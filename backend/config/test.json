@@ -1,0 +1,6 @@
+{
+  "database": {
+    "host": "database",
+    "database": "PROJECT_NAME_test"
+  }
+}

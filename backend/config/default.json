@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "encryptionKey": "ieTh4 So6as aeZ5i ouSh8 Eed3g xib7A Ieg9y ohw0C"
+  },
+  "database": {
+    "host": "host.docker.internal",
+    "username": "web",
+    "database": "PROJECT_NAME"
+  }
+}

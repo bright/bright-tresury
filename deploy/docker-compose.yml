@@ -1,0 +1,47 @@
+version: '3'
+services:
+  backend:
+    image: "${DOCKER_REGISTRY}project_name/backend:${TAG:-latest}"
+    build:
+      context: ../backend
+    environment:
+      DEPLOY_ENV: "${DEPLOY_ENV:-development}"
+    restart: unless-stopped
+  backend-development:
+    image: "${DOCKER_REGISTRY}project_name/backend:${TAG:-latest}"
+    build:
+      context: ../backend
+    volumes:
+      - ${PROJECT_DIR:-../}/backend:/srv/backend
+    environment:
+      DEPLOY_ENV: "development"
+      #      use inspect-brk to break immediately
+      #      NODE_DEBUG_OPTION: "--inspect-brk=50000"
+      #      use inspect to attach later on
+      NODE_DEBUG_OPTION: "--inspect=0.0.0.0:50000"
+    command: bash -c "npm run compile:watch & npm run main:nodemon:dist"
+    ports:
+      - 50000:50000
+      - 3000:3000
+    depends_on:
+      - database
+  backend-test-ci:
+    image: "${DOCKER_REGISTRY}project_name/backend:${TAG:-latest}"
+    build:
+      context: ../backend
+    environment:
+      DEPLOY_ENV: test
+    command: bash -c "npm run database:migrate:ci && npm run test:ci"
+    depends_on:
+      - database
+  database:
+    #  we don't use manual tagging so that each deployment does not cause a db restart
+    image: "${DOCKER_REGISTRY}project_name/database:1.0"
+    build:
+      context: ./database
+    volumes:
+      - ${PROJECT_DIR:-../}/deploy/pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres; do sleep 1; done
+    restart: unless-stopped
+

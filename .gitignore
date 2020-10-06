@@ -1,0 +1,10 @@
+node_modules
+.idea
+dist
+tmp
+
+deploy/pg-data
+
+**/src/**/*.js
+**/test*/**/*.js
+

@@ -1,0 +1,30 @@
+{
+  "name": "@bright/deploy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "npm run cdk -- deploy",
+    "diff": "npm run cdk -- diff",
+    "synth": "npm run cdk -- synth",
+    "destroy": "npm run cdk -- destroy",
+    "build": "tsc",
+    "watch": "tsc -w",
+    "cdk": "DEPLOY_ENV=${DEPLOY_ENV:-'stage'} cdk"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^12.0.8",
+    "typescript": "^3.5.2",
+    "ts-node": "^8.1.0",
+    "@aws-cdk/cdk": "^0.34.0",
+    "@aws-cdk/aws-ec2": "^0.34.0",
+    "@aws-cdk/aws-rds": "^0.34.0",
+    "@aws-cdk/aws-ssm": "^0.34.0",
+    "source-map-support": "^0.5.9"
+  },
+  "devDependencies": {
+    "aws-cdk": "^0.34.0"
+  }
+}

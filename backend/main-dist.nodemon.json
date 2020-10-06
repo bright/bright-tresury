@@ -1,0 +1,9 @@
+{
+  "watch": [
+    "dist"
+  ],
+  "ignore": [
+    "*.tsbuildinfo"
+  ],
+  "exec": "npm run main:dist | bunyan -o short"
+}
