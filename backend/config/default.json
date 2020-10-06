@@ -5,6 +5,6 @@
   "database": {
     "host": "host.docker.internal",
     "username": "web",
-    "database": "PROJECT_NAME"
+    "database": "treasury"
   }
 }

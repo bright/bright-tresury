@@ -11,7 +11,7 @@ import { getLogger } from "../logging.module";
 import { AsyncFactoryProvider, propertyOfProvider } from "../utils/dependency.injection";
 
 interface EnvConfig {
-    deployEnv: "production" | "development" | "stage" | "test" | "test-local"
+    deployEnv: "production" | "development" | "development-local" | "stage" | "test" | "test-local"
     port: number
 }
 
@@ -24,14 +24,14 @@ export type AppConfig = EnvConfig & {
 const configSchema = convict<AppConfig>({
     deployEnv: {
         doc: "The application environment.",
-        format: ["production", "development", "stage", "test", "test-local"],
+        format: ["production", "development", "development-local", "stage", "test", "test-local"],
         default: "development",
         env: "DEPLOY_ENV"
     },
     port: {
         doc: "Listen port.",
         format: "port",
-        default: 3000,
+        default: 3001,
         env: "PORT"
     },
     auth: authConfigSchema,

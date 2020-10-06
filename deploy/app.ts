@@ -44,14 +44,14 @@ class DatabaseStack extends Stack {
         })
 
         this.database = new rds.CfnDBInstance(this, "Database", {
-            dbName: "PROJECT_NAME",
+            dbName: "treasury",
             dbInstanceClass: "db.t3.micro",
             allowMajorVersionUpgrade: true,
             autoMinorVersionUpgrade: true,
             engine: "postgres",
             engineVersion: "11.2",
             dbInstanceIdentifier: projectEnvSpecificName("main"),
-            masterUsername: "PROJECT_NAME",
+            masterUsername: "treasury",
             masterUserPassword: resolveSecureParameter("/database/password"),
             vpcSecurityGroups: [this.databaseSecurityGroup.securityGroupId],
             multiAz: false,

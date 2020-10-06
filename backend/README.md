@@ -1,3 +1,21 @@
+## Local development
+
+Run once:
+ `../deploy/database/init-user-db.sh`.
+
+Run:
+* `nvm use`
+* `npm install`
+* `npm run compile`
+* `DEPLOY_ENV=development-local npm run database:migrate`
+* `DEPLOY_ENV=development-local npm run main`
+
+Access [api documentation](http://localhost:3001/api/documentation/)
+
+Run tests
+* `DEPLOY_ENV=test-local npm run database:migrate`
+* `DEPLOY_ENV=test-local npm run test`
+
 ## Configuration
 
 The pack uses [node-convict](https://github.com/mozilla/node-convict) for configuration.

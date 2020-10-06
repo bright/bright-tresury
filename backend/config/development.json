@@ -1,6 +1,6 @@
 {
   "database": {
     "host": "database",
-    "database": "PROJECT_NAME"
+    "database": "treasury"
   }
 }

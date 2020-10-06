@@ -1,14 +1,14 @@
 version: '3'
 services:
   backend:
-    image: "${DOCKER_REGISTRY}project_name/backend:${TAG:-latest}"
+    image: "${DOCKER_REGISTRY}treasury/backend:${TAG:-latest}"
     build:
       context: ../backend
     environment:
       DEPLOY_ENV: "${DEPLOY_ENV:-development}"
     restart: unless-stopped
   backend-development:
-    image: "${DOCKER_REGISTRY}project_name/backend:${TAG:-latest}"
+    image: "${DOCKER_REGISTRY}treasury/backend:${TAG:-latest}"
     build:
       context: ../backend
     volumes:
@@ -22,11 +22,11 @@ services:
     command: bash -c "npm run compile:watch & npm run main:nodemon:dist"
     ports:
       - 50000:50000
-      - 3000:3000
+      - 3001:3001
     depends_on:
       - database
   backend-test-ci:
-    image: "${DOCKER_REGISTRY}project_name/backend:${TAG:-latest}"
+    image: "${DOCKER_REGISTRY}treasury/backend:${TAG:-latest}"
     build:
       context: ../backend
     environment:
@@ -36,7 +36,7 @@ services:
       - database
   database:
     #  we don't use manual tagging so that each deployment does not cause a db restart
-    image: "${DOCKER_REGISTRY}project_name/database:1.0"
+    image: "${DOCKER_REGISTRY}treasury/database:1.0"
     build:
       context: ./database
     volumes:
