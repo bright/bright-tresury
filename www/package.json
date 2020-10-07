@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@polkadot/api": "^2.1.1",
+    "@polkadot/extension-dapp": "^0.34.1",
+    "@polkadot/types": "^2.1.1",
+    "@polkadot/ui-keyring": "^0.59.1",
+    "@polkadot/ui-settings": "^0.59.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -15,7 +20,10 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "typescript": "~3.7.2"
+    "semantic-ui-css": "^2.4.1",
+    "semantic-ui-react": "^2.0.0",
+    "typescript": "^3.8.3",
+    "bignumber.js": "^9.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

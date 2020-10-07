@@ -1,0 +1,9 @@
+{
+  "APP_NAME": "treasury",
+  "DEVELOPMENT_KEYRING": true,
+  "RPC": {},
+  "PROVIDER_SOCKET": "wss://rpc.polkadot.io",
+  "PROVIDER_SOCKET_LOCAL": "ws://localhost:9944",
+  "PROVIDER_SOCKET_KUSAMA": "wss://kusama-rpc.polkadot.io",
+  "PROVIDER_SOCKET_POLKADOT": "wss://rpc.polkadot.io"
+}
