@@ -9,6 +9,7 @@ import { tryLoadParamsFromSSM } from "./config.ssm";
 import { DatabaseConfig, databaseConfigSchema, DatabaseConfigToken } from "../database/database.config"
 import { getLogger } from "../logging.module";
 import { AsyncFactoryProvider, propertyOfProvider } from "../utils/dependency.injection";
+import { BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken } from "../blockchain/blockchain.config";
 
 interface EnvConfig {
     deployEnv: "production" | "development" | "development-local" | "stage" | "test" | "test-local"
@@ -18,7 +19,8 @@ interface EnvConfig {
 export type AppConfig = EnvConfig & {
     auth: AuthConfig
     database: DatabaseConfig,
-    aws: AWSConfig
+    aws: AWSConfig,
+    blockchain: BlockchainConfig,
 };
 
 const configSchema = convict<AppConfig>({
@@ -36,7 +38,8 @@ const configSchema = convict<AppConfig>({
     },
     auth: authConfigSchema,
     database: databaseConfigSchema,
-    aws: awsConfigSchema
+    aws: awsConfigSchema,
+    blockchain: blockchainConfigSchema,
 });
 const logger = getLogger();
 
@@ -74,7 +77,8 @@ const appConfigProvider: AsyncFactoryProvider<AppConfig> = {
 
 const authConfigProvider = propertyOfProvider(appConfigProvider, 'auth', 'AuthConfig');
 const databaseConfigProvider = propertyOfProvider(appConfigProvider, "database", DatabaseConfigToken)
-const providers: Provider[] = [appConfigProvider, authConfigProvider, databaseConfigProvider];
+const blockchainConfigProvider = propertyOfProvider(appConfigProvider, "blockchain", BlockchainConfigToken)
+const providers: Provider[] = [appConfigProvider, authConfigProvider, databaseConfigProvider, blockchainConfigProvider];
 
 // @Global() // if we don't have to import config module everywhere
 @Module({
