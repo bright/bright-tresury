@@ -1,5 +1,5 @@
 import { Test } from "@nestjs/testing";
-import { beforeEachSetup, beforeAllSetup } from "../utils/spec.helpers";
+import { beforeAllSetup } from "../utils/spec.helpers";
 import { BlockchainModule } from "./blockchain.module";
 import { BlockchainService } from "./blockchain.service";
 
@@ -10,8 +10,8 @@ describe(`Blockchain service`, () => {
         }).compile()
     )
     const service = beforeAllSetup(() => module().get<BlockchainService>(BlockchainService))
-    test(`can connect to blockchain`, async () => {
-        const res = service().getUrl()
-        expect(res).toBe("ws://localhost:9944")
+    test(`can connect to test blockchain`, async () => {
+        const res = await service().getName()
+        expect(res).toBe("Parity Polkadot")
     });
 });

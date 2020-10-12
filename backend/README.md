@@ -13,6 +13,7 @@ Run:
 Access [api documentation](http://localhost:3001/api/documentation/)
 
 Run tests
+* `npm run compile`
 * `DEPLOY_ENV=test-local npm run database:migrate`
 * `DEPLOY_ENV=test-local npm run test`
 
