@@ -1,10 +1,10 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class TMP_CreatePost1548588641029 implements MigrationInterface {
+export class CreateProposal1602526116864 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.query(`
-        create table "posts" (
+      await queryRunner.query(`
+        create table "proposals" (
           "id" uuid primary key,
           "createdAt" timestamp with time zone not null default CURRENT_TIMESTAMP ,
           "updatedAt" timestamp with time zone not null default CURRENT_TIMESTAMP ,
@@ -15,8 +15,8 @@ export class TMP_CreatePost1548588641029 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
-        await queryRunner.query(`
-        drop table "posts";
+      await queryRunner.query(`
+        drop table "proposals";
         `)
     }
 

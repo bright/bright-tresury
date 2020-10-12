@@ -1,8 +1,8 @@
 import { Column, Entity } from "typeorm";
 import { BaseEntity } from "../database/base.entity";
 
-@Entity("posts")
-export class Post extends BaseEntity {
+@Entity("proposals")
+export class Proposal extends BaseEntity {
     @Column({ nullable: false })
     title: string
 

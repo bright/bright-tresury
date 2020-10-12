@@ -3,14 +3,15 @@ import { ModuleMetadata } from "@nestjs/common/interfaces";
 import { Test, TestingModuleBuilder } from "@nestjs/testing";
 import { memoize } from 'lodash';
 import { SuperAgentRequest } from "superagent";
-import supertest from "supertest"
+import supertest from "supertest";
+import { getConnection } from 'typeorm';
 import { AppModule, configureGlobalServices } from "../app.module";
 import { AuthService } from "../auth/auth.service";
 import { NestLoggerAdapter } from "../logging.module";
 import { Accessor } from "./accessor";
 import { tryClose } from "./closeable";
+import './responseMatching';
 import { responseMatchers } from "./responseMatchingHelpers";
-import './responseMatching'
 
 if (!process.env.DEPLOY_ENV) {
     process.env.DEPLOY_ENV = 'test'
@@ -123,3 +124,31 @@ export const beforeSetupFullApp = memoize(() => {
     });
 })
 
+const tablesToRemove = memoize(
+  async (): Promise<Array<{ table_name: string }>> => {
+    const connection = await getConnection()
+    return await connection.query(
+      `
+        select * 
+        from information_schema.tables 
+        where 
+            table_schema='public' and table_name != 'migrations'
+        `
+    )
+  }
+)
+
+export const cleanDatabase = async () => {
+  try {
+    const tables = await tablesToRemove()
+    const connection = await getConnection()
+    const tableList = tables.map((t: any) => `"${t.table_name}"`).join(', ')
+    const truncateQuery = `truncate ${tableList};`
+    return await connection.query(truncateQuery)
+  } catch (e) {
+    // tslint:disable-next-line:no-console
+    console.error('Please make sure that beforeSetupFullApp is called before cleanDatabase.')
+    // tslint:disable-next-line:no-console
+    console.error(e)
+  }
+}
