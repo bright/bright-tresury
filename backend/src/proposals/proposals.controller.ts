@@ -1,9 +1,7 @@
 import { Controller, Get, HttpStatus, Query } from '@nestjs/common';
-import { ApiResponse, ApiModelPropertyOptional } from '@nestjs/swagger';
-import { ProposalsService } from './proposals.service';
+import { ApiModelPropertyOptional, ApiResponse } from '@nestjs/swagger';
 import { Proposal } from './proposal.entity';
-import { IsString } from 'class-validator';
-import { getLogger } from '../logging.module';
+import { ProposalsService } from './proposals.service';
 
 class GetProposalsQuery {
     @ApiModelPropertyOptional()

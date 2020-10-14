@@ -13,8 +13,8 @@ export class ProposalNetwork extends BaseEntity {
     @ManyToOne(
         () => Proposal,
         (proposal) => proposal.networks
-      )
-      proposal: Proposal
+    )
+    proposal: Proposal
 
     constructor(name: string, proposal: Proposal, value: number = 0) {
         super();

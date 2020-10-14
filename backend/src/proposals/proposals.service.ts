@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Proposal } from './proposal.entity';
 import { FindConditions, In, Repository } from 'typeorm';
+import { Proposal } from './proposal.entity';
 import { ProposalNetwork } from './proposalNetwork.entity';
 
 @Injectable()
