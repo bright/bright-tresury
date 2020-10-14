@@ -4,9 +4,10 @@ import { DatabaseModule } from '../database/database.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Proposal } from './proposal.entity';
 import { ProposalsService } from './proposals.service';
+import { ProposalNetwork } from './proposalNetwork.entity';
 
 @Module({
-  imports: [DatabaseModule, TypeOrmModule.forFeature([Proposal])],
+  imports: [DatabaseModule, TypeOrmModule.forFeature([Proposal]), TypeOrmModule.forFeature([ProposalNetwork])],
   providers: [ProposalsService],
   controllers: [ProposalsController]
 })

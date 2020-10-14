@@ -8,7 +8,7 @@
     "clean-js": "find src -name '*.js' -exec rm {} +",
     "compile": "tsc",
     "compile:watch": "tsc --watch",
-    "test": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest | bunyan -o short",
+    "test": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest",
     "test:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand | bunyan -o short",
     "test:watch": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --watch | bunyan -o short",
     "test:ci": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest",
