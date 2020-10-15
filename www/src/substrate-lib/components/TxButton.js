@@ -193,8 +193,7 @@ function TxButton ({
   };
 
   return (
-    <Button
-      basic
+    <Button basic
       color={color}
       style={style}
       type='submit'
