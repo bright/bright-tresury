@@ -1,17 +1,19 @@
 import { INestApplication } from '@nestjs/common';
 import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers';
 import { Proposal } from './proposal.entity';
+import { ProposalNetwork } from './proposalNetwork.entity';
 import { ProposalsService } from './proposals.service';
 
 const baseUrl = '/api/v1/proposals'
 
-export function createProposal(proposalName: string, networks?: string[], app: INestApplication = beforeSetupFullApp().get()) {
+export async function createProposal(proposalName: string, networks?: string[], app: INestApplication = beforeSetupFullApp().get()) {
     const proposal = new Proposal(proposalName)
-    return app.get(ProposalsService).save(proposal, networks)
+    const result = await app.get(ProposalsService).save(proposal, networks)
+    return result
 }
 
 
-describe(`Proposals`, () => {
+describe(`/api/v1/proposals`, () => {
     const app = beforeSetupFullApp()
 
     beforeEach(async () => {
@@ -50,6 +52,34 @@ describe(`Proposals`, () => {
 
             const actualProposal2 = body.find(p => p.title === 'Test title2')
             expect(actualProposal2).toBeDefined
+        })
+    })
+
+    describe('GET /:id', () => {
+        it('should return an existing proposal', async () => {
+            const proposal = await createProposal('Test title', ['kusama', 'polkadot'])
+
+            const result = await request(app())
+                .get(`${baseUrl}/${proposal.id}`)
+
+            const body = result.body as Proposal
+            expect(body.title).toBe('Test title')
+            expect(body.networks).toBeDefined()
+            expect(body.networks!.length).toBe(2)
+            expect(body.networks!.find((n: ProposalNetwork) => n.name === 'kusama')).toBeDefined
+            expect(body.networks!.find((n: ProposalNetwork) => n.name === 'polkadot')).toBeDefined
+        })
+
+        it('should return not found for not existing proposal', async () => {
+            return request(app())
+                .get(`${baseUrl}/6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b`)
+                .expect(404)
+        })
+
+        it('should return bad request for not valid uuid param', async () => {
+            return request(app())
+                .get(`${baseUrl}/not_valid`)
+                .expect(400)
         })
     })
 })
