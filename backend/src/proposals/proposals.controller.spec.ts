@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { validate as uuidValidate } from 'uuid';
 import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers';
 import { Proposal } from './proposal.entity';
 import { ProposalNetwork } from './proposalNetwork.entity';
@@ -6,9 +7,9 @@ import { ProposalsService } from './proposals.service';
 
 const baseUrl = '/api/v1/proposals'
 
-export async function createProposal(proposalName: string, networks?: string[], app: INestApplication = beforeSetupFullApp().get()) {
-    const proposal = new Proposal(proposalName)
-    const result = await app.get(ProposalsService).save(proposal, networks)
+export async function createProposal(title: string, networks?: string[], app: INestApplication = beforeSetupFullApp().get()) {
+    const proposal: CreateProposalDto = { title, networks }
+    const result = await app.get(ProposalsService).save(proposal)
     return result
 }
 
@@ -80,6 +81,54 @@ describe(`/api/v1/proposals`, () => {
             return request(app())
                 .get(`${baseUrl}/not_valid`)
                 .expect(400)
+        })
+    })
+
+    describe('POST', () => {
+        it('should return created for minimal valid data', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({ title: 'Test title' })
+                .expect(201)
+        })
+
+        it('should return created for all valid data', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({ title: 'Test title', networks: ['kusama'] })
+                .expect(201)
+        })
+
+        it('should return created proposal for valid data', async () => {
+            const actual = await request(app())
+                .post(`${baseUrl}`)
+                .send({ title: 'Test title', networks: ['kusama'] })
+
+            const body = actual.body
+            expect(uuidValidate(body.id)).toBe(true)
+            expect(body.title).toBe('Test title')
+            expect(body.networks!.length).toBe(1)
+            expect(body.networks[0].name).toBe('kusama')
+        })
+
+        it('should create a proposal and networks', async () => {
+            const result = await request(app())
+                .post(`${baseUrl}`)
+                .send({ title: 'Test title', networks: ['kusama'] })
+
+            const proposalsService = app.get().get(ProposalsService)
+            const actual = await proposalsService.findOne(result.body.id)
+            expect(actual).toBeDefined()
+            expect(actual!.title).toBe('Test title')
+            expect(actual!.networks!.length).toBe(1)
+            expect(actual!.networks![0].name).toBe('kusama')
+        })
+
+        it('should return bad request for empty title', async () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({ title: '' })
+                .expect(201)
         })
     })
 })

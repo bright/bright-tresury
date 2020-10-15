@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, HttpStatus, NotFoundException, Param, Query } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, HttpStatus, NotFoundException, Param, Post, Query } from '@nestjs/common';
 import { ApiModelPropertyOptional, ApiResponse } from '@nestjs/swagger';
 import { validate as uuidValidate } from 'uuid';
 import { Proposal } from './proposal.entity';
@@ -19,7 +19,7 @@ export class ProposalsController {
         status: HttpStatus.OK,
         description: 'Respond with all proposals.',
     })
-    async getProposals(@Query() query?: GetProposalsQuery): Promise<Proposal[]> {
+    getProposals(@Query() query?: GetProposalsQuery): Promise<Proposal[]> {
         return this.proposalsService.find(query?.network)
     }
 
@@ -45,5 +45,18 @@ export class ProposalsController {
             throw new NotFoundException('Proposal not found.')
         }
         return proposal
+    }
+
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        description: 'Create new proposal.',
+    })
+    @ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Title must not be empty.',
+    })
+    @Post()
+    createProposal(@Body() createProposalDto: CreateProposalDto): Promise<Proposal> {
+        return this.proposalsService.save(createProposalDto)
     }
 }

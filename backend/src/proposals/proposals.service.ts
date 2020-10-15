@@ -37,13 +37,14 @@ export class ProposalsService {
         return this.proposalRepository.findOne(id, { relations: ['networks'] })
     }
 
-    async save(proposal: Proposal, networks?: string[]): Promise<Proposal> {
-        const p = await this.proposalRepository.save(proposal)
-        if (networks) {
-            await Promise.all(networks.map(async (network) => {
-                await this.proposalNetworkRepository.save(new ProposalNetwork(network, p))
+    async save(createProposalDto: CreateProposalDto): Promise<Proposal> {
+        const proposal = await this.proposalRepository.save(new Proposal(createProposalDto.title))
+        if (createProposalDto.networks) {
+            await Promise.all(createProposalDto.networks.map(async (network) => {
+                await this.proposalNetworkRepository.save(new ProposalNetwork(network, proposal))
             }))
         }
-        return p
+        const result = await this.findOne(proposal.id)
+        return result ?? proposal
     }
 }
