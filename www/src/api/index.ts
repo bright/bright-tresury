@@ -11,7 +11,7 @@ import { HttpStatus } from './httpStatus'
 
 const NODE_ENV = process.env.NODE_ENV
 export const API_PREFIX = NODE_ENV === 'development' ? 'http://localhost:3001/' : '/'
-export const API_URL = `${API_PREFIX}api`
+export const API_URL = `${API_PREFIX}api/v1`
 
 type HttpMethod = 'GET' | 'HEAD' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'
 
