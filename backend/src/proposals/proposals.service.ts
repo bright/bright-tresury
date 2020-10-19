@@ -23,6 +23,9 @@ export class ProposalsService {
                     name: networkName
                 }
             })
+            if (proposalNetworks.length === 0) {
+                return []
+            }
             const proposalIds = proposalNetworks.map(pc => pc.proposal.id)
             where.id = In(proposalIds)
         }
