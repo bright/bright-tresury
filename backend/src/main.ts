@@ -10,7 +10,7 @@ const logger = getLogger()
 
 async function bootstrap() {
     const app = await createApp();
-
+    app.enableCors()
     const document = generateSwaggerDocument(app);
 
     SwaggerModule.setup('api/documentation', app, document);
