@@ -1,71 +1,47 @@
-import React, { createRef, useState } from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-// import { Container, Dimmer, Loader, Grid, Sticky, Message } from 'semantic-ui-react';
 import './App.css';
-import { ROUTE_ROOT } from './routes';
-import { useSubstrate, SubstrateContextProvider } from './substrate-lib';
-import { DeveloperConsole } from './substrate-lib/components';
-import { Dimmer, Loader, Grid, Message } from 'semantic-ui-react';
-import Home from './home/Home';
+import Ideas from './ideas/Ideas';
+import Menu from './main/Menu';
+import Proposals from './proposals/Proposals';
+import { ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_ROOT } from './routes';
+import Stats from './stats/Stats';
+import { SubstrateContextProvider } from './substrate-lib';
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            display: 'flex',
+        },
+    }),
+);
 
 
 function AppRoutes() {
-  return (
-    <Router>
-      <Switch>
-        <Route exact={true} path={ROUTE_ROOT} component={Main} />
-      </Switch>
-    </Router>
-  )
-}
-
-function Main() {
-  const [accountAddress, setAccountAddress] = useState(null);
-  const { apiState, keyring, keyringState, apiError } = useSubstrate();
-  const accountPair =
-    accountAddress &&
-    keyringState === 'READY' &&
-    keyring.getPair(accountAddress);
-
-    const loader = (text: any) =>
-    <Dimmer active>
-      <Loader size='small'>{text}</Loader>
-    </Dimmer>;
-
-  const message = (err: any) =>
-    <Grid centered columns={2} padded>
-      <Grid.Column>
-        <Message negative compact floating
-          header='Error Connecting to Substrate'
-          content={`${err}`}
-        />
-      </Grid.Column>
-    </Grid>;
-
-
-  if (apiState === 'ERROR') return message(apiError);
-  else if (apiState !== 'READY') return loader('Connecting to Substrate');
-
-  if (keyringState !== 'READY') {
-    return loader('Loading accounts (please review any extension\'s authorization)');
-  }
-
-  const contextRef = createRef<HTMLDivElement>();
-
-  return (
-    <div ref={contextRef}>
-      <Home/>
-      <DeveloperConsole />
-    </div>
-  );
+    const classes = useStyles();
+    return (
+        <Router>
+            <div className={classes.root}>
+                <Menu />
+                <Switch>
+                    <Route exact={true} path={ROUTE_ROOT} component={Stats} />
+                    <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
+                    <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
+                </Switch>
+            </div>
+        </Router>
+    )
 }
 
 function App() {
-  return (
-    <SubstrateContextProvider>
-      <AppRoutes />
-    </SubstrateContextProvider>
-  )
+    return (
+        <SubstrateContextProvider>
+            {/* <Main> */}
+            <AppRoutes />
+            {/* </Main> */}
+        </SubstrateContextProvider>
+    )
 }
 
 export default App;

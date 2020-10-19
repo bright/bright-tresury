@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@material-ui/core": "^4.11.0",
+    "@material-ui/icons": "^4.9.1",
     "@polkadot/api": "^2.1.1",
     "@polkadot/extension-dapp": "^0.34.1",
     "@polkadot/types": "^2.1.1",
@@ -16,14 +18,14 @@
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-router-dom": "^5.1.5",
+    "bignumber.js": "^9.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^2.0.0",
-    "typescript": "^3.8.3",
-    "bignumber.js": "^9.0.0"
+    "typescript": "^3.8.3"
   },
   "scripts": {
     "start": "react-scripts start",
