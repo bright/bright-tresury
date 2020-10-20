@@ -5,7 +5,7 @@ import { ConfigModule } from "./config/config";
 import { DatabaseModule } from "./database/database.module";
 import { LoggingModule, NestLoggerAdapter } from "./logging.module";
 import { VersionModule } from "./version/version";
-import { ProposalsModule } from './proposals/proposals.module';
+import { IdeasModule } from './ideas/ideas.module';
 
 @Module({
     imports: [
@@ -14,7 +14,7 @@ import { ProposalsModule } from './proposals/proposals.module';
         DatabaseModule,
         VersionModule,
         AuthModule,
-        ProposalsModule
+        IdeasModule
     ],
     exports: []
 })

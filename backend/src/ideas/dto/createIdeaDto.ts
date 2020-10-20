@@ -1,4 +1,4 @@
-interface CreateProposalDto {
+interface CreateIdeaDto {
     title: string,
     networks?: string[]
 }

@@ -14,9 +14,9 @@ export interface IdeaResponse {
 }
 
 export function getIdeasByNetwork(name: string) {
-    return fetchAndUnwrap<IdeaResponse[]>('GET', `${API_URL}/proposals?network=${name}`)
+    return fetchAndUnwrap<IdeaResponse[]>('GET', `${API_URL}/ideas?network=${name}`)
 }
 
 export function getIdeasById(id: string) {
-    return fetchAndUnwrap<IdeaResponse>('GET', `${API_URL}/proposals/${id}`)
+    return fetchAndUnwrap<IdeaResponse>('GET', `${API_URL}/ideas/${id}`)
 }

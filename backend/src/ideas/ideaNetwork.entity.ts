@@ -1,9 +1,9 @@
 import { Column, Entity, ManyToOne } from "typeorm";
 import { BaseEntity } from "../database/base.entity";
-import { Proposal } from "./proposal.entity";
+import { Idea } from "./idea.entity";
 
-@Entity("proposal_networks")
-export class ProposalNetwork extends BaseEntity {
+@Entity("idea_networks")
+export class IdeaNetwork extends BaseEntity {
     @Column({ nullable: false })
     name: string
 
@@ -11,15 +11,15 @@ export class ProposalNetwork extends BaseEntity {
     value: number
 
     @ManyToOne(
-        () => Proposal,
-        (proposal) => proposal.networks
+        () => Idea,
+        (idea) => idea.networks
     )
-    proposal: Proposal
+    idea: Idea
 
-    constructor(name: string, proposal: Proposal, value: number = 0) {
+    constructor(name: string, idea: Idea, value: number = 0) {
         super();
         this.name = name;
-        this.proposal = proposal;
+        this.idea = idea;
         this.value = value;
     }
 }
