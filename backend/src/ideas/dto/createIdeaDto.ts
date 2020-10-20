@@ -1,4 +1,9 @@
 interface CreateIdeaDto {
-    title: string,
-    networks?: string[]
+    title: string
+    networks?: CreateIdeNetworkDto[]
+}
+
+interface CreateIdeNetworkDto {
+    name: string
+    value?: number
 }

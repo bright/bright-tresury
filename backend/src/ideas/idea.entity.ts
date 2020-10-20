@@ -18,8 +18,6 @@ export class Idea extends BaseEntity {
 
     constructor(_title: string) {
         super()
-           console.log('title :>> ', _title);
         this.title = _title
-        console.log('this :>> ', this)
     }
 }

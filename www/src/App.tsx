@@ -3,9 +3,10 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './App.css';
 import Ideas from './ideas/Ideas';
+import NewIdea from './ideas/NewIdea';
 import Menu from './main/Menu';
 import Proposals from './proposals/Proposals';
-import { ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_ROOT } from './routes';
+import { ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSALS, ROUTE_ROOT } from './routes';
 import Stats from './stats/Stats';
 import { SubstrateContextProvider } from './substrate-lib';
 
@@ -28,6 +29,7 @@ function AppRoutes() {
                     <Route exact={true} path={ROUTE_ROOT} component={Stats} />
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
+                    <Route exact={true} path={ROUTE_NEW_IDEA} component={NewIdea} />
                 </Switch>
             </div>
         </Router>
