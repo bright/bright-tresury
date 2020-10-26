@@ -1,6 +1,24 @@
-## Substrate node
+# Treasury app
 
-To run a local Polkadot node go to [Polkadot GitHub page](https://github.com/paritytech/polkadot). You can download it and run locally or in a docker container. In both scenarios run the node in development mode (with `--dev` flag).
+This is an application to interact with a tresury module of Substrate based networks.
+
+This repo contains:
+
+* backend
+    * database which keeps contextual data
+    * event listener to track on-chain updates
+    * REST API with [documentation](http://localhost:3001/api/documentation/)
+* frontend
+    * React frontend application available on [http://localhost:3000/](http://localhost:3000/)
+
+
+## Development
+
+To run backend and frontend in development mode see the corresponding readme files.
+
+### Local Substrate node
+
+You can connect to any of the live Substrate based network (*currently configured in code*). To run a local Polkadot node go to [Polkadot GitHub page](https://github.com/paritytech/polkadot). You can download it and run locally or in a docker container. In both scenarios run the node in development mode (with `--dev` flag).
 
 ### Genesis config
 
