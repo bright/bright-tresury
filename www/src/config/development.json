@@ -1,4 +1,5 @@
 {
+  "PROVIDER_SOCKET": "ws://localhost:9944",
   "CUSTOM_TYPES": {
     "Address": "AccountId",
     "LookupSource": "AccountId"

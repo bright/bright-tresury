@@ -10,6 +10,7 @@ export interface Idea {
     id?: string
     title: string
     content: string
+    beneficiary: string
     networks: IdeaNetwork[]
 }
 
@@ -17,7 +18,7 @@ export function getIdeasByNetwork(name: string) {
     return fetchAndUnwrap<Idea[]>('GET', `${API_URL}/ideas?network=${name}`)
 }
 
-export function getIdeasById(id: string) {
+export function getIdeaById(id: string) {
     return fetchAndUnwrap<Idea>('GET', `${API_URL}/ideas/${id}`)
 }
 

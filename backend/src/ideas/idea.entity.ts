@@ -10,14 +10,19 @@ export class Idea extends BaseEntity {
     @Column({ nullable: true, type: "text" })
     content: string | null = null
 
+    @Column({ nullable: true, type: "text" })
+    beneficiary: string | null = null
+
     @OneToMany(
         () => IdeaNetwork,
         (network) => network.idea
     )
     networks?: IdeaNetwork[]
 
-    constructor(_title: string) {
+    constructor(title: string, content: string | null = null, beneficiary: string | null = null) {
         super()
-        this.title = _title
+        this.title = title
+        this.content = content
+        this.beneficiary = beneficiary
     }
 }

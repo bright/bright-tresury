@@ -19,26 +19,14 @@ function TxButton ({
   // Hooks
   const { api } = useSubstrate();
   const [unsub, setUnsub] = useState(null);
-  const [sudoKey, setSudoKey] = useState(null);
 
   const { palletRpc, callable, inputParams, paramFields } = attrs;
 
   const isQuery = () => type === 'QUERY';
-  const isSudo = () => type === 'SUDO-TX';
   const isUnsigned = () => type === 'UNSIGNED-TX';
   const isSigned = () => type === 'SIGNED-TX';
   const isRpc = () => type === 'RPC';
   const isConstant = () => type === 'CONSTANT';
-
-  const loadSudoKey = () => {
-    (async function () {
-      if (!api) { return; }
-      const sudoKey = await api.query.sudo.key();
-      sudoKey.isEmpty ? setSudoKey(null) : setSudoKey(sudoKey.toString());
-    })();
-  };
-
-  useEffect(loadSudoKey, [api]);
 
   const getFromAcct = async () => {
     const {
@@ -66,19 +54,6 @@ function TxButton ({
 
   const txErrHandler = err =>
     setStatus(`😞 Transaction Failed: ${err.toString()}`);
-
-  const sudoTx = async () => {
-    const fromAcct = await getFromAcct();
-    const transformed = transformParams(paramFields, inputParams);
-    // transformed can be empty parameters
-    const txExecute = transformed
-      ? api.tx.sudo.sudo(api.tx[palletRpc][callable](...transformed))
-      : api.tx.sudo.sudo(api.tx[palletRpc][callable]());
-
-    const unsub = txExecute.signAndSend(fromAcct, txResHandler)
-      .catch(txErrHandler);
-    setUnsub(() => unsub);
-  };
 
   const signedTx = async () => {
     const fromAcct = await getFromAcct();
@@ -134,8 +109,7 @@ function TxButton ({
 
     setStatus('Sending...');
 
-    (isSudo() && sudoTx()) ||
-      (isSigned() && signedTx()) ||
+    (isSigned() && signedTx()) ||
       (isUnsigned() && unsignedTx()) ||
       (isQuery() && query()) ||
       (isRpc() && rpc()) ||
@@ -187,19 +161,13 @@ function TxButton ({
     });
   };
 
-  const isSudoer = acctPair => {
-    if (!sudoKey || !acctPair) { return false; }
-    return acctPair.address === sudoKey;
-  };
-
   return (
     <Button basic
       color={color}
       style={style}
       type='submit'
       onClick={transaction}
-      disabled={ disabled || !palletRpc || !callable || !allParamsFilled() ||
-        (isSudo() && !isSudoer(accountPair)) }
+      disabled={ disabled || !palletRpc || !callable || !allParamsFilled()}
     >
       {label}
     </Button>
@@ -211,7 +179,7 @@ TxButton.propTypes = {
   accountPair: PropTypes.object,
   setStatus: PropTypes.func.isRequired,
   type: PropTypes.oneOf([
-    'QUERY', 'RPC', 'SIGNED-TX', 'UNSIGNED-TX', 'SUDO-TX',
+    'QUERY', 'RPC', 'SIGNED-TX', 'UNSIGNED-TX',
     'CONSTANT']).isRequired,
   attrs: PropTypes.shape({
     palletRpc: PropTypes.string,
@@ -238,12 +206,6 @@ function TxGroupButton (props) {
         {...props}
       />
       <Button.Or />
-      <TxButton
-        label='SUDO'
-        type='SUDO-TX'
-        color='red'
-        {...props}
-      />
     </Button.Group>
   );
 }

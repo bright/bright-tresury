@@ -41,7 +41,7 @@ export class IdeasService {
     }
 
     async save(createIdeaDto: CreateIdeaDto): Promise<Idea> {
-        const idea = await this.ideaRepository.save(new Idea(createIdeaDto.title))
+        const idea = await this.ideaRepository.save(new Idea(createIdeaDto.title, createIdeaDto.content, createIdeaDto.beneficiary))
         if (createIdeaDto.networks) {
             await Promise.all(createIdeaDto.networks.map(async (network) => {
                 await this.ideaNetworkRepository.save(new IdeaNetwork(network.name, idea, network.value))

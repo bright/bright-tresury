@@ -3,8 +3,8 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { ROUTE_NEW_IDEA } from '../routes';
+import { generatePath, Link, useHistory } from 'react-router-dom';
+import { ROUTE_IDEA, ROUTE_NEW_IDEA } from '../routes';
 import { getIdeasByNetwork, Idea } from './ideas.api';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,7 +22,7 @@ interface Props {
     network: string
 }
 
-const Ideas: React.FC<Props> = ({ network = 'kusama' }) => {
+const Ideas: React.FC<Props> = ({ network = 'localhost' }) => {
     const classes = useStyles()
 
     const history = useHistory()
@@ -60,7 +60,9 @@ const Ideas: React.FC<Props> = ({ network = 'kusama' }) => {
                     ideas.map((idea) => (
                         <Grid key={idea.id} item xs={12} md={6}>
                             <Paper className={classes.paper} >
-                                <p>{idea.title}</p>
+                                <Link to={generatePath(ROUTE_IDEA, { ideaId: idea.id })}>
+                                    <p>{idea.title}</p>
+                                </Link>
                             </Paper>
                         </Grid>
                     ))

@@ -7,8 +7,13 @@ import { IdeasService } from './ideas.service';
 
 const baseUrl = '/api/v1/ideas'
 
-export async function createIdea(title: string, networks?: CreateIdeNetworkDto[], app: INestApplication = beforeSetupFullApp().get()) {
-    const idea: CreateIdeaDto = { title, networks }
+export async function createIdea(
+    title: string,
+    networks?: CreateIdeNetworkDto[],
+    beneficiary: string | undefined = undefined,
+    content: string | undefined = undefined,
+    app: INestApplication = beforeSetupFullApp().get()) {
+    const idea: CreateIdeaDto = { title, networks, beneficiary, content }
     const result = await app.get(IdeasService).save(idea)
     return result
 }
@@ -38,9 +43,9 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas for selected network', async () => {
-            await createIdea('Test title1', [{name: 'kusama'}])
-            await createIdea('Test title2', [{name: 'kusama'}, {name: 'polkadot'}])
-            await createIdea('Test title3', [{name: 'polkadot'}])
+            await createIdea('Test title1', [{ name: 'kusama' }])
+            await createIdea('Test title2', [{ name: 'kusama' }, { name: 'polkadot' }])
+            await createIdea('Test title3', [{ name: 'polkadot' }])
 
             const result = await request(app())
                 .get(`${baseUrl}?network=kusama`)
@@ -58,13 +63,15 @@ describe(`/api/v1/ideas`, () => {
 
     describe('GET /:id', () => {
         it('should return an existing idea', async () => {
-            const idea = await createIdea('Test title', [{name: 'kusama'}, {name: 'polkadot'}])
+            const idea = await createIdea('Test title', [{ name: 'kusama' }, { name: 'polkadot' }], '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 'content')
 
             const result = await request(app())
                 .get(`${baseUrl}/${idea.id}`)
 
             const body = result.body as Idea
             expect(body.title).toBe('Test title')
+            expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            expect(body.content).toBe('content')
             expect(body.networks).toBeDefined()
             expect(body.networks!.length).toBe(2)
             expect(body.networks!.find((n: IdeaNetwork) => n.name === 'kusama')).toBeDefined
@@ -95,18 +102,30 @@ describe(`/api/v1/ideas`, () => {
         it('should return created for all valid data', () => {
             return request(app())
                 .post(`${baseUrl}`)
-                .send({ title: 'Test title', networks: [{name: 'kusama', value: 10}] })
+                .send({
+                    title: 'Test title',
+                    networks: [{ name: 'kusama', value: 10 }],
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                    content: 'content'
+                })
                 .expect(201)
         })
 
         it('should return created idea for valid data', async () => {
             const actual = await request(app())
                 .post(`${baseUrl}`)
-                .send({ title: 'Test title', networks: [{name: 'kusama', value: 10}] })
+                .send({
+                    title: 'Test title',
+                    networks: [{ name: 'kusama', value: 10 }],
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                    content: 'content'
+                })
 
             const body = actual.body
             expect(uuidValidate(body.id)).toBe(true)
             expect(body.title).toBe('Test title')
+            expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            expect(body.content).toBe('content')
             expect(body.networks!.length).toBe(1)
             expect(body.networks[0].name).toBe('kusama')
             expect(body.networks[0].value).toBe(10)
@@ -115,7 +134,7 @@ describe(`/api/v1/ideas`, () => {
         it('should create a idea and networks', async () => {
             const result = await request(app())
                 .post(`${baseUrl}`)
-                .send({ title: 'Test title', networks: [{name: 'kusama', value: 10}] })
+                .send({ title: 'Test title', networks: [{ name: 'kusama', value: 10 }] })
 
             const ideasService = app.get().get(IdeasService)
             const actual = await ideasService.findOne(result.body.id)
