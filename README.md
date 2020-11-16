@@ -49,3 +49,9 @@ Go to *Governance* -> *Council* tab. *Submit candidacy* of three accounts. *Vote
 * Fill the tresury pot
 
 If you want to add some tokens to the tresury, one easy way would be to submit a proposal for some large amount of tokens and reject it. The bond gets slashed and the tokens go to the tresury.
+
+* Unexpeced epoch change
+
+If you run your local node you may encounter "Unexpected epoch change" error. The only way to fix it is to purge the chain:
+
+`polkadot purge-chain --dev`
