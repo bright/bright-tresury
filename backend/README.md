@@ -1,7 +1,12 @@
 ## Local development
 
+Please make sure that your PostgreSQL does not restrict providing a password for roles. It can be done by editing pg_hba.conf postgres configuration file and changing `METHOD` value to `trust`.
+
 Run once:
  `../deploy/database/init-user-db.sh`.
+ 
+Please make sure that `web` role has required privileges for `treasury` and `treasury_test` database. The required privileges are:
+`select, insert, update, delete, truncate`.
 
 Run:
 * `nvm use`
