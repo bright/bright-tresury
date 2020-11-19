@@ -8,6 +8,7 @@ import IdeaDetailsForm from './IdeaDetailsForm';
 import {createIdea, getIdeaById, Idea, IdeaNetwork} from './ideas.api';
 import SubmitProposal from './SubmitProposal';
 import {Button} from "../components/button/Button";
+import {useTranslation} from "react-i18next";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -24,6 +25,7 @@ interface Props {
 const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
     const classes = useStyles()
     const history = useHistory()
+    const {t} = useTranslation()
 
     let {ideaId} = useParams<{ ideaId: string }>()
 
@@ -62,11 +64,11 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
         <div className={classes.root}>
             <IdeaDetailsForm idea={idea} setIdea={setIdea}/>
             <Button variant="contained" color="primary" onClick={save}>
-                Save
+                {t('idea.details.save')}
             </Button>
             {!!idea.id && <div>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
-                    Submit proposal
+                    {t('idea.details.submitProposal')}
                 </Button>
                 <Modal
                     open={open}

@@ -4,6 +4,7 @@ import { KeyringAddress } from '@polkadot/ui-keyring/types';
 import React, { useState } from 'react';
 import { useSubstrate } from '../substrate-lib';
 import { TxButton } from '../substrate-lib/components';
+import {useTranslation} from "react-i18next";
 import {Input} from "../components/input/Input";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -34,6 +35,7 @@ interface Props {
 
 const SubmitProposal: React.FC<Props> = ({ network = 'localhost', value = 100, beneficiary = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' }) => {
     const classes = useStyles()
+    const {t} = useTranslation()
     const { keyring, keyringState } = useSubstrate();
 
     const [address, setAddress] = useState('')
@@ -64,7 +66,7 @@ const SubmitProposal: React.FC<Props> = ({ network = 'localhost', value = 100, b
             </form>
             <p>{status}</p>
             <TxButton
-                label='Sign and submit'
+                label={t('idea.signAndSubmit')}
                 type='SIGNED-TX'
                 color='blue'
                 accountPair={account}

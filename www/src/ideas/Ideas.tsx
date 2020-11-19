@@ -6,6 +6,7 @@ import {generatePath, Link, useHistory} from 'react-router-dom';
 import {ROUTE_IDEA, ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, Idea} from './ideas.api';
 import {Button} from "../components/button/Button";
+import {useTranslation} from "react-i18next";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -26,6 +27,7 @@ const Ideas: React.FC<Props> = ({network = 'localhost'}) => {
     const classes = useStyles()
 
     const history = useHistory()
+    const {t} = useTranslation()
 
     const [ideas, setIdeas] = useState<Idea[]>([])
     const [status, setStatus] = useState<string>('')
@@ -50,7 +52,7 @@ const Ideas: React.FC<Props> = ({network = 'localhost'}) => {
         <Grid container className={classes.root} spacing={2}>
             <Grid item xs={12}>
                 <Button variant="contained" color="primary" onClick={goToNewIdea}>
-                    + Introduce Idea
+                    {t('idea.introduce')}
                 </Button>
             </Grid>
             <Grid container>

@@ -2,9 +2,11 @@ import { MenuItem, MenuList } from '@material-ui/core';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_ROOT } from '../routes';
+import {useTranslation} from "react-i18next";
 
 const Menu: React.FC<{}> = () => {
     const history = useHistory()
+    const {t} = useTranslation()
 
     const goToStats = () => {
         history.push(ROUTE_ROOT)
@@ -20,11 +22,11 @@ const Menu: React.FC<{}> = () => {
 
     return (
         <MenuList>
-            <MenuItem onClick={goToStats}>Stats</MenuItem>
-            <MenuItem onClick={goToIdeas}>Ideas</MenuItem>
-            <MenuItem onClick={goToProposals}>Proposals</MenuItem>
-            <MenuItem>Tips</MenuItem>
-            <MenuItem>Bounty</MenuItem>
+            <MenuItem onClick={goToStats}>{t('menu.stats')}</MenuItem>
+            <MenuItem onClick={goToIdeas}>{t('menu.ideas')}</MenuItem>
+            <MenuItem onClick={goToProposals}>{t('menu.proposals')}</MenuItem>
+            <MenuItem>{t('menu.tips')}</MenuItem>
+            <MenuItem>{t('menu.bounty')}</MenuItem>
         </MenuList>
     );
 }

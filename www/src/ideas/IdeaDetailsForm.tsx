@@ -7,6 +7,7 @@ import { ROUTE_IDEAS, ROUTE_NEW_IDEA } from '../routes';
 import { createIdea, getIdeaById, Idea, IdeaNetwork } from './ideas.api';
 import SubmitProposal from './SubmitProposal';
 import {Input} from "../components/input/Input";
+import {useTranslation} from "react-i18next";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -24,6 +25,7 @@ interface Props {
 
 const IdeaDetailsForm: React.FC<Props> = ({ idea, setIdea }) => {
     const classes = useStyles()
+    const {t} = useTranslation()
 
     const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIdea({ ...idea, title: event.target.value });
@@ -57,7 +59,7 @@ const IdeaDetailsForm: React.FC<Props> = ({ idea, setIdea }) => {
                     disabled={!!idea.id}
                     className={classes.form}
                     id="title"
-                    label="Title"
+                    label={t('idea.details.form.title')}
                     value={idea.title}
                     onChange={handleChangeTitle}
                     required={true} />
@@ -67,7 +69,7 @@ const IdeaDetailsForm: React.FC<Props> = ({ idea, setIdea }) => {
                     disabled={!!idea.id}
                     className={classes.form}
                     id="decription"
-                    label="Decription"
+                    label={t('idea.details.form.description')}
                     value={idea.content}
                     onChange={handleChangeDescription}
                     multiline={true}
@@ -78,7 +80,7 @@ const IdeaDetailsForm: React.FC<Props> = ({ idea, setIdea }) => {
                     disabled={!!idea.id}
                     className={classes.form}
                     id="beneficiary"
-                    label="Beneficiary"
+                    label={t('idea.details.form.beneficiary')}
                     value={idea.beneficiary}
                     onChange={handleChangeBeneficiary}
                     multiline={true}

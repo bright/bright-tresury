@@ -1,0 +1,22 @@
+{
+  "menu": {
+    "stats": "Stats",
+    "ideas": "Ideas",
+    "proposals": "Proposals",
+    "tips": "Tips",
+    "bounty": "Bounty"
+  },
+  "idea": {
+    "details": {
+      "form": {
+        "title":"Title",
+        "description":"Description",
+        "beneficiary":"Beneficiary"
+      },
+      "save": "Save",
+      "submitProposal": "Submit Proposal",
+      "signAndSubmit": "Sign and submit"
+    },
+    "introduce": "+ Introduce Idea"
+  }
+}
