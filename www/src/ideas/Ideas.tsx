@@ -1,11 +1,11 @@
-import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
-import { generatePath, Link, useHistory } from 'react-router-dom';
-import { ROUTE_IDEA, ROUTE_NEW_IDEA } from '../routes';
-import { getIdeasByNetwork, Idea } from './ideas.api';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {generatePath, Link, useHistory} from 'react-router-dom';
+import {ROUTE_IDEA, ROUTE_NEW_IDEA} from '../routes';
+import {getIdeasByNetwork, Idea} from './ideas.api';
+import {Button} from "../components/button/Button";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,7 +22,7 @@ interface Props {
     network: string
 }
 
-const Ideas: React.FC<Props> = ({ network = 'localhost' }) => {
+const Ideas: React.FC<Props> = ({network = 'localhost'}) => {
     const classes = useStyles()
 
     const history = useHistory()
@@ -51,7 +51,7 @@ const Ideas: React.FC<Props> = ({ network = 'localhost' }) => {
             <Grid item xs={12}>
                 <Button variant="contained" color="primary" onClick={goToNewIdea}>
                     + Introduce Idea
-                    </Button>
+                </Button>
             </Grid>
             <Grid container>
                 {status === 'loading' && <p>Loading</p>}
@@ -59,8 +59,8 @@ const Ideas: React.FC<Props> = ({ network = 'localhost' }) => {
                 {status === 'resolved' && (
                     ideas.map((idea) => (
                         <Grid key={idea.id} item xs={12} md={6}>
-                            <Paper className={classes.paper} >
-                                <Link to={generatePath(ROUTE_IDEA, { ideaId: idea.id })}>
+                            <Paper className={classes.paper}>
+                                <Link to={generatePath(ROUTE_IDEA, {ideaId: idea.id})}>
                                     <p>{idea.title}</p>
                                 </Link>
                             </Paper>

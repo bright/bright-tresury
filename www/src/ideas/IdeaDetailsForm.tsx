@@ -1,4 +1,4 @@
-import { Button, FilledInput, FormControl, InputAdornment, Modal, TextField } from '@material-ui/core';
+import { FilledInput, FormControl, InputAdornment } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { ROUTE_IDEAS, ROUTE_NEW_IDEA } from '../routes';
 import { createIdea, getIdeaById, Idea, IdeaNetwork } from './ideas.api';
 import SubmitProposal from './SubmitProposal';
+import {Input} from "../components/input/Input";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -52,7 +53,7 @@ const IdeaDetailsForm: React.FC<Props> = ({ idea, setIdea }) => {
     return (
         <form className={classes.form} autoComplete="off">
             <div>
-                <TextField
+                <Input
                     disabled={!!idea.id}
                     className={classes.form}
                     id="title"
@@ -62,7 +63,7 @@ const IdeaDetailsForm: React.FC<Props> = ({ idea, setIdea }) => {
                     required={true} />
             </div>
             <div>
-                <TextField
+                <Input
                     disabled={!!idea.id}
                     className={classes.form}
                     id="decription"
@@ -73,7 +74,7 @@ const IdeaDetailsForm: React.FC<Props> = ({ idea, setIdea }) => {
                 />
             </div>
             <div>
-                <TextField
+                <Input
                     disabled={!!idea.id}
                     className={classes.form}
                     id="beneficiary"

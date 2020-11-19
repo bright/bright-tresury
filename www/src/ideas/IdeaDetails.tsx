@@ -1,12 +1,13 @@
-import { Button, FilledInput, FormControl, InputAdornment, Modal, TextField } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-import { ROUTE_IDEAS, ROUTE_NEW_IDEA } from '../routes';
+import {Modal} from '@material-ui/core';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import React, {useEffect, useState} from 'react';
+import {useHistory, useParams} from 'react-router';
+import {Link} from 'react-router-dom';
+import {ROUTE_IDEAS, ROUTE_NEW_IDEA} from '../routes';
 import IdeaDetailsForm from './IdeaDetailsForm';
-import { createIdea, getIdeaById, Idea, IdeaNetwork } from './ideas.api';
+import {createIdea, getIdeaById, Idea, IdeaNetwork} from './ideas.api';
 import SubmitProposal from './SubmitProposal';
+import {Button} from "../components/button/Button";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -20,13 +21,18 @@ interface Props {
     network: string
 }
 
-const IdeaDetails: React.FC<Props> = ({ network = 'localhost' }) => {
+const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
     const classes = useStyles()
     const history = useHistory()
 
-    let { ideaId } = useParams<{ ideaId: string }>()
+    let {ideaId} = useParams<{ ideaId: string }>()
 
-    const [idea, setIdea] = useState<Idea>({title: '', content: '', networks: [{ name: network, value: 0 } as IdeaNetwork], beneficiary: ''})
+    const [idea, setIdea] = useState<Idea>({
+        title: '',
+        content: '',
+        networks: [{name: network, value: 0} as IdeaNetwork],
+        beneficiary: ''
+    })
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
@@ -66,9 +72,8 @@ const IdeaDetails: React.FC<Props> = ({ network = 'localhost' }) => {
                     open={open}
                     onClose={handleClose}
                     aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description"
-                >
-                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary} network={network} />
+                    aria-describedby="simple-modal-description">
+                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary} network={network}/>
                 </Modal>
             </div>}
         </div>
