@@ -1,10 +1,10 @@
-import { MenuItem, TextField } from '@material-ui/core';
+import { MenuItem } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { KeyringAddress } from '@polkadot/ui-keyring/types';
 import React, { useState } from 'react';
-import { useHistory } from 'react-router';
 import { useSubstrate } from '../substrate-lib';
 import { TxButton } from '../substrate-lib/components';
+import {Input} from "../components/input/Input";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -49,7 +49,7 @@ const SubmitProposal: React.FC<Props> = ({ network = 'localhost', value = 100, b
     return (
         <div className={classes.paper}>
             <form>
-                <TextField
+                <Input
                     id="network-select"
                     select
                     value={address}
@@ -60,7 +60,7 @@ const SubmitProposal: React.FC<Props> = ({ network = 'localhost', value = 100, b
                             {account.meta.name}
                         </MenuItem>
                     ))}
-                </TextField>
+                </Input>
             </form>
             <p>{status}</p>
             <TxButton
