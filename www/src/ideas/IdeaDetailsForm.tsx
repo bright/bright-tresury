@@ -1,17 +1,13 @@
-import {FilledInput, FormControl, InputAdornment, InputLabel} from '@material-ui/core';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React, {useEffect, useState} from 'react';
-import {useHistory, useParams} from 'react-router';
-import {Link} from 'react-router-dom';
-import {ROUTE_IDEAS, ROUTE_NEW_IDEA} from '../routes';
-import {createIdea, getIdeaById, Idea, IdeaNetwork} from './ideas.api';
-import SubmitProposal from './SubmitProposal';
+import {createStyles, makeStyles} from '@material-ui/core/styles';
+import React from 'react';
+import {Idea} from './ideas.api';
 import {Input} from "../components/input/Input";
 import {useTranslation} from "react-i18next";
 import {Header} from "../components/header/Header";
 import {Formik} from "formik";
 import {Button} from "../components/button/Button";
 import {Select} from "../components/select/Select";
+import {BeneficiarySelect} from "./beneficiary/BeneficiarySelect";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -22,8 +18,16 @@ const useStyles = makeStyles(() =>
         form: {
             marginTop: '2em'
         },
-        formField: {
-            marginTop: '2em !important'
+        inputField: {
+            marginTop: '2em'
+        },
+        selectField: {
+            marginTop: '2em',
+            width: '50%',
+        },
+        rewardField: {
+            marginTop: '2em',
+            width: '50%'
         }
     }),
 );
@@ -35,27 +39,28 @@ interface Props {
 
 const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
     const classes = useStyles()
-    const history = useHistory()
     const {t} = useTranslation()
 
-    const handleChangeNetwork = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Number(event.target.value)
-        const {networks} = idea
-        const id = networks.findIndex(n => n.name === event.target.id)
-        if (id < 0) return
-
-        const newNetwork = {...(networks[id])}
-        newNetwork.value = value
-
-        const newNetworks = [...networks.slice(0, id), newNetwork, ...networks.slice(id + 1, networks.length)]
-        setIdea({...idea, networks: newNetworks});
-    }
+    // const handleChangeNetwork = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     const value = Number(event.target.value)
+    //     const {networks} = idea
+    //     const id = networks.findIndex(n => n.name === event.target.id)
+    //     if (id < 0) return
+    //
+    //     const newNetwork = {...(networks[id])}
+    //     newNetwork.value = value
+    //
+    //     const newNetworks = [...networks.slice(0, id), newNetwork, ...networks.slice(id + 1, networks.length)]
+    //     setIdea({...idea, networks: newNetworks});
+    // }
 
     const save = async (formIdea: Idea) => {
+        const editedIdea = {...idea, ...formIdea}
         if (idea.id === undefined) {
             // await createIdea({...idea, ...formIdea})
             // history.push(ROUTE_IDEAS)
         }
+        alert(JSON.stringify(editedIdea))
     }
 
     return (
@@ -72,77 +77,96 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                       handleSubmit
                   }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <Input
-                            className={classes.formField}
-                            id="title"
-                            type="title"
-                            name="title"
-                            placeholder={t('idea.details.form.title')}
-                            label={t('idea.details.form.title')}
-                            value={values.title}
-                            onChange={handleChange}
-                            required={true}/>
-                        <Select
-                            className={classes.formField}
-                            id="beneficiary"
-                            value={values.beneficiary}
-                            onChange={handleChange}
-                            multiline={true}
-                        />
-                        <Select
-                            className={classes.formField}
-                            id="fieldOfIdea"
-                            value={values.fieldOfIdea}
-                            onChange={handleChange}
-                            multiline={true}
-                        />
-                        <Input
-                            className={classes.formField}
-                            id="content"
-                            type="content"
-                            name="content"
-                            multiline={true}
-                            rows={8}
-                            label={t('idea.details.form.content')}
-                            value={values.content}
-                            onChange={handleChange}
-                        />
-                        {idea.networks.map((network) => {
-                                return (
-                                    <Input
-                                        className={classes.formField}
-                                        id={network.name}
-                                        key={network.name}
-                                        label={t('idea.details.form.reward')}
-                                        value={network.value}
-                                        onChange={handleChange}
-                                        endAdornment={'LOC'}
-                                    />
+                        <div className={classes.inputField}>
+                            <Input
+                                id="title"
+                                type="title"
+                                name="title"
+                                placeholder={t('idea.details.form.title')}
+                                label={t('idea.details.form.title')}
+                                value={values.title}
+                                onChange={handleChange}
+                                required={true}/>
+                        </div>
+                        <div className={classes.selectField}>
+                            {JSON.stringify(values.beneficiary)}
+                            <BeneficiarySelect
+                                id="beneficiary"
+                                name="beneficiary"
+                                type="beneficiary"
+                                value={values.beneficiary ? values.beneficiary : null}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className={classes.selectField}>
+                            <Select
+                                id="fieldOfIdea"
+                                name="fieldOfIdea"
+                                type="fieldOfIdea"
+                                nameResolver={(value: string) => value}
+                                label={t('idea.details.form.fieldOfIdea')}
+                                placeholder={t('idea.details.form.fieldOfIdea')}
+                                values={['Optimisation', 'Treasury', 'Transactions']}
+                                value={values.fieldOfIdea ? values.fieldOfIdea : null}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className={classes.inputField}>
+                            <Input
+                                id="content"
+                                type="content"
+                                name="content"
+                                multiline={true}
+                                rows={8}
+                                label={t('idea.details.form.content')}
+                                placeholder={t('idea.details.form.content')}
+                                value={values.content}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        {values.networks.map((network, index) => {
+                                return (<div className={classes.rewardField} key={network.name}>
+                                        <Input
+                                            id={`networks[${index}].value`}
+                                            name={`networks[${index}].value`}
+                                            type={`networks[${index}].value`}
+                                            label={t('idea.details.form.reward')}
+                                            placeholder={t('idea.details.form.reward')}
+                                            value={network.value}
+                                            onChange={handleChange}
+                                            endAdornment={'LOC'}
+                                        />
+                                    </div>
                                 )
                             }
                         )}
-                        <Input
-                            className={classes.formField}
-                            id="contact"
-                            type="contact"
-                            name="contact"
-                            multiline={true}
-                            rows={4}
-                            label={t('idea.details.form.contact')}
-                            value={values.contact}
-                            onChange={handleChange}
-                        />
-                        <Input
-                            className={classes.formField}
-                            id="portfolio"
-                            type="portfolio"
-                            name="portfolio"
-                            multiline={true}
-                            rows={4}
-                            label={t('idea.details.form.portfolio')}
-                            value={values.portfolio}
-                            onChange={handleChange}
-                        />
+                        <div className={classes.inputField}>
+                            <Input
+                                id="contact"
+                                type="contact"
+                                name="contact"
+                                multiline={true}
+                                rows={4}
+                                label={t('idea.details.form.contact')}
+                                placeholder={t('idea.details.form.contact')}
+                                value={values.contact}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        <div className={classes.inputField}>
+                            <Input
+                                className={classes.inputField}
+                                id="portfolio"
+                                type="portfolio"
+                                name="portfolio"
+                                multiline={true}
+                                rows={4}
+                                label={t('idea.details.form.portfolio')}
+                                placeholder={t('idea.details.form.portfolio')}
+                                value={values.portfolio}
+                                onChange={handleChange}
+                            />
+                        </div>
                         <Button variant="contained" color="primary" type="submit">
                             {t('idea.details.save')}
                         </Button>

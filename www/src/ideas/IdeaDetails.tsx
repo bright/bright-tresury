@@ -1,11 +1,9 @@
 import {Modal} from '@material-ui/core';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import {createStyles, makeStyles} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
-import {useHistory, useParams} from 'react-router';
-import {Link} from 'react-router-dom';
-import {ROUTE_IDEAS, ROUTE_NEW_IDEA} from '../routes';
+import {useParams} from 'react-router';
 import IdeaDetailsForm from './IdeaDetailsForm';
-import {createIdea, getIdeaById, Idea, IdeaNetwork} from './ideas.api';
+import {getIdeaById, Idea, IdeaNetwork} from './ideas.api';
 import SubmitProposal from './SubmitProposal';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
@@ -31,8 +29,7 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
     const [idea, setIdea] = useState<Idea>({
         title: '',
         content: '',
-        networks: [{name: network, value: 0} as IdeaNetwork],
-        beneficiary: ''
+        networks: [{name: network, value: 0} as IdeaNetwork]
     })
     const [open, setOpen] = React.useState(false);
 
@@ -64,7 +61,7 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
                     onClose={handleClose}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description">
-                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary} network={network}/>
+                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary!.meta.name!} network={network}/>
                 </Modal>
             </div>}
         </div>

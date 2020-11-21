@@ -1,4 +1,4 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import {createStyles, makeStyles} from '@material-ui/core/styles';
 
 import React from "react";
 
@@ -14,6 +14,6 @@ const useStyles = makeStyles(() =>
 
 export const Header: React.FC = ({children}) => {
     const classes = useStyles()
-    return <div className={classes.header} {...children}>{children}</div>;
+    return <div className={classes.header}>{children}</div>;
 };
 

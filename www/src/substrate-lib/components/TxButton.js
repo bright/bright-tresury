@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { web3FromSource } from '@polkadot/extension-dapp';
 import { useSubstrate } from '..';
 import {Button} from "../../components/button/Button";

@@ -1,8 +1,7 @@
-import React, {PropsWithChildren} from "react";
+import React from "react";
 import {createStyles, InputAdornment, InputLabel, TextField} from "@material-ui/core";
-import {makeStyles, styled, Theme} from "@material-ui/core/styles";
+import {makeStyles, Theme} from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
-import {TextFieldProps} from "@material-ui/core/TextField/TextField";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface TextInputProps {
+interface InputProps {
     label: string
     placeholder?: string
     multiline?: boolean
@@ -35,11 +34,12 @@ interface TextInputProps {
     endAdornment?: string
 }
 
-export const TextInput: React.FC<TextInputProps & React.PropsWithChildren<any>> = ({...props}) => {
+export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({...props}) => {
     const classes = useStyles()
-    return <FormGroup {...props}>
+    return <FormGroup>
         {props.label ? <InputLabel className={classes.label}>{props.label}</InputLabel> : null}
         <TextField
+            {...(props as React.PropsWithChildren<any>)}
             variant="filled"
             InputProps={{
                 disableUnderline: true,
@@ -52,11 +52,10 @@ export const TextInput: React.FC<TextInputProps & React.PropsWithChildren<any>> 
                 endAdornment: props.endAdornment ?
                     <InputAdornment position="end">{props.endAdornment}</InputAdornment> : null
             }}
+            label={undefined}
             multiline={props.multiline === true}
             rows={props.rows ? props.rows : 1}
             placeholder={props.placeholder ? props.placeholder : null}>
         </TextField>
     </FormGroup>
 }
-
-export const Input = styled(TextInput)({})

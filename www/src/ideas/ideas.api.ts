@@ -1,4 +1,5 @@
 import { API_URL, fetchAndUnwrap } from '../api'
+import {KeyringAddress} from "@polkadot/ui-keyring/types";
 
 export interface IdeaNetwork {
     id?: string
@@ -9,7 +10,7 @@ export interface IdeaNetwork {
 export interface Idea {
     id?: string
     title: string
-    beneficiary: string
+    beneficiary?: KeyringAddress
     fieldOfIdea?: string
     content: string
     networks: IdeaNetwork[]
