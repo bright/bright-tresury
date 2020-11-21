@@ -14,7 +14,7 @@ const useStyles = makeStyles(() =>
     createStyles({
         root: {
             flexGrow: 1,
-        },
+        }
     }),
 );
 
@@ -24,7 +24,6 @@ interface Props {
 
 const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
     const classes = useStyles()
-    const history = useHistory()
     const {t} = useTranslation()
 
     let {ideaId} = useParams<{ ideaId: string }>()
@@ -53,19 +52,9 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
         setOpen(false);
     };
 
-    const save = async () => {
-        if (ideaId === undefined) {
-            await createIdea(idea)
-            history.push(ROUTE_IDEAS)
-        }
-    }
-
     return (
         <div className={classes.root}>
             <IdeaDetailsForm idea={idea} setIdea={setIdea}/>
-            <Button variant="contained" color="primary" onClick={save}>
-                {t('idea.details.save')}
-            </Button>
             {!!idea.id && <div>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
                     {t('idea.details.submitProposal')}
