@@ -2,7 +2,7 @@ import {createStyles, FormGroup, InputLabel, MenuItem, Select as MaterialSelect}
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             background: '#fff',

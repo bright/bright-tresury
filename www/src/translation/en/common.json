@@ -17,7 +17,9 @@
         "portfolio": "Portfolio",
         "reward": "Reward"
       },
-      "save": "Save",
+      "create": "Create",
+      "edit": "Edit",
+      "saveDraft": "Save as Draft",
       "submitProposal": "Submit Proposal",
       "signAndSubmit": "Sign and submit"
     },

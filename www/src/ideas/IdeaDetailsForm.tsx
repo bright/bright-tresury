@@ -5,7 +5,7 @@ import {Input} from "../components/input/Input";
 import {useTranslation} from "react-i18next";
 import {Header} from "../components/header/Header";
 import {Formik} from "formik";
-import {Button} from "../components/button/Button";
+import {Button, ButtonVariant} from "../components/button/Button";
 import {Select} from "../components/select/Select";
 import {BeneficiarySelect} from "./beneficiary/BeneficiarySelect";
 
@@ -28,6 +28,14 @@ const useStyles = makeStyles(() =>
         rewardField: {
             marginTop: '2em',
             width: '50%'
+        },
+        submitButton: {
+            margin: '3em 0',
+            float: 'right'
+        },
+        saveDraftButton: {
+            margin: '3em 0',
+            float: 'left'
         }
     }),
 );
@@ -167,9 +175,18 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <Button variant="contained" color="primary" type="submit">
-                            {t('idea.details.save')}
-                        </Button>
+                        <div className={classes.saveDraftButton}>
+                            <Button
+                                variant={ButtonVariant.Outlined} color="primary" type="button">
+                                {t('idea.details.saveDraft')}
+                            </Button>
+                        </div>
+                        <div className={classes.submitButton}>
+                            <Button
+                                variant={ButtonVariant.Contained} color="primary" type="submit">
+                                {t(idea.id === undefined ? 'idea.details.create' : 'idea.details.edit')}
+                            </Button>
+                        </div>
                     </form>
                 }
             </Formik>
