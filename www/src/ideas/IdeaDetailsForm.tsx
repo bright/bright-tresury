@@ -16,14 +16,15 @@ import {Select} from "../components/select/Select";
 const useStyles = makeStyles(() =>
     createStyles({
         container: {
-            position: 'absolute',
-            width: '100%',
-            padding: 36,
+            padding: '3em 5em 3em 3em',
             background: '#F5F5F5'
         },
         form: {
-            margin: 5
+            marginTop: '2em'
         },
+        formField: {
+            marginTop: '2em !important'
+        }
     }),
 );
 
@@ -36,18 +37,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
     const classes = useStyles()
     const history = useHistory()
     const {t} = useTranslation()
-
-    const handleChangeTitle = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIdea({...idea, title: event.target.value});
-    }
-
-    const handleChangeDescription = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIdea({...idea, content: event.target.value});
-    }
-
-    const handleChangeBeneficiary = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIdea({...idea, beneficiary: event.target.value});
-    }
 
     const handleChangeNetwork = (event: React.ChangeEvent<HTMLInputElement>) => {
         const value = Number(event.target.value)
@@ -64,10 +53,8 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
 
     const save = async (formIdea: Idea) => {
         if (idea.id === undefined) {
-            await createIdea({...idea, ...formIdea})
-            history.push(ROUTE_IDEAS)
-        } else {
-
+            // await createIdea({...idea, ...formIdea})
+            // history.push(ROUTE_IDEAS)
         }
     }
 
@@ -80,67 +67,87 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                 initialValues={idea}
                 onSubmit={save}>
                 {({
-                     values,
-                     handleChange,
-                     handleSubmit
-                 }) =>
+                      values,
+                      handleChange,
+                      handleSubmit
+                  }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <div>
-                            <Input
-                                className={classes.form}
-                                id="title"
-                                type="title"
-                                name="title"
-                                label={t('idea.details.form.title')}
-                                value={values.title}
-                                onChange={handleChange}
-                                required={true}/>
-                        </div>
-                        <div>
-                            <Input
-                                id="description"
-                                type="description"
-                                name="description"
-                                label={t('idea.details.form.description')}
-                                value={values.content}
-                                onChange={handleChange}
-                                multiline={true}
-                            />
-                        </div>
-                        <div>
-                            <InputLabel shrink={true}>{t('idea.details.form.beneficiary')}</InputLabel>
-                            <FilledInput
-                                id="beneficiary"
-                                value={values.beneficiary}
-                                onChange={handleChange}
-                                multiline={true}
-                            />
-                            <Select
-                                value
-                            />
-                        </div>
-                        <div>
-                            {idea.networks.map((network) => {
-                                    return (
-                                        <FormControl>
-                                            <InputLabel shrink={true}>{t('idea.details.form.reward')}</InputLabel>
-                                            <FilledInput
-                                                key={network.name}
-                                                id={network.name}
-                                                value={network.value}
-                                                onChange={handleChange}
-                                                endAdornment={<InputAdornment position="end">LOC</InputAdornment>}
-                                            />
-                                        </FormControl>
-                                    )
-                                }
-                            )}
-                        </div>
+                        <Input
+                            className={classes.formField}
+                            id="title"
+                            type="title"
+                            name="title"
+                            placeholder={t('idea.details.form.title')}
+                            label={t('idea.details.form.title')}
+                            value={values.title}
+                            onChange={handleChange}
+                            required={true}/>
+                        <Select
+                            className={classes.formField}
+                            id="beneficiary"
+                            value={values.beneficiary}
+                            onChange={handleChange}
+                            multiline={true}
+                        />
+                        <Select
+                            className={classes.formField}
+                            id="fieldOfIdea"
+                            value={values.fieldOfIdea}
+                            onChange={handleChange}
+                            multiline={true}
+                        />
+                        <Input
+                            className={classes.formField}
+                            id="content"
+                            type="content"
+                            name="content"
+                            multiline={true}
+                            rows={8}
+                            label={t('idea.details.form.content')}
+                            value={values.content}
+                            onChange={handleChange}
+                        />
+                        {idea.networks.map((network) => {
+                                return (
+                                    <Input
+                                        className={classes.formField}
+                                        id={network.name}
+                                        key={network.name}
+                                        label={t('idea.details.form.reward')}
+                                        value={network.value}
+                                        onChange={handleChange}
+                                        endAdornment={'LOC'}
+                                    />
+                                )
+                            }
+                        )}
+                        <Input
+                            className={classes.formField}
+                            id="contact"
+                            type="contact"
+                            name="contact"
+                            multiline={true}
+                            rows={4}
+                            label={t('idea.details.form.contact')}
+                            value={values.contact}
+                            onChange={handleChange}
+                        />
+                        <Input
+                            className={classes.formField}
+                            id="portfolio"
+                            type="portfolio"
+                            name="portfolio"
+                            multiline={true}
+                            rows={4}
+                            label={t('idea.details.form.portfolio')}
+                            value={values.portfolio}
+                            onChange={handleChange}
+                        />
                         <Button variant="contained" color="primary" type="submit">
                             {t('idea.details.save')}
                         </Button>
                     </form>
-            }
+                }
             </Formik>
         </div>
     );
