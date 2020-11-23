@@ -1,12 +1,14 @@
 import {createStyles, makeStyles} from '@material-ui/core/styles';
 import React from 'react';
-import {Idea} from './ideas.api';
+import {useHistory} from 'react-router-dom';
+import {createIdea, Idea} from './ideas.api';
 import {Input} from "../components/input/Input";
 import {useTranslation} from "react-i18next";
 import {Header} from "../components/header/Header";
 import {FieldArray, Formik} from "formik";
 import {Button, ButtonVariant} from "../components/button/Button";
 import {Select} from "../components/select/Select";
+import {ROUTE_IDEAS} from "../routes";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -28,14 +30,12 @@ const useStyles = makeStyles(() =>
             marginTop: '2em',
             width: '50%'
         },
-        submitButton: {
+        submitButtons: {
             margin: '3em 0',
-            float: 'right'
+            display: 'flex',
+            justifyContent: 'space-between',
+            position: 'relative',
         },
-        saveDraftButton: {
-            margin: '3em 0',
-            float: 'left'
-        }
     }),
 );
 
@@ -46,13 +46,14 @@ interface Props {
 
 const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
     const classes = useStyles()
+    const history = useHistory()
     const {t} = useTranslation()
 
     const save = async (formIdea: Idea) => {
-        const editedIdea = {...idea, ...formIdea}
         if (idea.id === undefined) {
-            // await createIdea({...idea, ...formIdea})
-            // history.push(ROUTE_IDEAS)
+            const editedIdea = {...idea, ...formIdea}
+            await createIdea(editedIdea)
+            history.push(ROUTE_IDEAS)
         }
     }
 
@@ -179,19 +180,15 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                 </div>
                             )}/>
                         </div>
-                        <div className={classes.inputField}>
-                            <div className={classes.saveDraftButton}>
-                                <Button
-                                    variant={ButtonVariant.Outlined} color="primary" type="button">
-                                    {t('idea.details.saveDraft')}
-                                </Button>
-                            </div>
-                            <div className={classes.submitButton}>
-                                <Button
-                                    variant={ButtonVariant.Contained} color="primary" type="submit">
-                                    {t(idea.id === undefined ? 'idea.details.create' : 'idea.details.edit')}
-                                </Button>
-                            </div>
+                        <div className={classes.submitButtons}>
+                            <Button
+                                variant={ButtonVariant.Outlined} color="primary" type="button">
+                                {t('idea.details.saveDraft')}
+                            </Button>
+                            <Button
+                                variant={ButtonVariant.Contained} color="primary" type="submit">
+                                {t(idea.id === undefined ? 'idea.details.create' : 'idea.details.edit')}
+                            </Button>
                         </div>
                     </form>
                 }

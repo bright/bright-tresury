@@ -1,5 +1,5 @@
 import {createStyles, FormGroup, InputLabel, MenuItem, Select as MaterialSelect} from "@material-ui/core";
-import {makeStyles, Theme} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
 
 const useStyles = makeStyles(() =>
@@ -33,7 +33,6 @@ export const Select: React.FC<SelectProps<any> & React.PropsWithChildren<any>> =
     return <FormGroup>
         {props.label ? <InputLabel className={classes.label}>{props.label}</InputLabel> : null}
         <MaterialSelect
-            option
             {...props}
             renderValue={props.renderValue}
             value={props.value ? props.value : ''}
@@ -42,8 +41,7 @@ export const Select: React.FC<SelectProps<any> & React.PropsWithChildren<any>> =
                 classes: {
                     select: classes.select
                 }
-            }}
-        >
+            }}>
             <MenuItem value="">{props.placeholder}</MenuItem>
             {props.values ? props.values.map((value: any, index: number) =>
                 <MenuItem key={index} value={value}>

@@ -1,5 +1,5 @@
 import {Button as MaterialButton, createStyles} from "@material-ui/core";
-import {makeStyles, styled} from "@material-ui/core/styles";
+import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
 
 const useStyles = makeStyles(() => createStyles({
@@ -15,7 +15,9 @@ const useStyles = makeStyles(() => createStyles({
     },
     buttonOutlined: {
         borderColor: '#0E65F2',
-        borderWidth: '2px',
+        color: '#0E65F2',
+    },
+    buttonText: {
         color: '#0E65F2',
     }
 }))
@@ -31,7 +33,8 @@ export const Button: React.FC<ButtonProps & React.PropsWithChildren<any>> = ({..
         classes={{
             root: classes.button,
             contained: classes.buttonContained,
-            outlined: classes.buttonOutlined
+            outlined: classes.buttonOutlined,
+            text: classes.buttonText
         }}
         variant={props.variant ? props.variant : ButtonVariant.Contained}>
         {props.children}

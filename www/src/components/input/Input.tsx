@@ -28,9 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface InputProps {
     label: string
-    placeholder?: string
-    multiline?: boolean
-    rows?: number
     endAdornment?: string
 }
 
@@ -39,7 +36,7 @@ export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({...p
     return <FormGroup>
         {props.label ? <InputLabel className={classes.label}>{props.label}</InputLabel> : null}
         <TextField
-            {...(props as React.PropsWithChildren<any>)}
+            {...props}
             variant="filled"
             InputProps={{
                 disableUnderline: true,
@@ -52,10 +49,7 @@ export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({...p
                 endAdornment: props.endAdornment ?
                     <InputAdornment position="end">{props.endAdornment}</InputAdornment> : null
             }}
-            label={undefined}
-            multiline={props.multiline === true}
-            rows={props.rows ? props.rows : 1}
-            placeholder={props.placeholder ? props.placeholder : null}>
+            label={undefined}>
         </TextField>
     </FormGroup>
 }
