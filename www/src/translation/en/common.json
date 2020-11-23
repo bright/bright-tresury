@@ -15,7 +15,10 @@
         "content": "Reason of Proposal",
         "contact": "Proposer's information",
         "portfolio": "Portfolio",
-        "reward": "Reward"
+        "reward": "Reward",
+        "link": "Link",
+        "linkPlaceholder": "Add external link to your proposal here",
+        "addLink": "+ Add Link"
       },
       "create": "Create",
       "edit": "Edit",

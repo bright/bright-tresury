@@ -4,7 +4,7 @@ import {Idea} from './ideas.api';
 import {Input} from "../components/input/Input";
 import {useTranslation} from "react-i18next";
 import {Header} from "../components/header/Header";
-import {Formik} from "formik";
+import {FieldArray, Formik} from "formik";
 import {Button, ButtonVariant} from "../components/button/Button";
 import {Select} from "../components/select/Select";
 
@@ -62,7 +62,10 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                 {t(idea.id === undefined ? 'idea.introduceTitle' : 'idea.editTitle')}
             </Header>
             <Formik
-                initialValues={idea}
+                initialValues={{
+                    ...idea,
+                    links: (idea.links && idea.links.length > 0) ? idea.links : ['']
+                }}
                 onSubmit={save}>
                 {({
                       values,
@@ -70,7 +73,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                       handleSubmit
                   }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        {JSON.stringify(values)}
                         <div className={classes.inputField}>
                             <Input
                                 id="title"
@@ -82,7 +84,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                 required={true}/>
                         </div>
                         <div className={classes.selectField}>
-                            {JSON.stringify(values.beneficiary)}
                             <Input
                                 id="beneficiary"
                                 name="beneficiary"
@@ -118,7 +119,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         {values.networks.map((network, index) => {
                                 return (<div className={classes.rewardField} key={network.name}>
                                         <Input
-                                            id={`networks[${index}].value`}
+                                            id={`networks${index}`}
                                             name={`networks[${index}].value`}
                                             type={`number`}
                                             label={t('idea.details.form.reward')}
@@ -145,7 +146,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         </div>
                         <div className={classes.inputField}>
                             <Input
-                                className={classes.inputField}
                                 id="portfolio"
                                 name="portfolio"
                                 multiline={true}
@@ -156,17 +156,42 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                 onChange={handleChange}
                             />
                         </div>
-                        <div className={classes.saveDraftButton}>
-                            <Button
-                                variant={ButtonVariant.Outlined} color="primary" type="button">
-                                {t('idea.details.saveDraft')}
-                            </Button>
+                        <div className={classes.inputField}>
+                            <FieldArray name={'links'} render={arrayHelpers => (
+                                <div>
+                                    {values.links ? values.links.map((link: string, index: number) =>
+                                        <div className={classes.inputField} key={index}>
+                                            <Input
+                                                id={`links${index}`}
+                                                name={`links[${index}]`}
+                                                value={link}
+                                                label={index === 0 ? t('idea.details.form.link') : null}
+                                                placeholder={t('idea.details.form.linkPlaceholder')}
+                                                onChange={handleChange}
+                                            />
+                                        </div>
+                                    ) : null}
+                                    <Button className={classes.inputField} variant={ButtonVariant.Text} color="primary"
+                                            type="button"
+                                            onClick={() => arrayHelpers.push('')}>
+                                        {t('idea.details.form.addLink')}
+                                    </Button>
+                                </div>
+                            )}/>
                         </div>
-                        <div className={classes.submitButton}>
-                            <Button
-                                variant={ButtonVariant.Contained} color="primary" type="submit">
-                                {t(idea.id === undefined ? 'idea.details.create' : 'idea.details.edit')}
-                            </Button>
+                        <div className={classes.inputField}>
+                            <div className={classes.saveDraftButton}>
+                                <Button
+                                    variant={ButtonVariant.Outlined} color="primary" type="button">
+                                    {t('idea.details.saveDraft')}
+                                </Button>
+                            </div>
+                            <div className={classes.submitButton}>
+                                <Button
+                                    variant={ButtonVariant.Contained} color="primary" type="submit">
+                                    {t(idea.id === undefined ? 'idea.details.create' : 'idea.details.edit')}
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 }

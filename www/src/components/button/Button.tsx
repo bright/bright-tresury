@@ -28,8 +28,8 @@ export const Button: React.FC<ButtonProps & React.PropsWithChildren<any>> = ({..
     const classes = useStyles()
     return <MaterialButton
         {...props}
-        className={classes.button}
         classes={{
+            root: classes.button,
             contained: classes.buttonContained,
             outlined: classes.buttonOutlined
         }}
