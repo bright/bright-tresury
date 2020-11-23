@@ -1,5 +1,5 @@
 import React from "react";
-import {createStyles, InputAdornment, InputLabel, TextField} from "@material-ui/core";
+import {createStyles, InputAdornment, InputLabel, TextField, TextFieldProps} from "@material-ui/core";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
 
@@ -31,7 +31,7 @@ interface InputProps {
     endAdornment?: string
 }
 
-export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({...props}) => {
+export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({endAdornment, ...props}) => {
     const classes = useStyles()
     return <FormGroup>
         {props.label ? <InputLabel className={classes.label}>{props.label}</InputLabel> : null}
@@ -46,8 +46,8 @@ export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({...p
                     input: classes.input,
                     adornedEnd: classes.adornedEnd
                 },
-                endAdornment: props.endAdornment ?
-                    <InputAdornment position="end">{props.endAdornment}</InputAdornment> : null
+                endAdornment: endAdornment ?
+                    <InputAdornment position="end">{endAdornment}</InputAdornment> : null
             }}
             label={undefined}>
         </TextField>
