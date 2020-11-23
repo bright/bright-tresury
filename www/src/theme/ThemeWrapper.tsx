@@ -1,15 +1,12 @@
 import React from "react";
 import {createMuiTheme, CssBaseline, ThemeProvider} from "@material-ui/core";
+import {theme} from "./theme";
 
-const theme = createMuiTheme({
-    typography: {
-        fontFamily: 'Proxima Nova',
-    }
-});
+const muiTheme = createMuiTheme(theme);
 
 export const ThemeWrapper: React.FC = ({children}) => {
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={muiTheme}>
             <CssBaseline/>
             {children}
         </ThemeProvider>

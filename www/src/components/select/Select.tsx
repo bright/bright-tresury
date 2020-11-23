@@ -24,7 +24,7 @@ const useStyles = makeStyles(() =>
 
 interface SelectProps<T> {
     values: T[]
-    nameResolver: (value: T) => string
+    renderValue: (value: T) => string
     label: string
 }
 
@@ -33,7 +33,9 @@ export const Select: React.FC<SelectProps<any> & React.PropsWithChildren<any>> =
     return <FormGroup>
         {props.label ? <InputLabel className={classes.label}>{props.label}</InputLabel> : null}
         <MaterialSelect
+            option
             {...props}
+            renderValue={props.renderValue}
             value={props.value ? props.value : ''}
             disableUnderline={true}
             inputProps={{
@@ -45,7 +47,7 @@ export const Select: React.FC<SelectProps<any> & React.PropsWithChildren<any>> =
             <MenuItem value="">{props.placeholder}</MenuItem>
             {props.values ? props.values.map((value: any, index: number) =>
                 <MenuItem key={index} value={value}>
-                    {props.nameResolver(value)}
+                    {props.renderValue(value)}
                 </MenuItem>
             ) : null}
         </MaterialSelect>

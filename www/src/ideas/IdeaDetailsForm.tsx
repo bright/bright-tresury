@@ -7,7 +7,6 @@ import {Header} from "../components/header/Header";
 import {Formik} from "formik";
 import {Button, ButtonVariant} from "../components/button/Button";
 import {Select} from "../components/select/Select";
-import {BeneficiarySelect} from "./beneficiary/BeneficiarySelect";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -49,26 +48,12 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    // const handleChangeNetwork = (event: React.ChangeEvent<HTMLInputElement>) => {
-    //     const value = Number(event.target.value)
-    //     const {networks} = idea
-    //     const id = networks.findIndex(n => n.name === event.target.id)
-    //     if (id < 0) return
-    //
-    //     const newNetwork = {...(networks[id])}
-    //     newNetwork.value = value
-    //
-    //     const newNetworks = [...networks.slice(0, id), newNetwork, ...networks.slice(id + 1, networks.length)]
-    //     setIdea({...idea, networks: newNetworks});
-    // }
-
     const save = async (formIdea: Idea) => {
         const editedIdea = {...idea, ...formIdea}
         if (idea.id === undefined) {
             // await createIdea({...idea, ...formIdea})
             // history.push(ROUTE_IDEAS)
         }
-        alert(JSON.stringify(editedIdea))
     }
 
     return (
@@ -85,10 +70,10 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                       handleSubmit
                   }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
+                        {JSON.stringify(values)}
                         <div className={classes.inputField}>
                             <Input
                                 id="title"
-                                type="title"
                                 name="title"
                                 placeholder={t('idea.details.form.title')}
                                 label={t('idea.details.form.title')}
@@ -98,31 +83,29 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         </div>
                         <div className={classes.selectField}>
                             {JSON.stringify(values.beneficiary)}
-                            <BeneficiarySelect
+                            <Input
                                 id="beneficiary"
                                 name="beneficiary"
-                                type="beneficiary"
-                                value={values.beneficiary ? values.beneficiary : null}
-                                onChange={handleChange}
-                            />
+                                placeholder={t('idea.details.form.beneficiary')}
+                                label={t('idea.details.form.beneficiary')}
+                                value={values.beneficiary}
+                                onChange={handleChange}/>
                         </div>
                         <div className={classes.selectField}>
                             <Select
                                 id="fieldOfIdea"
                                 name="fieldOfIdea"
-                                type="fieldOfIdea"
-                                nameResolver={(value: string) => value}
+                                renderValue={(value: string) => value}
                                 label={t('idea.details.form.fieldOfIdea')}
                                 placeholder={t('idea.details.form.fieldOfIdea')}
                                 values={['Optimisation', 'Treasury', 'Transactions']}
-                                value={values.fieldOfIdea ? values.fieldOfIdea : null}
+                                value={values.fieldOfIdea}
                                 onChange={handleChange}
                             />
                         </div>
                         <div className={classes.inputField}>
                             <Input
                                 id="content"
-                                type="content"
                                 name="content"
                                 multiline={true}
                                 rows={8}
@@ -137,7 +120,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                         <Input
                                             id={`networks[${index}].value`}
                                             name={`networks[${index}].value`}
-                                            type={`networks[${index}].value`}
+                                            type={`number`}
                                             label={t('idea.details.form.reward')}
                                             placeholder={t('idea.details.form.reward')}
                                             value={network.value}
@@ -151,7 +134,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         <div className={classes.inputField}>
                             <Input
                                 id="contact"
-                                type="contact"
                                 name="contact"
                                 multiline={true}
                                 rows={4}
@@ -165,7 +147,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                             <Input
                                 className={classes.inputField}
                                 id="portfolio"
-                                type="portfolio"
                                 name="portfolio"
                                 multiline={true}
                                 rows={4}
