@@ -28,8 +28,13 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
 
     const [idea, setIdea] = useState<Idea>({
         title: '',
+        beneficiary: '',
+        fieldOfIdea: '',
         content: '',
-        networks: [{name: network, value: 0} as IdeaNetwork]
+        networks: [{name: network, value: 0} as IdeaNetwork],
+        contact: '',
+        portfolio: '',
+        links: [],
     })
     const [open, setOpen] = React.useState(false);
 
@@ -61,7 +66,7 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
                     onClose={handleClose}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description">
-                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary!.meta.name!} network={network}/>
+                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary} network={network}/>
                 </Modal>
             </div>}
         </div>

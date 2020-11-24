@@ -1,6 +1,7 @@
-import {createStyles, FormGroup, InputLabel, MenuItem, Select as MaterialSelect} from "@material-ui/core";
+import {createStyles, FormGroup, InputLabel, MenuItem, Select as MaterialSelect, SelectProps as MaterialSelectProps} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
+import {SelectItem} from "./SelectItem";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -23,30 +24,28 @@ const useStyles = makeStyles(() =>
 );
 
 interface SelectProps<T> {
-    values: T[]
-    renderValue: (value: T) => string
+    value: T
+    options: T[]
     label: string
+    placeholder: string
 }
 
-export const Select: React.FC<SelectProps<any> & React.PropsWithChildren<any>> = ({...props}) => {
+export const Select: React.FC<SelectProps<any> & MaterialSelectProps> = ({value, renderValue, options, label, placeholder, ...props}) => {
     const classes = useStyles()
     return <FormGroup>
-        {props.label ? <InputLabel className={classes.label}>{props.label}</InputLabel> : null}
+        {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
         <MaterialSelect
             {...props}
-            renderValue={props.renderValue}
-            value={props.value ? props.value : ''}
+            value={value ? value : ''}
             disableUnderline={true}
             inputProps={{
                 classes: {
                     select: classes.select
                 }
             }}>
-            <MenuItem value="">{props.placeholder}</MenuItem>
-            {props.values ? props.values.map((value: any, index: number) =>
-                <MenuItem key={index} value={value}>
-                    {props.renderValue(value)}
-                </MenuItem>
+            <SelectItem value={placeholder} />
+            {options ? options.map((option: any, index: number) =>
+                <SelectItem key={index} value={option} renderValue={renderValue ? renderValue(option) : option} />
             ) : null}
         </MaterialSelect>
     </FormGroup>

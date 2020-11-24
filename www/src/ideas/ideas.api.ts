@@ -10,7 +10,7 @@ export interface IdeaNetwork {
 export interface Idea {
     id?: string
     title: string
-    beneficiary?: KeyringAddress
+    beneficiary: string
     fieldOfIdea?: string
     content: string
     networks: IdeaNetwork[]

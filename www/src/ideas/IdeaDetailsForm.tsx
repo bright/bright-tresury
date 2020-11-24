@@ -6,7 +6,7 @@ import {Input} from "../components/input/Input";
 import {useTranslation} from "react-i18next";
 import {Header} from "../components/header/Header";
 import {FieldArray, Formik} from "formik";
-import {Button, ButtonVariant} from "../components/button/Button";
+import {Button} from "../components/button/Button";
 import {Select} from "../components/select/Select";
 import {ROUTE_IDEAS} from "../routes";
 
@@ -48,9 +48,10 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
     const classes = useStyles()
     const history = useHistory()
     const {t} = useTranslation()
+    const isNew = (): boolean => idea.id === undefined
 
     const save = async (formIdea: Idea) => {
-        if (idea.id === undefined) {
+        if (isNew()) {
             const editedIdea = {...idea, ...formIdea}
             await createIdea(editedIdea)
             history.push(ROUTE_IDEAS)
@@ -60,7 +61,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
     return (
         <div className={classes.container}>
             <Header>
-                {t(idea.id === undefined ? 'idea.introduceTitle' : 'idea.editTitle')}
+                {t(isNew() ? 'idea.introduceTitle' : 'idea.editTitle')}
             </Header>
             <Formik
                 initialValues={{
@@ -74,59 +75,47 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                       handleSubmit
                   }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
+                        {JSON.stringify(values)}
                         <div className={classes.inputField}>
                             <Input
-                                id="title"
                                 name="title"
                                 placeholder={t('idea.details.form.title')}
                                 label={t('idea.details.form.title')}
-                                value={values.title}
-                                onChange={handleChange}
                                 required={true}/>
                         </div>
                         <div className={classes.selectField}>
                             <Input
-                                id="beneficiary"
                                 name="beneficiary"
                                 placeholder={t('idea.details.form.beneficiary')}
                                 label={t('idea.details.form.beneficiary')}
-                                value={values.beneficiary}
-                                onChange={handleChange}/>
+                            />
                         </div>
                         <div className={classes.selectField}>
                             <Select
-                                id="fieldOfIdea"
                                 name="fieldOfIdea"
-                                renderValue={(value: string) => value}
                                 label={t('idea.details.form.fieldOfIdea')}
                                 placeholder={t('idea.details.form.fieldOfIdea')}
-                                values={['Optimisation', 'Treasury', 'Transactions']}
+                                options={['Optimisation', 'Treasury', 'Transactions']}
                                 value={values.fieldOfIdea}
                                 onChange={handleChange}
                             />
                         </div>
                         <div className={classes.inputField}>
                             <Input
-                                id="content"
                                 name="content"
                                 multiline={true}
                                 rows={8}
                                 label={t('idea.details.form.content')}
                                 placeholder={t('idea.details.form.content')}
-                                value={values.content}
-                                onChange={handleChange}
                             />
                         </div>
                         {values.networks.map((network, index) => {
                                 return (<div className={classes.rewardField} key={network.name}>
                                         <Input
-                                            id={`networks${index}`}
                                             name={`networks[${index}].value`}
                                             type={`number`}
                                             label={t('idea.details.form.reward')}
                                             placeholder={t('idea.details.form.reward')}
-                                            value={network.value}
-                                            onChange={handleChange}
                                             endAdornment={'LOC'}
                                         />
                                     </div>
@@ -135,26 +124,20 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         )}
                         <div className={classes.inputField}>
                             <Input
-                                id="contact"
                                 name="contact"
                                 multiline={true}
                                 rows={4}
                                 label={t('idea.details.form.contact')}
                                 placeholder={t('idea.details.form.contact')}
-                                value={values.contact}
-                                onChange={handleChange}
                             />
                         </div>
                         <div className={classes.inputField}>
                             <Input
-                                id="portfolio"
                                 name="portfolio"
                                 multiline={true}
                                 rows={4}
                                 label={t('idea.details.form.portfolio')}
                                 placeholder={t('idea.details.form.portfolio')}
-                                value={values.portfolio}
-                                onChange={handleChange}
                             />
                         </div>
                         <div className={classes.inputField}>
@@ -163,16 +146,13 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                     {values.links ? values.links.map((link: string, index: number) =>
                                         <div className={classes.inputField} key={index}>
                                             <Input
-                                                id={`links${index}`}
                                                 name={`links[${index}]`}
-                                                value={link}
                                                 label={index === 0 ? t('idea.details.form.link') : null}
                                                 placeholder={t('idea.details.form.linkPlaceholder')}
-                                                onChange={handleChange}
                                             />
                                         </div>
                                     ) : null}
-                                    <Button className={classes.inputField} variant={ButtonVariant.Text} color="primary"
+                                    <Button className={classes.inputField} variant={"text"} color="primary"
                                             type="button"
                                             onClick={() => arrayHelpers.push('')}>
                                         {t('idea.details.form.addLink')}
@@ -182,12 +162,12 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         </div>
                         <div className={classes.submitButtons}>
                             <Button
-                                variant={ButtonVariant.Outlined} color="primary" type="button">
+                                variant={"outlined"} color="primary" type="button">
                                 {t('idea.details.saveDraft')}
                             </Button>
                             <Button
-                                variant={ButtonVariant.Contained} color="primary" type="submit">
-                                {t(idea.id === undefined ? 'idea.details.create' : 'idea.details.edit')}
+                                variant={"contained"} color="primary" type="submit">
+                                {t(isNew() ? 'idea.details.create' : 'idea.details.edit')}
                             </Button>
                         </div>
                     </form>

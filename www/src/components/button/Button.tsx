@@ -1,23 +1,23 @@
-import {Button as MaterialButton, createStyles} from "@material-ui/core";
+import {Button as MaterialButton, ButtonProps as MaterialButtonProps, createStyles} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
 
 const useStyles = makeStyles(() => createStyles({
-    button: {
+    root: {
         textTransform: 'none',
         fontWeight: 600,
         borderRadius: '6px',
         padding: '.5em 2em .5em 2em'
     },
-    buttonContained: {
+    contained: {
         backgroundColor: '#0E65F2',
         color: 'white',
     },
-    buttonOutlined: {
+    outlined: {
         borderColor: '#0E65F2',
         color: '#0E65F2',
     },
-    buttonText: {
+    text: {
         color: '#0E65F2',
     }
 }))
@@ -26,24 +26,14 @@ interface ButtonProps {
     variant?: ButtonVariant
 }
 
-export const Button: React.FC<ButtonProps & React.PropsWithChildren<any>> = ({...props}) => {
+export const Button: React.FC<ButtonProps & MaterialButtonProps> = ({children, variant, ...props}) => {
     const classes = useStyles()
     return <MaterialButton
         {...props}
-        classes={{
-            root: classes.button,
-            contained: classes.buttonContained,
-            outlined: classes.buttonOutlined,
-            text: classes.buttonText
-        }}
-        variant={props.variant ? props.variant : ButtonVariant.Contained}>
-        {props.children}
+        classes={classes}
+        variant={variant ?? "contained"}>
+        {children}
     </MaterialButton>
 }
 
-export enum ButtonVariant {
-    Contained = "contained",
-    Outlined = "outlined",
-    Text = "text"
-}
-
+export type ButtonVariant = "contained" | "outlined" | "text"

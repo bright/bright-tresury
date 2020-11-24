@@ -1,7 +1,8 @@
 import React from "react";
-import {createStyles, InputAdornment, InputLabel, TextField, TextFieldProps} from "@material-ui/core";
+import {createStyles, InputAdornment, InputLabel, TextField} from "@material-ui/core";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
+import {useField} from "formik";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,16 +28,18 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface InputProps {
-    label: string
+    label?: string
     endAdornment?: string
 }
 
-export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({endAdornment, ...props}) => {
+export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({label, endAdornment, ...props }) => {
     const classes = useStyles()
+    const [field, meta] = useField({ ...props, type: 'input' });
     return <FormGroup>
-        {props.label ? <InputLabel className={classes.label}>{props.label}</InputLabel> : null}
+        {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
         <TextField
             {...props}
+            inputProps={{...field, ...meta}}
             variant="filled"
             InputProps={{
                 disableUnderline: true,
@@ -48,8 +51,7 @@ export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({endA
                 },
                 endAdornment: endAdornment ?
                     <InputAdornment position="end">{endAdornment}</InputAdornment> : null
-            }}
-            label={undefined}>
+            }}>
         </TextField>
     </FormGroup>
 }
