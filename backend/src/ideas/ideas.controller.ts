@@ -1,12 +1,12 @@
 import { BadRequestException, Body, Controller, Get, HttpStatus, NotFoundException, Param, Post, Query } from '@nestjs/common';
-import { ApiModelPropertyOptional, ApiResponse } from '@nestjs/swagger';
+import { ApiPropertyOptional, ApiResponse } from '@nestjs/swagger';
 import { create } from 'domain';
 import { validate as uuidValidate } from 'uuid';
 import { Idea } from './idea.entity';
 import { IdeasService } from './ideas.service';
 
 class GetIdeasQuery {
-    @ApiModelPropertyOptional()
+    @ApiPropertyOptional()
     network?: string
 }
 
