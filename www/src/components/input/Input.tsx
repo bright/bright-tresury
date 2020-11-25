@@ -1,5 +1,5 @@
 import React from "react";
-import {createStyles, InputAdornment, InputLabel, TextField} from "@material-ui/core";
+import {createStyles, InputAdornment, InputLabel, TextField, TextFieldProps} from "@material-ui/core";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
 import {useField} from "formik";
@@ -32,9 +32,10 @@ interface InputProps {
     endAdornment?: string
 }
 
-export const Input: React.FC<InputProps & React.PropsWithChildren<any>> = ({label, endAdornment, ...props }) => {
+export const Input: React.FC<InputProps & TextFieldProps> = ({label, endAdornment, ...props}) => {
     const classes = useStyles()
-    const [field, meta] = useField({ ...props, type: 'input' });
+    // @ts-ignore
+    const [field, meta] = useField({...props});
     return <FormGroup>
         {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
         <TextField

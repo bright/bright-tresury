@@ -75,7 +75,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                       handleSubmit
                   }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        {JSON.stringify(values)}
                         <div className={classes.inputField}>
                             <Input
                                 name="title"
@@ -97,7 +96,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                 placeholder={t('idea.details.form.fieldOfIdea')}
                                 options={['Optimisation', 'Treasury', 'Transactions']}
                                 value={values.fieldOfIdea}
-                                onChange={handleChange}
                             />
                         </div>
                         <div className={classes.inputField}>
@@ -147,7 +145,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                         <div className={classes.inputField} key={index}>
                                             <Input
                                                 name={`links[${index}]`}
-                                                label={index === 0 ? t('idea.details.form.link') : null}
+                                                label={index === 0 ? t('idea.details.form.link') : ''}
                                                 placeholder={t('idea.details.form.linkPlaceholder')}
                                             />
                                         </div>

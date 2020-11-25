@@ -1,7 +1,14 @@
-import {createStyles, FormGroup, InputLabel, MenuItem, Select as MaterialSelect, SelectProps as MaterialSelectProps} from "@material-ui/core";
+import {
+    createStyles,
+    FormGroup,
+    InputLabel,
+    MenuItem,
+    Select as MaterialSelect,
+    SelectProps as MaterialSelectProps
+} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
-import {SelectItem} from "./SelectItem";
+import {useField} from "formik";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -28,10 +35,13 @@ interface SelectProps<T> {
     options: T[]
     label: string
     placeholder: string
+    renderValue?: (value: T) => string
 }
 
 export const Select: React.FC<SelectProps<any> & MaterialSelectProps> = ({value, renderValue, options, label, placeholder, ...props}) => {
     const classes = useStyles()
+    // @ts-ignore
+    const [field, meta] = useField({ ...props, type: 'input' });
     return <FormGroup>
         {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
         <MaterialSelect
@@ -41,11 +51,14 @@ export const Select: React.FC<SelectProps<any> & MaterialSelectProps> = ({value,
             inputProps={{
                 classes: {
                     select: classes.select
-                }
+                },
+                ...field, ...meta
             }}>
-            <SelectItem value={placeholder} />
+            <MenuItem value={''}>{placeholder}</MenuItem>
             {options ? options.map((option: any, index: number) =>
-                <SelectItem key={index} value={option} renderValue={renderValue ? renderValue(option) : option} />
+                <MenuItem key={index} value={option}>
+                    {renderValue ? renderValue(option) : option}
+                </MenuItem>
             ) : null}
         </MaterialSelect>
     </FormGroup>
