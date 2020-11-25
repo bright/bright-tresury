@@ -8,17 +8,6 @@ const useStyles = makeStyles(() => createStyles({
         fontWeight: 600,
         borderRadius: '6px',
         padding: '.5em 2em .5em 2em'
-    },
-    contained: {
-        backgroundColor: '#0E65F2',
-        color: 'white',
-    },
-    outlined: {
-        borderColor: '#0E65F2',
-        color: '#0E65F2',
-    },
-    text: {
-        color: '#0E65F2',
     }
 }))
 
