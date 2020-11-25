@@ -9,14 +9,25 @@
   "idea": {
     "details": {
       "form": {
-        "title":"Title",
-        "description":"Description",
-        "beneficiary":"Beneficiary"
+        "title": "Title",
+        "beneficiary": "Beneficiary",
+        "fieldOfIdea": "Field of Idea",
+        "content": "Reason of Proposal",
+        "contact": "Proposer's information",
+        "portfolio": "Portfolio",
+        "reward": "Reward",
+        "link": "Link",
+        "linkPlaceholder": "Add external link to your proposal here",
+        "addLink": "+ Add Link"
       },
-      "save": "Save",
+      "create": "Create",
+      "edit": "Edit",
+      "saveDraft": "Save as Draft",
       "submitProposal": "Submit Proposal",
       "signAndSubmit": "Sign and submit"
     },
+    "introduceTitle": "Introduce Idea",
+    "editTitle": "Edit Idea",
     "introduce": "+ Introduce Idea"
   }
 }

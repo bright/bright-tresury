@@ -1,11 +1,9 @@
 import {Modal} from '@material-ui/core';
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import {createStyles, makeStyles} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
-import {useHistory, useParams} from 'react-router';
-import {Link} from 'react-router-dom';
-import {ROUTE_IDEAS, ROUTE_NEW_IDEA} from '../routes';
+import {useParams} from 'react-router';
 import IdeaDetailsForm from './IdeaDetailsForm';
-import {createIdea, getIdeaById, Idea, IdeaNetwork} from './ideas.api';
+import {getIdeaById, Idea, IdeaNetwork} from './ideas.api';
 import SubmitProposal from './SubmitProposal';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
@@ -14,7 +12,7 @@ const useStyles = makeStyles(() =>
     createStyles({
         root: {
             flexGrow: 1,
-        },
+        }
     }),
 );
 
@@ -24,16 +22,19 @@ interface Props {
 
 const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
     const classes = useStyles()
-    const history = useHistory()
     const {t} = useTranslation()
 
     let {ideaId} = useParams<{ ideaId: string }>()
 
     const [idea, setIdea] = useState<Idea>({
         title: '',
+        beneficiary: '',
+        fieldOfIdea: '',
         content: '',
         networks: [{name: network, value: 0} as IdeaNetwork],
-        beneficiary: ''
+        contact: '',
+        portfolio: '',
+        links: [],
     })
     const [open, setOpen] = React.useState(false);
 
@@ -53,19 +54,9 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
         setOpen(false);
     };
 
-    const save = async () => {
-        if (ideaId === undefined) {
-            await createIdea(idea)
-            history.push(ROUTE_IDEAS)
-        }
-    }
-
     return (
         <div className={classes.root}>
             <IdeaDetailsForm idea={idea} setIdea={setIdea}/>
-            <Button variant="contained" color="primary" onClick={save}>
-                {t('idea.details.save')}
-            </Button>
             {!!idea.id && <div>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
                     {t('idea.details.submitProposal')}

@@ -66,7 +66,7 @@ const SubmitProposal: React.FC<Props> = ({ network = 'localhost', value = 100, b
             </form>
             <p>{status}</p>
             <TxButton
-                label={t('idea.signAndSubmit')}
+                label={t('idea.details.signAndSubmit')}
                 type='SIGNED-TX'
                 color='blue'
                 accountPair={account}

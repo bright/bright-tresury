@@ -11,7 +11,8 @@ import Stats from './stats/Stats';
 import {SubstrateContextProvider} from './substrate-lib';
 import Main from './main/Main';
 import i18next from "i18next";
-import {getTranslation, setTranslation} from "./translation/translationStorage";
+import {getTranslation} from "./translation/translationStorage";
+import {ThemeWrapper} from "./theme/ThemeWrapper";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,9 +48,11 @@ function AppRoutes() {
 function App() {
     return (
         <SubstrateContextProvider>
-            <Main>
-                <AppRoutes/>
-            </Main>
+            <ThemeWrapper>
+                <Main>
+                    <AppRoutes/>
+                </Main>
+            </ThemeWrapper>
         </SubstrateContextProvider>
     )
 }
