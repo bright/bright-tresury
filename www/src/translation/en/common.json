@@ -30,5 +30,15 @@
     "introduceTitle": "Introduce Idea",
     "editTitle": "Edit Idea",
     "introduce": "+ Introduce Idea"
+  },
+  "components": {
+    "signAndSubmit": {
+      "form": {
+        "selectAccount": "Select your account",
+        "signAndSubmit": "SignAndSubmit",
+        "cancel": "Cancel",
+        "accountSelectTitle": "Please, select your account in:"
+      }
+    }
   }
 }

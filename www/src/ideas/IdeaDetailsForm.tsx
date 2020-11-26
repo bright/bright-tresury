@@ -81,7 +81,6 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                 onSubmit={save}>
                 {({
                       values,
-                      handleChange,
                       handleSubmit
                   }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>

@@ -1,10 +1,12 @@
 import {Modal, Theme} from '@material-ui/core';
 import {createStyles, makeStyles} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
+import {useTranslation} from "react-i18next";
 import {useParams} from 'react-router';
+import {Button} from "../components/button/Button";
+import TxSignAndSubmitForm from "../substrate-lib/components/TxSignAndSubmitForm";
 import IdeaDetailsForm from './IdeaDetailsForm';
 import {getIdeaById, Idea, IdeaNetwork} from './ideas.api';
-import SubmitProposal from './SubmitProposal';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
 import {Header} from "../components/header/Header";
@@ -99,7 +101,21 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
                     onClose={handleClose}
                     aria-labelledby="simple-modal-title"
                     aria-describedby="simple-modal-description">
-                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary} network={network}/>
+                    <TxSignAndSubmitForm network={'localhost'} txAttrs={{
+                        palletRpc: 'treasury',
+                        callable: 'proposeSpend',
+                        inputParams: [
+                            {
+                                name: 'value',
+                                value: idea.networks[0].value.toString(),
+                                type: 'Compact<Balance>'
+                            },
+                            {
+                                name: 'beneficiary',
+                                value: idea.beneficiary,
+                            },
+                        ],
+                    }}/>
                 </Modal>
             </div>}
         </div>

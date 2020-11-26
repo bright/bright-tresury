@@ -1,18 +1,17 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
-import Ideas from './ideas/Ideas';
 import IdeaDetails from './ideas/IdeaDetails';
+import Ideas from './ideas/Ideas';
 import Menu from './main/Menu';
 import Proposals from './proposals/Proposals';
 import {ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSALS, ROUTE_ROOT} from './routes';
 import Stats from './stats/Stats';
-import {SubstrateContextProvider} from './substrate-lib';
-import Main from './main/Main';
-import i18next from "i18next";
-import {getTranslation} from "./translation/translationStorage";
 import {ThemeWrapper} from "./theme/ThemeWrapper";
+import {getTranslation} from "./translation/translationStorage";
+import { SubstrateContextProvider } from './substrate-lib';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -21,7 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-
 
 function AppRoutes() {
     const classes = useStyles();
@@ -50,9 +48,7 @@ function App() {
     return (
         <SubstrateContextProvider>
             <ThemeWrapper>
-                <Main>
-                    <AppRoutes/>
-                </Main>
+                <AppRoutes/>
             </ThemeWrapper>
         </SubstrateContextProvider>
     )
