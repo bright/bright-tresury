@@ -11,7 +11,7 @@ export function generateSwaggerDocument(app: INestApplication) {
         .setTitle('API')
         .setDescription('API description')
         .setVersion('1.0')
-        .setSchemes("http", "https")
+        .addServer("http", "https")
         .addBearerAuth()
         .build();
 
