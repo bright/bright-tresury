@@ -36,8 +36,20 @@ export class IdeasService {
         })
     }
 
-    findOne(id: string): Promise<Idea | undefined> {
-        return this.ideaRepository.findOne(id, { relations: ['networks'] })
+    findOne(id?: string, networkId?: string): Promise<Idea | undefined> {
+        return this.ideaRepository.findOne(id, {
+            relations: ['networks'],
+            where: {
+                networks: {
+                    id: networkId
+                }
+            }
+        })
+    }
+
+    async findOneByNetworkId(netwrokId: string): Promise<Idea | undefined> {
+        const ideaNetwork = await this.ideaNetworkRepository.findOne(netwrokId, {relations: ['idea']})
+        return ideaNetwork?.idea
     }
 
     async save(createIdeaDto: CreateIdeaDto): Promise<Idea> {

@@ -1,23 +1,11 @@
-import { INestApplication } from '@nestjs/common';
 import { validate as uuidValidate } from 'uuid';
 import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers';
 import { Idea } from './idea.entity';
 import { IdeaNetwork } from './ideaNetwork.entity';
 import { IdeasService } from './ideas.service';
+import { createIdea } from './spec.helpers';
 
 const baseUrl = '/api/v1/ideas'
-
-export async function createIdea(
-    title: string,
-    networks?: CreateIdeNetworkDto[],
-    beneficiary: string | undefined = undefined,
-    content: string | undefined = undefined,
-    app: INestApplication = beforeSetupFullApp().get()) {
-    const idea: CreateIdeaDto = { title, networks, beneficiary, content }
-    const result = await app.get(IdeasService).save(idea)
-    return result
-}
-
 
 describe(`/api/v1/ideas`, () => {
     const app = beforeSetupFullApp()
@@ -33,7 +21,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas', async () => {
-            await createIdea('Test title')
+            await createIdea({ title: 'Test title' })
 
             const result = await request(app())
                 .get(baseUrl)
@@ -43,27 +31,32 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas for selected network', async () => {
-            await createIdea('Test title1', [{ name: 'kusama' }])
-            await createIdea('Test title2', [{ name: 'kusama' }, { name: 'polkadot' }])
-            await createIdea('Test title3', [{ name: 'polkadot' }])
+            await createIdea({ title: 'Test title1', networks: [{ name: 'kusama' }] })
+            await createIdea({ title: 'Test title2', networks: [{ name: 'kusama' }, { name: 'polkadot' }] })
+            await createIdea({ title: 'Test title3', networks: [{ name: 'polkadot' }] })
 
             const result = await request(app())
                 .get(`${baseUrl}?network=kusama`)
 
             expect(result.body.length).toBe(2)
 
-            const body = result.body as Array<Idea>
+            const body = result.body as Idea[]
             const actualIdea1 = body.find(p => p.title === 'Test title1')
-            expect(actualIdea1).toBeDefined
+            expect(actualIdea1).toBeDefined()
 
             const actualIdea2 = body.find(p => p.title === 'Test title2')
-            expect(actualIdea2).toBeDefined
+            expect(actualIdea2).toBeDefined()
         })
     })
 
     describe('GET /:id', () => {
         it('should return an existing idea', async () => {
-            const idea = await createIdea('Test title', [{ name: 'kusama' }, { name: 'polkadot' }], '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', 'content')
+            const idea = await createIdea({
+                title: 'Test title',
+                networks: [{ name: 'kusama' }, { name: 'polkadot' }],
+                beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                content: 'content'
+            })
 
             const result = await request(app())
                 .get(`${baseUrl}/${idea.id}`)
@@ -74,8 +67,8 @@ describe(`/api/v1/ideas`, () => {
             expect(body.content).toBe('content')
             expect(body.networks).toBeDefined()
             expect(body.networks!.length).toBe(2)
-            expect(body.networks!.find((n: IdeaNetwork) => n.name === 'kusama')).toBeDefined
-            expect(body.networks!.find((n: IdeaNetwork) => n.name === 'polkadot')).toBeDefined
+            expect(body.networks!.find((n: IdeaNetwork) => n.name === 'kusama')).toBeDefined()
+            expect(body.networks!.find((n: IdeaNetwork) => n.name === 'polkadot')).toBeDefined()
         })
 
         it('should return not found for not existing idea', async () => {

@@ -1,11 +1,14 @@
 import { INestApplication, Module, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from "@nestjs/core";
 import { AuthModule } from "./auth";
+import { BlockchainModule } from "./blockchain/blockchain.module";
 import { ConfigModule } from "./config/config";
 import { DatabaseModule } from "./database/database.module";
 import { LoggingModule, NestLoggerAdapter } from "./logging.module";
 import { VersionModule } from "./version/version";
 import { IdeasModule } from './ideas/ideas.module';
+import { ProposalsModule } from './proposals/proposals.module';
+import { ExtrinsicsModule } from './extrinsics/extrinsics.module';
 
 @Module({
     imports: [
@@ -14,7 +17,10 @@ import { IdeasModule } from './ideas/ideas.module';
         DatabaseModule,
         VersionModule,
         AuthModule,
-        IdeasModule
+        IdeasModule,
+        BlockchainModule,
+        ProposalsModule,
+        ExtrinsicsModule,
     ],
     exports: []
 })
