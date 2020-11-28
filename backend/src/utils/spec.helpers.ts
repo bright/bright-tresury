@@ -1,17 +1,17 @@
-import { INestApplication } from "@nestjs/common";
-import { ModuleMetadata } from "@nestjs/common/interfaces";
-import { Test, TestingModuleBuilder } from "@nestjs/testing";
-import { memoize } from 'lodash';
-import { SuperAgentRequest } from "superagent";
+import {INestApplication} from "@nestjs/common";
+import {ModuleMetadata} from "@nestjs/common/interfaces";
+import {Test, TestingModuleBuilder} from "@nestjs/testing";
+import {memoize} from 'lodash';
+import {SuperAgentRequest} from "superagent";
 import supertest from "supertest";
-import { getConnection } from 'typeorm';
-import { AppModule, configureGlobalServices } from "../app.module";
-import { AuthService } from "../auth/auth.service";
-import { NestLoggerAdapter } from "../logging.module";
-import { Accessor } from "./accessor";
-import { tryClose } from "./closeable";
+import {getConnection} from 'typeorm';
+import {AppModule, configureGlobalServices} from "../app.module";
+import {AuthService} from "../auth/auth.service";
+import {NestLoggerAdapter} from "../logging.module";
+import {Accessor} from "./accessor";
+import {tryClose} from "./closeable";
 import './responseMatching';
-import { responseMatchers } from "./responseMatchingHelpers";
+import {responseMatchers} from "./responseMatchingHelpers";
 
 if (!process.env.DEPLOY_ENV) {
     process.env.DEPLOY_ENV = 'test'
@@ -31,7 +31,7 @@ export const authorizationToken = (principalInfo: { accountId: string }, app: IN
     };
 }
 
-export function beforeEachSetup<T>(setupCall: () => T | PromiseLike<T>, options: { autoClose: boolean } = { autoClose: true }): Accessor<T> {
+export function beforeEachSetup<T>(setupCall: () => T | PromiseLike<T>, options: { autoClose: boolean } = {autoClose: true}): Accessor<T> {
     let result: T | undefined;
 
     function accessor() {
@@ -60,7 +60,7 @@ export function beforeEachSetup<T>(setupCall: () => T | PromiseLike<T>, options:
     return accessor
 }
 
-export function beforeAllSetup<T>(setupCall: () => T | PromiseLike<T>, options: { autoClose: boolean } = { autoClose: true }): Accessor<T> {
+export function beforeAllSetup<T>(setupCall: () => T | PromiseLike<T>, options: { autoClose: boolean } = {autoClose: true}): Accessor<T> {
     let result: T | undefined;
 
     function accessor() {
@@ -92,7 +92,7 @@ export function beforeAllSetup<T>(setupCall: () => T | PromiseLike<T>, options: 
 export async function createTestingApp(moduleToTest: ModuleMetadata | ModuleMetadata["imports"], customize?: (builder: TestingModuleBuilder) => TestingModuleBuilder) {
     const moduleMetadata: ModuleMetadata = moduleToTest && 'imports' in moduleToTest
         ? moduleToTest as ModuleMetadata
-        : { imports: moduleToTest as ModuleMetadata['imports'] }
+        : {imports: moduleToTest as ModuleMetadata['imports']}
 
     let module = Test.createTestingModule(moduleMetadata);
     if (customize) {
@@ -125,30 +125,35 @@ export const beforeSetupFullApp = memoize(() => {
 })
 
 const tablesToRemove = memoize(
-  async (): Promise<Array<{ table_name: string }>> => {
-    const connection = await getConnection()
-    return await connection.query(
-      `
+    async (): Promise<Array<{ table_name: string }>> => {
+        const connection = await getConnection()
+        return await connection.query(
+            `
         select * 
         from information_schema.tables 
         where 
             table_schema='public' and table_name != 'migrations'
         `
-    )
-  }
+        )
+    }
 )
 
 export const cleanDatabase = async () => {
-  try {
-    const tables = await tablesToRemove()
-    const connection = await getConnection()
-    const tableList = tables.map((t: any) => `"${t.table_name}"`).join(', ')
-    const truncateQuery = `truncate ${tableList};`
-    return await connection.query(truncateQuery)
-  } catch (e) {
-    // tslint:disable-next-line:no-console
-    console.error('Please make sure that beforeSetupFullApp is called before cleanDatabase.')
-    // tslint:disable-next-line:no-console
-    console.error(e)
-  }
+    try {
+        const tables = await tablesToRemove()
+        const connection = await getConnection()
+        const tableList = tables.map((t: any) => `"${t.table_name}"`).join(', ')
+        if (tableList) {
+            const truncateQuery = `truncate ${tableList};`
+            return await connection.query(truncateQuery)
+        } else {
+            // tslint:disable-next-line:no-console
+            console.error(`Table list empty`)
+        }
+    } catch (e) {
+        // tslint:disable-next-line:no-console
+        console.error('Please make sure that beforeSetupFullApp is called before cleanDatabase.')
+        // tslint:disable-next-line:no-console
+        console.error(e)
+    }
 }

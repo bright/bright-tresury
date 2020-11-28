@@ -91,11 +91,11 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         </div>
                         <div className={classes.selectField}>
                             <Select
-                                name="fieldOfIdea"
-                                label={t('idea.details.form.fieldOfIdea')}
-                                placeholder={t('idea.details.form.fieldOfIdea')}
+                                name="field"
+                                label={t('idea.details.form.field')}
+                                placeholder={t('idea.details.form.field')}
                                 options={['Optimisation', 'Treasury', 'Transactions']}
-                                value={values.fieldOfIdea}
+                                value={values.field}
                             />
                         </div>
                         <div className={classes.inputField}>

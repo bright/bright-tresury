@@ -15,7 +15,7 @@ export class IdeaNetwork extends BaseEntity {
         () => Idea,
         (idea) => idea.networks
     )
-    idea: Idea
+    idea?: Idea
 
     @OneToOne(() => Extrinsic)
     @JoinColumn()
@@ -24,10 +24,9 @@ export class IdeaNetwork extends BaseEntity {
     @Column({ nullable: true, type: "integer", })
     blockchainProposalId: number | null
 
-    constructor(name: string, idea: Idea, value: number = 0, extrinsic = null, blockchainProposalId = null) {
+    constructor(name: string, value: number = 0, extrinsic = null, blockchainProposalId = null) {
         super();
         this.name = name
-        this.idea = idea
         this.value = value
         this.extrinsic = extrinsic
         this.blockchainProposalId = blockchainProposalId

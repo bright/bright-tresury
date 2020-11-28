@@ -29,7 +29,7 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
     const [idea, setIdea] = useState<Idea>({
         title: '',
         beneficiary: '',
-        fieldOfIdea: '',
+        field: '',
         content: '',
         networks: [{name: network, value: 0} as IdeaNetwork],
         contact: '',

@@ -11,7 +11,7 @@
       "form": {
         "title": "Title",
         "beneficiary": "Beneficiary",
-        "fieldOfIdea": "Field of Idea",
+        "field": "Field of Idea",
         "content": "Reason of Proposal",
         "contact": "Proposer's information",
         "portfolio": "Portfolio",

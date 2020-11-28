@@ -1,9 +1,12 @@
-import { BadRequestException, Body, Controller, Get, HttpStatus, NotFoundException, Param, Post, Query } from '@nestjs/common';
+import {BadRequestException, Body, Controller, Get, HttpStatus, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
 import { ApiPropertyOptional, ApiResponse } from '@nestjs/swagger';
-import { create } from 'domain';
 import { validate as uuidValidate } from 'uuid';
 import { Idea } from './idea.entity';
 import { IdeasService } from './ideas.service';
+import {IdeaDto, toIdeaDto} from "./dto/ideaDto";
+import {CreateIdeaDto} from "./dto/createIdeaDto";
+import {IdeaNetwork} from "./ideaNetwork.entity";
+import {IdeaNetworkDto} from "./dto/ideaNetworkDto";
 
 class GetIdeasQuery {
     @ApiPropertyOptional()
@@ -20,8 +23,9 @@ export class IdeasController {
         status: HttpStatus.OK,
         description: 'Respond with all ideas.',
     })
-    getIdeas(@Query() query?: GetIdeasQuery): Promise<Idea[]> {
-        return this.ideasService.find(query?.network)
+    async getIdeas(@Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
+        const ideas = await this.ideasService.find(query?.network)
+        return ideas.map((idea: Idea) => toIdeaDto(idea))
     }
 
     @Get(':id')
@@ -57,7 +61,22 @@ export class IdeasController {
         description: 'Title must not be empty.',
     })
     @Post()
-    createIdea(@Body() createIdeaDto: CreateIdeaDto): Promise<Idea> {
-        return this.ideasService.save(createIdeaDto)
+    async createIdea(@Body() createIdeaDto: CreateIdeaDto): Promise<IdeaDto> {
+        const idea = await this.ideasService.create(createIdeaDto)
+        return toIdeaDto(idea)
+    }
+
+    @ApiResponse({
+        status: HttpStatus.CREATED,
+        description: 'Create new idea.',
+    })
+    @ApiResponse({
+        status: HttpStatus.BAD_REQUEST,
+        description: 'Title must not be empty.',
+    })
+    @Patch()
+    async updateIdea(@Body() createIdeaDto: Partial<CreateIdeaDto>, @Param('id') id: string): Promise<IdeaDto> {
+        const idea = await this.ideasService.update(createIdeaDto, id)
+        return toIdeaDto(idea)
     }
 }

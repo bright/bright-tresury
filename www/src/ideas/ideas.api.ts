@@ -11,7 +11,7 @@ export interface Idea {
     id?: string
     title: string
     beneficiary: string
-    fieldOfIdea?: string
+    field?: string
     content: string
     networks: IdeaNetwork[]
     contact?: string

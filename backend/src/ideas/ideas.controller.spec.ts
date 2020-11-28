@@ -1,8 +1,9 @@
-import { validate as uuidValidate } from 'uuid';
-import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers';
-import { Idea } from './idea.entity';
-import { IdeaNetwork } from './ideaNetwork.entity';
-import { IdeasService } from './ideas.service';
+import {INestApplication} from '@nestjs/common';
+import {validate as uuidValidate} from 'uuid';
+import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
+import {Idea} from './idea.entity';
+import {IdeaNetwork} from './ideaNetwork.entity';
+import {IdeasService} from './ideas.service';
 import { createIdea } from './spec.helpers';
 
 const baseUrl = '/api/v1/ideas'
@@ -31,9 +32,9 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas for selected network', async () => {
-            await createIdea({ title: 'Test title1', networks: [{ name: 'kusama' }] })
-            await createIdea({ title: 'Test title2', networks: [{ name: 'kusama' }, { name: 'polkadot' }] })
-            await createIdea({ title: 'Test title3', networks: [{ name: 'polkadot' }] })
+            await createIdea('Test title1', [{name: 'kusama'}])
+            await createIdea('Test title2', [{name: 'kusama'}, {name: 'polkadot'}])
+            await createIdea('Test title3', [{name: 'polkadot'}])
 
             const result = await request(app())
                 .get(`${baseUrl}?network=kusama`)
@@ -41,10 +42,10 @@ describe(`/api/v1/ideas`, () => {
             expect(result.body.length).toBe(2)
 
             const body = result.body as Idea[]
-            const actualIdea1 = body.find(p => p.title === 'Test title1')
+            const actualIdea1 = body.find((idea: Idea) => idea.title === 'Test title1')
             expect(actualIdea1).toBeDefined()
 
-            const actualIdea2 = body.find(p => p.title === 'Test title2')
+            const actualIdea2 = body.find((idea: Idea) => idea.title === 'Test title2')
             expect(actualIdea2).toBeDefined()
         })
     })
@@ -88,8 +89,43 @@ describe(`/api/v1/ideas`, () => {
         it('should return created for minimal valid data', () => {
             return request(app())
                 .post(`${baseUrl}`)
-                .send({ title: 'Test title' })
+                .send({title: 'Test title', networks: [{name: 'kusama'}]})
                 .expect(201)
+        })
+
+        it('should return bad request if no networks', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: null})
+                .expect(400)
+        })
+
+        it('should return bad request if empty networks', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: []})
+                .expect(400)
+        })
+
+        it('should return bad request if links are not array', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: [{name: 'kusama'}], links: 'link'})
+                .expect(400)
+        })
+
+        it('should return created if links are strings array', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: [{name: 'kusama'}], links: 'https://somelink.com'})
+                .expect(400)
+        })
+
+        it('should return bad request for empty title', async () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: ''})
+                .expect(400)
         })
 
         it('should return created for all valid data', () => {
@@ -97,9 +133,13 @@ describe(`/api/v1/ideas`, () => {
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
-                    networks: [{ name: 'kusama', value: 10 }],
+                    networks: [{name: 'kusama', value: 10}],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    content: 'content'
+                    content: 'content',
+                    field: 'field',
+                    contact: 'contact',
+                    portfolio: 'portfolio',
+                    links: ['portfolio'],
                 })
                 .expect(201)
         })
@@ -109,9 +149,13 @@ describe(`/api/v1/ideas`, () => {
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
-                    networks: [{ name: 'kusama', value: 10 }],
+                    networks: [{name: 'kusama', value: 10}],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    content: 'content'
+                    content: 'content',
+                    field: 'field',
+                    contact: 'contact',
+                    portfolio: 'portfolio',
+                    links: ['link'],
                 })
 
             const body = actual.body
@@ -122,12 +166,15 @@ describe(`/api/v1/ideas`, () => {
             expect(body.networks!.length).toBe(1)
             expect(body.networks[0].name).toBe('kusama')
             expect(body.networks[0].value).toBe(10)
+            expect(body.contact).toBe('contact')
+            expect(body.portfolio).toBe('portfolio')
+            expect(body.links).toStrictEqual(['link'])
         })
 
         it('should create a idea and networks', async () => {
             const result = await request(app())
                 .post(`${baseUrl}`)
-                .send({ title: 'Test title', networks: [{ name: 'kusama', value: 10 }] })
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 10}]})
 
             const ideasService = app.get().get(IdeasService)
             const actual = await ideasService.findOne(result.body.id)
@@ -136,13 +183,6 @@ describe(`/api/v1/ideas`, () => {
             expect(actual!.networks!.length).toBe(1)
             expect(actual!.networks![0].name).toBe('kusama')
             expect(actual!.networks![0].value).toBe(10)
-        })
-
-        it('should return bad request for empty title', async () => {
-            return request(app())
-                .post(`${baseUrl}`)
-                .send({ title: '' })
-                .expect(201)
         })
     })
 })
