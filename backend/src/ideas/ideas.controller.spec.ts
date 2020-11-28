@@ -4,6 +4,9 @@ import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers'
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
+import {IdeaNetworkDto} from "./dto/ideaNetworkDto";
+import {CreateIdeaDto} from "./dto/createIdeaDto";
+import {Not} from "typeorm";
 import { createIdea } from './spec.helpers';
 
 const baseUrl = '/api/v1/ideas'
@@ -145,7 +148,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return created idea for valid data', async () => {
-            const actual = await request(app())
+            const response = await request(app())
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
@@ -158,7 +161,7 @@ describe(`/api/v1/ideas`, () => {
                     links: ['link'],
                 })
 
-            const body = actual.body
+            const body = response.body
             expect(uuidValidate(body.id)).toBe(true)
             expect(body.title).toBe('Test title')
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
@@ -183,6 +186,38 @@ describe(`/api/v1/ideas`, () => {
             expect(actual!.networks!.length).toBe(1)
             expect(actual!.networks![0].name).toBe('kusama')
             expect(actual!.networks![0].value).toBe(10)
+        })
+    })
+
+    describe('PATCH', () => {
+        it('should return status ok for minimal valid data', async () => {
+            const idea = await createIdea('Test title')
+            return request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({title: 'Test title 2'})
+                .expect(200)
+        })
+        it('should patch title', async () => {
+            const idea = await createIdea('Test title')
+            const response = await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({title: 'Test title 2'})
+                .expect(200)
+            expect(response.body.title).toBe('Test title 2')
+        })
+        it('should keep previous data for not patched properties', async () => {
+            const idea = await createIdea('Test title', [{name: 'kusama'}], 'abcd-1234', 'content-1234')
+            const response = await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({title: 'Test title 2'})
+                .expect(200)
+            const body = response.body
+            // tslint:disable-next-line:no-console
+            console.error(`The body: ${JSON.stringify(body)}`)
+            expect(body.title).not.toBe('Test title')
+            expect(body.beneficiary).toBe('abcd-1234')
+            expect(body.content).toBe('content-1234')
+            expect(body.networks[0].name).toBe('kusama')
         })
     })
 })

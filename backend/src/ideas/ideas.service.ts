@@ -37,7 +37,7 @@ export class IdeasService {
         if (!currentIdea) {
             throw new NotFoundException('There is no idea with such id')
         }
-        return await this.ideaRepository.save(new Idea(
+        await this.ideaRepository.save(new Idea(
             updateIdea.title ?? currentIdea.title,
             updateIdea.networks ? updateIdea.networks.map((network: IdeaNetworkDto) => new IdeaNetwork(
                 network.name,
@@ -50,9 +50,13 @@ export class IdeasService {
             updateIdea.contact ?? currentIdea.contact,
             updateIdea.portfolio ?? currentIdea.portfolio,
             updateIdea.links ? JSON.stringify(updateIdea.links) : currentIdea.links,
-            id,
+            id
             )
         )
+        return (await this.ideaRepository.findOne(
+            id,
+            {relations: ['networks']}
+        ))!
     }
 
     async create(createIdeaDto: CreateIdeaDto): Promise<Idea> {
@@ -70,6 +74,9 @@ export class IdeasService {
             createIdeaDto.portfolio,
             JSON.stringify(createIdeaDto.links),
         )
-        return await this.ideaRepository.save(idea)
+        const createdIdea = await this.ideaRepository.save(idea)
+        return (await this.ideaRepository.findOne(
+            createdIdea.id, {relations: ['networks']}
+        ))!
     }
 }

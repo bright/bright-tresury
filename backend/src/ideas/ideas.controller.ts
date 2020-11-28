@@ -74,7 +74,7 @@ export class IdeasController {
         status: HttpStatus.BAD_REQUEST,
         description: 'Title must not be empty.',
     })
-    @Patch()
+    @Patch(':id')
     async updateIdea(@Body() createIdeaDto: Partial<CreateIdeaDto>, @Param('id') id: string): Promise<IdeaDto> {
         const idea = await this.ideasService.update(createIdeaDto, id)
         return toIdeaDto(idea)
