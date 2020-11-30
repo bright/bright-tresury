@@ -9,44 +9,25 @@ import {TxAttrs, TxButton} from "./TxButton";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            flexGrow: 1,
+        networkTitle: {
+          textAlign: 'center'
         },
         form: {
             width: '100%',
-            margin: 5
         },
-        paper: {
-            position: 'absolute',
-            width: 400,
-            backgroundColor: theme.palette.background.paper,
-            border: '2px solid #000',
-            boxShadow: theme.shadows[5],
-            padding: theme.spacing(2, 4, 3),
-        },
+        buttons: {
+            display: 'flex',
+            width: '100%',
+            justifyContent: 'space-between'
+        }
     }),
 );
 
 interface Props {
     network: string
     txAttrs: TxAttrs
+    onCancel: () => void
 }
-
-const a = {
-    palletRpc: 'treasury',
-    callable: 'proposeSpend',
-    inputParams: [
-        {
-            name: 'value',
-            value: 10,
-            type: 'Compact<Balance>'
-        },
-        {
-            name: 'beneficiary',
-            value: 'AAA',
-        },
-    ],
-} as TxAttrs
 
 interface Account {
     name: string,
@@ -59,13 +40,13 @@ interface FormikState {
 
 const TypedSelect = Select as ISelect<Account>
 
-const TxSignAndSubmitForm: React.FC<Props> = ({network = 'localhost', txAttrs = a}) => {
+const TxSignAndSubmitForm: React.FC<Props> = ({network = 'localhost', txAttrs, onCancel}) => {
     const classes = useStyles()
     const {t} = useTranslation()
     const emptyAccount = {name: t('components.signAndSubmit.form.selectAccount'), address: ''} as Account
     const [status, setStatus] = useState('')
     const [accounts, setAccounts] = useState<Account[]>([emptyAccount])
-    const {apiState, keyringState, apiError, keyring} = useSubstrate();
+    const {keyringState, keyring} = useSubstrate();
 
     useEffect(() => {
         if (keyringState === 'READY' && keyring) {
@@ -80,9 +61,10 @@ const TxSignAndSubmitForm: React.FC<Props> = ({network = 'localhost', txAttrs = 
 
     return (
         <div ref={contextRef}>
-            {apiState === 'ERROR' ? <p>{apiError}</p> : null}
-            {apiState !== 'READY' ? <p>Not connected</p> : null}
-            {keyringState !== 'READY' ? <p>Loading accounts (please review any extension's authorization)</p> : null}
+            {/*TODO*/}
+            {/*{apiState === 'ERROR' ? <p>{apiError}</p> : null}*/}
+            {/*{apiState !== 'READY' ? <p>Not connected</p> : null}*/}
+            {/*{keyringState !== 'READY' ? <p>Loading accounts (please review any extension's authorization)</p> : null}*/}
             {accounts.length === 0 || accounts.length === 1 ? <p>No accounts available</p> :
                 <Formik
                     initialValues={{
@@ -94,9 +76,12 @@ const TxSignAndSubmitForm: React.FC<Props> = ({network = 'localhost', txAttrs = 
                           values,
                           handleSubmit
                       }) =>
-                        <div className={classes.paper}>
+                        <div>
+                            <p className={classes.networkTitle}>{t('components.signAndSubmit.form.networkHeader')}</p>
+                            <p className={classes.networkTitle}>localhost</p>
                             <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                                 <TypedSelect
+                                    variant={"outlined"}
                                     name="account"
                                     label={t('components.signAndSubmit.form.selectAccount')}
                                     options={accounts}
@@ -107,15 +92,17 @@ const TxSignAndSubmitForm: React.FC<Props> = ({network = 'localhost', txAttrs = 
                                 />
                             </form>
                             <p>{status}</p>
-                            <TxButton
-                                label={t('components.signAndSubmit.form.signAndSubmit')}
-                                address={values.account.address}
-                                setStatus={(status: string) => setStatus(status)}
-                                attrs={txAttrs}
-                            />
-                            <Button variant={"text"} color="primary" type="button">
-                                {t('components.signAndSubmit.form.cancel')}
-                            </Button>
+                            <div className={classes.buttons}>
+                                <Button variant={"text"} color="primary" type="button" onClick={onCancel}>
+                                    {t('components.signAndSubmit.form.cancel')}
+                                </Button>
+                                <TxButton
+                                    label={t('components.signAndSubmit.form.signAndSubmit')}
+                                    address={values.account.address}
+                                    setStatus={(status: string) => setStatus(status)}
+                                    attrs={txAttrs}
+                                />
+                            </div>
                         </div>}
                 </Formik>}
         </div>

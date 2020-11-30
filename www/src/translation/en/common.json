@@ -25,7 +25,11 @@
       "edit": "Edit",
       "saveDraft": "Save as Draft",
       "submitProposal": "Submit Proposal",
-      "signAndSubmit": "Sign and submit"
+      "signAndSubmit": "Sign and submit",
+      "submitProposalModal": {
+        "title": "You are about to convert your idea into proposal",
+        "warningMessage": "In order to submit your proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your proposal will be <strong>rejected you will lose the bond</strong>. If your proposal is approved you will get the deposit money back."
+      }
     },
     "introduceTitle": "Introduce Idea",
     "editTitle": "Edit Idea",
@@ -34,8 +38,9 @@
   "components": {
     "signAndSubmit": {
       "form": {
+        "networkHeader": "Please, select your account in:",
         "selectAccount": "Select your account",
-        "signAndSubmit": "SignAndSubmit",
+        "signAndSubmit": "Sign and submit",
         "cancel": "Cancel",
         "accountSelectTitle": "Please, select your account in:"
       }

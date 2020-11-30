@@ -1,10 +1,8 @@
-import {Modal, Theme} from '@material-ui/core';
 import {createStyles, makeStyles} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from "react-i18next";
 import {useParams} from 'react-router';
 import {Button} from "../components/button/Button";
-import TxSignAndSubmitForm from "../substrate-lib/components/TxSignAndSubmitForm";
 import IdeaDetailsForm from './IdeaDetailsForm';
 import {getIdeaById, Idea, IdeaNetwork} from './ideas.api';
 import {Button} from "../components/button/Button";
@@ -15,6 +13,7 @@ import CrossSvg from "../assets/cross.svg";
 import {useHistory} from "react-router-dom";
 import {breakpoints} from "../theme/theme";
 import {ROUTE_IDEAS} from "../routes";
+import SubmitProposalModal from "./SubmitProposalModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -92,32 +91,15 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
                 <IconButton svg={CrossSvg} onClick={navigateToList}/>
             </div>
             <IdeaDetailsForm idea={idea} setIdea={setIdea}/>
-            {!!idea.id && <div>
+            {!!idea.id && <>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
                     {t('idea.details.submitProposal')}
                 </Button>
-                <Modal
+                <SubmitProposalModal
                     open={open}
                     onClose={handleClose}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description">
-                    <TxSignAndSubmitForm network={'localhost'} txAttrs={{
-                        palletRpc: 'treasury',
-                        callable: 'proposeSpend',
-                        inputParams: [
-                            {
-                                name: 'value',
-                                value: idea.networks[0].value.toString(),
-                                type: 'Compact<Balance>'
-                            },
-                            {
-                                name: 'beneficiary',
-                                value: idea.beneficiary,
-                            },
-                        ],
-                    }}/>
-                </Modal>
-            </div>}
+                    idea={idea}/>
+            </>}
         </div>
     );
 }

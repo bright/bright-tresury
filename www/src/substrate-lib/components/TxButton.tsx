@@ -145,6 +145,7 @@ const TxButton: React.FC<TxButtonProps> = ({address, label, setStatus, attrs, di
 
     return (
         <Button
+            color='primary'
             type='submit'
             onClick={handleClick}
             disabled={disabled || !palletRpc || !callable || !allParamsFilled() || !address || !api}

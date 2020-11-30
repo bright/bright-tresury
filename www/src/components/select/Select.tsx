@@ -25,7 +25,7 @@ const useStyles = makeStyles(() =>
             fontSize: '0.875em',
             backgroundColor: '#fff',
             padding: '1em',
-            fontWeight: 500
+            fontWeight: 500,
         },
     }),
 );
