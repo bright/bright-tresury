@@ -10,7 +10,8 @@ const useStyles = makeStyles(() => createStyles({
         padding: '.5em 2em .5em 2em'
     },
     text: {
-        padding: 0
+        paddingLeft: 0,
+        paddingRight: 0
     }
 }))
 
