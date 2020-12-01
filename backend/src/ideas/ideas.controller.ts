@@ -1,12 +1,10 @@
-import {BadRequestException, Body, Controller, Get, HttpStatus, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
-import { ApiPropertyOptional, ApiResponse } from '@nestjs/swagger';
-import { validate as uuidValidate } from 'uuid';
-import { Idea } from './idea.entity';
-import { IdeasService } from './ideas.service';
+import {BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
+import {ApiPropertyOptional, ApiResponse} from '@nestjs/swagger';
+import {validate as uuidValidate} from 'uuid';
+import {Idea} from './idea.entity';
+import {IdeasService} from './ideas.service';
 import {IdeaDto, toIdeaDto} from "./dto/ideaDto";
 import {CreateIdeaDto} from "./dto/createIdeaDto";
-import {IdeaNetwork} from "./ideaNetwork.entity";
-import {IdeaNetworkDto} from "./dto/ideaNetworkDto";
 
 class GetIdeasQuery {
     @ApiPropertyOptional()
@@ -16,7 +14,8 @@ class GetIdeasQuery {
 @Controller('/api/v1/ideas')
 export class IdeasController {
 
-    constructor(private ideasService: IdeasService) { }
+    constructor(private ideasService: IdeasService) {
+    }
 
     @Get()
     @ApiResponse({
@@ -67,16 +66,33 @@ export class IdeasController {
     }
 
     @ApiResponse({
-        status: HttpStatus.CREATED,
-        description: 'Create new idea.',
+        status: HttpStatus.OK,
+        description: 'Patched idea.',
     })
     @ApiResponse({
         status: HttpStatus.BAD_REQUEST,
         description: 'Title must not be empty.',
     })
+    @ApiResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: 'No idea found',
+    })
     @Patch(':id')
     async updateIdea(@Body() createIdeaDto: Partial<CreateIdeaDto>, @Param('id') id: string): Promise<IdeaDto> {
         const idea = await this.ideasService.update(createIdeaDto, id)
         return toIdeaDto(idea)
+    }
+
+    @ApiResponse({
+        status: HttpStatus.OK,
+        description: 'Deleted idea.',
+    })
+    @ApiResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: 'No idea found.',
+    })
+    @Delete(':id')
+    async delete(@Param('id') id: string) {
+        await this.ideasService.delete(id)
     }
 }

@@ -1,12 +1,9 @@
-import {INestApplication} from '@nestjs/common';
 import {validate as uuidValidate} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
-import {IdeaNetworkDto} from "./dto/ideaNetworkDto";
-import {CreateIdeaDto} from "./dto/createIdeaDto";
-import {Not} from "typeorm";
+import {v4 as uuid} from 'uuid';
 import { createIdea } from './spec.helpers';
 
 const baseUrl = '/api/v1/ideas'
@@ -138,11 +135,11 @@ describe(`/api/v1/ideas`, () => {
                     title: 'Test title',
                     networks: [{name: 'kusama', value: 10}],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    content: 'content',
-                    field: 'field',
-                    contact: 'contact',
-                    portfolio: 'portfolio',
-                    links: ['portfolio'],
+                    content: 'Test content',
+                    field: 'Test field',
+                    contact: 'Test contact',
+                    portfolio: 'Test portfolio',
+                    links: ['Test portfolio'],
                 })
                 .expect(201)
         })
@@ -154,24 +151,24 @@ describe(`/api/v1/ideas`, () => {
                     title: 'Test title',
                     networks: [{name: 'kusama', value: 10}],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    content: 'content',
-                    field: 'field',
-                    contact: 'contact',
-                    portfolio: 'portfolio',
-                    links: ['link'],
+                    content: 'Test content',
+                    field: 'Test field',
+                    contact: 'Test contact',
+                    portfolio: 'Test portfolio',
+                    links: ['Test link'],
                 })
 
             const body = response.body
             expect(uuidValidate(body.id)).toBe(true)
             expect(body.title).toBe('Test title')
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body.content).toBe('content')
+            expect(body.content).toBe('Test content')
             expect(body.networks!.length).toBe(1)
             expect(body.networks[0].name).toBe('kusama')
             expect(body.networks[0].value).toBe(10)
-            expect(body.contact).toBe('contact')
-            expect(body.portfolio).toBe('portfolio')
-            expect(body.links).toStrictEqual(['link'])
+            expect(body.contact).toBe('Test contact')
+            expect(body.portfolio).toBe('Test portfolio')
+            expect(body.links).toStrictEqual(['Test link'])
         })
 
         it('should create a idea and networks', async () => {
@@ -190,12 +187,18 @@ describe(`/api/v1/ideas`, () => {
     })
 
     describe('PATCH', () => {
-        it('should return status ok for minimal valid data', async () => {
+        it('should return status ok for minima patch data', async () => {
             const idea = await createIdea('Test title')
             return request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'})
                 .expect(200)
+        })
+        it('should return not found if wrong id', () => {
+            return request(app())
+                .patch(`${baseUrl}/${uuid()}`)
+                .send({title: 'Test title 2'})
+                .expect(404)
         })
         it('should patch title', async () => {
             const idea = await createIdea('Test title')
@@ -205,19 +208,72 @@ describe(`/api/v1/ideas`, () => {
                 .expect(200)
             expect(response.body.title).toBe('Test title 2')
         })
+        it('should patch network', async () => {
+            const idea = await createIdea('Test title', [{name: 'kusama', value: 13}])
+            const response = await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({
+                    networks: [
+                        {
+                            ...idea.networks[0],
+                            value: 33
+                        }
+                    ]
+                })
+                .expect(200)
+            expect(response.body.networks[0].id).toBe(idea.networks[0].id)
+            expect(response.body.networks[0].value).toBe(33)
+        })
+        it('should patch links', async () => {
+            const idea = await createIdea('Test title', [{name: 'kusama', value: 13}], '', '', ['The link'])
+            const response = await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({
+                    links: ['patched link']
+                })
+                .expect(200)
+            expect(response.body.links[0]).toBe('patched link')
+        })
         it('should keep previous data for not patched properties', async () => {
-            const idea = await createIdea('Test title', [{name: 'kusama'}], 'abcd-1234', 'content-1234')
+            const idea = await createIdea('Test title', [{name: 'kusama'}], 'abcd-1234', 'Test content')
             const response = await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'})
                 .expect(200)
             const body = response.body
             // tslint:disable-next-line:no-console
-            console.error(`The body: ${JSON.stringify(body)}`)
             expect(body.title).not.toBe('Test title')
             expect(body.beneficiary).toBe('abcd-1234')
-            expect(body.content).toBe('content-1234')
+            expect(body.content).toBe('Test content')
             expect(body.networks[0].name).toBe('kusama')
+        })
+    })
+    describe('DELETE', () => {
+        it('should delete idea', async () => {
+            const idea = await createIdea('Test title')
+            await request(app())
+                .delete(`${baseUrl}/${idea.id}`)
+                .send()
+                .expect(200)
+            await request(app())
+                .get(`${baseUrl}/${idea.id}`)
+                .expect(404)
+        })
+        it('should delete idea with networks', async () => {
+            const idea = await createIdea('Test title', [{name: 'polkadot', value: 47}])
+            await request(app())
+                .delete(`${baseUrl}/${idea.id}`)
+                .send()
+                .expect(200)
+            await request(app())
+                .get(`${baseUrl}/${idea.id}`)
+                .expect(404)
+        })
+        it('should return not found if wrong id', () => {
+            return request(app())
+                .delete(`${baseUrl}/${uuid()}`)
+                .send()
+                .expect(404)
         })
     })
 })

@@ -30,7 +30,9 @@ export class Idea extends BaseEntity {
         () => IdeaNetwork,
         (network) => network.idea,
         {
-            cascade: true
+            cascade: true,
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
         }
     )
     networks: IdeaNetwork[]

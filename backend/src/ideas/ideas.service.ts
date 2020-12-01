@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {FindConditions, In, Repository} from 'typeorm';
+import {Repository} from 'typeorm';
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {CreateIdeaDto} from "./dto/createIdeaDto";
@@ -24,7 +24,11 @@ export class IdeasService {
     }
 
     findOne(id: string): Promise<Idea | undefined> {
-        return this.ideaRepository.findOne(id, {relations: ['networks']})
+        const idea = this.ideaRepository.findOne(id, {relations: ['networks']})
+        if (!idea) {
+            throw new NotFoundException('There is no idea with such id')
+        }
+        return idea
     }
 
     async findOneByNetworkId(networkId: string): Promise<Idea | undefined> {
@@ -78,5 +82,13 @@ export class IdeasService {
         return (await this.ideaRepository.findOne(
             createdIdea.id, {relations: ['networks']}
         ))!
+    }
+
+    async delete(id: string) {
+        const currentIdea = await this.ideaRepository.findOne(id)
+        if (!currentIdea) {
+            throw new NotFoundException('There is no idea with such id')
+        }
+        await this.ideaRepository.remove(currentIdea)
     }
 }
