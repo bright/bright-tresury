@@ -3,6 +3,9 @@ import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers'
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
+import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
+import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {Not} from "typeorm";
 import {v4 as uuid} from 'uuid';
 import { createIdea } from './spec.helpers';
 

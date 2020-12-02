@@ -3,8 +3,8 @@ import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkRes
 import {validate as uuidValidate} from 'uuid';
 import {Idea} from './idea.entity';
 import {IdeasService} from './ideas.service';
-import {IdeaDto, toIdeaDto} from "./dto/ideaDto";
-import {CreateIdeaDto} from "./dto/createIdeaDto";
+import {IdeaDto, toIdeaDto} from "./dto/idea.dto";
+import {CreateIdeaDto} from "./dto/createIdea.dto";
 
 class GetIdeasQuery {
     @ApiPropertyOptional()

@@ -3,8 +3,8 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
-import {CreateIdeaDto} from "./dto/createIdeaDto";
-import {IdeaNetworkDto} from "./dto/ideaNetworkDto";
+import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 
 @Injectable()
 export class IdeasService {
