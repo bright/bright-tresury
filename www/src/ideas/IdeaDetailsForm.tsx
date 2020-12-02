@@ -1,4 +1,4 @@
-import {createStyles, makeStyles} from '@material-ui/core/styles';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React from 'react';
 import {useHistory} from 'react-router-dom';
 import {createIdea, Idea} from './ideas.api';
@@ -9,9 +9,10 @@ import {FieldArray, Formik} from "formik";
 import {Button} from "../components/button/Button";
 import {Select} from "../components/select/Select";
 import {ROUTE_IDEAS} from "../routes";
+import {breakpoints} from "../theme/theme";
 import * as Yup from 'yup'
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
             padding: '3em 5em 3em 3em',
@@ -23,20 +24,32 @@ const useStyles = makeStyles(() =>
         inputField: {
             marginTop: '2em'
         },
-        selectField: {
-            marginTop: '2em',
+        smallField: {
             width: '50%',
-        },
-        rewardField: {
-            marginTop: '2em',
-            width: '50%'
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '100%',
+            },
         },
         submitButtons: {
             margin: '3em 0',
             display: 'flex',
             justifyContent: 'space-between',
             position: 'relative',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                justifyContent: 'inherit',
+                flexDirection: 'column-reverse'
+            },
         },
+        bottomButtons: {
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                width: '100%'
+            },
+        },
+        saveAsDraftButton: {
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                marginTop: '2em'
+            },
+        }
     }),
 );
 
@@ -87,14 +100,14 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                                 placeholder={t('idea.details.form.title')}
                                 label={t('idea.details.form.title')}/>
                         </div>
-                        <div className={classes.selectField}>
+                        <div className={`${classes.inputField} ${classes.smallField}`}>
                             <Input
                                 name="beneficiary"
                                 placeholder={t('idea.details.form.beneficiary')}
                                 label={t('idea.details.form.beneficiary')}
                             />
                         </div>
-                        <div className={classes.selectField}>
+                        <div className={`${classes.inputField} ${classes.smallField}`}>
                             <Select
                                 name="field"
                                 label={t('idea.details.form.field')}
@@ -113,7 +126,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                             />
                         </div>
                         {values.networks.map((network, index) => {
-                                return (<div className={classes.rewardField} key={network.name}>
+                                return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
                                         <Input
                                             name={`networks[${index}].value`}
                                             type={`number`}
@@ -165,10 +178,12 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         </div>
                         <div className={classes.submitButtons}>
                             <Button
+                                className={`${classes.bottomButtons} ${classes.saveAsDraftButton}`}
                                 variant={"outlined"} color="primary" type="button">
                                 {t('idea.details.saveDraft')}
                             </Button>
                             <Button
+                                className={classes.bottomButtons}
                                 variant={"contained"} color="primary" type="submit">
                                 {t(isNew() ? 'idea.details.create' : 'idea.details.edit')}
                             </Button>

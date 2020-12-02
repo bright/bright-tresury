@@ -1,3 +1,5 @@
+import {Breakpoint} from "@material-ui/core/styles/createBreakpoints";
+
 export const theme = {
     typography: {
         fontFamily: 'Proxima Nova',
@@ -16,4 +18,9 @@ export const theme = {
             default: '#fff'
         }
     }
+}
+
+export const breakpoints = {
+    mobile: 'xs' as Breakpoint,
+    tablet: 'sm' as Breakpoint,
 }
