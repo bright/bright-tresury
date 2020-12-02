@@ -1,9 +1,9 @@
-import { ApiModelProperty } from "@nestjs/swagger";
+import {ApiProperty} from "@nestjs/swagger";
 import { Type } from "class-transformer";
 import { IsNumber, ValidateNested } from "class-validator";
 
 export class IdeaProposalDataDto {
-    @ApiModelProperty()
+    @ApiProperty()
     @IsNumber()
     nextProposalId: number
 
@@ -13,13 +13,13 @@ export class IdeaProposalDataDto {
 }
 
 export class CreateIdeaProposalDto {
-    @ApiModelProperty()
+    @ApiProperty()
     ideaNetworkId: string
 
-    @ApiModelProperty()
+    @ApiProperty()
     extrinsicHash: string
 
-    @ApiModelProperty()
+    @ApiProperty()
     lastBlockHash: string
 
     @ValidateNested()
