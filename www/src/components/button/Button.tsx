@@ -11,11 +11,11 @@ const useStyles = makeStyles(() => createStyles({
     }
 }))
 
-interface ButtonProps {
+export type ButtonProps = {
     variant?: ButtonVariant
-}
+} & MaterialButtonProps
 
-export const Button: React.FC<ButtonProps & MaterialButtonProps> = ({children, variant, ...props}) => {
+export const Button: React.FC<ButtonProps> = ({children, variant, ...props}) => {
     const classes = useStyles()
     return <MaterialButton
         {...props}
