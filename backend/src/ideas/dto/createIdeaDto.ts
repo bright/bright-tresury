@@ -1,7 +1,8 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {ArrayMinSize, IsArray, IsNotEmpty, IsOptional, MaxLength, Min} from "class-validator";
+import {ArrayMinSize, IsArray, IsNotEmpty, IsOptional, MaxLength, Min, ValidateNested} from "class-validator";
 import {IdeaNetworkDto} from "./ideaNetworkDto";
 import {ideaRestrictions} from "../idea.entity";
+import {Type} from "class-transformer";
 
 export class CreateIdeaDto {
     @ApiProperty()
@@ -23,13 +24,17 @@ export class CreateIdeaDto {
         type: [IdeaNetworkDto]
     })
     @IsNotEmpty()
+    @ValidateNested({each: true})
+    @Type(() => IdeaNetworkDto)
     @ArrayMinSize(1)
     networks!: IdeaNetworkDto[]
 
     @ApiPropertyOptional()
+    // @IsOptional()
     contact?: string
 
     @ApiPropertyOptional()
+    // @IsOptional()
     portfolio?: string
 
     @ApiPropertyOptional({

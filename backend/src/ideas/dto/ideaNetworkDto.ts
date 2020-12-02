@@ -1,11 +1,15 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {IsNumber} from "class-validator";
+import {IsNotEmpty, IsNumber, IsOptional} from "class-validator";
 
 export class IdeaNetworkDto {
     @ApiPropertyOptional()
+    @IsOptional()
     id?: string
+
     @ApiProperty()
+    @IsNotEmpty()
     name: string
+
     @ApiProperty({type: Number})
     @IsNumber()
     value?: number

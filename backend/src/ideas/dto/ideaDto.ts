@@ -9,7 +9,6 @@ export class IdeaDto {
     id!: string
 
     @ApiProperty()
-    @IsNotEmpty()
     title!: string
 
     @ApiPropertyOptional()
@@ -35,7 +34,6 @@ export class IdeaDto {
     @ApiPropertyOptional({
         type: [String]
     })
-    @IsArray()
     links?: string[]
 
     constructor(

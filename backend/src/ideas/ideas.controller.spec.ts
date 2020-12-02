@@ -89,7 +89,7 @@ describe(`/api/v1/ideas`, () => {
         it('should return created for minimal valid data', () => {
             return request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama'}]})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 3}]})
                 .expect(201)
         })
 
@@ -104,6 +104,20 @@ describe(`/api/v1/ideas`, () => {
             return request(app())
                 .post(`${baseUrl}`)
                 .send({title: 'Test title', networks: []})
+                .expect(400)
+        })
+
+        it('should return bad request if network without a value', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: [{name: 'kusama', value: null}]})
+                .expect(400)
+        })
+
+        it('should return bad request if network without a name', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: [{name: null, value: 5}]})
                 .expect(400)
         })
 
@@ -187,7 +201,7 @@ describe(`/api/v1/ideas`, () => {
     })
 
     describe('PATCH', () => {
-        it('should return status ok for minima patch data', async () => {
+        it('should return status ok for minimal patch data', async () => {
             const idea = await createIdea('Test title')
             return request(app())
                 .patch(`${baseUrl}/${idea.id}`)

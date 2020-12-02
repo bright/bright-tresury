@@ -1,5 +1,5 @@
 import {BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
-import {ApiPropertyOptional, ApiResponse} from '@nestjs/swagger';
+import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiPropertyOptional, ApiResponse, ApiTags} from '@nestjs/swagger';
 import {validate as uuidValidate} from 'uuid';
 import {Idea} from './idea.entity';
 import {IdeasService} from './ideas.service';
@@ -12,14 +12,14 @@ class GetIdeasQuery {
 }
 
 @Controller('/api/v1/ideas')
+@ApiTags('ideas')
 export class IdeasController {
 
     constructor(private ideasService: IdeasService) {
     }
 
     @Get()
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         description: 'Respond with all ideas.',
     })
     async getIdeas(@Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
@@ -28,16 +28,13 @@ export class IdeasController {
     }
 
     @Get(':id')
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         description: 'Respond with idea details.',
     })
-    @ApiResponse({
-        status: HttpStatus.NOT_FOUND,
+    @ApiNotFoundResponse({
         description: 'Idea not found.',
     })
-    @ApiResponse({
-        status: HttpStatus.BAD_REQUEST,
+    @ApiBadRequestResponse({
         description: 'Not valid uuid parameter.',
     })
     async getIdea(@Param('id') id: string): Promise<Idea> {
@@ -51,12 +48,10 @@ export class IdeasController {
         return idea
     }
 
-    @ApiResponse({
-        status: HttpStatus.CREATED,
+    @ApiCreatedResponse({
         description: 'Create new idea.',
     })
-    @ApiResponse({
-        status: HttpStatus.BAD_REQUEST,
+    @ApiBadRequestResponse({
         description: 'Title must not be empty.',
     })
     @Post()
@@ -65,16 +60,13 @@ export class IdeasController {
         return toIdeaDto(idea)
     }
 
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         description: 'Patched idea.',
     })
-    @ApiResponse({
-        status: HttpStatus.BAD_REQUEST,
+    @ApiBadRequestResponse({
         description: 'Title must not be empty.',
     })
-    @ApiResponse({
-        status: HttpStatus.NOT_FOUND,
+    @ApiNotFoundResponse({
         description: 'No idea found',
     })
     @Patch(':id')
@@ -83,11 +75,10 @@ export class IdeasController {
         return toIdeaDto(idea)
     }
 
-    @ApiResponse({
-        status: HttpStatus.OK,
+    @ApiOkResponse({
         description: 'Deleted idea.',
     })
-    @ApiResponse({
+    @ApiNotFoundResponse({
         status: HttpStatus.NOT_FOUND,
         description: 'No idea found.',
     })
