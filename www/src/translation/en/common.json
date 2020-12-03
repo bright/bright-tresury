@@ -28,22 +28,41 @@
       "signAndSubmit": "Sign and submit",
       "submitProposalModal": {
         "title": "You are about to convert your idea into proposal",
-        "warningMessage": "In order to submit your proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your proposal will be <strong>rejected you will lose the bond</strong>. If your proposal is approved you will get the deposit money back."
+        "warningMessage": "In order to submit your proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your proposal will be <strong>rejected you will lose the bond</strong>. If your proposal is approved you will get the deposit money back.",
+        "eventDescription": "event propose spend finished"
       }
     },
     "introduceTitle": "Introduce Idea",
     "editTitle": "Edit Idea",
     "introduce": "+ Introduce Idea"
   },
-  "components": {
-    "signAndSubmit": {
-      "form": {
-        "networkHeader": "Please, select your account in:",
-        "selectAccount": "Select your account",
-        "signAndSubmit": "Sign and submit",
-        "cancel": "Cancel",
-        "accountSelectTitle": "Please, select your account in:"
-      }
+  "substrate": {
+    "form": {
+      "networkHeader": "Please, select your account in:",
+      "selectAccount": "Select your account",
+      "signAndSubmit": "Sign and submit",
+      "cancel": "Cancel",
+      "accountSelectTitle": "Please, select your account in:"
+    },
+    "inProgress": {
+      "title": "Submitting transaction",
+      "steps": {
+        "ready": "transaction ready",
+        "inBlock": "transaction in block",
+        "extrinsicSuccess": "extrinsic success",
+        "finalized": "transaction finalized"
+      },
+      "ok": "Ok"
+    },
+    "error": {
+      "title": "Transaction failed",
+      "subtitle": "Please check if you have enough funds to conduct the transaction",
+      "ok": "Ok"
+    },
+    "warning": {
+      "title": "Transaction submitted, insufficient funds",
+      "subtitle": "You have not enough funds to pay the deposit",
+      "ok": "Ok"
     }
   }
 }

@@ -14,6 +14,8 @@ const StyledBox = styled(Box)(({theme}) => ({
     paddingTop: 10,
     paddingBottom: 10,
     textAlign: 'center',
+    marginLeft: 0,
+    marginRight: 0,
 }))
 
 export const Info: React.FC<BoxProps> = ({children, ...props}) => {
