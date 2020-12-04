@@ -16,7 +16,13 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         container: {
             padding: '3em 5em 3em 3em',
-            background: '#F5F5F5'
+            background: '#F5F5F5',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                padding: '1em 1.5em 3em 1.5em',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                padding: '1em 1.5em 4em 1em',
+            },
         },
         form: {
             marginTop: '2em'
