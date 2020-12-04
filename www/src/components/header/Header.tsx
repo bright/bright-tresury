@@ -5,7 +5,7 @@ import React from "react";
 const useStyles = makeStyles(() =>
     createStyles({
         header: {
-            fontSize: '1em',
+            fontSize: '18px',
             fontWeight: 'bold',
             color: '#1B1D1C',
         }

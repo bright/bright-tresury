@@ -10,6 +10,8 @@ import {Button} from "../components/button/Button";
 import {Select} from "../components/select/Select";
 import {ROUTE_IDEAS} from "../routes";
 import {breakpoints} from "../theme/theme";
+import {ReactComponent as CrossSvg} from "./../assets/cross.svg"
+import {IconButton} from "../components/button/IconButton";
 import * as Yup from 'yup'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -55,7 +57,13 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 marginTop: '2em'
             },
-        }
+        },
+        headerContainer: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            alignContent: 'center'
+        },
     }),
 );
 
@@ -82,11 +90,18 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
         title: Yup.string().required(t('idea.details.form.emptyFieldError'))
     })
 
+    const navigateBack = () => {
+        history.goBack()
+    }
+
     return (
         <div className={classes.container}>
-            <Header>
-                {t(isNew() ? 'idea.introduceTitle' : 'idea.editTitle')}
-            </Header>
+            <div className={classes.headerContainer}>
+                <Header>
+                    {t(isNew() ? 'idea.introduceTitle' : 'idea.editTitle')}
+                </Header>
+                <IconButton svg={CrossSvg} onClick={navigateBack}/>
+            </div>
             <Formik
                 initialValues={{
                     ...idea,

@@ -19,12 +19,12 @@ const useStyles = makeStyles((theme: Theme) =>
         label: {
             marginBottom: '8px',
             color: theme.palette.text.primary,
-            fontSize: '0.75em',
+            fontSize: '12px',
         },
         input: {
             backgroundColor: theme.palette.background.default,
             border: `solid 1px ${theme.palette.background.default}`,
-            fontSize: '0.875em',
+            fontSize: '14px',
             padding: '1em',
             fontWeight: 500
         },
