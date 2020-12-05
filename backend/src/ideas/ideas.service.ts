@@ -38,22 +38,20 @@ export class IdeasService {
 
     async update(updateIdea: Partial<CreateIdeaDto>, id: string): Promise<Idea> {
         const currentIdea = await this.findOne(id)
-        await this.ideaRepository.save(new Idea(
-            updateIdea.title ?? currentIdea.title,
-            updateIdea.networks ? updateIdea.networks.map((network: IdeaNetworkDto) => new IdeaNetwork(
-                network.name,
-                network.value,
-                network.id
-            )) : currentIdea.networks,
-            updateIdea.beneficiary ?? currentIdea.beneficiary,
-            updateIdea.content ?? currentIdea.content,
-            updateIdea.field ?? currentIdea.field,
-            updateIdea.contact ?? currentIdea.contact,
-            updateIdea.portfolio ?? currentIdea.portfolio,
-            updateIdea.links ? JSON.stringify(updateIdea.links) : currentIdea.links,
-            id
-            )
-        )
+        await this.ideaRepository.save({
+            ...currentIdea,
+            ...updateIdea,
+            networks: updateIdea.networks ? updateIdea.networks.map((updatedNetwork: IdeaNetworkDto) => {
+                const existingNetwork = currentIdea.networks.find((currentIdeaNetwork: IdeaNetworkDto) =>
+                    currentIdeaNetwork.id === updatedNetwork.id
+                )
+                return {
+                    ...existingNetwork,
+                    ...updatedNetwork
+                }
+            }) : currentIdea.networks,
+            links: updateIdea.links ? JSON.stringify(updateIdea.links) : currentIdea.links
+        })
         return (await this.ideaRepository.findOne(
             id,
             {relations: ['networks']}
