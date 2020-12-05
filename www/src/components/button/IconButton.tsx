@@ -2,7 +2,7 @@ import {
     IconButton as MaterialIconButton,
     IconButtonProps as MaterialIconButtonProps
 } from "@material-ui/core";
-import React, {ElementType} from "react";
+import React from "react";
 
 export type IconButtonProps = {
     svg?: string
@@ -10,6 +10,6 @@ export type IconButtonProps = {
 
 export const IconButton: React.FC<IconButtonProps> = ({children, svg, ...props}) => {
     return <MaterialIconButton {...props}>
-        {svg ? <img src={svg}/> : null}
+        {svg ? <img src={svg} alt={''}/> : null}
     </MaterialIconButton>
 }

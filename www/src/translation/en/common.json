@@ -32,6 +32,12 @@
         "eventDescription": "event propose spend finished"
       }
     },
+    "list": {
+      "tile": {
+        "statusActive": "Active",
+        "suitor": "(Suitor)"
+      }
+    },
     "introduceTitle": "Introduce Idea",
     "editTitle": "Edit Idea",
     "introduce": "+ Introduce Idea"

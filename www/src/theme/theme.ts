@@ -18,10 +18,12 @@ export const theme = {
             main: '#E6F0FD'
         },
         text: {
-            primary: '#1B1D1C'
+            primary: '#1B1D1C',
+            secondary: '#7B7B7B'
         },
         background: {
-            default: '#FFFFFF'
+            default: '#FFFFFF',
+            paper: '#F5F5F5'
         }
     }
 }
