@@ -23,8 +23,8 @@ export class IdeasService {
             .getMany() : await this.ideaRepository.find()
     }
 
-    findOne(id: string): Promise<Idea | undefined> {
-        const idea = this.ideaRepository.findOne(id, {relations: ['networks']})
+    async findOne(id: string): Promise<Idea> {
+        const idea = await this.ideaRepository.findOne(id, {relations: ['networks']})
         if (!idea) {
             throw new NotFoundException('There is no idea with such id')
         }
@@ -37,10 +37,7 @@ export class IdeasService {
     }
 
     async update(updateIdea: Partial<CreateIdeaDto>, id: string): Promise<Idea> {
-        const currentIdea = await this.ideaRepository.findOne(id)
-        if (!currentIdea) {
-            throw new NotFoundException('There is no idea with such id')
-        }
+        const currentIdea = await this.findOne(id)
         await this.ideaRepository.save(new Idea(
             updateIdea.title ?? currentIdea.title,
             updateIdea.networks ? updateIdea.networks.map((network: IdeaNetworkDto) => new IdeaNetwork(
@@ -85,10 +82,7 @@ export class IdeasService {
     }
 
     async delete(id: string) {
-        const currentIdea = await this.ideaRepository.findOne(id)
-        if (!currentIdea) {
-            throw new NotFoundException('There is no idea with such id')
-        }
+        const currentIdea = await this.findOne(id)
         await this.ideaRepository.remove(currentIdea)
     }
 }

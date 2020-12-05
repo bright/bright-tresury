@@ -9,7 +9,7 @@
     "compile": "tsc",
     "compile:watch": "tsc --watch",
     "test": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand",
-    "test:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand | bunyan -o short",
+    "test:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand --detectOpenHandles | bunyan -o short",
     "test:watch": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --watch | bunyan -o short",
     "test:ci": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest",
     "main": "npx --node-arg $NODE_DEBUG_OPTION -- ts-node --files src/main.ts",
