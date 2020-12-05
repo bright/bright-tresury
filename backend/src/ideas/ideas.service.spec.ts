@@ -55,7 +55,7 @@ describe(`/api/v1/ideas`, () => {
         it('should return an existing idea', async (done) => {
             const idea = await getService().create({
                 title: 'Test title',
-                networks: [{name: 'kusama'}, {name: 'polkadot'}],
+                networks: [{name: 'kusama', value: 15}, {name: 'polkadot', value: 14}],
                 beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 content: 'content'
             })

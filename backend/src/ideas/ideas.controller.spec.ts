@@ -33,9 +33,9 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas for selected network', async (done) => {
-            await createIdea('Test title1', [{name: 'kusama'}])
-            await createIdea('Test title2', [{name: 'kusama'}, {name: 'polkadot'}])
-            await createIdea('Test title3', [{name: 'polkadot'}])
+            await createIdea('Test title1', [{name: 'kusama', value: 15}])
+            await createIdea('Test title2', [{name: 'kusama', value: 4}, {name: 'polkadot', value: 20}])
+            await createIdea('Test title3', [{name: 'polkadot', value: 11}])
 
             const result = await request(app())
                 .get(`${baseUrl}?network=kusama`)
@@ -56,7 +56,7 @@ describe(`/api/v1/ideas`, () => {
         it('should return an existing idea', async (done) => {
             const idea = await createIdea({
                 title: 'Test title',
-                networks: [{ name: 'kusama' }, { name: 'polkadot' }],
+                networks: [{ name: 'kusama', value: 241 }, { name: 'polkadot', value: 12 }],
                 beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 content: 'content'
             })
@@ -258,7 +258,12 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should keep previous data for not patched properties', async (done) => {
-            const idea = await createIdea('Test title', [{name: 'kusama'}], 'abcd-1234', 'Test content')
+            const idea = await createIdea({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 10}],
+                beneficiary: 'abcd-1234',
+                content: 'Test content'
+            })
             const response = await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'})

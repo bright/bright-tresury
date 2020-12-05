@@ -12,11 +12,11 @@ export class IdeaNetworkDto {
 
     @ApiProperty({type: Number})
     @IsNumber()
-    value?: number
+    value: number
 
     constructor(
         name: string,
-        value?: number,
+        value: number,
         id?: string
     ) {
         this.name = name
