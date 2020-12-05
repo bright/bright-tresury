@@ -3,15 +3,28 @@ import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
 import {useHistory} from 'react-router-dom';
 import {ROUTE_NEW_IDEA} from '../routes';
+import {getIdeasByNetwork, Idea} from './ideas.api';
+import {useHistory} from 'react-router-dom';
+import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, IdeaDto} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
+import IdeaTile from "./IdeaTile";
 import IdeaCard from "./list/IdeaCard";
 import {breakpoints} from "../theme/theme";
 import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";
 import config from '../config';
 
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        tilesContainer: {
+            padding: '26px 32px',
+            display: 'inline-block',
+            backgroundColor: theme.palette.background.paper
+        }
+    }),
+);
 
 const useStyles = makeStyles((theme: Theme) => {
     const horizontalMargin = '32px'
