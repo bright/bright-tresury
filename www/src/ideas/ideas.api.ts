@@ -1,5 +1,5 @@
 import { API_URL, fetchAndUnwrap } from '../api'
-import {KeyringAddress} from "@polkadot/ui-keyring/types";
+import {ExtrinsicDetails} from "./SubmitProposalModal";
 
 export interface IdeaNetwork {
     id?: string
@@ -29,4 +29,13 @@ export function getIdeaById(id: string) {
 
 export function createIdea(idea: Idea) {
     return fetchAndUnwrap<Idea>('POST', `${API_URL}/ideas`, idea)
+}
+
+export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: Idea, ideaNetwork: IdeaNetwork) {
+    const data = {
+        ideaNetworkId: ideaNetwork.id,
+        extrinsicHash: exDetails.extrinsicHash,
+        lastBlockHash: exDetails.lastBlockHash,
+    }
+    return fetchAndUnwrap<Idea>('POST', `${API_URL}/ideas/${idea.id}/proposals`, data)
 }

@@ -1,10 +1,10 @@
 import {createStyles, makeStyles} from '@material-ui/core/styles';
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Trans, useTranslation} from "react-i18next";
 import {Info, Strong} from '../components/info/Info';
 import {Modal} from '../components/modal/Modal';
 import SubmittingTransaction from "../substrate-lib/components/SubmittingTransaction";
-import {Idea} from './ideas.api';
+import {convertIdeaToProposal, Idea} from './ideas.api';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -17,6 +17,11 @@ const useStyles = makeStyles(() =>
     }),
 );
 
+export interface ExtrinsicDetails {
+    extrinsicHash: string
+    lastBlockHash: string
+}
+
 interface Props {
     open: boolean,
     onClose: () => void,
@@ -26,6 +31,23 @@ interface Props {
 const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
+    const [extrinsicDetails, setExtrinsicDetails] = useState<ExtrinsicDetails | undefined>(undefined)
+
+    const convert = useCallback(() => {
+        if (extrinsicDetails) {
+            convertIdeaToProposal(extrinsicDetails, idea, idea.networks[0])
+                .then((result) => {
+                    console.log(result)
+                })
+                .catch((err) => {
+                    console.log(err)
+                })
+        }
+    }, [extrinsicDetails])
+
+    useEffect(() => {
+        convert()
+    }, [convert])
 
     return (
         <Modal
@@ -43,7 +65,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                     inputParams: [
                         {
                             name: 'value',
-                            value: '400000',//idea.networks[0].value.toString(),
+                            value: idea.networks[0].value.toString(),
                             type: 'Compact<Balance>'
                         },
                         {
@@ -52,6 +74,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                         },
                     ],
                 }}
+                setExtrinsicDetails={setExtrinsicDetails}
             >
                 <>
                     <h2 id='modal-title' className={classes.h2}>{t('idea.details.submitProposalModal.title')}</h2>

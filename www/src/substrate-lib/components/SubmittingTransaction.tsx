@@ -1,5 +1,6 @@
 import {Box} from "@material-ui/core";
 import {ISubmittableResult} from "@polkadot/types/types";
+import {sign} from "crypto";
 import React, {useEffect, useState} from 'react';
 import {useSubstrate} from "../index";
 import SignAndSubmitForm from "./SignAndSubmitForm";
@@ -43,9 +44,10 @@ export interface Account {
 export interface Props {
     onClose: () => void
     txAttrs: TxAttrs
+    setExtrinsicDetails: (data: any) => void
 }
 
-const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs}) => {
+const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, setExtrinsicDetails}) => {
     const [result, setTransactionResult] = useState<Result | undefined>(undefined)
     const [error, setTransactionError] = useState<any>(undefined)
     const [submitting, setSubmitting] = useState(false)
@@ -94,13 +96,20 @@ const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs}) =>
         }
 
         const transformed = transformParams(inputParams);
-        // transformed can be empty parameters
 
+        // transformed can be empty parameters
         const txExecute = transformed
             ? api.tx[palletRpc][callable](...transformed)
             : api.tx[palletRpc][callable]();
 
-        const unsub = await txExecute.signAndSend(fromAcct, txResHandler)
+        // sign the transaction to get the proper extrinsic hash
+        await txExecute.signAsync(fromAcct)
+
+        const signedBlock = await api.rpc.chain.getBlock();
+        setExtrinsicDetails({extrinsicHash: txExecute.hash, lastBlockHash: signedBlock.hash})
+
+        // send the transaction
+        const unsub = await txExecute.send(txResHandler)
             .catch(txErrHandler);
         setUnsub(() => unsub);
     };

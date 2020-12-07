@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ExtrinsicEvent } from "../../extrinsics/extrinsicEvent";
 import { ExtrinsicsService } from "../../extrinsics/extrinsics.service";
+import {getLogger} from "../../logging.module";
 import { Idea } from '../idea.entity';
 import { IdeaNetwork } from '../ideaNetwork.entity';
 import { CreateIdeaProposalDto } from "./dto/createIdeaProposal.dto";
@@ -31,7 +32,7 @@ export class IdeaProposalsService {
             return this.extractEvents(events, network)
         }
 
-        const extrinsic = await this.extrinsicsService.listenForProposeSpendExtrinsic(dto, callback)
+        const extrinsic = await this.extrinsicsService.listenForExtrinsic(dto, callback)
 
         network.extrinsic = extrinsic
         await this.ideaNetworkRepository.save({ id: network.id, extrinsic })
@@ -40,8 +41,8 @@ export class IdeaProposalsService {
     }
 
     async extractEvents(events: ExtrinsicEvent[], network: IdeaNetwork): Promise<void> {
-        const proposedEvent = events.find((event) => event.section === 'treasury' && event.method === 'proposeSpend')
-        const proposalIndex = Number(proposedEvent?.data.find((d) => d.name === 'proposalIndex')?.value)
+        const proposedEvent = events.find((event) => event.section === 'treasury' && event.method === 'Proposed')
+        const proposalIndex = Number(proposedEvent?.data.find((d) => d.name === 'ProposalIndex')?.value)
         if (!isNaN(proposalIndex)) {
             await this.ideaNetworkRepository.save({ id: network.id, blockchainProposalId: proposalIndex })
             return
