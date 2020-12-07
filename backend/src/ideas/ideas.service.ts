@@ -63,8 +63,7 @@ export class IdeasService {
             createIdeaDto.title,
             createIdeaDto.networks.map((network: IdeaNetworkDto) => new IdeaNetwork(
                 network.name,
-                network.value,
-                network.id
+                network.value
             )),
             createIdeaDto.beneficiary,
             createIdeaDto.content,
