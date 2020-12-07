@@ -12,14 +12,19 @@ export interface Props {
 const TransactionError: React.FC<Props> = ({error, onOk}) => {
     const {t} = useTranslation()
     return (
-        <>
-            <img src={failedImg} alt={t('substrate.error.title')}/>
+        <Box
+            display="flex"
+            flexDirection='column'
+            alignItems='center'
+        >
+
+        <img src={failedImg} alt={t('substrate.error.title')}/>
             <h2 id='modal-title'>{t('substrate.error.title')}</h2>
             <p id='modal-description'>{t('substrate.error.subtitle')}</p>
             <Box pt='40px'>
                 <Button color='primary' onClick={onOk}>{t('substrate.error.ok')}</Button>
             </Box>
-        </>
+        </Box>
     );
 }
 

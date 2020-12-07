@@ -1,6 +1,5 @@
 import {Box} from "@material-ui/core";
 import {ISubmittableResult} from "@polkadot/types/types";
-import {sign} from "crypto";
 import React, {useEffect, useState} from 'react';
 import {useSubstrate} from "../index";
 import SignAndSubmitForm from "./SignAndSubmitForm";
@@ -115,7 +114,6 @@ const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, set
     };
 
     const onSubmit = async (address: string) => {
-        debugger;
         setSubmitting(true)
         if (unsub !== undefined) {
             await unsub();
@@ -125,20 +123,20 @@ const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, set
     };
 
     return (
-        <Box
-            display="flex"
-            flexDirection='column'
-            alignItems='center'
-        >
-            {!submitting && <>
+        <>
+            {!submitting && <Box
+                display="flex"
+                flexDirection='column'
+                alignItems='center'
+            >
                 {children}
                 <SignAndSubmitForm accounts={accounts} txAttrs={txAttrs} onCancel={onClose} onSubmit={onSubmit}/>
-            </>}
+            </Box>}
             {result && result.error ? <TransactionWarning error={error} onOk={onClose}/> : null}
             {result && !result.error ?
                 <TransactionInProgress status={result.status} event={result.event} onOk={onClose} eventDescription={txAttrs.eventDescription}/> : null}
             {error ? <TransactionError error={error} onOk={onClose}/> : null}
-        </Box>)
+        </>)
 
 }
 

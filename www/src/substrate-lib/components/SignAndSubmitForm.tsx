@@ -1,4 +1,4 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import {createStyles, makeStyles} from '@material-ui/core/styles';
 import {Formik} from "formik";
 import React, {createRef} from 'react';
 import {useTranslation} from 'react-i18next';

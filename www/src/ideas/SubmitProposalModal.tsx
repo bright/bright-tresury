@@ -43,7 +43,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                     console.log(err)
                 })
         }
-    }, [extrinsicDetails])
+    }, [extrinsicDetails, idea])
 
     useEffect(() => {
         convert()
