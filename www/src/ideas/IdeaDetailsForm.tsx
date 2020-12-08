@@ -9,6 +9,7 @@ import {FieldArray, Formik} from "formik";
 import {Button} from "../components/button/Button";
 import {Select} from "../components/select/Select";
 import {ROUTE_IDEAS} from "../routes";
+import * as Yup from 'yup'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -58,6 +59,10 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
         }
     }
 
+    const validationSchema = Yup.object({
+        title: Yup.string().required(t('idea.details.form.emptyFieldError'))
+    })
+
     return (
         <div className={classes.container}>
             <Header>
@@ -68,6 +73,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                     ...idea,
                     links: (idea.links && idea.links.length > 0) ? idea.links : ['']
                 }}
+                validationSchema={validationSchema}
                 onSubmit={save}>
                 {({
                       values,
@@ -79,8 +85,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                             <Input
                                 name="title"
                                 placeholder={t('idea.details.form.title')}
-                                label={t('idea.details.form.title')}
-                                required={true}/>
+                                label={t('idea.details.form.title')}/>
                         </div>
                         <div className={classes.selectField}>
                             <Input

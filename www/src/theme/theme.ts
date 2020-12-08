@@ -8,6 +8,12 @@ export const theme = {
         },
         secondary: {
             main: '#E6F0FD'
+        },
+        text: {
+            primary: '#1B1D1C'
+        },
+        background: {
+            default: '#fff'
         }
     }
 }

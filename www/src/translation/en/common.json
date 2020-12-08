@@ -18,7 +18,8 @@
         "reward": "Reward",
         "link": "Link",
         "linkPlaceholder": "Add external link to your proposal here",
-        "addLink": "+ Add Link"
+        "addLink": "+ Add Link",
+        "emptyFieldError": "This field cannot be empty"
       },
       "create": "Create",
       "edit": "Edit",
