@@ -13,7 +13,7 @@ import {useField} from "formik";
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
-            background: '#fff',
+            background: '#21224f',
             padding: '0'
         },
         label: {

@@ -4,7 +4,7 @@ import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {v4 as uuid} from 'uuid';
-import { createIdea } from './spec.helpers';
+import {createIdea} from './spec.helpers';
 
 const baseUrl = '/api/v1/ideas'
 
@@ -22,7 +22,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas', async (done) => {
-            await createIdea({ title: 'Test title' })
+            await createIdea({title: 'Test title'})
 
             const result = await request(app())
                 .get(baseUrl)
@@ -33,9 +33,9 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas for selected network', async (done) => {
-            await createIdea('Test title1', [{name: 'kusama', value: 15}])
-            await createIdea('Test title2', [{name: 'kusama', value: 4}, {name: 'polkadot', value: 20}])
-            await createIdea('Test title3', [{name: 'polkadot', value: 11}])
+            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}]})
+            await createIdea({title: 'Test title2', networks: [{name: 'kusama', value: 4}, {name: 'polkadot', value: 20}]})
+            await createIdea({title: 'Test title3', networks: [{name: 'polkadot', value: 11}]})
 
             const result = await request(app())
                 .get(`${baseUrl}?network=kusama`)
@@ -56,7 +56,7 @@ describe(`/api/v1/ideas`, () => {
         it('should return an existing idea', async (done) => {
             const idea = await createIdea({
                 title: 'Test title',
-                networks: [{ name: 'kusama', value: 241 }, { name: 'polkadot', value: 12 }],
+                networks: [{name: 'kusama', value: 241}, {name: 'polkadot', value: 12}],
                 beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 content: 'content'
             })
@@ -207,7 +207,7 @@ describe(`/api/v1/ideas`, () => {
 
     describe('PATCH', () => {
         it('should return status ok for minimal patch data', async (done) => {
-            const idea = await createIdea('Test title')
+            const idea = await createIdea({title: 'Test title'})
             await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'})
@@ -221,7 +221,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(404)
         })
         it('should patch title', async (done) => {
-            const idea = await createIdea('Test title')
+            const idea = await createIdea({title: 'Test title'})
             const response = await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'})
@@ -230,7 +230,7 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should patch network', async (done) => {
-            const idea = await createIdea('Test title', [{name: 'kusama', value: 13}])
+            const idea = await createIdea({title: 'Test title', networks: [{name: 'kusama', value: 13}]})
             const response = await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
@@ -247,7 +247,11 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should patch links', async (done) => {
-            const idea = await createIdea('Test title', [{name: 'kusama', value: 13}], '', '', ['The link'])
+            const idea = await createIdea({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 13}],
+                links: ['The link']
+            })
             const response = await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
@@ -279,7 +283,7 @@ describe(`/api/v1/ideas`, () => {
     })
     describe('DELETE', () => {
         it('should delete idea', async (done) => {
-            const idea = await createIdea('Test title')
+            const idea = await createIdea({title: 'Test title'})
             await request(app())
                 .delete(`${baseUrl}/${idea.id}`)
                 .expect(200)
@@ -290,7 +294,7 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should delete idea with networks', async (done) => {
-            const idea = await createIdea('Test title', [{name: 'polkadot', value: 47}])
+            const idea = await createIdea({title: 'Test title', networks: [{name: 'polkadot', value: 47}]})
             await request(app())
                 .del(`${baseUrl}/${idea.id}`)
                 .send()
