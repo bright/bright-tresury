@@ -118,17 +118,6 @@ project {
             }
         }
 
-        features {
-            commitStatusPublisher {
-                publisher = upsource {
-                    serverUrl = "https://review.brightinventions.pl:443"
-                    projectId = "bright-backend-pack"
-                    userName = "piotr"
-                    password = "credentialsJSON:0f753a37-9cd8-4498-977d-dd00e65b6a61"
-                }
-            }
-        }
-
         requirements {
             dockerAndDockerComposeExist()
             backendAgent()
