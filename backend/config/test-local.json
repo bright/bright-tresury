@@ -2,5 +2,12 @@
   "database": {
     "host": "localhost",
     "database": "treasury_test"
+  },
+  "blockchain": {
+    "nodeUrl": "ws://localhost:9944",
+    "types": {
+      "Address": "AccountId",
+      "LookupSource": "AccountId"
+    }
   }
 }

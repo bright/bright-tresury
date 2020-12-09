@@ -13,7 +13,7 @@ import { createIdea } from "../spec.helpers";
 import { CreateIdeaProposalDto, IdeaProposalDataDto } from "./dto/createIdeaProposal.dto";
 import { IdeaProposalsService } from "./idea.proposals.service";
 
-describe('IdeaProposalsService', async () => {
+describe('IdeaProposalsService', () => {
     const blockHash = '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04'
     const proposalIndex = 3
     const extrinsic = {

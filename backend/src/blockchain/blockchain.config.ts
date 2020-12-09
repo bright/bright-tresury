@@ -10,7 +10,7 @@ export const BlockchainConfigToken = 'BlockchainConfig'
 export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     nodeUrl: {
         doc: "Url used to connect to Substrate node",
-        default: "ws://localhost:9944",
+        default: "ws://substrate:9944",
         env: "SUBSTRATE_NODE_URL",
         format(value: any) {
             if (typeof value !== "string") {

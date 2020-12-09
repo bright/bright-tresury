@@ -25,15 +25,17 @@ services:
       - 3001:3001
     depends_on:
       - database
+      - substrate
   backend-test-ci:
     image: "${DOCKER_REGISTRY}treasury/backend:${TAG:-latest}"
     build:
       context: ../backend
     environment:
-      DEPLOY_ENV: test
+      DEPLOY_ENV: "test"
     command: bash -c "npm run database:migrate:ci && npm run test:ci"
     depends_on:
       - database
+      - substrate
   database:
     #  we don't use manual tagging so that each deployment does not cause a db restart
     image: "${DOCKER_REGISTRY}treasury/database:1.0"
@@ -43,5 +45,11 @@ services:
       - ${PROJECT_DIR:-../}/deploy/pg-data:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready -U postgres; do sleep 1; done
+    restart: unless-stopped
+  substrate:
+    image: parity/polkadot:latest
+    ports:
+      - "9944:9944"
+    command: --rpc-external --ws-external --dev
     restart: unless-stopped
 
