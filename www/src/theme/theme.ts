@@ -21,7 +21,7 @@ export const theme = {
             primary: '#1B1D1C'
         },
         background: {
-            default: '#fff'
+            default: '#FFFFFF'
         }
     }
 }
