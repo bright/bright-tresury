@@ -13,6 +13,14 @@ export interface Props {
     eventDescription?: string
 }
 
+enum Steps {
+    READY,
+    IN_BLOCK,
+    EVENT,
+    FINALIZED,
+    FINISHED,
+}
+
 const TransactionInProgress: React.FC<Props> = ({status, onOk, event, eventDescription}) => {
     const {t} = useTranslation()
 
@@ -20,15 +28,15 @@ const TransactionInProgress: React.FC<Props> = ({status, onOk, event, eventDescr
 
     useEffect(() => {
         if (!status) {
-            setActiveStep(0)
+            setActiveStep(Steps.READY)
         } else if (status.isFinalized) {
-            setActiveStep(4)
+            setActiveStep(Steps.FINISHED)
         } else if (event) {
-            setActiveStep(3)
+            setActiveStep(Steps.FINALIZED)
         } else if (status.isInBlock) {
-            setActiveStep(2)
+            setActiveStep(Steps.EVENT)
         } else if (status.isReady) {
-            setActiveStep(1)
+            setActiveStep(Steps.IN_BLOCK)
         }
     }, [status, event])
 

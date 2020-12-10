@@ -50,7 +50,7 @@ export const transformParams = (inputParams?: InputParam[]): any[] => {
     }
 
     // Deal with a vector
-    if (type.indexOf('Vec<') >= 0) {
+    if (type.includes('Vec<')) {
       const splitted = value.split(',').map((e: string) => e.trim());
       const mapped = splitted.map((single: string) => isNumType(type)
           ? (single.indexOf('.') >= 0 ? Number.parseFloat(single) : Number.parseInt(single))
