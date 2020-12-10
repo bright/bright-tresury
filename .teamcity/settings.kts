@@ -86,7 +86,7 @@ fun Project.deployToEnvironment(build: BuildType, environmentName: String): Buil
 project {
     params {
         text("env.DOCKER_REGISTRY", "339594496974.dkr.ecr.eu-central-1.amazonaws.com")
-        text("env.AWS_ACCESS_KEY_ID", "AKIAU6ELIZPHBL5IPBB7")
+        text("env.AWS_ACCESS_KEY_ID", "AKIAU6ELIZPHGDPYXSAE")
         password("env.AWS_SECRET_ACCESS_KEY", "credentialsJSON:f329b27b-1b5d-4462-a119-cdda59b8550c", display = ParameterDisplay.HIDDEN)
     }
 
