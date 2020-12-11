@@ -45,9 +45,11 @@ describe(`/api/v1/ideas`, () => {
             const body = result.body as Idea[]
             const actualIdea1 = body.find((idea: Idea) => idea.title === 'Test title1')
             expect(actualIdea1).toBeDefined()
+            expect(actualIdea1!.networks[0].name).toBe('kusama')
 
             const actualIdea2 = body.find((idea: Idea) => idea.title === 'Test title2')
             expect(actualIdea2).toBeDefined()
+            expect(actualIdea2!.networks[0].name).toBe('kusama')
             done()
         })
     })

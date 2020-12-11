@@ -22,7 +22,7 @@ export class IdeasService {
     async find(networkName?: string): Promise<Idea[]> {
         try {
             return networkName ? await this.ideaRepository.createQueryBuilder('idea')
-                .leftJoin('idea.networks', 'network')
+                .leftJoinAndSelect('idea.networks', 'network')
                 .where('network.name = :networkName', {networkName})
                 .getMany() : await this.ideaRepository.find()
         } catch (error) {
