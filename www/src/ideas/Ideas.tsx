@@ -17,9 +17,19 @@ import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";
 import config from '../config';
 import {breakpoints} from "../theme/theme";
+import IdeaFilters, {IdeaFilter} from "./list/IdeaFilters";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        newIdeaButton: {
+            marginTop: '32px',
+            marginBottom: '16px',
+            marginLeft: '32px',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginTop: '16px',
+                marginBottom: '8px'
+            },
+        },
         tilesContainer: {
             padding: '26px 32px',
             display: 'inline-block',

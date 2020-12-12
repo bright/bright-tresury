@@ -55,12 +55,12 @@ export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, 
         value={value}
         classes={tabsClasses}
         onChange={(event, value) => handleChange(value)}>
-        {values ? values.map(({value, label, path}) =>
+        {values ? values.map(({value, label, path}, index: number) =>
             <MaterialTab
                 classes={tabClasses}
                 label={path ? <Link to={path}>{label}</Link> : label}
                 value={value}
-                key={value}/>
+                key={index}/>
         ) : null}
     </MaterialTabs>
 }
