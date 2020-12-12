@@ -127,6 +127,10 @@ const IdeaTile: React.FC<Props> = ({idea}) => {
         }
     }
 
+    const formatNetworkValue = (value: number): string => {
+        return value.toString().replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")
+    }
+
     return <Card className={classes.root} >
         <div className={classes.networkAccentLine}/>
 
@@ -141,7 +145,7 @@ const IdeaTile: React.FC<Props> = ({idea}) => {
             <div className={`${classes.contentMargin} ${classes.details}`}>
                 <p className={classes.titleLabel}>{idea.title}</p>
                 {idea.networks.length > 0 ?
-                    <p className={classes.networkLabel}>{`${idea.networks[0].value} LOC`}</p> : JSON.stringify(idea)}
+                    <p className={classes.networkLabel}>{`${formatNetworkValue(idea.networks[0].value)} LOC`}</p> : JSON.stringify(idea)}
             </div>
 
             <Divider className={classes.contentMargin}/>
