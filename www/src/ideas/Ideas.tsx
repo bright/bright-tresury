@@ -15,13 +15,18 @@ import {breakpoints} from "../theme/theme";
 import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";
 import config from '../config';
+import {breakpoints} from "../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         tilesContainer: {
             padding: '26px 32px',
             display: 'inline-block',
-            backgroundColor: theme.palette.background.paper
+            backgroundColor: theme.palette.background.paper,
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                padding: '26px 18px',
+                marginLeft: '4em',
+            },
         }
     }),
 );

@@ -8,6 +8,7 @@ import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import {Status} from "../components/status/Status";
 import {useTranslation} from "react-i18next";
+import {breakpoints} from "../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -48,27 +49,38 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         display: 'flex',
         flexWrap: 'nowrap',
         flexDirection: 'row',
-        alignItems: 'flex-start'
+        alignItems: 'flex-start',
+        [theme.breakpoints.down(breakpoints.mobile)]: {
+            flexDirection: 'column-reverse',
+            alignItems: 'flex-start'
+        },
     },
     titleLabel: {
         display: 'inline-block',
+        fontSize: '1.5em',
+        marginBottom: '16px',
+        marginTop: 0,
+        fontWeight: 700,
+        width: '100%',
+        maxHeight: '3em',
         textOverflow: `ellipsis`,
         overflow: `hidden`,
-        fontSize: '1.5em',
-        marginTop: '18px',
-        marginBottom: '16px',
-        fontWeight: 700,
-        height: '3em',
-        width: '100%',
-        flex: 1
+        [theme.breakpoints.up(breakpoints.tablet)]: {
+            height: '3em',
+            flex: 1,
+            marginTop: '16px'
+        },
     },
     networkLabel: {
         backgroundColor: '#E6F0FD',
         borderRadius: '3px',
         fontSize: '1em',
+        marginTop: '16px',
         display: 'block',
         position: 'relative',
-        marginLeft: '4em',
+        [theme.breakpoints.up(breakpoints.tablet)]: {
+            marginLeft: '4em',
+        },
         fontWeight: 500,
         padding: '3px'
     },
