@@ -25,6 +25,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: '100%',
             },
         },
+        fieldSelect: {
+            backgroundColor: theme.palette.background.default,
+            fontWeight: 500
+        },
         submitButtons: {
             margin: '3em 0',
             display: 'flex',
@@ -100,6 +104,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         </div>
                         <div className={`${classes.inputField} ${classes.smallField}`}>
                             <Select
+                                className={classes.fieldSelect}
                                 name="field"
                                 label={t('idea.details.form.field')}
                                 placeholder={t('idea.details.form.field')}

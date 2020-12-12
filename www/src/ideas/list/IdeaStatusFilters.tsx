@@ -4,14 +4,21 @@ import React, {useState} from "react";
 import {Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
+import {Select} from "../../components/select/Select";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        filters: {
-            margin: '16px 32px',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                margin: '8px 32px'
-            }
+        filterTabs: {
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                display: 'none'
+            },
+        },
+        filterSelect: {
+            display: 'none',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                fontWeight: 600,
+                display: 'inherit'
+            },
         }
     }),
 );
@@ -20,7 +27,7 @@ interface Props {
     onChange: (filter: IdeaFilter) => void
 }
 
-const IdeaFilters: React.FC<Props> = ({onChange}) => {
+const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
     const classes = useStyles()
     const [filter, setFilter] = useState<IdeaFilter>(IdeaFilter.All)
     const {t} = useTranslation()
@@ -43,7 +50,9 @@ const IdeaFilters: React.FC<Props> = ({onChange}) => {
     const filterValues = Object.values(IdeaFilter)
         .filter((value: any) => typeof value === 'number')
 
-    const tabs = filterValues.map((filter: string | IdeaFilter) => getTranslation(filter as IdeaFilter))
+    const filterOptions = filterValues.map((filter: string | IdeaFilter) =>
+        getTranslation(filter as IdeaFilter)
+    )
 
     const onFilterChange = (filter: IdeaFilter) => {
         onChange(filter)
@@ -52,10 +61,19 @@ const IdeaFilters: React.FC<Props> = ({onChange}) => {
 
     return <div>
         <Tabs
-            className={classes.filters}
+            className={classes.filterTabs}
             value={getTranslation(filter)}
-            values={tabs}
+            values={filterOptions}
             handleChange={(index: number) => onFilterChange(filterValues[index] as IdeaFilter)}
+        />
+        <Select
+            className={classes.filterSelect}
+            value={getTranslation(filter)}
+            options={filterOptions}
+            disableFormik={true}
+            onChange={(event: any) => {
+                onFilterChange(filterValues[filterOptions.indexOf(event.target.value)] as IdeaFilter)
+            }}
         />
     </div>
 }
@@ -68,4 +86,4 @@ export enum IdeaFilter {
     Closed,
 }
 
-export default IdeaFilters
+export default IdeaStatusFilters

@@ -44,6 +44,7 @@
         "suitor": "(Suitor)"
       },
       "filters": {
+        "currentSpendTime": "Current Spend Time",
         "all": "All",
         "active": "Active",
         "inactive": "Inactive",

@@ -9,11 +9,11 @@ import {
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
 import {useField} from "formik";
+import {FieldInputProps, FieldMetaProps} from "formik/dist/types";
 
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
-            background: '#21224f',
             padding: '0'
         },
         label: {
@@ -23,7 +23,6 @@ const useStyles = makeStyles(() =>
         },
         select: {
             fontSize: '0.875em',
-            backgroundColor: '#fff',
             padding: '1em',
             fontWeight: 500,
         },
@@ -35,15 +34,31 @@ interface SelectProps<T> {
     options: T[]
     label: string
     placeholder?: string
-    renderOption?: (value: T) => string
+    renderOption?: (value: T) => string,
+    disableFormik?: boolean
+}
+
+export const Select: React.FC<SelectProps<any> & MaterialSelectProps> = ({disableFormik, ...props}) => {
+    return disableFormik ? <SelectComponent {...props}/> : <FormikSelectComponent {...props}/>
 }
 
 export type ISelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps>
 
-export const Select: ISelect = ({value, renderOption, options, label, placeholder, ...props}) => {
-    const classes = useStyles()
+const FormikSelectComponent: ISelect = ({...props}) => {
     // @ts-ignore
     const [field, meta] = useField({ ...props, type: 'input' });
+    return <SelectComponent {...props} field={field} meta={meta}/>
+}
+
+interface FormikSelectProps {
+    field?: FieldInputProps<any>
+    meta?: FieldMetaProps<any>
+}
+
+type IFormikSelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps & FormikSelectProps>
+
+const SelectComponent: IFormikSelect = ({field, meta, disableFormik, value, renderOption, options, label, placeholder, ...props}) => {
+    const classes = useStyles()
     return <FormGroup>
         {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
         <MaterialSelect

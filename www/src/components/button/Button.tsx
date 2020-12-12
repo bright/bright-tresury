@@ -7,7 +7,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
         textTransform: 'none',
         fontWeight: 600,
-        borderRadius: '6px',
+        borderRadius: '8px',
         padding: '.5em 2em',
         [theme.breakpoints.down(breakpoints.tablet)]: {
             padding: '.35em 2em'
