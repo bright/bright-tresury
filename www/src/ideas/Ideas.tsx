@@ -7,6 +7,7 @@ import {getIdeasByNetwork, Idea} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
 import IdeaTile from "./IdeaTile";
+import {breakpoints} from "../theme/theme";
 import config from '../config';
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -14,7 +15,11 @@ const useStyles = makeStyles((theme: Theme) =>
         tilesContainer: {
             padding: '26px 32px',
             display: 'inline-block',
-            backgroundColor: theme.palette.background.paper
+            backgroundColor: theme.palette.background.paper,
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                padding: '26px 18px',
+                marginLeft: '4em',
+            },
         }
     }),
 );
