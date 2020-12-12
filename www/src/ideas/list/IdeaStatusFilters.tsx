@@ -2,6 +2,7 @@ import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import React, {useState} from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
+import {Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {Select} from "../../components/select/Select";
