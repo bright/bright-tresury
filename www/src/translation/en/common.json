@@ -42,6 +42,13 @@
       "tile": {
         "statusActive": "Active",
         "suitor": "(Suitor)"
+      },
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive",
+        "turnedIntoProposal": "Turned into Proposal",
+        "closed": "Closed"
       }
     },
     "introduceTitle": "Introduce Idea",

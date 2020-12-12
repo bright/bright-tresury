@@ -1,12 +1,20 @@
-import {Button as MaterialButton, ButtonProps as MaterialButtonProps, createStyles} from "@material-ui/core";
+import {Button as MaterialButton, ButtonProps as MaterialButtonProps, createStyles, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
+import {breakpoints} from "../../theme/theme";
 
-const useStyles = makeStyles(() => createStyles({
+const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
         textTransform: 'none',
         fontWeight: 600,
         borderRadius: '6px',
+        padding: '.5em 2em',
+        [theme.breakpoints.down(breakpoints.tablet)]: {
+            padding: '.35em 2em'
+        },
+        [theme.breakpoints.down(breakpoints.mobile)]: {
+            padding: '.6em 2em'
+        },
         padding: '.5em 2em .5em 2em'
     },
     text: {

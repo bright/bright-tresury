@@ -8,10 +8,20 @@ import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
 import IdeaCard from "./IdeaCard";
 import {breakpoints} from "../theme/theme";
+import IdeaFilters, {IdeaFilter} from "./list/IdeaFilters";
 import config from '../config';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        newIdeaButton: {
+            marginTop: '32px',
+            marginBottom: '16px',
+            marginLeft: '32px',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginTop: '16px',
+                marginBottom: '8px'
+            },
+        },
         tilesContainer: {
             padding: '26px 32px',
             display: 'inline-block',
@@ -53,13 +63,21 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
         history.push(ROUTE_NEW_IDEA)
     }
 
+    const onFilterChange = (filter: IdeaFilter) => {
+        console.log(filter)
+    }
+
     return (
         <div>
-            <Button variant="contained" color="primary" onClick={goToNewIdea}>
+            <Button className={classes.newIdeaButton}
+                    variant="contained"
+                    color="primary"
+                    onClick={goToNewIdea}>
                 {t('idea.introduce')}
             </Button>
+            <IdeaFilters onChange={onFilterChange}/>
             <div className={classes.tilesContainer}>
-                <Grid container spacing={2}>
+                <Grid container spacing={2} >
                     {status === 'loading' && <p>Loading</p>}
                     {status === 'error' && <p>Error</p>}
                     {status === 'resolved' && (
