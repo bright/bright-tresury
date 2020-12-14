@@ -7,21 +7,24 @@ import { BlockchainService } from './blockchain.service'
 
 const logger = getLogger()
 
-let polkadotApiInstance: null | ApiPromise
+const polkadotApiInstance: null | ApiPromise = null
 
 const polkadotApiFactory = {
     provide: 'PolkadotApi',
-    useFactory: async (blockchainConfig: BlockchainConfig) => {
-        if (polkadotApiInstance === null || polkadotApiInstance === undefined) {
-            const wsProvider = new WsProvider(blockchainConfig.nodeUrl);
-            polkadotApiInstance = await ApiPromise.create({
-                provider: wsProvider,
-                types: blockchainConfig.types,
-            });
-        }
-        return polkadotApiInstance
+    // useFactory: async (blockchainConfig: BlockchainConfig) => {
+        useFactory: async () => {
+        //     if (polkadotApiInstance === null || polkadotApiInstance === undefined) {
+        //     const wsProvider = new WsProvider(blockchainConfig.nodeUrl);
+        //     polkadotApiInstance = await ApiPromise.create({
+        //         provider: wsProvider,
+        //         types: blockchainConfig.types,
+        //     });
+        // }
+        // return polkadotApiInstance
     },
-    inject: [BlockchainConfigToken],
+    // inject: [BlockchainConfigToken],
+    inject: [],
+
 }
 
 @Module({
