@@ -95,7 +95,9 @@ const Resources = {
     EC2InstanceProfile: 'EC2InstanceProfile',
     ParametersKmsKey: 'ParametersKmsKey',
     AppApiParametersAccessPolicy: "AppApiParametersAccessPolicy",
-    RootAwsAccountId: "771419126041",
+
+    RootAwsAccountId: "339594496974",
+
     AppTaskRole: "AppTaskRole",
     BackendDBInstanceHostParameter: "BackendDBInstanceHostParameter"
 }
