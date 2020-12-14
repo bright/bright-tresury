@@ -27,6 +27,5 @@ RUN yarn install --frozen-lockfile
 ADD --chown=node backend/ ${SERVER_TARGET_DIR}/
 
 RUN yarn compile
-RUN yarn copy:assets
 
 CMD yarn main:dist

@@ -35,8 +35,6 @@ describe(`Blockchain service`, () => {
 
             // create and sign extrinsic
             const extrinsic = api.tx.treasury.proposeSpend(10, '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            // TODO fix types!
-            // @ts-ignore
             await extrinsic.signAsync(pair)
 
             // start listening for the extrinsic
