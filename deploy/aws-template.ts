@@ -584,7 +584,7 @@ export default cloudform({
                         AWS: [
                             Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'root']),
                             Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/deployer']),
-                            Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/patryk.huzarski'])
+                            Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/treasury'])
 
                         ]
                     },
