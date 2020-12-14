@@ -90,7 +90,6 @@ project {
         description = "Builds and tests"
 
         buildNumberPattern = "%build.counter% - %build.vcs.number%"
-
         vcs {
             root(DslContext.settingsRoot)
         }
