@@ -6,18 +6,29 @@ RUN useradd --home-dir /srv/ --gid node --shell $(which bash) node-runner && \
 
 USER node
 
-ARG _TARGET_DIR=/srv/backend
+ARG SERVER_TARGET_DIR=/srv/backend
+ARG CLIENT_TARGET_DIR=/srv/front
 
-ADD --chown=node ./*.json ${_TARGET_DIR}/
+COPY --chown=node backend/*.json ${SERVER_TARGET_DIR}/
+COPY --chown=node backend/*.lock ${SERVER_TARGET_DIR}/
+COPY --chown=node front/*.json ${CLIENT_TARGET_DIR}/
+COPY --chown=node front/*.lock ${CLIENT_TARGET_DIR}/
 
-WORKDIR ${_TARGET_DIR}
+WORKDIR ${CLIENT_TARGET_DIR}
 
-RUN npm ci --verbose
+RUN yarn install --frozen-lockfile
 
-ADD --chown=node ./ ${_TARGET_DIR}/
+ADD --chown=node front/ ${CLIENT_TARGET_DIR}/
 
-RUN npm run compile
+RUN yarn build
 
-USER node-runner
+WORKDIR ${SERVER_TARGET_DIR}
 
-CMD npm run main:dist
+RUN yarn install --frozen-lockfile
+
+ADD --chown=node backend/ ${SERVER_TARGET_DIR}/
+
+RUN yarn compile
+RUN yarn copy:assets
+
+CMD yarn main:dist
