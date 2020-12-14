@@ -8,6 +8,8 @@ import { BlockchainModule } from "./blockchain.module";
 import { BlockchainService } from "./blockchain.service";
 
 describe(`Blockchain service`, () => {
+    // TODO fix types!
+    // @ts-ignore
     let api: ApiPromise
     let keyring: Keyring
     let pair: KeyringPair
@@ -33,6 +35,8 @@ describe(`Blockchain service`, () => {
 
             // create and sign extrinsic
             const extrinsic = api.tx.treasury.proposeSpend(10, '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            // TODO fix types!
+            // @ts-ignore
             await extrinsic.signAsync(pair)
 
             // start listening for the extrinsic
@@ -51,11 +55,12 @@ describe(`Blockchain service`, () => {
             })
 
             // send the extrinsic
-            await extrinsic.send((result) => {
+            await extrinsic.send((result: any) => {
                 if (result.isFinalized) {
+                    // TODO fix types
                     expectedBlockHash = result.status.asFinalized.toString()
                     const event = result.events
-                        .find(({ event: e }) => e.section === 'treasury' && e.method === 'Proposed')
+                        .find(({ event: e } : { event: any }) => e.section === 'treasury' && e.method === 'Proposed')
                     expectedProposalId = Number(event?.event.data[0])
                 }
             })
