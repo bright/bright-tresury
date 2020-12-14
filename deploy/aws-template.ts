@@ -466,7 +466,7 @@ export default cloudform({
 
         [Resources.BastionHost]: new EC2.Instance({
             InstanceType: "t2.nano",
-            KeyName: 'treasury_ssh',
+            KeyName: 'treasury-ssh-key',
             ImageId: "ami-1b316af0",
             NetworkInterfaces: [
                 {
@@ -842,7 +842,7 @@ export default cloudform({
             ],
             InstanceType: Fn.FindInMap('ECS', DeployEnv, 'InstanceType'),
             IamInstanceProfile: Fn.Ref(Resources.EC2InstanceProfile),
-            KeyName: 'treasury_ssh',
+            KeyName: 'treasury-ssh-key',
             UserData: Fn.Base64(Fn.Join('', [
                 "#!/bin/bash -xe\n",
                 "echo ECS_CLUSTER=",
