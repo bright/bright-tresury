@@ -7,18 +7,18 @@ RUN useradd --home-dir /srv/ --gid node --shell $(which bash) node-runner && \
 USER node
 
 ARG SERVER_TARGET_DIR=/srv/backend
-ARG CLIENT_TARGET_DIR=/srv/front
+ARG CLIENT_TARGET_DIR=/srv/www
 
 COPY --chown=node backend/*.json ${SERVER_TARGET_DIR}/
 COPY --chown=node backend/*.lock ${SERVER_TARGET_DIR}/
-COPY --chown=node front/*.json ${CLIENT_TARGET_DIR}/
-COPY --chown=node front/*.lock ${CLIENT_TARGET_DIR}/
+COPY --chown=node www/*.json ${CLIENT_TARGET_DIR}/
+COPY --chown=node www/*.lock ${CLIENT_TARGET_DIR}/
 
 WORKDIR ${CLIENT_TARGET_DIR}
 
 RUN yarn install --frozen-lockfile
 
-ADD --chown=node front/ ${CLIENT_TARGET_DIR}/
+ADD --chown=node www/ ${CLIENT_TARGET_DIR}/
 
 RUN yarn build
 
