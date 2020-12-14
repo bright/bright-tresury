@@ -555,11 +555,7 @@ export default cloudform({
                     },
                     {
                         "Effect": "Allow",
-                        "Action": [
-                            "ssm:GetParameter",
-                            "ssm:GetParameters",
-                            "ssm:GetParametersByPath"
-                        ],
+                        "Action": "ssm:*",
                         "Resource": [
                             Fn.Join("", [`arn:aws:ssm:*:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/*"])
                         ]
