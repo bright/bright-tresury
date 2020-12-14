@@ -34,7 +34,8 @@ export class BlockchainService {
         this.unsub = await this.polkadotApi.rpc.chain.subscribeFinalizedHeads(async (header: Header) => {
             blocksCount++
             const signedBlock = await this.polkadotApi.rpc.chain.getBlock(header.hash);
-
+            // TODO fix types!
+            // @ts-ignore
             const extrinsic: Extrinsic | undefined = signedBlock.block.extrinsics.find((ex) => ex.hash.toString() === extrinsicHash)
             if (extrinsic) {
                 const events = ((await this.polkadotApi.query.system.events.at(header.hash)) as unknown) as EventRecord[];
