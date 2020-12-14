@@ -8,14 +8,14 @@ export PROJECT_DIR="$( cd "${SCRIPT_DIR}/.."  && pwd )"
 
 export VCS_VERSION=${VCS_VERSION:-${BUILD_VCS_NUMBER:-$(git rev-parse HEAD)}}
 
-export PROJECT_NAME=traceabledonations
+export PROJECT_NAME=treasury
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-''}
 
 export AWS_REGION=${AWS_REGION:-eu-central-1}
 
 function docker-compose {
-    TAG=${VCS_VERSION} command docker-compose --project-name traceabledonations "${@}"
+    TAG=${VCS_VERSION} command docker-compose --project-name treasury "${@}"
 }
 
 if [[ ! -z "${DOCKER_REGISTRY}" ]]; then
