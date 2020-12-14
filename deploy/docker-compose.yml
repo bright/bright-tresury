@@ -1,14 +1,14 @@
 version: '3'
 services:
   backend:
-    image: "${DOCKER_REGISTRY}treasury/backend:${TAG:-latest}"
+    image: "${DOCKER_REGISTRY}treasury:${TAG:-latest}"
     build:
       context: ../backend
     environment:
       DEPLOY_ENV: "${DEPLOY_ENV:-development}"
     restart: unless-stopped
   backend-development:
-    image: "${DOCKER_REGISTRY}treasury/backend:${TAG:-latest}"
+    image: "${DOCKER_REGISTRY}treasury:${TAG:-latest}"
     build:
       context: ../backend
     volumes:
@@ -27,7 +27,7 @@ services:
       - database
       - substrate
   backend-test-ci:
-    image: "${DOCKER_REGISTRY}treasury/backend:${TAG:-latest}"
+    image: "${DOCKER_REGISTRY}treasury:${TAG:-latest}"
     build:
       context: ../backend
     environment:
@@ -38,7 +38,7 @@ services:
       - substrate
   database:
     #  we don't use manual tagging so that each deployment does not cause a db restart
-    image: "${DOCKER_REGISTRY}treasury/database:1.0"
+    image: "${DOCKER_REGISTRY}treasury:1.0"
     build:
       context: ./database
     volumes:
