@@ -791,7 +791,7 @@ export default cloudform({
             HealthCheckProtocol: "HTTP",
             HealthCheckTimeoutSeconds: 10,
             HealthyThresholdCount: 2,
-            Name: Fn.Join('-', [Resources.ECSTargetGroup, 'traceable', DeployEnv]), // added refs.stackname
+            Name: Fn.Join('-', [Resources.ECSTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
             Protocol: "HTTP",
             TargetGroupAttributes: [
