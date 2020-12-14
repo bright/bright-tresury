@@ -11,7 +11,6 @@ This repo contains:
 * frontend
     * React frontend application available on [http://localhost:3000/](http://localhost:3000/)
 
-
 ## Development
 
 To run backend and frontend in development mode see the corresponding readme files.

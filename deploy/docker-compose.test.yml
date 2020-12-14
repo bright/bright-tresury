@@ -1,0 +1,20 @@
+version: '3'
+services:
+  backend-test-ci:
+    build:
+      context: ../
+      dockerfile: backend/Dockerfile
+    environment:
+      DEPLOY_ENV: test
+      TEAMCITY_VERSION: ${TEAMCITY_VERSION}
+    command: bash -c "while !</dev/tcp/database/5432; do sleep 1; done; yarn database:migrate:ci && yarn test:ci"
+    depends_on:
+      - database
+  database:
+    build:
+      context: ./database
+    volumes:
+      - ${PROJECT_DIR:-../}/deploy/pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: pg_isready -U postgres; do sleep 1; done
+    restart: unless-stopped
