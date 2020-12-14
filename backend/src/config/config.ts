@@ -59,6 +59,7 @@ const loadConfig = memoize(async () => {
     configSchema.loadFile(files);
 
     const parametersFromSSM = await tryLoadParamsFromSSM(configSchema.getProperties().aws, env);
+    console.log(JSON.stringify(parametersFromSSM), 'parametersFromSSM')
 
     if (parametersFromSSM) {
         logger.info("Apply parameters fetched from SSM");

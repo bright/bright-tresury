@@ -6,7 +6,7 @@ import { set } from "lodash"
 
 const logger = getLogger();
 
-export async function tryLoadParamsFromSSM(awsConfig: AWSConfig, deployEnv: string, prefix = `/${deployEnv}/`) {
+export async function tryLoadParamsFromSSM(awsConfig: AWSConfig, deployEnv: string, prefix = `/treasury-${deployEnv}/`) {
     if (/(test|test-local|development-local)/.test(deployEnv)) {
         logger.debug("Skipping loading parameters from ssm");
         return null
