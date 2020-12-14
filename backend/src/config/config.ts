@@ -20,7 +20,7 @@ export type AppConfig = EnvConfig & {
     auth: AuthConfig
     database: DatabaseConfig,
     aws: AWSConfig,
-    blockchain: BlockchainConfig,
+    // blockchain: BlockchainConfig,
 };
 
 const configSchema = convict<AppConfig>({
@@ -39,7 +39,7 @@ const configSchema = convict<AppConfig>({
     auth: authConfigSchema,
     database: databaseConfigSchema,
     aws: awsConfigSchema,
-    blockchain: blockchainConfigSchema,
+    // blockchain: blockchainConfigSchema,
 });
 const logger = getLogger();
 
@@ -59,7 +59,6 @@ const loadConfig = memoize(async () => {
     configSchema.loadFile(files);
 
     const parametersFromSSM = await tryLoadParamsFromSSM(configSchema.getProperties().aws, env);
-    console.log(JSON.stringify(parametersFromSSM), 'parametersFromSSM')
 
     if (parametersFromSSM) {
         logger.info("Apply parameters fetched from SSM");
@@ -78,8 +77,8 @@ const appConfigProvider: AsyncFactoryProvider<AppConfig> = {
 
 const authConfigProvider = propertyOfProvider(appConfigProvider, 'auth', 'AuthConfig');
 const databaseConfigProvider = propertyOfProvider(appConfigProvider, "database", DatabaseConfigToken)
-const blockchainConfigProvider = propertyOfProvider(appConfigProvider, "blockchain", BlockchainConfigToken)
-const providers: Provider[] = [appConfigProvider, authConfigProvider, databaseConfigProvider, blockchainConfigProvider];
+// const blockchainConfigProvider = propertyOfProvider(appConfigProvider, "blockchain", BlockchainConfigToken)
+const providers: Provider[] = [appConfigProvider, authConfigProvider, databaseConfigProvider];
 
 // @Global() // if we don't have to import config module everywhere
 @Module({
