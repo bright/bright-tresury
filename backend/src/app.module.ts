@@ -18,9 +18,9 @@ import { ExtrinsicsModule } from './extrinsics/extrinsics.module';
         VersionModule,
         AuthModule,
         IdeasModule,
-        BlockchainModule,
+        // BlockchainModule,
         ProposalsModule,
-        ExtrinsicsModule,
+        // ExtrinsicsModule,
     ],
     exports: []
 })
