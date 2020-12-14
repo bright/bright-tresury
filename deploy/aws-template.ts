@@ -585,7 +585,6 @@ export default cloudform({
                     Principal: {
                         AWS: [
                             Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'root']),
-                            Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/deployer']),
                             Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/treasury'])
 
                         ]
