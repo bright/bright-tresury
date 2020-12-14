@@ -78,7 +78,7 @@ const Resources = {
 
     // load balancer
     ECSALB: 'ECSALB',
-    ALBHttpsListener: 'ALBHttpsListener',
+    //ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
     ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
@@ -708,22 +708,22 @@ export default cloudform({
             ]
         }).dependsOn(Resources.HttpHttpsServerSecurityGroup),
 
-        [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
-            Certificates: [
-                {
-                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
-                }
-            ],
-            DefaultActions: [
-                {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
-                }
-            ],
-            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
-            Port: 443,
-            Protocol: "HTTPS"
-        }).dependsOn(Resources.ECSServiceRole),
+        // [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
+        //     Certificates: [
+        //         {
+        //             CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
+        //         }
+        //     ],
+        //     DefaultActions: [
+        //         {
+        //             Type: "forward",
+        //             TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
+        //         }
+        //     ],
+        //     LoadBalancerArn: Fn.Ref(Resources.ECSALB),
+        //     Port: 443,
+        //     Protocol: "HTTPS"
+        // }).dependsOn(Resources.ECSServiceRole),
 
         [Resources.ALBHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
