@@ -1,7 +1,8 @@
-import {ControllerApi} from './utils/decorators'
 import {Get} from '@nestjs/common'
-import {HealthCheckResponse} from './app.dto'
 import {getLogger} from "./logging.module";
+import {ControllerApi} from './utils/decorators'
+import {HealthCheckResponse} from './app.dto'
+
 const logger = getLogger()
 
 @ControllerApi("/health")
