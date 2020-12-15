@@ -11,6 +11,7 @@ import { ProposalsModule } from './proposals/proposals.module';
 import { ExtrinsicsModule } from './extrinsics/extrinsics.module';
 import {AppController} from "./app.controller";
 import { FrontendMiddleware } from './front-end.middleware';
+import {NestExpressApplication} from "@nestjs/platform-express";
 
 @Module({
     imports: [
@@ -40,7 +41,7 @@ export function configureGlobalServices(app: INestApplication) {
 }
 
 export async function createApp() {
-    const app = await NestFactory.create(AppModule, {
+    const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         logger: new NestLoggerAdapter()
     });
 
