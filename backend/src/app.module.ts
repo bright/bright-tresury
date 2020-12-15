@@ -10,6 +10,7 @@ import { IdeasModule } from './ideas/ideas.module';
 import { ProposalsModule } from './proposals/proposals.module';
 import { ExtrinsicsModule } from './extrinsics/extrinsics.module';
 import {AppController} from "./app.controller";
+import { FrontendMiddleware } from './front-end.middleware';
 
 @Module({
     imports: [
