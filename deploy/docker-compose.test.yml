@@ -10,6 +10,7 @@ services:
     command: bash -c "while !</dev/tcp/database/5432; do sleep 1; done; yarn database:migrate:ci && yarn test:ci"
     depends_on:
       - database
+      - substrate
   database:
     build:
       context: ./database
@@ -17,4 +18,10 @@ services:
       - ${PROJECT_DIR:-../}/deploy/pg-data:/var/lib/postgresql/data
     healthcheck:
       test: pg_isready -U postgres; do sleep 1; done
+    restart: unless-stopped
+  substrate:
+    image: parity/polkadot:latest
+    ports:
+      - "9944:9944"
+    command: --rpc-external --ws-external --dev
     restart: unless-stopped
