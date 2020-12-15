@@ -1,4 +1,4 @@
-import ApiPromise from "@polkadot/api/promise";
+import {ApiPromise} from "@polkadot/api";
 import {web3FromSource} from "@polkadot/extension-dapp";
 import {KeyringPair} from "@polkadot/keyring/types";
 import {Keyring} from "@polkadot/ui-keyring";

@@ -14,7 +14,7 @@ COPY --chown=node www/*.json ${CLIENT_TARGET_DIR}/
 
 WORKDIR ${CLIENT_TARGET_DIR}
 
-RUN yarn install --frozen-lockfile
+RUN yarn install
 
 ADD --chown=node www/ ${CLIENT_TARGET_DIR}/
 
