@@ -46,6 +46,7 @@ function AppRoutes() {
 }
 
 function App() {
+    console.log('front-end hello')
     return (
         <SubstrateContextProvider>
             <ThemeWrapper>

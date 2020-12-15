@@ -10,6 +10,7 @@ export class FrontendMiddleware implements NestMiddleware {
     if (req.baseUrl.includes(ROUTE_PREFIX)) {
       next();
     } else {
+      console.log('FRONT-END serving')
       res.sendFile(resolvePath("index.html"));
     }
   }
