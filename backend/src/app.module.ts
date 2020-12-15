@@ -1,4 +1,4 @@
-import { INestApplication, Module, ValidationPipe } from '@nestjs/common';
+import { INestApplication, Module, ValidationPipe, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { NestFactory } from "@nestjs/core";
 import { AuthModule } from "./auth";
 import { BlockchainModule } from "./blockchain/blockchain.module";
@@ -9,6 +9,7 @@ import { VersionModule } from "./version/version";
 import { IdeasModule } from './ideas/ideas.module';
 import { ProposalsModule } from './proposals/proposals.module';
 import { ExtrinsicsModule } from './extrinsics/extrinsics.module';
+import {AppController} from "./app.controller";
 
 @Module({
     imports: [
@@ -22,9 +23,13 @@ import { ExtrinsicsModule } from './extrinsics/extrinsics.module';
         ProposalsModule,
         // ExtrinsicsModule,
     ],
-    exports: []
+    exports: [],
+    controllers: [AppController]
 })
-export class AppModule {
+export class AppModule implements NestModule {
+    configure(consumer: MiddlewareConsumer): void {
+        consumer.apply(FrontendMiddleware).forRoutes('*')
+    }
 }
 
 export function configureGlobalServices(app: INestApplication) {
