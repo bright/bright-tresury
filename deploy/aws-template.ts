@@ -744,29 +744,29 @@ export default cloudform({
             Protocol: 'HTTP',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
-            Actions: [
-                {
-                    Type: "redirect",
-                    RedirectConfig: {
-                        "Host" : "#{host}",
-                        "Path" : "/#{path}",
-                        "Port" : "443",
-                        "Protocol" : "HTTPS",
-                        "Query" : "#{query}",
-                        "StatusCode" : "HTTP_302"
-                    }
-                }
-            ],
-            Conditions: [
-                {
-                    Field: "path-pattern",
-                    Values: ["/"]
-                }
-            ],
-            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-            Priority: 2
-        }).dependsOn(Resources.ALBHttpListener),
+        // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+        //     Actions: [
+        //         {
+        //             Type: "redirect",
+        //             RedirectConfig: {
+        //                 "Host" : "#{host}",
+        //                 "Path" : "/#{path}",
+        //                 "Port" : "443",
+        //                 "Protocol" : "HTTPS",
+        //                 "Query" : "#{query}",
+        //                 "StatusCode" : "HTTP_302"
+        //             }
+        //         }
+        //     ],
+        //     Conditions: [
+        //         {
+        //             Field: "path-pattern",
+        //             Values: ["/"]
+        //         }
+        //     ],
+        //     ListenerArn: Fn.Ref(Resources.ALBHttpListener),
+        //     Priority: 2
+        // }).dependsOn(Resources.ALBHttpListener),
 
         [Resources.ECSALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
