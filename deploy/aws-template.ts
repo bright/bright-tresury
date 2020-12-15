@@ -728,20 +728,13 @@ export default cloudform({
         [Resources.ALBHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
                 {
-                    Type: "redirect",
-                    RedirectConfig: {
-                        "Host" : "#{host}",
-                        "Path" : "/#{path}",
-                        "Port" : "443",
-                        "Protocol" : "HTTPS",
-                        "Query" : "#{query}",
-                        "StatusCode" : "HTTP_302"
-                    }
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
                 }
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 80,
-            Protocol: 'HTTP',
+            Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
         // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
