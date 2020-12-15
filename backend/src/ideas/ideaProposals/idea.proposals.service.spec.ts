@@ -20,9 +20,9 @@ describe('IdeaProposalsService', () => {
         blockHash,
         events: [{
             section: 'treasury',
-            method: 'proposeSpend',
+            method: 'Proposed',
             data: [{
-                name: 'proposalIndex',
+                name: 'ProposalIndex',
                 value: proposalIndex.toString()
             }]
         }

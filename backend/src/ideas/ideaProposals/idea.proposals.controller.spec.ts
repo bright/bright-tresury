@@ -33,9 +33,9 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
                     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
                     events: [{
                         section: 'treasury',
-                        method: 'proposeSpend',
+                        method: 'Proposed',
                         data: [{
-                            name: 'proposalIndex',
+                            name: 'ProposalIndex',
                             value: "3"
                         }]
                     }

@@ -19,7 +19,7 @@ export class ExtrinsicsService {
         return this.extrinsicRepository.findOne({ extrinsicHash })
     }
 
-    async listenForProposeSpendExtrinsic(createExtrinsicDto: CreateExtrinsicDto, extractEvents?: (events: ExtrinsicEvent[]) => void): Promise<Extrinsic> {
+    async listenForExtrinsic(createExtrinsicDto: CreateExtrinsicDto, extractEvents?: (events: ExtrinsicEvent[]) => void): Promise<Extrinsic> {
         const extrinsic = await this.create(createExtrinsicDto)
 
         const callback = async (updateExtrinsicDto: UpdateExtrinsicDto) => {

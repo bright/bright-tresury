@@ -1,18 +1,17 @@
-import {Modal, Theme} from '@material-ui/core';
-import {createStyles, makeStyles} from '@material-ui/core/styles';
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
+import {useTranslation} from "react-i18next";
 import {useParams} from 'react-router';
+import {useHistory} from "react-router-dom";
+import CrossSvg from "../assets/cross.svg";
+import {Button} from "../components/button/Button";
+import {IconButton} from "../components/button/IconButton";
+import {Header} from "../components/header/Header";
+import {ROUTE_IDEAS} from "../routes";
+import {breakpoints} from "../theme/theme";
 import IdeaDetailsForm from './IdeaDetailsForm';
 import {getIdeaById, Idea, IdeaNetwork} from './ideas.api';
-import SubmitProposal from './SubmitProposal';
-import {Button} from "../components/button/Button";
-import {useTranslation} from "react-i18next";
-import {Header} from "../components/header/Header";
-import {IconButton} from "../components/button/IconButton";
-import CrossSvg from "../assets/cross.svg";
-import {useHistory} from "react-router-dom";
-import {breakpoints} from "../theme/theme";
-import {ROUTE_IDEAS} from "../routes";
+import SubmitProposalModal from "./SubmitProposalModal";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -90,18 +89,15 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
                 <IconButton svg={CrossSvg} onClick={navigateToList}/>
             </div>
             <IdeaDetailsForm idea={idea} setIdea={setIdea}/>
-            {!!idea.id && <div>
+            {!!idea.id && <>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
                     {t('idea.details.submitProposal')}
                 </Button>
-                <Modal
+                <SubmitProposalModal
                     open={open}
                     onClose={handleClose}
-                    aria-labelledby="simple-modal-title"
-                    aria-describedby="simple-modal-description">
-                    <SubmitProposal value={idea.networks[0].value} beneficiary={idea.beneficiary} network={network}/>
-                </Modal>
-            </div>}
+                    idea={idea}/>
+            </>}
         </div>
     );
 }

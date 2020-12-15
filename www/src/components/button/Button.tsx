@@ -8,6 +8,10 @@ const useStyles = makeStyles(() => createStyles({
         fontWeight: 600,
         borderRadius: '6px',
         padding: '.5em 2em .5em 2em'
+    },
+    text: {
+        paddingLeft: 0,
+        paddingRight: 0
     }
 }))
 

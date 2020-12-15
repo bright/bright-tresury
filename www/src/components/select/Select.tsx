@@ -25,7 +25,7 @@ const useStyles = makeStyles(() =>
             fontSize: '0.875em',
             backgroundColor: '#fff',
             padding: '1em',
-            fontWeight: 500
+            fontWeight: 500,
         },
     }),
 );
@@ -34,11 +34,13 @@ interface SelectProps<T> {
     value: T
     options: T[]
     label: string
-    placeholder: string
-    renderValue?: (value: T) => string
+    placeholder?: string
+    renderOption?: (value: T) => string
 }
 
-export const Select: React.FC<SelectProps<any> & MaterialSelectProps> = ({value, renderValue, options, label, placeholder, ...props}) => {
+export type ISelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps>
+
+export const Select: ISelect = ({value, renderOption, options, label, placeholder, ...props}) => {
     const classes = useStyles()
     // @ts-ignore
     const [field, meta] = useField({ ...props, type: 'input' });
@@ -54,10 +56,10 @@ export const Select: React.FC<SelectProps<any> & MaterialSelectProps> = ({value,
                 },
                 ...field, ...meta
             }}>
-            <MenuItem value={''}>{placeholder}</MenuItem>
+            {placeholder ? <MenuItem value={''}>{placeholder}</MenuItem> : null}
             {options ? options.map((option: any, index: number) =>
                 <MenuItem key={index} value={option}>
-                    {renderValue ? renderValue(option) : option}
+                    {renderOption ? renderOption(option) : option}
                 </MenuItem>
             ) : null}
         </MaterialSelect>
