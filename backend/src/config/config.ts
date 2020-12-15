@@ -33,7 +33,7 @@ const configSchema = convict<AppConfig>({
     port: {
         doc: "Listen port.",
         format: "port",
-        default: 3001,
+        default: 3000,
         env: "PORT"
     },
     auth: authConfigSchema,
