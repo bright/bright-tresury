@@ -1,4 +1,4 @@
-import ApiPromise from "@polkadot/api/promise";
+import {ApiPromise} from "@polkadot/api";
 import { DefinitionRpcExt } from "@polkadot/types/types";
 import { Keyring } from "@polkadot/ui-keyring";
 import React, { Dispatch, useReducer } from 'react';
