@@ -35,17 +35,20 @@ export class AppModule implements NestModule {
 }
 
 export function configureGlobalServices(app: INestApplication) {
-    app.useGlobalPipes(new ValidationPipe({
-        transform: true
-    }))
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true,
+        })
+    )
 }
 
 export async function createApp() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-        logger: new NestLoggerAdapter()
-    });
+        logger: new NestLoggerAdapter(),
+    })
+    // app.use(timeout('30s'))
 
-    configureGlobalServices(app);
+    configureGlobalServices(app)
 
-    return app;
+    return app
 }
