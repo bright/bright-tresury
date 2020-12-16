@@ -1,9 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common'
+import {HttpException, Inject, Injectable} from '@nestjs/common'
 import { ApiPromise } from '@polkadot/api'
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
 import { EventRecord, Header } from '@polkadot/types/interfaces';
 import { UpdateExtrinsicDto } from "../extrinsics/dto/updateExtrinsic.dto";
 import { ExtrinsicEvent } from "../extrinsics/extrinsicEvent";
+import {getLogger} from "../logging.module";
 
 @Injectable()
 export class BlockchainService {
@@ -27,7 +28,11 @@ export class BlockchainService {
         extrinsicHash: string,
         cb: (updateExtrinsicDto: UpdateExtrinsicDto) => void) {
 
-        await this.polkadotApi.isReady
+        try {
+            await this.polkadotApi.isReadyOrError
+        } catch (err) {
+            throw new HttpException('No blockchain connection', 404)
+        }
 
         let blocksCount = 0;
 
