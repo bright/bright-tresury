@@ -35,7 +35,7 @@
     "list": {
       "tile": {
         "statusActive": "Active",
-        "suitor": "(Suitor)"
+        "beneficiary": "(Suitor)"
       }
     },
     "introduceTitle": "Introduce Idea",

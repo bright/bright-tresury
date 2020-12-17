@@ -12,6 +12,7 @@ import {breakpoints} from "../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
+        borderRadius: '8px',
         backgroundColor: theme.palette.background.default,
         '&:hover': {
             transform: 'scale(1.01)'
@@ -88,14 +89,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         display: 'flex',
         flexDirection: 'row',
     },
-    beneficiaryLabel: {
+    beneficiary: {
         fontSize: '1em',
         height: '1em',
         fontWeight: 600,
         marginTop: '24px',
         marginBottom: '4px'
     },
-    suitorLabel: {
+    beneficiaryLabel: {
         fontSize: '12px',
         fontWeight: 700,
         marginBottom: '24px',
@@ -141,17 +142,17 @@ const IdeaTile: React.FC<Props> = ({idea}) => {
             <div className={`${classes.contentMargin} ${classes.details}`}>
                 <p className={classes.titleLabel}>{idea.title}</p>
                 {idea.networks.length > 0 ?
-                    <p className={classes.networkLabel}>{`${idea.networks[0].value} LOC`}</p> : JSON.stringify(idea)}
+                    <p className={classes.networkLabel}>{`${idea.networks[0].value} LOC`}</p> : null}
             </div>
 
             <Divider className={classes.contentMargin}/>
 
             <div className={`${classes.contentMargin} ${classes.beneficiaryInfo}`}>
                 <div>
-                    <p className={classes.beneficiaryLabel}>
+                    <p className={classes.beneficiary}>
                         {getBeneficiaryFragment()}
                     </p>
-                    <p className={classes.suitorLabel}>{t('idea.list.tile.suitor')}</p>
+                    <p className={classes.beneficiaryLabel}>{t('idea.list.tile.beneficiary')}</p>
                 </div>
             </div>
         </Link>
