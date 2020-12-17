@@ -9,6 +9,7 @@ import {createStyles} from "@material-ui/core";
 import {Status} from "../components/status/Status";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../theme/theme";
+import {ellipseTextInTheMiddle} from "../util/stringUtil";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -118,14 +119,7 @@ const IdeaTile: React.FC<Props> = ({idea}) => {
 
     const getBeneficiaryFragment = (): string => {
         if (!idea.beneficiary) return ''
-        const visibleCharacters = 12
-        if (idea.beneficiary.length > visibleCharacters) {
-            const prefix = idea.beneficiary.substring(0, visibleCharacters / 2)
-            const suffix = idea.beneficiary.substring(idea.beneficiary.length - (visibleCharacters / 2))
-            return `${prefix}...${suffix}`
-        } else {
-            return ''
-        }
+        return ellipseTextInTheMiddle(idea.beneficiary, 12)
     }
 
     return <Card className={classes.root} >
