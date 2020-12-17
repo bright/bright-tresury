@@ -1,10 +1,13 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
+import {getLogger} from "../logging.module";
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
+
+const logger = getLogger()
 
 @Injectable()
 export class IdeasService {
@@ -17,10 +20,15 @@ export class IdeasService {
     }
 
     async find(networkName?: string): Promise<Idea[]> {
-        return networkName ? await this.ideaRepository.createQueryBuilder('idea')
-            .leftJoin('idea.networks', 'network')
-            .where('network.name = :networkName', {networkName})
-            .getMany() : await this.ideaRepository.find()
+        try {
+            return networkName ? await this.ideaRepository.createQueryBuilder('idea')
+                .leftJoin('idea.networks', 'network')
+                .where('network.name = :networkName', {networkName})
+                .getMany() : await this.ideaRepository.find()
+        } catch (error) {
+            logger.error(error)
+            return []
+        }
     }
 
     async findOne(id: string): Promise<Idea> {
