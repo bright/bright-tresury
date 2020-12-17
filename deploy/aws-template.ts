@@ -661,6 +661,10 @@ export default cloudform({
                             Name: "DEPLOY_ENV",
                             Value: DeployEnv
                         },
+                        {
+                            Name: "NODE_OPTIONS",
+                            Value: "--max-old-space-size=600"
+                        },
                         // {
                         //     Name: 'ETHEREUM_NODE_URL',
                         //     Value: Fn.Ref('EtherumNodeUrl'),
