@@ -1,17 +1,13 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
 import {useTranslation} from "react-i18next";
-import {useParams} from 'react-router';
-import {useHistory} from "react-router-dom";
-import CrossSvg from "../assets/cross.svg";
+import {useParams, useLocation} from 'react-router';
 import {Button} from "../components/button/Button";
-import {IconButton} from "../components/button/IconButton";
-import {Header} from "../components/header/Header";
-import {ROUTE_IDEAS} from "../routes";
 import {breakpoints} from "../theme/theme";
 import IdeaDetailsForm from './IdeaDetailsForm';
 import {getIdeaById, Idea, IdeaNetwork} from './ideas.api';
 import SubmitProposalModal from "./SubmitProposalModal";
+import IdeaFormHeader from "./details/form/IdeaFormHeader";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,12 +33,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     network: string
+    state: IdeaDetailsState
 }
 
-const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
+const IdeaDetails: React.FC<Props> = ({network, state}) => {
     const classes = useStyles()
     const {t} = useTranslation()
-    const history = useHistory()
 
     let {ideaId} = useParams<{ ideaId: string }>()
 
@@ -76,18 +72,12 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
 
     const isNew = (): boolean => idea.id === undefined
 
-    const navigateToList = () => {
-        history.push(ROUTE_IDEAS)
-    }
-
     return (
         <div className={classes.root}>
-            <div className={classes.headerContainer}>
-                <Header>
-                    {t(isNew() ? 'idea.introduceTitle' : 'idea.editTitle')}
-                </Header>
-                <IconButton svg={CrossSvg} onClick={navigateToList}/>
-            </div>
+            {state === IdeaDetailsState.EDITABLE ? <IdeaFormHeader isNewIdea={isNew()}/> :
+                state === IdeaDetailsState.STATIC_DETAILS ? <div>
+                Details
+            </div> : null}
             <IdeaDetailsForm idea={idea} setIdea={setIdea}/>
             {!!idea.id && <>
                 <Button variant="contained" color="primary" onClick={handleOpen}>
@@ -103,3 +93,8 @@ const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
 }
 
 export default IdeaDetails
+
+export enum IdeaDetailsState {
+    STATIC_DETAILS,
+    EDITABLE
+}

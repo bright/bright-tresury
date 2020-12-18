@@ -3,6 +3,7 @@ import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
+import IdeaDetails, {IdeaDetailsState} from './ideas/IdeaDetails';
 import Ideas from './ideas/Ideas';
 import Menu from './main/Menu';
 import Proposals from './proposals/Proposals';
@@ -40,6 +41,16 @@ function AppRoutes() {
                     <Route exact={true} path={ROUTE_NEW_IDEA} component={CreateIdea}/>
                     <Route exact={true} path={ROUTE_EDIT_IDEA} component={CreateIdea}/>
                     <Route exact={true} path={ROUTE_IDEA} component={Idea}/>
+                    <Route exact={true} path={ROUTE_NEW_IDEA} component={() =>
+                        <IdeaDetails
+                            network={'localhost'}
+                            state={IdeaDetailsState.EDITABLE}
+                    />}/>
+                    <Route exact={true} path={ROUTE_IDEA} component={() =>
+                        <IdeaDetails
+                            network={'localhost'}
+                            state={IdeaDetailsState.STATIC_DETAILS}
+                        />}/>
                 </Switch>
             </div>
         </Router>
