@@ -6,7 +6,7 @@ import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, Idea} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
-import IdeaTile from "./IdeaTile";
+import IdeaCard from "./IdeaCard";
 import {breakpoints} from "../theme/theme";
 import config from '../config';
 
@@ -65,7 +65,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
                     {status === 'resolved' && (
                         ideas.map((idea) => (
                             <Grid key={idea.id} item xs={12} md={6}>
-                                <IdeaTile idea={idea}/>
+                                <IdeaCard idea={idea}/>
                             </Grid>
                         ))
                     )}

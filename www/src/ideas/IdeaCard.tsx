@@ -13,7 +13,6 @@ import {ellipseTextInTheMiddle} from "../util/stringUtil";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
-        borderRadius: '8px',
         backgroundColor: theme.palette.background.default,
         '&:hover': {
             transform: 'scale(1.01)'
@@ -110,7 +109,7 @@ interface Props {
     idea: Idea
 }
 
-const IdeaTile: React.FC<Props> = ({idea}) => {
+const IdeaCard: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -153,4 +152,4 @@ const IdeaTile: React.FC<Props> = ({idea}) => {
     </Card>
 }
 
-export default IdeaTile
+export default IdeaCard
