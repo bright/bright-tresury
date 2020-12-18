@@ -9,6 +9,7 @@ import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, IdeaDto} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
+import IdeaCard from "./IdeaCard";
 import IdeaTile from "./IdeaTile";
 import IdeaCard from "./list/IdeaCard";
 import {breakpoints} from "../theme/theme";

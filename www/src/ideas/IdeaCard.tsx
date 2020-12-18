@@ -108,7 +108,7 @@ interface Props {
     idea: Idea
 }
 
-const IdeaTile: React.FC<Props> = ({idea}) => {
+const IdeaCard: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -158,4 +158,4 @@ const IdeaTile: React.FC<Props> = ({idea}) => {
     </Card>
 }
 
-export default IdeaTile
+export default IdeaCard

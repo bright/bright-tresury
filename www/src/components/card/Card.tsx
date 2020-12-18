@@ -10,7 +10,7 @@ const useStyles = makeStyles(() => createStyles({
 
 export const Card: React.FC<PaperProps> = ({children, ...props}) => {
     const classes = useStyles()
-    return <Paper {...props} classes={classes}>
+    return <Paper{...props} classes={classes}>
         {children}
     </Paper>
 }
