@@ -1,5 +1,5 @@
 import React from "react";
-import {Idea} from "../ideas.api";
+import {IdeaDto} from "../ideas.api";
 import {Card} from "../../components/card/Card";
 import {generatePath, Link} from "react-router-dom";
 import {ROUTE_IDEA} from "../../routes";
@@ -107,7 +107,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }))
 
 interface Props {
-    idea: Idea
+    idea: IdeaDto
 }
 
 const IdeaCard: React.FC<Props> = ({idea}) => {

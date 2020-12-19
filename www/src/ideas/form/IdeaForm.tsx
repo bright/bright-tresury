@@ -44,7 +44,7 @@ const IdeaForm: React.FC<Props> = ({network}) => {
         networks: [{name: network, value: 0} as IdeaNetworkDto],
         contact: '',
         portfolio: '',
-        links: [],
+        links: [''],
     })
 
     useEffect(() => {

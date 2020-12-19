@@ -8,6 +8,7 @@ import {getIdeaById, IdeaDto, IdeaNetworkDto} from '../ideas.api';
 import IdeaHeader from "./IdeaHeader";
 import IdeaContent from "./IdeaContent";
 import SubmitProposalModal from "../SubmitProposalModal";
+import {IdeaContentType} from "./IdeaContentTypeTabs";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -34,6 +35,7 @@ const Idea: React.FC<Props> = ({network}) => {
 
     let {ideaId} = useParams<{ ideaId: string }>()
 
+    const [contentType, setContentType] = useState<IdeaContentType>(IdeaContentType.Info);
     const [idea, setIdea] = useState<IdeaDto>({
         title: '',
         beneficiary: '',
@@ -42,7 +44,7 @@ const Idea: React.FC<Props> = ({network}) => {
         networks: [{name: network, value: 0} as IdeaNetworkDto],
         contact: '',
         portfolio: '',
-        links: [],
+        links: [''],
     })
 
     useEffect(() => {
@@ -55,8 +57,8 @@ const Idea: React.FC<Props> = ({network}) => {
 
     return (
         <div className={classes.root}>
-            <IdeaHeader idea={idea}/>
-            <IdeaContent idea={idea}/>
+            <IdeaHeader idea={idea} setContentType={setContentType}/>
+            <IdeaContent idea={idea} contentType={contentType}/>
         </div>
     );
 }

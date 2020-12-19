@@ -32,6 +32,15 @@
         "eventDescription": "event propose spend finished"
       }
     },
+    "content": {
+      "infoLabel": "Info",
+      "milestonesLabel": "Milestones",
+      "discussionLabel": "Discussion",
+      "info": {
+        "reward": "Reward",
+        "deposit": "Deposit"
+      }
+    },
     "list": {
       "card": {
         "statusActive": "Active",
