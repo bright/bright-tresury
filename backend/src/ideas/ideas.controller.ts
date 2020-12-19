@@ -37,7 +37,7 @@ export class IdeasController {
     @ApiBadRequestResponse({
         description: 'Not valid uuid parameter.',
     })
-    async getIdea(@Param('id') id: string): Promise<Idea> {
+    async getIdea(@Param('id') id: string): Promise<IdeaDto> {
         if (!uuidValidate(id)) {
             throw new BadRequestException('Not valid uuid parameter.')
         }
@@ -45,7 +45,7 @@ export class IdeasController {
         if (!idea) {
             throw new NotFoundException('Idea not found.')
         }
-        return idea
+        return toIdeaDto(idea)
     }
 
     @ApiCreatedResponse({
