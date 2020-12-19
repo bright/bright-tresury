@@ -4,7 +4,7 @@ import {Trans, useTranslation} from "react-i18next";
 import {Info, Strong} from '../components/info/Info';
 import {Modal} from '../components/modal/Modal';
 import SubmittingTransaction from "../substrate-lib/components/SubmittingTransaction";
-import {convertIdeaToProposal, Idea} from './ideas.api';
+import {convertIdeaToProposal, IdeaDto} from './ideas.api';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -25,7 +25,7 @@ export interface ExtrinsicDetails {
 interface Props {
     open: boolean,
     onClose: () => void,
-    idea: Idea
+    idea: IdeaDto
 }
 
 const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
@@ -61,7 +61,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                     palletRpc: 'treasury',
                     callable: 'proposeSpend',
                     eventMethod: 'Proposed',
-                    eventDescription: t('idea.details.submitProposalModal.eventDescription'),
+                    eventDescription: t('idea.idea.submitProposalModal.eventDescription'),
                     inputParams: [
                         {
                             name: 'value',
@@ -77,7 +77,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                 setExtrinsicDetails={setExtrinsicDetails}
             >
                 <>
-                    <h2 id='modal-title' className={classes.h2}>{t('idea.details.submitProposalModal.title')}</h2>
+                    <h2 id='modal-title' className={classes.h2}>{t('idea.idea.submitProposalModal.title')}</h2>
                     <Info className={classes.info}>
                         <Trans id='modal-description'
                                i18nKey="idea.details.submitProposalModal.warningMessage"

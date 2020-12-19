@@ -1,41 +1,41 @@
 import {API_URL, fetchAndUnwrap} from '../api'
 import {ExtrinsicDetails} from "./SubmitProposalModal";
 
-export interface IdeaNetwork {
+export interface IdeaNetworkDto {
     id?: string
     name: string
     value: number
 }
 
-export interface Idea {
+export interface IdeaDto {
     id?: string
     title: string
     beneficiary: string
     field?: string
     content: string
-    networks: IdeaNetwork[]
+    networks: IdeaNetworkDto[]
     contact?: string
     portfolio?: string
     links?: string[]
 }
 
 export function getIdeasByNetwork(name: string) {
-    return fetchAndUnwrap<Idea[]>('GET', `${API_URL}/ideas?network=${name}`)
+    return fetchAndUnwrap<IdeaDto[]>('GET', `${API_URL}/ideas?network=${name}`)
 }
 
 export function getIdeaById(id: string) {
-    return fetchAndUnwrap<Idea>('GET', `${API_URL}/ideas/${id}`)
+    return fetchAndUnwrap<IdeaDto>('GET', `${API_URL}/ideas/${id}`)
 }
 
-export function createIdea(idea: Idea) {
-    return fetchAndUnwrap<Idea>('POST', `${API_URL}/ideas`, idea)
+export function createIdea(idea: IdeaDto) {
+    return fetchAndUnwrap<IdeaDto>('POST', `${API_URL}/ideas`, idea)
 }
 
-export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: Idea, ideaNetwork: IdeaNetwork) {
+export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: IdeaDto, ideaNetwork: IdeaNetworkDto) {
     const data = {
         ideaNetworkId: ideaNetwork.id,
         extrinsicHash: exDetails.extrinsicHash,
         lastBlockHash: exDetails.lastBlockHash,
     }
-    return fetchAndUnwrap<Idea>('POST', `${API_URL}/ideas/${idea.id}/proposals`, data)
+    return fetchAndUnwrap<IdeaDto>('POST', `${API_URL}/ideas/${idea.id}/proposals`, data)
 }

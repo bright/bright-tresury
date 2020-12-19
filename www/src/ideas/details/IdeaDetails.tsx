@@ -1,8 +1,8 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-import {createIdea, Idea} from './ideas.api';
-import {FormInput} from "../components/input/FormInput";
+import {createIdea, IdeaDto} from './ideas.api';
+import {FormInput} from "../components/input/Input";
 import {useTranslation} from "react-i18next";
 import {FieldArray, Formik} from "formik";
 import {Button} from "../components/button/Button";
@@ -52,18 +52,24 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
-    idea: Idea,
-    setIdea: (idea: Idea) => void
+export enum IdeaDetailsState {
+    STATIC,
+    EDITABLE
 }
 
-const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
+interface Props {
+    idea: IdeaDto,
+    setIdea?: (idea: IdeaDto) => void,
+    state: IdeaDetailsState
+}
+
+const IdeaDetails: React.FC<Props> = ({idea, setIdea, state}) => {
     const classes = useStyles()
     const history = useHistory()
     const {t} = useTranslation()
     const isNew = (): boolean => idea.id === undefined
 
-    const save = async (formIdea: Idea) => {
+    const save = async (formIdea: IdeaDto) => {
         if (isNew()) {
             const editedIdea = {...idea, ...formIdea}
             await createIdea(editedIdea)
@@ -190,4 +196,4 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
     );
 }
 
-export default IdeaDetailsForm
+export default IdeaDetails

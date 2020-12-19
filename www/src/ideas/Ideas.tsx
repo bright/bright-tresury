@@ -1,9 +1,9 @@
 import Grid from '@material-ui/core/Grid';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
-import {useHistory} from 'react-router-dom';
-import {ROUTE_NEW_IDEA} from '../routes';
-import {getIdeasByNetwork, Idea} from './ideas.api';
+import {generatePath, Link, useHistory} from 'react-router-dom';
+import {ROUTE_IDEA, ROUTE_NEW_IDEA} from '../routes';
+import {getIdeasByNetwork, IdeaDto} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
 import IdeaCard from "./list/IdeaCard";
@@ -119,7 +119,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const history = useHistory()
     const {t} = useTranslation()
 
-    const [ideas, setIdeas] = useState<Idea[]>([])
+    const [ideas, setIdeas] = useState<IdeaDto[]>([])
     const [status, setStatus] = useState<string>('')
 
     useEffect(() => {

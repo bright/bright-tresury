@@ -1,11 +1,11 @@
 import React from 'react';
-import {Header} from "../../../components/header/Header";
-import {IconButton} from "../../../components/button/IconButton";
-import CrossSvg from "../../../assets/cross.svg";
+import {Header} from "../../components/header/Header";
+import {IconButton} from "../../components/button/IconButton";
+import CrossSvg from "../../assets/cross.svg";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useHistory} from "react-router-dom";
-import {ROUTE_IDEAS} from "../../../routes";
+import {ROUTE_IDEAS} from "../../routes";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

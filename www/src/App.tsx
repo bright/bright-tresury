@@ -3,15 +3,16 @@ import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
-import IdeaDetails, {IdeaDetailsState} from './ideas/IdeaDetails';
 import Ideas from './ideas/Ideas';
 import Menu from './main/Menu';
 import Proposals from './proposals/Proposals';
-import {ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSALS, ROUTE_ROOT} from './routes';
+import {ROUTE_EDIT_IDEA, ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSALS, ROUTE_ROOT} from './routes';
 import Stats from './stats/Stats';
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
 import { SubstrateContextProvider } from './substrate-lib';
+import IdeaForm from "./ideas/form/IdeaForm";
+import Idea from "./ideas/idea/Idea";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,16 +36,9 @@ function AppRoutes() {
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
-                    <Route exact={true} path={ROUTE_NEW_IDEA} component={() =>
-                        <IdeaDetails
-                            network={'localhost'}
-                            state={IdeaDetailsState.EDITABLE}
-                    />}/>
-                    <Route exact={true} path={ROUTE_IDEA} component={() =>
-                        <IdeaDetails
-                            network={'localhost'}
-                            state={IdeaDetailsState.STATIC_DETAILS}
-                        />}/>
+                    <Route exact={true} path={ROUTE_NEW_IDEA} component={IdeaForm}/>
+                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={IdeaForm}/>
+                    <Route exact={true} path={ROUTE_IDEA} component={Idea}/>
                 </Switch>
             </div>
         </Router>
