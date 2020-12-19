@@ -32,13 +32,13 @@ const useStyles = makeStyles(() =>
 interface SelectProps<T> {
     value: T
     options: T[]
-    label: string
+    label?: string
     placeholder?: string
     renderOption?: (value: T) => string,
     disableFormik?: boolean
 }
 
-export const Select: React.FC<SelectProps<any> & MaterialSelectProps> = ({disableFormik, ...props}) => {
+export const Select: ISelect = ({disableFormik, ...props}) => {
     return disableFormik ? <SelectComponent {...props}/> : <FormikSelectComponent {...props}/>
 }
 
@@ -46,18 +46,14 @@ export type ISelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps>
 
 const FormikSelectComponent: ISelect = ({...props}) => {
     // @ts-ignore
-    const [field, meta] = useField({ ...props, type: 'input' });
-    return <SelectComponent {...props} field={field} meta={meta}/>
+    const [field, meta] = useField({...props, type: 'input'});
+    return <SelectComponent
+        {...props}
+        inputProps={{...field, ...meta}}
+    />
 }
 
-interface FormikSelectProps {
-    field?: FieldInputProps<any>
-    meta?: FieldMetaProps<any>
-}
-
-type IFormikSelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps & FormikSelectProps>
-
-const SelectComponent: IFormikSelect = ({field, meta, disableFormik, value, renderOption, options, label, placeholder, ...props}) => {
+const SelectComponent: ISelect = ({inputProps, disableFormik, value, renderOption, options, label, placeholder, ...props}) => {
     const classes = useStyles()
     return <FormGroup>
         {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
@@ -69,7 +65,7 @@ const SelectComponent: IFormikSelect = ({field, meta, disableFormik, value, rend
                 classes: {
                     select: classes.select
                 },
-                ...field, ...meta
+                ...inputProps
             }}>
             {placeholder ? <MenuItem value={''}>{placeholder}</MenuItem> : null}
             {options ? options.map((option: any, index: number) =>

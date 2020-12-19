@@ -15,7 +15,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         [theme.breakpoints.down(breakpoints.mobile)]: {
             padding: '.6em 2em'
         },
-        padding: '.5em 2em .5em 2em'
     },
     text: {
         paddingLeft: 0,

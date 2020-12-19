@@ -6,7 +6,7 @@ import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, Idea} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
-import IdeaCard from "./IdeaCard";
+import IdeaCard from "./list/IdeaCard";
 import {breakpoints} from "../theme/theme";
 import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";

@@ -1,15 +1,15 @@
 import React from "react";
-import {Idea} from "./ideas.api";
-import {Card} from "../components/card/Card";
+import {Idea} from "../ideas.api";
+import {Card} from "../../components/card/Card";
 import {generatePath, Link} from "react-router-dom";
-import {ROUTE_IDEA} from "../routes";
-import {Divider} from "../components/divider/Divider";
+import {ROUTE_IDEA} from "../../routes";
+import {Divider} from "../../components/divider/Divider";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
-import {Status} from "../components/status/Status";
+import {Status} from "../../components/status/Status";
 import {useTranslation} from "react-i18next";
-import {breakpoints} from "../theme/theme";
-import {ellipseTextInTheMiddle} from "../util/stringUtil";
+import {breakpoints} from "../../theme/theme";
+import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
