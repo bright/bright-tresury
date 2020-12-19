@@ -27,6 +27,14 @@ interface Props {
     onChange: (filter: IdeaFilter) => void
 }
 
+export enum IdeaFilter {
+    All,
+    Active,
+    Inactive,
+    TurnedIntoProposal,
+    Closed,
+}
+
 const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
     const classes = useStyles()
     const [filter, setFilter] = useState<IdeaFilter>(IdeaFilter.All)
@@ -76,14 +84,6 @@ const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
             }}
         />
     </div>
-}
-
-export enum IdeaFilter {
-    All,
-    Active,
-    Inactive,
-    TurnedIntoProposal,
-    Closed,
 }
 
 export default IdeaStatusFilters

@@ -33,15 +33,9 @@
       }
     },
     "list": {
-      "tile": {
+      "card": {
         "statusActive": "Active",
         "beneficiary": "(Beneficiary)"
-      }
-    },
-    "list": {
-      "tile": {
-        "statusActive": "Active",
-        "suitor": "(Suitor)"
       },
       "filters": {
         "currentSpendTime": "Current Spend Time",

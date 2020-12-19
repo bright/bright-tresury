@@ -10,6 +10,7 @@ import {Status} from "../../components/status/Status";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {ellipseTextInTheMiddle} from "../../util/stringUtil";
+import {formatNumber} from "../../util/numberUtil";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -113,7 +114,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    const statusLabel = t('idea.list.tile.statusActive')
+    const statusLabel = t('idea.list.card.statusActive')
     const statusColor = '#00BFFF'
 
     const getBeneficiaryFragment = (): string => {
@@ -135,7 +136,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
             <div className={`${classes.contentMargin} ${classes.details}`}>
                 <p className={classes.titleLabel}>{idea.title}</p>
                 {idea.networks.length > 0 ?
-                    <p className={classes.networkLabel}>{`${idea.networks[0].value} LOC`}</p> : null}
+                    <p className={classes.networkLabel}>{`${formatNumber(idea.networks[0].value)} LOC`}</p> : null}
             </div>
 
             <Divider className={classes.contentMargin}/>
@@ -145,7 +146,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
                     <p className={classes.beneficiary}>
                         {getBeneficiaryFragment()}
                     </p>
-                    <p className={classes.beneficiaryLabel}>{t('idea.list.tile.beneficiary')}</p>
+                    <p className={classes.beneficiaryLabel}>{t('idea.list.card.beneficiary')}</p>
                 </div>
             </div>
         </Link>
