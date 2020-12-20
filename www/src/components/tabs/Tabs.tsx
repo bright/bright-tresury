@@ -29,9 +29,9 @@ const useTabStyles = makeStyles((theme: Theme) =>
     }))
 
 interface Props {
-    values: string[],
+    values: { label: string, value: string }[],
     value: string,
-    handleChange: (index: number) => void
+    handleChange: (value: string) => void
 }
 
 export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, ...props}) => {
@@ -42,13 +42,13 @@ export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, 
         {...props}
         value={value}
         classes={tabsClasses}
-        onChange={(event, value) => handleChange(values.indexOf(value))}>
-        {values ? values.map((value: string, index: number) =>
+        onChange={(event, value) => handleChange(value)}>
+        {values ? values.map(({value, label}) =>
             <MaterialTab
                 classes={tabClasses}
-                label={value}
+                label={label}
                 value={value}
-                key={index}/>
+                key={value}/>
         ) : null}
     </MaterialTabs>
 }

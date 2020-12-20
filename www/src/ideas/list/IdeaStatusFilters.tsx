@@ -28,11 +28,11 @@ interface Props {
 }
 
 export enum IdeaFilter {
-    All,
-    Active,
-    Inactive,
-    TurnedIntoProposal,
-    Closed,
+    All = 'all',
+    Active = 'active',
+    Inactive = 'inactive',
+    TurnedIntoProposal = 'turnedIntoProposal',
+    Closed = 'closed',
 }
 
 const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
@@ -41,25 +41,17 @@ const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
     const {t} = useTranslation()
 
     const getTranslation = (ideaFilter: IdeaFilter): string => {
-        switch (ideaFilter) {
-            case IdeaFilter.All:
-                return t('idea.list.filters.all')
-            case IdeaFilter.Active:
-                return t('idea.list.filters.active')
-            case IdeaFilter.Inactive:
-                return t('idea.list.filters.inactive')
-            case IdeaFilter.TurnedIntoProposal:
-                return t('idea.list.filters.turnedIntoProposal')
-            case IdeaFilter.Closed:
-                return t('idea.list.filters.closed')
-        }
+        return t(`idea.list.filters.${ideaFilter}`)
     }
 
     const filterValues = Object.values(IdeaFilter)
-        .filter((value: any) => typeof value === 'number')
 
-    const filterOptions = filterValues.map((filter: string | IdeaFilter) =>
-        getTranslation(filter as IdeaFilter)
+    const valuesWithLabels = filterValues.map((filter: IdeaFilter) => {
+            return {
+                value: filter,
+                label: getTranslation(filter)
+            }
+        }
     )
 
     const onFilterChange = (filter: IdeaFilter) => {
@@ -70,17 +62,18 @@ const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
     return <div>
         <Tabs
             className={classes.filterTabs}
-            value={getTranslation(filter)}
-            values={filterOptions}
-            handleChange={(index: number) => onFilterChange(filterValues[index] as IdeaFilter)}
+            value={filter}
+            values={valuesWithLabels}
+            handleChange={(value: string) => onFilterChange(value as IdeaFilter)}
         />
         <Select
             className={classes.filterSelect}
-            value={getTranslation(filter)}
-            options={filterOptions}
+            value={filter}
+            options={filterValues}
             disableFormik={true}
+            renderOption={(option) => getTranslation(option)}
             onChange={(event: any) => {
-                onFilterChange(filterValues[filterOptions.indexOf(event.target.value)] as IdeaFilter)
+                onFilterChange(event.target.value)
             }}
         />
     </div>
