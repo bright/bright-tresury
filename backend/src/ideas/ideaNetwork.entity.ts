@@ -8,7 +8,7 @@ export class IdeaNetwork extends BaseEntity {
     @Column({ nullable: false })
     name: string
 
-    @Column({ nullable: false, type: "integer", default: 0 })
+    @Column("decimal", { precision: 39, scale: 15, nullable: false, default: 0 })
     value: number
 
     @ManyToOne(

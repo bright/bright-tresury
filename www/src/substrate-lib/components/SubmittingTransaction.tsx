@@ -1,5 +1,6 @@
 import {Box} from "@material-ui/core";
 import {ISubmittableResult} from "@polkadot/types/types";
+import BN from "bn.js";
 import React, {useEffect, useState} from 'react';
 import {useSubstrate} from "../index";
 import SignAndSubmitForm from "./SignAndSubmitForm";
@@ -94,7 +95,11 @@ const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, set
             return
         }
 
-        const transformed = transformParams(inputParams);
+        // TODO should be set as general properties
+        const properties = await api.rpc.system.properties()
+        const decimals = properties.tokenDecimals.unwrapOr(new BN(15)).toNumber()
+
+        const transformed = transformParams(inputParams, decimals);
 
         // transformed can be empty parameters
         const txExecute = transformed

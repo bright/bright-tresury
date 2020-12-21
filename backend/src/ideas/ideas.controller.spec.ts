@@ -189,7 +189,7 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
 
-        it('should create a idea and networks', async (done) => {
+        it('should create an idea and networks', async (done) => {
             const result = await request(app())
                 .post(`${baseUrl}`)
                 .send({title: 'Test title', networks: [{name: 'kusama', value: 10}]})
@@ -200,7 +200,7 @@ describe(`/api/v1/ideas`, () => {
             expect(actual!.title).toBe('Test title')
             expect(actual!.networks!.length).toBe(1)
             expect(actual!.networks![0].name).toBe('kusama')
-            expect(actual!.networks![0].value).toBe(10)
+            expect(Number(actual!.networks![0].value)).toBe(10)
             done()
         })
     })

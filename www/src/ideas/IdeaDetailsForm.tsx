@@ -73,6 +73,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
 
     return (
             <Formik
+                enableReinitialize={true}
                 initialValues={{
                     ...idea,
                     links: (idea.links && idea.links.length > 0) ? idea.links : ['']

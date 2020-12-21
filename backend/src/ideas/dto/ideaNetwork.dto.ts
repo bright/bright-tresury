@@ -20,7 +20,8 @@ export class IdeaNetworkDto {
         id?: string
     ) {
         this.name = name
-        this.value = value
+        // remove trailing zeros returned from postgres for numeric types
+        this.value = Number(value)
         this.id = id
     }
 }

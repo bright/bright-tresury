@@ -1,4 +1,4 @@
-import { API_URL, fetchAndUnwrap } from '../api'
+import {API_URL, fetchAndUnwrap} from '../api'
 import {ExtrinsicDetails} from "./SubmitProposalModal";
 
 export interface IdeaNetwork {
