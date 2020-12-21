@@ -8,7 +8,7 @@ echo $(ls deploy)
 
 docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.yml \
-    build --no-cache backend
+    build --no-cache
 
 if [[ ! -z "${DOCKER_REGISTRY}" ]]; then
     echo "Push containers to registry"
@@ -17,7 +17,7 @@ if [[ ! -z "${DOCKER_REGISTRY}" ]]; then
     # aws ecr get-login [--registry-ids registryId] --no-include-email | bash
     docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.yml \
-    push backend
+    push 
 
     docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.yml \
