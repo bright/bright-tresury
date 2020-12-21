@@ -119,7 +119,7 @@ describe(`/api/v1/ideas`, () => {
             expect(savedIdea.title).toBe('Test title')
             expect(savedIdea.networks!.length).toBe(1)
             expect(savedIdea.networks![0].name).toBe('kusama')
-            expect(savedIdea.networks![0].value).toBe(10)
+            expect(savedIdea.networks![0].value).toBe('10.000000000000000')
             done()
         })
     })
@@ -140,7 +140,7 @@ describe(`/api/v1/ideas`, () => {
             const savedIdea = await getService().findOne(idea.id)
             expect(savedIdea.title).toBe('Test title updated')
             expect(savedIdea.networks[0].name).toBe('kusama')
-            expect(savedIdea.networks[0].value).toBe(44)
+            expect(savedIdea.networks[0].value).toBe('44.000000000000000')
             expect(savedIdea.portfolio).toBe('Test portfolio')
         })
         it('should update and save idea with updated links', async () => {
@@ -163,7 +163,7 @@ describe(`/api/v1/ideas`, () => {
             }, idea.id)
             const savedIdea = await getService().findOne(idea.id)
             expect(savedIdea.networks[0].name).toBe('kusama')
-            expect(savedIdea.networks[0].value).toBe(249)
+            expect(savedIdea.networks[0].value).toBe('249.000000000000000')
         })
         it('should throw not found if wrong id', async (done) => {
             await expect(getService().update({}, uuid()))
