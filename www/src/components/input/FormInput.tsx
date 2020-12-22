@@ -49,7 +49,7 @@ interface InputProps {
     endAdornment?: string
 }
 
-export const Input: React.FC<InputProps & TextFieldProps> = ({label, endAdornment, ...props}) => {
+export const FormInput: React.FC<InputProps & TextFieldProps> = ({label, endAdornment, ...props}) => {
     const classes = useStyles()
     // @ts-ignore
     const [field, meta] = useField({...props});

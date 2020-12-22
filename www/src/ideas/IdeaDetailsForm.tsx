@@ -2,11 +2,11 @@ import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React from 'react';
 import {useHistory} from 'react-router-dom';
 import {createIdea, Idea} from './ideas.api';
-import {Input} from "../components/input/Input";
+import {FormInput} from "../components/input/FormInput";
 import {useTranslation} from "react-i18next";
 import {FieldArray, Formik} from "formik";
 import {Button} from "../components/button/Button";
-import {Select} from "../components/select/Select";
+import {FormSelect} from "../components/select/Select";
 import {ROUTE_IDEAS} from "../routes";
 import {breakpoints} from "../theme/theme";
 import * as Yup from 'yup'
@@ -90,20 +90,20 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                   }) =>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                         <div className={classes.inputField}>
-                            <Input
+                            <FormInput
                                 name="title"
                                 placeholder={t('idea.details.form.title')}
                                 label={t('idea.details.form.title')}/>
                         </div>
                         <div className={`${classes.inputField} ${classes.smallField}`}>
-                            <Input
+                            <FormInput
                                 name="beneficiary"
                                 placeholder={t('idea.details.form.beneficiary')}
                                 label={t('idea.details.form.beneficiary')}
                             />
                         </div>
                         <div className={`${classes.inputField} ${classes.smallField}`}>
-                            <Select
+                            <FormSelect
                                 className={classes.fieldSelect}
                                 name="field"
                                 label={t('idea.details.form.field')}
@@ -113,7 +113,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                             />
                         </div>
                         <div className={classes.inputField}>
-                            <Input
+                            <FormInput
                                 name="content"
                                 multiline={true}
                                 rows={8}
@@ -123,7 +123,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         </div>
                         {values.networks.map((network, index) => {
                                 return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
-                                        <Input
+                                        <FormInput
                                             name={`networks[${index}].value`}
                                             type={`number`}
                                             label={t('idea.details.form.reward')}
@@ -135,7 +135,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                             }
                         )}
                         <div className={classes.inputField}>
-                            <Input
+                            <FormInput
                                 name="contact"
                                 multiline={true}
                                 rows={4}
@@ -144,7 +144,7 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                             />
                         </div>
                         <div className={classes.inputField}>
-                            <Input
+                            <FormInput
                                 name="portfolio"
                                 multiline={true}
                                 rows={4}
@@ -155,15 +155,15 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         <div className={classes.inputField}>
                             <FieldArray name={'links'} render={arrayHelpers => (
                                 <div>
-                                    {/*{values.links ? values.links.map((link: string, index: number) =>*/}
-                                    {/*    <div className={classes.inputField} key={index}>*/}
-                                    {/*        <Input*/}
-                                    {/*            name={`links[${index}]`}*/}
-                                    {/*            label={index === 0 ? t('idea.details.form.link') : ''}*/}
-                                    {/*            placeholder={t('idea.details.form.linkPlaceholder')}*/}
-                                    {/*        />*/}
-                                    {/*    </div>*/}
-                                    {/*) : null}*/}
+                                    {values.links ? values.links.map((link: string, index: number) =>
+                                        <div className={classes.inputField} key={index}>
+                                            <FormInput
+                                                name={`links[${index}]`}
+                                                label={index === 0 ? t('idea.details.form.link') : ''}
+                                                placeholder={t('idea.details.form.linkPlaceholder')}
+                                            />
+                                        </div>
+                                    ) : null}
                                     <Button className={classes.inputField} variant={"text"} color="primary"
                                             type="button"
                                             onClick={() => arrayHelpers.push('')}>

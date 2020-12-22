@@ -3,7 +3,7 @@ import {Formik} from "formik";
 import React, {createRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from "../../components/button/Button";
-import {ISelect, Select} from "../../components/select/Select";
+import {FormSelect, ISelect} from "../../components/select/Select";
 import {Account, InputParam, TxAttrs} from './SubmittingTransaction';
 import config from '../../config';
 
@@ -35,7 +35,7 @@ interface Values {
     account: Account
 }
 
-const TypedSelect = Select as ISelect<Account>
+const TypedSelect = FormSelect as ISelect<Account>
 
 const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accounts}) => {
     const classes = useStyles()

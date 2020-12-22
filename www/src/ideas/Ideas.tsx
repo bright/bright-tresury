@@ -157,7 +157,6 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
                         className={classes.timeSelect}
                         value={t('idea.list.filters.currentSpendTime')}
                         options={[t('idea.list.filters.currentSpendTime')]}
-                        disableFormik={true}
                     />
                 </div>
                 <div className={classes.paperBackground}/>

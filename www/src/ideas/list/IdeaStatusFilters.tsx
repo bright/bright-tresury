@@ -57,7 +57,7 @@ const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
 
     const filterValues = Object.values(IdeaFilter)
 
-    const valuesWithLabels = filterValues.map((filter: IdeaFilter) => {
+    const tabEntries = filterValues.map((filter: IdeaFilter) => {
             return {
                 value: filter,
                 label: getTranslation(filter)
@@ -74,14 +74,13 @@ const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
         <Tabs
             className={classes.filterTabs}
             value={filter}
-            values={valuesWithLabels}
+            values={tabEntries}
             handleChange={(value: string) => onFilterChange(value as IdeaFilter)}
         />
         <Select
             className={classes.filterSelect}
             value={filter}
             options={filterValues}
-            disableFormik={true}
             renderOption={(option) => getTranslation(option)}
             onChange={(event: any) => {
                 onFilterChange(event.target.value)

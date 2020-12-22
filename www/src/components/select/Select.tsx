@@ -34,12 +34,15 @@ interface SelectProps<T> {
     options: T[]
     label?: string
     placeholder?: string
-    renderOption?: (value: T) => string,
-    disableFormik?: boolean
+    renderOption?: (value: T) => string
 }
 
-export const Select: ISelect = ({disableFormik, ...props}) => {
-    return disableFormik ? <SelectComponent {...props}/> : <FormikSelectComponent {...props}/>
+export const FormSelect: ISelect = ({...props}) => {
+    return <FormikSelectComponent {...props}/>
+}
+
+export const Select: ISelect = ({...props}) => {
+    return <SelectComponent {...props}/>
 }
 
 export type ISelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps>
@@ -53,7 +56,7 @@ const FormikSelectComponent: ISelect = ({...props}) => {
     />
 }
 
-const SelectComponent: ISelect = ({inputProps, disableFormik, value, renderOption, options, label, placeholder, ...props}) => {
+const SelectComponent: ISelect = ({inputProps, value, renderOption, options, label, placeholder, ...props}) => {
     const classes = useStyles()
     return <FormGroup>
         {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
