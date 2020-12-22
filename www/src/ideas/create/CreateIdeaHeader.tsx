@@ -22,7 +22,7 @@ interface Props {
     isNewIdea: boolean
 }
 
-const IdeaFormHeader: React.FC<Props> = ({isNewIdea}) => {
+const CreateIdeaHeader: React.FC<Props> = ({isNewIdea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
     const history = useHistory()
@@ -39,4 +39,4 @@ const IdeaFormHeader: React.FC<Props> = ({isNewIdea}) => {
     </div>
 }
 
-export default IdeaFormHeader
+export default CreateIdeaHeader

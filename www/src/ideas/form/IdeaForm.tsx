@@ -1,76 +1,192 @@
-import React, {useContext, useEffect, useState} from "react";
-import IdeaDetails, {IdeaDetailsState} from "../details/IdeaDetails";
-import IdeaFormHeader from "./IdeaFormHeader";
-import {useParams} from "react-router";
-import {getIdeaById, IdeaDto, IdeaNetworkDto} from "../ideas.api";
-import {Button} from "../../components/button/Button";
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import React from 'react';
+import {useHistory} from 'react-router-dom';
 import {useTranslation} from "react-i18next";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {FieldArray, Formik} from "formik";
+import * as Yup from 'yup'
 import {breakpoints} from "../../theme/theme";
-import SubmitProposalModal from "../SubmitProposalModal";
+import {createIdea, IdeaDto} from "../ideas.api";
+import {ROUTE_IDEAS} from "../../routes";
+import {FormInput} from "../../components/input/FormInput";
+import {FormSelect} from "../../components/select/Select";
+import {Button} from "../../components/button/Button";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            flexGrow: 1,
-            padding: '3em 5em 3em 3em',
-            background: theme.palette.background.paper,
+        form: {
+            marginTop: '2em'
+        },
+        inputField: {
+            marginTop: '2em'
+        },
+        smallField: {
+            width: '50%',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                padding: '1em 1.5em 3em 1.5em',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: '1em 1.5em 4em 1em',
+                width: '100%',
             },
         },
+        fieldSelect: {
+            backgroundColor: theme.palette.background.default,
+            fontWeight: 500
+        },
+        submitButtons: {
+            margin: '3em 0',
+            display: 'flex',
+            justifyContent: 'space-between',
+            position: 'relative',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                justifyContent: 'inherit',
+                flexDirection: 'column-reverse'
+            },
+        },
+        bottomButtons: {
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                width: '100%'
+            },
+        },
+        saveAsDraftButton: {
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                marginTop: '2em'
+            },
+        }
     }),
 );
 
 interface Props {
-    network: string
+    idea: IdeaDto,
+    setIdea?: (idea: IdeaDto) => void,
 }
 
-const IdeaForm: React.FC<Props> = ({network}) => {
+const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
     const classes = useStyles()
+    const history = useHistory()
     const {t} = useTranslation()
-
-    let {ideaId} = useParams<{ ideaId: string }>()
-
-    const [submitProposalVisibility, setSubmitProposalVisibility] = React.useState(false);
-    const [idea, setIdea] = useState<IdeaDto>({
-        title: '',
-        beneficiary: '',
-        field: '',
-        content: '',
-        networks: [{name: network, value: 0} as IdeaNetworkDto],
-        contact: '',
-        portfolio: '',
-        links: [''],
-    })
-
-    useEffect(() => {
-        if (ideaId !== undefined) {
-            getIdeaById(ideaId).then((result) => {
-                setIdea(result)
-            }).catch()
-        }
-    }, [ideaId])
-
     const isNew = (): boolean => idea.id === undefined
 
-    return <div className={classes.root}>
-        <IdeaFormHeader isNewIdea={isNew()}/>
-        <IdeaDetails idea={idea} setIdea={setIdea} state={IdeaDetailsState.EDITABLE}/>
-        {!!idea.id && <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setSubmitProposalVisibility(true)}>
-            {t('idea.details.submitProposal')}
-        </Button>}
-        <SubmitProposalModal
-            open={submitProposalVisibility}
-            onClose={() => setSubmitProposalVisibility(false)}
-            idea={idea}/>
-    </div>
+    const save = async (formIdea: IdeaDto) => {
+        if (isNew()) {
+            const editedIdea = {...idea, ...formIdea}
+            await createIdea(editedIdea)
+            history.push(ROUTE_IDEAS)
+        }
+    }
+
+    const validationSchema = Yup.object({
+        title: Yup.string().required(t('idea.details.form.emptyFieldError'))
+    })
+
+    return (
+            <Formik
+                initialValues={{
+                    ...idea,
+                    links: (idea.links && idea.links.length > 0) ? idea.links : ['']
+                }}
+                validationSchema={validationSchema}
+                onSubmit={save}>
+                {({
+                      values,
+                      handleSubmit
+                  }) =>
+                    <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
+                        <div className={classes.inputField}>
+                            <FormInput
+                                name="title"
+                                placeholder={t('idea.details.form.title')}
+                                label={t('idea.details.form.title')}/>
+                        </div>
+                        <div className={`${classes.inputField} ${classes.smallField}`}>
+                            <FormInput
+                                name="beneficiary"
+                                placeholder={t('idea.details.form.beneficiary')}
+                                label={t('idea.details.form.beneficiary')}
+                            />
+                        </div>
+                        <div className={`${classes.inputField} ${classes.smallField}`}>
+                            <FormSelect
+                                className={classes.fieldSelect}
+                                name="field"
+                                label={t('idea.details.form.field')}
+                                placeholder={t('idea.details.form.field')}
+                                options={['Optimisation', 'Treasury', 'Transactions']}
+                                value={values.field}
+                            />
+                        </div>
+                        <div className={classes.inputField}>
+                            <FormInput
+                                name="content"
+                                multiline={true}
+                                rows={8}
+                                label={t('idea.details.form.content')}
+                                placeholder={t('idea.details.form.content')}
+                            />
+                        </div>
+                        {values.networks.map((network, index) => {
+                                return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
+                                        <FormInput
+                                            name={`networks[${index}].value`}
+                                            type={`number`}
+                                            label={t('idea.details.form.reward')}
+                                            placeholder={t('idea.details.form.reward')}
+                                            endAdornment={'LOC'}
+                                        />
+                                    </div>
+                                )
+                            }
+                        )}
+                        <div className={classes.inputField}>
+                            <FormInput
+                                name="contact"
+                                multiline={true}
+                                rows={4}
+                                label={t('idea.details.form.contact')}
+                                placeholder={t('idea.details.form.contact')}
+                            />
+                        </div>
+                        <div className={classes.inputField}>
+                            <FormInput
+                                name="portfolio"
+                                multiline={true}
+                                rows={4}
+                                label={t('idea.details.form.portfolio')}
+                                placeholder={t('idea.details.form.portfolio')}
+                            />
+                        </div>
+                        <div className={classes.inputField}>
+                            <FieldArray name={'links'} render={arrayHelpers => (
+                                <div>
+                                    {values.links ? values.links.map((link: string, index: number) =>
+                                        <div className={classes.inputField} key={index}>
+                                            <FormInput
+                                                name={`links[${index}]`}
+                                                label={index === 0 ? t('idea.details.form.link') : ''}
+                                                placeholder={t('idea.details.form.linkPlaceholder')}
+                                            />
+                                        </div>
+                                    ) : null}
+                                    <Button className={classes.inputField} variant={"text"} color="primary"
+                                            type="button"
+                                            onClick={() => arrayHelpers.push('')}>
+                                        {t('idea.details.form.addLink')}
+                                    </Button>
+                                </div>
+                            )}/>
+                        </div>
+                        <div className={classes.submitButtons}>
+                            <Button
+                                className={`${classes.bottomButtons} ${classes.saveAsDraftButton}`}
+                                variant={"outlined"} color="primary" type="button">
+                                {t('idea.details.saveDraft')}
+                            </Button>
+                            <Button
+                                className={classes.bottomButtons}
+                                variant={"contained"} color="primary" type="submit">
+                                {t(isNew() ? 'idea.details.create' : 'idea.details.edit')}
+                            </Button>
+                        </div>
+                    </form>
+                }
+            </Formik>
+    );
 }
 
 export default IdeaForm

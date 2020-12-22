@@ -1,82 +1,14 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React from 'react';
-import {useHistory} from 'react-router-dom';
-import {createIdea, IdeaDto} from './ideas.api';
-import {FormInput} from "../components/input/Input";
-import {useTranslation} from "react-i18next";
-import {FieldArray, Formik} from "formik";
-import {Button} from "../components/button/Button";
-import {FormSelect} from "../components/select/Select";
-import {ROUTE_IDEAS} from "../routes";
-import {breakpoints} from "../theme/theme";
-import * as Yup from 'yup'
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        form: {
-            marginTop: '2em'
-        },
-        inputField: {
-            marginTop: '2em'
-        },
-        smallField: {
-            width: '50%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '100%',
-            },
-        },
-        fieldSelect: {
-            backgroundColor: theme.palette.background.default,
-            fontWeight: 500
-        },
-        submitButtons: {
-            margin: '3em 0',
-            display: 'flex',
-            justifyContent: 'space-between',
-            position: 'relative',
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                justifyContent: 'inherit',
-                flexDirection: 'column-reverse'
-            },
-        },
-        bottomButtons: {
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                width: '100%'
-            },
-        },
-        saveAsDraftButton: {
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                marginTop: '2em'
-            },
-        }
-    }),
-);
-
-export enum IdeaDetailsState {
-    STATIC,
-    EDITABLE
-}
+import React from "react";
+import {IdeaDto} from "../ideas.api";
 
 interface Props {
-    idea: IdeaDto,
-    setIdea?: (idea: IdeaDto) => void,
-    state: IdeaDetailsState
+    idea: IdeaDto
 }
 
-const IdeaDetails: React.FC<Props> = ({idea, setIdea, state}) => {
-    const classes = useStyles()
-    const history = useHistory()
-    const {t} = useTranslation()
-    const isNew = (): boolean => idea.id === undefined
-
-    const save = async (formIdea: IdeaDto) => {
-        if (isNew()) {
-            const editedIdea = {...idea, ...formIdea}
-            await createIdea(editedIdea)
-            history.push(ROUTE_IDEAS)
-        }
-    }
-
+const IdeaDetails: React.FC<Props> = ({idea}) => {
+    return <div>
+        Idea Details
+    </div>
     const validationSchema = Yup.object({
         title: Yup.string().required(t('idea.details.form.emptyFieldError'))
     })

@@ -11,7 +11,7 @@ import Stats from './stats/Stats';
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
 import { SubstrateContextProvider } from './substrate-lib';
-import IdeaForm from "./ideas/form/IdeaForm";
+import CreateIdea from "./ideas/create/CreateIdea";
 import Idea from "./ideas/idea/Idea";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,8 +36,8 @@ function AppRoutes() {
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
-                    <Route exact={true} path={ROUTE_NEW_IDEA} component={IdeaForm}/>
-                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={IdeaForm}/>
+                    <Route exact={true} path={ROUTE_NEW_IDEA} component={CreateIdea}/>
+                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={CreateIdea}/>
                     <Route exact={true} path={ROUTE_IDEA} component={Idea}/>
                 </Switch>
             </div>

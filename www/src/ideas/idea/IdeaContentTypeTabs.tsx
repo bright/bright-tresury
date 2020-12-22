@@ -1,15 +1,16 @@
 import React, {useState} from "react";
-import {Tabs} from "../../components/tabs/Tabs";
+import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
+import {IdeaFilter} from "../list/IdeaStatusFilters";
 
 interface Props {
     onChange: (type: IdeaContentType) => void
 }
 
 export enum IdeaContentType {
-    Info,
-    Milestones,
-    Discussion
+    Info= "info",
+    Milestones = "milestones",
+    Discussion = "discussion"
 }
 
 const IdeaContentTypeTabs: React.FC<Props> = ({onChange}) => {
@@ -28,10 +29,13 @@ const IdeaContentTypeTabs: React.FC<Props> = ({onChange}) => {
     }
 
     const filterValues = Object.values(IdeaContentType)
-        .filter((value: any) => typeof value === 'number')
 
-    const filterOptions = filterValues.map((filter: string | IdeaContentType) =>
-        getTranslation(filter as IdeaContentType)
+    const tabEntries = filterValues.map((filter: IdeaContentType) => {
+            return {
+                value: filter,
+                label: getTranslation(filter)
+            } as TabEntry
+        }
     )
 
     const onFilterChange = (filter: IdeaContentType) => {
@@ -41,9 +45,9 @@ const IdeaContentTypeTabs: React.FC<Props> = ({onChange}) => {
 
     return <div>
         <Tabs
-            value={getTranslation(filter)}
-            values={filterOptions}
-            handleChange={(index: number) => onFilterChange(filterValues[index] as IdeaContentType)}
+            value={filter}
+            values={tabEntries}
+            handleChange={(value: string) => onFilterChange(value as IdeaContentType)}
         />
     </div>
 }

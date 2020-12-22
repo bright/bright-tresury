@@ -125,7 +125,7 @@ const IdeaHeader: React.FC<Props> = ({idea, setContentType}) => {
             variant="contained"
             color="primary"
             onClick={() => setSubmitProposalVisibility(true)}>
-            {t('idea.details.submitProposal')}
+            {t('idea.form.submitProposal')}
         </Button>
         }
         <SubmitProposalModal
