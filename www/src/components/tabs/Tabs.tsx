@@ -28,8 +28,13 @@ const useTabStyles = makeStyles((theme: Theme) =>
         }
     }))
 
+export interface TabEntry {
+    value: string
+    label: string
+}
+
 interface Props {
-    values: { label: string, value: string }[],
+    values: TabEntry[],
     value: string,
     handleChange: (value: string) => void
 }
