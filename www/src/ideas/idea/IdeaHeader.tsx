@@ -22,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
+            alignItems: 'center',
             flexWrap: 'wrap'
         },
         closeIcon: {
@@ -58,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         networkValues: {
             display: 'flex',
-            height: '6em',
+            alignSelf: 'flex-start',
             flexDirection: 'row'
         },
         networkDeposit: {
@@ -69,7 +70,7 @@ const useStyles = makeStyles((theme: Theme) =>
             height: 0,
         },
         contentTypeTabs: {
-            marginTop: '26px'
+            marginTop: '20px'
         }
     }),
 );
@@ -112,21 +113,23 @@ const IdeaHeader: React.FC<Props> = ({idea, setContentType}) => {
             </div>
         </div>
         <div className={classes.networkValues}>
-            <Amount amount={1950.000} currency={'DOT'} label={t('idea.content.info.reward')}/>
+            <div>
+                <Amount amount={1950.0000} currency={'DOT'} label={t('idea.content.info.reward')}/>
+            </div>
             <div className={classes.networkDeposit}>
-                <Amount amount={1950.000} currency={'DOT'} label={t('idea.content.info.deposit')}/>
+                <Amount amount={1950.0000} currency={'DOT'} label={t('idea.content.info.deposit')}/>
             </div>
         </div>
         <div className={classes.flexBreakLine}/>
         <div className={classes.contentTypeTabs}>
             <IdeaContentTypeTabs onChange={(type) => setContentType(type)}/>
         </div>
-        {!!idea.id && <Button
+        {!!idea.id && <div><Button
             variant="contained"
             color="primary"
             onClick={() => setSubmitProposalVisibility(true)}>
-            {t('idea.form.submitProposal')}
-        </Button>
+            {t('idea.details.submitProposal')}
+        </Button></div>
         }
         <SubmitProposalModal
             open={submitProposalVisibility}

@@ -8,11 +8,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             backgroundColor: theme.palette.primary.light,
             display: 'flex',
             flexDirection: 'column',
-            justifyContent: 'start',
+            justifyContent: 'center',
             alignItems: 'center',
-            alignContent: 'flex-start',
             borderRadius: '8px',
-            padding: '0 16px',
+            padding: '16px 20px',
         },
         amount: {
             fontSize: '18px',
@@ -20,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         },
         label: {
             fontSize: '14px',
-            paddingTop: 0
         }
     }),
 );
@@ -34,7 +32,7 @@ interface AmountProps {
 export const Amount: React.FC<AmountProps> = ({amount, currency, label, ...props}) => {
     const classes = useStyles()
     return <div {...props} className={classes.root}>
-        <p className={classes.amount}>{formatNumber(amount)} {currency}</p>
-        {label && <p className={classes.label}>{label}</p>}
+        <div className={classes.amount}>{formatNumber(amount)} {currency}</div>
+        {label && <div className={classes.label}>{label}</div>}
     </div>
 }
