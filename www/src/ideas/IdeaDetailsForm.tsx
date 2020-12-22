@@ -6,7 +6,7 @@ import {FormInput} from "../components/input/FormInput";
 import {useTranslation} from "react-i18next";
 import {FieldArray, Formik} from "formik";
 import {Button} from "../components/button/Button";
-import {FormSelect} from "../components/select/FormSelect";
+import {FormSelect} from "../components/select/Select";
 import {ROUTE_IDEAS} from "../routes";
 import {breakpoints} from "../theme/theme";
 import * as Yup from 'yup'
