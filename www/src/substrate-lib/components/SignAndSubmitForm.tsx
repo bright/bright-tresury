@@ -6,6 +6,8 @@ import {Button} from "../../components/button/Button";
 import {FormSelect} from "../../components/select/FormSelect";
 import {ISelect} from "../../components/select/Select";
 import {FormSelect, ISelect} from "../../components/select/Select";
+import {FormSelect} from "../../components/select/FormSelect";
+import {ISelect} from "../../components/select/Select";
 import {Account, InputParam, TxAttrs} from './SubmittingTransaction';
 import config from '../../config';
 
