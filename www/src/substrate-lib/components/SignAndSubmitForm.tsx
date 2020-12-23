@@ -3,7 +3,8 @@ import {Formik} from "formik";
 import React, {createRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from "../../components/button/Button";
-import {FormSelect, ISelect} from "../../components/select/Select";
+import {FormSelect} from "../../components/select/FormSelect";
+import {ISelect} from "../../components/select/Select";
 import {Account, InputParam, TxAttrs} from './SubmittingTransaction';
 import config from '../../config';
 

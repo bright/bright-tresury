@@ -8,8 +8,6 @@ import {
 } from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
-import {useField} from "formik";
-import {FieldInputProps, FieldMetaProps} from "formik/dist/types";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -37,26 +35,9 @@ interface SelectProps<T> {
     renderOption?: (value: T) => string
 }
 
-export const FormSelect: ISelect = ({...props}) => {
-    return <FormikSelectComponent {...props}/>
-}
-
-export const Select: ISelect = ({...props}) => {
-    return <SelectComponent {...props}/>
-}
-
 export type ISelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps>
 
-const FormikSelectComponent: ISelect = ({...props}) => {
-    // @ts-ignore
-    const [field, meta] = useField({...props, type: 'input'});
-    return <SelectComponent
-        {...props}
-        inputProps={{...field, ...meta}}
-    />
-}
-
-const SelectComponent: ISelect = ({inputProps, value, renderOption, options, label, placeholder, ...props}) => {
+export const Select: ISelect = ({inputProps, value, renderOption, options, label, placeholder, ...props}) => {
     const classes = useStyles()
     return <FormGroup>
         {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
