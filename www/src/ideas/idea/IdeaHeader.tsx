@@ -18,7 +18,10 @@ import {Amount} from "../../components/amount/Amount";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         headerContainer: {
-            padding: '3em 5em 3em 3em',
+            padding: '2em 7em 3em 3em',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                padding: '1em 1.5em 1em 2em'
+            },
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
@@ -39,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
             }
         },
         basicInfo: {
+            order: 1,
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
@@ -59,18 +63,50 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         networkValues: {
             display: 'flex',
+            flexDirection: 'row',
             alignSelf: 'flex-start',
-            flexDirection: 'row'
+            order: 2,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                order: 4,
+                marginTop: '16px',
+                justifyContent: 'center',
+                width: '100%',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                order: 2
+            }
+        },
+        networkReward: {
+            flex: 1
         },
         networkDeposit: {
+            flex: 1,
             marginLeft: '32px',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginLeft: '18px'
+            },
         },
         flexBreakLine: {
             flexBasis: '100%',
             height: 0,
+            order: 3
         },
         contentTypeTabs: {
-            marginTop: '20px'
+            marginTop: '20px',
+            order: 4,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                order: 5,
+            },
+        },
+        convertToProposal: {
+            order: 5,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                order: 2,
+                alignSelf: 'flex-end'
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                display: 'none'
+            }
         }
     }),
 );
@@ -113,7 +149,7 @@ const IdeaHeader: React.FC<Props> = ({idea, setContentType}) => {
             </div>
         </div>
         <div className={classes.networkValues}>
-            <div>
+            <div className={classes.networkReward}>
                 <Amount amount={1950.0000} currency={'DOT'} label={t('idea.content.info.reward')}/>
             </div>
             <div className={classes.networkDeposit}>
@@ -124,7 +160,7 @@ const IdeaHeader: React.FC<Props> = ({idea, setContentType}) => {
         <div className={classes.contentTypeTabs}>
             <IdeaContentTypeTabs onChange={(type) => setContentType(type)}/>
         </div>
-        {!!idea.id && <div><Button
+        {!!idea.id && <div className={classes.convertToProposal}><Button
             variant="contained"
             color="primary"
             onClick={() => setSubmitProposalVisibility(true)}>

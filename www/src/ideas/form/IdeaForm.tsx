@@ -8,7 +8,7 @@ import {breakpoints} from "../../theme/theme";
 import {createIdea, IdeaDto} from "../ideas.api";
 import {ROUTE_IDEAS} from "../../routes";
 import {FormInput} from "../../components/input/FormInput";
-import {FormSelect} from "../../components/select/Select";
+import {FormSelect} from "../../components/select/FormSelect";
 import {Button} from "../../components/button/Button";
 
 const useStyles = makeStyles((theme: Theme) =>

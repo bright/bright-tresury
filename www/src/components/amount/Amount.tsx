@@ -2,6 +2,7 @@ import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {createStyles, Theme} from "@material-ui/core";
 import {formatNumber} from "../../util/numberUtil";
+import {breakpoints} from "../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
         root: {
@@ -12,12 +13,24 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             alignItems: 'center',
             borderRadius: '8px',
             padding: '16px 20px',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                flexDirection: 'row',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                flexDirection: 'column',
+            },
         },
         amount: {
             fontSize: '18px',
-            fontWeight: 700
+            fontWeight: 700,
         },
         label: {
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginLeft: '12px'
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                marginLeft: 0
+            },
             fontSize: '14px',
         }
     }),
