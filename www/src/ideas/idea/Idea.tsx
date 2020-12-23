@@ -14,13 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             flexGrow: 1,
-            backgroundColor: theme.palette.background.default,
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                padding: '1em 1.5em 3em 1.5em',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: '1em 1.5em 4em 1em',
-            },
+            backgroundColor: theme.palette.background.paper
         },
     }),
 );

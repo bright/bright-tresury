@@ -18,6 +18,7 @@ import {Amount} from "../../components/amount/Amount";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         headerContainer: {
+            background: theme.palette.background.default,
             padding: '2em 7em 3em 3em',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 padding: '1em 1.5em 1em 2em'
@@ -50,16 +51,25 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         basicInfoDivider: {
             height: '20px',
-            marginLeft: '2em'
+            marginLeft: '2em',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginLeft: '1em'
+            }
         },
         status: {
-            marginLeft: '2em'
+            marginLeft: '2em',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginLeft: '1em'
+            },
         },
         ideaTitle: {
             flexBasis: '100%'
         },
         ideaId: {
             fontSize: '18px',
+            overflow: 'hidden',
+            maxWidth: '60%',
+            whiteSpace: 'nowrap'
         },
         networkValues: {
             display: 'flex',

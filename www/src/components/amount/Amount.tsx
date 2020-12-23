@@ -23,15 +23,19 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         amount: {
             fontSize: '18px',
             fontWeight: 700,
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                fontSize: '16px'
+            },
         },
         label: {
+            fontSize: '14px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 marginLeft: '12px'
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
+                fontSize: '12px',
                 marginLeft: 0
             },
-            fontSize: '14px',
         }
     }),
 );

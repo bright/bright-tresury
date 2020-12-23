@@ -13,9 +13,9 @@ const IdeaInfo: React.FC<Props> = ({idea}) => {
      */
     const doesIdeaBelongToCurrentUser = () => true
 
-    return <div>
+    return <>
         { doesIdeaBelongToCurrentUser() ? <IdeaForm idea={idea} /> : <IdeaDetails idea={idea}/>}
-    </div>
+    </>
 }
 
 export default IdeaInfo
