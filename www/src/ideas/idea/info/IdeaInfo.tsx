@@ -11,7 +11,7 @@ const IdeaInfo: React.FC<Props> = ({idea}) => {
     /**
      * TODO:// check if [idea] belongs to the currently logged in user
      */
-    const doesIdeaBelongToCurrentUser = () => true
+    const doesIdeaBelongToCurrentUser = () => false
 
     return <>
         { doesIdeaBelongToCurrentUser() ? <IdeaForm idea={idea} /> : <IdeaDetails idea={idea}/>}

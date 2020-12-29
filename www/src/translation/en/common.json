@@ -8,15 +8,16 @@
   },
   "idea": {
     "details": {
+      "title": "Title",
+      "beneficiary": "Beneficiary",
+      "field": "Field of Idea",
+      "content": "Reason of Proposal",
+      "contact": "Proposer's information",
+      "portfolio": "Portfolio",
+      "reward": "Reward",
+      "links": "Links",
+      "defaultValue": "-",
       "form": {
-        "title": "Title",
-        "beneficiary": "Beneficiary",
-        "field": "Field of Idea",
-        "content": "Reason of Proposal",
-        "contact": "Proposer's information",
-        "portfolio": "Portfolio",
-        "reward": "Reward",
-        "link": "Link",
         "linkPlaceholder": "Add external link to your proposal here",
         "addLink": "+ Add Link",
         "emptyFieldError": "This field cannot be empty"

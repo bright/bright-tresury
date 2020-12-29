@@ -1,13 +1,82 @@
 import React from "react";
 import {IdeaDto} from "../ideas.api";
+import {useTranslation} from "react-i18next";
+import {Label} from "../../components/text/Label";
+import {Identicon} from "../../components/identicon/Identicon";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
+import {Box} from "@material-ui/core";
+import {Link} from "../../components/link/Link";
+
+const useStyles = makeStyles(() =>
+    createStyles({
+        header: {
+            fontSize: '18px',
+            fontWeight: 'bold',
+            color: '#1B1D1C',
+        },
+        text: {
+            fontSize: '14px',
+            fontWeight: 500
+        },
+        textWrapper: {
+            marginTop: '2em'
+        },
+        beneficiary: {
+            display: 'flex',
+            alignItems: 'center'
+        },
+        beneficiaryValue: {
+            marginLeft: '.5em',
+        },
+        linkSpacing: {
+            marginTop: '.7em'
+        }
+    }),
+);
 
 interface Props {
     idea: IdeaDto
 }
 
 const IdeaDetails: React.FC<Props> = ({idea}) => {
+    const classes = useStyles()
+    const {t} = useTranslation()
+
+    const defaultValue = t('idea.details.defaultValue')
+
     return <div>
-        Idea Details
+        <Label label={t('idea.details.beneficiary')}/>
+        <div className={classes.beneficiary}>
+            <Identicon account={idea.beneficiary}/>
+            <div className={`${classes.beneficiaryValue} ${classes.text}`}>
+                {idea.beneficiary ?? defaultValue}
+            </div>
+        </div>
+        <div className={classes.textWrapper}>
+            <Label label={t('idea.details.field')}/>
+            {idea.field ?? defaultValue}
+        </div>
+        <div className={classes.textWrapper}>
+            <Label label={t('idea.details.content')}/>
+            {idea.content ?? defaultValue}
+        </div>
+        <div className={classes.textWrapper}>
+            <Label label={t('idea.details.contact')}/>
+            {idea.contact ?? defaultValue}
+        </div>
+        <div className={classes.textWrapper}>
+            <Label label={t('idea.details.portfolio')}/>
+            {idea.portfolio ?? defaultValue}
+        </div>
+        <div className={classes.textWrapper}>
+            <Label label={t('idea.details.links')}/>
+            {idea.links ? idea.links.map((link: string, index: number) =>
+                    <div className={index !== 0 ? classes.linkSpacing : ''}>
+                        <Link href={link} key={index}></Link>
+                    </div>)
+                : <div className={classes.text}>{defaultValue}</div>
+            }
+        </div>
     </div>
     const validationSchema = Yup.object({
         title: Yup.string().required(t('idea.details.form.emptyFieldError'))

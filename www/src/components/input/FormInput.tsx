@@ -9,6 +9,7 @@ import {
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
 import {useField} from "formik";
+import {Label} from "../text/Label";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,7 +56,7 @@ export const FormInput: React.FC<InputProps & TextFieldProps> = ({label, endAdor
     const [field, meta] = useField({...props});
     const hasError: boolean = meta.touched && Boolean(meta.error)
     return <FormGroup>
-        {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
+        {label ? <Label label={label}/> : null}
         <TextField
             {...props}
             error={hasError}

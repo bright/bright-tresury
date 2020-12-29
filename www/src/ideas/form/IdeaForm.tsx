@@ -91,22 +91,22 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                         <div className={classes.inputField}>
                             <FormInput
                                 name="title"
-                                placeholder={t('idea.details.form.title')}
-                                label={t('idea.details.form.title')}/>
+                                placeholder={t('idea.details.title')}
+                                label={t('idea.details.title')}/>
                         </div>
                         <div className={`${classes.inputField} ${classes.smallField}`}>
                             <FormInput
                                 name="beneficiary"
-                                placeholder={t('idea.details.form.beneficiary')}
-                                label={t('idea.details.form.beneficiary')}
+                                placeholder={t('idea.details.beneficiary')}
+                                label={t('idea.details.beneficiary')}
                             />
                         </div>
                         <div className={`${classes.inputField} ${classes.smallField}`}>
                             <FormSelect
                                 className={classes.fieldSelect}
                                 name="field"
-                                label={t('idea.details.form.field')}
-                                placeholder={t('idea.details.form.field')}
+                                label={t('idea.details.field')}
+                                placeholder={t('idea.details.field')}
                                 options={['Optimisation', 'Treasury', 'Transactions']}
                                 value={values.field}
                             />
@@ -116,8 +116,8 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                                 name="content"
                                 multiline={true}
                                 rows={8}
-                                label={t('idea.details.form.content')}
-                                placeholder={t('idea.details.form.content')}
+                                label={t('idea.details.content')}
+                                placeholder={t('idea.details.content')}
                             />
                         </div>
                         {values.networks.map((network, index) => {
@@ -125,8 +125,8 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                                         <FormInput
                                             name={`networks[${index}].value`}
                                             type={`number`}
-                                            label={t('idea.details.form.reward')}
-                                            placeholder={t('idea.details.form.reward')}
+                                            label={t('idea.details.reward')}
+                                            placeholder={t('idea.details.reward')}
                                             endAdornment={'LOC'}
                                         />
                                     </div>
@@ -138,8 +138,8 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                                 name="contact"
                                 multiline={true}
                                 rows={4}
-                                label={t('idea.details.form.contact')}
-                                placeholder={t('idea.details.form.contact')}
+                                label={t('idea.details.contact')}
+                                placeholder={t('idea.details.contact')}
                             />
                         </div>
                         <div className={classes.inputField}>
@@ -147,8 +147,8 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                                 name="portfolio"
                                 multiline={true}
                                 rows={4}
-                                label={t('idea.details.form.portfolio')}
-                                placeholder={t('idea.details.form.portfolio')}
+                                label={t('idea.details.portfolio')}
+                                placeholder={t('idea.details.portfolio')}
                             />
                         </div>
                         <div className={classes.inputField}>
@@ -158,7 +158,7 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                                         <div className={classes.inputField} key={index}>
                                             <FormInput
                                                 name={`links[${index}]`}
-                                                label={index === 0 ? t('idea.details.form.link') : ''}
+                                                label={index === 0 ? t('idea.details.links') : ''}
                                                 placeholder={t('idea.details.form.linkPlaceholder')}
                                             />
                                         </div>

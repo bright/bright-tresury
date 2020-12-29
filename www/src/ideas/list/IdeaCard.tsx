@@ -11,6 +11,7 @@ import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 import {formatNumber} from "../../util/numberUtil";
+import {Identicon} from "../../components/identicon/Identicon";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -86,11 +87,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         fontWeight: 500,
         padding: '3px'
     },
+    beneficiaryWrapper: {
+        display: 'flex',
+        alignItems: 'center'
+    },
     beneficiaryInfo: {
         display: 'flex',
+        marginLeft: '.75em',
         flexDirection: 'row',
     },
-    beneficiary: {
+    beneficiaryValue: {
         fontSize: '1em',
         height: '1em',
         fontWeight: 600,
@@ -122,7 +128,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
         return ellipseTextInTheMiddle(idea.beneficiary, 12)
     }
 
-    return <Card className={classes.root} >
+    return <Card className={classes.root}>
         <div className={classes.networkAccentLine}/>
 
         <Link className={classes.link} to={generatePath(ROUTE_IDEA, {ideaId: idea.id})}>
@@ -141,12 +147,15 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
 
             <Divider className={classes.contentMargin}/>
 
-            <div className={`${classes.contentMargin} ${classes.beneficiaryInfo}`}>
-                <div>
-                    <p className={classes.beneficiary}>
-                        {getBeneficiaryFragment()}
-                    </p>
-                    <p className={classes.beneficiaryLabel}>{t('idea.list.card.beneficiary')}</p>
+            <div className={`${classes.contentMargin} ${classes.beneficiaryWrapper}`}>
+                <Identicon account={idea.beneficiary}/>
+                <div className={classes.beneficiaryInfo}>
+                    <div>
+                        <p className={classes.beneficiaryValue}>
+                            {getBeneficiaryFragment()}
+                        </p>
+                        <p className={classes.beneficiaryLabel}>{t('idea.list.card.beneficiary')}</p>
+                    </div>
                 </div>
             </div>
         </Link>
