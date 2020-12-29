@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
             background: theme.palette.background.default,
             padding: '2em 7em 3em 3em',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                padding: '1em 1.5em 1em 2em'
+                padding: '1em 3em 1em 1.5em'
             },
             display: 'flex',
             flexDirection: 'row',
@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme: Theme) =>
             top: 32,
             right: 32,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                top: 32,
-                right: 24,
+                top: 20,
+                right: 24
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 top: 26,
@@ -67,9 +67,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         ideaId: {
             fontSize: '18px',
-            overflow: 'hidden',
             maxWidth: '60%',
-            whiteSpace: 'nowrap'
+            whiteSpace: 'nowrap',
+            overflow: 'hidden'
         },
         networkValues: {
             display: 'flex',
@@ -174,7 +174,7 @@ const IdeaHeader: React.FC<Props> = ({idea, setContentType}) => {
             variant="contained"
             color="primary"
             onClick={() => setSubmitProposalVisibility(true)}>
-            {t('idea.details.submitProposal')}
+            {t('idea.details.header.convertToProposal')}
         </Button></div>
         }
         <SubmitProposalModal

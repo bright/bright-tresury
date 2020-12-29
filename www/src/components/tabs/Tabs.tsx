@@ -1,6 +1,7 @@
 import React from "react";
 import {Tabs as MaterialTabs, Tab as MaterialTab, TabsProps, createStyles, TabClassKey} from '@material-ui/core';
 import {makeStyles, Theme} from "@material-ui/core/styles";
+import {breakpoints} from "../../theme/theme";
 
 const useTabsStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,6 +16,10 @@ const useTabStyles = makeStyles((theme: Theme) =>
             padding: '3px 18px !important',
             textTransform: 'initial',
             fontWeight: 600,
+            fontSize: '16px',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '17px',
+            },
             marginRight: '1em',
             minWidth: 0,
             minHeight: 0,

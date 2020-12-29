@@ -21,6 +21,9 @@
         "addLink": "+ Add Link",
         "emptyFieldError": "This field cannot be empty"
       },
+      "header": {
+        "convertToProposal": "Convert to Proposal"
+      },
       "create": "Create",
       "edit": "Edit",
       "saveDraft": "Save as Draft",
