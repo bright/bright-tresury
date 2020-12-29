@@ -4,6 +4,7 @@ import {useTranslation} from "react-i18next";
 import {Label} from "../../components/text/Label";
 import {Identicon} from "../../components/identicon/Identicon";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {Box} from "@material-ui/core";
 import {Link} from "../../components/link/Link";
 import {breakpoints} from "../../theme/theme";
 
