@@ -10,10 +10,10 @@ import {breakpoints} from "../../theme/theme";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            padding: '3em 5em 3em 3em',
+            padding: '2.5em 5em 3em 3em',
             background: theme.palette.background.paper,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                padding: '1em 1.5em 3em 1.5em',
+                padding: '2em 1.5em 3em 1.5em',
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 padding: '1em 1.5em 4em 1em',
@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 );
-
 
 interface Props {
     idea: IdeaDto

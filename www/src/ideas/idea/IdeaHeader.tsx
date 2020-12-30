@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         headerContainer: {
             background: theme.palette.background.default,
-            padding: '2em 7em 3em 3em',
+            padding: '2em 7em 2em 3em',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 padding: '1em 3em 1em 1.5em'
             },

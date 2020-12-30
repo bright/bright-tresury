@@ -3,22 +3,41 @@ import {IdeaDto} from "../ideas.api";
 import {useTranslation} from "react-i18next";
 import {Label} from "../../components/text/Label";
 import {Identicon} from "../../components/identicon/Identicon";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
+import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Box} from "@material-ui/core";
 import {Link} from "../../components/link/Link";
+import {breakpoints} from "../../theme/theme";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        header: {
-            fontSize: '18px',
-            fontWeight: 'bold',
-            color: '#1B1D1C',
-        },
         text: {
             fontSize: '14px',
-            fontWeight: 500
+            fontWeight: 500,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '18px'
+            },
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '16px'
+            }
         },
-        textWrapper: {
+        longText: {
+            padding: '20px',
+            backgroundColor: theme.palette.background.default,
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: 400,
+            width: '70%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '100%',
+                padding: '16px',
+                fontSize: '18px'
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                padding: '10px',
+                fontSize: '14px'
+            },
+        },
+        spacing: {
             marginTop: '2em'
         },
         beneficiary: {
@@ -44,35 +63,45 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
 
     const defaultValue = t('idea.details.defaultValue')
 
+    const nonEmptyLinks: string[] = idea.links ? idea.links.filter((link: string) => !!link) : []
+
     return <div>
         <Label label={t('idea.details.beneficiary')}/>
         <div className={classes.beneficiary}>
             <Identicon account={idea.beneficiary}/>
             <div className={`${classes.beneficiaryValue} ${classes.text}`}>
-                {idea.beneficiary ?? defaultValue}
+                {idea.beneficiary || defaultValue}
             </div>
         </div>
-        <div className={classes.textWrapper}>
+        <div className={classes.spacing}>
             <Label label={t('idea.details.field')}/>
-            {idea.field ?? defaultValue}
+            <div className={classes.text}>
+                {idea.field || defaultValue}
+            </div>
         </div>
-        <div className={classes.textWrapper}>
+        <div className={classes.spacing}>
             <Label label={t('idea.details.content')}/>
-            {idea.content ?? defaultValue}
+            <div className={classes.longText}>
+                {idea.content || defaultValue}
+            </div>
         </div>
-        <div className={classes.textWrapper}>
+        <div className={classes.spacing}>
             <Label label={t('idea.details.contact')}/>
-            {idea.contact ?? defaultValue}
+            <div className={classes.longText}>
+                {idea.contact || defaultValue}
+            </div>
         </div>
-        <div className={classes.textWrapper}>
+        <div className={classes.spacing}>
             <Label label={t('idea.details.portfolio')}/>
-            {idea.portfolio ?? defaultValue}
+            <div className={classes.longText}>
+                {idea.portfolio || defaultValue}
+            </div>
         </div>
-        <div className={classes.textWrapper}>
+        <div className={classes.spacing}>
             <Label label={t('idea.details.links')}/>
-            {idea.links ? idea.links.map((link: string, index: number) =>
+            {nonEmptyLinks && nonEmptyLinks.length > 0 ? nonEmptyLinks.map((link: string, index: number) =>
                     <div className={index !== 0 ? classes.linkSpacing : ''}>
-                        <Link href={link} key={index}></Link>
+                        <Link href={link} key={index}/>
                     </div>)
                 : <div className={classes.text}>{defaultValue}</div>
             }

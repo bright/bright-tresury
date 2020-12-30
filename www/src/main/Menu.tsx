@@ -1,8 +1,9 @@
-import { MenuItem, MenuList } from '@material-ui/core';
+import {MenuItem, MenuList} from '@material-ui/core';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_ROOT } from '../routes';
+import {useHistory} from 'react-router-dom';
+import {ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_ROOT} from '../routes';
 import {useTranslation} from "react-i18next";
+import {Divider} from "../components/divider/Divider";
 
 const Menu: React.FC<{}> = () => {
     const history = useHistory()
@@ -20,7 +21,7 @@ const Menu: React.FC<{}> = () => {
         history.push(ROUTE_PROPOSALS)
     }
 
-    return (
+    return <>
         <MenuList>
             <MenuItem onClick={goToStats}>{t('menu.stats')}</MenuItem>
             <MenuItem onClick={goToIdeas}>{t('menu.ideas')}</MenuItem>
@@ -28,7 +29,7 @@ const Menu: React.FC<{}> = () => {
             <MenuItem>{t('menu.tips')}</MenuItem>
             <MenuItem>{t('menu.bounty')}</MenuItem>
         </MenuList>
-    );
+    </>
 }
 
 export default Menu

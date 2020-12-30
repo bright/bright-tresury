@@ -19,5 +19,11 @@ interface Props {
 
 export const Link: React.FC<Props> = ({href, text}) => {
     const classes = useStyles()
-    return <MaterialLink href={href} className={classes.link}>{text ?? href}</MaterialLink>
+    return <MaterialLink
+        href={href}
+        className={classes.link}
+        target="_blank"
+        rel="noopener">
+        {text ?? href}
+    </MaterialLink>
 }
