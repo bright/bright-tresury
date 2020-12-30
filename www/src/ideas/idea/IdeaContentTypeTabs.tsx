@@ -1,6 +1,9 @@
 import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
+import InfoIcon from "../../assets/idea_info.svg";
+import MilestonesIcon from "../../assets/idea_milestones.svg";
+import DiscussionIcon from "../../assets/idea_discussion.svg";
 import {useRouteMatch} from "react-router-dom";
 
 interface Props {
@@ -28,6 +31,17 @@ const IdeaContentTypeTabs: React.FC<Props> = ({onChange, contentType}) => {
         }
     }
 
+    const getIcon = (ideaContentType: IdeaContentType): string => {
+        switch (ideaContentType) {
+            case IdeaContentType.Info:
+                return InfoIcon
+            case IdeaContentType.Milestones:
+                return MilestonesIcon
+            case IdeaContentType.Discussion:
+                return DiscussionIcon
+        }
+    }
+
     const contentTypes = Object.values(IdeaContentType)
 
     let { url } = useRouteMatch();
@@ -36,7 +50,8 @@ const IdeaContentTypeTabs: React.FC<Props> = ({onChange, contentType}) => {
             return {
                 value: contentType,
                 label: getTranslation(contentType),
-                path: `${url}/${contentType}`
+                path: `${url}/${contentType}`,
+                svg: getIcon(contentType)
             } as TabEntry
         }
     )

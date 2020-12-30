@@ -28,6 +28,12 @@ const useTabStyles = makeStyles((theme: Theme) =>
             border: `solid 2px ${theme.palette.background.paper}`,
             borderRadius: '8px'
         },
+        labelWrapper: {
+            display: 'flex',
+        },
+        labelIcon: {
+            marginRight: '10px'
+        },
         selected: {
             color: theme.palette.text.primary,
             border: `solid 2px ${theme.palette.primary.main}`,
@@ -38,15 +44,17 @@ export interface TabEntry {
     value: string
     label: string
     path?: string
+    svg?: string
 }
 
 interface Props {
     values: TabEntry[],
     value: string,
     handleChange: (value: string) => void
+    svg?: string
 }
 
-export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, ...props}) => {
+export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, svg, ...props}) => {
     const tabClasses = useTabStyles()
     const tabsClasses = useTabsStyles()
 
@@ -55,9 +63,13 @@ export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, 
         value={value}
         classes={tabsClasses}
         onChange={(event, value) => handleChange(value)}>
-        {values ? values.map(({value, label, path}, index: number) =>
+        {values ? values.map(({value, label, path, svg}) =>
             <MaterialTab
                 classes={tabClasses}
+                label={<div className={tabClasses.labelWrapper}>
+                    {svg ? <img className={tabClasses.labelIcon} src={svg}/> : null}
+                    {label}
+                </div>}
                 label={path ? <Link to={path}>{label}</Link> : label}
                 value={value}
                 key={index}/>
