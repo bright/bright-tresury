@@ -1,5 +1,5 @@
 import React from "react";
-import {Tabs as MaterialTabs, Tab as MaterialTab, TabsProps, createStyles, TabClassKey} from '@material-ui/core';
+import {Tabs as MaterialTabs, Tab as MaterialTab, TabsProps, createStyles} from '@material-ui/core';
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../../theme/theme";
 

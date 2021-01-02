@@ -1,14 +1,13 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
-import {useTranslation} from "react-i18next";
 import {useParams} from 'react-router';
-import {Button} from "../../components/button/Button";
-import {breakpoints} from "../../theme/theme";
 import {getIdeaById, IdeaDto, IdeaNetworkDto} from '../ideas.api';
 import IdeaHeader from "./IdeaHeader";
 import IdeaContent from "./IdeaContent";
-import SubmitProposalModal from "../SubmitProposalModal";
 import {IdeaContentType} from "./IdeaContentTypeTabs";
+import {useHistory} from 'react-router-dom';
+import pathToRegexp from 'path-to-regexp';
+import {ROUTE_IDEA} from "../../routes";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,11 +24,17 @@ interface Props {
 
 const Idea: React.FC<Props> = ({network}) => {
     const classes = useStyles()
-    const {t} = useTranslation()
+    const history = useHistory()
 
     let {ideaId} = useParams<{ ideaId: string }>()
-
-    const [contentType, setContentType] = useState<IdeaContentType>(IdeaContentType.Info);
+    let {contentType} = useParams<{ contentType?: IdeaContentType }>()
+    const setContentType = (contentType: IdeaContentType) => {
+        const newPath = pathToRegexp.compile(ROUTE_IDEA)({
+            ideaId,
+            contentType,
+        })
+        history.replace(newPath)
+    }
     const [idea, setIdea] = useState<IdeaDto>({
         title: '',
         beneficiary: '',
@@ -49,10 +54,12 @@ const Idea: React.FC<Props> = ({network}) => {
         }
     }, [ideaId])
 
+    const currentContentType = contentType ? contentType : IdeaContentType.Info
+
     return (
         <div className={classes.root}>
-            <IdeaHeader idea={idea} setContentType={setContentType}/>
-            <IdeaContent idea={idea} contentType={contentType}/>
+            <IdeaHeader idea={idea} contentType={currentContentType} setContentType={setContentType}/>
+            <IdeaContent idea={idea} contentType={currentContentType}/>
         </div>
     );
 }

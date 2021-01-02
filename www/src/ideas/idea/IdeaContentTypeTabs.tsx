@@ -1,10 +1,10 @@
-import React, {useState} from "react";
+import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
-import {IdeaFilter} from "../list/IdeaStatusFilters";
 
 interface Props {
     onChange: (type: IdeaContentType) => void
+    contentType: IdeaContentType
 }
 
 export enum IdeaContentType {
@@ -13,8 +13,7 @@ export enum IdeaContentType {
     Discussion = "discussion"
 }
 
-const IdeaContentTypeTabs: React.FC<Props> = ({onChange}) => {
-    const [filter, setFilter] = useState<IdeaContentType>(IdeaContentType.Info)
+const IdeaContentTypeTabs: React.FC<Props> = ({onChange, contentType}) => {
     const {t} = useTranslation()
 
     const getTranslation = (ideaContentType: IdeaContentType): string => {
@@ -28,26 +27,25 @@ const IdeaContentTypeTabs: React.FC<Props> = ({onChange}) => {
         }
     }
 
-    const filterValues = Object.values(IdeaContentType)
+    const contentTypes = Object.values(IdeaContentType)
 
-    const tabEntries = filterValues.map((filter: IdeaContentType) => {
+    const tabEntries = contentTypes.map((contentType: IdeaContentType) => {
             return {
-                value: filter,
-                label: getTranslation(filter)
+                value: contentType,
+                label: getTranslation(contentType)
             } as TabEntry
         }
     )
 
-    const onFilterChange = (filter: IdeaContentType) => {
-        onChange(filter)
-        setFilter(filter)
+    const onContentChange = (contentType: IdeaContentType) => {
+        onChange(contentType)
     }
 
     return <div>
         <Tabs
-            value={filter}
+            value={contentType}
             values={tabEntries}
-            handleChange={(value: string) => onFilterChange(value as IdeaContentType)}
+            handleChange={(value: string) => onContentChange(value as IdeaContentType)}
         />
     </div>
 }

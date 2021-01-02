@@ -123,10 +123,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     idea: IdeaDto
+    contentType: IdeaContentType
     setContentType: (type: IdeaContentType) => void
 }
 
-const IdeaHeader: React.FC<Props> = ({idea, setContentType}) => {
+const IdeaHeader: React.FC<Props> = ({idea, contentType, setContentType}) => {
     const classes = useStyles()
     const {t} = useTranslation()
     const history = useHistory()
@@ -168,7 +169,7 @@ const IdeaHeader: React.FC<Props> = ({idea, setContentType}) => {
         </div>
         <div className={classes.flexBreakLine}/>
         <div className={classes.contentTypeTabs}>
-            <IdeaContentTypeTabs onChange={(type) => setContentType(type)}/>
+            <IdeaContentTypeTabs contentType={contentType} onChange={(type) => setContentType(type)}/>
         </div>
         {!!idea.id && <div className={classes.convertToProposal}><Button
             variant="contained"

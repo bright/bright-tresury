@@ -29,13 +29,21 @@ interface Props {
 
 const IdeaContent: React.FC<Props> = ({idea, contentType}) => {
     const classes = useStyles()
-
-    return <div className={classes.root}>
-        {contentType === IdeaContentType.Info ?
-            <IdeaInfo idea={idea}/>
-            : contentType === IdeaContentType.Milestones ? <IdeaMilestones/>
-                : contentType === IdeaContentType.Discussion ? <IdeaDiscussion/> : null
+    const contentComponent = () => {
+        switch (contentType) {
+            case IdeaContentType.Info: {
+                return <IdeaInfo idea={idea}/>
+            }
+            case IdeaContentType.Milestones: {
+                return <IdeaMilestones/>
+            }
+            case IdeaContentType.Discussion: {
+                return <IdeaDiscussion/>
+            }
         }
+    }
+    return <div className={classes.root}>
+        {contentComponent()}
     </div>
 }
 
