@@ -1,10 +1,13 @@
 import {
-    createStyles, Drawer, isWidthDown,
+    createStyles,
+    Drawer,
+    isWidthDown,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
-    Theme, withWidth
+    Theme,
+    withWidth
 } from '@material-ui/core';
 import React, {useState} from 'react';
 import {useHistory, useLocation} from 'react-router-dom';
@@ -18,7 +21,7 @@ import clsx from 'clsx';
 
 const useStyles = makeStyles((theme: Theme) => {
         const drawerWidth = 250
-        const miniDrawerWidth = 80
+        const miniDrawerWidth = 84
         return createStyles({
             root: {
                 width: drawerWidth,
@@ -28,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) => {
                 display: 'flex',
                 padding: '20px 38px',
                 [theme.breakpoints.down(breakpoints.tablet)]: {
-                    padding: '28px',
+                    padding: '28px 28px 28px 0',
                 },
             },
             text: {
@@ -38,11 +41,20 @@ const useStyles = makeStyles((theme: Theme) => {
                 fontWeight: 'bold',
             },
             icon: {
+                padding: 0,
                 maxHeight: 28,
                 width: 22,
                 [theme.breakpoints.down(breakpoints.tablet)]: {
-                    maxHeight: 28,
-                    width: 26
+                    maxHeight: 56,
+                    width: 56,
+                    margin: 14,
+                    padding: 16
+                }
+            },
+            iconSelected: {
+                [theme.breakpoints.down(breakpoints.tablet)]: {
+                    backgroundColor: theme.palette.secondary.main,
+                    borderRadius: 5
                 }
             },
             drawerOpen: {
@@ -111,7 +123,9 @@ const Menu: React.FC<WithWidthProps> = ({width}) => {
             <List>
                 {MENU_ITEMS.map(({translationKey, svg, path}, index) => (
                     <ListItem className={classes.item} button key={index} onClick={() => goTo(path)}>
-                        <ListItemIcon><img className={classes.icon} src={svg}/></ListItemIcon>
+                        <ListItemIcon>
+                            <img className={`${classes.icon} ${matchesCurrentPath(path) ? classes.iconSelected : ''}`} src={svg}/>
+                        </ListItemIcon>
                         <ListItemText
                             classes={{
                                 primary: `${classes.text} ${matchesCurrentPath(path) ? classes.textSelected : ''}`
