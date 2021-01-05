@@ -10,7 +10,7 @@ import {ROUTE_EDIT_IDEA, ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSAL
 import Stats from './stats/Stats';
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
-import { SubstrateContextProvider } from './substrate-lib';
+import {SubstrateContextProvider} from './substrate-lib';
 import CreateIdea from "./ideas/create/CreateIdea";
 import Idea from "./ideas/idea/Idea";
 
@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: 'flex',
+            width: '100vw'
         },
     }),
 );
