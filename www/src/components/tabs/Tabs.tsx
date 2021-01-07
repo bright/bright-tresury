@@ -2,7 +2,7 @@ import React from "react";
 import {createStyles, Tab as MaterialTab, Tabs as MaterialTabs, TabsProps} from '@material-ui/core';
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../../theme/theme";
-import {Link} from "react-router-dom";
+import {TabLabel} from "./TabLabel";
 
 const useTabsStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,7 +35,6 @@ const useTabStyles = makeStyles((theme: Theme) =>
             marginRight: '10px'
         },
         selected: {
-            color: theme.palette.text.primary,
             border: `solid 2px ${theme.palette.primary.main}`,
         }
     }))
@@ -66,11 +65,7 @@ export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, 
         {values ? values.map(({value, label, path, svg}) =>
             <MaterialTab
                 classes={tabClasses}
-                label={<div className={tabClasses.labelWrapper}>
-                    {svg ? <img className={tabClasses.labelIcon} src={svg}/> : null}
-                    {label}
-                </div>}
-                label={path ? <Link to={path}>{label}</Link> : label}
+                label={<TabLabel label={label} svg={svg} path={path}/>}
                 value={value}
                 key={index}/>
         ) : null}
