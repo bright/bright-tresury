@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useMemo} from "react";
 import {IdeaDto} from "../ideas.api";
 import {useTranslation} from "react-i18next";
 import {Label} from "../../components/text/Label";
@@ -62,7 +62,10 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
 
     const defaultValue = t('idea.details.defaultValue')
 
-    const nonEmptyLinks: string[] = idea.links ? idea.links.filter((link: string) => !!link) : []
+    const nonEmptyLinks = useMemo(
+        () => idea.links ? idea.links.filter((link: string) => !!link) : [],
+        [idea.links]
+    )
 
     return <div>
         <Label label={t('idea.details.beneficiary')}/>
@@ -98,7 +101,7 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
         </div>
         <div className={classes.spacing}>
             <Label label={t('idea.details.links')}/>
-            {nonEmptyLinks && nonEmptyLinks.length > 0 ? nonEmptyLinks.map((link: string, index: number) =>
+            {nonEmptyLinks.length > 0 ? nonEmptyLinks.map((link: string, index: number) =>
                     <div className={index !== 0 ? classes.linkSpacing : ''}>
                         <Link href={link} key={index}/>
                     </div>)

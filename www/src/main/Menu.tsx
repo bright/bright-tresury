@@ -3,7 +3,6 @@ import React from 'react';
 import {useHistory} from 'react-router-dom';
 import {ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_ROOT} from '../routes';
 import {useTranslation} from "react-i18next";
-import {Divider} from "../components/divider/Divider";
 
 const Menu: React.FC<{}> = () => {
     const history = useHistory()

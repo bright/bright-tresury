@@ -1,7 +1,7 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router';
-import {getIdeaById, IdeaDto, IdeaNetworkDto} from '../ideas.api';
+import {createEmptyIdea, getIdeaById, IdeaDto} from '../ideas.api';
 import IdeaHeader from "./IdeaHeader";
 import {IdeaContentType} from "./IdeaContentTypeTabs";
 import {Route, Switch, useHistory, useRouteMatch} from 'react-router-dom';
@@ -49,16 +49,7 @@ const Idea: React.FC<Props> = ({network}) => {
         })
         history.replace(newPath)
     }
-    const [idea, setIdea] = useState<IdeaDto>({
-        title: '',
-        beneficiary: '',
-        field: '',
-        content: '',
-        networks: [{name: network, value: 0} as IdeaNetworkDto],
-        contact: '',
-        portfolio: '',
-        links: [''],
-    })
+    const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
     useEffect(() => {
         if (ideaId !== undefined) {

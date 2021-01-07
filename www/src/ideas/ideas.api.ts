@@ -17,6 +17,20 @@ export interface IdeaDto {
     contact?: string
     portfolio?: string
     links?: string[]
+
+}
+
+export function createEmptyIdea(network: string): IdeaDto {
+    return {
+        title: '',
+        beneficiary: '',
+        field: '',
+        content: '',
+        networks: [{name: network, value: 0} as IdeaNetworkDto],
+        contact: '',
+        portfolio: '',
+        links: [''],
+    } as IdeaDto
 }
 
 export function getIdeasByNetwork(name: string) {

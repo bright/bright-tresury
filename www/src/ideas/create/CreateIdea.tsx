@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import IdeaForm from "../form/IdeaForm";
 import CreateIdeaHeader from "./CreateIdeaHeader";
 import {useParams} from "react-router";
-import {getIdeaById, IdeaDto, IdeaNetworkDto} from "../ideas.api";
+import {createEmptyIdea, getIdeaById, IdeaDto} from "../ideas.api";
 import {Button} from "../../components/button/Button";
 import {useTranslation} from "react-i18next";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
@@ -35,17 +35,8 @@ const CreateIdea: React.FC<Props> = ({network}) => {
 
     let {ideaId} = useParams<{ ideaId: string }>()
 
-    const [submitProposalVisibility, setSubmitProposalVisibility] = React.useState(false);
-    const [idea, setIdea] = useState<IdeaDto>({
-        title: '',
-        beneficiary: '',
-        field: '',
-        content: '',
-        networks: [{name: network, value: 0} as IdeaNetworkDto],
-        contact: '',
-        portfolio: '',
-        links: [''],
-    })
+    const [submitProposalOpen, setSubmitProposalOpen] = React.useState(false);
+    const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
     useEffect(() => {
         if (ideaId !== undefined) {
@@ -63,12 +54,12 @@ const CreateIdea: React.FC<Props> = ({network}) => {
         {!!idea.id && <Button
             variant="contained"
             color="primary"
-            onClick={() => setSubmitProposalVisibility(true)}>
+            onClick={() => setSubmitProposalOpen(true)}>
             {t('idea.form.submitProposal')}
         </Button>}
         <SubmitProposalModal
-            open={submitProposalVisibility}
-            onClose={() => setSubmitProposalVisibility(false)}
+            open={submitProposalOpen}
+            onClose={() => setSubmitProposalOpen(false)}
             idea={idea}/>
     </div>
 }
