@@ -1,3 +1,8 @@
 {
-  "PROVIDER_SOCKET": "wss://dev-node.substrate.dev:9944"
+  "PROVIDER_SOCKET": "wss://dev-node.substrate.dev:9944",
+  "NETWORK_CURRENCY": "LOC",
+  "BOND_VALUE": {
+    "MIN_VALUE": 1000,
+    "PERCENT": 5
+  }
 }

@@ -1,7 +1,8 @@
 import React from "react";
-import {Tabs as MaterialTabs, Tab as MaterialTab, TabsProps, createStyles} from '@material-ui/core';
+import {createStyles, Tab as MaterialTab, Tabs as MaterialTabs, TabsProps} from '@material-ui/core';
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../../theme/theme";
+import {Link} from "react-router-dom";
 
 const useTabsStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,6 +37,7 @@ const useTabStyles = makeStyles((theme: Theme) =>
 export interface TabEntry {
     value: string
     label: string
+    path?: string
 }
 
 interface Props {
@@ -53,10 +55,10 @@ export const Tabs: React.FC<Props & TabsProps> = ({value, values, handleChange, 
         value={value}
         classes={tabsClasses}
         onChange={(event, value) => handleChange(value)}>
-        {values ? values.map(({value, label}) =>
+        {values ? values.map(({value, label, path}) =>
             <MaterialTab
                 classes={tabClasses}
-                label={label}
+                label={path ? <Link to={path}>{label}</Link> : label}
                 value={value}
                 key={value}/>
         ) : null}

@@ -2,6 +2,11 @@
   "APP_NAME": "treasury-stage",
   "PROVIDER_SOCKET": "ws://substrate:9944",
   "NETWORK_NAME": "localhost",
+  "NETWORK_CURRENCY": "LOC",
+  "BOND_VALUE": {
+    "MIN_VALUE": 1000,
+    "PERCENT": 5
+  },
   "CUSTOM_TYPES": {
     "Address": "AccountId",
     "LookupSource": "AccountId"

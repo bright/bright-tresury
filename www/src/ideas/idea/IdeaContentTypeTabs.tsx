@@ -1,6 +1,7 @@
 import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
+import {useRouteMatch} from "react-router-dom";
 
 interface Props {
     onChange: (type: IdeaContentType) => void
@@ -29,10 +30,13 @@ const IdeaContentTypeTabs: React.FC<Props> = ({onChange, contentType}) => {
 
     const contentTypes = Object.values(IdeaContentType)
 
+    let { url } = useRouteMatch();
+
     const tabEntries = contentTypes.map((contentType: IdeaContentType) => {
             return {
                 value: contentType,
-                label: getTranslation(contentType)
+                label: getTranslation(contentType),
+                path: `${url}/${contentType}`
             } as TabEntry
         }
     )

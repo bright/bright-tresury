@@ -14,6 +14,8 @@ import {Status} from "../../components/status/Status";
 import IdeaContentTypeTabs, {IdeaContentType} from "./IdeaContentTypeTabs";
 import {Divider} from "../../components/divider/Divider";
 import {Amount} from "../../components/amount/Amount";
+import {calculateBondValue} from "../../networks/bondUtil";
+import config from "../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -142,6 +144,9 @@ const IdeaHeader: React.FC<Props> = ({idea, contentType, setContentType}) => {
     const statusLabel = 'Active'
     const statusColor = '#00BFFF'
 
+    const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
+    const bondValue = networkValue ? calculateBondValue(networkValue) : 0
+
     return <div className={classes.headerContainer}>
         <IconButton className={classes.closeIcon} svg={CrossSvg} onClick={navigateToList}/>
 
@@ -161,10 +166,15 @@ const IdeaHeader: React.FC<Props> = ({idea, contentType, setContentType}) => {
         </div>
         <div className={classes.networkValues}>
             <div className={classes.networkReward}>
-                <Amount amount={1950.0000} currency={'DOT'} label={t('idea.content.info.reward')}/>
+                <Amount amount={networkValue}
+                        currency={config.NETWORK_CURRENCY}
+                        label={t('idea.content.info.reward')}/>
             </div>
             <div className={classes.networkDeposit}>
-                <Amount amount={1950.0000} currency={'DOT'} label={t('idea.content.info.deposit')}/>
+                <Amount amount={bondValue}
+                        currency={config.NETWORK_CURRENCY}
+                        label={t('idea.content.info.deposit')}
+                />
             </div>
         </div>
         <div className={classes.flexBreakLine}/>

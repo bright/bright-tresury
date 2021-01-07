@@ -10,6 +10,7 @@ import {ROUTE_IDEAS} from "../../routes";
 import {FormInput} from "../../components/input/FormInput";
 import {FormSelect} from "../../components/select/FormSelect";
 import {Button} from "../../components/button/Button";
+import config from "../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -127,7 +128,7 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                                             type={`number`}
                                             label={t('idea.details.reward')}
                                             placeholder={t('idea.details.reward')}
-                                            endAdornment={'LOC'}
+                                            endAdornment={config.NETWORK_CURRENCY}
                                         />
                                     </div>
                                 )
