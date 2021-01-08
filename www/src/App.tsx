@@ -37,9 +37,9 @@ function AppRoutes() {
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
-                    <Route exact={true} path={ROUTE_NEW_IDEA} component={() => <CreateIdea network={'localhost'}/>}/>
-                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={() => <CreateIdea network={'localhost'}/>}/>
-                    <Route exact={true} path={ROUTE_IDEA} component={() => <Idea network={'localhost'}/>}/>
+                    <Route exact={true} path={ROUTE_NEW_IDEA} component={CreateIdea}/>
+                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={CreateIdea}/>
+                    <Route exact={true} path={ROUTE_IDEA} component={Idea}/>
                 </Switch>
             </div>
         </Router>

@@ -1,8 +1,8 @@
 import Grid from '@material-ui/core/Grid';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
-import {generatePath, Link, useHistory} from 'react-router-dom';
-import {ROUTE_IDEA, ROUTE_NEW_IDEA} from '../routes';
+import {useHistory} from 'react-router-dom';
+import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, IdeaDto} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
@@ -10,7 +10,6 @@ import IdeaCard from "./list/IdeaCard";
 import {breakpoints} from "../theme/theme";
 import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";
-import IdeaFilters, {IdeaFilter} from "./list/IdeaFilters";
 import config from '../config';
 
 

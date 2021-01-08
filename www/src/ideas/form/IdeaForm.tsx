@@ -5,7 +5,7 @@ import {useTranslation} from "react-i18next";
 import {FieldArray, Formik} from "formik";
 import * as Yup from 'yup'
 import {breakpoints} from "../../theme/theme";
-import {createIdea, IdeaDto} from "../ideas.api";
+import {createIdea, IdeaDto, IdeaNetworkDto} from "../ideas.api";
 import {ROUTE_IDEAS} from "../../routes";
 import {FormInput} from "../../components/input/FormInput";
 import {FormSelect} from "../../components/select/FormSelect";
@@ -78,6 +78,7 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
 
     return (
             <Formik
+                enableReinitialize={true}
                 initialValues={{
                     ...idea,
                     links: (idea.links && idea.links.length > 0) ? idea.links : ['']
@@ -121,7 +122,7 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                                 placeholder={t('idea.details.content')}
                             />
                         </div>
-                        {values.networks.map((network, index) => {
+                        {values.networks.map((network: IdeaNetworkDto, index: number) => {
                                 return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
                                         <FormInput
                                             name={`networks[${index}].value`}

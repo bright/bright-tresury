@@ -43,7 +43,7 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accoun
     const {t} = useTranslation()
 
     const emptyAccount = {
-        name: t('substrate.create.selectAccount'),
+        name: t('substrate.form.selectAccount'),
         address: ''
     } as Account
 
@@ -95,7 +95,7 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accoun
                                 <TypedSelect
                                     variant={"outlined"}
                                     name="account"
-                                    label={t('substrate.create.selectAccount')}
+                                    label={t('substrate.form.selectAccount')}
                                     options={[emptyAccount, ...accounts]}
                                     value={values.account}
                                     renderOption={(value: Account) => {
@@ -104,14 +104,14 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accoun
                                 />
                                 <div className={classes.buttons}>
                                     <Button variant={"text"} color="primary" type="button" onClick={onCancel}>
-                                        {t('substrate.create.cancel')}
+                                        {t('substrate.form.cancel')}
                                     </Button>
                                     <Button
                                         color='primary'
                                         type='submit'
                                         disabled={!allParamsFilled() || !values.account.address}
                                     >
-                                        {t('substrate.create.signAndSubmit')}
+                                        {t('substrate.form.signAndSubmit')}
                                     </Button>
                                 </div>
                             </form>

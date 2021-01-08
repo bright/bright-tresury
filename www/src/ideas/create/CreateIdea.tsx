@@ -8,6 +8,7 @@ import {useTranslation} from "react-i18next";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../../theme/theme";
 import SubmitProposalModal from "../SubmitProposalModal";
+import config from "../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,7 +30,7 @@ interface Props {
     network: string
 }
 
-const CreateIdea: React.FC<Props> = ({network}) => {
+const CreateIdea: React.FC<Props> = ({network= config.NETWORK_NAME}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 

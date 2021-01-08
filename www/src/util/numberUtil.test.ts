@@ -25,4 +25,16 @@ describe('formats number to string', () => {
         const formattedNumber = formatNumber(999888)
         expect(formattedNumber).toBe('999,888');
     })
+    test('formats 0 properly', () => {
+        const formattedNumber = formatNumber(0)
+        expect(formattedNumber).toBe('0');
+    })
+    test('formats 0.0000 properly', () => {
+        const formattedNumber = formatNumber(0.000000)
+        expect(formattedNumber).toBe('0');
+    })
+    test('formats 30000.000000000000000 properly', () => {
+        const formattedNumber = formatNumber(30000.000000000000000)
+        expect(formattedNumber).toBe('30,000');
+    })
 })

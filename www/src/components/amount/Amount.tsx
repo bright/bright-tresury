@@ -26,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 fontSize: '16px'
             },
+            whiteSpace: 'nowrap'
         },
         label: {
             fontSize: '14px',
@@ -42,14 +43,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 interface AmountProps {
     amount: number
-    currency?: string
+    currency: string
     label?: string
 }
 
 export const Amount: React.FC<AmountProps> = ({amount, currency, label, ...props}) => {
     const classes = useStyles()
     return <div {...props} className={classes.root}>
-        <div className={classes.amount}>{formatNumber(amount)} {currency}</div>
+        <div className={classes.amount}>{formatNumber(Number(amount))} {currency}</div>
         {label && <div className={classes.label}>{label}</div>}
     </div>
 }

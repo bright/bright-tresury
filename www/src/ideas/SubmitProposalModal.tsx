@@ -61,7 +61,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                     palletRpc: 'treasury',
                     callable: 'proposeSpend',
                     eventMethod: 'Proposed',
-                    eventDescription: t('idea.idea.submitProposalModal.eventDescription'),
+                    eventDescription: t('idea.details.submitProposalModal.eventDescription'),
                     inputParams: [
                         {
                             name: 'value',
@@ -77,7 +77,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                 setExtrinsicDetails={setExtrinsicDetails}
             >
                 <>
-                    <h2 id='modal-title' className={classes.h2}>{t('idea.idea.submitProposalModal.title')}</h2>
+                    <h2 id='modal-title' className={classes.h2}>{t('idea.details.submitProposalModal.title')}</h2>
                     <Info className={classes.info}>
                         <Trans id='modal-description'
                                i18nKey="idea.details.submitProposalModal.warningMessage"
