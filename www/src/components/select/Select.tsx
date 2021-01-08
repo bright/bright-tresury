@@ -32,7 +32,7 @@ interface SelectProps<T> {
     options: T[]
     label?: string
     placeholder?: string
-    renderOption?: (value: T) => string
+    renderOption?: (value: T) => any
 }
 
 export const FormSelect: ISelect = ({...props}) => {

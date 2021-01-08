@@ -4,9 +4,7 @@ import {useParams} from 'react-router';
 import {createEmptyIdea, getIdeaById, IdeaDto} from '../ideas.api';
 import IdeaHeader from "./IdeaHeader";
 import {IdeaContentType} from "./IdeaContentTypeTabs";
-import {Route, Switch, useHistory, useRouteMatch} from 'react-router-dom';
-import pathToRegexp from 'path-to-regexp';
-import {ROUTE_IDEA} from "../../routes";
+import {Route, Switch, useRouteMatch} from 'react-router-dom';
 import IdeaInfo from "./info/IdeaInfo";
 import IdeaMilestones from "./milestones/IdeaMilestones";
 import IdeaDiscussion from "./discussion/IdeaDiscussion";
@@ -38,17 +36,9 @@ interface Props {
 
 const Idea: React.FC<Props> = ({network}) => {
     const classes = useStyles()
-    const history = useHistory()
 
     let {ideaId} = useParams<{ ideaId: string }>()
-    let {contentType} = useParams<{ contentType?: IdeaContentType }>()
-    const setContentType = (contentType: IdeaContentType) => {
-        const newPath = pathToRegexp.compile(ROUTE_IDEA)({
-            ideaId,
-            contentType,
-        })
-        history.replace(newPath)
-    }
+
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
     useEffect(() => {
@@ -59,15 +49,16 @@ const Idea: React.FC<Props> = ({network}) => {
         }
     }, [ideaId])
 
-    let {path} = useRouteMatch();
-
-    const currentContentType = contentType ? contentType : IdeaContentType.Info
+    let {path, url} = useRouteMatch();
 
     return (
         <div className={classes.root}>
-            <IdeaHeader idea={idea} contentType={currentContentType} setContentType={setContentType}/>
+            <IdeaHeader idea={idea}/>
             <div className={classes.content}>
                 <Switch>
+                    <Route exact={true} path={path}>
+                        <IdeaInfo idea={idea}/>
+                    </Route>
                     <Route exact={true} path={`${path}/${IdeaContentType.Info}`}>
                         <IdeaInfo idea={idea}/>
                     </Route>
@@ -76,9 +67,6 @@ const Idea: React.FC<Props> = ({network}) => {
                     </Route>
                     <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
                         <IdeaDiscussion/>
-                    </Route>
-                    <Route exact={true} path={path}>
-                        <IdeaInfo idea={idea}/>
                     </Route>
                 </Switch>
             </div>

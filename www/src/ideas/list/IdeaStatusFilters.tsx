@@ -1,11 +1,13 @@
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
-import React, {useState} from "react";
+import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
-import {Select} from "../../components/select/Select";
+import {ISelect, Select} from "../../components/select/Select";
+import {generatePath, NavLink, useParams} from "react-router-dom";
+import {ROUTE_IDEAS_FILTERED} from "../../routes";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,13 +22,16 @@ const useStyles = makeStyles((theme: Theme) =>
                 fontWeight: 600,
                 display: 'inherit'
             },
+        },
+        filterSelectLink: {
+            textDecoration: 'none',
+            width: '100%',
+            color: theme.palette.text.primary
         }
     }),
 );
 
-interface Props {
-    onChange: (filter: IdeaFilter) => void
-}
+const FilterSelect = Select as ISelect<TabEntry>
 
 export enum IdeaFilter {
     All = 'all',
@@ -36,9 +41,8 @@ export enum IdeaFilter {
     Closed = 'closed',
 }
 
-const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
+const IdeaStatusFilters: React.FC<{}> = () => {
     const classes = useStyles()
-    const [filter, setFilter] = useState<IdeaFilter>(IdeaFilter.All)
     const {t} = useTranslation()
 
     const getTranslation = (ideaFilter: IdeaFilter): string => {
@@ -58,34 +62,31 @@ const IdeaStatusFilters: React.FC<Props> = ({onChange}) => {
 
     const filterValues = Object.values(IdeaFilter)
 
-    const tabEntries = filterValues.map((filter: IdeaFilter) => {
-            return {
-                value: filter,
-                label: getTranslation(filter)
-            } as TabEntry
-        }
-    )
-
-    const onFilterChange = (filter: IdeaFilter) => {
-        onChange(filter)
-        setFilter(filter)
+    const getTabEntry = (filter: IdeaFilter) => {
+        return {
+            label: getTranslation(filter),
+            path: generatePath(ROUTE_IDEAS_FILTERED, {filter})
+        } as TabEntry
     }
+    const tabEntries = filterValues.map((filter: IdeaFilter) => getTabEntry(filter))
+
+    const {filter} = useParams<{ filter: IdeaFilter }>()
+    /**
+     * Current tab entry is forced, because there should be always some filter specified.
+     */
+    const currentTabEntry = tabEntries.find(entry => entry.label === getTranslation(filter))!!
 
     return <div>
-        <Tabs
-            className={classes.filterTabs}
-            value={filter}
-            values={tabEntries}
-            handleChange={(value: string) => onFilterChange(value as IdeaFilter)}
-        />
-        <Select
+        <div className={classes.filterTabs}>
+            <Tabs values={tabEntries}/>
+        </div>
+        <FilterSelect
             className={classes.filterSelect}
-            value={filter}
-            options={filterValues}
-            renderOption={(option) => getTranslation(option)}
-            onChange={(event: any) => {
-                onFilterChange(event.target.value)
-            }}
+            value={currentTabEntry}
+            options={tabEntries}
+            renderOption={(option: TabEntry) =>
+                <NavLink className={classes.filterSelectLink} to={option.path}>{option.label}</NavLink>
+            }
         />
     </div>
 }

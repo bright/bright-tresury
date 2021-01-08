@@ -11,7 +11,7 @@ import {Button} from "../../components/button/Button";
 import SubmitProposalModal from "../SubmitProposalModal";
 import {breakpoints} from "../../theme/theme";
 import {Status} from "../../components/status/Status";
-import IdeaContentTypeTabs, {IdeaContentType} from "./IdeaContentTypeTabs";
+import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
 import {Divider} from "../../components/divider/Divider";
 import {Amount} from "../../components/amount/Amount";
 import {calculateBondValue} from "../../networks/bondUtil";
@@ -125,15 +125,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     idea: IdeaDto
-    contentType: IdeaContentType
-    setContentType: (type: IdeaContentType) => void
 }
 
-const IdeaHeader: React.FC<Props> = ({idea, contentType, setContentType}) => {
+const IdeaHeader: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
     const history = useHistory()
-
 
     const [submitProposalVisibility, setSubmitProposalVisibility] = useState(false);
 
@@ -179,7 +176,7 @@ const IdeaHeader: React.FC<Props> = ({idea, contentType, setContentType}) => {
         </div>
         <div className={classes.flexBreakLine}/>
         <div className={classes.contentTypeTabs}>
-            <IdeaContentTypeTabs contentType={contentType} onChange={(type) => setContentType(type)}/>
+            <IdeaContentTypeTabs />
         </div>
         {!!idea.id && <div className={classes.convertToProposal}><Button
             variant="contained"

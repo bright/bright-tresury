@@ -12,6 +12,7 @@ import {breakpoints} from "../../theme/theme";
 import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 import {formatNumber} from "../../util/numberUtil";
 import {Identicon} from "../../components/identicon/Identicon";
+import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -131,7 +132,8 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
     return <Card className={classes.root}>
         <div className={classes.networkAccentLine}/>
 
-        <Link className={classes.link} to={generatePath(ROUTE_IDEA, {ideaId: idea.id})}>
+        <Link className={classes.link}
+              to={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
                 <p className={classes.idLabel}>{idea.id}</p>
                 <Status label={statusLabel} color={statusColor}/>

@@ -1,6 +1,8 @@
 import Grid from '@material-ui/core/Grid';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
+import {useHistory, useParams} from 'react-router-dom';
+import {ROUTE_NEW_IDEA} from '../routes';
 import {useHistory} from 'react-router-dom';
 import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, Idea} from './ideas.api';
@@ -19,7 +21,6 @@ import config from '../config';
 import {breakpoints} from "../theme/theme";
 import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";
-
 
 const useStyles = makeStyles((theme: Theme) => {
     const horizontalMargin = '32px'
@@ -240,9 +241,8 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
         history.push(ROUTE_NEW_IDEA)
     }
 
-    const onFilterChange = (filter: IdeaFilter) => {
-        console.log(filter)
-    }
+    // TODO: filter ideas on frontend
+    const filter = useParams<{filter: IdeaFilter}>()
 
     return (
         <div>
@@ -263,7 +263,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
                 </div>
                 <div className={classes.paperBackground}/>
                 <div className={classes.statusFilters}>
-                    <IdeaStatusFilters onChange={onFilterChange}/>
+                    <IdeaStatusFilters />
                 </div>
             </div>
             <div className={classes.tilesContainer}>

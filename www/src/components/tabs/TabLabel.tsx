@@ -1,35 +1,50 @@
 import React from "react";
 import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
-import {Link} from "react-router-dom";
+import {ButtonBase, createStyles} from "@material-ui/core";
+import {NavLink} from "react-router-dom";
+import {breakpoints} from "../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        labelWrapper: {
+        root: {
+            padding: '8px 18px !important',
+            fontWeight: 400,
+            fontSize: '16px',
+            fontFamily: theme.typography.fontFamily,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '17px',
+            },
+            marginRight: '1em',
+            color: theme.palette.text.primary,
+            border: `solid 2px ${theme.palette.background.paper}`,
+            borderRadius: '8px',
+            textDecoration: 'none',
             display: 'flex',
         },
         labelIcon: {
             marginRight: '10px'
         },
-        link: {
-            textDecoration: 'none',
-            color: theme.palette.text.primary
-        }
+        selected: {
+            border: `solid 2px ${theme.palette.primary.main}`,
+        },
     }))
 
 interface Props {
     label: string
+    path: string
     svg?: string
-    path?: string
 }
 
 export const TabLabel: React.FC<Props> = ({label, svg, path}) => {
     const classes = useStyles()
-    const iconLabel = <div className={classes.labelWrapper}>
-        {svg ? <img className={classes.labelIcon} src={svg}/> : null}
-        {label}
-    </div>
-    return <>
-        {path ? <Link className={classes.link} to={path}>{iconLabel}</Link> : iconLabel}
-    </>
+
+    return <ButtonBase centerRipple={true}>
+        <NavLink
+            className={classes.root}
+            to={path}
+            activeClassName={classes.selected}>
+            {svg ? <img className={classes.labelIcon} src={svg}/> : null}
+            {label}
+        </NavLink>
+    </ButtonBase>
 }
