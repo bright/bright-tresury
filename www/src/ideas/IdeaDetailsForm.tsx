@@ -150,15 +150,15 @@ const IdeaDetailsForm: React.FC<Props> = ({idea, setIdea}) => {
                         <div className={classes.inputField}>
                             <FieldArray name={'links'} render={arrayHelpers => (
                                 <div>
-                                    {values.links ? values.links.map((link: string, index: number) =>
-                                        <div className={classes.inputField} key={index}>
-                                            <Input
-                                                name={`links[${index}]`}
-                                                label={index === 0 ? t('idea.details.form.link') : ''}
-                                                placeholder={t('idea.details.form.linkPlaceholder')}
-                                            />
-                                        </div>
-                                    ) : null}
+                                    {/*{values.links ? values.links.map((link: string, index: number) =>*/}
+                                    {/*    <div className={classes.inputField} key={index}>*/}
+                                    {/*        <Input*/}
+                                    {/*            name={`links[${index}]`}*/}
+                                    {/*            label={index === 0 ? t('idea.details.form.link') : ''}*/}
+                                    {/*            placeholder={t('idea.details.form.linkPlaceholder')}*/}
+                                    {/*        />*/}
+                                    {/*    </div>*/}
+                                    {/*) : null}*/}
                                     <Button className={classes.inputField} variant={"text"} color="primary"
                                             type="button"
                                             onClick={() => arrayHelpers.push('')}>
