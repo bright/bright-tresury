@@ -13,13 +13,16 @@ import {getTranslation} from "./translation/translationStorage";
 import {SubstrateContextProvider} from './substrate-lib';
 import CreateIdea from "./ideas/create/CreateIdea";
 import Idea from "./ideas/idea/Idea";
-import {SubstrateContextProvider} from './substrate-lib';
+import {breakpoints} from "./theme/theme";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: 'flex',
-            width: '100vw'
+            width: '100vw',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                flexDirection: 'column'
+            },
         },
         content: {
             flexGrow: 1

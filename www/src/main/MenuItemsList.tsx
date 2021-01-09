@@ -9,20 +9,22 @@ import {NavLink} from "react-router-dom";
 const useStyles = makeStyles((theme: Theme) => {
         return createStyles({
             item: {
-                width: 'fit-content',
                 padding: '20px 38px',
                 display: 'flex',
                 alignItems: 'center',
                 [theme.breakpoints.down(breakpoints.tablet)]: {
-                    padding: '28px 28px 45px 0',
+                    padding: '28px 28px 28px 0',
                 },
+                [theme.breakpoints.down(breakpoints.mobile)]: {
+                    padding: '42px 24px 42px 24px',
+                }
             },
             activeItem: {
                 /**
                  * Selectors below are used to propagate active state of [NavLink] component to it's children.
                  */
                 '& img': {
-                    [theme.breakpoints.down(breakpoints.tablet)]: {
+                    [theme.breakpoints.only(breakpoints.tablet)]: {
                         backgroundColor: theme.palette.secondary.main,
                         borderRadius: 5
                     }
@@ -35,6 +37,9 @@ const useStyles = makeStyles((theme: Theme) => {
                 fontSize: 18,
                 fontWeight: 500,
                 fontFamily: theme.typography.fontFamily,
+                [theme.breakpoints.down(breakpoints.tablet)]: {
+                    fontSize: 21
+                },
             },
             icon: {
                 padding: 0,
@@ -42,11 +47,15 @@ const useStyles = makeStyles((theme: Theme) => {
                 flex: 1,
                 width: 22,
                 marginRight: 14,
-                [theme.breakpoints.down(breakpoints.tablet)]: {
+                [theme.breakpoints.only(breakpoints.tablet)]: {
                     maxHeight: 60,
                     width: 60,
                     margin: 12,
                     padding: 16,
+                },
+                [theme.breakpoints.down(breakpoints.mobile)]: {
+                    maxHeight: 30,
+                    width: 26,
                 },
             },
             link: {
@@ -58,13 +67,21 @@ const useStyles = makeStyles((theme: Theme) => {
     }
 )
 
-const MenuItemsList: React.FC<{}> = () => {
+interface Props {
+    onSelected?: () => void
+}
+
+const MenuItemsList: React.FC<Props> = ({onSelected}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
     return <List disablePadding={true} dense={true}>
         {MENU_ITEMS.map((menuItem: MenuItem, index) => (
-            <ListItem disableGutters={true} button>
+            <ListItem disableGutters={true} button onClick={() => {
+                if (onSelected) {
+                    onSelected()
+                }
+            }}>
                 <NavLink className={`${classes.link} ${classes.item}`} to={menuItem.path}
                          activeClassName={classes.activeItem}
                          key={index}>

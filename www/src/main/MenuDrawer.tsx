@@ -1,5 +1,4 @@
 import React, {useState} from "react";
-import {MenuItem} from "./MenuItems";
 import clsx from "clsx";
 import {createStyles, Drawer, isWidthDown, Theme, withWidth} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
@@ -35,12 +34,7 @@ const useStyles = makeStyles((theme: Theme) => {
     }
 )
 
-interface Props {
-    currentItem: MenuItem,
-    onItemSelected: (item: MenuItem) => void
-}
-
-const MenuDrawer: React.FC<WithWidthProps & Props> = ({width, currentItem, onItemSelected}) => {
+const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
     const classes = useStyles()
     const isTabletOrMobile = () => isWidthDown(breakpoints.tablet, width!)
     const [open, setOpen] = useState(!isTabletOrMobile())
