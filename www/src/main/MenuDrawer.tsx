@@ -7,6 +7,7 @@ import {WithWidthProps} from "@material-ui/core/withWidth/withWidth";
 import MenuItemsList from "./MenuItemsList";
 import TreasuryLogo from "./../assets/treasury_logo.svg"
 import {IconButton} from "../components/button/IconButton";
+import MenuAppInfo from "./MenuAppInfo";
 
 const useStyles = makeStyles((theme: Theme) => {
         const drawerWidth = 250
@@ -63,6 +64,7 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
             : null
         }
         <MenuItemsList/>
+        {!isTabletOrMobile() ? <MenuAppInfo /> : null}
     </Drawer>
 }
 

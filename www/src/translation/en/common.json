@@ -4,7 +4,9 @@
     "ideas": "Ideas",
     "proposals": "Proposals",
     "tips": "Tips",
-    "bounty": "Bounty"
+    "bounty": "Bounty",
+    "whatForLabel": "What is Treasury app for?",
+    "learnMoreLabel": "Learn more"
   },
   "idea": {
     "details": {

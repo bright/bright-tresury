@@ -19,6 +19,11 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     text: {
         paddingLeft: 0,
         paddingRight: 0
+    },
+    containedSecondary: {
+        color: theme.palette.text.secondary,
+        fontWeight: 'bold',
+        boxShadow: 'initial'
     }
 }))
 

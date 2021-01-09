@@ -16,7 +16,7 @@ export const theme = {
             light: '#E6F0FD'
         },
         secondary: {
-            main: '#e6f0fd'
+            main: '#E6F0FD'
         },
         text: {
             primary: '#1B1D1C',
