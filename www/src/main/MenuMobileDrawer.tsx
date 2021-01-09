@@ -24,7 +24,7 @@ const MenuMobileDrawer: React.FC<Props> = ({currentItem, onItemSelected}) => {
             onClose={() => setDrawerState(false)}
             anchor={'top'}
             variant="permanent">
-            <MenuItemsList currentItem={currentItem} onItemSelected={onItemSelected}/>
+            <MenuItemsList />
         </Drawer>
     </>
 }
