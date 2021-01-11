@@ -49,7 +49,7 @@ const Idea: React.FC<Props> = ({network}) => {
         }
     }, [ideaId])
 
-    let {path, url} = useRouteMatch();
+    let {path} = useRouteMatch();
 
     return (
         <div className={classes.root}>

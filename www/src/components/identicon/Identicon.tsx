@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 });
 
-
 interface Props {
     account: string
 }

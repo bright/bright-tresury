@@ -49,9 +49,9 @@ function AppRoutes() {
                         <Redirect to={generatePath(ROUTE_IDEAS_FILTERED, {filter: IdeaFilter.All})}/>
                     </Route>
                     <Route path={ROUTE_IDEAS_FILTERED} component={Ideas}/>
-                    <Route exact={true} path={ROUTE_NEW_IDEA} component={() => <CreateIdea network={'localhost'}/>}/>
-                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={() => <Idea network={'localhost'}/>}/>
-                    <Route path={ROUTE_IDEA} component={() => <Idea network={'localhost'}/>}/>
+                    <Route exact={true} path={ROUTE_NEW_IDEA} component={CreateIdea}/>
+                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
+                    <Route path={ROUTE_IDEA} component={Idea}/>
                 </Switch>
             </div>
         </Router>

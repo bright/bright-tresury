@@ -1,14 +1,8 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React from 'react';
 import {useHistory} from 'react-router-dom';
-import {createIdea, Idea} from './ideas.api';
-import {FormInput} from "../components/input/FormInput";
 import {useTranslation} from "react-i18next";
 import {FieldArray, Formik} from "formik";
-import {Button} from "../components/button/Button";
-import {FormSelect} from "../components/select/FormSelect";
-import {ROUTE_IDEAS} from "../routes";
-import {breakpoints} from "../theme/theme";
 import * as Yup from 'yup'
 import {breakpoints} from "../../theme/theme";
 import {createIdea, IdeaDto, IdeaNetworkDto} from "../ideas.api";
