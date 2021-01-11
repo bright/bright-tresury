@@ -5,6 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {Button} from "../../components/button/Button";
 import {ISelect, Select} from "../../components/select/Select";
 import {Account, InputParam, TxAttrs} from './SubmittingTransaction';
+import config from '../../config';
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -88,7 +89,7 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accoun
                       }) =>
                         <div>
                             <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
-                            <p className={classes.networkTitle}>localhost</p>
+                            <p className={classes.networkTitle}>{config.NETWORK_NAME}</p>
                             <form autoComplete="off" onSubmit={handleSubmit}>
                                 <TypedSelect
                                     variant={"outlined"}

@@ -1,24 +1,36 @@
 import {Box} from "@material-ui/core";
+import {DispatchError} from "@polkadot/types/interfaces";
+import {EventMetadataLatest} from "@polkadot/types/interfaces/metadata";
 import {ISubmittableResult} from "@polkadot/types/types";
 import BN from "bn.js";
 import React, {useEffect, useState} from 'react';
+import {Trans, useTranslation} from "react-i18next";
+import config from "../../config";
 import {useSubstrate} from "../index";
+import {ApiState, KeyringState} from "../SubstrateContext";
+import ExtrinsicFailed from "./ExtrinsicFailed";
 import SignAndSubmitForm from "./SignAndSubmitForm";
+import SubstrateLoading from "./SubstrateLoading";
 import TransactionError from "./TransactionError";
 import TransactionInProgress from "./TransactionInProgress";
-import TransactionWarning from "./TransactionWarning";
 import {getFromAcct, transformParams} from "./utils";
 
 export interface Result {
     status: Status,
-    event?: any,
-    error?: any,
+    event?: EventMetadataLatest,
+    error?: ExtrinsicError,
 }
 
 export interface Status {
     isReady: boolean
     isInBlock: boolean
     isFinalized: boolean
+}
+
+export interface ExtrinsicError {
+    section?: string
+    name?: string
+    description: string
 }
 
 export interface TxAttrs {
@@ -44,20 +56,20 @@ export interface Account {
 export interface Props {
     onClose: () => void
     txAttrs: TxAttrs
-    setExtrinsicDetails: (data: any) => void
+    setExtrinsicDetails: (data: { extrinsicHash: string, lastBlockHash: string }) => void
 }
 
 const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, setExtrinsicDetails}) => {
-    const [result, setTransactionResult] = useState<Result | undefined>(undefined)
-    const [error, setTransactionError] = useState<any>(undefined)
+    const {t} = useTranslation()
+    const [result, setResult] = useState<Result | undefined>()
+    const [error, setError] = useState<any>()
     const [submitting, setSubmitting] = useState(false)
-    const [unsub, setUnsub] = useState<(() => void) | undefined>(undefined);
-    const {keyringState, keyring, api} = useSubstrate();
+    const {keyringState, keyring, api, apiState} = useSubstrate();
 
     const [accounts, setAccounts] = useState<Account[]>([])
 
     useEffect(() => {
-        if (keyringState === 'READY' && keyring) {
+        if (keyringState === KeyringState.READY && keyring) {
             const keyringAccounts = keyring.getAccounts().map((account) => {
                 return {name: account.meta?.name || '', address: account.address} as Account
             })
@@ -68,20 +80,33 @@ const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, set
     const txResHandler = (result: ISubmittableResult) => {
         const txResult = {status: result.status} as Result
 
-        const applyExtrinsicEvents = result.events
-            .filter(({phase, event}) =>
+        const applyExtrinsicEvent = result.events
+            .find(({phase, event}) =>
                 phase.isApplyExtrinsic && event.section === txAttrs.palletRpc && event.method === txAttrs.eventMethod
             )
-
-        if (applyExtrinsicEvents.length > 0) {
-            txResult.event = applyExtrinsicEvents[0].event.meta
+        if (applyExtrinsicEvent) {
+            txResult.event = applyExtrinsicEvent.event.meta
         }
 
-        setTransactionResult(txResult)
+        const extrinsicFailedEvent = result.events
+            .find(({event: {section, method}}) =>
+                section === 'system' && method === 'ExtrinsicFailed'
+            )
+        if (extrinsicFailedEvent) {
+            const dispatchError = extrinsicFailedEvent.event.data[0] as DispatchError
+            if ((dispatchError).isModule && api) {
+                const decoded = api.registry.findMetaError((dispatchError).asModule);
+                const {documentation, name, section} = decoded;
+                txResult.error = {section, name, description: documentation.join(' ')}
+            } else {
+                txResult.error = {description: dispatchError.toString()}
+            }
+        }
+        setResult(txResult)
     }
 
     const txErrHandler = (err: any) => {
-        setTransactionError(err)
+        setError(err)
     }
 
     const signAndSend = async (address: string) => {
@@ -110,39 +135,54 @@ const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, set
         await txExecute.signAsync(fromAcct)
 
         const signedBlock = await api.rpc.chain.getBlock();
-        setExtrinsicDetails({extrinsicHash: txExecute.hash, lastBlockHash: signedBlock.hash})
+        setExtrinsicDetails({extrinsicHash: txExecute.hash.toString(), lastBlockHash: signedBlock.hash.toString()})
 
         // send the transaction
-        const unsub = await txExecute.send(txResHandler)
+        await txExecute.send(txResHandler)
             .catch(txErrHandler);
-        setUnsub(() => unsub);
     };
 
     const onSubmit = async (address: string) => {
         setSubmitting(true)
-        if (unsub !== undefined) {
-            await unsub();
-            setUnsub(undefined);
-        }
         await signAndSend(address)
     };
 
-    return (
-        <>
-            {!submitting && <Box
+    if (apiState === ApiState.ERROR) {
+        return <TransactionError
+            onOk={onClose}
+            title={t('substrate.error.api.title')}
+            subtitle={t('substrate.error.api.subtitle', {networkName: config.NETWORK_NAME})}/>
+    } else if (apiState !== ApiState.READY) {
+        return <SubstrateLoading onOk={onClose}/>
+    } else if (keyringState !== KeyringState.READY || (keyringState === KeyringState.READY && accounts.length === 0)) {
+        return <TransactionError
+            onOk={onClose}
+            title={t('substrate.error.accounts.title')}
+            subtitle={<Trans id='modal-description'
+                             i18nKey="substrate.error.accounts.subtitle"
+                             components={{a: <a href='https://polkadot.js.org/extension/'/>}}/>}
+        />
+    } else if (!submitting) {
+        return (
+            <Box
                 display="flex"
                 flexDirection='column'
                 alignItems='center'
             >
                 {children}
                 <SignAndSubmitForm accounts={accounts} txAttrs={txAttrs} onCancel={onClose} onSubmit={onSubmit}/>
-            </Box>}
-            {result && result.error ? <TransactionWarning error={error} onOk={onClose}/> : null}
-            {result && !result.error ?
-                <TransactionInProgress status={result.status} event={result.event} onOk={onClose} eventDescription={txAttrs.eventDescription}/> : null}
-            {error ? <TransactionError error={error} onOk={onClose}/> : null}
-        </>)
-
+            </Box>
+        )
+    } else if (result && result.error) {
+        return <ExtrinsicFailed error={result.error} onOk={onClose}/>
+    } else if (error) {
+        return <TransactionError
+            error={error}
+            onOk={onClose}
+            title={t('substrate.error.transaction.title', {networkName: config.NETWORK_NAME})}/>
+    } else {
+        return <TransactionInProgress status={result?.status} event={result?.event} onOk={onClose} eventDescription={txAttrs.eventDescription}/>
+    }
 }
 
 export default SubmittingTransaction

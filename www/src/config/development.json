@@ -1,6 +1,7 @@
 {
   "APP_NAME": "treasury-development",
   "PROVIDER_SOCKET": "ws://localhost:9944",
+  "NETWORK_NAME": "localhost",
   "CUSTOM_TYPES": {
     "Address": "AccountId",
     "LookupSource": "AccountId"

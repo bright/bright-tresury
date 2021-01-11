@@ -7,6 +7,7 @@ import {ROUTE_IDEA, ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, Idea} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
+import config from '../config';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,7 +24,7 @@ interface Props {
     network: string
 }
 
-const Ideas: React.FC<Props> = ({network = 'localhost'}) => {
+const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const classes = useStyles()
 
     const history = useHistory()

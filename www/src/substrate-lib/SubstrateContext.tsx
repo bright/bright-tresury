@@ -12,10 +12,10 @@ type State = {
     jsonrpc: Record<string, Record<string, DefinitionRpcExt>>
     types: any
     keyring?: Keyring
-    keyringState?: string
+    keyringState?: KeyringState
     api?: ApiPromise
     apiError?: any
-    apiState?: string
+    apiState?: ApiState
 }
 
 type Props = {
@@ -37,6 +37,17 @@ const INIT_STATE = {
     types: config.CUSTOM_TYPES,
 } as State;
 
+export enum ApiState {
+    CONNECTING = 'CONNECTING',
+    READY = 'READY',
+    ERROR = 'ERROR'
+}
+
+export enum KeyringState {
+    READY = 'READY',
+    ERROR = 'ERROR'
+}
+
 const reducer = (state: State, action: Action): State => {
     let socket = null;
 
@@ -46,19 +57,19 @@ const reducer = (state: State, action: Action): State => {
             return { ...state, socket, api: undefined, apiState: undefined };
 
         case 'CONNECT':
-            return { ...state, api: action.api, apiState: 'CONNECTING' };
+            return { ...state, api: action.api, apiState: ApiState.CONNECTING };
 
         case 'CONNECT_SUCCESS':
-            return { ...state, apiState: 'READY' };
+            return { ...state, apiState: ApiState.READY };
 
         case 'CONNECT_ERROR':
-            return { ...state, apiState: 'ERROR', apiError: action.apiError };
+            return { ...state, apiState: ApiState.ERROR, apiError: action.apiError };
 
         case 'SET_KEYRING':
-            return { ...state, keyring: action.keyring, keyringState: 'READY' };
+            return { ...state, keyring: action.keyring, keyringState: KeyringState.READY };
 
         case 'KEYRING_ERROR':
-            return { ...state, keyring: undefined, keyringState: 'ERROR' };
+            return { ...state, keyring: undefined, keyringState: KeyringState.ERROR };
     }
 };
 

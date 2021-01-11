@@ -3,7 +3,7 @@ import {Story, Meta} from '@storybook/react/types-6-0';
 import TransactionInProgress, {Props} from "./TransactionInProgress";
 
 export default {
-    title: 'InProgress',
+    title: 'Transaction In Progress',
     component: TransactionInProgress,
 } as Meta;
 

@@ -44,6 +44,10 @@
       "cancel": "Cancel",
       "accountSelectTitle": "Please, select your account in:"
     },
+    "loading": {
+      "title": "Almost there",
+      "cancel": "Cancel"
+    },
     "inProgress": {
       "title": "Submitting transaction",
       "steps": {
@@ -55,13 +59,31 @@
       "ok": "Ok"
     },
     "error": {
-      "title": "Transaction failed",
-      "subtitle": "Please check if you have enough funds to conduct the transaction",
+      "transaction": {
+        "title": "Transaction failed",
+        "subtitle": {
+          "unspecific": "Something went wrong, you may try again later",
+          "1010": "Please check if you have enough funds to conduct the transaction"
+        }
+      },
+      "api": {
+        "title": "Connection error",
+        "subtitle": "Cannot connect to the network {{networkName}}"
+      },
+      "accounts": {
+        "title": "No injected accounts",
+        "subtitle": "There are no injected accounts found so you cannot sign any transaction. You may want to use <a>Polkadot{.js} extension</a>. If you already have the extension installed, make sure you have authorized the app to use it or try refreshing the page."
+      },
       "ok": "Ok"
     },
-    "warning": {
-      "title": "Transaction submitted, insufficient funds",
-      "subtitle": "You have not enough funds to pay the deposit",
+    "extrinsicError": {
+      "title": "Extrinsic failed",
+      "subtitle": {
+        "unspecific": "Something went wrong, you may try again later",
+        "treasury": {
+          "InsufficientProposersBalance": "Proposer's balance is too low."
+        }
+      },
       "ok": "Ok"
     }
   }

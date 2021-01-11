@@ -8,6 +8,8 @@ import { Idea } from '../idea.entity';
 import { IdeaNetwork } from '../ideaNetwork.entity';
 import { CreateIdeaProposalDto } from "./dto/createIdeaProposal.dto";
 
+const logger = getLogger()
+
 @Injectable()
 export class IdeaProposalsService {
     constructor(
@@ -41,11 +43,19 @@ export class IdeaProposalsService {
     }
 
     async extractEvents(events: ExtrinsicEvent[], network: IdeaNetwork): Promise<void> {
+        logger.info('Extracting events for section: treasury, method: Proposed')
         const proposedEvent = events.find((event) => event.section === 'treasury' && event.method === 'Proposed')
-        const proposalIndex = Number(proposedEvent?.data.find((d) => d.name === 'ProposalIndex')?.value)
-        if (!isNaN(proposalIndex)) {
-            await this.ideaNetworkRepository.save({ id: network.id, blockchainProposalId: proposalIndex })
-            return
+        if (proposedEvent) {
+            logger.info('Event found')
+            logger.info(proposedEvent)
+            const proposalIndex = Number(proposedEvent?.data.find((d) => d.name === 'ProposalIndex')?.value)
+            logger.info(`Proposal index is ${proposalIndex}`)
+            if (!isNaN(proposalIndex)) {
+                await this.ideaNetworkRepository.save({id: network.id, blockchainProposalId: proposalIndex})
+                return
+            }
+        } else {
+            logger.warn('Event not found')
         }
         return
     }

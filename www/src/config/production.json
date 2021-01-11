@@ -1,6 +1,7 @@
 {
   "APP_NAME": "treasury-stage",
   "PROVIDER_SOCKET": "ws://substrate:9944",
+  "NETWORK_NAME": "localhost",
   "CUSTOM_TYPES": {
     "Address": "AccountId",
     "LookupSource": "AccountId"

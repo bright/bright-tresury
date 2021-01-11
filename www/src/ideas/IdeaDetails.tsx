@@ -12,6 +12,7 @@ import {breakpoints} from "../theme/theme";
 import IdeaDetailsForm from './IdeaDetailsForm';
 import {getIdeaById, Idea, IdeaNetwork} from './ideas.api';
 import SubmitProposalModal from "./SubmitProposalModal";
+import config from '../config';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -39,7 +40,7 @@ interface Props {
     network: string
 }
 
-const IdeaDetails: React.FC<Props> = ({network = 'localhost'}) => {
+const IdeaDetails: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const classes = useStyles()
     const {t} = useTranslation()
     const history = useHistory()
