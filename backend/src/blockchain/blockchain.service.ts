@@ -1,10 +1,14 @@
 import {HttpException, Inject, Injectable} from '@nestjs/common'
-import { ApiPromise } from '@polkadot/api'
+import {ApiPromise} from '@polkadot/api'
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
-import { EventRecord, Header } from '@polkadot/types/interfaces';
-import { UpdateExtrinsicDto } from "../extrinsics/dto/updateExtrinsic.dto";
-import { ExtrinsicEvent } from "../extrinsics/extrinsicEvent";
+import {EventRecord, Header} from '@polkadot/types/interfaces';
+import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
+import {ExtrinsicEvent} from "../extrinsics/extrinsicEvent";
 import {getLogger} from "../logging.module";
+import {BlockchainProposal} from "./dot/blockchainProposal.dto";
+import BN from 'bn.js';
+
+const logger = getLogger()
 
 @Injectable()
 export class BlockchainService {
@@ -47,8 +51,8 @@ export class BlockchainService {
                 await this.unsub?.()
 
                 const applyExtrinsicEvents = events
-                    .filter(({ phase, event }) => phase.isApplyExtrinsic)
-                    .map(({ event }) => {
+                    .filter(({phase, event}) => phase.isApplyExtrinsic)
+                    .map(({event}) => {
                         const types = event.typeDef;
                         return {
                             section: event.section,
@@ -77,4 +81,33 @@ export class BlockchainService {
             }
         })
     }
+
+    async getProposals(): Promise<BlockchainProposal[]> {
+        logger.info('Getting proposals from blockchain...')
+
+        const proposalCount = (await this.polkadotApi.query.treasury.proposalCount()).toNumber()
+        logger.info(`ProposalCount is ${proposalCount}.`)
+
+        if (proposalCount === 0) {
+            return []
+        } else {
+            const result: BlockchainProposal[] = []
+            for (let index = 0; index < proposalCount; index++) {
+                const proposalOption = await this.polkadotApi.query.treasury.proposals(index)
+                const proposal: any = proposalOption.isSome ? proposalOption.value.toJSON() : undefined
+                if (proposal) {
+                    result.push({
+                        proposalIndex: index,
+                        proposer: proposal.proposer,
+                        beneficiary: proposal.beneficiary,
+                        value: new BN(proposal.value),
+                        bond: new BN(proposal.bond),
+                    })
+                }
+            }
+            logger.info(`Returning ${result.length} proposals.`)
+            return result
+        }
+    }
+
 }

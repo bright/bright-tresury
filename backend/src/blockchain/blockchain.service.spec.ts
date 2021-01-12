@@ -1,11 +1,12 @@
-import { Test } from "@nestjs/testing";
-import { Keyring, SubmittableResult } from "@polkadot/api";
+import {Test} from "@nestjs/testing";
+import {Keyring, SubmittableResult} from "@polkadot/api";
 import ApiPromise from "@polkadot/api/promise";
-import { KeyringPair } from "@polkadot/keyring/types";
-import { UpdateExtrinsicDto } from "../extrinsics/dto/updateExtrinsic.dto";
-import { beforeAllSetup } from "../utils/spec.helpers";
-import { BlockchainModule } from "./blockchain.module";
-import { BlockchainService } from "./blockchain.service";
+import {KeyringPair} from "@polkadot/keyring/types";
+import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
+import {beforeAllSetup} from "../utils/spec.helpers";
+import {BlockchainModule} from "./blockchain.module";
+import BN from 'bn.js';
+import {BlockchainService} from "./blockchain.service";
 
 describe(`Blockchain service`, () => {
     // TODO fix types!
@@ -24,8 +25,8 @@ describe(`Blockchain service`, () => {
 
     beforeEach(async () => {
         api = await service().getApi()
-        keyring = new Keyring({ type: 'sr25519' });
-        pair = keyring.addFromUri('//Alice', { name: 'Alice default' });
+        keyring = new Keyring({type: 'sr25519'});
+        pair = keyring.addFromUri('//Alice', {name: 'Alice default'});
     })
 
     describe('findExtrinsic', () => {
@@ -58,7 +59,7 @@ describe(`Blockchain service`, () => {
                     // TODO fix types
                     expectedBlockHash = result.status.asFinalized.toString()
                     const event = result.events
-                        .find(({ event: e } : { event: any }) => e.section === 'treasury' && e.method === 'Proposed')
+                        .find(({event: e}: { event: any }) => e.section === 'treasury' && e.method === 'Proposed')
                     expectedProposalId = Number(event?.event.data[0])
                 }
             })
@@ -88,6 +89,27 @@ describe(`Blockchain service`, () => {
             await extrinsic.send((result: SubmittableResult) => {
                 if (result.isFinalized) {
                     expectedBlockHash = result.status.asFinalized.toString()
+                }
+            })
+        }, 60000)
+    })
+
+    describe.only('getProposals', () => {
+        it('should return existing proposals', async (done) => {
+            // create a proposal
+            const nextProposalIndex  = (await api.query.treasury.proposalCount()).toNumber()
+            const extrinsic = api.tx.treasury.proposeSpend(10, '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+            await extrinsic.signAndSend(pair, async(result: SubmittableResult) => {
+                if (result.isFinalized) {
+                    const proposals = await service().getProposals()
+                    expect(proposals.length).toBeGreaterThan(0)
+                    const lastProposal = proposals[proposals.length - 1]
+                    expect(lastProposal.proposalIndex).toBe(nextProposalIndex)
+                    expect(lastProposal.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+                    expect(lastProposal.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+                    expect(lastProposal.bond.eq(new BN(1000000000000))).toBe(true)
+                    expect(lastProposal.value.eq(new BN(10))).toBe(true)
+                    done()
                 }
             })
         }, 60000)
