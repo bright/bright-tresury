@@ -22,7 +22,7 @@ RUN yarn build
 
 WORKDIR ${SERVER_TARGET_DIR}
 
-RUN npm run install
+RUN npm install
 
 ADD --chown=node backend/ ${SERVER_TARGET_DIR}/
 
