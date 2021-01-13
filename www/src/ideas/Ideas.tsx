@@ -1,14 +1,14 @@
 import Grid from '@material-ui/core/Grid';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React, {useEffect, useState} from 'react';
-import {useHistory, useParams} from 'react-router-dom';
+import {useHistory} from 'react-router-dom';
 import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, IdeaDto} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
 import IdeaCard from "./list/IdeaCard";
 import {breakpoints} from "../theme/theme";
-import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
+import IdeaStatusFilters from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";
 import config from '../config';
 
@@ -136,9 +136,6 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
         history.push(ROUTE_NEW_IDEA)
     }
 
-    // TODO: filter ideas on frontend
-    const filter = useParams<{filter: IdeaFilter}>()
-
     return (
         <div>
             <div className={classes.header}>
@@ -152,7 +149,6 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
                 <div className={classes.timeSelectWrapper}>
                     <Select
                         className={classes.timeSelect}
-                        label={t('idea.list.filters.currentSpendTime')}
                         value={t('idea.list.filters.currentSpendTime')}
                         options={[t('idea.list.filters.currentSpendTime')]}
                     />

@@ -15,6 +15,7 @@ export interface TabEntry {
     label: string
     path: string
     svg?: string
+    isDefault?: boolean
 }
 
 interface Props {
@@ -24,8 +25,9 @@ interface Props {
 export const Tabs: React.FC<Props> = ({values}) => {
     const classes = useStyles()
     return <div className={classes.root}>
-        {values ? values.map(({label, path, svg}) =>
+        {values ? values.map(({label, path, svg, isDefault}) =>
             <TabLabel
+                isDefault={isDefault}
                 label={label}
                 svg={svg}
                 path={path}

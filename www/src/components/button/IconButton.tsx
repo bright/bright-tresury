@@ -7,6 +7,6 @@ export type IconButtonProps = {
 
 export const IconButton: React.FC<IconButtonProps> = ({children, svg, ...props}) => {
     return <MaterialIconButton {...props}>
-        {svg ? <img src={svg}/> : null}
+        {svg ? <img src={svg} alt={''}/> : null}
     </MaterialIconButton>
 }

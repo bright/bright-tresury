@@ -3,6 +3,7 @@ import {makeStyles, Theme} from "@material-ui/core/styles";
 import {ButtonBase, createStyles} from "@material-ui/core";
 import {NavLink} from "react-router-dom";
 import {breakpoints} from "../../theme/theme";
+import {Location} from 'history';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,17 +34,24 @@ interface Props {
     label: string
     path: string
     svg?: string
+    isDefault?: boolean
 }
 
-export const TabLabel: React.FC<Props> = ({label, svg, path}) => {
+export const TabLabel: React.FC<Props> = ({label, svg, path, isDefault}) => {
     const classes = useStyles()
 
     return <ButtonBase centerRipple={true}>
         <NavLink
             className={classes.root}
             to={path}
+            isActive={(match, location: Location) => {
+                const isActiveByDefault = isDefault === true &&
+                    `${location.pathname}${location.search}` === location.pathname
+                return `${location.pathname}${location.search}` === path ? true : isActiveByDefault
+            }}
             activeClassName={classes.selected}>
-            {svg ? <img className={classes.labelIcon} src={svg}/> : null}
+            {isDefault}
+            {svg ? <img className={classes.labelIcon} src={svg} alt={''}/> : null}
             {label}
         </NavLink>
     </ButtonBase>
