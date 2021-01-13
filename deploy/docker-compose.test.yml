@@ -7,7 +7,7 @@ services:
     environment:
       DEPLOY_ENV: test
       TEAMCITY_VERSION: ${TEAMCITY_VERSION}
-    command: bash -c "while !</dev/tcp/database/5432; do sleep 1; done; yarn database:migrate:ci && yarn test:ci"
+    command: bash -c "while !</dev/tcp/database/5432; do sleep 1; done; npm run database:migrate:ci && npm run test:ci"
     depends_on:
       - database
       - substrate

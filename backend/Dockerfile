@@ -22,10 +22,10 @@ RUN yarn build
 
 WORKDIR ${SERVER_TARGET_DIR}
 
-RUN yarn install --frozen-lockfile
+RUN npm run install
 
 ADD --chown=node backend/ ${SERVER_TARGET_DIR}/
 
-RUN yarn compile
+RUN npm run compile
 
-CMD yarn main:dist
+CMD npm run main:dist
