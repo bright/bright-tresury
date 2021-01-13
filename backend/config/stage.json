@@ -1,2 +1,5 @@
 {
+  "blockchain": {
+    "nodeUrl": "ws://localhost:9944"
+  }
 }
