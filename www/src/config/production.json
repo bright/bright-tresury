@@ -1,6 +1,6 @@
 {
   "APP_NAME": "treasury-stage",
-  "PROVIDER_SOCKET": "ws://substrate:9944",
+  "PROVIDER_SOCKET": "ws://host.docker.internal:9944",
   "NETWORK_NAME": "localhost",
   "NETWORK_CURRENCY": "LOC",
   "BOND_VALUE": {
