@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         fontWeight: 700,
         marginBottom: '24px',
         marginTop: '0',
-        color: theme.palette.text.secondary
+        color: theme.palette.text.disabled
     }
 }))
 

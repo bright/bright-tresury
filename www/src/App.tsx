@@ -19,13 +19,9 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             display: 'flex',
-            width: '100vw',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 flexDirection: 'column'
             },
-        },
-        content: {
-            flexGrow: 1
         }
     }),
 );
@@ -39,16 +35,14 @@ function AppRoutes() {
         <Router>
             <div className={classes.root}>
                 <Menu/>
-                <div className={classes.content}>
-                    <Switch>
-                        <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
-                        <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
-                        <Route exact={true} path={ROUTE_IDEAS}  component={Ideas}/>
-                        <Route exact={true} path={ROUTE_NEW_IDEA} component={CreateIdea}/>
-                        <Route exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
-                        <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
-                    </Switch>
-                </div>
+                <Switch>
+                    <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
+                    <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
+                    <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
+                    <Route exact={true} path={ROUTE_NEW_IDEA} component={CreateIdea}/>
+                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
+                    <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
+                </Switch>
             </div>
         </Router>
     )

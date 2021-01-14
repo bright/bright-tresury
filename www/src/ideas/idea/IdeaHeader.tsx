@@ -23,7 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
             background: theme.palette.background.default,
             padding: '2em 7em 2em 3em',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                padding: '1em 3em 1em 1.5em'
+                padding: '1em 2.2em 1em 2.2em'
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                paddingLeft: 0,
+                paddingRight: 0
             },
             display: 'flex',
             flexDirection: 'row',
@@ -37,19 +41,23 @@ const useStyles = makeStyles((theme: Theme) =>
             right: 32,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 top: 20,
-                right: 24
+                right: 16
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                top: 26,
+                top: 70,
                 right: 8,
             }
         },
         basicInfo: {
             order: 1,
+            flex: 1,
             display: 'flex',
             alignItems: 'center',
             flexDirection: 'row',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                paddingLeft: '1.5em',
+            },
         },
         basicInfoDivider: {
             height: '20px',
@@ -85,7 +93,9 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: '100%',
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                order: 2
+                order: 2,
+                paddingLeft: '1.5em',
+                paddingRight: '1.5em'
             }
         },
         networkReward: {
@@ -109,6 +119,10 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 5,
             },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                overflowX: 'auto',
+                paddingLeft: '1.5em'
+            }
         },
         convertToProposal: {
             order: 5,
@@ -176,7 +190,7 @@ const IdeaHeader: React.FC<Props> = ({idea}) => {
         </div>
         <div className={classes.flexBreakLine}/>
         <div className={classes.contentTypeTabs}>
-            <IdeaContentTypeTabs />
+            <IdeaContentTypeTabs/>
         </div>
         {!!idea.id && <div className={classes.convertToProposal}><Button
             variant="contained"
