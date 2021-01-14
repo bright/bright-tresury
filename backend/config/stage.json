@@ -1,2 +1,10 @@
 {
+  "blockchain": {
+    "nodeUrl": "ws://localhost:9944",
+    "types": {
+      "Address": "AccountId",
+      "LookupSource": "AccountId",
+      "BlockWeights": "Balance"
+    }
+  }
 }
