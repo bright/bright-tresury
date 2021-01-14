@@ -1,6 +1,6 @@
 {
   "blockchain": {
-    "nodeUrl": "ws://host.docker.internal:9944",
+    "nodeUrl": "ws://172.17.0.1:9944",
     "types": {
       "Address": "AccountId",
       "LookupSource": "AccountId",
