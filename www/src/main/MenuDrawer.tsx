@@ -13,6 +13,9 @@ const useStyles = makeStyles((theme: Theme) => {
         const drawerWidth = 250
         const miniDrawerWidth = 84
         return createStyles({
+            root: {
+                background: theme.palette.background.default
+            },
             drawerIcon: {
                 marginTop: '1em'
             },
@@ -53,7 +56,7 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
             [classes.drawerClose]: !open
         })}
         classes={{
-            paper: clsx({
+            paper: clsx(classes.root, {
                 [classes.drawerOpen]: open,
                 [classes.drawerClose]: !open
             })

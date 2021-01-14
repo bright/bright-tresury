@@ -34,7 +34,10 @@ const useStyles = makeStyles((theme: Theme) =>
         menu: {
             width: '100%',
             maxWidth: '100%',
-            left: '0 !important'
+            left: '0 !important',
+            background: theme.palette.background.default,
+        },
+        root: {
         }
     }),
 );
@@ -69,7 +72,6 @@ const MenuMobileDrawer: React.FC<{}> = () => {
             <div className={classes.menuButtonArrow}/>
         </ButtonBase>
         <Menu
-            className={classes.menu}
             keepMounted
             open={open}
             anchorEl={anchorEl}

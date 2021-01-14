@@ -1,7 +1,7 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {createStyles, Theme} from "@material-ui/core";
-import MenuDrawing from "./../assets/menu_drawing.svg"
+import MenuDrawing from "../assets/menu_drawing.svg"
 import TreasuryLabeledLogo from "./../assets/treasury_labeled_logo.svg"
 import {useTranslation} from "react-i18next";
 import {Button} from "../components/button/Button";

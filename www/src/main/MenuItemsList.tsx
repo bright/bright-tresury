@@ -12,6 +12,7 @@ const useStyles = makeStyles((theme: Theme) => {
                 padding: '20px 38px',
                 display: 'flex',
                 alignItems: 'center',
+                width: '100%',
                 [theme.breakpoints.down(breakpoints.tablet)]: {
                     padding: '28px 28px 28px 0',
                 },
@@ -44,12 +45,12 @@ const useStyles = makeStyles((theme: Theme) => {
             icon: {
                 padding: 0,
                 maxHeight: 28,
-                flex: 1,
                 width: 22,
                 marginRight: 14,
                 [theme.breakpoints.only(breakpoints.tablet)]: {
                     maxHeight: 60,
                     width: 60,
+                    minWidth: 60,
                     margin: 12,
                     padding: 16,
                 },

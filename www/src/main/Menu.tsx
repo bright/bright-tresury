@@ -6,15 +6,10 @@ import {WithWidthProps} from "@material-ui/core/withWidth/withWidth";
 import MenuDrawer from "./MenuDrawer";
 import MenuMobileDrawer from "./MenuMobileDrawer";
 
-
 const Menu: React.FC<WithWidthProps> = ({width}) => {
     const isMobile = () => isWidthDown(breakpoints.mobile, width!)
 
-    if(isMobile()) {
-        return <MenuMobileDrawer />
-    } else {
-        return <MenuDrawer />
-    }
+    return isMobile() ? <MenuMobileDrawer/> : <MenuDrawer/>
 }
 
 export default withWidth()(Menu)
