@@ -28,9 +28,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         marginTop: 20
     },
     logo: {
-        marginTop: 24,
+        marginTop: 30,
         width: '100%',
-        height: 18
+        height: 32
     }
 }))
 

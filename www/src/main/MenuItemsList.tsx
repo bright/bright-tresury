@@ -8,27 +8,46 @@ import {NavLink} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => {
         return createStyles({
-            item: {
+            navLinkItem: {
                 padding: '20px 38px',
                 display: 'flex',
                 alignItems: 'center',
+                alignContent: 'center',
                 width: '100%',
+                textDecoration: 'none',
+                minHeight: 0,
+                color: theme.palette.text.primary,
                 [theme.breakpoints.down(breakpoints.tablet)]: {
                     padding: '28px 28px 28px 0',
                 },
                 [theme.breakpoints.down(breakpoints.mobile)]: {
                     padding: '42px 24px 42px 24px',
-                }
+                },
+                /**
+                 * Selector below are used to propagate inactive state of [NavLink] component to it's children.
+                 */
+                '& .iconHighlighted': {
+                    display: 'none'
+                },
+                '& .iconRegular': {
+                    display: 'initial'
+                },
             },
             activeItem: {
                 /**
-                 * Selectors below are used to propagate active state of [NavLink] component to it's children.
+                 * Selector below are used to propagate active state of [NavLink] component to it's children.
                  */
                 '& img': {
                     [theme.breakpoints.only(breakpoints.tablet)]: {
                         backgroundColor: theme.palette.secondary.main,
                         borderRadius: 5
                     }
+                },
+                '& .iconHighlighted': {
+                    display: 'initial'
+                },
+                '& .iconRegular': {
+                    display: 'none'
                 },
                 '& div': {
                     fontWeight: 'bold',
@@ -59,11 +78,6 @@ const useStyles = makeStyles((theme: Theme) => {
                     width: 26,
                 },
             },
-            link: {
-                textDecoration: 'none',
-                minHeight: 0,
-                color: theme.palette.text.primary
-            }
         })
     }
 )
@@ -83,10 +97,11 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
                     onSelected()
                 }
             }}>
-                <NavLink className={`${classes.link} ${classes.item}`} to={menuItem.path}
+                <NavLink className={classes.navLinkItem} to={menuItem.path}
                          activeClassName={classes.activeItem}
                          key={index}>
-                    <img className={classes.icon} src={menuItem.svg}/>
+                    <img className={`${classes.icon} iconRegular`} src={menuItem.svg}/>
+                    <img className={`${classes.icon} iconHighlighted`} src={menuItem.svgHighlighted}/>
                     <div className={classes.text}>{t(menuItem.translationKey)}</div>
                 </NavLink>
             </ListItem>
