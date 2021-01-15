@@ -16,7 +16,6 @@
       "portfolio": "Portfolio",
       "reward": "Reward",
       "links": "Links",
-      "defaultValue": "-",
       "form": {
         "linkPlaceholder": "Add external link to your proposal here",
         "addLink": "+ Add Link",

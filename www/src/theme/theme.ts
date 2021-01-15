@@ -16,12 +16,13 @@ export const theme = {
             light: '#E6F0FD'
         },
         secondary: {
-            main: '#E6F0FD'
+            main: '#e6f0fd'
         },
         text: {
             primary: '#1B1D1C',
             secondary: '#7B7B7B',
-            disabled: '#7B7B7B'
+            disabled: '#7B7B7B',
+            hint: '#777777'
         },
         background: {
             default: '#FFFFFF',

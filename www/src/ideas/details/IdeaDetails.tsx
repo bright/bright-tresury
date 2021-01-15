@@ -6,6 +6,7 @@ import {Identicon} from "../../components/identicon/Identicon";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Link} from "../../components/link/Link";
 import {breakpoints} from "../../theme/theme";
+import {Placeholder} from "../../components/text/Placeholder";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -60,8 +61,6 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    const defaultValue = t('idea.details.defaultValue')
-
     const nonEmptyLinks = useMemo(
         () => idea.links ? idea.links.filter((link: string) => !!link) : [],
         [idea.links]
@@ -70,33 +69,35 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
     return <div>
         <Label label={t('idea.details.beneficiary')}/>
         <div className={classes.beneficiary}>
-            <Identicon account={idea.beneficiary}/>
-            <div className={`${classes.beneficiaryValue} ${classes.text}`}>
-                {idea.beneficiary || defaultValue}
-            </div>
+            {idea.beneficiary ? <>
+                <Identicon account={idea.beneficiary}/>
+                <div className={`${classes.beneficiaryValue} ${classes.text}`}>
+                    {idea.beneficiary}
+                </div>
+            </> : <Placeholder value={t('idea.details.beneficiary')}/>}
         </div>
         <div className={classes.spacing}>
             <Label label={t('idea.details.field')}/>
             <div className={classes.text}>
-                {idea.field || defaultValue}
+                {idea.field || <Placeholder value={t('idea.details.field')}/>}
             </div>
         </div>
         <div className={classes.spacing}>
             <Label label={t('idea.details.content')}/>
             <div className={classes.longText}>
-                {idea.content || defaultValue}
+                {idea.content || <Placeholder value={t('idea.details.content')}/>}
             </div>
         </div>
         <div className={classes.spacing}>
             <Label label={t('idea.details.contact')}/>
             <div className={classes.longText}>
-                {idea.contact || defaultValue}
+                {idea.contact || <Placeholder value={t('idea.details.contact')}/>}
             </div>
         </div>
         <div className={classes.spacing}>
             <Label label={t('idea.details.portfolio')}/>
             <div className={classes.longText}>
-                {idea.portfolio || defaultValue}
+                {idea.portfolio || <Placeholder value={t('idea.details.portfolio')}/>}
             </div>
         </div>
         <div className={classes.spacing}>
@@ -105,7 +106,7 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
                     <div className={index !== 0 ? classes.linkSpacing : ''}>
                         <Link href={link} key={index}/>
                     </div>)
-                : <div className={classes.text}>{defaultValue}</div>
+                : <Placeholder value={t('idea.details.links')}/>
             }
         </div>
     </div>
