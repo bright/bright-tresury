@@ -5,6 +5,7 @@ import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {v4 as uuid} from 'uuid';
 import {createIdea} from './spec.helpers';
+import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
 const baseUrl = '/api/v1/ideas'
 
@@ -133,7 +134,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(400)
         })
 
-        it('should return created if links are strings array', () => {
+        it('should return bad request if links are strings array', () => {
             return request(app())
                 .post(`${baseUrl}`)
                 .send({title: 'Test title', networks: [{name: 'kusama'}], links: 'https://somelink.com'})
@@ -188,6 +189,7 @@ describe(`/api/v1/ideas`, () => {
             expect(body.contact).toBe('Test contact')
             expect(body.portfolio).toBe('Test portfolio')
             expect(body.links).toStrictEqual(['Test link'])
+            expect(body.status).toBe(DefaultIdeaStatus)
             done()
         })
 
@@ -263,6 +265,47 @@ describe(`/api/v1/ideas`, () => {
             expect(response.body.links[0]).toBe('patched link')
             done()
         })
+        it('should return bad request if links are not array', async (done) => {
+            const idea = await createIdea({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 13}],
+                links: ['The link']
+            })
+            await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({
+                    links: 'Updated link'
+                })
+                .expect(400)
+            done()
+        })
+        it('should patch idea status', async (done) => {
+            const idea = await createIdea({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 13}]
+            })
+            const response = await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({
+                    status: IdeaStatus.Active
+                })
+                .expect(200)
+            expect(response.body.status).toBe(IdeaStatus.Active)
+            done()
+        })
+        it('should return bad request if idea status is unknown', async (done) => {
+            const idea = await createIdea({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 13}]
+            })
+            await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({
+                    status: 'unknown_idea_status'
+                })
+                .expect(400)
+            done()
+        })
         it('should keep previous data for not patched properties', async (done) => {
             const idea = await createIdea({
                 title: 'Test title',
@@ -275,7 +318,6 @@ describe(`/api/v1/ideas`, () => {
                 .send({title: 'Test title 2'})
                 .expect(200)
             const body = response.body
-            // tslint:disable-next-line:no-console
             expect(body.title).not.toBe('Test title')
             expect(body.beneficiary).toBe('abcd-1234')
             expect(body.content).toBe('Test content')

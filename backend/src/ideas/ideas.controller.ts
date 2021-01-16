@@ -5,6 +5,7 @@ import {Idea} from './idea.entity';
 import {IdeasService} from './ideas.service';
 import {IdeaDto, toIdeaDto} from "./dto/idea.dto";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {UpdateIdeaDto} from "./dto/updateIdea.dto";
 
 class GetIdeasQuery {
     @ApiPropertyOptional()
@@ -74,7 +75,7 @@ export class IdeasController {
         description: 'No idea found',
     })
     @Patch(':id')
-    async updateIdea(@Body() createIdeaDto: Partial<CreateIdeaDto>, @Param('id') id: string): Promise<IdeaDto> {
+    async updateIdea(@Body() createIdeaDto: UpdateIdeaDto, @Param('id') id: string): Promise<IdeaDto> {
         const idea = await this.ideasService.update(createIdeaDto, id)
         return toIdeaDto(idea)
     }

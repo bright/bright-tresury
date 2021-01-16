@@ -2,10 +2,11 @@ import {NotFoundException} from '@nestjs/common';
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
-import {CreateIdeaDto} from "./dto/createIdea.dto";
-import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
+import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
+import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
 describe(`/api/v1/ideas`, () => {
 
@@ -134,8 +135,17 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
             } as CreateIdeaDto)
-            const savedIdea = await getService().find(createdIdea.id)
+            const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea).toBeDefined()
+        })
+
+        it('should create and save idea with default idea status', async () => {
+            const createdIdea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
+            } as CreateIdeaDto)
+            const savedIdea = await getService().findOne(createdIdea.id)
+            expect(savedIdea.status).toBe(DefaultIdeaStatus)
         })
 
         it('should create and save idea with all valid data', async (done) => {
@@ -218,6 +228,15 @@ describe(`/api/v1/ideas`, () => {
                 .rejects
                 .toThrow(NotFoundException)
             done()
+        })
+        it('should update and save idea with updated status', async () => {
+            const idea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 44}]
+            })
+            await getService().update({status: IdeaStatus.Active}, idea.id)
+            const savedIdea = await getService().findOne(idea.id)
+            expect(savedIdea.status).toBe(IdeaStatus.Active)
         })
     })
     describe('delete', () => {

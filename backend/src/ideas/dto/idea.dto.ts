@@ -3,6 +3,7 @@ import {IsArray, IsNotEmpty} from "class-validator";
 import {IdeaNetworkDto} from "./ideaNetwork.dto";
 import {Idea, ideaRestrictions} from "../idea.entity";
 import {IdeaNetwork} from "../ideaNetwork.entity";
+import {IdeaStatus} from "../ideaStatus";
 
 export class IdeaDto {
     @ApiProperty()
@@ -36,6 +37,9 @@ export class IdeaDto {
     })
     links?: string[]
 
+    @ApiProperty({enum: IdeaStatus})
+    status?: IdeaStatus
+
     constructor(
         id: string,
         title: string,
@@ -45,7 +49,8 @@ export class IdeaDto {
         field?: string,
         contact?: string,
         portfolio?: string,
-        links?: string[]
+        links?: string[],
+        status?: IdeaStatus
     ) {
         this.id = id
         this.title = title
@@ -56,6 +61,7 @@ export class IdeaDto {
         this.contact = contact
         this.portfolio = portfolio
         this.links = links
+        this.status = status
     }
 
 }
@@ -74,6 +80,7 @@ export function toIdeaDto(idea: Idea): IdeaDto {
         idea.field,
         idea.contact,
         idea.portfolio,
-        idea.links ? JSON.parse(idea.links) as string[] : undefined
+        idea.links ? JSON.parse(idea.links) as string[] : undefined,
+        idea.status
     )
 }

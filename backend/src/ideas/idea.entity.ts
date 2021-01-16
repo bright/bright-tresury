@@ -2,6 +2,7 @@ import {Column, Entity, OneToMany} from "typeorm";
 import {BaseEntity} from "../database/base.entity";
 import {IdeaNetwork} from "./ideaNetwork.entity";
 import {v4 as uuid} from 'uuid';
+import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
 export const ideaRestrictions = {
     field: {
@@ -46,9 +47,18 @@ export class Idea extends BaseEntity {
     @Column({nullable: true, type: "text"})
     links?: string
 
+    @Column({
+        type: "enum",
+        enum: IdeaStatus,
+        default: DefaultIdeaStatus,
+        nullable: false
+    })
+    status: IdeaStatus
+
     constructor(
         title: string,
         networks: IdeaNetwork[],
+        status: IdeaStatus,
         beneficiary?: string,
         content?: string,
         field?: string,
@@ -59,10 +69,11 @@ export class Idea extends BaseEntity {
     ) {
         super()
         this.title = title
-        this.content = content
-        this.beneficiary = beneficiary
-        this.field = field
         this.networks = networks
+        this.status = status
+        this.beneficiary = beneficiary
+        this.content = content
+        this.field = field
         this.contact = contact
         this.portfolio = portfolio
         this.links = links

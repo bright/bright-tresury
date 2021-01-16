@@ -6,6 +6,7 @@ import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
+import {DefaultIdeaStatus} from "./ideaStatus";
 
 const logger = getLogger()
 
@@ -90,6 +91,7 @@ export class IdeasService {
                 network.name,
                 network.value
             )),
+            DefaultIdeaStatus,
             createIdeaDto.beneficiary,
             createIdeaDto.content,
             createIdeaDto.field,
