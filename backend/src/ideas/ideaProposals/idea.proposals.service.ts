@@ -1,29 +1,27 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ExtrinsicEvent } from "../../extrinsics/extrinsicEvent";
-import { ExtrinsicsService } from "../../extrinsics/extrinsics.service";
+import {Injectable, NotFoundException} from '@nestjs/common';
+import {InjectRepository} from '@nestjs/typeorm';
+import {Repository} from 'typeorm';
+import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
+import {ExtrinsicsService} from "../../extrinsics/extrinsics.service";
 import {getLogger} from "../../logging.module";
-import { Idea } from '../idea.entity';
-import { IdeaNetwork } from '../ideaNetwork.entity';
-import { CreateIdeaProposalDto } from "./dto/createIdeaProposal.dto";
+import {IdeaNetwork} from '../ideaNetwork.entity';
+import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
+import {IdeasService} from "../ideas.service";
+import {IdeaStatus} from "../ideaStatus";
 
 const logger = getLogger()
 
 @Injectable()
 export class IdeaProposalsService {
     constructor(
-        @InjectRepository(Idea) private readonly ideaRepository: Repository<Idea>,
         @InjectRepository(IdeaNetwork) private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
-        private readonly extrinsicsService: ExtrinsicsService
+        private readonly extrinsicsService: ExtrinsicsService,
+        private readonly ideaService: IdeasService,
     ) {
     }
 
     async createProposal(ideaId: string, dto: CreateIdeaProposalDto): Promise<IdeaNetwork> {
-        const idea = await this.ideaRepository.findOne(ideaId, { relations: ['networks'] })
-        if (!idea) {
-            throw new NotFoundException('Idea not found.')
-        }
+        const idea = await this.ideaService.findOne(ideaId)
 
         const network = await idea.networks?.find((n) => n.id === dto.ideaNetworkId)
         if (!network) {
@@ -37,7 +35,7 @@ export class IdeaProposalsService {
         const extrinsic = await this.extrinsicsService.listenForExtrinsic(dto, callback)
 
         network.extrinsic = extrinsic
-        await this.ideaNetworkRepository.save({ id: network.id, extrinsic })
+        await this.ideaNetworkRepository.save({id: network.id, extrinsic})
 
         return network
     }
@@ -52,6 +50,8 @@ export class IdeaProposalsService {
             logger.info(`Proposal index is ${proposalIndex}`)
             if (!isNaN(proposalIndex)) {
                 await this.ideaNetworkRepository.save({id: network.id, blockchainProposalId: proposalIndex})
+                const idea = await this.ideaService.findOneByNetworkId(network.id)
+                await this.ideaService.update({status: IdeaStatus.TurnedIntoProposal}, idea!.id)
                 return
             }
         } else {

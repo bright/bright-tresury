@@ -42,6 +42,9 @@ export class IdeasService {
 
     async findOneByNetworkId(networkId: string): Promise<Idea | undefined> {
         const ideaNetwork = await this.ideaNetworkRepository.findOne(networkId, {relations: ['idea']})
+        if (!ideaNetwork) {
+            throw new NotFoundException('There is no idea network with such id')
+        }
         return ideaNetwork?.idea
     }
 

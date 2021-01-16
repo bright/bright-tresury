@@ -12,6 +12,7 @@ import { IdeasService } from "../ideas.service";
 import { createIdea } from "../spec.helpers";
 import { CreateIdeaProposalDto, IdeaProposalDataDto } from "./dto/createIdeaProposal.dto";
 import { IdeaProposalsService } from "./idea.proposals.service";
+import {IdeaStatus} from "../ideaStatus";
 
 describe('IdeaProposalsService', () => {
     const blockHash = '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04'
@@ -50,6 +51,7 @@ describe('IdeaProposalsService', () => {
     const service = beforeAllSetup(() => module().get<IdeaProposalsService>(IdeaProposalsService))
     const ideasService = beforeAllSetup(() => module().get<IdeasService>(IdeasService))
     const ideaNetworkRepository = beforeAllSetup(() => module().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
+    const ideaRepository = beforeAllSetup(() => module().get<Repository<Idea>>(getRepositoryToken(Idea)))
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -90,6 +92,13 @@ describe('IdeaProposalsService', () => {
             const i = await ideaNetworkRepository()
             const actual = await i.findOne(idea.networks![0].id)
             expect(actual!.blockchainProposalId).toBe(proposalIndex)
+        })
+        it(`should change idea status to turned into proposal`, async () => {
+            await service().extractEvents(extrinsic.events, idea.networks![0])
+
+            const repository = await ideaRepository()
+            const actualIdea = await repository.findOne(idea.id)
+            expect(actualIdea!.status).toBe(IdeaStatus.TurnedIntoProposal)
         })
     })
 });
