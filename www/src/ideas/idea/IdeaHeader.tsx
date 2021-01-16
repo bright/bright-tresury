@@ -72,8 +72,12 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginLeft: '1em'
             },
         },
-        ideaTitle: {
+        ideaTitleBreakLine: {
+            height: 0,
             flexBasis: '100%'
+        },
+        ideaTitle: {
+            marginRight: '.75em'
         },
         ideaId: {
             fontSize: '18px',
@@ -131,17 +135,32 @@ const useStyles = makeStyles((theme: Theme) =>
                 alignSelf: 'flex-end'
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                display: 'none'
+                position: 'fixed',
+                padding: 16,
+                background: theme.palette.background.default,
+                bottom: 0,
+                left: 0,
+                right: 0,
+                display: 'flex',
+                justifyContent: 'center',
+                width: '100vw',
+                zIndex: 1
+            }
+        },
+        convertToProposalButton: {
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                width: '100%'
             }
         }
     }),
 );
 
 interface Props {
-    idea: IdeaDto
+    idea: IdeaDto,
+    canEdit: boolean
 }
 
-const IdeaHeader: React.FC<Props> = ({idea}) => {
+const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
     const classes = useStyles()
     const {t} = useTranslation()
     const history = useHistory()
@@ -166,6 +185,7 @@ const IdeaHeader: React.FC<Props> = ({idea}) => {
             <div className={classes.status}>
                 <IdeaStatusIndicator ideaStatus={idea.status}/>
             </div>
+            <div className={classes.ideaTitleBreakLine}/>
             <div className={classes.ideaTitle}>
                 <Header>
                     {idea.title}
@@ -189,17 +209,22 @@ const IdeaHeader: React.FC<Props> = ({idea}) => {
         <div className={classes.contentTypeTabs}>
             <IdeaContentTypeTabs/>
         </div>
-        {!!idea.id && <div className={classes.convertToProposal}><Button
-            variant="contained"
-            color="primary"
-            onClick={() => setSubmitProposalVisibility(true)}>
-            {t('idea.details.header.convertToProposal')}
-        </Button></div>
-        }
-        <SubmitProposalModal
-            open={submitProposalVisibility}
-            onClose={() => setSubmitProposalVisibility(false)}
-            idea={idea}/>
+        {canEdit ? <>
+            {!!idea.id && <div className={classes.convertToProposal}>
+                <Button
+                    variant="contained"
+                    color="primary"
+                    className={classes.convertToProposalButton}
+                    onClick={() => setSubmitProposalVisibility(true)}>
+                    {t('idea.details.header.convertToProposal')}
+                </Button>
+            </div>
+            }
+            <SubmitProposalModal
+                open={submitProposalVisibility}
+                onClose={() => setSubmitProposalVisibility(false)}
+                idea={idea}/>
+        </> : null}
     </div>
 }
 

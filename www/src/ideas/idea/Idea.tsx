@@ -9,6 +9,7 @@ import IdeaInfo from "./info/IdeaInfo";
 import IdeaMilestones from "./milestones/IdeaMilestones";
 import IdeaDiscussion from "./discussion/IdeaDiscussion";
 import {breakpoints} from "../../theme/theme";
+import {Button} from "../../components/button/Button";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,6 +41,10 @@ const Idea: React.FC<Props> = ({network}) => {
     let {ideaId} = useParams<{ ideaId: string }>()
 
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
+    /**
+     * TODO:// check if [idea] belongs to the currently logged in user
+     */
+    const [canEdit, setCanEdit] = useState(true)
 
     useEffect(() => {
         if (ideaId !== undefined) {
@@ -53,14 +58,31 @@ const Idea: React.FC<Props> = ({network}) => {
 
     return (
         <div className={classes.root}>
-            <IdeaHeader idea={idea}/>
+            {/* region: Remove this button as soon as we add authorization */}
+            <Button variant="contained"
+                    style={{
+                        position: 'absolute',
+                        top: 16,
+                        right: 0,
+                        fontSize: 10,
+                        left: 0,
+                        margin: 'auto',
+                        color: 'white',
+                        textAlign: 'center',
+                        backgroundColor: canEdit ? 'green' : 'orange'
+                    }}
+                    onClick={() => setCanEdit(!canEdit)}>
+                Simulate {canEdit ? 'logout' : 'login'}
+            </Button>
+            {/*endregion*/}
+            <IdeaHeader idea={idea} canEdit={canEdit}/>
             <div className={classes.content}>
                 <Switch>
                     <Route exact={true} path={path}>
-                        <IdeaInfo idea={idea}/>
+                        <IdeaInfo idea={idea} canEdit={canEdit}/>
                     </Route>
                     <Route exact={true} path={`${path}/${IdeaContentType.Info}`}>
-                        <IdeaInfo idea={idea}/>
+                        <IdeaInfo idea={idea} canEdit={canEdit}/>
                     </Route>
                     <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
                         <IdeaMilestones/>
