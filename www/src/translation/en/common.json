@@ -48,7 +48,11 @@
     },
     "list": {
       "card": {
+        "statusDraft": "Draft",
         "statusActive": "Active",
+        "statusInactive": "Inactive",
+        "statusTurnedIntoProposal": "Turned into Proposal",
+        "statusClosed": "Closed",
         "beneficiary": "(Beneficiary)"
       },
       "filters": {

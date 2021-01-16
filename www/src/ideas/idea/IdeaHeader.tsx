@@ -10,12 +10,12 @@ import {IdeaDto} from "../ideas.api";
 import {Button} from "../../components/button/Button";
 import SubmitProposalModal from "../SubmitProposalModal";
 import {breakpoints} from "../../theme/theme";
-import {Status} from "../../components/status/Status";
 import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
 import {Divider} from "../../components/divider/Divider";
 import {Amount} from "../../components/amount/Amount";
 import {calculateBondValue} from "../../networks/bondUtil";
 import config from "../../config";
+import {IdeaStatusIndicator} from "./status/IdeaStatusIndicator";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -152,9 +152,6 @@ const IdeaHeader: React.FC<Props> = ({idea}) => {
         history.push(ROUTE_IDEAS)
     }
 
-    const statusLabel = 'Active'
-    const statusColor = '#00BFFF'
-
     const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
     const bondValue = networkValue ? calculateBondValue(networkValue) : 0
 
@@ -167,7 +164,7 @@ const IdeaHeader: React.FC<Props> = ({idea}) => {
             </p>
             <Divider className={classes.basicInfoDivider} orientation="vertical"/>
             <div className={classes.status}>
-                <Status label={statusLabel} color={statusColor}/>
+                <IdeaStatusIndicator ideaStatus={idea.status}/>
             </div>
             <div className={classes.ideaTitle}>
                 <Header>

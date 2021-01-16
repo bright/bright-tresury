@@ -6,13 +6,13 @@ import {ROUTE_IDEA} from "../../routes";
 import {Divider} from "../../components/divider/Divider";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
-import {Status} from "../../components/status/Status";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 import {formatNumber} from "../../util/numberUtil";
 import {Identicon} from "../../components/identicon/Identicon";
 import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
+import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -121,9 +121,6 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    const statusLabel = t('idea.list.card.statusActive')
-    const statusColor = '#00BFFF'
-
     const getBeneficiaryFragment = (): string => {
         if (!idea.beneficiary) return ''
         return ellipseTextInTheMiddle(idea.beneficiary, 12)
@@ -136,7 +133,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
               to={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
                 <p className={classes.idLabel}>{idea.id}</p>
-                <Status label={statusLabel} color={statusColor}/>
+                <IdeaStatusIndicator ideaStatus={idea.status}/>
             </div>
 
             <Divider className={classes.contentMargin}/>

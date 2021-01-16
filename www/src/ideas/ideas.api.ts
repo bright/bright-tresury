@@ -17,7 +17,15 @@ export interface IdeaDto {
     contact?: string
     portfolio?: string
     links?: string[]
+    status: IdeaStatus
+}
 
+export enum IdeaStatus {
+    Draft = 'draft',
+    Active = 'active',
+    Inactive = 'inactive',
+    TurnedIntoProposal = 'turned_into_proposal',
+    Closed = 'closed',
 }
 
 export function createEmptyIdea(network: string): IdeaDto {
