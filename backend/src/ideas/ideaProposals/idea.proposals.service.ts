@@ -28,8 +28,8 @@ export class IdeaProposalsService {
             throw new NotFoundException('Idea network not found.')
         }
 
-        const callback = (events: ExtrinsicEvent[]) => {
-            return this.extractEvents(events, network)
+        const callback = async (events: ExtrinsicEvent[]) => {
+            return await this.extractEvents(events, network)
         }
 
         const extrinsic = await this.extrinsicsService.listenForExtrinsic(dto, callback)

@@ -42,7 +42,7 @@ describe(`Blockchain service`, () => {
             await extrinsic.signAsync(aliceKeypair)
 
             // start listening for the extrinsic
-            await service().listenForExtrinsic(extrinsic.hash.toString(), (result: UpdateExtrinsicDto) => {
+            await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
                 expect(result).toBeDefined()
                 expect(result!.blockHash).toBe(expectedBlockHash)
                 expect(result!.events).toContainEqual({
@@ -93,7 +93,7 @@ describe(`Blockchain service`, () => {
             await extrinsic.signAsync(aliceKeypair)
 
             // start listening for the extrinsic
-            await service().listenForExtrinsic(extrinsic.hash.toString(), (result: UpdateExtrinsicDto) => {
+            await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
                 expect(result).toBeDefined()
                 expect(result!.blockHash).toBe(expectedBlockHash)
                 const errorEvent = result!.events.find((e) => e.section === 'system' && e.method === 'ExtrinsicFailed')

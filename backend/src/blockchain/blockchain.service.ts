@@ -30,7 +30,7 @@ export class BlockchainService {
 
     async listenForExtrinsic(
         extrinsicHash: string,
-        cb: (updateExtrinsicDto: UpdateExtrinsicDto) => void) {
+        cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) {
 
         try {
             await this.polkadotApi.isReadyOrError
@@ -75,7 +75,7 @@ export class BlockchainService {
                     data: args
                 } as UpdateExtrinsicDto
 
-                cb(result)
+                await cb(result)
             }
 
             // stop listening to blocks after some time - we assume the block might not be found
