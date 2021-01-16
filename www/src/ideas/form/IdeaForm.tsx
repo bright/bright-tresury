@@ -5,7 +5,7 @@ import {useTranslation} from "react-i18next";
 import {FieldArray, Formik} from "formik";
 import * as Yup from 'yup'
 import {breakpoints} from "../../theme/theme";
-import {createIdea, IdeaDto, IdeaNetworkDto} from "../ideas.api";
+import {createIdea, IdeaDto, IdeaNetworkDto, updateIdea} from "../ideas.api";
 import {ROUTE_IDEAS} from "../../routes";
 import {FormInput} from "../../components/input/FormInput";
 import {FormSelect} from "../../components/select/FormSelect";
@@ -65,9 +65,12 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
     const isNew = (): boolean => idea.id === undefined
 
     const save = async (formIdea: IdeaDto) => {
+        const editedIdea = {...idea, ...formIdea}
         if (isNew()) {
-            const editedIdea = {...idea, ...formIdea}
             await createIdea(editedIdea)
+            history.push(ROUTE_IDEAS)
+        } else {
+            await updateIdea(editedIdea)
             history.push(ROUTE_IDEAS)
         }
     }

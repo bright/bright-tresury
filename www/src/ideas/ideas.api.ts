@@ -57,6 +57,10 @@ export function createIdea(idea: IdeaDto) {
     return fetchAndUnwrap<IdeaDto>('POST', `${API_URL}/ideas`, idea)
 }
 
+export function updateIdea(idea: IdeaDto) {
+    return fetchAndUnwrap<IdeaDto>('PATCH', `${API_URL}/ideas/${idea.id}`, idea)
+}
+
 export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: IdeaDto, ideaNetwork: IdeaNetworkDto) {
     const data = {
         ideaNetworkId: ideaNetwork.id,
