@@ -50,8 +50,7 @@ export class IdeaProposalsService {
             logger.info(`Proposal index is ${proposalIndex}`)
             if (!isNaN(proposalIndex)) {
                 await this.ideaNetworkRepository.save({id: network.id, blockchainProposalId: proposalIndex})
-                const idea = await this.ideaService.findOneByNetworkId(network.id)
-                await this.ideaService.update({status: IdeaStatus.TurnedIntoProposal}, idea!.id)
+                await this.ideaService.turnIdeaIntoProposalByNetworkId(network.id)
                 return
             }
         } else {

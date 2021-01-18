@@ -239,6 +239,19 @@ describe(`/api/v1/ideas`, () => {
             expect(savedIdea.status).toBe(IdeaStatus.Active)
         })
     })
+    describe('turn into proposal', () => {
+        it('should turn into proposal', async () => {
+            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]})
+            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id)
+            const updatedIdea = await getService().findOne(createdIdea.id)
+            expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposal)
+        })
+        it('should throw not found exception for wrong network id', async () => {
+            await expect(getService().turnIdeaIntoProposalByNetworkId(uuid()))
+                .rejects
+                .toThrow(NotFoundException)
+        })
+    })
     describe('delete', () => {
         it('should delete idea', async (done) => {
             const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]})

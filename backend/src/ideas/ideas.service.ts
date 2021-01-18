@@ -6,7 +6,7 @@ import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
-import {DefaultIdeaStatus} from "./ideaStatus";
+import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
 const logger = getLogger()
 
@@ -111,5 +111,11 @@ export class IdeasService {
     async delete(id: string) {
         const currentIdea = await this.findOne(id)
         await this.ideaRepository.remove(currentIdea)
+    }
+
+    /** TODO: validate if idea is ready to be turned into proposal */
+    async turnIdeaIntoProposalByNetworkId(networkId: string) {
+        const idea = await this.findOneByNetworkId(networkId)
+        await this.update({status: IdeaStatus.TurnedIntoProposal}, idea!.id)
     }
 }
