@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { IsNumber, ValidateNested } from "class-validator";
 
 export class IdeaProposalDataDto {
-    @ApiProperty()
+    @ApiProperty({description: 'The current next proposal id', required: true})
     @IsNumber()
     nextProposalId: number
 
@@ -13,15 +13,16 @@ export class IdeaProposalDataDto {
 }
 
 export class CreateIdeaProposalDto {
-    @ApiProperty()
+    @ApiProperty({description: 'Idea network ID', required: true})
     ideaNetworkId: string
 
-    @ApiProperty()
+    @ApiProperty({description: 'Hash of extrinsic which creates proposal', required: true})
     extrinsicHash: string
 
-    @ApiProperty()
+    @ApiProperty({description: 'Hash of last seen block', required: true})
     lastBlockHash: string
 
+    @ApiProperty({description: 'Details of the proposal to be found', required: true})
     @ValidateNested()
     @Type(() => IdeaProposalDataDto)
     data: IdeaProposalDataDto
@@ -33,4 +34,3 @@ export class CreateIdeaProposalDto {
         this.data = data
     }
 }
-
