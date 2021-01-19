@@ -5,7 +5,7 @@ import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {ISelect, Select} from "../../components/select/Select";
-import {NavLink, useLocation} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import {ROUTE_IDEAS} from "../../routes";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,10 +40,14 @@ export enum IdeaFilter {
     Closed = 'closed',
 }
 
-const FilterSearchParamName = "filter"
-const DefaultFilter = IdeaFilter.All
+interface Props {
+    filter: IdeaFilter
+}
 
-const IdeaStatusFilters: React.FC<{}> = () => {
+export const FilterSearchParamName = "filter"
+export const DefaultFilter = IdeaFilter.All
+
+const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -73,13 +77,12 @@ const IdeaStatusFilters: React.FC<{}> = () => {
     }
     const tabEntries = filterValues.map((filter: IdeaFilter) => getTabEntry(filter))
 
-    const useFilter = () => new URLSearchParams(useLocation().search).get(FilterSearchParamName)
-    const filterParam = useFilter()
-    const filter = filterParam ? filterParam as IdeaFilter : DefaultFilter
     /**
      * Current tab entry is forced, because there should be always some filter specified.
      */
-    const currentTabEntry = tabEntries.find(entry => entry.label === getTranslation(filter ? filter : IdeaFilter.All))!
+    const currentTabEntry = tabEntries.find(entry =>
+        entry.label === getTranslation(filter ? filter : IdeaFilter.All)
+    )!
 
     return <div>
         <div className={classes.filterTabs}>

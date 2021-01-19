@@ -1,16 +1,17 @@
 import Grid from '@material-ui/core/Grid';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React, {useEffect, useState} from 'react';
-import {useHistory} from 'react-router-dom';
+import React, {useEffect, useMemo, useState} from 'react';
+import {useHistory, useLocation} from 'react-router-dom';
 import {ROUTE_NEW_IDEA} from '../routes';
 import {getIdeasByNetwork, IdeaDto} from './ideas.api';
 import {Button} from "../components/button/Button";
 import {useTranslation} from "react-i18next";
 import IdeaCard from "./list/IdeaCard";
 import {breakpoints} from "../theme/theme";
-import IdeaStatusFilters from "./list/IdeaStatusFilters";
+import IdeaStatusFilters, {DefaultFilter, FilterSearchParamName, IdeaFilter} from "./list/IdeaStatusFilters";
 import {Select} from "../components/select/Select";
 import config from '../config';
+import {filterIdeas} from "./list/filterIdeas";
 
 const useStyles = makeStyles((theme: Theme) => {
     const horizontalMargin = '32px'
@@ -120,11 +121,19 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const [ideas, setIdeas] = useState<IdeaDto[]>([])
     const [status, setStatus] = useState<string>('')
 
+    const useFilter = () => new URLSearchParams(useLocation().search).get(FilterSearchParamName)
+    const filterParam = useFilter()
+    const filter = filterParam ? filterParam as IdeaFilter : DefaultFilter
+
+    const filteredIdeas = useMemo(() => {
+        return filterIdeas(ideas, filter)
+    }, [filter, ideas])
+
     useEffect(() => {
         setStatus('loading')
         getIdeasByNetwork(network)
-            .then((reponse) => {
-                setIdeas(reponse)
+            .then((response: IdeaDto[]) => {
+                setIdeas(response)
                 setStatus('resolved')
             })
             .catch(() => {
@@ -155,7 +164,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
                 </div>
                 <div className={classes.paperBackground}/>
                 <div className={classes.statusFilters}>
-                    <IdeaStatusFilters />
+                    <IdeaStatusFilters filter={filter}/>
                 </div>
             </div>
             <div className={classes.tilesContainer}>
@@ -163,7 +172,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
                     {status === 'loading' && <p>Loading</p>}
                     {status === 'error' && <p>Error</p>}
                     {status === 'resolved' && (
-                        ideas.map((idea) => (
+                        filteredIdeas.map((idea) => (
                             <Grid key={idea.id} item xs={12} md={6}>
                                 <IdeaCard idea={idea}/>
                             </Grid>
