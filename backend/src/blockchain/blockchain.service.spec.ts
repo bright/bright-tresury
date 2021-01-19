@@ -7,6 +7,7 @@ import {beforeAllSetup} from "../utils/spec.helpers";
 import {BlockchainModule} from "./blockchain.module";
 import BN from 'bn.js';
 import {BlockchainService} from "./blockchain.service";
+import {BN_TEN} from "./utils";
 
 describe(`Blockchain service`, () => {
     // TODO fix types!
@@ -98,17 +99,17 @@ describe(`Blockchain service`, () => {
         it('should return existing proposals', async (done) => {
             // create a proposal
             const nextProposalIndex  = (await api.query.treasury.proposalCount()).toNumber()
-            const extrinsic = api.tx.treasury.proposeSpend(10, '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+            const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
             await extrinsic.signAndSend(pair, async(result: SubmittableResult) => {
                 if (result.isFinalized) {
                     const proposals = await service().getProposals()
                     expect(proposals.length).toBeGreaterThan(0)
-                    const lastProposal = proposals[proposals.length - 1]
+                    const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
                     expect(lastProposal.proposalIndex).toBe(nextProposalIndex)
                     expect(lastProposal.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
                     expect(lastProposal.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
-                    expect(lastProposal.bond.eq(new BN(1000000000000))).toBe(true)
-                    expect(lastProposal.value.eq(new BN(10))).toBe(true)
+                    expect(lastProposal.bond).toBe(50)
+                    expect(lastProposal.value).toBe(1000)
                     done()
                 }
             })
