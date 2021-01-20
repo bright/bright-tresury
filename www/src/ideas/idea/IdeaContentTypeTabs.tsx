@@ -1,13 +1,13 @@
 import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
-import InfoIcon from "../../assets/idea_info.svg";
-import MilestonesIcon from "../../assets/idea_milestones.svg";
-import DiscussionIcon from "../../assets/idea_discussion.svg";
+import infoIcon from "../../assets/idea_info.svg";
+import milestonesIcon from "../../assets/idea_milestones.svg";
+import discussionIcon from "../../assets/idea_discussion.svg";
 import {useRouteMatch} from "react-router-dom";
 
 export enum IdeaContentType {
-    Info= "info",
+    Info = "info",
     Milestones = "milestones",
     Discussion = "discussion"
 }
@@ -29,11 +29,11 @@ const IdeaContentTypeTabs: React.FC<{}> = () => {
     const getIcon = (ideaContentType: IdeaContentType): string => {
         switch (ideaContentType) {
             case IdeaContentType.Info:
-                return InfoIcon
+                return infoIcon
             case IdeaContentType.Milestones:
-                return MilestonesIcon
+                return milestonesIcon
             case IdeaContentType.Discussion:
-                return DiscussionIcon
+                return discussionIcon
         }
     }
 

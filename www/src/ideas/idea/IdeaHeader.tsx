@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import CrossSvg from "../../assets/cross.svg";
+import crossSvg from "../../assets/cross.svg";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useHistory} from "react-router-dom";
@@ -159,7 +159,7 @@ const IdeaHeader: React.FC<Props> = ({idea}) => {
     const bondValue = networkValue ? calculateBondValue(networkValue) : 0
 
     return <div className={classes.headerContainer}>
-        <IconButton className={classes.closeIcon} svg={CrossSvg} onClick={navigateToList}/>
+        <IconButton className={classes.closeIcon} svg={crossSvg} onClick={navigateToList}/>
 
         <div className={classes.basicInfo}>
             <p className={classes.ideaId}>

@@ -1,8 +1,8 @@
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import {createStyles, Theme} from "@material-ui/core";
-import MenuDrawing from "../assets/menu_drawing.svg"
-import TreasuryLabeledLogo from "./../assets/treasury_labeled_logo.svg"
+import menuDrawing from "../assets/menu_drawing.svg"
+import treasuryLabeledLogo from "./../assets/treasury_labeled_logo.svg"
 import {useTranslation} from "react-i18next";
 import {Button} from "../components/button/Button";
 
@@ -39,7 +39,7 @@ const MenuAppInfo: React.FC<{}> = () => {
     const {t} = useTranslation()
 
     return <div className={classes.root}>
-        <img className={classes.drawing} src={MenuDrawing}/>
+        <img className={classes.drawing} src={menuDrawing}/>
         <div className={classes.whatForLabel}>
             {t('menu.whatForLabel')}
         </div>
@@ -49,7 +49,7 @@ const MenuAppInfo: React.FC<{}> = () => {
                 color="secondary">
             {t('menu.learnMoreLabel')}
         </Button>
-        <img className={classes.logo} src={TreasuryLabeledLogo}/>
+        <img className={classes.logo} src={treasuryLabeledLogo}/>
     </div>
 }
 

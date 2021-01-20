@@ -1,7 +1,7 @@
 import React from 'react';
 import {Header} from "../../components/header/Header";
 import {IconButton} from "../../components/button/IconButton";
-import CrossSvg from "../../assets/cross.svg";
+import crossSvg from "../../assets/cross.svg";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useHistory} from "react-router-dom";
@@ -35,7 +35,7 @@ const CreateIdeaHeader: React.FC<Props> = ({isNewIdea}) => {
         <Header>
             {t(isNewIdea ? 'idea.introduceTitle' : 'idea.editTitle')}
         </Header>
-        <IconButton svg={CrossSvg} onClick={navigateToList}/>
+        <IconButton svg={crossSvg} onClick={navigateToList}/>
     </div>
 }
 

@@ -5,7 +5,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {WithWidthProps} from "@material-ui/core/withWidth/withWidth";
 import MenuItemsList from "./MenuItemsList";
-import TreasuryLogo from "./../assets/treasury_logo.svg"
+import treasuryLogo from "./../assets/treasury_logo.svg"
 import {IconButton} from "../components/button/IconButton";
 import MenuAppInfo from "./MenuAppInfo";
 
@@ -63,7 +63,7 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
         }}
         variant="permanent">
         {isTabletOrMobile() ?
-            <IconButton className={classes.drawerIcon} svg={TreasuryLogo} onClick={() => setOpen(!open)}/>
+            <IconButton className={classes.drawerIcon} svg={treasuryLogo} onClick={() => setOpen(!open)}/>
             : null
         }
         <MenuItemsList/>

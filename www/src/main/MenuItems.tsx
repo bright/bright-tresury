@@ -1,13 +1,13 @@
-import StatsSvg from "../assets/menu_stats.svg";
-import StatsHighlightedSvg from "../assets/menu_stats_highlighted.svg";
-import IdeasSvg from "../assets/menu_ideas.svg";
-import IdeasHighlightedSvg from "../assets/menu_ideas_highlighted.svg";
-import ProposalsSvg from "../assets/menu_proposals.svg";
-import ProposalsHighlightedSvg from "../assets/menu_proposals_highlighted.svg";
-import TipsSvg from "../assets/menu_tips.svg";
-import TipsHighlightedSvg from "../assets/menu_tips_highlighted.svg";
-import BountySvg from "../assets/menu_bounty.svg";
-import BountyHighlightedSvg from "../assets/menu_bounty_highlighted.svg";
+import statsSvg from "../assets/menu_stats.svg";
+import statsHighlightedSvg from "../assets/menu_stats_highlighted.svg";
+import ideasSvg from "../assets/menu_ideas.svg";
+import ideasHighlightedSvg from "../assets/menu_ideas_highlighted.svg";
+import proposalsSvg from "../assets/menu_proposals.svg";
+import proposalsHighlightedSvg from "../assets/menu_proposals_highlighted.svg";
+import tipsSvg from "../assets/menu_tips.svg";
+import tipsHighlightedSvg from "../assets/menu_tips_highlighted.svg";
+import bountySvg from "../assets/menu_bounty.svg";
+import bountyHighlightedSvg from "../assets/menu_bounty_highlighted.svg";
 import {ROUTE_BOUNTY, ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_STATS, ROUTE_TIPS} from "../routes";
 
 export interface MenuItem {
@@ -20,32 +20,32 @@ export interface MenuItem {
 export const MENU_ITEMS: MenuItem[] = [
     {
         translationKey: 'menu.stats',
-        svg: StatsSvg,
-        svgHighlighted: StatsHighlightedSvg,
+        svg: statsSvg,
+        svgHighlighted: statsHighlightedSvg,
         path: ROUTE_STATS
     },
     {
         translationKey: 'menu.ideas',
-        svg: IdeasSvg,
-        svgHighlighted: IdeasHighlightedSvg,
+        svg: ideasSvg,
+        svgHighlighted: ideasHighlightedSvg,
         path: ROUTE_IDEAS
     },
     {
         translationKey: 'menu.proposals',
-        svg: ProposalsSvg,
-        svgHighlighted: ProposalsHighlightedSvg,
+        svg: proposalsSvg,
+        svgHighlighted: proposalsHighlightedSvg,
         path: ROUTE_PROPOSALS
     },
     {
         translationKey: 'menu.tips',
-        svg: TipsSvg,
-        svgHighlighted: TipsHighlightedSvg,
+        svg: tipsSvg,
+        svgHighlighted: tipsHighlightedSvg,
         path: ROUTE_TIPS
     },
     {
         translationKey: 'menu.bounty',
-        svg: BountySvg,
-        svgHighlighted: BountyHighlightedSvg,
+        svg: bountySvg,
+        svgHighlighted: bountyHighlightedSvg,
         path: ROUTE_BOUNTY
     }
 ]
