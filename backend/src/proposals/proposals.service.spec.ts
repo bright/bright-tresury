@@ -1,6 +1,11 @@
 import {Test} from '@nestjs/testing';
-import BN from "bn.js";
+import {getRepositoryToken} from "@nestjs/typeorm";
+import {Repository} from 'typeorm';
 import {BlockchainService} from "../blockchain/blockchain.service";
+import {IdeaDto} from "../ideas/dto/idea.dto";
+import {IdeaNetwork} from "../ideas/ideaNetwork.entity";
+import {IdeasService} from "../ideas/ideas.service";
+import {createIdea} from "../ideas/spec.helpers";
 import {getLogger} from "../logging.module";
 import {beforeAllSetup, cleanDatabase} from "../utils/spec.helpers";
 import {ProposalsModule} from "./proposals.module";
@@ -15,15 +20,17 @@ describe('ProposalsService', () => {
                     proposalIndex: 0,
                     proposer: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     beneficiary: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
-                    bond: 0.001, // 0.001 units
-                    value: 1e-14, // FIXME: 10^(-14) units
+                    bond: 0.001,
+                    value: 1e-14,
+                    status: 'proposal',
                 },
                 {
                     proposalIndex: 3,
                     proposer: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
                     beneficiary: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
-                    bond: 20, // 20 units
-                    value: 1000, // 1000 units
+                    bond: 20,
+                    value: 1000,
+                    status: 'approval',
                 }
             ]
         }
@@ -39,6 +46,8 @@ describe('ProposalsService', () => {
     )
 
     const service = beforeAllSetup(() => module().get<ProposalsService>(ProposalsService))
+    const ideasService = beforeAllSetup(() => module().get<IdeasService>(IdeasService))
+    const ideasNetworkRepository = beforeAllSetup(() => module().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -50,7 +59,7 @@ describe('ProposalsService', () => {
 
     describe('find', () => {
         it('should return proposals', async () => {
-            const actual = await service().find()
+            const actual = await service().find('localhost')
             expect(actual.length).toBe(2)
 
             const actual1 = actual[0]
@@ -60,8 +69,6 @@ describe('ProposalsService', () => {
             expect(actual1.bond).toBe(0.001)
             expect(actual1.value).toBe(0.00000000000001)
             expect(actual1.status).toBe('submitted')
-            // expect(actual1.ideaId).toBe('xxx')
-            // expect(actual1.title).toBe('Title')
 
             const actual2 = actual[1]
             expect(actual2.proposalIndex).toBe(3)
@@ -69,9 +76,26 @@ describe('ProposalsService', () => {
             expect(actual2.beneficiary).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
             expect(actual2.bond).toBe(20)
             expect(actual2.value).toBe(1000)
-            expect(actual2.status).toBe('submitted')
-            // expect(actual2.ideaId).toBe('xxx')
-            // expect(actual2.title).toBe('Title')
+            expect(actual2.status).toBe('approved')
+        })
+
+        it('should return idea details for proposals', async () => {
+            const idea = await createIdea({title: 'Some title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, ideasService())
+            idea.networks[0].blockchainProposalId = 0
+            await ideasNetworkRepository().save(idea.networks[0])
+
+            const actual = await service().find('localhost')
+
+            const actual1 = actual[0]
+            expect(actual1.proposalIndex).toBe(0)
+            expect(actual1.ideaId).toBe(idea.id)
+            expect(actual1.title).toBe('Some title')
+
+            const actual2 = actual[1]
+            expect(actual2.proposalIndex).toBe(3)
+            expect(actual2.ideaId).toBe(undefined)
+            expect(actual2.title).toBe(undefined)
         })
     })
+
 });

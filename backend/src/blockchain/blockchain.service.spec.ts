@@ -95,7 +95,7 @@ describe(`Blockchain service`, () => {
         }, 60000)
     })
 
-    describe.only('getProposals', () => {
+    describe('getProposals', () => {
         it('should return existing proposals', async (done) => {
             // create a proposal
             const nextProposalIndex  = (await api.query.treasury.proposalCount()).toNumber()

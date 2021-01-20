@@ -1,4 +1,6 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
+import {BlockchainProposal} from "../../blockchain/dot/blockchainProposal.dto";
+import {Idea} from "../../ideas/idea.entity";
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -32,23 +34,18 @@ export class ProposalDto {
     title?: string
 
     constructor(
-        proposalIndex: number,
-        proposer: string,
-        beneficiary: string,
-        value: number,
-        bond: number,
-        status: ProposalStatus,
-        ideaId?: string,
-        title?: string,
+        blockchainProposal: BlockchainProposal,
+        idea?: Idea
     ) {
-        this.proposalIndex = proposalIndex
-        this.proposer = proposer
-        this.beneficiary = beneficiary
-        this.value = value
-        this.bond = bond
-        this.status = status
-        this.ideaId = ideaId
-        this.title = title
-    }
+        this.proposalIndex = blockchainProposal.proposalIndex
+        this.proposer = blockchainProposal.proposer
+        this.beneficiary = blockchainProposal.beneficiary
+        this.value = blockchainProposal.value
+        this.bond = blockchainProposal.bond
 
+        this.status = blockchainProposal.status === 'proposal' ? ProposalStatus.Submitted : ProposalStatus.Approved
+
+        this.ideaId = idea?.id
+        this.title = idea?.title
+    }
 }

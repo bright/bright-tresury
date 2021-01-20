@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
+import {In, Repository} from 'typeorm';
 import {getLogger} from "../logging.module";
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
@@ -42,6 +42,23 @@ export class IdeasService {
     async findOneByNetworkId(networkId: string): Promise<Idea | undefined> {
         const ideaNetwork = await this.ideaNetworkRepository.findOne(networkId, {relations: ['idea']})
         return ideaNetwork?.idea
+    }
+
+    async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, Idea>> {
+        const ideaNetworks = await this.ideaNetworkRepository.find({
+            relations: ['idea'],
+            where: {
+                blockchainProposalId: In(proposalIds),
+                name: networkName
+            }
+        })
+        const result = new Map<number, Idea>()
+        ideaNetworks.forEach(({blockchainProposalId, idea}) => {
+            if (blockchainProposalId !== null && idea) {
+                result.set(blockchainProposalId, idea)
+            }
+        })
+        return result
     }
 
     async update(updateIdea: Partial<CreateIdeaDto>, id: string): Promise<Idea> {

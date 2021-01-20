@@ -1,7 +1,7 @@
 import {DeriveTreasuryProposal} from "@polkadot/api-derive/types";
 import {transformBalance} from "../utils";
 
-type BlockchainProposalStatus = 'proposal' | 'approval'
+export type BlockchainProposalStatus = 'proposal' | 'approval'
 
 export interface BlockchainProposal {
     proposalIndex: number,

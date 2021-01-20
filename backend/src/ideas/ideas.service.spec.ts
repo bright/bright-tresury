@@ -1,15 +1,17 @@
-import {BadRequestException, INestApplication, NotFoundException} from '@nestjs/common';
-import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
+import {NotFoundException} from '@nestjs/common';
+import {getRepositoryToken} from "@nestjs/typeorm";
+import {v4 as uuid} from 'uuid';
+import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
+import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
-import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
-import {CreateIdeaDto} from "./dto/createIdea.dto";
-import {v4 as uuid} from 'uuid';
 
 describe(`/api/v1/ideas`, () => {
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(IdeasService)
+    const getIdeaNetworkRepository = () => app.get().get(getRepositoryToken(IdeaNetwork))
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -47,6 +49,52 @@ describe(`/api/v1/ideas`, () => {
             const ideas = await getService().find('polkadot')
 
             expect(ideas.length).toBe(2)
+            done()
+        })
+    })
+
+    describe('findByProposalIds', () => {
+        it('should return ideas for given proposalIds and network', async (done) => {
+            const idea = await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}]
+            })
+            idea.networks[0].blockchainProposalId = 0
+            await getIdeaNetworkRepository().save(idea.networks[0])
+
+            const result = await getService().findByProposalIds([0], 'kusama')
+
+            expect(result.size).toBe(1)
+            expect(result.get(0)?.id).toBe(idea.id)
+            expect(result.get(0)?.title).toBe('Test title 1')
+            done()
+        })
+
+        it('should not return ideas for other network', async (done) => {
+            const idea = await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'other_network', value: 10}]
+            })
+            idea.networks[0].blockchainProposalId = 0
+            await getIdeaNetworkRepository().save(idea.networks[0])
+
+            const result = await getService().findByProposalIds([0], 'kusama')
+
+            expect(result.size).toBe(0)
+            done()
+        })
+
+        it('should not return ideas for other proposalIds', async (done) => {
+            const idea = await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}]
+            })
+            idea.networks[0].blockchainProposalId = 0
+            await getIdeaNetworkRepository().save(idea.networks[0])
+
+            const result = await getService().findByProposalIds([1], 'kusama')
+
+            expect(result.size).toBe(0)
             done()
         })
     })
