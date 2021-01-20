@@ -26,10 +26,10 @@ const useStyles = makeStyles((theme: Theme) => {
                 /**
                  * Selector below are used to propagate inactive state of [NavLink] component to it's children.
                  */
-                '& .iconHighlighted': {
+                '& .iconActive': {
                     display: 'none'
                 },
-                '& .iconRegular': {
+                '& .iconInactive': {
                     display: 'initial'
                 },
             },
@@ -43,10 +43,10 @@ const useStyles = makeStyles((theme: Theme) => {
                         borderRadius: 5
                     }
                 },
-                '& .iconHighlighted': {
+                '& .iconActive': {
                     display: 'initial'
                 },
-                '& .iconRegular': {
+                '& .iconInactive': {
                     display: 'none'
                 },
                 '& div': {
@@ -100,8 +100,8 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
                 <NavLink className={classes.navLinkItem} to={menuItem.path}
                          activeClassName={classes.activeItem}
                          key={index}>
-                    <img className={`${classes.icon} iconRegular`} src={menuItem.svg}/>
-                    <img className={`${classes.icon} iconHighlighted`} src={menuItem.svgHighlighted}/>
+                    <img className={`${classes.icon} iconInactive`} src={menuItem.svg}/>
+                    <img className={`${classes.icon} iconActive`} src={menuItem.svgHighlighted}/>
                     <div className={classes.text}>{t(menuItem.translationKey)}</div>
                 </NavLink>
             </ListItem>

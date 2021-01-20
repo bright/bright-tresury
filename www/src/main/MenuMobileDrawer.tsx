@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import {ButtonBase, Menu} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import MenuItemsList from "./MenuItemsList";
@@ -37,8 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
             left: '0 !important',
             background: theme.palette.background.default,
         },
-        root: {
-        }
+        root: {}
     }),
 );
 
@@ -54,8 +53,10 @@ const MenuMobileDrawer: React.FC<{}> = () => {
         return regexp.test(location.pathname)
     }
 
-    const getCurrentMenuItem = (): MenuItem => MENU_ITEMS
-        .find(item => matchesCurrentPath(item.path)) || MENU_ITEMS[0]
+    const currentMenuItem = useMemo((): MenuItem =>
+        MENU_ITEMS.find(item => matchesCurrentPath(item.path)) || MENU_ITEMS[0],
+        [location.pathname]
+    )
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const handleOpen = (event: any) => {
@@ -67,8 +68,8 @@ const MenuMobileDrawer: React.FC<{}> = () => {
 
     return <>
         <ButtonBase className={classes.menuButton} onClick={handleOpen}>
-            <img className={classes.menuButtonIcon} src={getCurrentMenuItem().svg} />
-            <div className={classes.menuButtonText}>{t(getCurrentMenuItem().translationKey)}</div>
+            <img className={classes.menuButtonIcon} src={currentMenuItem.svg}/>
+            <div className={classes.menuButtonText}>{t(currentMenuItem.translationKey)}</div>
             <div className={classes.menuButtonArrow}/>
         </ButtonBase>
         <Menu

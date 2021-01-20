@@ -8,7 +8,7 @@ import tipsSvg from "../assets/menu_tips.svg";
 import tipsHighlightedSvg from "../assets/menu_tips_highlighted.svg";
 import bountySvg from "../assets/menu_bounty.svg";
 import bountyHighlightedSvg from "../assets/menu_bounty_highlighted.svg";
-import {ROUTE_BOUNTY, ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_STATS, ROUTE_TIPS} from "../routes";
+import {ROUTE_BOUNTIES, ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_STATS, ROUTE_TIPS} from "../routes";
 
 export interface MenuItem {
     translationKey: string
@@ -43,9 +43,9 @@ export const MENU_ITEMS: MenuItem[] = [
         path: ROUTE_TIPS
     },
     {
-        translationKey: 'menu.bounty',
+        translationKey: 'menu.bounties',
         svg: bountySvg,
         svgHighlighted: bountyHighlightedSvg,
-        path: ROUTE_BOUNTY
+        path: ROUTE_BOUNTIES
     }
 ]

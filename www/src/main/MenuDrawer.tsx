@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useMemo, useState} from "react";
 import clsx from "clsx";
 import {createStyles, Drawer, isWidthDown, Theme, withWidth} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
@@ -40,15 +40,19 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
     const classes = useStyles()
-    const isTabletOrMobile = () => isWidthDown(breakpoints.tablet, width!)
-    const [open, setOpen] = useState(!isTabletOrMobile())
+    const isTabletOrMobile = useMemo(() => isWidthDown(breakpoints.tablet, width!), [width])
+    const [open, setOpen] = useState(!isTabletOrMobile)
 
     const container =
         window !== undefined ? () => window.document.body : undefined;
 
+    const closeDrawer = () => {
+        setOpen(false)
+    }
+
     return <Drawer
         container={container}
-        onClose={() => setOpen(false)}
+        onClose={closeDrawer}
         anchor={'left'}
         open
         className={clsx({
@@ -62,12 +66,12 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
             })
         }}
         variant="permanent">
-        {isTabletOrMobile() ?
+        {isTabletOrMobile ?
             <IconButton className={classes.drawerIcon} svg={treasuryLogo} onClick={() => setOpen(!open)}/>
             : null
         }
         <MenuItemsList/>
-        {!isTabletOrMobile() ? <MenuAppInfo /> : null}
+        {!isTabletOrMobile ? <MenuAppInfo/> : null}
     </Drawer>
 }
 
