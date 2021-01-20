@@ -58,6 +58,8 @@
       "filters": {
         "currentSpendTime": "Current Spend Time",
         "all": "All",
+        "mine": "Mine",
+        "draft": "Draft",
         "active": "Active",
         "inactive": "Inactive",
         "turnedIntoProposal": "Turned into Proposal",

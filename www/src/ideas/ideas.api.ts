@@ -28,6 +28,11 @@ export enum IdeaStatus {
     Closed = 'closed',
 }
 
+export function doesIdeaBelongToUser(idea: IdeaDto) {
+    /** TODO: adjust when authorization will be possible */
+    return true
+}
+
 export function createEmptyIdea(network: string): IdeaDto {
     return {
         title: '',

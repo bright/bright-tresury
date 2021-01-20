@@ -3,7 +3,7 @@ import {IdeaFilter} from "./IdeaStatusFilters";
 import {IdeaDto, IdeaStatus} from "../ideas.api";
 
 describe('filter ideas', () => {
-    test('filter ideas by all filters out only draft ideas', () => {
+    test('filter ideas by all', () => {
         const ideas = [
             createIdea(IdeaStatus.Active),
             createIdea(IdeaStatus.Draft),
@@ -14,9 +14,25 @@ describe('filter ideas', () => {
 
         expect(filterIdeas(ideas, IdeaFilter.All)).toStrictEqual([
             ideas[0],
+            ideas[1],
             ideas[2],
             ideas[3],
             ideas[4],
+        ]);
+    })
+    test('filter ideas by draft', () => {
+        const ideas = [
+            createIdea(IdeaStatus.Active),
+            createIdea(IdeaStatus.Draft),
+            createIdea(IdeaStatus.Inactive),
+            createIdea(IdeaStatus.Draft),
+            createIdea(IdeaStatus.TurnedIntoProposal),
+            createIdea(IdeaStatus.Closed),
+        ]
+
+        expect(filterIdeas(ideas, IdeaFilter.Draft)).toStrictEqual([
+            ideas[1],
+            ideas[3],
         ]);
     })
     test('filter ideas by active', () => {

@@ -114,16 +114,17 @@ interface Props {
 
 const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const classes = useStyles()
-
     const history = useHistory()
     const {t} = useTranslation()
+    const location = useLocation()
 
     const [ideas, setIdeas] = useState<IdeaDto[]>([])
     const [status, setStatus] = useState<string>('')
 
-    const useFilter = () => new URLSearchParams(useLocation().search).get(FilterSearchParamName)
-    const filterParam = useFilter()
-    const filter = filterParam ? filterParam as IdeaFilter : DefaultFilter
+    const filter = useMemo(() => {
+        const filterParam = new URLSearchParams(location.search).get(FilterSearchParamName)
+        return filterParam ? filterParam as IdeaFilter : DefaultFilter
+    }, [location.search])
 
     const filteredIdeas = useMemo(() => {
         return filterIdeas(ideas, filter)

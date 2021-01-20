@@ -34,6 +34,8 @@ const FilterSelect = Select as ISelect<TabEntry>
 
 export enum IdeaFilter {
     All = 'all',
+    Mine = 'mine',
+    Draft = 'draft',
     Active = 'active',
     Inactive = 'inactive',
     TurnedIntoProposal = 'turnedIntoProposal',
@@ -55,6 +57,10 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
         switch (ideaFilter) {
             case IdeaFilter.All:
                 return t('idea.list.filters.all')
+            case IdeaFilter.Mine:
+                return t('idea.list.filters.mine')
+            case IdeaFilter.Draft:
+                return t('idea.list.filters.draft')
             case IdeaFilter.Active:
                 return t('idea.list.filters.active')
             case IdeaFilter.Inactive:
