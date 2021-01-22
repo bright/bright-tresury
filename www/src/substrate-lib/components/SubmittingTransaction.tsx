@@ -1,4 +1,3 @@
-import {Box} from "@material-ui/core";
 import {DispatchError} from "@polkadot/types/interfaces";
 import {EventMetadataLatest} from "@polkadot/types/interfaces/metadata";
 import {ISubmittableResult} from "@polkadot/types/types";
@@ -9,7 +8,7 @@ import config from "../../config";
 import {useSubstrate} from "../index";
 import {ApiState, KeyringState} from "../SubstrateContext";
 import ExtrinsicFailed from "./ExtrinsicFailed";
-import SignAndSubmitForm from "./SignAndSubmitForm";
+import SignAndSubmit from "./SignAndSubmit";
 import SubstrateLoading from "./SubstrateLoading";
 import TransactionError from "./TransactionError";
 import TransactionInProgress from "./TransactionInProgress";
@@ -57,9 +56,11 @@ export interface Props {
     onClose: () => void
     txAttrs: TxAttrs
     setExtrinsicDetails: (data: { extrinsicHash: string, lastBlockHash: string }) => void
+    title: string
+    instruction: string | JSX.Element
 }
 
-const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, setExtrinsicDetails}) => {
+const SubmittingTransaction: React.FC<Props> = ({onClose, txAttrs, setExtrinsicDetails, title, instruction}) => {
     const {t} = useTranslation()
     const [result, setResult] = useState<Result | undefined>()
     const [error, setError] = useState<any>()
@@ -164,14 +165,7 @@ const SubmittingTransaction: React.FC<Props> = ({children, onClose, txAttrs, set
         />
     } else if (!submitting) {
         return (
-            <Box
-                display="flex"
-                flexDirection='column'
-                alignItems='center'
-            >
-                {children}
-                <SignAndSubmitForm accounts={accounts} txAttrs={txAttrs} onCancel={onClose} onSubmit={onSubmit}/>
-            </Box>
+            <SignAndSubmit title={title} instruction={instruction} accounts={accounts} txAttrs={txAttrs} onCancel={onClose} onSubmit={onSubmit}/>
         )
     } else if (result && result.error) {
         return <ExtrinsicFailed error={result.error} onOk={onClose}/>

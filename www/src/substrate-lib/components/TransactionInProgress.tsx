@@ -5,6 +5,7 @@ import successImg from '../../assets/success.svg';
 import {Button} from "../../components/button/Button";
 import {Stepper} from "../../components/stepper/Stepper";
 import {Status} from "./SubmittingTransaction";
+import TransactionModal from "./TransactionModal";
 
 export interface Props {
     status?: Status,
@@ -50,20 +51,16 @@ const TransactionInProgress: React.FC<Props> = ({status, onOk, event, eventDescr
     const success = activeStep >= steps.length
 
     return (
-        <Box
-            display="flex"
-            flexDirection='column'
-            alignItems='center'
+        <TransactionModal
+            title={t('substrate.inProgress.title')}
+            imgSrc={success ? successImg : undefined}
+            buttons={<Button color='primary' onClick={onOk} disabled={!success}>{t('substrate.inProgress.ok')}</Button>}
         >
-
-        {success ? <img src={successImg} alt={t('substrate.inProgress.title')}/> : null}
-            <h2 id='modal-title'>{t('substrate.inProgress.title')}</h2>
-            <Box p={'32px'}>
+            <Box>
                 <Stepper steps={steps} activeStep={activeStep}><></>
                 </Stepper>
             </Box>
-            <Button color='primary' onClick={onOk} disabled={!success}>{t('substrate.inProgress.ok')}</Button>
-        </Box>
+        </TransactionModal>
     );
 }
 

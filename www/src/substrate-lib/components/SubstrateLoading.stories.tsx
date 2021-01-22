@@ -1,5 +1,6 @@
 import {Meta, Story} from '@storybook/react/types-6-0';
 import React from 'react';
+import {Modal} from "../../components/modal/Modal";
 import SubstrateLoading, {Props} from "./SubstrateLoading";
 
 export default {
@@ -7,7 +8,7 @@ export default {
     component: SubstrateLoading,
 } as Meta;
 
-const Template: Story<Props> = (args) => <SubstrateLoading {...args}/>;
+const Template: Story<Props> = (args) => <Modal open={true}><SubstrateLoading {...args}/></Modal>;
 
 export const Default = Template.bind({});
 Default.args = {

@@ -1,31 +1,36 @@
-import {Modal as MaterialModal, ModalProps as MaterialModalProps, createStyles, Theme} from "@material-ui/core";
+import {createStyles, ModalProps as MaterialModalProps, Theme} from "@material-ui/core";
+import Dialog from "@material-ui/core/Dialog";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
+import {breakpoints} from "../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
-        position: 'absolute',
-        top: `50%`,
-        left: `50%`,
-        transform: `translate(-50%, -50%)`,
-        width: 675,
+    inner: {
+        padding: '2.5em 1.5em',
         backgroundColor: theme.palette.background.default,
+        outline: 'none',
+        alignItems: 'center',
+        [theme.breakpoints.up(breakpoints.tablet)]: {
+            width: 500,
+        },
+    },
+    root: {
         border: '1px solid',
         borderColor: theme.palette.grey[600],
         boxShadow: theme.shadows[5],
-        padding: 42,
         borderRadius: '6px',
-        outline: 'none',
-        alignItems: 'center',
-    },
+
+    }
 }))
 
-export const Modal: React.FC<MaterialModalProps> = ({children, ...props}) => {
+export type Props = MaterialModalProps
+
+export const Modal: React.FC<Props> = ({children, ...props}) => {
     const classes = useStyles()
-    return <MaterialModal
+    return <Dialog className={classes.root}
         {...props}>
-        <div className={classes.root}>
+        <div className={classes.inner}>
             {children}
         </div>
-    </MaterialModal>
+    </Dialog>
 }

@@ -1,21 +1,9 @@
-import {createStyles, makeStyles} from '@material-ui/core/styles';
 import React, {useCallback, useEffect, useState} from 'react';
 import {Trans, useTranslation} from "react-i18next";
-import {Info, Strong} from '../components/info/Info';
+import {Strong} from '../components/info/Info';
 import {Modal} from '../components/modal/Modal';
 import SubmittingTransaction from "../substrate-lib/components/SubmittingTransaction";
 import {convertIdeaToProposal, IdeaDto} from './ideas.api';
-
-const useStyles = makeStyles(() =>
-    createStyles({
-        h2: {
-            textAlign: 'center',
-        },
-        info: {
-            margin: 20,
-        }
-    }),
-);
 
 export interface ExtrinsicDetails {
     extrinsicHash: string
@@ -29,7 +17,6 @@ interface Props {
 }
 
 const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
-    const classes = useStyles()
     const {t} = useTranslation()
     const [extrinsicDetails, setExtrinsicDetails] = useState<ExtrinsicDetails | undefined>(undefined)
 
@@ -56,6 +43,11 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
             aria-labelledby='modal-title'
             aria-describedby='modal-description'>
             <SubmittingTransaction
+                title={t('idea.details.submitProposalModal.title')}
+                instruction={<Trans id='modal-description'
+                                    i18nKey="idea.details.submitProposalModal.warningMessage"
+                                    components={{strong: <Strong/>}}
+                />}
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'treasury',
@@ -75,17 +67,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                     ],
                 }}
                 setExtrinsicDetails={setExtrinsicDetails}
-            >
-                <>
-                    <h2 id='modal-title' className={classes.h2}>{t('idea.details.submitProposalModal.title')}</h2>
-                    <Info className={classes.info}>
-                        <Trans id='modal-description'
-                               i18nKey="idea.details.submitProposalModal.warningMessage"
-                               components={{strong: <Strong/>}}
-                        />
-                    </Info>
-                </>
-            </SubmittingTransaction>
+            />
         </Modal>
     );
 }

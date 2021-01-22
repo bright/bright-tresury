@@ -2,6 +2,7 @@ import {Meta, Story} from '@storybook/react/types-6-0';
 import i18next from "i18next";
 import React from 'react';
 import {Trans} from "react-i18next";
+import {Modal} from "../../components/modal/Modal";
 import TransactionError, {Props} from "./TransactionError";
 
 export default {
@@ -9,7 +10,7 @@ export default {
     component: TransactionError,
 } as Meta;
 
-const Template: Story<Props> = (args) => <TransactionError {...args}/>;
+const Template: Story<Props> = (args) => <Modal open={true}><TransactionError {...args}/></Modal>;
 
 export const Default = Template.bind({});
 Default.args = {

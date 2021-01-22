@@ -5,19 +5,27 @@ import {useTranslation} from 'react-i18next';
 import {Button} from "../../components/button/Button";
 import {FormSelect} from "../../components/select/FormSelect";
 import {ISelect} from "../../components/select/Select";
-import {Account, InputParam, TxAttrs} from './SubmittingTransaction';
 import config from '../../config';
+import {Account, InputParam, TxAttrs} from './SubmittingTransaction';
 
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
+            width: '100%',
+            height: '100%',
+        },
+        formContainer: {
+            display: 'flex',
+            flexDirection: 'column',
+            height: '100%',
             width: '100%',
         },
         networkTitle: {
             textAlign: 'center'
         },
         buttons: {
-            marginTop: 42,
+            paddingTop: 42,
+            marginTop: 'auto',
             display: 'flex',
             width: '100%',
             justifyContent: 'space-between'
@@ -25,7 +33,7 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-interface Props {
+export interface Props {
     txAttrs: TxAttrs
     onCancel: () => void
     onSubmit: (address: string) => void
@@ -78,45 +86,44 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accoun
 
     return (
         <div ref={contextRef} className={classes.root}>
-            {accounts.length === 0 || accounts.length === 1 ? <p>No accounts available</p> :
-                <Formik
-                    initialValues={{
-                        account: emptyAccount,
-                    } as Values}
-                    onSubmit={onSubmitForm}>
-                    {({
-                          values,
-                          handleSubmit
-                      }) =>
-                        <div>
-                            <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
-                            <p className={classes.networkTitle}>{config.NETWORK_NAME}</p>
-                            <form autoComplete="off" onSubmit={handleSubmit}>
-                                <TypedSelect
-                                    variant={"outlined"}
-                                    name="account"
-                                    label={t('substrate.form.selectAccount')}
-                                    options={[emptyAccount, ...accounts]}
-                                    value={values.account}
-                                    renderOption={(value: Account) => {
-                                        return value.name ?? value.address
-                                    }}
-                                />
-                                <div className={classes.buttons}>
-                                    <Button variant={"text"} color="primary" type="button" onClick={onCancel}>
-                                        {t('substrate.form.cancel')}
-                                    </Button>
-                                    <Button
-                                        color='primary'
-                                        type='submit'
-                                        disabled={!allParamsFilled() || !values.account.address}
-                                    >
-                                        {t('substrate.form.signAndSubmit')}
-                                    </Button>
-                                </div>
-                            </form>
-                        </div>}
-                </Formik>}
+            <Formik
+                initialValues={{
+                    account: emptyAccount,
+                } as Values}
+                onSubmit={onSubmitForm}>
+                {({
+                      values,
+                      handleSubmit
+                  }) =>
+                    <div className={classes.formContainer}>
+                        <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
+                        <p className={classes.networkTitle}>{config.NETWORK_NAME}</p>
+                        <form autoComplete="off" onSubmit={handleSubmit} className={classes.formContainer}>
+                            <TypedSelect
+                                variant={"outlined"}
+                                name="account"
+                                label={t('substrate.form.selectAccount')}
+                                options={[emptyAccount, ...accounts]}
+                                value={values.account}
+                                renderOption={(value: Account) => {
+                                    return value.name ?? value.address
+                                }}
+                            />
+                            <div className={classes.buttons}>
+                                <Button variant={"text"} color="primary" type="button" onClick={onCancel}>
+                                    {t('substrate.form.cancel')}
+                                </Button>
+                                <Button
+                                    color='primary'
+                                    type='submit'
+                                    disabled={!allParamsFilled() || !values.account.address}
+                                >
+                                    {t('substrate.form.signAndSubmit')}
+                                </Button>
+                            </div>
+                        </form>
+                    </div>}
+            </Formik>
         </div>
     );
 }

@@ -1,15 +1,22 @@
-import {Box, createStyles} from "@material-ui/core";
+import {createStyles, Theme} from "@material-ui/core";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React from 'react';
 import {useTranslation} from "react-i18next";
 import {Button} from "../../components/button/Button";
+import {breakpoints} from "../../theme/theme";
+import TransactionModal from "./TransactionModal";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
+        linearProgressContainer: {
+            padding: '2.5em 6em',
+            [theme.breakpoints.up(breakpoints.tablet)]: {
+                width: '100%',
+            },
+        },
         linearProgress: {
-            width: '100%',
-            margin: '60px 0',
+            minWidth: '170px'
         },
     }),
 );
@@ -22,19 +29,14 @@ const SubstrateLoading: React.FC<Props> = ({onOk}) => {
     const {t} = useTranslation()
     const classes = useStyles()
     return (
-        <Box
-            display="flex"
-            flexDirection='column'
-            alignItems='center'
+        <TransactionModal
+            title={t('substrate.loading.title')}
+            buttons={<Button color='primary' variant='text' onClick={onOk}>{t('substrate.loading.cancel')}</Button>}
         >
-            <h2 id='modal-title'>{t('substrate.loading.title')}</h2>
-            <div className={classes.linearProgress}>
-                <LinearProgress color='primary'/>
+            <div className={classes.linearProgressContainer}>
+                <LinearProgress className={classes.linearProgress} color='primary'/>
             </div>
-            <Box>
-                <Button color='primary' variant='text' onClick={onOk}>{t('substrate.loading.cancel')}</Button>
-            </Box>
-        </Box>
+        </TransactionModal>
     );
 }
 

@@ -7,7 +7,8 @@ export const theme = {
             fontWeight: 700,
             fontSize: 18,
             lineHeight: 22,
-            letterSpacing: 0
+            letterSpacing: 0,
+            align: 'center'
         }
     },
     palette: {
