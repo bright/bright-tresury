@@ -15,8 +15,6 @@ export function filterIdeas(ideas: IdeaDto[], filter: IdeaFilter): IdeaDto[] {
             return ideas.filter(idea => idea.status === IdeaStatus.Draft && doesIdeaBelongToUser(idea))
         case IdeaFilter.Active:
             return ideas.filter(idea => idea.status === IdeaStatus.Active)
-        case IdeaFilter.Inactive:
-            return ideas.filter(idea => idea.status === IdeaStatus.Inactive)
         case IdeaFilter.TurnedIntoProposal:
             return ideas.filter(idea => idea.status === IdeaStatus.TurnedIntoProposal)
         case IdeaFilter.Closed:

@@ -114,8 +114,9 @@ export class IdeasService {
     }
 
     /** TODO: validate if idea is ready to be turned into proposal */
-    async turnIdeaIntoProposalByNetworkId(networkId: string) {
+    async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number) {
         const idea = await this.findOneByNetworkId(networkId)
+        await this.ideaNetworkRepository.save({id: networkId, blockchainProposalId})
         await this.update({status: IdeaStatus.TurnedIntoProposal}, idea!.id)
     }
 }

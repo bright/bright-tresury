@@ -7,6 +7,8 @@ import {IdeasService} from './ideas.service';
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
+import {Repository} from "typeorm";
+import {getRepositoryToken} from "@nestjs/typeorm";
 
 describe(`/api/v1/ideas`, () => {
 
@@ -242,12 +244,20 @@ describe(`/api/v1/ideas`, () => {
     describe('turn into proposal', () => {
         it('should turn into proposal', async () => {
             const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]})
-            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id)
+            const blockchainProposalId = 31234
+            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId)
             const updatedIdea = await getService().findOne(createdIdea.id)
             expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposal)
         })
+        it('should turn into proposal and update network with blockchain proposal id', async () => {
+            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]})
+            const blockchainProposalId = 31234
+            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId)
+            const updatedIdeaNetwork = await getIdeaNetworkRepository().findOne(createdIdea.networks[0].id)
+            expect(updatedIdeaNetwork!.blockchainProposalId).toBe(blockchainProposalId)
+        })
         it('should throw not found exception for wrong network id', async () => {
-            await expect(getService().turnIdeaIntoProposalByNetworkId(uuid()))
+            await expect(getService().turnIdeaIntoProposalByNetworkId(uuid(), 1234))
                 .rejects
                 .toThrow(NotFoundException)
         })

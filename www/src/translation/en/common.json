@@ -50,7 +50,6 @@
       "card": {
         "statusDraft": "Draft",
         "statusActive": "Active",
-        "statusInactive": "Inactive",
         "statusTurnedIntoProposal": "Turned into Proposal",
         "statusClosed": "Closed",
         "beneficiary": "(Beneficiary)"
@@ -61,7 +60,6 @@
         "mine": "Mine",
         "draft": "Draft",
         "active": "Active",
-        "inactive": "Inactive",
         "turnedIntoProposal": "Turned into Proposal",
         "closed": "Closed"
       }

@@ -37,7 +37,6 @@ export enum IdeaFilter {
     Mine = 'mine',
     Draft = 'draft',
     Active = 'active',
-    Inactive = 'inactive',
     TurnedIntoProposal = 'turnedIntoProposal',
     Closed = 'closed',
 }
@@ -63,8 +62,6 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
                 return t('idea.list.filters.draft')
             case IdeaFilter.Active:
                 return t('idea.list.filters.active')
-            case IdeaFilter.Inactive:
-                return t('idea.list.filters.inactive')
             case IdeaFilter.TurnedIntoProposal:
                 return t('idea.list.filters.turnedIntoProposal')
             case IdeaFilter.Closed:

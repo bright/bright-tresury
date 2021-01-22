@@ -1,5 +1,5 @@
-import {ApiProperty, ApiPropertyOptional, PartialType} from "@nestjs/swagger";
-import {ArrayMinSize, IsArray, IsEnum, IsNotEmpty, IsOptional, MaxLength, Min, ValidateNested} from "class-validator";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
+import {ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested} from "class-validator";
 import {IdeaNetworkDto} from "./ideaNetwork.dto";
 import {ideaRestrictions} from "../idea.entity";
 import {IdeaStatus} from "../ideaStatus";
@@ -48,6 +48,7 @@ export class CreateIdeaDto {
     @ApiPropertyOptional({enum: IdeaStatus})
     @IsOptional()
     @IsEnum(IdeaStatus)
+    @IsIn([IdeaStatus.Draft, IdeaStatus.Active])
     status?: IdeaStatus
 
 }

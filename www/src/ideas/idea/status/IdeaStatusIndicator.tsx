@@ -16,8 +16,6 @@ export const IdeaStatusIndicator: React.FC<Props> = ({ideaStatus}) => {
                 return 'idea.list.card.statusDraft'
             case IdeaStatus.Active:
                 return 'idea.list.card.statusActive'
-            case IdeaStatus.Inactive:
-                return 'idea.list.card.statusInactive'
             case IdeaStatus.TurnedIntoProposal:
                 return 'idea.list.card.statusTurnedIntoProposal'
             case IdeaStatus.Closed:
@@ -31,8 +29,6 @@ export const IdeaStatusIndicator: React.FC<Props> = ({ideaStatus}) => {
                 return '#B159A9'
             case IdeaStatus.Active:
                 return '#0E65F2'
-            case IdeaStatus.Inactive:
-                return '#7B7B7B'
             case IdeaStatus.TurnedIntoProposal:
                 return '#2FD3AE'
             case IdeaStatus.Closed:

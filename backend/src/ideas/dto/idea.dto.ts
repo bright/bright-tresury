@@ -38,11 +38,12 @@ export class IdeaDto {
     links?: string[]
 
     @ApiProperty({enum: IdeaStatus})
-    status?: IdeaStatus
+    status: IdeaStatus
 
     constructor(
         id: string,
         title: string,
+        status: IdeaStatus,
         networks: IdeaNetworkDto[],
         beneficiary?: string,
         content?: string,
@@ -50,7 +51,6 @@ export class IdeaDto {
         contact?: string,
         portfolio?: string,
         links?: string[],
-        status?: IdeaStatus
     ) {
         this.id = id
         this.title = title
@@ -70,6 +70,7 @@ export function toIdeaDto(idea: Idea): IdeaDto {
     return new IdeaDto(
         idea.id,
         idea.title,
+        idea.status,
         idea.networks ? idea.networks.map((ideaNetwork: IdeaNetwork) => new IdeaNetworkDto(
             ideaNetwork.name,
             ideaNetwork.value,
@@ -81,6 +82,5 @@ export function toIdeaDto(idea: Idea): IdeaDto {
         idea.contact,
         idea.portfolio,
         idea.links ? JSON.parse(idea.links) as string[] : undefined,
-        idea.status
     )
 }

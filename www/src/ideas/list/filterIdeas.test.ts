@@ -7,7 +7,6 @@ describe('filter ideas', () => {
         const ideas = [
             createIdea(IdeaStatus.Active),
             createIdea(IdeaStatus.Draft),
-            createIdea(IdeaStatus.Inactive),
             createIdea(IdeaStatus.TurnedIntoProposal),
             createIdea(IdeaStatus.Closed),
         ]
@@ -24,7 +23,6 @@ describe('filter ideas', () => {
         const ideas = [
             createIdea(IdeaStatus.Active),
             createIdea(IdeaStatus.Draft),
-            createIdea(IdeaStatus.Inactive),
             createIdea(IdeaStatus.Draft),
             createIdea(IdeaStatus.TurnedIntoProposal),
             createIdea(IdeaStatus.Closed),
@@ -39,7 +37,6 @@ describe('filter ideas', () => {
         const ideas = [
             createIdea(IdeaStatus.Active),
             createIdea(IdeaStatus.Draft),
-            createIdea(IdeaStatus.Inactive),
             createIdea(IdeaStatus.Active),
             createIdea(IdeaStatus.TurnedIntoProposal),
             createIdea(IdeaStatus.Closed),
@@ -48,22 +45,6 @@ describe('filter ideas', () => {
         expect(filterIdeas(ideas, IdeaFilter.Active)).toStrictEqual([
             ideas[0],
             ideas[3],
-        ]);
-    })
-    test('filter ideas by inactive', () => {
-        const ideas = [
-            createIdea(IdeaStatus.Active),
-            createIdea(IdeaStatus.Draft),
-            createIdea(IdeaStatus.Inactive),
-            createIdea(IdeaStatus.Active),
-            createIdea(IdeaStatus.TurnedIntoProposal),
-            createIdea(IdeaStatus.Closed),
-            createIdea(IdeaStatus.Inactive),
-        ]
-
-        expect(filterIdeas(ideas, IdeaFilter.Inactive)).toStrictEqual([
-            ideas[2],
-            ideas[6],
         ]);
     })
     test('filter ideas by turned into proposal', () => {
