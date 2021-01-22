@@ -6,7 +6,7 @@ import {EventRecord, Header} from '@polkadot/types/interfaces';
 import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
 import {ExtrinsicEvent} from "../extrinsics/extrinsicEvent";
 import {getLogger} from "../logging.module";
-import {BlockchainProposal, fromDeriveTreasuryProposal} from "./dot/blockchainProposal.dto";
+import {BlockchainProposal, BlockchainProposalStatus, fromDerivedTreasuryProposal} from "./dot/blockchainProposal.dto";
 
 const logger = getLogger()
 
@@ -100,11 +100,11 @@ export class BlockchainService {
 
         // TODO: It's also possible to extract voting results from DeriveTreasuryProposals object
         const result: BlockchainProposal[] = proposals.proposals.map((derivedProposal) => {
-            return fromDeriveTreasuryProposal(derivedProposal, 'proposal')
+            return fromDerivedTreasuryProposal(derivedProposal, BlockchainProposalStatus.Proposal)
         })
 
         return result.concat(proposals.approvals.map((derivedProposal) => {
-            return fromDeriveTreasuryProposal(derivedProposal, 'approval')
+            return fromDerivedTreasuryProposal(derivedProposal, BlockchainProposalStatus.Approval)
         }))
     }
 

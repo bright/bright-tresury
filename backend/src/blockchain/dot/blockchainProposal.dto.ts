@@ -1,7 +1,10 @@
 import {DeriveTreasuryProposal} from "@polkadot/api-derive/types";
 import {transformBalance} from "../utils";
 
-export type BlockchainProposalStatus = 'proposal' | 'approval'
+export enum BlockchainProposalStatus {
+    Proposal = 'proposal',
+    Approval = 'approval'
+}
 
 export interface BlockchainProposal {
     proposalIndex: number,
@@ -12,7 +15,7 @@ export interface BlockchainProposal {
     status: BlockchainProposalStatus
 }
 
-export const fromDeriveTreasuryProposal = (derivedProposal: DeriveTreasuryProposal, status: BlockchainProposalStatus): BlockchainProposal => {
+export const fromDerivedTreasuryProposal = (derivedProposal: DeriveTreasuryProposal, status: BlockchainProposalStatus): BlockchainProposal => {
     const {id, proposal} = derivedProposal
     return {
         proposalIndex: id.toNumber(),
