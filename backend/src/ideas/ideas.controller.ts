@@ -75,8 +75,8 @@ export class IdeasController {
         description: 'No idea found',
     })
     @Patch(':id')
-    async updateIdea(@Body() createIdeaDto: UpdateIdeaDto, @Param('id') id: string): Promise<IdeaDto> {
-        const idea = await this.ideasService.update(createIdeaDto, id)
+    async updateIdea(@Body() updateIdeaDto: UpdateIdeaDto, @Param('id') id: string): Promise<IdeaDto> {
+        const idea = await this.ideasService.update(updateIdeaDto, id)
         return toIdeaDto(idea)
     }
 

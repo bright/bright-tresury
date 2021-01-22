@@ -118,6 +118,7 @@ describe(`/api/v1/ideas`, () => {
             expect(savedIdea.networks!.length).toBe(2)
             expect(savedIdea.networks!.find((n: IdeaNetwork) => n.name === 'kusama')).toBeDefined()
             expect(savedIdea.networks!.find((n: IdeaNetwork) => n.name === 'polkadot')).toBeDefined()
+            expect(savedIdea.ordinalNumber).toBeDefined()
             done()
         })
 
@@ -166,6 +167,27 @@ describe(`/api/v1/ideas`, () => {
             } as CreateIdeaDto)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea.status).toBe(IdeaStatus.Active)
+        })
+
+        it('should add auto generated ordinal number', async () => {
+            const createdIdea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
+            } as CreateIdeaDto)
+            const savedIdea = await getService().findOne(createdIdea.id)
+            expect(savedIdea.ordinalNumber).toBeDefined()
+        })
+
+        it('should auto increment ordinal number', async () => {
+            const createdFirstIdea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
+            } as CreateIdeaDto)
+            const createdSecondIdea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
+            } as CreateIdeaDto)
+            expect(createdSecondIdea.ordinalNumber).toBe(createdFirstIdea.ordinalNumber + 1)
         })
 
         it('should create and save idea with all valid data', async (done) => {

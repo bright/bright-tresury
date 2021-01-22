@@ -6,6 +6,7 @@ import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
+import {UpdateIdeaDto} from "./dto/updateIdea.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
 const logger = getLogger()
@@ -65,7 +66,7 @@ export class IdeasService {
         return result
     }
 
-    async update(updateIdea: Partial<CreateIdeaDto>, id: string): Promise<Idea> {
+    async update(updateIdea: UpdateIdeaDto, id: string): Promise<Idea> {
         const currentIdea = await this.findOne(id)
         await this.ideaRepository.save({
             ...currentIdea,

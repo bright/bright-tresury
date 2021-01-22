@@ -35,7 +35,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return ideas for selected network', async (done) => {
             await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}]})
-            await createIdea({title: 'Test title2', networks: [{name: 'kusama', value: 4}, {name: 'polkadot', value: 20}]})
+            await createIdea({title: 'Test title2', networks: [{name: 'polkadot', value: 4}, {name: 'kusama', value: 20}]})
             await createIdea({title: 'Test title3', networks: [{name: 'polkadot', value: 11}]})
 
             const result = await request(app())
@@ -189,6 +189,7 @@ describe(`/api/v1/ideas`, () => {
             expect(body.contact).toBe('Test contact')
             expect(body.portfolio).toBe('Test portfolio')
             expect(body.links).toStrictEqual(['Test link'])
+            expect(body.ordinalNumber).toBeDefined()
             expect(body.status).toBe(DefaultIdeaStatus)
             done()
         })
@@ -322,6 +323,16 @@ describe(`/api/v1/ideas`, () => {
             expect(body.beneficiary).toBe('abcd-1234')
             expect(body.content).toBe('Test content')
             expect(body.networks[0].name).toBe('kusama')
+            done()
+        })
+        it('should not patch ordinal number', async (done) => {
+            const ordinalNumber = Number.MAX_VALUE
+            const idea = await createIdea({})
+            const response = await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({ordinalNumber})
+                .expect(200)
+            expect(response.body.ordinalNumber).not.toBe(ordinalNumber)
             done()
         })
     })

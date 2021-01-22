@@ -1,4 +1,4 @@
-import {Column, Entity, OneToMany} from "typeorm";
+import {Column, Entity, Generated, OneToMany} from "typeorm";
 import {BaseEntity} from "../database/base.entity";
 import {IdeaNetwork} from "./ideaNetwork.entity";
 import {v4 as uuid} from 'uuid';
@@ -47,6 +47,11 @@ export class Idea extends BaseEntity {
     @Column({nullable: true, type: "text"})
     links?: string
 
+    @Column({nullable: false, type: "integer", generated: "increment"})
+    @Generated('increment')
+    // @ts-ignore
+    ordinalNumber: number
+
     @Column({
         type: "enum",
         enum: IdeaStatus,
@@ -65,7 +70,7 @@ export class Idea extends BaseEntity {
         contact?: string,
         portfolio?: string,
         links?: string,
-        id?: string
+        id?: string,
     ) {
         super()
         this.title = title
