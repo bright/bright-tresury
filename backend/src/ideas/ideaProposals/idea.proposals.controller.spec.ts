@@ -1,14 +1,9 @@
-import { v4 as uuid } from "uuid";
-import { BlockchainService } from "../../blockchain/blockchain.service";
-import { CreateExtrinsicDto } from "../../extrinsics/dto/createExtrinsic.dto";
-import { UpdateExtrinsicDto } from "../../extrinsics/dto/updateExtrinsic.dto";
-import { ExtrinsicEvent } from "../../extrinsics/extrinsicEvent";
-import { getLogger } from "../../logging.module";
-import { Idea } from "../idea.entity";
-import { IdeaNetwork } from "../ideaNetwork.entity";
-import { createIdea } from '../spec.helpers';
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../../utils/spec.helpers';
-import { IdeaProposalsService } from "./idea.proposals.service";
+import {v4 as uuid} from "uuid";
+import {BlockchainService} from "../../blockchain/blockchain.service";
+import {UpdateExtrinsicDto} from "../../extrinsics/dto/updateExtrinsic.dto";
+import {beforeAllSetup, beforeSetupFullApp, cleanDatabase, request} from '../../utils/spec.helpers';
+import {Idea} from "../idea.entity";
+import {createIdea} from '../spec.helpers';
 
 const baseUrl = (id: string) => `/api/v1/ideas/${id}/proposals`
 
@@ -39,7 +34,11 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
                             value: "3"
                         }]
                     }
-                    ]
+                    ],
+                    data: {
+                        value: 10,
+                        beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+                    }
                 })
             })
     })

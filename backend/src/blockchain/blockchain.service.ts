@@ -3,12 +3,10 @@ import {ApiPromise} from '@polkadot/api'
 import {DeriveTreasuryProposals} from "@polkadot/api-derive/types";
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
 import {EventRecord, Header} from '@polkadot/types/interfaces';
-import {log} from "util";
 import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
 import {ExtrinsicEvent} from "../extrinsics/extrinsicEvent";
 import {getLogger} from "../logging.module";
 import {BlockchainProposal, fromDeriveTreasuryProposal} from "./dot/blockchainProposal.dto";
-import {transformBalance} from "./utils";
 
 const logger = getLogger()
 
@@ -68,9 +66,14 @@ export class BlockchainService {
                         } as ExtrinsicEvent
                     })
 
+                const method = extrinsic.method.toJSON()
+                // @ts-ignore
+                const args: any = method?.hasOwnProperty('args') ? method[`args`] : {}
+
                 const result = {
                     blockHash: header.hash.toString(),
-                    events: applyExtrinsicEvents
+                    events: applyExtrinsicEvents,
+                    data: args
                 } as UpdateExtrinsicDto
 
                 cb(result)

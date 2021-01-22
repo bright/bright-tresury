@@ -1,14 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { BlockchainModule } from "../blockchain/blockchain.module";
-import { BlockchainService } from "../blockchain/blockchain.service";
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from "../utils/spec.helpers";
-import { CreateExtrinsicDto } from "./dto/createExtrinsic.dto";
-import { UpdateExtrinsicDto } from "./dto/updateExtrinsic.dto";
-import { Extrinsic, ExtrinsicStatuses } from "./extrinsic.entity";
-import { ExtrinsicsModule } from "./extrinsics.module";
-import { ExtrinsicsService } from './extrinsics.service';
+import {Test} from '@nestjs/testing';
+import {getRepositoryToken} from "@nestjs/typeorm";
+import {Repository} from "typeorm";
+import {BlockchainService} from "../blockchain/blockchain.service";
+import {beforeAllSetup, cleanDatabase} from "../utils/spec.helpers";
+import {CreateExtrinsicDto} from "./dto/createExtrinsic.dto";
+import {UpdateExtrinsicDto} from "./dto/updateExtrinsic.dto";
+import {Extrinsic, ExtrinsicStatuses} from "./extrinsic.entity";
+import {ExtrinsicsModule} from "./extrinsics.module";
+import {ExtrinsicsService} from './extrinsics.service';
 
 describe('ExtrinsicsService', () => {
     const blockchainService = {
@@ -23,7 +22,11 @@ describe('ExtrinsicsService', () => {
                         value: '3'
                     }]
                 }
-                ]
+                ],
+                data: {
+                    value: 10,
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+                }
             })
         }
     }
@@ -31,7 +34,7 @@ describe('ExtrinsicsService', () => {
     const createExtrinsicDto = {
         extrinsicHash: '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1',
         lastBlockHash: '0x8d152599c9e65cc7195b483d3158b832fdcd3738ee88fe809dff80227f2c2e43',
-        data: { someField: 'some value' }
+        data: {someField: 'some value'}
     }
 
     const module = beforeAllSetup(async () =>
@@ -78,7 +81,7 @@ describe('ExtrinsicsService', () => {
         it('should save extrinsic with minimal data', async () => {
             await service().create(createExtrinsicDto)
 
-            const actual = await repository().findOne({ extrinsicHash: '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1' })
+            const actual = await repository().findOne({extrinsicHash: '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1'})
             expect(actual).toBeDefined()
             expect(actual!.lastBlockHash).toBe(createExtrinsicDto.lastBlockHash)
             expect(actual!.data).toStrictEqual(createExtrinsicDto.data)

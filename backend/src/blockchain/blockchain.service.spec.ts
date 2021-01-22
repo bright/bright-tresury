@@ -31,7 +31,7 @@ describe(`Blockchain service`, () => {
     })
 
     describe('findExtrinsic', () => {
-        it('should start listening and find extrinsic with events', async (done) => {
+        it('should start listening and find proposeSpend extrinsic with events', async (done) => {
             let expectedBlockHash = ''
             let expectedProposalId = 0
 
@@ -50,6 +50,23 @@ describe(`Blockchain service`, () => {
                         name: 'ProposalIndex',
                         value: `${expectedProposalId}`
                     }]
+                })
+                expect(result!.events).toContainEqual({
+                    section: 'balances',
+                    method: 'Reserved',
+                    data: [
+                        {
+                            name: 'AccountId',
+                            value: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+                        },
+                        {
+                            name: 'Balance',
+                            value: '1000000000000'
+                        }]
+                })
+                expect(result!.data).toStrictEqual({
+                    value: 10,
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
                 })
                 done()
             })
@@ -98,9 +115,9 @@ describe(`Blockchain service`, () => {
     describe('getProposals', () => {
         it('should return existing proposals', async (done) => {
             // create a proposal
-            const nextProposalIndex  = (await api.query.treasury.proposalCount()).toNumber()
+            const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
             const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
-            await extrinsic.signAndSend(pair, async(result: SubmittableResult) => {
+            await extrinsic.signAndSend(pair, async (result: SubmittableResult) => {
                 if (result.isFinalized) {
                     const proposals = await service().getProposals()
                     expect(proposals.length).toBeGreaterThan(0)

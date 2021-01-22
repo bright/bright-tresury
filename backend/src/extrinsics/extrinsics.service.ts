@@ -47,6 +47,7 @@ export class ExtrinsicsService {
         extrinsic.blockHash = updateExtrinsicDto.blockHash
         extrinsic.events = updateExtrinsicDto.events
         extrinsic.status = ExtrinsicStatuses.ExtrinsicSuccess
+        extrinsic.data = updateExtrinsicDto.data
 
         return this.extrinsicRepository.save(extrinsic)
     }
