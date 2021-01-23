@@ -6,7 +6,8 @@ import {TabLabel} from "./TabLabel";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            display: 'flex'
+            position: 'relative',
+            display: 'flex',
         }
     })
 )

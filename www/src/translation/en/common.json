@@ -69,6 +69,18 @@
     "editTitle": "Edit Idea",
     "introduce": "+ Introduce Idea"
   },
+  "proposal": {
+    "list": {
+      "filters": {
+        "all": "All",
+        "published": "Published",
+        "submitted": "Submitted",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "rewarded": "Rewarded"
+      }
+    }
+  },
   "substrate": {
     "form": {
       "networkHeader": "Please, select your account in:",

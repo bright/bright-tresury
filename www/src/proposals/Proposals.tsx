@@ -1,21 +1,13 @@
 import React from 'react';
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import ProposalsHeader from "./ProposalsHeader";
 
-const useStyles = makeStyles((theme: Theme) => {
-        return createStyles({
-            header: {}
-        })
-    }
-)
+export const proposalsHorizontalMargin = '32px'
+export const proposalsMobileHorizontalMargin = '18px'
 
 const Proposals: React.FC<{}> = () => {
-    const classes = useStyles()
     return (
         <div>
-            <div className={classes.header}>
-
-            </div>
-            Proposals
+            <ProposalsHeader/>
         </div>
     );
 }

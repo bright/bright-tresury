@@ -1,13 +1,11 @@
 import React from "react";
-import {Button} from "../components/button/Button";
 import {Select} from "../components/select/Select";
-import IdeaStatusFilters from "./list/IdeaStatusFilters";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {useTranslation} from "react-i18next";
-import {ROUTE_NEW_IDEA} from "../routes";
 import {useHistory} from "react-router-dom";
-import {ideasHorizontalMargin, ideasMobileHorizontalMargin} from "./Ideas";
+import {proposalsHorizontalMargin, proposalsMobileHorizontalMargin} from "./Proposals";
+import ProposalStatusFilters from "./list/ProposalStatusFilters";
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -18,8 +16,8 @@ const useStyles = makeStyles((theme: Theme) => {
             justifyContent: 'space-between',
             paddingTop: '32px',
         },
-        newIdeaButton: {
-            margin: `0 ${ideasHorizontalMargin}`,
+        newProposalButton: {
+            margin: `0 ${proposalsHorizontalMargin}`,
             order: 1,
             fontWeight: 700,
             [theme.breakpoints.down(breakpoints.tablet)]: {
@@ -27,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => {
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 fontSize: '15px',
-                margin: `0px ${ideasMobileHorizontalMargin} 16px ${ideasMobileHorizontalMargin}`,
+                margin: `0px ${proposalsMobileHorizontalMargin} 16px ${proposalsMobileHorizontalMargin}`,
                 flex: 1
             },
         },
@@ -44,14 +42,14 @@ const useStyles = makeStyles((theme: Theme) => {
         timeSelectWrapper: {
             order: 5,
             borderRadius: '8px',
-            margin: `32px ${ideasHorizontalMargin}`,
+            margin: `32px ${proposalsHorizontalMargin}`,
             backgroundColor: theme.palette.primary.light,
             [theme.breakpoints.up(breakpoints.tablet)]: {
                 height: '32px'
             },
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 2,
-                margin: `0 ${ideasHorizontalMargin}`
+                margin: `0 ${proposalsHorizontalMargin}`
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 order: 2,
@@ -59,7 +57,7 @@ const useStyles = makeStyles((theme: Theme) => {
                 margin: `0`,
                 background: theme.palette.background.paper,
                 paddingTop: '8px',
-                paddingLeft: ideasMobileHorizontalMargin
+                paddingLeft: proposalsMobileHorizontalMargin
             },
         },
         timeSelect: {
@@ -79,51 +77,48 @@ const useStyles = makeStyles((theme: Theme) => {
         },
         statusFilters: {
             order: 4,
-            margin: `${ideasHorizontalMargin}`,
+            overflowX: 'auto',
+            position: 'relative',
+            maxWidth: '50% !important',
+            margin: `${proposalsHorizontalMargin}`,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 3,
-                margin: `12px ${ideasHorizontalMargin}`,
+                margin: `12px ${proposalsHorizontalMargin}`,
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 order: 5,
                 margin: 0,
                 background: theme.palette.background.paper,
                 paddingTop: '8px',
-                paddingRight: ideasMobileHorizontalMargin
+                paddingRight: proposalsMobileHorizontalMargin
             }
         },
     })
 })
 
-const IdeasHeader: React.FC = () => {
+interface Props {
+
+}
+
+const ProposalsHeader: React.FC<Props> = () => {
     const classes = useStyles()
     const {t} = useTranslation()
     const history = useHistory()
 
-    const goToNewIdea = () => {
-        history.push(ROUTE_NEW_IDEA)
-    }
-
     return <div className={classes.header}>
-        <Button className={classes.newIdeaButton}
-                variant="contained"
-                color="primary"
-                onClick={goToNewIdea}>
-            {t('idea.introduce')}
-        </Button>
         <div className={classes.flexBreakLine}/>
         <div className={classes.timeSelectWrapper}>
             <Select
                 className={classes.timeSelect}
-                value={t('idea.list.filters.currentSpendTime')}
-                options={[t('idea.list.filters.currentSpendTime')]}
+                value={t('proposal.list.filters.currentSpendTime')}
+                options={[t('proposal.list.filters.currentSpendTime')]}
             />
         </div>
         <div className={classes.paperBackground}/>
         <div className={classes.statusFilters}>
-            <IdeaStatusFilters/>
+            <ProposalStatusFilters/>
         </div>
     </div>
 }
 
-export default IdeasHeader
+export default ProposalsHeader

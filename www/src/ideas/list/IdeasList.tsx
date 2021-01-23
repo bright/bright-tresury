@@ -1,10 +1,10 @@
 import React from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../theme/theme";
-import {ideasHorizontalMargin, ideasMobileHorizontalMargin} from "./Ideas";
+import {breakpoints} from "../../theme/theme";
 import Grid from "@material-ui/core/Grid";
-import IdeaCard from "./list/IdeaCard";
-import {IdeaDto} from "./ideas.api";
+import IdeaCard from "./IdeaCard";
+import {IdeaDto} from "../ideas.api";
+import {ideasHorizontalMargin, ideasMobileHorizontalMargin} from "../Ideas";
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({

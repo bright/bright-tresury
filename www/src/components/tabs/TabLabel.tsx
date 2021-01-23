@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
             border: `solid 2px ${theme.palette.background.paper}`,
             borderRadius: '8px',
             textDecoration: 'none',
+            whiteSpace: 'nowrap',
             display: 'flex',
         },
         labelIcon: {

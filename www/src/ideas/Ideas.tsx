@@ -6,7 +6,7 @@ import {DefaultFilter, FilterSearchParamName, IdeaFilter} from "./list/IdeaStatu
 import config from '../config';
 import {filterIdeas} from "./list/filterIdeas";
 import IdeasHeader from "./IdeasHeader";
-import IdeasList from "./IdeasList";
+import IdeasList from "./list/IdeasList";
 
 export const ideasHorizontalMargin = '32px'
 export const ideasMobileHorizontalMargin = '18px'
@@ -22,7 +22,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const [status, setStatus] = useState<string>('')
 
     const filter = useMemo(() => {
-        const filterParam = new URLSearchParams(location.search).get(FilterSearchParamName)
+        const filterParam = useSearchParams().get(FilterSearchParamName)
         return filterParam ? filterParam as IdeaFilter : DefaultFilter
     }, [location.search])
 
@@ -43,14 +43,12 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     }, [network])
 
 
-    return (
-        <div>
-            <IdeasHeader/>
-            {status === 'loading' && <p>Loading</p>}
-            {status === 'error' && <p>Error</p>}
-            {status === 'resolved' && (<IdeasList ideas={filteredIdeas}/>)}
-        </div>
-    );
+    return <div>
+        <IdeasHeader/>
+        {status === 'loading' && <p>Loading</p>}
+        {status === 'error' && <p>Error</p>}
+        {status === 'resolved' && (<IdeasList ideas={filteredIdeas}/>)}
+    </div>
 }
 
 export default Ideas

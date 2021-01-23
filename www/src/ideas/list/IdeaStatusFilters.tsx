@@ -1,36 +1,25 @@
 import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
+import {createStyles, Hidden} from "@material-ui/core";
 import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
-import {ISelect, Select} from "../../components/select/Select";
 import {NavLink} from "react-router-dom";
 import {ROUTE_IDEAS} from "../../routes";
+import {useSearchParams} from "../../router/useSearchParams";
+import {NavSelect} from "../../components/select/NavSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        filterTabs: {
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                display: 'none'
-            },
-        },
         filterSelect: {
-            display: 'none',
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                fontWeight: 600,
-                display: 'inherit'
+            fontWeight: 600,
+            display: 'initial',
+            [theme.breakpoints.up(breakpoints.tablet)]: {
+                display: 'none',
             },
         },
-        filterSelectLink: {
-            textDecoration: 'none',
-            width: '100%',
-            color: theme.palette.text.primary
-        }
     }),
 );
-
-const FilterSelect = Select as ISelect<TabEntry>
 
 export enum IdeaFilter {
     All = 'all',
@@ -84,20 +73,17 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
      * Current tab entry is forced, because there should be always some filter specified.
      */
     const currentTabEntry = tabEntries.find(entry =>
-        entry.label === getTranslation(filter ? filter : IdeaFilter.All)
+        entry.label === getTranslation(filter)
     )!
 
     return <div>
-        <div className={classes.filterTabs}>
+        <Hidden only={breakpoints.mobile}>
             <Tabs values={tabEntries}/>
-        </div>
-        <FilterSelect
+        </Hidden>
+        <NavSelect
             className={classes.filterSelect}
             value={currentTabEntry}
             options={tabEntries}
-            renderOption={(option: TabEntry) =>
-                <NavLink className={classes.filterSelectLink} to={option.path}>{option.label}</NavLink>
-            }
         />
     </div>
 }
