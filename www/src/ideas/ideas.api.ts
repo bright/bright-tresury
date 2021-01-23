@@ -18,6 +18,7 @@ export interface IdeaDto {
     portfolio?: string
     links?: string[]
     status: IdeaStatus
+    ordinalNumber: number
 }
 
 export enum IdeaStatus {

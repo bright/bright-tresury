@@ -46,7 +46,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                 title={t('idea.details.submitProposalModal.title')}
                 instruction={<Trans id='modal-description'
                                     i18nKey="idea.details.submitProposalModal.warningMessage"
-                                    components={{strong: <Strong/>}}
+                                    components={{strong: <Strong color={'primary'}/>}}
                 />}
                 onClose={onClose}
                 txAttrs={{

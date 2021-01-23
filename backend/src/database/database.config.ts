@@ -80,7 +80,7 @@ export const databaseConfigSchema: Schema<DatabaseConfig> = {
 
     logging: {
         doc: "Logging in typeorm https://github.com/typeorm/typeorm/blob/master/docs/logging.md",
-        default: ['error'],
+        default: ['query', 'error'],
         format(value: any) {
             if (Array.isArray(value)) {
                 return value;

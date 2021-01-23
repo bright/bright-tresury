@@ -16,6 +16,7 @@ import {Amount} from "../../components/amount/Amount";
 import {calculateBondValue} from "../../networks/bondUtil";
 import config from "../../config";
 import {IdeaStatusIndicator} from "./status/IdeaStatusIndicator";
+import {IdeaOrdinalNumber} from "../list/IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,7 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 right: 16
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                top: 70,
+                top: 60,
                 right: 8,
             }
         },
@@ -74,9 +75,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         ideaTitleBreakLine: {
             height: 0,
-            flexBasis: '100%'
-        },
         ideaTitle: {
+            marginTop: '24px',
+            flexBasis: '100%',
             marginRight: '.75em'
         },
         ideaId: {
@@ -118,7 +119,7 @@ const useStyles = makeStyles((theme: Theme) =>
             order: 3
         },
         contentTypeTabs: {
-            marginTop: '20px',
+            marginTop: '24px',
             order: 4,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 5,
@@ -130,9 +131,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         convertToProposal: {
             order: 5,
+            [theme.breakpoints.up(breakpoints.mobile)]: {
+                alignSelf: 'flex-end'
+            },
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 2,
-                alignSelf: 'flex-end'
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 position: 'fixed',
@@ -178,9 +181,7 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
         <IconButton className={classes.closeIcon} svg={crossSvg} onClick={navigateToList}/>
 
         <div className={classes.basicInfo}>
-            <p className={classes.ideaId}>
-                {idea.id}
-            </p>
+            <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
             <Divider className={classes.basicInfoDivider} orientation="vertical"/>
             <div className={classes.status}>
                 <IdeaStatusIndicator ideaStatus={idea.status}/>

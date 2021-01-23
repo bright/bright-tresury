@@ -49,6 +49,7 @@
     "list": {
       "card": {
         "statusDraft": "Draft",
+        "ideaNumber": "Idea - <strong>{{ordinalNumber}}</strong>",
         "statusActive": "Active",
         "statusTurnedIntoProposal": "Turned into Proposal",
         "statusClosed": "Closed",

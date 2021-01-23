@@ -30,7 +30,7 @@ export class CreateIdeaDto {
         type: [IdeaNetworkDto]
     })
     @IsNotEmpty()
-    @ValidateNested({each: true, always: true})
+    @ValidateNested({each: true})
     @Type(() => IdeaNetworkDto)
     @ArrayMinSize(1)
     networks!: CreateIdeaNetworkDto[]

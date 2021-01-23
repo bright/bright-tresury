@@ -8,10 +8,10 @@ Accepted
 
 ## Context
 
-Api controllers does not filter body or query params by default. If we specify body type to some particular
-DTO class, then it is still allowed to send any json properties by the client, even those that are not 
-specified in the DTO class. It may be dangerous if we won't filter client's request to match our models. 
-Consider simple patch method in the service:
+Api controllers does not filter body, response or query params by default. If we specify body type to 
+some particular DTO class, then it is still allowed to send any json properties by the client, even 
+those that are not specified in the DTO class. It may be dangerous if we won't filter client's 
+request to match our models. Consider simple patch method in the service:
 
 ```
 function updateModel(patch: Partial<ModelDto>, id: string) {
@@ -60,3 +60,7 @@ interface CreatePersonDto {
     lastName: string
 }
 ``` 
+
+The same thing goes for returning proper DTO objects. If we want to return some particular property, 
+we should also either add any validation decorator from `class-validator` library or just add 
+`@Allow` decorator.

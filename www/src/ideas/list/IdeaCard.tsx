@@ -13,6 +13,7 @@ import {formatNumber} from "../../util/numberUtil";
 import {Identicon} from "../../components/identicon/Identicon";
 import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
+import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -39,14 +40,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         margin: '0 20px 0 24px'
     },
     header: {
-        display: 'flex',
-        justifyContent: 'space-between'
-    },
-    idLabel: {
         marginTop: '20px',
         marginBottom: '6px',
-        fontSize: '16px',
-        fontWeight: 700
+        display: 'flex',
+        justifyContent: 'space-between'
     },
     details: {
         padding: '0',
@@ -133,6 +130,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
               to={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
                 <p className={classes.idLabel}>{idea.id}</p>
+                <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
                 <IdeaStatusIndicator ideaStatus={idea.status}/>
             </div>
 

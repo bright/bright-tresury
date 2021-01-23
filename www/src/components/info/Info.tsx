@@ -30,8 +30,15 @@ const StyledStrong = styled('strong')(({theme}) => ({
     color: theme.palette.primary.main,
 }))
 
-export const Strong: React.FC = ({children}) => {
-    return (
-        <StyledStrong>{children}</StyledStrong>
-    )
+interface StrongProps {
+    color?: StrongColor
 }
+
+export const Strong: React.FC<StrongProps> = ({children, color = 'default'}) => {
+    if (color === 'primary') {
+        return <StyledStrong>{children}</StyledStrong>
+    }
+    return <strong>{children}</strong>
+}
+
+export type StrongColor = 'default' | 'primary'

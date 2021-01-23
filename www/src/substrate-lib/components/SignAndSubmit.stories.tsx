@@ -17,7 +17,7 @@ Default.args = {
     title: 'You are about to convert your idea into proposal',
     instruction: <Trans id='modal-description'
                         i18nKey="idea.details.submitProposalModal.warningMessage"
-                        components={{strong: <Strong/>}}
+                        components={{strong: <Strong color={'primary'}/>}}
     />,
     onSubmit: () => {
         console.log('submit')
