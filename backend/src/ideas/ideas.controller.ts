@@ -6,9 +6,11 @@ import {IdeasService} from './ideas.service';
 import {IdeaDto, toIdeaDto} from "./dto/idea.dto";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
+import {Allow} from "class-validator";
 
 class GetIdeasQuery {
     @ApiPropertyOptional()
+    @Allow()
     network?: string
 }
 

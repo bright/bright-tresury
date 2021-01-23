@@ -326,8 +326,8 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should not patch ordinal number', async (done) => {
-            const ordinalNumber = Number.MAX_VALUE
             const idea = await createIdea({})
+            const ordinalNumber = idea.ordinalNumber + 13
             const response = await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({ordinalNumber})

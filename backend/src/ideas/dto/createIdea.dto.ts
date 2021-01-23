@@ -4,6 +4,7 @@ import {IdeaNetworkDto} from "./ideaNetwork.dto";
 import {ideaRestrictions} from "../idea.entity";
 import {IdeaStatus} from "../ideaStatus";
 import {Type} from "class-transformer";
+import {CreateIdeaNetworkDto} from "./createIdeaNetwork.dto";
 
 const AllowedIdeaStatuses = [IdeaStatus.Draft, IdeaStatus.Active]
 
@@ -32,7 +33,7 @@ export class CreateIdeaDto {
     @ValidateNested({each: true, always: true})
     @Type(() => IdeaNetworkDto)
     @ArrayMinSize(1)
-    networks!: IdeaNetworkDto[]
+    networks!: CreateIdeaNetworkDto[]
 
     @ApiPropertyOptional()
     @IsOptional()

@@ -7,6 +7,7 @@ import {IdeaNetwork} from './ideaNetwork.entity';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
+import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
 const logger = getLogger()
@@ -71,7 +72,7 @@ export class IdeasService {
         await this.ideaRepository.save({
             ...currentIdea,
             ...updateIdea,
-            networks: updateIdea.networks ? updateIdea.networks.map((updatedNetwork: IdeaNetworkDto) => {
+            networks: updateIdea.networks ? updateIdea.networks.map((updatedNetwork: CreateIdeaNetworkDto) => {
                 const existingNetwork = currentIdea.networks.find((currentIdeaNetwork: IdeaNetworkDto) =>
                     currentIdeaNetwork.id === updatedNetwork.id
                 )
@@ -91,7 +92,7 @@ export class IdeasService {
     async create(createIdeaDto: CreateIdeaDto): Promise<Idea> {
         const idea = new Idea(
             createIdeaDto.title,
-            createIdeaDto.networks.map((network: IdeaNetworkDto) => new IdeaNetwork(
+            createIdeaDto.networks.map((network: CreateIdeaNetworkDto) => new IdeaNetwork(
                 network.name,
                 network.value
             )),

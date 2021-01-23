@@ -1,5 +1,7 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {IsNotEmpty, IsNumber, IsOptional} from "class-validator";
+import {Allow, IsNotEmpty, IsNumber, IsOptional} from "class-validator";
+import {IdeaNetwork} from "../ideaNetwork.entity";
+import {ExtrinsicDto, toExtrinsicDto} from "../../extrinsics/dto/extrinsic.dto";
 
 export class IdeaNetworkDto {
     @ApiPropertyOptional()
@@ -14,14 +16,28 @@ export class IdeaNetworkDto {
     @IsNumber()
     value: number
 
+    @Allow()
+    extrinsic: ExtrinsicDto | null
+
     constructor(
         name: string,
         value: number,
-        id?: string
+        extrinsic: ExtrinsicDto | null,
+        id?: string,
     ) {
+        this.id = id
         this.name = name
         // remove trailing zeros returned from postgres for numeric types
         this.value = Number(value)
-        this.id = id
+        this.extrinsic = extrinsic
     }
+}
+
+export function toIdeaNetworkDto(ideaNetwork: IdeaNetwork) {
+    return new IdeaNetworkDto(
+        ideaNetwork.name,
+        ideaNetwork.value,
+        ideaNetwork.extrinsic ? toExtrinsicDto(ideaNetwork.extrinsic) : null,
+        ideaNetwork.id,
+    )
 }

@@ -1,6 +1,6 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {Allow, IsArray, IsNotEmpty} from "class-validator";
-import {IdeaNetworkDto} from "./ideaNetwork.dto";
+import {IdeaNetworkDto, toIdeaNetworkDto} from "./ideaNetwork.dto";
 import {Idea, ideaRestrictions} from "../idea.entity";
 import {IdeaNetwork} from "../ideaNetwork.entity";
 import {IdeaStatus} from "../ideaStatus";
@@ -86,11 +86,9 @@ export function toIdeaDto(idea: Idea): IdeaDto {
         idea.id,
         idea.title,
         idea.status,
-        idea.networks ? idea.networks.map((ideaNetwork: IdeaNetwork) => new IdeaNetworkDto(
-            ideaNetwork.name,
-            ideaNetwork.value,
-            ideaNetwork.id
-        )) : [],
+        idea.networks ? idea.networks.map((ideaNetwork: IdeaNetwork) =>
+            toIdeaNetworkDto(ideaNetwork)
+        ) : [],
         idea.ordinalNumber,
         idea.beneficiary,
         idea.content,
