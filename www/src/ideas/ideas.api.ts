@@ -46,16 +46,18 @@ export function createEmptyIdea(network: string): IdeaDto {
     } as IdeaDto
 }
 
-export function getIdeasByNetwork(name: string) {
-    return fetchAndUnwrap<IdeaDto[]>('GET', `${API_URL}/ideas?network=${name}`)
+const IdeaApiPath = `${API_URL}/ideas`
+
+export function getIdeasByNetwork(networkName: string) {
+    return fetchAndUnwrap<IdeaDto[]>('GET', `${IdeaApiPath}?network=${networkName}`)
 }
 
 export function getIdeaById(id: string) {
-    return fetchAndUnwrap<IdeaDto>('GET', `${API_URL}/ideas/${id}`)
+    return fetchAndUnwrap<IdeaDto>('GET', `${IdeaApiPath}/${id}`)
 }
 
 export function createIdea(idea: IdeaDto) {
-    return fetchAndUnwrap<IdeaDto>('POST', `${API_URL}/ideas`, idea)
+    return fetchAndUnwrap<IdeaDto>('POST', `${IdeaApiPath}`, idea)
 }
 
 export function updateIdea(idea: IdeaDto) {
@@ -68,5 +70,5 @@ export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: IdeaDto
         extrinsicHash: exDetails.extrinsicHash,
         lastBlockHash: exDetails.lastBlockHash,
     }
-    return fetchAndUnwrap<IdeaDto>('POST', `${API_URL}/ideas/${idea.id}/proposals`, data)
+    return fetchAndUnwrap<IdeaDto>('POST', `${IdeaApiPath}/${idea.id}/proposals`, data)
 }

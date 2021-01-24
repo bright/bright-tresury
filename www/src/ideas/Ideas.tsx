@@ -42,7 +42,6 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
             })
     }, [network])
 
-
     return <div>
         <IdeasHeader/>
         {status === 'loading' && <p>Loading</p>}

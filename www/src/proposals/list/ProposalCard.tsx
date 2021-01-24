@@ -1,8 +1,7 @@
 import React from "react";
-import {IdeaDto} from "../ideas.api";
 import {Card} from "../../components/card/Card";
 import {generatePath, Link} from "react-router-dom";
-import {ROUTE_IDEA} from "../../routes";
+import {ROUTE_PROPOSAL} from "../../routes";
 import {Divider} from "../../components/divider/Divider";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
@@ -11,9 +10,9 @@ import {breakpoints} from "../../theme/theme";
 import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 import {formatNumber} from "../../util/numberUtil";
 import {Identicon} from "../../components/identicon/Identicon";
-import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
-import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
-import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
+import {ProposalDto} from "../proposals.api";
+import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
+import {ProposalContentType} from "../proposal/ProposalContentTypeTabs";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -40,10 +39,14 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         margin: '0 20px 0 24px'
     },
     header: {
-        marginTop: '20px',
-        marginBottom: '6px',
         display: 'flex',
         justifyContent: 'space-between'
+    },
+    idLabel: {
+        marginTop: '20px',
+        marginBottom: '6px',
+        fontSize: '16px',
+        fontWeight: 700
     },
     details: {
         padding: '0',
@@ -85,11 +88,16 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         fontWeight: 500,
         padding: '3px'
     },
-    beneficiaryWrapper: {
+    accountsWrapper: {
         display: 'flex',
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'space-between'
     },
-    beneficiaryInfo: {
+    accountWrapper: {
+        display: 'flex',
+        alignItems: 'center',
+    },
+    accountInfo: {
         display: 'flex',
         marginLeft: '.75em',
         flexDirection: 'row',
@@ -101,7 +109,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         marginTop: '24px',
         marginBottom: '4px'
     },
-    beneficiaryLabel: {
+    accountLabel: {
         fontSize: '12px',
         fontWeight: 700,
         marginBottom: '24px',
@@ -111,46 +119,65 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 }))
 
 interface Props {
-    idea: IdeaDto
+    proposal: ProposalDto
 }
 
-const IdeaCard: React.FC<Props> = ({idea}) => {
+const ProposalCard: React.FC<Props> = ({proposal}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
     const getBeneficiaryFragment = (): string => {
-        if (!idea.beneficiary) return ''
-        return ellipseTextInTheMiddle(idea.beneficiary, 12)
+        if (!proposal.beneficiary) return ''
+        return ellipseTextInTheMiddle(proposal.beneficiary, 12)
+    }
+
+    const getProposerFragment = (): string => {
+        if (!proposal.proposer) return ''
+        return ellipseTextInTheMiddle(proposal.proposer, 12)
     }
 
     return <Card className={classes.root}>
+        {/*TODO: create common network aware card that will switch left ribbon and replace it in [IdeaCard.tsx]*/}
         <div className={classes.networkAccentLine}/>
-
         <Link className={classes.link}
-              to={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
+              to={`${generatePath(ROUTE_PROPOSAL, {proposalId: proposal.proposalIndex})}/${ProposalContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
-                <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
-                <IdeaStatusIndicator ideaStatus={idea.status}/>
+                <p className={classes.idLabel}>{proposal.proposalIndex}</p>
+                <ProposalStatusIndicator proposalStatus={proposal.status}/>
             </div>
 
             <Divider className={classes.contentMargin}/>
 
             <div className={`${classes.contentMargin} ${classes.details}`}>
-                <p className={classes.titleLabel}>{idea.title}</p>
-                {idea.networks.length > 0 ?
-                    <p className={classes.networkLabel}>{`${formatNumber(idea.networks[0].value)} LOC`}</p> : null}
+                <p className={classes.titleLabel}>{proposal.title}</p>
+                <p className={classes.networkLabel}>{`${formatNumber(proposal.value)} LOC`}</p>
             </div>
 
             <Divider className={classes.contentMargin}/>
 
-            <div className={`${classes.contentMargin} ${classes.beneficiaryWrapper}`}>
-                <Identicon account={idea.beneficiary}/>
-                <div className={classes.beneficiaryInfo}>
-                    <div>
-                        <p className={classes.accountValue}>
-                            {getBeneficiaryFragment()}
-                        </p>
-                        <p className={classes.beneficiaryLabel}>{t('idea.list.card.beneficiary')}</p>
+            <div className={`${classes.contentMargin} ${classes.accountsWrapper}`}>
+                <div className={classes.accountWrapper}>
+                    <Identicon account={proposal.beneficiary}/>
+                    <div className={classes.accountInfo}>
+                        <div>
+                            <p className={classes.accountValue}>
+                                {getBeneficiaryFragment()}
+                            </p>
+                            <p className={classes.accountLabel}>{t('proposal.list.card.beneficiary')}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/*TODO: create common view for such account details and replace it here and in [IdeaCard.tsx]*/}
+                <div className={classes.accountWrapper}>
+                    <Identicon account={proposal.proposer}/>
+                    <div className={classes.accountInfo}>
+                        <div>
+                            <p className={classes.accountValue}>
+                                {getProposerFragment()}
+                            </p>
+                            <p className={classes.accountLabel}>{t('proposal.list.card.proposer')}</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -158,4 +185,4 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
     </Card>
 }
 
-export default IdeaCard
+export default ProposalCard

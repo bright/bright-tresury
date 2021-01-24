@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             alignItems: 'center'
         },
-        beneficiaryValue: {
+        accountValue: {
             marginLeft: '.5em',
         },
         linkSpacing: {
@@ -71,7 +71,7 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
         <div className={classes.beneficiary}>
             {idea.beneficiary ? <>
                 <Identicon account={idea.beneficiary}/>
-                <div className={`${classes.beneficiaryValue} ${classes.text}`}>
+                <div className={`${classes.accountValue} ${classes.text}`}>
                     {idea.beneficiary}
                 </div>
             </> : <Placeholder value={t('idea.details.beneficiary')}/>}
