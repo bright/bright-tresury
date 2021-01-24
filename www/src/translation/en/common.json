@@ -71,7 +71,9 @@
   },
   "proposal": {
     "list": {
+      "introduceIdea": "To create a proposal, <a>first introduce your idea</a>",
       "filters": {
+        "currentSpendTime": "Current Spend Time",
         "all": "All",
         "published": "Published",
         "submitted": "Submitted",

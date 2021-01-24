@@ -9,8 +9,8 @@ import {ROUTE_NEW_IDEA} from "../routes";
 import {useHistory} from "react-router-dom";
 import {ideasHorizontalMargin, ideasMobileHorizontalMargin} from "./Ideas";
 
-const useStyles = makeStyles((theme: Theme) => {
-    return createStyles({
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
         header: {
             display: 'flex',
             flexDirection: 'row',
@@ -92,8 +92,7 @@ const useStyles = makeStyles((theme: Theme) => {
                 paddingRight: ideasMobileHorizontalMargin
             }
         },
-    })
-})
+    }))
 
 const IdeasHeader: React.FC = () => {
     const classes = useStyles()
