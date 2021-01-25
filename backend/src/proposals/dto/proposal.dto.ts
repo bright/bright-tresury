@@ -1,11 +1,12 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {BlockchainProposal, BlockchainProposalStatus} from "../../blockchain/dot/blockchainProposal.dto";
+import {BlockchainProposal, BlockchainProposalStatus} from "../../blockchain/dto/blockchainProposal.dto";
 import {Idea} from "../../ideas/idea.entity";
 
 export enum ProposalStatus {
     Submitted = 'submitted',
     Approved = 'approved',
-    Closed = 'closed'
+    Rejected = 'rejected',
+    Rewarded = 'rewarded'
 }
 
 export class ProposalDto {

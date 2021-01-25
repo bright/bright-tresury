@@ -15,7 +15,7 @@ export interface BlockchainProposal {
     status: BlockchainProposalStatus
 }
 
-export const fromDerivedTreasuryProposal = (derivedProposal: DeriveTreasuryProposal, status: BlockchainProposalStatus): BlockchainProposal => {
+export function toBlockchainProposal (derivedProposal: DeriveTreasuryProposal, status: BlockchainProposalStatus): BlockchainProposal {
     const {id, proposal} = derivedProposal
     return {
         proposalIndex: id.toNumber(),
