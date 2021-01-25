@@ -93,10 +93,11 @@ export class BlockchainService {
         const proposalCount = (await this.polkadotApi.query.treasury.proposalCount()).toNumber()
         logger.info(`ProposalCount is ${proposalCount}.`)
 
-        const proposals: DeriveTreasuryProposals = await this.polkadotApi.derive.treasury.proposals()
-        if (proposals.proposalCount.toNumber() === 0) {
+        if (proposalCount === 0) {
             return []
         }
+
+        const proposals: DeriveTreasuryProposals = await this.polkadotApi.derive.treasury.proposals()
 
         // TODO: It's also possible to extract voting results from DeriveTreasuryProposals object
         const result: BlockchainProposal[] = proposals.proposals.map((derivedProposal) => {
