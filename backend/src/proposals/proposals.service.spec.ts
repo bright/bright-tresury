@@ -62,21 +62,21 @@ describe('ProposalsService', () => {
             const actual = await service().find('localhost')
             expect(actual.length).toBe(2)
 
-            const actual1 = actual[0]
-            expect(actual1.proposalIndex).toBe(0)
-            expect(actual1.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(actual1.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
-            expect(actual1.bond).toBe(0.001)
-            expect(actual1.value).toBe(0.00000000000001)
-            expect(actual1.status).toBe('submitted')
+            const [proposal1] = actual[0]
+            expect(proposal1.proposalIndex).toBe(0)
+            expect(proposal1.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            expect(proposal1.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+            expect(proposal1.bond).toBe(0.001)
+            expect(proposal1.value).toBe(0.00000000000001)
+            expect(proposal1.status).toBe('proposal')
 
-            const actual2 = actual[1]
-            expect(actual2.proposalIndex).toBe(3)
-            expect(actual2.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
-            expect(actual2.beneficiary).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
-            expect(actual2.bond).toBe(20)
-            expect(actual2.value).toBe(1000)
-            expect(actual2.status).toBe('approved')
+            const [proposal2] = actual[1]
+            expect(proposal2.proposalIndex).toBe(3)
+            expect(proposal2.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
+            expect(proposal2.beneficiary).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
+            expect(proposal2.bond).toBe(20)
+            expect(proposal2.value).toBe(1000)
+            expect(proposal2.status).toBe('approval')
         })
 
         it('should return idea details for proposals', async () => {
@@ -86,15 +86,14 @@ describe('ProposalsService', () => {
 
             const actual = await service().find('localhost')
 
-            const actual1 = actual[0]
-            expect(actual1.proposalIndex).toBe(0)
-            expect(actual1.ideaId).toBe(idea.id)
-            expect(actual1.title).toBe('Some title')
+            const [proposal1, idea1] = actual[0]
+            expect(proposal1.proposalIndex).toBe(0)
+            expect(idea1!.id).toBe(idea.id)
+            expect(idea1!.title).toBe('Some title')
 
-            const actual2 = actual[1]
-            expect(actual2.proposalIndex).toBe(3)
-            expect(actual2.ideaId).toBe(undefined)
-            expect(actual2.title).toBe(undefined)
+            const [proposal2, idea2] = actual[1]
+            expect(proposal2.proposalIndex).toBe(3)
+            expect(idea2).toBe(undefined)
         })
     })
 

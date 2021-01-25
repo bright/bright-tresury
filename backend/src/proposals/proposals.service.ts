@@ -1,8 +1,9 @@
 import {Injectable} from '@nestjs/common';
 import {BlockchainService} from "../blockchain/blockchain.service";
+import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
+import {Idea} from '../ideas/idea.entity';
 import {IdeasService} from "../ideas/ideas.service";
 import {getLogger} from "../logging.module";
-import {ProposalDto} from "./dto/proposal.dto";
 
 const logger = getLogger()
 
@@ -14,7 +15,7 @@ export class ProposalsService {
     ) {
     }
 
-    async find(networkName: string): Promise<ProposalDto[]> {
+    async find(networkName: string): Promise<Array<[proposal: BlockchainProposal, idea: Idea | undefined]>> {
         try {
             const blockchainProposals = await this.blockchainService.getProposals()
 
@@ -26,7 +27,7 @@ export class ProposalsService {
             const ideas = await this.ideasService.findByProposalIds(blockchainProposalsId, networkName)
 
             return blockchainProposals.map((proposal) =>
-                new ProposalDto(proposal, ideas.get(proposal.proposalIndex))
+                [proposal, ideas.get(proposal.proposalIndex)]
             )
 
         } catch (error) {

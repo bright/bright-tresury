@@ -25,6 +25,7 @@ export class ProposalsController {
         description: 'Respond with proposals for selected network.',
     })
     async getProposals(@Query() query: GetProposalsQuery): Promise<ProposalDto[]> {
-        return this.proposalsService.find(query.network)
+        const proposals = await this.proposalsService.find(query.network)
+        return proposals.map(([proposal, idea]) => new ProposalDto(proposal, idea))
     }
 }

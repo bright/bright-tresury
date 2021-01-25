@@ -1,5 +1,7 @@
+import {BlockchainProposalStatus} from "../blockchain/dto/blockchainProposal.dto";
+import {Idea} from "../ideas/idea.entity";
 import {beforeAllSetup, beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
-import {ProposalDto, ProposalStatus} from "./dto/proposal.dto";
+import {ProposalDto} from "./dto/proposal.dto";
 import {ProposalsService} from "./proposals.service";
 
 const baseUrl = '/api/v1/proposals'
@@ -7,29 +9,29 @@ const baseUrl = '/api/v1/proposals'
 describe(`/api/v1/proposals`, () => {
     const app = beforeSetupFullApp()
     const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
+    const idea = new Idea('Title', [])
 
     beforeAll(() => {
         jest.spyOn(proposalsService(), 'find').mockImplementation(
             async (networkName: string) => {
                 return [
-                    {
+                    [{
                         proposalIndex: 0,
                         proposer: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                         beneficiary: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
                         bond: 0.001,
                         value: 1e-14,
-                        status: ProposalStatus.Submitted,
-                        ideaId: 'some-id',
-                        title: 'Title'
+                        status: BlockchainProposalStatus.Proposal
                     },
-                    {
+                        idea],
+                    [{
                         proposalIndex: 3,
                         proposer: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
                         beneficiary: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
                         bond: 20,
                         value: 1000,
-                        status: ProposalStatus.Approved,
-                    }
+                        status: BlockchainProposalStatus.Approval,
+                    }, undefined]
                 ]
             })
     })
@@ -58,7 +60,7 @@ describe(`/api/v1/proposals`, () => {
             expect(actual1.bond).toBe(0.001)
             expect(actual1.value).toBe(0.00000000000001)
             expect(actual1.status).toBe('submitted')
-            expect(actual1.ideaId).toBe('some-id')
+            expect(actual1.ideaId).toBe(idea.id)
             expect(actual1.title).toBe('Title')
 
             const actual2 = result.body[1] as ProposalDto
