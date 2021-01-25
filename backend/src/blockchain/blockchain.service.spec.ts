@@ -15,6 +15,8 @@ describe(`Blockchain service`, () => {
     let api: ApiPromise
     let keyring: Keyring
     let pair: KeyringPair
+    const aliceAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+    const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
     const module = beforeAllSetup(async () =>
         await Test.createTestingModule({
@@ -36,7 +38,7 @@ describe(`Blockchain service`, () => {
             let expectedProposalId = 0
 
             // create and sign extrinsic
-            const extrinsic = api.tx.treasury.proposeSpend(10, '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            const extrinsic = api.tx.treasury.proposeSpend(10, bobAddress)
             await extrinsic.signAsync(pair)
 
             // start listening for the extrinsic
@@ -57,7 +59,7 @@ describe(`Blockchain service`, () => {
                     data: [
                         {
                             name: 'AccountId',
-                            value: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+                            value: aliceAddress
                         },
                         {
                             name: 'Balance',
@@ -66,7 +68,7 @@ describe(`Blockchain service`, () => {
                 })
                 expect(result!.data).toStrictEqual({
                     value: 10,
-                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+                    beneficiary: bobAddress
                 })
                 done()
             })
@@ -116,15 +118,15 @@ describe(`Blockchain service`, () => {
         it('should return existing proposals', async (done) => {
             // create a proposal
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
-            const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+            const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), bobAddress)
             await extrinsic.signAndSend(pair, async (result: SubmittableResult) => {
                 if (result.isFinalized) {
                     const proposals = await service().getProposals()
                     expect(proposals.length).toBeGreaterThan(0)
                     const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
                     expect(lastProposal.proposalIndex).toBe(nextProposalIndex)
-                    expect(lastProposal.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-                    expect(lastProposal.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+                    expect(lastProposal.proposer).toBe(aliceAddress)
+                    expect(lastProposal.beneficiary).toBe(bobAddress)
                     expect(lastProposal.bond).toBe(50)
                     expect(lastProposal.value).toBe(1000)
                     done()
