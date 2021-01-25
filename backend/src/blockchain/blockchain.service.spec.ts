@@ -14,7 +14,7 @@ describe(`Blockchain service`, () => {
     // @ts-ignore
     let api: ApiPromise
     let keyring: Keyring
-    let pair: KeyringPair
+    let aliceKeypair: KeyringPair
     const aliceAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
@@ -29,7 +29,7 @@ describe(`Blockchain service`, () => {
     beforeEach(async () => {
         api = await service().getApi()
         keyring = new Keyring({type: 'sr25519'});
-        pair = keyring.addFromUri('//Alice', {name: 'Alice default'});
+        aliceKeypair = keyring.addFromUri('//Alice', {name: 'Alice default'});
     })
 
     describe('findExtrinsic', () => {
@@ -39,7 +39,7 @@ describe(`Blockchain service`, () => {
 
             // create and sign extrinsic
             const extrinsic = api.tx.treasury.proposeSpend(10, bobAddress)
-            await extrinsic.signAsync(pair)
+            await extrinsic.signAsync(aliceKeypair)
 
             // start listening for the extrinsic
             await service().listenForExtrinsic(extrinsic.hash.toString(), (result: UpdateExtrinsicDto) => {
@@ -90,7 +90,7 @@ describe(`Blockchain service`, () => {
 
             // create and sign extrinsic which will fail as only ApproveOrigin can call this extrinsic
             const extrinsic = api.tx.treasury.rejectProposal(0)
-            await extrinsic.signAsync(pair)
+            await extrinsic.signAsync(aliceKeypair)
 
             // start listening for the extrinsic
             await service().listenForExtrinsic(extrinsic.hash.toString(), (result: UpdateExtrinsicDto) => {
@@ -119,7 +119,7 @@ describe(`Blockchain service`, () => {
             // create a proposal
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
             const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), bobAddress)
-            await extrinsic.signAndSend(pair, async (result: SubmittableResult) => {
+            await extrinsic.signAndSend(aliceKeypair, async (result: SubmittableResult) => {
                 if (result.isFinalized) {
                     const proposals = await service().getProposals()
                     expect(proposals.length).toBeGreaterThan(0)
