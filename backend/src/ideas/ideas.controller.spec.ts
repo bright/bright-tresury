@@ -1,9 +1,8 @@
-import {validate as uuidValidate} from 'uuid';
+import {v4 as uuid, validate as uuidValidate} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
 import {Idea} from './idea.entity';
 import {IdeaNetwork} from './ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
-import {v4 as uuid} from 'uuid';
 import {createIdea} from './spec.helpers';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
@@ -11,6 +10,7 @@ const baseUrl = '/api/v1/ideas'
 
 describe(`/api/v1/ideas`, () => {
     const app = beforeSetupFullApp()
+    const getService = () => app.get().get(IdeasService)
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -333,6 +333,17 @@ describe(`/api/v1/ideas`, () => {
                 .send({ordinalNumber})
                 .expect(200)
             expect(response.body.ordinalNumber).not.toBe(ordinalNumber)
+            done()
+        })
+        it('should not pass ordinal number to the service', async (done) => {
+            const spyOnPatchIdea = jest.spyOn(getService(), 'update')
+            const idea = await createIdea({})
+            const ordinalNumber = idea.ordinalNumber + 13
+            await request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({ordinalNumber})
+                .expect(200)
+            expect(spyOnPatchIdea).toHaveBeenCalledWith({}, idea.id)
             done()
         })
     })

@@ -129,7 +129,6 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
         <Link className={classes.link}
               to={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
-                <p className={classes.idLabel}>{idea.id}</p>
                 <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
                 <IdeaStatusIndicator ideaStatus={idea.status}/>
             </div>

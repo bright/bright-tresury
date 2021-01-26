@@ -75,6 +75,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         ideaTitleBreakLine: {
             height: 0,
+        },
         ideaTitle: {
             marginTop: '24px',
             flexBasis: '100%',
@@ -155,8 +156,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: '100%'
             }
         }
-    }),
-);
+    }))
 
 interface Props {
     idea: IdeaDto,
