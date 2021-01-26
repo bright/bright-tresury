@@ -1,6 +1,6 @@
 import {ApiProperty} from "@nestjs/swagger";
-import { Type } from "class-transformer";
-import {Allow, IsNumber, ValidateNested} from "class-validator";
+import {Type} from "class-transformer";
+import {IsNotEmpty, IsNumber, ValidateNested} from "class-validator";
 
 export class IdeaProposalDataDto {
     @ApiProperty({description: 'The current next proposal id', required: true})
@@ -14,15 +14,15 @@ export class IdeaProposalDataDto {
 
 export class CreateIdeaProposalDto {
     @ApiProperty({description: 'Idea network ID', required: true})
-    @Allow()
+    @IsNotEmpty()
     ideaNetworkId: string
 
     @ApiProperty({description: 'Hash of extrinsic which creates proposal', required: true})
-    @Allow()
+    @IsNotEmpty()
     extrinsicHash: string
 
     @ApiProperty({description: 'Hash of last seen block', required: true})
-    @Allow()
+    @IsNotEmpty()
     lastBlockHash: string
 
     @ApiProperty({description: 'Details of the proposal to be found', required: true})

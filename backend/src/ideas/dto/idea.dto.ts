@@ -1,5 +1,4 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {Allow, IsArray, IsNotEmpty} from "class-validator";
 import {IdeaNetworkDto, toIdeaNetworkDto} from "./ideaNetwork.dto";
 import {Idea, ideaRestrictions} from "../idea.entity";
 import {IdeaNetwork} from "../ideaNetwork.entity";
@@ -7,47 +6,37 @@ import {IdeaStatus} from "../ideaStatus";
 
 export class IdeaDto {
     @ApiProperty()
-    @Allow()
     id!: string
 
     @ApiProperty()
-    @Allow()
     title!: string
 
     @ApiPropertyOptional()
-    @Allow()
     content?: string
 
     @ApiPropertyOptional()
-    @Allow()
     beneficiary?: string
 
     @ApiPropertyOptional({maxLength: ideaRestrictions.field.maxLength})
-    @Allow()
     field?: string
 
     @ApiProperty({
         type: [IdeaNetworkDto]
     })
-    @Allow()
     networks!: IdeaNetworkDto[]
 
     @ApiPropertyOptional()
-    @Allow()
     contact?: string
 
     @ApiPropertyOptional()
-    @Allow()
     portfolio?: string
 
     @ApiPropertyOptional({
         type: [String]
     })
-    @Allow()
     links?: string[]
 
     @ApiProperty()
-    @Allow()
     ordinalNumber: number
 
     @ApiProperty({enum: IdeaStatus})

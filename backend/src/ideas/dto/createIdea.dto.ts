@@ -14,11 +14,11 @@ export class CreateIdeaDto {
     title!: string
 
     @ApiPropertyOptional()
-    @Allow()
+    @IsOptional()
     content?: string
 
     @ApiProperty()
-    @Allow()
+    @IsOptional()
     beneficiary?: string
 
     @ApiPropertyOptional({maxLength: ideaRestrictions.field.maxLength})
