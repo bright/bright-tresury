@@ -37,6 +37,9 @@ export class ProposalsService {
     }
 
     async findOne(proposalId: number, networkName: string): Promise<[proposal: BlockchainProposal, idea: Idea | undefined]> {
+
+        // TODO: consider creating a separate function for getting one proposal.
+        //  Maybe there will show up a function in polkadotApi.derive.treasury to get a single proposal.
         const blockchainProposals = await this.blockchainService.getProposals()
 
         const proposal = blockchainProposals.find(({proposalIndex}) => proposalIndex === proposalId)
