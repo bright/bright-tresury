@@ -5,6 +5,8 @@ import {ideaRestrictions} from "../idea.entity";
 import {IdeaStatus} from "../ideaStatus";
 import {Type} from "class-transformer";
 
+const AllowedIdeaStatuses = [IdeaStatus.Draft, IdeaStatus.Active]
+
 export class CreateIdeaDto {
     @ApiProperty()
     @IsNotEmpty()
@@ -45,10 +47,15 @@ export class CreateIdeaDto {
     @IsOptional()
     links?: string[]
 
-    @ApiPropertyOptional({enum: IdeaStatus})
+    @ApiPropertyOptional({
+        enum: IdeaStatus,
+        oneOf: AllowedIdeaStatuses.map((status: IdeaStatus) => {
+            return {type: status}
+        })
+    })
     @IsOptional()
     @IsEnum(IdeaStatus)
-    @IsIn([IdeaStatus.Draft, IdeaStatus.Active])
+    @IsIn(AllowedIdeaStatuses)
     status?: IdeaStatus
 
 }

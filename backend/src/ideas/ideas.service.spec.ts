@@ -7,8 +7,6 @@ import {IdeasService} from './ideas.service';
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {Repository} from "typeorm";
-import {getRepositoryToken} from "@nestjs/typeorm";
 
 describe(`/api/v1/ideas`, () => {
 

@@ -45,7 +45,7 @@ export class IdeasService {
         if (!ideaNetwork) {
             throw new NotFoundException('There is no idea network with such id')
         }
-        return ideaNetwork?.idea
+        return ideaNetwork.idea
     }
 
     async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, Idea>> {
