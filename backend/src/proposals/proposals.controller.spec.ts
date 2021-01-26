@@ -90,6 +90,13 @@ describe(`/api/v1/proposals`, () => {
                 .expect(400)
         })
 
+        it('should return 400 for not valid proposal id', async () => {
+            await request(app)
+                .get(`${baseUrl}/not-a-number?network=localhost`)
+                .expect(400)
+        })
+
+
         it('should return 404 for not existing proposal', async () => {
             await request(app)
                 .get(`${baseUrl}/123?network=localhost`)

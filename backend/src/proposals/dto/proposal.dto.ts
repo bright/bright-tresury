@@ -25,7 +25,7 @@ export class ProposalDto {
     @ApiProperty({description: 'Locked deposit'})
     bond: number
 
-    @ApiProperty({description: 'Status of a proposal', type: ProposalStatus})
+    @ApiProperty({description: 'Status of a proposal', enum: ProposalStatus})
     status: ProposalStatus
 
     @ApiPropertyOptional({description: 'Id of a corresponding idea'})

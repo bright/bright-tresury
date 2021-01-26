@@ -21,6 +21,7 @@ export class IdeasController {
     @Get()
     @ApiOkResponse({
         description: 'Respond with all ideas.',
+        type: [IdeaDto],
     })
     async getIdeas(@Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
         const ideas = await this.ideasService.find(query?.network)
@@ -30,6 +31,7 @@ export class IdeasController {
     @Get(':id')
     @ApiOkResponse({
         description: 'Respond with idea details.',
+        type: IdeaDto,
     })
     @ApiNotFoundResponse({
         description: 'Idea not found.',
@@ -50,6 +52,7 @@ export class IdeasController {
 
     @ApiCreatedResponse({
         description: 'Create new idea.',
+        type: IdeaDto,
     })
     @ApiBadRequestResponse({
         description: 'Title must not be empty.',
@@ -62,6 +65,7 @@ export class IdeasController {
 
     @ApiOkResponse({
         description: 'Patched idea.',
+        type: IdeaDto,
     })
     @ApiBadRequestResponse({
         description: 'Title must not be empty.',
