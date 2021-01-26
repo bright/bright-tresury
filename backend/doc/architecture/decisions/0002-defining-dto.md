@@ -51,7 +51,7 @@ interface CreatePersonDto {
 ``` 
 
 If some particular property does not need to be validated, but we still want to receive it from the client, 
-we should use `@Allow` decorator.
+we could use `@Allow` decorator, but please try to avoid that and use `@IsOptional` or `@IsNotEmpty` instead. 
 
 Example: 
 ```
@@ -61,6 +61,4 @@ interface CreatePersonDto {
 }
 ``` 
 
-The same thing goes for returning proper DTO objects. If we want to return some particular property, 
-we should also either add any validation decorator from `class-validator` library or just add 
-`@Allow` decorator.
+We don't need to add any validators to dto models which represents return objects. 

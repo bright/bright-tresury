@@ -49,8 +49,7 @@ export class Idea extends BaseEntity {
 
     @Column({nullable: false, type: "integer", generated: "increment"})
     @Generated('increment')
-    // @ts-ignore
-    ordinalNumber: number
+    ordinalNumber!: number
 
     @Column({
         type: "enum",
