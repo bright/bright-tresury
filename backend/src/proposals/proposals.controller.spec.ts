@@ -1,55 +1,51 @@
-import {BlockchainProposalStatus} from "../blockchain/dto/blockchainProposal.dto";
+import {INestApplication} from "@nestjs/common";
+import {getRepositoryToken} from "@nestjs/typeorm";
+import {AppModule} from "../app.module";
+import {BlockchainService} from "../blockchain/blockchain.service";
+import {IdeaDto} from "../ideas/dto/idea.dto";
 import {Idea} from "../ideas/idea.entity";
-import {beforeAllSetup, beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
+import {IdeaNetwork} from "../ideas/ideaNetwork.entity";
+import {IdeasService} from "../ideas/ideas.service";
+import {createIdea} from "../ideas/spec.helpers";
+import {cleanDatabase, createTestingApp, request} from '../utils/spec.helpers';
 import {ProposalDto} from "./dto/proposal.dto";
-import {ProposalsService} from "./proposals.service";
+import {mockedBlockchainService} from "./spec.helpers";
 
 const baseUrl = '/api/v1/proposals'
 
 describe(`/api/v1/proposals`, () => {
-    const app = beforeSetupFullApp()
-    const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
-    const idea = new Idea('Title', [])
+    let app: INestApplication
+    let idea: Idea
 
-    beforeAll(() => {
-        jest.spyOn(proposalsService(), 'find').mockImplementation(
-            async (networkName: string) => {
-                return [
-                    [{
-                        proposalIndex: 0,
-                        proposer: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                        beneficiary: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
-                        bond: 0.001,
-                        value: 1e-14,
-                        status: BlockchainProposalStatus.Proposal
-                    },
-                        idea],
-                    [{
-                        proposalIndex: 3,
-                        proposer: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
-                        beneficiary: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
-                        bond: 20,
-                        value: 1000,
-                        status: BlockchainProposalStatus.Approval,
-                    }, undefined]
-                ]
-            })
+    beforeAll(async () => {
+        app = await createTestingApp([AppModule], (builder) =>
+            builder.overrideProvider(BlockchainService)
+                .useValue(mockedBlockchainService))
+    })
+
+    afterAll(async () => {
+        if (app) {
+            await app.close()
+        }
     })
 
     beforeEach(async () => {
         await cleanDatabase()
+        idea = await createIdea({title: 'Title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, app.get(IdeasService))
+        idea.networks[0].blockchainProposalId = 0
+        await app.get(getRepositoryToken(IdeaNetwork)).save(idea.networks[0])
     })
-    describe('GET', () => {
+    describe('GET /?network=:networkName', () => {
         it('should return 200 for selected network', () => {
-            return request(app())
-                .get(`${baseUrl}?network=kusama`)
+            return request(app)
+                .get(`${baseUrl}?network=localhost`)
                 .expect(200)
         })
 
         it('should return proposals for selected network', async () => {
 
-            const result = await request(app())
-                .get(`${baseUrl}?network=kusama`)
+            const result = await request(app)
+                .get(`${baseUrl}?network=localhost`)
 
             expect(result.body.length).toBe(2)
 
@@ -74,10 +70,45 @@ describe(`/api/v1/proposals`, () => {
             expect(actual2.title).toBeUndefined()
         })
 
-        it('should return 404 for empty network param', async () => {
-            await request(app())
+        it('should return 400 for empty network param', async () => {
+            await request(app)
                 .get(baseUrl)
                 .expect(400)
+        })
+    })
+
+    describe('GET /:proposalId?network=:networkName', () => {
+        it('should return 200 for existing proposal in selected network', () => {
+            return request(app)
+                .get(`${baseUrl}/0?network=localhost`)
+                .expect(200)
+        })
+
+        it('should return 400 for empty network param', async () => {
+            await request(app)
+                .get(`${baseUrl}/0`)
+                .expect(400)
+        })
+
+        it('should return 404 for not existing proposal', async () => {
+            await request(app)
+                .get(`${baseUrl}/123?network=localhost`)
+                .expect(404)
+        })
+
+        it('should return proposal details', async () => {
+            const result = await request(app)
+                .get(`${baseUrl}/0?network=localhost`)
+
+            const actual = result.body as ProposalDto
+            expect(actual.proposalIndex).toBe(0)
+            expect(actual.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            expect(actual.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+            expect(actual.bond).toBe(0.001)
+            expect(actual.value).toBe(0.00000000000001)
+            expect(actual.status).toBe('submitted')
+            expect(actual.ideaId).toBe(idea.id)
+            expect(actual.title).toBe('Title')
         })
 
     })

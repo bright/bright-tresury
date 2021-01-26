@@ -87,16 +87,21 @@ export class BlockchainService {
     }
 
     async getProposals(): Promise<BlockchainProposal[]> {
-        logger.info('Getting proposals from blockchain...')
+        try {
+            await this.polkadotApi.isReadyOrError
+        } catch (err) {
+            throw new HttpException('No blockchain connection', 404)
+        }
 
-        const proposalCount = (await this.polkadotApi.query.treasury.proposalCount()).toNumber()
+        logger.info('Getting proposals from blockchain...')
+        const proposals: DeriveTreasuryProposals = await this.polkadotApi.derive.treasury.proposals()
+
+        const proposalCount = proposals.proposalCount.toNumber()
         logger.info(`ProposalCount is ${proposalCount}.`)
 
         if (proposalCount === 0) {
             return []
         }
-
-        const proposals: DeriveTreasuryProposals = await this.polkadotApi.derive.treasury.proposals()
 
         // TODO: It's also possible to extract voting results from DeriveTreasuryProposals object
         const result: BlockchainProposal[] = proposals.proposals.map((derivedProposal) => {
@@ -107,5 +112,4 @@ export class BlockchainService {
             return toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Approval)
         }))
     }
-
 }

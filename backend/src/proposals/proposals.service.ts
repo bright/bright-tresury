@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {BlockchainService} from "../blockchain/blockchain.service";
 import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
 import {Idea} from '../ideas/idea.entity';
@@ -35,4 +35,17 @@ export class ProposalsService {
             return []
         }
     }
+
+    async findOne(proposalId: number, networkName: string): Promise<[proposal: BlockchainProposal, idea: Idea | undefined]> {
+        const blockchainProposals = await this.blockchainService.getProposals()
+
+        const proposal = blockchainProposals.find(({proposalIndex}) => proposalIndex === proposalId)
+        if (!proposal) {
+            throw new NotFoundException('Proposal not found.')
+        }
+
+        const ideas = await this.ideasService.findByProposalIds([proposal.proposalIndex], networkName)
+        return [proposal, ideas.get(proposal.proposalIndex)]
+    }
+
 }
