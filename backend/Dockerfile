@@ -11,6 +11,7 @@ ARG CLIENT_TARGET_DIR=/srv/www
 
 COPY --chown=node backend/*.json ${SERVER_TARGET_DIR}/
 COPY --chown=node www/*.json ${CLIENT_TARGET_DIR}/
+COPY --chown=node www/yarn.lock ${CLIENT_TARGET_DIR}/
 
 WORKDIR ${CLIENT_TARGET_DIR}
 
