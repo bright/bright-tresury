@@ -9,10 +9,10 @@ services:
       DEPLOY_ENV: "${DEPLOY_ENV:-development}"
     restart: unless-stopped
     depends_on:
-      - substrate
-  substrate:
-    image: parity/polkadot:master
-    ports:
-      - "9944:9944"
-    command: --rpc-external --ws-external --dev
+      - nginx
+  nginx:
+    image: "${DOCKER_REGISTRY}nginx:${TAG:-latest}"
+    build:
+      context: ../
+      dockerfile: backend/nginx.Dockerfile
     restart: unless-stopped

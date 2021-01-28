@@ -1,0 +1,2178 @@
+{
+  "Parameters": {
+    "DeployEnv": {
+      "Type": "String",
+      "Description": "Deploy environment name",
+      "AllowedValues": [
+        "stage",
+        "prod"
+      ]
+    },
+    "AppImage": {
+      "Type": "String",
+      "Description": "Repository, image and tag of the app to deploy"
+    },
+    "NginxImage": {
+      "Type": "String",
+      "Description": "Nginx for proxying wss traffic from substrate"
+    },
+    "SSHFrom": {
+      "Type": "String",
+      "Description": "Lockdown SSH access to the bastion host (default can be accessed from anywhere)",
+      "MinLength": 9,
+      "MaxLength": 18,
+      "Default": "0.0.0.0/0",
+      "AllowedPattern": "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
+      "ConstraintDescription": "must be a valid CIDR range of the form x.x.x.x/x."
+    }
+  },
+  "Mappings": {
+    "SubnetConfig": {
+      "VPC": {
+        "CIDR": "10.0.0.0/16"
+      },
+      "PrivateA": {
+        "CIDR": "10.0.0.0/24"
+      },
+      "PrivateB": {
+        "CIDR": "10.0.1.0/24"
+      },
+      "PublicA": {
+        "CIDR": "10.0.100.0/24"
+      },
+      "PublicB": {
+        "CIDR": "10.0.101.0/24"
+      }
+    },
+    "DatabaseMapping": {
+      "prod": {
+        "BackendDBInstanceIdentifier": "treasury-prod",
+        "BackendInstanceType": "db.t2.micro",
+        "BackendStorageType": "gp2",
+        "BackendAllocatedStorage": 10,
+        "DbName": "treasury",
+        "DbUserName": "treasury",
+        "MultiAZ": "true"
+      },
+      "stage": {
+        "BackendDBInstanceIdentifier": "treasury-stage",
+        "BackendInstanceType": "db.t2.micro",
+        "BackendStorageType": "gp2",
+        "BackendAllocatedStorage": 10,
+        "DbName": "treasury",
+        "DbUserName": "treasury",
+        "MultiAZ": "false"
+      }
+    },
+    "ECS": {
+      "stage": {
+        "InstanceType": "t2.micro",
+        "ContainerName": "treasury-www-stage",
+        "ContainerPort": "3000",
+        "Memory": "700",
+        "DesiredTasksCount": 1,
+        "SubstrateContainerName": "treasury-substrate-stage",
+        "SubstrateContainerPort": "9944",
+        "NginxContainerName": "treasury-nginx-stage",
+        "NginxContainerPort": "443"
+      },
+      "prod": {
+        "InstanceType": "t2.small",
+        "ContainerName": "treasury-www-prod",
+        "ContainerPort": "3000",
+        "Memory": "900",
+        "DesiredTasksCount": 1
+      }
+    },
+    "Certificates": {
+      "stage": {
+        "ARN": ""
+      },
+      "prod": {
+        "ARN": ""
+      }
+    }
+  },
+  "Resources": {
+    "HttpHttpsServerSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enables inbound HTTP and HTTPS access via port 80 and 443",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "AccessInternetSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enables outbound Internet access via ports 80,443",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupEgress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 80,
+            "ToPort": 80,
+            "CidrIp": "0.0.0.0/0"
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 443,
+            "ToPort": 443,
+            "CidrIp": "0.0.0.0/0"
+          }
+        ]
+      }
+    },
+    "VPC": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "VPC",
+            "CIDR"
+          ]
+        },
+        "EnableDnsHostnames": true,
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "VPC"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PublicASubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PublicA",
+            "CIDR"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "PublicASubnet"
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "DependsOn": "VPC"
+    },
+    "PublicBSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PublicB",
+            "CIDR"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "PublicBSubnet"
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "DependsOn": "VPC"
+    },
+    "InternetGateway": {
+      "Type": "AWS::EC2::InternetGateway",
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "InternetGateway"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PublicRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Public"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "PublicRouteTable"
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "DependsOn": "VPC"
+    },
+    "PublicRoute": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": {
+          "Ref": "InternetGateway"
+        }
+      },
+      "DependsOn": [
+        "PublicRouteTable",
+        "InternetGateway"
+      ]
+    },
+    "PublicASubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PublicASubnet"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        }
+      },
+      "DependsOn": [
+        "PublicASubnet",
+        "PublicRouteTable"
+      ]
+    },
+    "PublicBSubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PublicBSubnet"
+        },
+        "RouteTableId": {
+          "Ref": "PublicRouteTable"
+        }
+      },
+      "DependsOn": [
+        "PublicBSubnet",
+        "PublicRouteTable"
+      ]
+    },
+    "VPCGatewayToInternetAttachment": {
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "InternetGatewayId": {
+          "Ref": "InternetGateway"
+        }
+      },
+      "DependsOn": [
+        "VPC",
+        "InternetGateway"
+      ]
+    },
+    "PrivateARouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "PrivateARouteTable"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PrivateBRouteTable": {
+      "Type": "AWS::EC2::RouteTable",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "PrivateBRouteTable"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "PrivateASubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivateASubnet"
+        },
+        "RouteTableId": {
+          "Ref": "PrivateARouteTable"
+        }
+      },
+      "DependsOn": [
+        "PrivateASubnet",
+        "PrivateARouteTable"
+      ]
+    },
+    "PrivateBSubnetRouteTableAssociation": {
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties": {
+        "SubnetId": {
+          "Ref": "PrivateBSubnet"
+        },
+        "RouteTableId": {
+          "Ref": "PrivateBRouteTable"
+        }
+      },
+      "DependsOn": [
+        "PrivateBSubnet",
+        "PrivateBRouteTable"
+      ]
+    },
+    "PrivateASubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PrivateA",
+            "CIDR"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "PrivateASubnet"
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "DependsOn": "VPC"
+    },
+    "PrivateBSubnet": {
+      "Type": "AWS::EC2::Subnet",
+      "Properties": {
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "AvailabilityZone": {
+          "Fn::Select": [
+            1,
+            {
+              "Fn::GetAZs": ""
+            }
+          ]
+        },
+        "CidrBlock": {
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "PrivateB",
+            "CIDR"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Network",
+            "Value": "Private"
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "PrivateBSubnet"
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "DependsOn": "VPC"
+    },
+    "NatGatewayEIP": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc"
+      },
+      "DependsOn": "VPCGatewayToInternetAttachment"
+    },
+    "NatGateway": {
+      "Type": "AWS::EC2::NatGateway",
+      "Properties": {
+        "AllocationId": {
+          "Fn::GetAtt": [
+            "NatGatewayEIP",
+            "AllocationId"
+          ]
+        },
+        "SubnetId": {
+          "Ref": "PublicASubnet"
+        }
+      }
+    },
+    "PrivateARouteNat": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateARouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "NatGateway"
+        }
+      }
+    },
+    "PrivateBRouteNat": {
+      "Type": "AWS::EC2::Route",
+      "Properties": {
+        "RouteTableId": {
+          "Ref": "PrivateBRouteTable"
+        },
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": {
+          "Ref": "NatGateway"
+        }
+      }
+    },
+    "BackendDBSubnetGroup": {
+      "Type": "AWS::RDS::DBSubnetGroup",
+      "Properties": {
+        "DBSubnetGroupDescription": "Backend db subnet group that allows for multi-az",
+        "SubnetIds": [
+          {
+            "Ref": "PrivateASubnet"
+          },
+          {
+            "Ref": "PrivateBSubnet"
+          }
+        ]
+      }
+    },
+    "BackendDBInstanceParameters": {
+      "Type": "AWS::RDS::DBParameterGroup",
+      "Properties": {
+        "Description": "Backend DB Instance Parameter Group",
+        "Family": "postgres11",
+        "Parameters": {
+          "track_activity_query_size": "2048",
+          "shared_preload_libraries": "pg_stat_statements"
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "BackendDBInstance"
+                ]
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "BackendDBInstance": {
+      "Type": "AWS::RDS::DBInstance",
+      "Properties": {
+        "DBName": {
+          "Fn::FindInMap": [
+            "DatabaseMapping",
+            {
+              "Ref": "DeployEnv"
+            },
+            "DbName"
+          ]
+        },
+        "MasterUsername": {
+          "Fn::FindInMap": [
+            "DatabaseMapping",
+            {
+              "Ref": "DeployEnv"
+            },
+            "DbUserName"
+          ]
+        },
+        "DBInstanceIdentifier": {
+          "Fn::FindInMap": [
+            "DatabaseMapping",
+            {
+              "Ref": "DeployEnv"
+            },
+            "BackendDBInstanceIdentifier"
+          ]
+        },
+        "DBParameterGroupName": {
+          "Ref": "BackendDBInstanceParameters"
+        },
+        "DBSubnetGroupName": {
+          "Ref": "BackendDBSubnetGroup"
+        },
+        "MasterUserPassword": {
+          "Fn::Join": [
+            "",
+            [
+              "{{resolve:ssm-secure:/",
+              "treasury",
+              "-",
+              {
+                "Ref": "DeployEnv"
+              },
+              "/database/password:1}}"
+            ]
+          ]
+        },
+        "EnablePerformanceInsights": true,
+        "Engine": "postgres",
+        "EngineVersion": "11.2",
+        "AllowMajorVersionUpgrade": true,
+        "DBInstanceClass": {
+          "Fn::FindInMap": [
+            "DatabaseMapping",
+            {
+              "Ref": "DeployEnv"
+            },
+            "BackendInstanceType"
+          ]
+        },
+        "VPCSecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "BackendDBEC2SecurityGroup",
+              "GroupId"
+            ]
+          }
+        ],
+        "AllocatedStorage": {
+          "Fn::FindInMap": [
+            "DatabaseMapping",
+            {
+              "Ref": "DeployEnv"
+            },
+            "BackendAllocatedStorage"
+          ]
+        },
+        "StorageType": {
+          "Fn::FindInMap": [
+            "DatabaseMapping",
+            {
+              "Ref": "DeployEnv"
+            },
+            "BackendStorageType"
+          ]
+        },
+        "MultiAZ": {
+          "Fn::FindInMap": [
+            "DatabaseMapping",
+            {
+              "Ref": "DeployEnv"
+            },
+            "MultiAZ"
+          ]
+        },
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": {
+              "Fn::Join": [
+                "-",
+                [
+                  {
+                    "Ref": "AWS::StackName"
+                  },
+                  "BackendDBInstance"
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "DeletionPolicy": "Snapshot"
+    },
+    "BackendDBInstanceHostParameter": {
+      "Type": "AWS::SSM::Parameter",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "",
+            [
+              "/",
+              "treasury",
+              "-",
+              {
+                "Ref": "DeployEnv"
+              },
+              "/database/host"
+            ]
+          ]
+        },
+        "Type": "String",
+        "Value": {
+          "Fn::GetAtt": [
+            "BackendDBInstance",
+            "Endpoint.Address"
+          ]
+        },
+        "Description": "Backend db instance host address"
+      }
+    },
+    "BackendDBEC2SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Open database for access",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "CidrIp": {
+              "Fn::FindInMap": [
+                "SubnetConfig",
+                "PublicA",
+                "CIDR"
+              ]
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "CidrIp": {
+              "Fn::FindInMap": [
+                "SubnetConfig",
+                "PublicB",
+                "CIDR"
+              ]
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "CidrIp": {
+              "Fn::FindInMap": [
+                "SubnetConfig",
+                "PrivateA",
+                "CIDR"
+              ]
+            }
+          },
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 5432,
+            "ToPort": 5432,
+            "CidrIp": {
+              "Fn::FindInMap": [
+                "SubnetConfig",
+                "PrivateB",
+                "CIDR"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "BastionIPAddress": {
+      "Type": "AWS::EC2::EIP",
+      "Properties": {
+        "Domain": "vpc",
+        "InstanceId": {
+          "Ref": "BastionHost"
+        }
+      }
+    },
+    "BastionHost": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "InstanceType": "t2.nano",
+        "KeyName": "treasury-ssh-key",
+        "ImageId": "ami-1b316af0",
+        "NetworkInterfaces": [
+          {
+            "AssociatePublicIpAddress": true,
+            "DeviceIndex": "0",
+            "SubnetId": {
+              "Ref": "PublicASubnet"
+            },
+            "DeleteOnTermination": true,
+            "GroupSet": [
+              {
+                "Ref": "BastionSecurityGroup"
+              }
+            ]
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "Application",
+            "Value": {
+              "Ref": "AWS::StackName"
+            }
+          },
+          {
+            "Key": "Name",
+            "Value": "BastionHost"
+          }
+        ]
+      },
+      "DependsOn": [
+        "PublicASubnet",
+        "BastionSecurityGroup"
+      ]
+    },
+    "BastionSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "Enable access to the Bastion host",
+        "VpcId": {
+          "Ref": "VPC"
+        },
+        "SecurityGroupIngress": [
+          {
+            "IpProtocol": "tcp",
+            "FromPort": 22,
+            "ToPort": 22,
+            "CidrIp": {
+              "Ref": "SSHFrom"
+            }
+          }
+        ]
+      },
+      "DependsOn": "VPC"
+    },
+    "UploadsBucket": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketName": {
+          "Fn::Join": [
+            "-",
+            [
+              "treasury",
+              "uploads",
+              {
+                "Ref": "DeployEnv"
+              }
+            ]
+          ]
+        }
+      }
+    },
+    "AppApiS3AccessPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": "s3:ListAllMyBuckets",
+              "Resource": "arn:aws:s3:::*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": "s3:*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      "treasury",
+                      "-uploads-",
+                      {
+                        "Ref": "DeployEnv"
+                      }
+                    ]
+                  ]
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::",
+                      "treasury",
+                      "-uploads-",
+                      {
+                        "Ref": "DeployEnv"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "AppApiSESAccessPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ses:SendEmail",
+                "ses:SendRawEmail"
+              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:aws:ses:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId"
+                    },
+                    ":*"
+                  ]
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "AppApiParametersAccessPolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:DescribeParameters"
+              ],
+              "Resource": "*"
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "ssm:GetParameter",
+                "ssm:GetParameters",
+                "ssm:GetParametersByPath"
+              ],
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:ssm:*:339594496974:parameter/treasury-",
+                      {
+                        "Ref": "DeployEnv"
+                      },
+                      "/*"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "Effect": "Allow",
+              "Action": [
+                "kms:Decrypt"
+              ],
+              "Resource": [
+                {
+                  "Fn::GetAtt": [
+                    "ParametersKmsKey",
+                    "Arn"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "DependsOn": [
+        "ParametersKmsKey"
+      ]
+    },
+    "ParametersKmsKey": {
+      "Type": "AWS::KMS::Key",
+      "Properties": {
+        "Description": {
+          "Fn::Join": [
+            " ",
+            [
+              {
+                "Ref": "DeployEnv"
+              },
+              "encryption key for secure parameters"
+            ]
+          ]
+        },
+        "KeyPolicy": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "Enable full access to users",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": [
+                  {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn:aws:iam:",
+                        "339594496974",
+                        "root"
+                      ]
+                    ]
+                  },
+                  {
+                    "Fn::Join": [
+                      ":",
+                      [
+                        "arn:aws:iam:",
+                        "339594496974",
+                        "user/treasury"
+                      ]
+                    ]
+                  }
+                ]
+              },
+              "Action": "kms:*",
+              "Resource": "*"
+            }
+          ]
+        }
+      }
+    },
+    "AppApiAccessUser": {
+      "Type": "AWS::IAM::User",
+      "Properties": {
+        "ManagedPolicyArns": [
+          {
+            "Ref": "AppApiS3AccessPolicy"
+          },
+          {
+            "Ref": "AppApiSESAccessPolicy"
+          },
+          {
+            "Ref": "AppApiParametersAccessPolicy"
+          }
+        ]
+      }
+    },
+    "AppTaskRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ecs-tasks.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "ManagedPolicyArns": [
+          {
+            "Ref": "AppApiS3AccessPolicy"
+          },
+          {
+            "Ref": "AppApiSESAccessPolicy"
+          },
+          {
+            "Ref": "AppApiParametersAccessPolicy"
+          }
+        ]
+      }
+    },
+    "AppApiAccessCredentials": {
+      "Type": "AWS::IAM::AccessKey",
+      "Properties": {
+        "UserName": {
+          "Ref": "AppApiAccessUser"
+        }
+      }
+    },
+    "ECSCluster": {
+      "Type": "AWS::ECS::Cluster",
+      "Properties": {}
+    },
+    "ECSSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "ECS Security Group",
+        "VpcId": {
+          "Ref": "VPC"
+        }
+      }
+    },
+    "ECSSecurityGroupALBports": {
+      "Type": "AWS::EC2::SecurityGroupIngress",
+      "Properties": {
+        "GroupId": {
+          "Ref": "ECSSecurityGroup"
+        },
+        "IpProtocol": "tcp",
+        "FromPort": 31000,
+        "ToPort": 61000,
+        "CidrIp": {
+          "Fn::FindInMap": [
+            "SubnetConfig",
+            "VPC",
+            "CIDR"
+          ]
+        }
+      }
+    },
+    "CloudwatchLogsGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "-",
+            [
+              "ECSLogGroup",
+              {
+                "Ref": "AWS::StackName"
+              }
+            ]
+          ]
+        },
+        "RetentionInDays": 14
+      }
+    },
+    "NginxCloudwatchLogsGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "-",
+            [
+              "NginxECSLogGroup",
+              {
+                "Ref": "AWS::StackName"
+              }
+            ]
+          ]
+        },
+        "RetentionInDays": 14
+      }
+    },
+    "SubstrateCloudwatchLogsGroup": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {
+          "Fn::Join": [
+            "-",
+            [
+              "SubstrateECSLogGroup",
+              {
+                "Ref": "AWS::StackName"
+              }
+            ]
+          ]
+        },
+        "RetentionInDays": 14
+      }
+    },
+    "TaskDefinition": {
+      "Type": "AWS::ECS::TaskDefinition",
+      "Properties": {
+        "Family": {
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName"
+              },
+              "-app"
+            ]
+          ]
+        },
+        "NetworkMode": "awsvpc",
+        "ContainerDefinitions": [
+          {
+            "Name": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "ContainerName"
+              ]
+            },
+            "Environment": [
+              {
+                "Name": "DEPLOY_ENV",
+                "Value": {
+                  "Ref": "DeployEnv"
+                }
+              },
+              {
+                "Name": "NODE_OPTIONS",
+                "Value": "--max-old-space-size=600"
+              }
+            ],
+            "Cpu": 100,
+            "Essential": true,
+            "Image": "Fn.Ref('AppImage')",
+            "Command": [
+              "npm",
+              "run",
+              "database-migrate-and-main"
+            ],
+            "MemoryReservation": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "Memory"
+              ]
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "CloudwatchLogsGroup"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        ":",
+                        {
+                          "Ref": "AppImage"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+              }
+            },
+            "PortMappings": [
+              {
+                "ContainerPort": {
+                  "Fn::FindInMap": [
+                    "ECS",
+                    {
+                      "Ref": "DeployEnv"
+                    },
+                    "ContainerPort"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "Name": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "NginxContainerName"
+              ]
+            },
+            "Cpu": 100,
+            "Essential": true,
+            "Image": "Fn.Ref('NginxImage')",
+            "MemoryReservation": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "Memory"
+              ]
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "NginxCloudwatchLogsGroup"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        ":",
+                        {
+                          "Ref": "NginxImage"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+              }
+            },
+            "PortMappings": [
+              {
+                "ContainerPort": {
+                  "Fn::FindInMap": [
+                    "ECS",
+                    {
+                      "Ref": "DeployEnv"
+                    },
+                    "NginxContainerPort"
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "Name": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "SubstrateContainerName"
+              ]
+            },
+            "Cpu": 100,
+            "Essential": true,
+            "Image": "parity/polkadot:v0.8.24",
+            "Command": [
+              "--rpc-external",
+              "--ws-external",
+              "--dev",
+              "--rpc-cors all"
+            ],
+            "MemoryReservation": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "Memory"
+              ]
+            },
+            "LogConfiguration": {
+              "LogDriver": "awslogs",
+              "Options": {
+                "awslogs-group": {
+                  "Ref": "SubstrateCloudwatchLogsGroup"
+                },
+                "awslogs-region": {
+                  "Ref": "AWS::Region"
+                },
+                "awslogs-stream-prefix": {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        ":",
+                        "substrate"
+                      ]
+                    }
+                  ]
+                },
+                "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+              }
+            },
+            "PortMappings": [
+              {
+                "ContainerPort": {
+                  "Fn::FindInMap": [
+                    "ECS",
+                    {
+                      "Ref": "DeployEnv"
+                    },
+                    "SubstrateContainerPort"
+                  ]
+                }
+              }
+            ]
+          }
+        ],
+        "TaskRoleArn": {
+          "Fn::GetAtt": [
+            "AppTaskRole",
+            "Arn"
+          ]
+        }
+      }
+    },
+    "ECSALB": {
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+      "Properties": {
+        "Name": {
+          "Ref": "AWS::StackName"
+        },
+        "Scheme": "internet-facing",
+        "LoadBalancerAttributes": [
+          {
+            "Key": "idle_timeout.timeout_seconds",
+            "Value": "30"
+          }
+        ],
+        "Subnets": [
+          {
+            "Ref": "PublicASubnet"
+          },
+          {
+            "Ref": "PublicBSubnet"
+          }
+        ],
+        "SecurityGroups": [
+          {
+            "Ref": "HttpHttpsServerSecurityGroup"
+          }
+        ]
+      },
+      "DependsOn": "HttpHttpsServerSecurityGroup"
+    },
+    "ALBHttpsListener": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "Certificates": [
+          {
+            "CertificateArn": {
+              "Fn::FindInMap": [
+                "Certificates",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "ARN"
+              ]
+            }
+          }
+        ],
+        "DefaultActions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "NginxECSTargetGroup"
+            }
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "ECSALB"
+        },
+        "Port": 443,
+        "Protocol": "HTTPS"
+      },
+      "DependsOn": "ECSServiceRole"
+    },
+    "ALBHttpListener": {
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+      "Properties": {
+        "DefaultActions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "ECSTargetGroup"
+            }
+          }
+        ],
+        "LoadBalancerArn": {
+          "Ref": "ECSALB"
+        },
+        "Port": 80,
+        "Protocol": "HTTP"
+      },
+      "DependsOn": "ECSServiceRole"
+    },
+    "ECSALBRedirectListenerRule": {
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+      "Properties": {
+        "Actions": [
+          {
+            "Type": "redirect",
+            "RedirectConfig": {
+              "Host": "#{host}",
+              "Path": "/#{path}",
+              "Port": "443",
+              "Protocol": "HTTPS",
+              "Query": "#{query}",
+              "StatusCode": "HTTP_302"
+            }
+          }
+        ],
+        "Conditions": [
+          {
+            "Field": "path-pattern",
+            "Values": [
+              "/"
+            ]
+          }
+        ],
+        "ListenerArn": {
+          "Ref": "ALBHttpListener"
+        },
+        "Priority": 2
+      },
+      "DependsOn": "ALBHttpListener"
+    },
+    "ECSALBListenerRule": {
+      "Type": "AWS::ElasticLoadBalancingV2::ListenerRule",
+      "Properties": {
+        "Actions": [
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "ECSTargetGroup"
+            }
+          },
+          {
+            "Type": "forward",
+            "TargetGroupArn": {
+              "Ref": "NginxECSTargetGroup"
+            }
+          }
+        ],
+        "Conditions": [
+          {
+            "Field": "path-pattern",
+            "Values": [
+              "/"
+            ]
+          }
+        ],
+        "ListenerArn": {
+          "Ref": "ALBHttpListener"
+        },
+        "Priority": 1
+      },
+      "DependsOn": "ALBHttpListener"
+    },
+    "ECSTargetGroup": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "HealthCheckIntervalSeconds": 20,
+        "HealthCheckPath": "/api/health",
+        "HealthCheckProtocol": "HTTP",
+        "HealthCheckTimeoutSeconds": 10,
+        "HealthyThresholdCount": 2,
+        "Name": {
+          "Fn::Join": [
+            "-",
+            [
+              "ECSTargetGroup",
+              "treasury",
+              {
+                "Ref": "DeployEnv"
+              }
+            ]
+          ]
+        },
+        "Port": {
+          "Fn::FindInMap": [
+            "ECS",
+            {
+              "Ref": "DeployEnv"
+            },
+            "ContainerPort"
+          ]
+        },
+        "Protocol": "HTTP",
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30"
+          },
+          {
+            "Key": "stickiness.enabled",
+            "Value": "true"
+          },
+          {
+            "Key": "stickiness.type",
+            "Value": "lb_cookie"
+          },
+          {
+            "Value": "86400",
+            "Key": "stickiness.lb_cookie.duration_seconds"
+          }
+        ],
+        "UnhealthyThresholdCount": 5,
+        "VpcId": {
+          "Ref": "VPC"
+        }
+      },
+      "DependsOn": "ECSALB"
+    },
+    "NginxECSTargetGroup": {
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+      "Properties": {
+        "Name": {
+          "Fn::Join": [
+            "-",
+            [
+              "NginxECSTargetGroup",
+              "treasury",
+              {
+                "Ref": "DeployEnv"
+              }
+            ]
+          ]
+        },
+        "Port": {
+          "Fn::FindInMap": [
+            "ECS",
+            {
+              "Ref": "DeployEnv"
+            },
+            "NginxContainerPort"
+          ]
+        },
+        "Protocol": "HTTPS",
+        "TargetGroupAttributes": [
+          {
+            "Key": "deregistration_delay.timeout_seconds",
+            "Value": "30"
+          },
+          {
+            "Key": "stickiness.enabled",
+            "Value": "true"
+          },
+          {
+            "Key": "stickiness.type",
+            "Value": "lb_cookie"
+          },
+          {
+            "Value": "86400",
+            "Key": "stickiness.lb_cookie.duration_seconds"
+          }
+        ],
+        "UnhealthyThresholdCount": 5,
+        "VpcId": {
+          "Ref": "VPC"
+        }
+      },
+      "DependsOn": "ECSALB"
+    },
+    "ECSAutoScalingGroup": {
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+      "Properties": {
+        "VPCZoneIdentifier": [
+          {
+            "Ref": "PrivateASubnet"
+          },
+          {
+            "Ref": "PrivateBSubnet"
+          }
+        ],
+        "LaunchConfigurationName": {
+          "Ref": "ContainerInstances"
+        },
+        "MinSize": "2",
+        "MaxSize": "6",
+        "DesiredCapacity": "2"
+      },
+      "CreationPolicy": {
+        "ResourceSignal": {
+          "Timeout": "PT5M"
+        }
+      },
+      "UpdatePolicy": {
+        "AutoScalingReplacingUpdate": {
+          "WillReplace": true
+        }
+      }
+    },
+    "ContainerInstances": {
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+      "Properties": {
+        "ImageId": "ami-9fc39c74",
+        "SecurityGroups": [
+          {
+            "Ref": "ECSSecurityGroup"
+          }
+        ],
+        "InstanceType": {
+          "Fn::FindInMap": [
+            "ECS",
+            {
+              "Ref": "DeployEnv"
+            },
+            "InstanceType"
+          ]
+        },
+        "IamInstanceProfile": {
+          "Ref": "EC2InstanceProfile"
+        },
+        "KeyName": "treasury-ssh-key",
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Join": [
+              "",
+              [
+                "#!/bin/bash -xe\n",
+                "echo ECS_CLUSTER=",
+                {
+                  "Ref": "ECSCluster"
+                },
+                " >> /etc/ecs/ecs.config\n",
+                "yum install -y aws-cfn-bootstrap\n",
+                "/opt/aws/bin/cfn-signal -e $? ",
+                "         --stack ",
+                {
+                  "Ref": "AWS::StackName"
+                },
+                "         --resource ECSAutoScalingGroup ",
+                "         --region ",
+                {
+                  "Ref": "AWS::Region"
+                },
+                "\n"
+              ]
+            ]
+          }
+        }
+      },
+      "DependsOn": [
+        "ECSSecurityGroup",
+        "PublicRoute"
+      ]
+    },
+    "ECSService": {
+      "Type": "AWS::ECS::Service",
+      "Properties": {
+        "Cluster": {
+          "Ref": "ECSCluster"
+        },
+        "DesiredCount": {
+          "Fn::FindInMap": [
+            "ECS",
+            {
+              "Ref": "DeployEnv"
+            },
+            "DesiredTasksCount"
+          ]
+        },
+        "LoadBalancers": [
+          {
+            "ContainerName": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "ContainerName"
+              ]
+            },
+            "ContainerPort": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "ContainerPort"
+              ]
+            },
+            "TargetGroupArn": {
+              "Ref": "ECSTargetGroup"
+            }
+          },
+          {
+            "ContainerName": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "NginxContainerName"
+              ]
+            },
+            "ContainerPort": {
+              "Fn::FindInMap": [
+                "ECS",
+                {
+                  "Ref": "DeployEnv"
+                },
+                "NginxContainerPort"
+              ]
+            },
+            "TargetGroupArn": {
+              "Ref": "ECSTargetGroup"
+            }
+          }
+        ],
+        "DeploymentConfiguration": {
+          "MinimumHealthyPercent": 50
+        },
+        "Role": {
+          "Ref": "ECSServiceRole"
+        },
+        "TaskDefinition": {
+          "Ref": "TaskDefinition"
+        }
+      },
+      "DependsOn": "ALBHttpListener"
+    },
+    "ECSServiceRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ecs.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "ecs-service",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
+                    "elasticloadbalancing:DeregisterTargets",
+                    "elasticloadbalancing:Describe*",
+                    "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
+                    "elasticloadbalancing:RegisterTargets",
+                    "ec2:Describe*",
+                    "ec2:AuthorizeSecurityGroupIngress"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "ServiceScalingTarget": {
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+      "Properties": {
+        "MaxCapacity": 2,
+        "MinCapacity": 1,
+        "ResourceId": {
+          "Fn::Join": [
+            "",
+            [
+              "service/",
+              {
+                "Ref": "ECSCluster"
+              },
+              "/",
+              {
+                "Fn::GetAtt": [
+                  "ECSService",
+                  "Name"
+                ]
+              }
+            ]
+          ]
+        },
+        "RoleARN": {
+          "Fn::GetAtt": [
+            "AutoscalingRole",
+            "Arn"
+          ]
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs"
+      },
+      "DependsOn": "ECSService"
+    },
+    "ServiceScalingPolicy": {
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+      "Properties": {
+        "PolicyName": "AStepPolicy",
+        "PolicyType": "StepScaling",
+        "ScalingTargetId": {
+          "Ref": "ServiceScalingTarget"
+        },
+        "StepScalingPolicyConfiguration": {
+          "AdjustmentType": "PercentChangeInCapacity",
+          "Cooldown": 60,
+          "MetricAggregationType": "Average",
+          "StepAdjustments": [
+            {
+              "MetricIntervalLowerBound": 0,
+              "ScalingAdjustment": 200
+            }
+          ]
+        }
+      }
+    },
+    "CPUUsageAlarmScaleUp": {
+      "Type": "AWS::CloudWatch::Alarm",
+      "Properties": {
+        "AlarmDescription": "Alarm if instance CPU usage is >75%.",
+        "AlarmActions": [
+          {
+            "Ref": "ServiceScalingPolicy"
+          }
+        ],
+        "MetricName": "CPUUtilization",
+        "Namespace": "AWS/EC2",
+        "Statistic": "Average",
+        "Period": 60,
+        "EvaluationPeriods": 3,
+        "Threshold": 75,
+        "ComparisonOperator": "GreaterThanThreshold",
+        "Dimensions": [
+          {
+            "Name": "AutoScalingGroupName",
+            "Value": {
+              "Ref": "ECSAutoScalingGroup"
+            }
+          }
+        ]
+      }
+    },
+    "EC2Role": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "ecs-service",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "ecs:CreateCluster",
+                    "ecs:DeregisterContainerInstance",
+                    "ecs:DiscoverPollEndpoint",
+                    "ecs:Poll",
+                    "ecs:RegisterContainerInstance",
+                    "ecs:StartTelemetrySession",
+                    "ecs:Submit*",
+                    "ecr:GetAuthorizationToken",
+                    "ecr:BatchCheckLayerAvailability",
+                    "ecr:GetDownloadUrlForLayer",
+                    "ecr:BatchGetImage",
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "AutoscalingRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "application-autoscaling.amazonaws.com"
+                ]
+              },
+              "Action": [
+                "sts:AssumeRole"
+              ]
+            }
+          ]
+        },
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyName": "service-autoscaling",
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "application-autoscaling:*",
+                    "cloudwatch:DescribeAlarms",
+                    "cloudwatch:PutMetricAlarm",
+                    "ecs:DescribeServices",
+                    "ecs:UpdateService"
+                  ],
+                  "Resource": "*"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "EC2InstanceProfile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "EC2Role"
+          }
+        ]
+      }
+    }
+  }
+}
+

@@ -67,6 +67,8 @@ const Resources = {
 
     // logs
     CloudwatchLogsGroup: 'CloudwatchLogsGroup',
+    NginxCloudwatchLogsGroup: 'NginxCloudwatchLogsGroup',
+    SubstrateCloudwatchLogsGroup: 'SubstrateCloudwatchLogsGroup',
 
     // ECS
     ECSCluster: 'ECSCluster',
@@ -78,11 +80,12 @@ const Resources = {
 
     // load balancer
     ECSALB: 'ECSALB',
-    //ALBHttpsListener: 'ALBHttpsListener',
+    ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
     ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSTargetGroup: 'ECSTargetGroup',
+    NginxECSTargetGroup: 'NginxECSTargetGroup',
     ECSAutoScalingGroup: 'ECSAutoScalingGroup',
     ECSServiceRole: 'ECSServiceRole',
 
@@ -127,6 +130,9 @@ export default cloudform({
         }),
         AppImage: new StringParameter({
             Description: "Repository, image and tag of the app to deploy"
+        }),
+        NginxImage: new StringParameter({
+            Description: "Nginx for proxying wss traffic from substrate"
         }),
         // EtherumNodeUrl: new StringParameter({
         //     Description: 'Etherum node url',
@@ -185,7 +191,11 @@ export default cloudform({
                 ContainerName: `${ProjectName}-www-stage`,
                 ContainerPort: "3000",
                 Memory: "700",
-                DesiredTasksCount: 1
+                DesiredTasksCount: 1,
+                SubstrateContainerName: `${ProjectName}-substrate-stage`,
+                SubstrateContainerPort: "9944",
+                NginxContainerName: `${ProjectName}-nginx-stage`,
+                NginxContainerPort: "443",
             },
             prod: {
                 InstanceType: "t2.small",
@@ -651,8 +661,19 @@ export default cloudform({
             RetentionInDays: 14
         }),
 
+        [Resources.NginxCloudwatchLogsGroup]: new Logs.LogGroup({
+            LogGroupName: Fn.Join('-', ['NginxECSLogGroup', Refs.StackName]),
+            RetentionInDays: 14
+        }),
+
+        [Resources.SubstrateCloudwatchLogsGroup]: new Logs.LogGroup({
+            LogGroupName: Fn.Join('-', ['SubstrateECSLogGroup', Refs.StackName]),
+            RetentionInDays: 14
+        }),
+
         [Resources.TaskDefinition]: new ECS.TaskDefinition({
             Family: Fn.Join('', [Refs.StackName, '-app']),
+            NetworkMode: "awsvpc",
             ContainerDefinitions: [
                 {
                     Name: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
@@ -665,14 +686,10 @@ export default cloudform({
                             Name: "NODE_OPTIONS",
                             Value: "--max-old-space-size=600"
                         },
-                        // {
-                        //     Name: 'ETHEREUM_NODE_URL',
-                        //     Value: Fn.Ref('EtherumNodeUrl'),
-                        // },
                     ],
                     Cpu: 100,
                     Essential: true,
-                    Image: Fn.Ref('AppImage'),
+                    Image: "Fn.Ref('AppImage')",
                     Command: ['npm', 'run', 'database-migrate-and-main'],
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {
@@ -687,6 +704,49 @@ export default cloudform({
                     PortMappings: [
                         {
                             ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort')
+                        }
+                    ]
+                },
+                {
+                    Name: Fn.FindInMap('ECS', DeployEnv, 'NginxContainerName'),
+                    Cpu: 100,
+                    Essential: true,
+                    Image: "Fn.Ref('NginxImage')",
+                    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
+                    LogConfiguration: {
+                        LogDriver: "awslogs",
+                        Options: {
+                            "awslogs-group": Fn.Ref('NginxCloudwatchLogsGroup'),
+                            "awslogs-region": Refs.Region,
+                            "awslogs-stream-prefix": Fn.Select(1, Fn.Split(':', Fn.Ref('NginxImage'))),
+                            "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+                        }
+                    },
+                    PortMappings: [
+                        {
+                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'NginxContainerPort')
+                        }
+                    ]
+                },
+                {
+                    Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
+                    Cpu: 100,
+                    Essential: true,
+                    Image: "parity/polkadot:v0.8.24",
+                    Command: ['--rpc-external', '--ws-external', '--dev', '--rpc-cors all'],
+                    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
+                    LogConfiguration: {
+                        LogDriver: "awslogs",
+                        Options: {
+                            "awslogs-group": Fn.Ref('SubstrateCloudwatchLogsGroup'),
+                            "awslogs-region": Refs.Region,
+                            "awslogs-stream-prefix": Fn.Select(1, Fn.Split(':', 'substrate')),
+                            "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+                        }
+                    },
+                    PortMappings: [
+                        {
+                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort')
                         }
                     ]
                 }
@@ -712,22 +772,22 @@ export default cloudform({
             ]
         }).dependsOn(Resources.HttpHttpsServerSecurityGroup),
 
-        // [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
-        //     Certificates: [
-        //         {
-        //             CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
-        //         }
-        //     ],
-        //     DefaultActions: [
-        //         {
-        //             Type: "forward",
-        //             TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
-        //         }
-        //     ],
-        //     LoadBalancerArn: Fn.Ref(Resources.ECSALB),
-        //     Port: 443,
-        //     Protocol: "HTTPS"
-        // }).dependsOn(Resources.ECSServiceRole),
+        [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
+            Certificates: [
+                {
+                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
+                }
+            ],
+            DefaultActions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.NginxECSTargetGroup)
+                }
+            ],
+            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
+            Port: 443,
+            Protocol: "HTTPS"
+        }).dependsOn(Resources.ECSServiceRole),
 
         [Resources.ALBHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
@@ -741,35 +801,39 @@ export default cloudform({
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
-        // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
-        //     Actions: [
-        //         {
-        //             Type: "redirect",
-        //             RedirectConfig: {
-        //                 "Host" : "#{host}",
-        //                 "Path" : "/#{path}",
-        //                 "Port" : "443",
-        //                 "Protocol" : "HTTPS",
-        //                 "Query" : "#{query}",
-        //                 "StatusCode" : "HTTP_302"
-        //             }
-        //         }
-        //     ],
-        //     Conditions: [
-        //         {
-        //             Field: "path-pattern",
-        //             Values: ["/"]
-        //         }
-        //     ],
-        //     ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-        //     Priority: 2
-        // }).dependsOn(Resources.ALBHttpListener),
+        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: "redirect",
+                    RedirectConfig: {
+                        "Host" : "#{host}",
+                        "Path" : "/#{path}",
+                        "Port" : "443",
+                        "Protocol" : "HTTPS",
+                        "Query" : "#{query}",
+                        "StatusCode" : "HTTP_302"
+                    }
+                }
+            ],
+            Conditions: [
+                {
+                    Field: "path-pattern",
+                    Values: ["/"]
+                }
+            ],
+            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
+            Priority: 2
+        }).dependsOn(Resources.ALBHttpListener),
 
         [Resources.ECSALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: "forward",
                     TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
+                },
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.NginxECSTargetGroup)
                 }
             ],
             Conditions: [
@@ -791,6 +855,37 @@ export default cloudform({
             Name: Fn.Join('-', [Resources.ECSTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
             Protocol: "HTTP",
+            TargetGroupAttributes: [
+                {
+                    Key: "deregistration_delay.timeout_seconds",
+                    Value: "30"
+                },
+                {
+                    Key: "stickiness.enabled",
+                    Value: "true"
+                },
+                {
+                    Key: "stickiness.type",
+                    Value: "lb_cookie"
+                },
+                {
+                    Value: "86400",
+                    Key: "stickiness.lb_cookie.duration_seconds"
+                }
+            ],
+            UnhealthyThresholdCount: 5,
+            VpcId: Fn.Ref(Resources.VPC)
+        }).dependsOn(Resources.ECSALB),
+
+        [Resources.NginxECSTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
+            // HealthCheckIntervalSeconds: 20,
+            // HealthCheckPath: "/api/health",
+            // HealthCheckProtocol: "HTTP",
+            // HealthCheckTimeoutSeconds: 10,
+            // HealthyThresholdCount: 2,
+            Name: Fn.Join('-', [Resources.NginxECSTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
+            Port: Fn.FindInMap('ECS', DeployEnv, 'NginxContainerPort'),
+            Protocol: "HTTPS",
             TargetGroupAttributes: [
                 {
                     Key: "deregistration_delay.timeout_seconds",
@@ -866,6 +961,11 @@ export default cloudform({
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
                     ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
+                    TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
+                },
+                {
+                    ContainerName: Fn.FindInMap('ECS', DeployEnv, 'NginxContainerName'),
+                    ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'NginxContainerPort'),
                     TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
                 }
             ],
