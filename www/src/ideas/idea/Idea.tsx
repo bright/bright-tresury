@@ -9,7 +9,7 @@ import IdeaInfo from "./info/IdeaInfo";
 import IdeaMilestones from "./milestones/IdeaMilestones";
 import IdeaDiscussion from "./discussion/IdeaDiscussion";
 import {breakpoints} from "../../theme/theme";
-import {Button} from "../../components/button/Button";
+import {isAuthorized} from "../../util/auth.util";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,7 +44,7 @@ const Idea: React.FC<Props> = ({network}) => {
     /**
      * TODO:// check if [idea] belongs to the currently logged in user
      */
-    const [canEdit, setCanEdit] = useState(true)
+    const [canEdit, setCanEdit] = useState(isAuthorized())
 
     useEffect(() => {
         if (ideaId !== undefined) {
@@ -58,23 +58,6 @@ const Idea: React.FC<Props> = ({network}) => {
 
     return (
         <div className={classes.root}>
-            {/* region: Remove this button as soon as we add authorization */}
-            <Button variant="contained"
-                    style={{
-                        position: 'absolute',
-                        top: 16,
-                        right: 0,
-                        fontSize: 10,
-                        left: 0,
-                        margin: 'auto',
-                        color: 'white',
-                        textAlign: 'center',
-                        backgroundColor: canEdit ? 'green' : 'orange'
-                    }}
-                    onClick={() => setCanEdit(!canEdit)}>
-                Simulate {canEdit ? 'logout' : 'login'}
-            </Button>
-            {/*endregion*/}
             <IdeaHeader idea={idea} canEdit={canEdit}/>
             <div className={classes.content}>
                 <Switch>

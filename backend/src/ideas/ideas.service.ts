@@ -94,7 +94,7 @@ export class IdeasService {
                 network.name,
                 network.value
             )),
-            DefaultIdeaStatus,
+            createIdeaDto.status ?? DefaultIdeaStatus,
             createIdeaDto.beneficiary,
             createIdeaDto.content,
             createIdeaDto.field,

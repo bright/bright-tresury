@@ -5,16 +5,18 @@ import {makeStyles} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {useTranslation} from "react-i18next";
 import {NavLink} from "react-router-dom";
+import {Button} from "../components/button/Button";
+import {isAuthorized, setAuthorized} from "../util/auth.util";
 
 const useStyles = makeStyles((theme: Theme) => {
-        return createStyles({
-            navLinkItem: {
-                padding: '20px 38px',
-                display: 'flex',
-                alignItems: 'center',
-                alignContent: 'center',
-                width: '100%',
-                textDecoration: 'none',
+    return createStyles({
+        navLinkItem: {
+            padding: '20px 38px',
+            display: 'flex',
+            alignItems: 'center',
+            alignContent: 'center',
+            width: '100%',
+            textDecoration: 'none',
                 minHeight: 0,
                 color: theme.palette.text.primary,
                 [theme.breakpoints.down(breakpoints.tablet)]: {
@@ -106,6 +108,23 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
                 </NavLink>
             </ListItem>
         ))}
+        {/* region: Remove this button as soon as we add authorization */}
+        <div style={{display: 'flex', justifyContent: 'center', marginTop: 32}}>
+            <Button variant="contained"
+                    style={{
+                        fontSize: 10,
+                        color: 'white',
+                        textAlign: 'center',
+                        backgroundColor: isAuthorized() ? 'orange' : 'green'
+                    }}
+                    onClick={() => {
+                        setAuthorized(!isAuthorized())
+                        window.location.reload()
+                    }}>
+                Simulate {isAuthorized() ? 'logout' : 'login'}
+            </Button>
+        </div>
+        {/*endregion*/}
     </List>
 }
 

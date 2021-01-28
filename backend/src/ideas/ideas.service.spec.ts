@@ -148,6 +148,26 @@ describe(`/api/v1/ideas`, () => {
             expect(savedIdea.status).toBe(DefaultIdeaStatus)
         })
 
+        it('should create and save idea with draft status', async () => {
+            const createdIdea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 1} as IdeaNetworkDto],
+                status: IdeaStatus.Draft
+            } as CreateIdeaDto)
+            const savedIdea = await getService().findOne(createdIdea.id)
+            expect(savedIdea.status).toBe(IdeaStatus.Draft)
+        })
+
+        it('should create and save idea with active status', async () => {
+            const createdIdea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 1} as IdeaNetworkDto],
+                status: IdeaStatus.Active
+            } as CreateIdeaDto)
+            const savedIdea = await getService().findOne(createdIdea.id)
+            expect(savedIdea.status).toBe(IdeaStatus.Active)
+        })
+
         it('should create and save idea with all valid data', async (done) => {
             const createdIdea = await getService().create({
                 title: 'Test title',
