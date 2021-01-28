@@ -19,8 +19,8 @@ stack_exists=$(aws cloudformation list-stacks --query "StackSummaries[?StackName
 
 deploy_params="\
 ParameterKey=DeployEnv,ParameterValue=${DEPLOY_ENV} \
-ParameterKey=AppImage,ParameterValue=${DOCKER_REGISTRY}treasury/backend:${VCS_VERSION} \
-ParameterKey=NginxImage,ParameterValue=${DOCKER_REGISTRY}treasury/nginx:${VCS_VERSION}"
+ParameterKey=AppImage,ParameterValue=${DOCKER_REGISTRY}backend:${VCS_VERSION} \
+ParameterKey=NginxImage,ParameterValue=${DOCKER_REGISTRY}nginx:${VCS_VERSION}"
 
 if [[ ${stack_exists} =~ "[]" ]]; then
     echo "Create new app stack: ${stack_name}"

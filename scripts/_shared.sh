@@ -21,7 +21,7 @@ function docker-compose {
 if [[ ! -z "${DOCKER_REGISTRY}" ]]; then
     if [[ ! "${DOCKER_REGISTRY}" == */ ]]; then
         echo "Append / to DOCKER_REGISTRY=${DOCKER_REGISTRY}"
-        DOCKER_REGISTRY="${DOCKER_REGISTRY}/"
+        DOCKER_REGISTRY="${DOCKER_REGISTRY}/treasury/"
     fi
 fi
 
