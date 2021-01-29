@@ -1,5 +1,4 @@
 import React from "react";
-import {Card} from "../../components/card/Card";
 import {generatePath, Link} from "react-router-dom";
 import {ROUTE_PROPOSAL} from "../../routes";
 import {Divider} from "../../components/divider/Divider";
@@ -15,24 +14,9 @@ import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
 import {ProposalContentType} from "../proposal/ProposalContentTypeTabs";
 import {ProposalIndex} from "./ProposalNumber";
 import {Placeholder} from "../../components/text/Placeholder";
+import {NetworkCard} from "../../components/card/NetworkCard";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
-        backgroundColor: theme.palette.background.default,
-        '&:hover': {
-            transform: 'scale(1.01)'
-        },
-        transition: 'transform 0.2s',
-        width: '100%',
-        position: 'relative',
-        overflow: 'hidden'
-    },
-    networkAccentLine: {
-        backgroundColor: '#E6007A',
-        height: '100%',
-        width: '4px',
-        position: 'absolute'
-    },
     link: {
         textDecoration: 'none',
         color: theme.palette.text.primary
@@ -138,9 +122,7 @@ const ProposalCard: React.FC<Props> = ({proposal}) => {
         return ellipseTextInTheMiddle(proposal.proposer, 12)
     }
 
-    return <Card className={classes.root}>
-        {/*TODO: create common network aware card that will switch left ribbon and replace it in [IdeaCard.tsx]*/}
-        <div className={classes.networkAccentLine}/>
+    return <NetworkCard>
         <Link className={classes.link}
               to={`${generatePath(ROUTE_PROPOSAL, {proposalId: proposal.proposalIndex})}/${ProposalContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
@@ -188,7 +170,7 @@ const ProposalCard: React.FC<Props> = ({proposal}) => {
                 </div>
             </div>
         </Link>
-    </Card>
+    </NetworkCard>
 }
 
 export default ProposalCard

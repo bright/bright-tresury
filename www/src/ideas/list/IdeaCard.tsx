@@ -1,6 +1,5 @@
 import React from "react";
 import {IdeaDto} from "../ideas.api";
-import {Card} from "../../components/card/Card";
 import {generatePath, Link} from "react-router-dom";
 import {ROUTE_IDEA} from "../../routes";
 import {Divider} from "../../components/divider/Divider";
@@ -13,25 +12,10 @@ import {formatNumber} from "../../util/numberUtil";
 import {Identicon} from "../../components/identicon/Identicon";
 import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
+import {NetworkCard} from "../../components/card/NetworkCard";
 import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    root: {
-        backgroundColor: theme.palette.background.default,
-        '&:hover': {
-            transform: 'scale(1.01)'
-        },
-        transition: 'transform 0.2s',
-        width: '100%',
-        position: 'relative',
-        overflow: 'hidden'
-    },
-    networkAccentLine: {
-        backgroundColor: '#E6007A',
-        height: '100%',
-        width: '4px',
-        position: 'absolute'
-    },
     link: {
         textDecoration: 'none',
         color: theme.palette.text.primary
@@ -123,9 +107,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
         return ellipseTextInTheMiddle(idea.beneficiary, 12)
     }
 
-    return <Card className={classes.root}>
-        <div className={classes.networkAccentLine}/>
-
+    return <NetworkCard>
         <Link className={classes.link}
               to={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
@@ -155,7 +137,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
                 </div>
             </div>
         </Link>
-    </Card>
+    </NetworkCard>
 }
 
 export default IdeaCard
