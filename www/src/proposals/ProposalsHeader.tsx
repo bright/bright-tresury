@@ -4,7 +4,7 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {Trans, useTranslation} from "react-i18next";
 import {proposalsHorizontalMargin, proposalsMobileHorizontalMargin} from "./Proposals";
-import ProposalStatusFilters from "./list/ProposalStatusFilters";
+import ProposalStatusFilters, {ProposalFilter} from "./list/ProposalStatusFilters";
 import {ideasHorizontalMargin, ideasMobileHorizontalMargin} from "../ideas/Ideas";
 import {ROUTE_NEW_IDEA} from "../routes";
 import {RouterLink} from "../components/link/RouterLink";
@@ -100,9 +100,10 @@ const useStyles = makeStyles((theme: Theme) => {
 })
 
 interface Props {
+    filter: ProposalFilter
 }
 
-const ProposalsHeader: React.FC<Props> = () => {
+const ProposalsHeader: React.FC<Props> = ({filter}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -123,7 +124,7 @@ const ProposalsHeader: React.FC<Props> = () => {
         </div>
         <div className={classes.paperBackground}/>
         <div className={classes.statusFilters}>
-            <ProposalStatusFilters/>
+            <ProposalStatusFilters filter={filter}/>
         </div>
     </div>
 }

@@ -13,11 +13,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface Props {
     value: string
+    className?: string
 }
 
-export const Placeholder: React.FC<Props> = ({value}) => {
+export const Placeholder: React.FC<Props> = ({value, className}) => {
     const classes = useStyles()
-    return <div className={classes.root}>
+    return <div className={className ?? classes.root}>
         {value}
     </div>
 }

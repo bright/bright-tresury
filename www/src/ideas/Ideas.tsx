@@ -1,8 +1,7 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-dom';
-import React, {useEffect, useState} from 'react';
 import {getIdeasByNetwork, IdeaDto} from './ideas.api';
-import {DefaultFilter, FilterSearchParamName, IdeaFilter} from "./list/IdeaStatusFilters";
+import {FilterSearchParamName, IdeaDefaultFilter, IdeaFilter} from "./list/IdeaStatusFilters";
 import config from '../config';
 import {filterIdeas} from "./list/filterIdeas";
 import IdeasHeader from "./IdeasHeader";
@@ -22,8 +21,8 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const [status, setStatus] = useState<string>('')
 
     const filter = useMemo(() => {
-        const filterParam = useSearchParams().get(FilterSearchParamName)
-        return filterParam ? filterParam as IdeaFilter : DefaultFilter
+        const filterParam = new URLSearchParams(location.search).get(FilterSearchParamName)
+        return filterParam ? filterParam as IdeaFilter : IdeaDefaultFilter
     }, [location.search])
 
     const filteredIdeas = useMemo(() => {
@@ -43,7 +42,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     }, [network])
 
     return <div>
-        <IdeasHeader/>
+        <IdeasHeader filter={filter}/>
         {status === 'loading' && <p>Loading</p>}
         {status === 'error' && <p>Error</p>}
         {status === 'resolved' && (<IdeasList ideas={filteredIdeas}/>)}

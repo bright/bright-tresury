@@ -13,6 +13,8 @@ import {Identicon} from "../../components/identicon/Identicon";
 import {ProposalDto} from "../proposals.api";
 import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
 import {ProposalContentType} from "../proposal/ProposalContentTypeTabs";
+import {ProposalIndex} from "./ProposalNumber";
+import {Placeholder} from "../../components/text/Placeholder";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -40,13 +42,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     header: {
         display: 'flex',
-        justifyContent: 'space-between'
-    },
-    idLabel: {
+        justifyContent: 'space-between',
         marginTop: '20px',
         marginBottom: '6px',
-        fontSize: '16px',
-        fontWeight: 700
     },
     details: {
         padding: '0',
@@ -61,7 +59,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     titleLabel: {
         display: 'inline-block',
-        fontSize: '1.5em',
+        fontSize: '18px',
         marginBottom: '16px',
         marginTop: 0,
         fontWeight: 700,
@@ -74,6 +72,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             flex: 1,
             marginTop: '16px'
         },
+    },
+    titlePlaceholder: {
+        fontSize: '18px',
+        color: theme.palette.text.hint
     },
     networkLabel: {
         backgroundColor: '#E6F0FD',
@@ -142,14 +144,18 @@ const ProposalCard: React.FC<Props> = ({proposal}) => {
         <Link className={classes.link}
               to={`${generatePath(ROUTE_PROPOSAL, {proposalId: proposal.proposalIndex})}/${ProposalContentType.Info}`}>
             <div className={`${classes.header} ${classes.contentMargin}`}>
-                <p className={classes.idLabel}>{proposal.proposalIndex}</p>
+                <ProposalIndex proposalIndex={proposal.proposalIndex}/>
                 <ProposalStatusIndicator proposalStatus={proposal.status}/>
             </div>
 
             <Divider className={classes.contentMargin}/>
 
             <div className={`${classes.contentMargin} ${classes.details}`}>
-                <p className={classes.titleLabel}>{proposal.title}</p>
+                <p className={classes.titleLabel}>
+                    {proposal.title ||
+                    <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')}/>
+                    }
+                </p>
                 <p className={classes.networkLabel}>{`${formatNumber(proposal.value)} LOC`}</p>
             </div>
 

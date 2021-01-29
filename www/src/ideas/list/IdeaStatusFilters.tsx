@@ -4,9 +4,7 @@ import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
-import {NavLink} from "react-router-dom";
 import {ROUTE_IDEAS} from "../../routes";
-import {useSearchParams} from "../../router/useSearchParams";
 import {NavSelect} from "../../components/select/NavSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,12 +28,12 @@ export enum IdeaFilter {
     Closed = 'closed',
 }
 
+export const FilterSearchParamName = "filter"
+export const IdeaDefaultFilter = IdeaFilter.All
+
 interface Props {
     filter: IdeaFilter
 }
-
-export const FilterSearchParamName = "filter"
-export const DefaultFilter = IdeaFilter.All
 
 const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
     const classes = useStyles()
@@ -62,7 +60,7 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
 
     const getTabEntry = (filter: IdeaFilter) => {
         return {
-            isDefault: filter === DefaultFilter,
+            isDefault: filter === IdeaDefaultFilter,
             label: getTranslation(filter),
             path: `${ROUTE_IDEAS}?${FilterSearchParamName}=${filter}`
         } as TabEntry

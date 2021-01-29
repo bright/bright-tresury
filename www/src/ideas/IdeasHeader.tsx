@@ -1,7 +1,7 @@
 import React from "react";
 import {Button} from "../components/button/Button";
 import {Select} from "../components/select/Select";
-import IdeaStatusFilters from "./list/IdeaStatusFilters";
+import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {useTranslation} from "react-i18next";
@@ -94,7 +94,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }))
 
-const IdeasHeader: React.FC = () => {
+interface Props {
+    filter: IdeaFilter
+}
+
+const IdeasHeader: React.FC<Props> = ({filter}) => {
     const classes = useStyles()
     const {t} = useTranslation()
     const history = useHistory()
@@ -120,7 +124,7 @@ const IdeasHeader: React.FC = () => {
         </div>
         <div className={classes.paperBackground}/>
         <div className={classes.statusFilters}>
-            <IdeaStatusFilters/>
+            <IdeaStatusFilters filter={filter}/>
         </div>
     </div>
 }

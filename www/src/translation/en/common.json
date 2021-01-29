@@ -83,7 +83,9 @@
         "proposer": "(Proposer)",
         "statusSubmitted": "Submitted",
         "statusApproved": "Approved",
-        "statusClosed": "Closed"
+        "statusClosed": "Closed",
+        "proposalIndex": "# <strong>{{proposalIndex}}</strong>",
+        "titlePlaceholder": "No title provided"
       },
       "filters": {
         "currentSpendTime": "Current Spend Time",

@@ -5,7 +5,6 @@ import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {ROUTE_PROPOSALS} from "../../routes";
-import {useSearchParams} from "../../router/useSearchParams";
 import {NavSelect} from "../../components/select/NavSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,9 +29,13 @@ export enum ProposalFilter {
 }
 
 const FilterSearchParamName = "filter"
-const DefaultFilter = ProposalFilter.All
+export const ProposalDefaultFilter = ProposalFilter.All
 
-const ProposalStatusFilters: React.FC = () => {
+interface Props {
+    filter: ProposalFilter
+}
+
+const ProposalStatusFilters: React.FC<Props> = ({filter}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -57,15 +60,13 @@ const ProposalStatusFilters: React.FC = () => {
 
     const getTabEntry = (filter: ProposalFilter) => {
         return {
-            isDefault: filter === DefaultFilter,
+            isDefault: filter === ProposalDefaultFilter,
             label: getTranslation(filter),
             path: `${ROUTE_PROPOSALS}?${FilterSearchParamName}=${filter}`
         } as TabEntry
     }
     const tabEntries = filterValues.map((filter: ProposalFilter) => getTabEntry(filter))
 
-    const filterParam = useSearchParams().get(FilterSearchParamName)
-    const filter = filterParam ? filterParam as ProposalFilter : DefaultFilter
     /**
      * Current tab entry is forced, because there should be always some filter specified.
      */
