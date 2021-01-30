@@ -9,6 +9,7 @@ import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
 import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
+import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 
 const logger = getLogger()
 
@@ -42,10 +43,13 @@ export class IdeasService {
         return idea
     }
 
-    async findOneByNetworkId(networkId: string): Promise<Idea | undefined> {
+    async findOneByNetworkId(networkId: string): Promise<Idea> {
         const ideaNetwork = await this.ideaNetworkRepository.findOne(networkId, {relations: ['idea']})
         if (!ideaNetwork) {
-            throw new NotFoundException('There is no idea network with such id')
+            throw new NotFoundException(`There is no idea network with id ${networkId}`)
+        }
+        if (!ideaNetwork.idea) {
+            throw new NotFoundException(`There is no idea for network with id: ${networkId}`)
         }
         return ideaNetwork.idea
     }
@@ -115,9 +119,11 @@ export class IdeasService {
         await this.ideaRepository.remove(currentIdea)
     }
 
-    /** TODO: validate if idea is ready to be turned into proposal */
     async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number) {
         const idea = await this.findOneByNetworkId(networkId)
+        if (!idea.beneficiary) {
+            throw new EmptyBeneficiaryException()
+        }
         await this.ideaNetworkRepository.save({id: networkId, blockchainProposalId})
         await this.update({status: IdeaStatus.TurnedIntoProposal}, idea!.id)
     }

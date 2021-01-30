@@ -45,7 +45,10 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
 
     beforeEach(async () => {
         await cleanDatabase()
-        idea = await createIdea({ networks: [{ name: 'local', value: 2 }] })
+        idea = await createIdea({
+            beneficiary: uuid(),
+            networks: [{name: 'local', value: 2}]
+        })
         data.ideaNetworkId = idea.networks![0].id
     })
 
