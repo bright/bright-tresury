@@ -25,15 +25,15 @@ const useStyles = makeStyles((theme: Theme) => {
 });
 
 interface Props {
-    account: string
+    address: string
 }
 
-export const Identicon: React.FC<Props> = ({account}) => {
+export const Identicon: React.FC<Props> = ({address}) => {
     const classes = useStyles()
     return <div className={classes.identicon}>
         {/** TODO: implement Identicon
-                https://github.com/polkadot-js/ui/tree/08132ef5663f677ed2b2a62112db76c1688c0b0e/packages/react-identicon
-        */}
-        {account.substring(0, 2)}
+         https://github.com/polkadot-js/ui/tree/08132ef5663f677ed2b2a62112db76c1688c0b0e/packages/react-identicon
+         */}
+        {address.substring(0, 2)}
     </div>
 }

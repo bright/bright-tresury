@@ -1,28 +1,21 @@
 import React from "react";
 import {IdeaDto} from "../ideas.api";
-import {generatePath, Link} from "react-router-dom";
+import {generatePath} from "react-router-dom";
 import {ROUTE_IDEA} from "../../routes";
 import {Divider} from "../../components/divider/Divider";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
-import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 import {formatNumber} from "../../util/numberUtil";
-import {Identicon} from "../../components/identicon/Identicon";
 import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
 import {NetworkCard} from "../../components/card/NetworkCard";
+import {AddressInfo} from "../../components/identicon/AddressInfo";
+import config from "../../config";
 import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    link: {
-        textDecoration: 'none',
-        color: theme.palette.text.primary
-    },
-    contentMargin: {
-        margin: '0 20px 0 24px'
-    },
     header: {
         marginTop: '20px',
         marginBottom: '6px',
@@ -68,29 +61,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         },
         fontWeight: 500,
         padding: '3px'
-    },
-    beneficiaryWrapper: {
-        display: 'flex',
-        alignItems: 'center'
-    },
-    beneficiaryInfo: {
-        display: 'flex',
-        marginLeft: '.75em',
-        flexDirection: 'row',
-    },
-    accountValue: {
-        fontSize: '1em',
-        height: '1em',
-        fontWeight: 600,
-        marginTop: '24px',
-        marginBottom: '4px'
-    },
-    beneficiaryLabel: {
-        fontSize: '12px',
-        fontWeight: 700,
-        marginBottom: '24px',
-        marginTop: '0',
-        color: theme.palette.text.disabled
     }
 }))
 
@@ -102,41 +72,20 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    const getBeneficiaryFragment = (): string => {
-        if (!idea.beneficiary) return ''
-        return ellipseTextInTheMiddle(idea.beneficiary, 12)
-    }
-
-    return <NetworkCard>
-        <Link className={classes.link}
-              to={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
-            <div className={`${classes.header} ${classes.contentMargin}`}>
-                <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
-                <IdeaStatusIndicator ideaStatus={idea.status}/>
-            </div>
-
-            <Divider className={classes.contentMargin}/>
-
-            <div className={`${classes.contentMargin} ${classes.details}`}>
-                <p className={classes.titleLabel}>{idea.title}</p>
-                {idea.networks.length > 0 ?
-                    <p className={classes.networkLabel}>{`${formatNumber(idea.networks[0].value)} LOC`}</p> : null}
-            </div>
-
-            <Divider className={classes.contentMargin}/>
-
-            <div className={`${classes.contentMargin} ${classes.beneficiaryWrapper}`}>
-                <Identicon account={idea.beneficiary}/>
-                <div className={classes.beneficiaryInfo}>
-                    <div>
-                        <p className={classes.accountValue}>
-                            {getBeneficiaryFragment()}
-                        </p>
-                        <p className={classes.beneficiaryLabel}>{t('idea.list.card.beneficiary')}</p>
-                    </div>
-                </div>
-            </div>
-        </Link>
+    return <NetworkCard
+        redirectTo={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
+        <div className={classes.header}>
+            <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
+            <IdeaStatusIndicator ideaStatus={idea.status}/>
+        </div>
+        <Divider/>
+        <div className={`${classes.details}`}>
+            <p className={classes.titleLabel}>{idea.title}</p>
+            {idea.networks.length > 0 ?
+                <p className={classes.networkLabel}>{`${formatNumber(idea.networks[0].value)} ${config.NETWORK_CURRENCY}`}</p> : null}
+        </div>
+        <Divider/>
+        <AddressInfo label={t('idea.list.card.beneficiary')} address={idea.beneficiary}/>
     </NetworkCard>
 }
 

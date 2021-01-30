@@ -1,29 +1,21 @@
 import React from "react";
-import {generatePath, Link} from "react-router-dom";
+import {generatePath} from "react-router-dom";
 import {ROUTE_PROPOSAL} from "../../routes";
 import {Divider} from "../../components/divider/Divider";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
-import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 import {formatNumber} from "../../util/numberUtil";
-import {Identicon} from "../../components/identicon/Identicon";
 import {ProposalDto} from "../proposals.api";
 import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
 import {ProposalContentType} from "../proposal/ProposalContentTypeTabs";
 import {ProposalIndex} from "./ProposalNumber";
 import {Placeholder} from "../../components/text/Placeholder";
 import {NetworkCard} from "../../components/card/NetworkCard";
+import {AddressInfo} from "../../components/identicon/AddressInfo";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
-    link: {
-        textDecoration: 'none',
-        color: theme.palette.text.primary
-    },
-    contentMargin: {
-        margin: '0 20px 0 24px'
-    },
     header: {
         display: 'flex',
         justifyContent: 'space-between',
@@ -59,7 +51,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     },
     titlePlaceholder: {
         fontSize: '18px',
-        color: theme.palette.text.hint
+        color: theme.palette.text.hint,
+        fontWeight: 500
     },
     networkLabel: {
         backgroundColor: '#E6F0FD',
@@ -79,29 +72,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         alignItems: 'center',
         justifyContent: 'space-between'
     },
-    accountWrapper: {
-        display: 'flex',
-        alignItems: 'center',
-    },
-    accountInfo: {
-        display: 'flex',
-        marginLeft: '.75em',
-        flexDirection: 'row',
-    },
-    accountValue: {
-        fontSize: '1em',
-        height: '1em',
-        fontWeight: 600,
-        marginTop: '24px',
-        marginBottom: '4px'
-    },
-    accountLabel: {
-        fontSize: '12px',
-        fontWeight: 700,
-        marginBottom: '24px',
-        marginTop: '0',
-        color: theme.palette.text.disabled
-    }
 }))
 
 interface Props {
@@ -112,64 +82,35 @@ const ProposalCard: React.FC<Props> = ({proposal}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    const getBeneficiaryFragment = (): string => {
-        if (!proposal.beneficiary) return ''
-        return ellipseTextInTheMiddle(proposal.beneficiary, 12)
-    }
+    const redirectTo = `${generatePath(
+        ROUTE_PROPOSAL,
+        {proposalId: proposal.proposalIndex})}
+        /${ProposalContentType.Info}`
 
-    const getProposerFragment = (): string => {
-        if (!proposal.proposer) return ''
-        return ellipseTextInTheMiddle(proposal.proposer, 12)
-    }
+    return <NetworkCard
+        redirectTo={redirectTo}>
+        <div className={classes.header}>
+            <ProposalIndex proposalIndex={proposal.proposalIndex}/>
+            <ProposalStatusIndicator proposalStatus={proposal.status}/>
+        </div>
 
-    return <NetworkCard>
-        <Link className={classes.link}
-              to={`${generatePath(ROUTE_PROPOSAL, {proposalId: proposal.proposalIndex})}/${ProposalContentType.Info}`}>
-            <div className={`${classes.header} ${classes.contentMargin}`}>
-                <ProposalIndex proposalIndex={proposal.proposalIndex}/>
-                <ProposalStatusIndicator proposalStatus={proposal.status}/>
-            </div>
+        <Divider/>
 
-            <Divider className={classes.contentMargin}/>
+        <div className={classes.details}>
+            <p className={classes.titleLabel}>
+                {proposal.title ||
+                <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')}/>
+                }
+            </p>
+            <p className={classes.networkLabel}>{`${formatNumber(proposal.value)} LOC`}</p>
+        </div>
 
-            <div className={`${classes.contentMargin} ${classes.details}`}>
-                <p className={classes.titleLabel}>
-                    {proposal.title ||
-                    <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')}/>
-                    }
-                </p>
-                <p className={classes.networkLabel}>{`${formatNumber(proposal.value)} LOC`}</p>
-            </div>
+        <Divider/>
 
-            <Divider className={classes.contentMargin}/>
-
-            <div className={`${classes.contentMargin} ${classes.accountsWrapper}`}>
-                <div className={classes.accountWrapper}>
-                    <Identicon account={proposal.beneficiary}/>
-                    <div className={classes.accountInfo}>
-                        <div>
-                            <p className={classes.accountValue}>
-                                {getBeneficiaryFragment()}
-                            </p>
-                            <p className={classes.accountLabel}>{t('proposal.list.card.beneficiary')}</p>
-                        </div>
-                    </div>
-                </div>
-
-                {/*TODO: create common view for such account details and replace it here and in [IdeaCard.tsx]*/}
-                <div className={classes.accountWrapper}>
-                    <Identicon account={proposal.proposer}/>
-                    <div className={classes.accountInfo}>
-                        <div>
-                            <p className={classes.accountValue}>
-                                {getProposerFragment()}
-                            </p>
-                            <p className={classes.accountLabel}>{t('proposal.list.card.proposer')}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Link>
+        <div className={classes.accountsWrapper}>
+            <AddressInfo label={t('proposal.list.card.beneficiary')} address={proposal.beneficiary}/>
+            <AddressInfo label={t('proposal.list.card.proposer')} address={proposal.proposer}/>
+        </div>
     </NetworkCard>
 }
 

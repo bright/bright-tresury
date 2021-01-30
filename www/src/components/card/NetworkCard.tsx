@@ -1,8 +1,9 @@
-import React from "react";
+import React, {HTMLAttributes} from "react";
 import {createStyles, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {Card} from "./Card";
 import config from "../../config";
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {
@@ -15,22 +16,37 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         position: 'relative',
         overflow: 'hidden'
     },
+    content: {
+        margin: '0 20px 0 24px'
+    },
     networkAccentLine: {
         backgroundColor: '#E6007A',
         height: '100%',
         width: '4px',
         position: 'absolute'
     },
+    link: {
+        textDecoration: 'none',
+        color: theme.palette.text.primary
+    },
 }))
 
 interface Props {
     network?: string
+    redirectTo?: string
 }
 
-export const NetworkCard: React.FC<Props> = ({children, network = config.NETWORK_NAME, ...props}) => {
+export const NetworkCard: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({children, network = config.NETWORK_NAME, redirectTo, ...props}) => {
     const classes = useStyles()
-    return <Card className={classes.root}>
-        <div className={classes.networkAccentLine}/>
+
+    const content = <div className={classes.content}>
         {children}
+    </div>
+
+    return <Card className={classes.root} {...props}>
+        <div className={classes.networkAccentLine}/>
+        {redirectTo ? <Link className={classes.link} to={redirectTo}>
+            {content}
+        </Link> : content}
     </Card>
 }

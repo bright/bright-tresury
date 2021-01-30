@@ -70,7 +70,7 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
         <Label label={t('idea.details.beneficiary')}/>
         <div className={classes.beneficiary}>
             {idea.beneficiary ? <>
-                <Identicon account={idea.beneficiary}/>
+                <Identicon address={idea.beneficiary}/>
                 <div className={`${classes.accountValue} ${classes.text}`}>
                     {idea.beneficiary}
                 </div>
