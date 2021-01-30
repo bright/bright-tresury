@@ -127,25 +127,68 @@ describe(`/api/v1/ideas`, () => {
                 .expect(400)
         })
 
+        it('should return bad request if network without a value', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: [{name: null}]})
+                .expect(400)
+        })
+
         it('should return bad request if links are not array', () => {
             return request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama'}], links: 'link'})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 2}], links: 'link'})
                 .expect(400)
         })
 
         it('should return bad request if links are strings array', () => {
             return request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama'}], links: 'https://somelink.com'})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 2}], links: 'https://somelink.com'})
                 .expect(400)
         })
 
         it('should return bad request for empty title', () => {
             return request(app())
                 .post(`${baseUrl}`)
-                .send({title: ''})
+                .send({title: '', networks: [{name: 'kusama', value: 2}]})
                 .expect(400)
+        })
+
+        it('should return bad request for wrong beneficiary', () => {
+            const beneficiary = '5GrwvaEF5zXb26Fz9rcQpDW'
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({
+                    title: 'Test title',
+                    networks: [{name: 'kusama', value: 2}],
+                    beneficiary
+                })
+                .expect(400)
+        })
+
+        it('should return created for empty beneficiary', () => {
+            const beneficiary = ''
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({
+                    title: 'Test title',
+                    networks: [{name: 'kusama', value: 2}],
+                    beneficiary
+                })
+                .expect(201)
+        })
+
+        it('should return created for correct beneficiary', () => {
+            const beneficiary = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({
+                    title: 'Test title',
+                    networks: [{name: 'kusama', value: 2}],
+                    beneficiary
+                })
+                .expect(201)
         })
 
         it('should return created for all valid data', () => {

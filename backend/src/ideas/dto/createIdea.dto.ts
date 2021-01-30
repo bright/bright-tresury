@@ -1,10 +1,11 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {Allow, ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested} from "class-validator";
+import {ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested} from "class-validator";
 import {IdeaNetworkDto} from "./ideaNetwork.dto";
 import {ideaRestrictions} from "../idea.entity";
 import {IdeaStatus} from "../ideaStatus";
 import {Type} from "class-transformer";
 import {CreateIdeaNetworkDto} from "./createIdeaNetwork.dto";
+import {IsValidAddress} from "../../utils/address/address.validator";
 
 const AllowedIdeaStatuses = [IdeaStatus.Draft, IdeaStatus.Active]
 
@@ -19,6 +20,7 @@ export class CreateIdeaDto {
 
     @ApiProperty()
     @IsOptional()
+    @IsValidAddress()
     beneficiary?: string
 
     @ApiPropertyOptional({maxLength: ideaRestrictions.field.maxLength})
