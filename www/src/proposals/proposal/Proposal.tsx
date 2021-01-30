@@ -1,5 +1,5 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Route, Switch, useRouteMatch} from 'react-router-dom';
 import {breakpoints} from "../../theme/theme";
 import ProposalInfo from "./info/ProposalInfo";
@@ -8,6 +8,9 @@ import ProposalMilestones from "./milestones/ProposalMilestones";
 import ProposalDiscussion from "./discussion/ProposalDiscussion";
 import ProposalVoting from "./voting/ProposalVoting";
 import ProposalHeader from "./discussion/ProposalHeader";
+import {useParams} from "react-router";
+import {getProposalByIndex, ProposalDto} from "../proposals.api";
+import config from "../../config";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -32,18 +35,30 @@ const useStyles = makeStyles((theme: Theme) =>
 const Proposal: React.FC = () => {
     const classes = useStyles()
 
+    let {proposalIndex} = useParams<{ proposalIndex: string }>()
+
+    const [proposal, setProposal] = useState<ProposalDto>()
+
+    useEffect(() => {
+        if (proposalIndex !== undefined) {
+            getProposalByIndex(proposalIndex, config.NETWORK_NAME).then((result) => {
+                setProposal(result)
+            }).catch()
+        }
+    }, [proposalIndex])
+
     let {path} = useRouteMatch();
 
     return (
         <div className={classes.root}>
-            <ProposalHeader/>
+            {proposal && <ProposalHeader proposal={proposal}/>}
             <div className={classes.content}>
                 <Switch>
                     <Route exact={true} path={path}>
-                        <ProposalInfo/>
+                        {proposal && <ProposalInfo proposal={proposal}/>}
                     </Route>
                     <Route exact={true} path={`${path}/${ProposalContentType.Info}`}>
-                        <ProposalInfo/>
+                        {proposal && <ProposalInfo proposal={proposal}/>}
                     </Route>
                     <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
                         <ProposalMilestones/>

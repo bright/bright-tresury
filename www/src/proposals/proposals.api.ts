@@ -20,6 +20,10 @@ export interface ProposalDto {
 
 const ProposalApiPath = `${API_URL}/proposals`
 
-export function getProposalsByNetwork(networkName: string) {
+export function getProposalsByNetwork(networkName: string): Promise<ProposalDto[]> {
     return fetchAndUnwrap<ProposalDto[]>('GET', `${ProposalApiPath}/?network=${networkName}`)
+}
+
+export function getProposalByIndex(index: string, networkName: string): Promise<ProposalDto> {
+    return fetchAndUnwrap<ProposalDto>('GET', `${ProposalApiPath}/${index}?network=${networkName}`)
 }

@@ -10,7 +10,7 @@ export const ROUTE_IDEA = '/ideas/:ideaId'
 // endregion
 // region Proposals
 export const ROUTE_PROPOSALS = '/proposals'
-export const ROUTE_PROPOSAL = '/proposal/:proposalId'
+export const ROUTE_PROPOSAL = '/proposals/:proposalIndex'
 // endregion
 // region Tips
 export const ROUTE_TIPS = '/tips'

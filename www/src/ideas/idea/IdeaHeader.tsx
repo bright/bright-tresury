@@ -1,21 +1,18 @@
 import React, {useState} from 'react';
-import crossSvg from "../../assets/cross.svg";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {useTranslation} from "react-i18next";
 import {useHistory} from "react-router-dom";
-import {Header} from "../../components/header/Header";
 import {ROUTE_IDEAS} from "../../routes";
-import {IconButton} from "../../components/button/IconButton";
 import {IdeaDto} from "../ideas.api";
 import {Button} from "../../components/button/Button";
 import SubmitProposalModal from "../SubmitProposalModal";
 import {breakpoints} from "../../theme/theme";
 import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
 import {Divider} from "../../components/divider/Divider";
-import {Amount} from "../../components/amount/Amount";
-import {calculateBondValue} from "../../networks/bondUtil";
-import config from "../../config";
 import {IdeaStatusIndicator} from "./status/IdeaStatusIndicator";
+import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposit";
+import {CloseIcon} from "../../components/closeIcon/CloseIcon";
+import {OptionalTitle} from "../../components/text/OptionalTitle";
 import {IdeaOrdinalNumber} from "../list/IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,19 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap'
-        },
-        closeIcon: {
-            position: 'absolute',
-            top: 32,
-            right: 32,
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                top: 20,
-                right: 16
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                top: 60,
-                right: 8,
-            }
         },
         basicInfo: {
             order: 1,
@@ -77,9 +61,10 @@ const useStyles = makeStyles((theme: Theme) =>
             height: 0,
         },
         ideaTitle: {
-            marginTop: '24px',
+            marginRight: '.5em',
+            fontSize: 18,
             flexBasis: '100%',
-            marginRight: '.75em'
+            marginTop: '24px',
         },
         ideaId: {
             fontSize: '18px',
@@ -88,8 +73,6 @@ const useStyles = makeStyles((theme: Theme) =>
             overflow: 'hidden'
         },
         networkValues: {
-            display: 'flex',
-            flexDirection: 'row',
             alignSelf: 'flex-start',
             order: 2,
             [theme.breakpoints.down(breakpoints.tablet)]: {
@@ -103,16 +86,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingLeft: '1.5em',
                 paddingRight: '1.5em'
             }
-        },
-        networkReward: {
-            flex: 1
-        },
-        networkDeposit: {
-            flex: 1,
-            marginLeft: '32px',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginLeft: '18px'
-            },
         },
         flexBreakLine: {
             flexBasis: '100%',
@@ -137,6 +110,8 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 2,
+                alignSelf: 'flex-end',
+                marginBottom: 24
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 position: 'fixed',
@@ -175,10 +150,9 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
     }
 
     const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
-    const bondValue = networkValue ? calculateBondValue(networkValue) : 0
 
     return <div className={classes.headerContainer}>
-        <IconButton className={classes.closeIcon} svg={crossSvg} onClick={navigateToList}/>
+        <CloseIcon onClose={navigateToList}/>
 
         <div className={classes.basicInfo}>
             <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
@@ -188,23 +162,11 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
             </div>
             <div className={classes.ideaTitleBreakLine}/>
             <div className={classes.ideaTitle}>
-                <Header>
-                    {idea.title}
-                </Header>
+                <OptionalTitle title={idea.title}/>
             </div>
         </div>
         <div className={classes.networkValues}>
-            <div className={classes.networkReward}>
-                <Amount amount={networkValue}
-                        currency={config.NETWORK_CURRENCY}
-                        label={t('idea.content.info.reward')}/>
-            </div>
-            <div className={classes.networkDeposit}>
-                <Amount amount={bondValue}
-                        currency={config.NETWORK_CURRENCY}
-                        label={t('idea.content.info.deposit')}
-                />
-            </div>
+            <NetworkRewardDeposit rewardValue={networkValue}/>
         </div>
         <div className={classes.flexBreakLine}/>
         <div className={classes.contentTypeTabs}>

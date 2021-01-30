@@ -1,8 +1,8 @@
 import React from "react";
-import {formatNumber} from "../../../util/numberUtil";
+import {formatNumber} from "../../util/numberUtil";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../../theme/theme";
-import config from "../../../config/index";
+import {breakpoints} from "../../theme/theme";
+import config from "../../config/index";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

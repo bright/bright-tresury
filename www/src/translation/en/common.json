@@ -2,6 +2,12 @@
   "components": {
     "timeSelect": {
       "currentSpendTime": "Current Spend Time"
+    },
+    "network": {
+      "rewardDeposit": {
+        "reward": "Reward",
+        "deposit": "Deposit"
+      }
     }
   },
   "menu": {

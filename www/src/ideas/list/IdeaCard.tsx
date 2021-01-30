@@ -9,8 +9,10 @@ import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
-import {NetworkCard} from "../../components/card/network/NetworkCard";
+import {NetworkCard} from "../../components/network/NetworkCard";
 import {AddressInfo} from "../../components/identicon/AddressInfo";
+import {NetworkValue} from "../../components/network/NetworkValue";
+import {NetworkCardTitle} from "../../components/network/NetworkCardTitle";
 import {NetworkValue} from "../../components/card/network/NetworkValue";
 import {TitleLabel} from "../../components/card/network/TitleLabel";
 import config from "../../config";
@@ -55,7 +57,7 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
         <Divider/>
 
         <div className={`${classes.details}`}>
-            <TitleLabel title={idea.title}/>
+            <NetworkCardTitle title={idea.title}/>
             {idea.networks.length > 0 ? <NetworkValue value={idea.networks[0].value}/> : null}
         </div>
 

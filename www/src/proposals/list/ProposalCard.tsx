@@ -10,10 +10,10 @@ import {ProposalDto} from "../proposals.api";
 import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
 import {ProposalContentType} from "../proposal/ProposalContentTypeTabs";
 import {ProposalIndex} from "./ProposalNumber";
-import {NetworkCard} from "../../components/card/network/NetworkCard";
+import {NetworkCard} from "../../components/network/NetworkCard";
 import {AddressInfo} from "../../components/identicon/AddressInfo";
-import {NetworkValue} from "../../components/card/network/NetworkValue";
-import {TitleLabel} from "../../components/card/network/TitleLabel";
+import {NetworkValue} from "../../components/network/NetworkValue";
+import {NetworkCardTitle} from "../../components/network/NetworkCardTitle";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
     header: {
@@ -50,11 +50,11 @@ const ProposalCard: React.FC<Props> = ({proposal}) => {
 
     const redirectTo = `${generatePath(
         ROUTE_PROPOSAL,
-        {proposalId: proposal.proposalIndex})}
-        /${ProposalContentType.Info}`
+        {proposalIndex: proposal.proposalIndex})}` + `/${ProposalContentType.Info}`
 
     return <NetworkCard
         redirectTo={redirectTo}>
+
         <div className={classes.header}>
             <ProposalIndex proposalIndex={proposal.proposalIndex}/>
             <ProposalStatusIndicator proposalStatus={proposal.status}/>
@@ -63,7 +63,7 @@ const ProposalCard: React.FC<Props> = ({proposal}) => {
         <Divider/>
 
         <div className={classes.details}>
-            <TitleLabel title={proposal.title}/>
+            <NetworkCardTitle title={proposal.title}/>
             <NetworkValue value={proposal.value}/>
         </div>
 
