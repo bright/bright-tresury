@@ -55,28 +55,28 @@ const ProposalStatusFilters: React.FC<Props> = ({filter}) => {
 
     const filterValues = Object.values(ProposalFilter)
 
-    const getTabEntry = (filter: ProposalFilter) => {
+    const getFilterOption = (filter: ProposalFilter) => {
         return {
             isDefault: filter === ProposalDefaultFilter,
             label: getTranslation(filter),
             path: `${ROUTE_PROPOSALS}?${ProposalFilterSearchParamName}=${filter}`
         } as TabEntry
     }
-    const tabEntries = filterValues.map((filter: ProposalFilter) => getTabEntry(filter))
+    const filterOptions = filterValues.map((filter: ProposalFilter) => getFilterOption(filter))
 
     /**
      * Current tab entry is forced, because there should be always some filter specified.
      */
-    const currentTabEntry = tabEntries.find(entry => entry.label === getTranslation(filter))!
+    const currentFilterOption = filterOptions.find(entry => entry.label === getTranslation(filter))!
 
     return <div>
         <Hidden only={breakpoints.mobile}>
-            <Tabs values={tabEntries}/>
+            <Tabs values={filterOptions}/>
         </Hidden>
         <NavSelect
             className={classes.filterSelect}
-            value={currentTabEntry}
-            options={tabEntries}
+            value={currentFilterOption}
+            options={filterOptions}
         />
     </div>
 }

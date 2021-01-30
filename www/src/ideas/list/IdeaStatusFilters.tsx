@@ -1,7 +1,7 @@
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles, Hidden} from "@material-ui/core";
 import React from "react";
-import {TabEntry, Tabs} from "../../components/tabs/Tabs";
+import {Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
 import {ROUTE_IDEAS} from "../../routes";
@@ -58,30 +58,30 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
 
     const filterValues = Object.values(IdeaFilter)
 
-    const getTabEntry = (filter: IdeaFilter) => {
+    const getFilterOption = (filter: IdeaFilter) => {
         return {
             isDefault: filter === IdeaDefaultFilter,
             label: getTranslation(filter),
             path: `${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${filter}`
-        } as TabEntry
+        }
     }
-    const tabEntries = filterValues.map((filter: IdeaFilter) => getTabEntry(filter))
+    const filterOptions = filterValues.map((filter: IdeaFilter) => getFilterOption(filter))
 
     /**
      * Current tab entry is forced, because there should be always some filter specified.
      */
-    const currentTabEntry = tabEntries.find(entry =>
+    const currentFilterOption = filterOptions.find(entry =>
         entry.label === getTranslation(filter)
     )!
 
     return <div>
         <Hidden only={breakpoints.mobile}>
-            <Tabs values={tabEntries}/>
+            <Tabs values={filterOptions}/>
         </Hidden>
         <NavSelect
             className={classes.filterSelect}
-            value={currentTabEntry}
-            options={tabEntries}
+            value={currentFilterOption}
+            options={filterOptions}
         />
     </div>
 }

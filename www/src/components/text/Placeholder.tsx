@@ -4,7 +4,7 @@ import React from "react";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
+        default: {
             color: theme.palette.text.hint,
             fontSize: '12px',
         },
@@ -18,7 +18,7 @@ interface Props {
 
 export const Placeholder: React.FC<Props> = ({value, className}) => {
     const classes = useStyles()
-    return <div className={className ?? classes.root}>
+    return <div className={className ?? classes.default}>
         {value}
     </div>
 }

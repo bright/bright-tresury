@@ -28,6 +28,6 @@ interface Props {
 export const NetworkValue: React.FC<Props> = ({value}) => {
     const classes = useStyles()
     return <p className={classes.root}>
-        {`${formatNumber(value)} ${config.NETWORK_CURRENCY}`}
+        {formatNumber(value)} {config.NETWORK_CURRENCY}
     </p>
 }
