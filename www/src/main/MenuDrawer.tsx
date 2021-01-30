@@ -5,17 +5,18 @@ import {makeStyles} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {WithWidthProps} from "@material-ui/core/withWidth/withWidth";
 import MenuItemsList from "./MenuItemsList";
-import treasuryLogo from "./../assets/treasury_logo.svg"
+import expandMenu from "./../assets/expand_menu.svg"
+import collapseMenu from "./../assets/collapse_menu.svg"
 import {IconButton} from "../components/button/IconButton";
 import MenuAppInfo from "./MenuAppInfo";
 
 const useStyles = makeStyles((theme: Theme) => {
-        const drawerWidth = 250
-        const miniDrawerWidth = 84
-        return createStyles({
-            root: {
-                background: theme.palette.background.default
-            },
+    const drawerWidth = 250
+    const miniDrawerWidth = 84
+    return createStyles({
+        root: {
+            background: theme.palette.background.default
+        },
             drawerIcon: {
                 marginTop: '1em'
             },
@@ -67,7 +68,8 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
         }}
         variant="permanent">
         {isTabletOrMobile ?
-            <IconButton className={classes.drawerIcon} svg={treasuryLogo} onClick={() => setOpen(!open)}/>
+            <IconButton className={classes.drawerIcon} svg={open ? collapseMenu : expandMenu}
+                        onClick={() => setOpen(!open)}/>
             : null
         }
         <MenuItemsList/>
