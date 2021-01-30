@@ -43,6 +43,7 @@ export const AddressInfo: React.FC<Props> = ({address, label}) => {
         if (!address) return ''
         return ellipseTextInTheMiddle(address, 12)
     }, [address])
+
     return <div className={classes.root}>
         {address && <Identicon address={address}/>}
         <div className={classes.info}>

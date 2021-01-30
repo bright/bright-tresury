@@ -7,11 +7,12 @@ import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
-import {formatNumber} from "../../util/numberUtil";
 import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
-import {NetworkCard} from "../../components/card/NetworkCard";
+import {NetworkCard} from "../../components/card/network/NetworkCard";
 import {AddressInfo} from "../../components/identicon/AddressInfo";
+import {NetworkValue} from "../../components/card/network/NetworkValue";
+import {TitleLabel} from "../../components/card/network/TitleLabel";
 import config from "../../config";
 import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
 
@@ -31,22 +32,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         [theme.breakpoints.down(breakpoints.mobile)]: {
             flexDirection: 'column-reverse',
             alignItems: 'flex-start'
-        },
-    },
-    titleLabel: {
-        display: 'inline-block',
-        fontSize: '1.5em',
-        marginBottom: '16px',
-        marginTop: 0,
-        fontWeight: 700,
-        width: '100%',
-        maxHeight: '3em',
-        textOverflow: `ellipsis`,
-        overflow: `hidden`,
-        [theme.breakpoints.up(breakpoints.tablet)]: {
-            height: '3em',
-            flex: 1,
-            marginTop: '16px'
         },
     },
     networkLabel: {
@@ -80,9 +65,8 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
         </div>
         <Divider/>
         <div className={`${classes.details}`}>
-            <p className={classes.titleLabel}>{idea.title}</p>
-            {idea.networks.length > 0 ?
-                <p className={classes.networkLabel}>{`${formatNumber(idea.networks[0].value)} ${config.NETWORK_CURRENCY}`}</p> : null}
+            <TitleLabel title={idea.title}/>
+            {idea.networks.length > 0 ? <NetworkValue value={idea.networks[0].value}/> : null}
         </div>
         <Divider/>
         <AddressInfo label={t('idea.list.card.beneficiary')} address={idea.beneficiary}/>

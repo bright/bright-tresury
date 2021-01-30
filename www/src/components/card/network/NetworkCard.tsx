@@ -1,8 +1,8 @@
 import React, {HTMLAttributes} from "react";
 import {createStyles, Theme} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import {Card} from "./Card";
-import config from "../../config";
+import {Card} from "../Card";
+import config from "../../../config/index";
 import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
