@@ -32,7 +32,8 @@
       "form": {
         "linkPlaceholder": "Add external link to your proposal here",
         "addLink": "+ Add Link",
-        "emptyFieldError": "This field cannot be empty"
+        "emptyFieldError": "This field cannot be empty",
+        "wrongBeneficiaryError": "Wrong beneficiary address"
       },
       "header": {
         "convertToProposal": "Convert to Proposal"
