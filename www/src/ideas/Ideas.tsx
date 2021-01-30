@@ -1,11 +1,12 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {useLocation} from 'react-router-dom';
 import {getIdeasByNetwork, IdeaDto} from './ideas.api';
-import {FilterSearchParamName, IdeaDefaultFilter, IdeaFilter} from "./list/IdeaStatusFilters";
+import {IdeaDefaultFilter, IdeaFilter, IdeaFilterSearchParamName} from "./list/IdeaStatusFilters";
 import config from '../config';
 import {filterIdeas} from "./list/filterIdeas";
 import IdeasHeader from "./IdeasHeader";
 import IdeasList from "./list/IdeasList";
+import {LoadingState, LoadingWrapper} from "../components/loading/LoadingWrapper";
 
 export const ideasHorizontalMargin = '32px'
 export const ideasMobileHorizontalMargin = '18px'
@@ -18,10 +19,10 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const location = useLocation()
 
     const [ideas, setIdeas] = useState<IdeaDto[]>([])
-    const [status, setStatus] = useState<string>('')
+    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Loading)
 
     const filter = useMemo(() => {
-        const filterParam = new URLSearchParams(location.search).get(FilterSearchParamName)
+        const filterParam = new URLSearchParams(location.search).get(IdeaFilterSearchParamName)
         return filterParam ? filterParam as IdeaFilter : IdeaDefaultFilter
     }, [location.search])
 
@@ -30,22 +31,21 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     }, [filter, ideas])
 
     useEffect(() => {
-        setStatus('loading')
         getIdeasByNetwork(network)
             .then((response: IdeaDto[]) => {
                 setIdeas(response)
-                setStatus('resolved')
+                setLoadingState(LoadingState.Resolved)
             })
             .catch(() => {
-                setStatus('error')
+                setLoadingState(LoadingState.Error)
             })
     }, [network])
 
     return <div>
         <IdeasHeader filter={filter}/>
-        {status === 'loading' && <p>Loading</p>}
-        {status === 'error' && <p>Error</p>}
-        {status === 'resolved' && (<IdeasList ideas={filteredIdeas}/>)}
+        <LoadingWrapper loadingState={loadingState}>
+            <IdeasList ideas={filteredIdeas}/>
+        </LoadingWrapper>
     </div>
 }
 

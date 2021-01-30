@@ -28,7 +28,7 @@ export enum IdeaFilter {
     Closed = 'closed',
 }
 
-export const FilterSearchParamName = "filter"
+export const IdeaFilterSearchParamName = "filter"
 export const IdeaDefaultFilter = IdeaFilter.All
 
 interface Props {
@@ -62,7 +62,7 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
         return {
             isDefault: filter === IdeaDefaultFilter,
             label: getTranslation(filter),
-            path: `${ROUTE_IDEAS}?${FilterSearchParamName}=${filter}`
+            path: `${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${filter}`
         } as TabEntry
     }
     const tabEntries = filterValues.map((filter: IdeaFilter) => getTabEntry(filter))

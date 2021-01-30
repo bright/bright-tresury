@@ -6,8 +6,7 @@ import {getProposalsByNetwork, ProposalDto} from "./proposals.api";
 import config from "../config";
 import {useLocation} from 'react-router-dom'
 import ProposalList from "./list/ProposalsList";
-import {FilterSearchParamName} from "../ideas/list/IdeaStatusFilters";
-import {ProposalDefaultFilter, ProposalFilter} from "./list/ProposalStatusFilters";
+import {ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName} from "./list/ProposalStatusFilters";
 
 export const proposalsHorizontalMargin = '32px'
 export const proposalsMobileHorizontalMargin = '18px'
@@ -31,7 +30,7 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Loading)
 
     const filter = useMemo(() => {
-        const filterParam = new URLSearchParams(location.search).get(FilterSearchParamName)
+        const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)
         return filterParam ? filterParam as ProposalFilter : ProposalDefaultFilter
     }, [location.search])
 
@@ -54,7 +53,7 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     return <div className={classes.root}>
         <ProposalsHeader filter={filter}/>
         <LoadingWrapper loadingState={loadingState}>
-            <ProposalList proposals={proposals}/>
+            <ProposalList proposals={filteredProposals}/>
         </LoadingWrapper>
     </div>
 }

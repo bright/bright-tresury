@@ -28,7 +28,7 @@ export enum ProposalFilter {
     Rewarded = 'rewarded',
 }
 
-const FilterSearchParamName = "filter"
+export const ProposalFilterSearchParamName = "filter"
 export const ProposalDefaultFilter = ProposalFilter.All
 
 interface Props {
@@ -62,7 +62,7 @@ const ProposalStatusFilters: React.FC<Props> = ({filter}) => {
         return {
             isDefault: filter === ProposalDefaultFilter,
             label: getTranslation(filter),
-            path: `${ROUTE_PROPOSALS}?${FilterSearchParamName}=${filter}`
+            path: `${ROUTE_PROPOSALS}?${ProposalFilterSearchParamName}=${filter}`
         } as TabEntry
     }
     const tabEntries = filterValues.map((filter: ProposalFilter) => getTabEntry(filter))
