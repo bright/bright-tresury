@@ -1,4 +1,9 @@
 {
+  "components": {
+    "timeSelect": {
+      "currentSpendTime": "Current Spend Time"
+    }
+  },
   "menu": {
     "stats": "Stats",
     "ideas": "Ideas",
@@ -56,7 +61,6 @@
         "beneficiary": "(Beneficiary)"
       },
       "filters": {
-        "currentSpendTime": "Current Spend Time",
         "all": "All",
         "mine": "Mine",
         "draft": "Draft",
@@ -88,7 +92,6 @@
         "titlePlaceholder": "No title provided"
       },
       "filters": {
-        "currentSpendTime": "Current Spend Time",
         "all": "All",
         "submitted": "Submitted",
         "approved": "Approved",

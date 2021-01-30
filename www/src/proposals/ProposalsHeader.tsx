@@ -1,5 +1,4 @@
 import React from "react";
-import {Select} from "../components/select/Select";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {Trans, useTranslation} from "react-i18next";
@@ -8,6 +7,7 @@ import ProposalStatusFilters, {ProposalFilter} from "./list/ProposalStatusFilter
 import {ideasHorizontalMargin, ideasMobileHorizontalMargin} from "../ideas/Ideas";
 import {ROUTE_NEW_IDEA} from "../routes";
 import {RouterLink} from "../components/link/RouterLink";
+import {TimeSelect} from "../components/select/TimeSelect";
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -116,11 +116,7 @@ const ProposalsHeader: React.FC<Props> = ({filter}) => {
         </div>
         <div className={classes.flexBreakLine}/>
         <div className={classes.timeSelectWrapper}>
-            <Select
-                className={classes.timeSelect}
-                value={t('proposal.list.filters.currentSpendTime')}
-                options={[t('proposal.list.filters.currentSpendTime')]}
-            />
+            <TimeSelect/>
         </div>
         <div className={classes.paperBackground}/>
         <div className={classes.statusFilters}>

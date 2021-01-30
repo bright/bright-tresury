@@ -1,6 +1,5 @@
 import React from "react";
 import {Button} from "../components/button/Button";
-import {Select} from "../components/select/Select";
 import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
@@ -8,6 +7,7 @@ import {useTranslation} from "react-i18next";
 import {ROUTE_NEW_IDEA} from "../routes";
 import {useHistory} from "react-router-dom";
 import {ideasHorizontalMargin, ideasMobileHorizontalMargin} from "./Ideas";
+import {TimeSelect} from "../components/select/TimeSelect";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -62,12 +62,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingLeft: ideasMobileHorizontalMargin
             },
         },
-        timeSelect: {
-            fontWeight: 600,
-            [theme.breakpoints.up(breakpoints.tablet)]: {
-                height: '32px',
-            },
-        },
         paperBackground: {
             display: 'none',
             [theme.breakpoints.down(breakpoints.mobile)]: {
@@ -116,11 +110,7 @@ const IdeasHeader: React.FC<Props> = ({filter}) => {
         </Button>
         <div className={classes.flexBreakLine}/>
         <div className={classes.timeSelectWrapper}>
-            <Select
-                className={classes.timeSelect}
-                value={t('idea.list.filters.currentSpendTime')}
-                options={[t('idea.list.filters.currentSpendTime')]}
-            />
+            <TimeSelect/>
         </div>
         <div className={classes.paperBackground}/>
         <div className={classes.statusFilters}>
