@@ -7,6 +7,7 @@ import config from "../config";
 import {useLocation} from 'react-router-dom'
 import ProposalList from "./list/ProposalsList";
 import {ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName} from "./list/ProposalStatusFilters";
+import {filterProposals} from "./list/filterProposals";
 
 export const proposalsHorizontalMargin = '32px'
 export const proposalsMobileHorizontalMargin = '18px'
@@ -35,8 +36,7 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     }, [location.search])
 
     const filteredProposals = useMemo(() => {
-        // TODO: filter proposals
-        return proposals
+        return filterProposals(proposals, filter)
     }, [filter, proposals])
 
     useEffect(() => {

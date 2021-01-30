@@ -1,7 +1,7 @@
 import {doesIdeaBelongToUser, IdeaDto, IdeaStatus} from "../ideas.api";
 import {IdeaFilter} from "./IdeaStatusFilters";
 
-/** TODO: adjust tests when authorization will be possible */
+/** TODO: adjust when authorization will be possible */
 export function filterIdeas(ideas: IdeaDto[], filter: IdeaFilter): IdeaDto[] {
     switch (filter) {
         case IdeaFilter.All:

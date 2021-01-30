@@ -21,7 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export enum ProposalFilter {
     All = 'all',
-    Published = 'published',
     Submitted = 'submitted',
     Approved = 'approved',
     Rejected = 'rejected',
@@ -43,8 +42,6 @@ const ProposalStatusFilters: React.FC<Props> = ({filter}) => {
         switch (proposalFilter) {
             case ProposalFilter.All:
                 return t('proposal.list.filters.all')
-            case ProposalFilter.Published:
-                return t('proposal.list.filters.published')
             case ProposalFilter.Submitted:
                 return t('proposal.list.filters.submitted')
             case ProposalFilter.Approved:

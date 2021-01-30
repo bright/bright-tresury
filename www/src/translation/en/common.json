@@ -90,7 +90,6 @@
       "filters": {
         "currentSpendTime": "Current Spend Time",
         "all": "All",
-        "published": "Published",
         "submitted": "Submitted",
         "approved": "Approved",
         "rejected": "Rejected",
