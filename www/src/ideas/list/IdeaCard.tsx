@@ -33,25 +33,13 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
             flexDirection: 'column-reverse',
             alignItems: 'flex-start'
         },
-    },
-    networkLabel: {
-        backgroundColor: '#E6F0FD',
-        borderRadius: '3px',
-        fontSize: '1em',
-        marginTop: '16px',
-        display: 'block',
-        position: 'relative',
-        [theme.breakpoints.up(breakpoints.tablet)]: {
-            marginLeft: '4em',
-        },
-        fontWeight: 500,
-        padding: '3px'
     }
 }))
 
 interface Props {
     idea: IdeaDto
 }
+
 
 const IdeaCard: React.FC<Props> = ({idea}) => {
     const classes = useStyles()
@@ -63,12 +51,16 @@ const IdeaCard: React.FC<Props> = ({idea}) => {
             <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
             <IdeaStatusIndicator ideaStatus={idea.status}/>
         </div>
+
         <Divider/>
+
         <div className={`${classes.details}`}>
             <TitleLabel title={idea.title}/>
             {idea.networks.length > 0 ? <NetworkValue value={idea.networks[0].value}/> : null}
         </div>
+
         <Divider/>
+
         <AddressInfo label={t('idea.list.card.beneficiary')} address={idea.beneficiary}/>
     </NetworkCard>
 }
