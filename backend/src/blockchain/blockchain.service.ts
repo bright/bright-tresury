@@ -1,4 +1,4 @@
-import {HttpException, Inject, Injectable} from '@nestjs/common'
+import {HttpException, Inject, Injectable, OnModuleDestroy} from '@nestjs/common'
 import {ApiPromise} from '@polkadot/api'
 import {DeriveTreasuryProposals} from "@polkadot/api-derive/types";
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
@@ -11,7 +11,7 @@ import {BlockchainProposal, BlockchainProposalStatus, toBlockchainProposal} from
 const logger = getLogger()
 
 @Injectable()
-export class BlockchainService {
+export class BlockchainService implements OnModuleDestroy {
     private unsub?: () => void;
 
     constructor(
@@ -24,8 +24,10 @@ export class BlockchainService {
         return this.polkadotApi
     }
 
-    async onModuleDestroy() {
-        await this.unsub?.()
+    async onModuleDestroy(): Promise<void> {
+        if (this.unsub) {
+            await this.unsub()
+        }
     }
 
     async listenForExtrinsic(
@@ -48,7 +50,9 @@ export class BlockchainService {
             const extrinsic: Extrinsic | undefined = signedBlock.block.extrinsics.find((ex) => ex.hash.toString() === extrinsicHash)
             if (extrinsic) {
                 const events = ((await this.polkadotApi.query.system.events.at(header.hash)) as unknown) as EventRecord[];
-                await this.unsub?.()
+                if (this.unsub) {
+                    await this.unsub()
+                }
 
                 const applyExtrinsicEvents = events
                     .filter(({phase, event}) => phase.isApplyExtrinsic)
@@ -66,7 +70,7 @@ export class BlockchainService {
                         } as ExtrinsicEvent
                     })
 
-                const method = extrinsic.method.toJSON() as {args?: unknown}
+                const method = extrinsic.method.toJSON() as { args?: unknown }
                 const args = method?.args ?? {}
 
                 const result = {
@@ -81,7 +85,9 @@ export class BlockchainService {
             // stop listening to blocks after some time - we assume the block might not be found
             // TODO set the threshold to some reasonable value
             if (blocksCount >= 50) {
-                await this.unsub?.()
+                if (this.unsub) {
+                    await this.unsub()
+                }
             }
         })
     }

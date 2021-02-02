@@ -38,7 +38,7 @@ describe(`Blockchain service`, () => {
             let expectedProposalId = 0
 
             // create and sign extrinsic
-            const extrinsic = api.tx.treasury.proposeSpend(10, bobAddress)
+            const extrinsic = await api.tx.treasury.proposeSpend(10, bobAddress)
             await extrinsic.signAsync(aliceKeypair)
 
             // start listening for the extrinsic
@@ -70,11 +70,13 @@ describe(`Blockchain service`, () => {
                     value: 10,
                     beneficiary: bobAddress
                 })
+                // tslint:disable-next-line:no-console
+                console.error('Its fine')
                 done()
             })
 
             // send the extrinsic
-            await extrinsic.send((result: any) => {
+            await extrinsic.send(async (result: any) => {
                 if (result.isFinalized) {
                     // TODO fix types
                     expectedBlockHash = result.status.asFinalized.toString()
@@ -89,7 +91,7 @@ describe(`Blockchain service`, () => {
             let expectedBlockHash = ''
 
             // create and sign extrinsic which will fail as only ApproveOrigin can call this extrinsic
-            const extrinsic = api.tx.treasury.rejectProposal(0)
+            const extrinsic = await api.tx.treasury.rejectProposal(0)
             await extrinsic.signAsync(aliceKeypair)
 
             // start listening for the extrinsic
@@ -111,14 +113,14 @@ describe(`Blockchain service`, () => {
                     expectedBlockHash = result.status.asFinalized.toString()
                 }
             })
-        }, 60000)
+        }, 60000);
     })
 
     describe('getProposals', () => {
         it('should return existing proposals', async (done) => {
             // create a proposal
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
-            const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), bobAddress)
+            const extrinsic = await api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), bobAddress)
             await extrinsic.signAndSend(aliceKeypair, async (result: SubmittableResult) => {
                 if (result.isFinalized) {
                     const proposals = await service().getProposals()
