@@ -42,7 +42,7 @@ describe('filter proposals', () => {
             proposals[3],
         ]);
     })
-    test('filter proposals by submitted', () => {
+    test('filter proposals by rejected', () => {
         const proposals = [
             createProposal(ProposalStatus.Approved),
             createProposal(ProposalStatus.Submitted),

@@ -9,7 +9,7 @@ import {breakpoints} from "../../theme/theme";
 import {ProposalDto} from "../proposals.api";
 import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
 import {ProposalContentType} from "../proposal/ProposalContentTypeTabs";
-import {ProposalIndex} from "./ProposalNumber";
+import {ProposalIndex} from "./ProposalIndex";
 import {NetworkCard} from "../../components/network/NetworkCard";
 import {AddressInfo} from "../../components/identicon/AddressInfo";
 import {NetworkValue} from "../../components/network/NetworkValue";

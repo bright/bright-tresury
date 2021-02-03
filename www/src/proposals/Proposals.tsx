@@ -5,7 +5,7 @@ import {LoadingState, LoadingWrapper} from "../components/loading/LoadingWrapper
 import {getProposalsByNetwork, ProposalDto} from "./proposals.api";
 import config from "../config";
 import {useLocation} from 'react-router-dom'
-import ProposalList from "./list/ProposalsList";
+import ProposalsList from "./list/ProposalsList";
 import {ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName} from "./list/ProposalStatusFilters";
 import {filterProposals} from "./list/filterProposals";
 
@@ -53,7 +53,7 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     return <div className={classes.root}>
         <ProposalsHeader filter={filter}/>
         <LoadingWrapper loadingState={loadingState}>
-            <ProposalList proposals={filteredProposals}/>
+            <ProposalsList proposals={filteredProposals}/>
         </LoadingWrapper>
     </div>
 }

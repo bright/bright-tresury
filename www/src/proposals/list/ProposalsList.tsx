@@ -7,9 +7,9 @@ interface Props {
     proposals: ProposalDto[]
 }
 
-const ProposalList: React.FC<Props> = ({proposals}) => {
+const ProposalsList: React.FC<Props> = ({proposals}) => {
     const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal}/>
     return <Grid items={proposals} renderItem={renderCard}/>
 }
 
-export default ProposalList
+export default ProposalsList

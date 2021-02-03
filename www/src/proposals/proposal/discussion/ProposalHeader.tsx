@@ -2,7 +2,7 @@ import React from 'react';
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import ProposalContentTypeTabs from "../ProposalContentTypeTabs";
 import {breakpoints} from "../../../theme/theme";
-import {ProposalIndex} from "../../list/ProposalNumber";
+import {ProposalIndex} from "../../list/ProposalIndex";
 import {ProposalStatusIndicator} from "../../status/ProposalStatusIndicator";
 import {ProposalDto} from "../../proposals.api";
 import {Divider} from "../../../components/divider/Divider";
