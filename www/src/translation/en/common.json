@@ -33,6 +33,7 @@
         "linkPlaceholder": "Add external link to your proposal here",
         "addLink": "+ Add Link",
         "emptyFieldError": "This field cannot be empty",
+        "nonZeroFieldError": "The value must me greater than zero",
         "wrongBeneficiaryError": "Wrong beneficiary address"
       },
       "header": {

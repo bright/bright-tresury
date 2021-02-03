@@ -8,7 +8,7 @@ import {FormButtonsContainer} from "../../components/formContainer/FormButtons";
 import {FormInput} from "../../components/input/FormInput";
 import {FormSelect} from "../../components/select/FormSelect";
 import config from "../../config";
-import {isValidAddressOrEmpty} from "../../util/addressValidator";
+import {isValidAddressOrEmpty, isValidAddress} from "../../util/addressValidator";
 import {breakpoints} from "../../theme/theme";
 import {IdeaDto, IdeaNetworkDto} from "../ideas.api";
 
@@ -36,9 +36,10 @@ const useStyles = makeStyles((theme: Theme) =>
 interface Props {
     idea: IdeaDto,
     onSubmit: (idea: IdeaDto) => void
+    extendedValidation?: boolean
 }
 
-const IdeaForm: React.FC<Props> = ({idea, onSubmit, children}) => {
+const IdeaForm: React.FC<Props> = ({idea, onSubmit, extendedValidation, children}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -49,6 +50,17 @@ const IdeaForm: React.FC<Props> = ({idea, onSubmit, children}) => {
         })
     })
 
+    const extendedValidationSchema = Yup.object().shape({
+        beneficiary: Yup.string()
+            .required(t('idea.details.form.emptyFieldError')),
+        networks: Yup.array()
+            .of(Yup.object().shape({
+                value: Yup.number()
+                    .required(t('idea.details.form.emptyFieldError'))
+                    .moreThan(0, (t('idea.details.form.nonZeroFieldError'))),
+            })),
+    })
+
     return (
         <Formik
             enableReinitialize={true}
@@ -56,7 +68,7 @@ const IdeaForm: React.FC<Props> = ({idea, onSubmit, children}) => {
                 ...idea,
                 links: (idea.links && idea.links.length > 0) ? idea.links : ['']
             }}
-            validationSchema={validationSchema}
+            validationSchema={extendedValidation ? validationSchema.concat(extendedValidationSchema) : validationSchema}
             onSubmit={onSubmit}>
             {({
                   values,
