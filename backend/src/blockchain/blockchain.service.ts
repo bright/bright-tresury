@@ -1,4 +1,4 @@
-import {HttpException, Inject, Injectable, OnModuleDestroy} from '@nestjs/common'
+import {HttpException, Inject, Injectable} from '@nestjs/common'
 import {ApiPromise} from '@polkadot/api'
 import {DeriveTreasuryProposals} from "@polkadot/api-derive/types";
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
@@ -11,7 +11,7 @@ import {BlockchainProposal, BlockchainProposalStatus, toBlockchainProposal} from
 const logger = getLogger()
 
 @Injectable()
-export class BlockchainService implements OnModuleDestroy {
+export class BlockchainService {
     private unsub?: () => void;
 
     constructor(
@@ -24,10 +24,8 @@ export class BlockchainService implements OnModuleDestroy {
         return this.polkadotApi
     }
 
-    async onModuleDestroy(): Promise<void> {
-        if (this.unsub) {
-            await this.unsub()
-        }
+    async onModuleDestroy() {
+        await this.unsub?.()
     }
 
     async listenForExtrinsic(
@@ -50,9 +48,7 @@ export class BlockchainService implements OnModuleDestroy {
             const extrinsic: Extrinsic | undefined = signedBlock.block.extrinsics.find((ex) => ex.hash.toString() === extrinsicHash)
             if (extrinsic) {
                 const events = ((await this.polkadotApi.query.system.events.at(header.hash)) as unknown) as EventRecord[];
-                if (this.unsub) {
-                    await this.unsub()
-                }
+                await this.unsub?.()
 
                 const applyExtrinsicEvents = events
                     .filter(({phase, event}) => phase.isApplyExtrinsic)
@@ -85,9 +81,7 @@ export class BlockchainService implements OnModuleDestroy {
             // stop listening to blocks after some time - we assume the block might not be found
             // TODO set the threshold to some reasonable value
             if (blocksCount >= 50) {
-                if (this.unsub) {
-                    await this.unsub()
-                }
+                await this.unsub?.()
             }
         })
     }

@@ -11,8 +11,8 @@ import {ExtrinsicsService} from './extrinsics.service';
 
 describe('ExtrinsicsService', () => {
     const blockchainService = {
-        listenForExtrinsic: async (extrinsicDto: CreateExtrinsicDto, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
-            await cb({
+        listenForExtrinsic: (extrinsicDto: CreateExtrinsicDto, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => {}) => {
+            cb({
                 blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
                 events: [{
                     section: 'treasury',
