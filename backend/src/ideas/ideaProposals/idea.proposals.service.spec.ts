@@ -13,6 +13,7 @@ import {createIdea} from "../spec.helpers";
 import {CreateIdeaProposalDto, IdeaProposalDataDto} from "./dto/createIdeaProposal.dto";
 import {IdeaProposalsService} from "./idea.proposals.service";
 import {IdeaStatus} from "../ideaStatus";
+import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
 
 describe('IdeaProposalsService', () => {
     const blockHash = '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04'
@@ -83,6 +84,15 @@ describe('IdeaProposalsService', () => {
             await service().createProposal(idea.id, dto)
 
             expect(spy).toHaveBeenCalled()
+        })
+
+        it('should throw empty beneficiary exception if idea beneficiary is empty', async () => {
+            const createdIdea = await ideasService().create({title: '', networks: [{name: 'local', value: 10}]})
+            const actualIdea = (await ideasService().findOne(createdIdea.id))!
+            const actualDto = new CreateIdeaProposalDto(actualIdea.networks![0].id, '', '', new IdeaProposalDataDto(3))
+            await expect(service().createProposal(actualIdea.id, actualDto))
+                .rejects
+                .toThrow(EmptyBeneficiaryException)
         })
     })
 

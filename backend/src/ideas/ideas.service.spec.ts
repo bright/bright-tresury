@@ -7,7 +7,6 @@ import {IdeasService} from './ideas.service';
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 
 describe(`/api/v1/ideas`, () => {
 
@@ -309,12 +308,6 @@ describe(`/api/v1/ideas`, () => {
             await expect(getService().turnIdeaIntoProposalByNetworkId(uuid(), 1234))
                 .rejects
                 .toThrow(NotFoundException)
-        })
-        it('should throw empty beneficiary exception if idea beneficiary is empty', async () => {
-            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]})
-            await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, 1234))
-                .rejects
-                .toThrow(EmptyBeneficiaryException)
         })
     })
     describe('delete', () => {

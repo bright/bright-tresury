@@ -9,7 +9,6 @@ import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
 import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 
 const logger = getLogger()
 
@@ -121,9 +120,6 @@ export class IdeasService {
 
     async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number) {
         const idea = await this.findOneByNetworkId(networkId)
-        if (!idea.beneficiary) {
-            throw new EmptyBeneficiaryException()
-        }
         await this.ideaNetworkRepository.save({id: networkId, blockchainProposalId})
         await this.update({status: IdeaStatus.TurnedIntoProposal}, idea!.id)
     }

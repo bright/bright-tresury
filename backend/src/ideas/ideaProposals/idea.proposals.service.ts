@@ -7,7 +7,7 @@ import {getLogger} from "../../logging.module";
 import {IdeaNetwork} from '../ideaNetwork.entity';
 import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
 import {IdeasService} from "../ideas.service";
-import {IdeaStatus} from "../ideaStatus";
+import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
 
 const logger = getLogger()
 
@@ -22,6 +22,10 @@ export class IdeaProposalsService {
 
     async createProposal(ideaId: string, dto: CreateIdeaProposalDto): Promise<IdeaNetwork> {
         const idea = await this.ideaService.findOne(ideaId)
+
+        if (!idea.beneficiary) {
+            throw new EmptyBeneficiaryException()
+        }
 
         const network = await idea.networks?.find((n) => n.id === dto.ideaNetworkId)
         if (!network) {
