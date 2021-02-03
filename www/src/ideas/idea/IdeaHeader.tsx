@@ -119,10 +119,10 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
                 color="primary"
                 className={classes.convertToProposalButton}
                 onClick={navigateToConvertToProposal}>
-                {t('idea.details.header.convertToProposal')}
-            </Button>
-        </div>
-        }
+                    {t('idea.details.header.convertToProposal')}
+                </Button>
+            </div>
+            }
     </HeaderContainer>
 }
 

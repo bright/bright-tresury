@@ -1,4 +1,3 @@
-import {Typography} from "@material-ui/core";
 import React, {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useParams} from "react-router";
