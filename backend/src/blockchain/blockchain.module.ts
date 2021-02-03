@@ -1,4 +1,4 @@
-import {Module} from '@nestjs/common'
+import {Module, OnModuleDestroy} from '@nestjs/common'
 import {ApiPromise, WsProvider} from '@polkadot/api'
 import {ConfigModule} from '../config/config'
 import {getLogger} from "../logging.module";
@@ -51,7 +51,7 @@ const polkadotApiFactory = {
     imports: [ConfigModule],
     exports: ['PolkadotApi'],
 })
-export class PolkadotApiModule {
+export class PolkadotApiModule implements OnModuleDestroy {
     async onModuleDestroy() {
         logger.info("Polkadot module destroy")
         polkadotApiInstance?.off('connected', onConnectedHandler)

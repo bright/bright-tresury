@@ -1,4 +1,4 @@
-import {HttpException, Inject, Injectable} from '@nestjs/common'
+import {HttpException, Inject, Injectable, OnModuleDestroy} from '@nestjs/common'
 import {ApiPromise} from '@polkadot/api'
 import {DeriveTreasuryProposals} from "@polkadot/api-derive/types";
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
@@ -11,7 +11,7 @@ import {BlockchainProposal, BlockchainProposalStatus, toBlockchainProposal} from
 const logger = getLogger()
 
 @Injectable()
-export class BlockchainService {
+export class BlockchainService implements OnModuleDestroy {
     private unsub?: () => void;
 
     constructor(
