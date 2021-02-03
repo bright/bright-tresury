@@ -8,8 +8,8 @@ interface Props {
 }
 
 const IdeasList: React.FC<Props> = ({ideas}) => {
-    const getCard = (idea: IdeaDto) => <IdeaCard idea={idea}/>
-    return <Grid items={ideas} component={getCard}/>
+    const renderCard = (idea: IdeaDto) => <IdeaCard idea={idea}/>
+    return <Grid items={ideas} renderItem={renderCard}/>
 }
 
 export default IdeasList

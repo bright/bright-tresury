@@ -8,8 +8,8 @@ interface Props {
 }
 
 const ProposalList: React.FC<Props> = ({proposals}) => {
-    const getCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal}/>
-    return <Grid items={proposals} component={getCard}/>
+    const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal}/>
+    return <Grid items={proposals} renderItem={renderCard}/>
 }
 
 export default ProposalList

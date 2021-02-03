@@ -21,18 +21,18 @@ const useStyles = makeStyles((theme: Theme) => {
 
 interface GridProps<T> {
     items: T[]
-    component: (item: T) => JSX.Element
+    renderItem: (item: T) => JSX.Element
 }
 
 export type IGrid<T = any> = React.FC<GridProps<T>>
 
-export const Grid: IGrid = ({items, component}) => {
+export const Grid: IGrid = ({items, renderItem}) => {
     const classes = useStyles()
 
     return <MaterialGrid container spacing={2} className={classes.root}>
         {items.map((item, index: number) =>
             <GridItem key={index}>
-                {component(item)}
+                {renderItem(item)}
             </GridItem>
         )}
     </MaterialGrid>

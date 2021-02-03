@@ -39,7 +39,7 @@ interface Props {
 export const AddressInfo: React.FC<Props> = ({address, label}) => {
     const classes = useStyles()
 
-    const accountFragment = useMemo(() => {
+    const addressFragment = useMemo(() => {
         if (!address) return ''
         return ellipseTextInTheMiddle(address, 12)
     }, [address])
@@ -49,7 +49,7 @@ export const AddressInfo: React.FC<Props> = ({address, label}) => {
         <div className={classes.info}>
             <div>
                 <p className={classes.value}>
-                    {accountFragment}
+                    {addressFragment}
                 </p>
                 <p className={classes.label}>{label}</p>
             </div>
