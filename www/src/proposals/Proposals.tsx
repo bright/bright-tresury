@@ -1,8 +1,8 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useMemo} from 'react';
 import ProposalsHeader from "./ProposalsHeader";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {LoadingState, LoadingWrapper} from "../components/loading/LoadingWrapper";
-import {getProposalsByNetwork, ProposalDto} from "./proposals.api";
+import {LoadingWrapper, useLoading} from "../components/loading/LoadingWrapper";
+import {getProposalsByNetwork} from "./proposals.api";
 import config from "../config";
 import {useLocation} from 'react-router-dom'
 import ProposalsList from "./list/ProposalsList";
@@ -27,8 +27,7 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const classes = useStyles()
     const location = useLocation()
 
-    const [proposals, setProposals] = useState<ProposalDto[]>([])
-    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Loading)
+    const {loadingState, response: proposals} = useLoading(getProposalsByNetwork(network), [network])
 
     const filter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)
@@ -36,19 +35,8 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     }, [location.search])
 
     const filteredProposals = useMemo(() => {
-        return filterProposals(proposals, filter)
+        return proposals ? filterProposals(proposals, filter) : []
     }, [filter, proposals])
-
-    useEffect(() => {
-        getProposalsByNetwork(network)
-            .then((response) => {
-                setProposals(response)
-                setLoadingState(LoadingState.Resolved)
-            })
-            .catch(() => {
-                setLoadingState(LoadingState.Error)
-            })
-    }, [network])
 
     return <div className={classes.root}>
         <ProposalsHeader filter={filter}/>
