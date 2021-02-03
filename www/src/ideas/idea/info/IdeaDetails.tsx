@@ -1,12 +1,12 @@
 import React, {useMemo} from "react";
-import {IdeaDto} from "../ideas.api";
+import {IdeaDto} from "../../ideas.api";
 import {useTranslation} from "react-i18next";
-import {Label} from "../../components/text/Label";
-import {Identicon} from "../../components/identicon/Identicon";
+import {Label} from "../../../components/text/Label";
+import {Identicon} from "../../../components/identicon/Identicon";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {Link} from "../../components/link/Link";
-import {breakpoints} from "../../theme/theme";
-import {Placeholder} from "../../components/text/Placeholder";
+import {Link} from "../../../components/link/Link";
+import {breakpoints} from "../../../theme/theme";
+import {Placeholder} from "../../../components/text/Placeholder";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

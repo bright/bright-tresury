@@ -6,6 +6,7 @@ export const ROUTE_STATS = '/stats'
 export const ROUTE_IDEAS = '/ideas'
 export const ROUTE_NEW_IDEA = '/ideas/new'
 export const ROUTE_EDIT_IDEA = '/ideas/edit/:ideaId'
+export const ROUTE_CONVERT_IDEA = '/ideas/convert/:ideaId'
 export const ROUTE_IDEA = '/ideas/:ideaId'
 // endregion
 // region Proposals

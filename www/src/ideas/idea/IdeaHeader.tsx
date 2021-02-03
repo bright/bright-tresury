@@ -1,26 +1,25 @@
-import React, {useState} from 'react';
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import React from 'react';
 import {useTranslation} from "react-i18next";
-import {useHistory} from "react-router-dom";
-import {ROUTE_IDEAS} from "../../routes";
-import {IdeaDto} from "../ideas.api";
+import {generatePath, useHistory} from "react-router-dom";
 import {Button} from "../../components/button/Button";
-import SubmitProposalModal from "../SubmitProposalModal";
-import {breakpoints} from "../../theme/theme";
-import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
-import {IdeaStatusIndicator} from "./status/IdeaStatusIndicator";
-import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposit";
 import {CloseIcon} from "../../components/closeIcon/CloseIcon";
-import {OptionalTitle} from "../../components/text/OptionalTitle";
 import {BasicInfo} from "../../components/header/BasicInfo";
+import {BasicInfoDivider} from "../../components/header/details/BasicInfoDivider";
 import {HeaderContainer} from "../../components/header/details/HeaderContainer";
 import {NetworkValues} from "../../components/header/details/NetworkValues";
-import {FlexBreakLine} from "../../components/header/FlexBreakLine";
-import {HeaderTabs} from "../../components/header/HeaderTabs";
-import {BasicInfoDivider} from "../../components/header/details/BasicInfoDivider";
 import {Status} from "../../components/header/details/Status";
 import {Title} from "../../components/header/details/Title";
+import {FlexBreakLine} from "../../components/header/FlexBreakLine";
+import {HeaderTabs} from "../../components/header/HeaderTabs";
+import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposit";
+import {OptionalTitle} from "../../components/text/OptionalTitle";
+import {ROUTE_CONVERT_IDEA, ROUTE_IDEAS} from "../../routes";
+import {breakpoints} from "../../theme/theme";
+import {IdeaDto} from "../ideas.api";
 import {IdeaOrdinalNumber} from "../list/IdeaOrdinalNumber";
+import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
+import {IdeaStatusIndicator} from "./status/IdeaStatusIndicator";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -82,10 +81,12 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
     const {t} = useTranslation()
     const history = useHistory()
 
-    const [submitProposalVisibility, setSubmitProposalVisibility] = useState(false);
-
     const navigateToList = () => {
         history.push(ROUTE_IDEAS)
+    }
+
+    const navigateToConvertToProposal = () => {
+        history.push(generatePath(ROUTE_CONVERT_IDEA, {ideaId: idea.id}),{idea})
     }
 
     const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
@@ -113,14 +114,11 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
             variant="contained"
             color="primary"
             className={classes.convertToProposalButton}
-            onClick={() => setSubmitProposalVisibility(true)}>
-            {t('idea.details.header.convertToProposal')}
-        </Button></div>
-        }
-        <SubmitProposalModal
-            open={submitProposalVisibility}
-            onClose={() => setSubmitProposalVisibility(false)}
-            idea={idea}/>
+            onClick={navigateToConvertToProposal}>
+                    {t('idea.details.header.convertToProposal')}
+                </Button>
+            </div>
+            }
     </HeaderContainer>
 }
 

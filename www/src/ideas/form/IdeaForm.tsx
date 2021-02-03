@@ -1,17 +1,16 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React, {useMemo} from 'react';
-import {useHistory} from 'react-router-dom';
-import {useTranslation} from "react-i18next";
 import {FieldArray, Formik} from "formik";
+import React from 'react';
+import {useTranslation} from "react-i18next";
 import * as Yup from 'yup'
-import {breakpoints} from "../../theme/theme";
-import {createIdea, IdeaDto, IdeaNetworkDto, IdeaStatus, updateIdea} from "../ideas.api";
-import {ROUTE_IDEAS} from "../../routes";
+import {Button} from "../../components/button/Button";
+import {FormButtonsContainer} from "../../components/formContainer/FormButtons";
 import {FormInput} from "../../components/input/FormInput";
 import {FormSelect} from "../../components/select/FormSelect";
-import {Button} from "../../components/button/Button";
 import config from "../../config";
-import {isValidAddress, isValidAddressOrEmpty} from "../../util/addressValidator";
+import {isValidAddressOrEmpty} from "../../util/addressValidator";
+import {breakpoints} from "../../theme/theme";
+import {IdeaDto, IdeaNetworkDto} from "../ideas.api";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,53 +30,17 @@ const useStyles = makeStyles((theme: Theme) =>
             backgroundColor: theme.palette.background.default,
             fontWeight: 500
         },
-        submitButtons: {
-            margin: '3em 0',
-            display: 'flex',
-            justifyContent: 'space-between',
-            position: 'relative',
-            flexDirection: 'row-reverse',
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                justifyContent: 'inherit',
-                flexDirection: 'column-reverse'
-            },
-        },
-        bottomButtons: {
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                width: '100%'
-            },
-        },
-        saveAsDraftButton: {
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                marginTop: '2em'
-            },
-        }
     }),
 );
 
 interface Props {
     idea: IdeaDto,
-    setIdea?: (idea: IdeaDto) => void,
+    onSubmit: (idea: IdeaDto) => void
 }
 
-const SubmitType = 'submitType'
-
-const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
+const IdeaForm: React.FC<Props> = ({idea, onSubmit, children}) => {
     const classes = useStyles()
-    const history = useHistory()
     const {t} = useTranslation()
-    const isNew = (): boolean => idea.id === undefined
-
-    const save = async (formIdea: IdeaDto) => {
-        const editedIdea = {...idea, ...formIdea}
-        if (isNew()) {
-            await createIdea(editedIdea)
-            history.push(ROUTE_IDEAS)
-        } else {
-            await updateIdea(editedIdea)
-            history.push(ROUTE_IDEAS)
-        }
-    }
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('idea.details.form.emptyFieldError')),
@@ -85,11 +48,6 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
             return isValidAddressOrEmpty(address)
         })
     })
-
-    const saveAsDraftEnabled = useMemo(() =>
-        !idea.status || idea.status === IdeaStatus.Draft,
-        [idea.status]
-    )
 
     return (
         <Formik
@@ -99,11 +57,10 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                 links: (idea.links && idea.links.length > 0) ? idea.links : ['']
             }}
             validationSchema={validationSchema}
-            onSubmit={save}>
+            onSubmit={onSubmit}>
             {({
                   values,
                   handleSubmit,
-                  setFieldValue
               }) =>
                 <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                     <div className={classes.inputField}>
@@ -189,24 +146,9 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
                             </div>
                         )}/>
                     </div>
-                    <div className={classes.submitButtons}>
-                        <Button
-                            className={classes.bottomButtons}
-                            variant={"contained"} color="primary" type="submit"
-                            onClick={() => {
-                                setFieldValue('status', IdeaStatus.Active)
-                            }}>
-                            {t(isNew() ? 'idea.details.create' : 'idea.details.edit')}
-                        </Button>
-                        {saveAsDraftEnabled && <Button
-                            className={`${classes.bottomButtons} ${classes.saveAsDraftButton}`}
-                            variant={"outlined"} color="primary" type="submit"
-                            onClick={() => {
-                                setFieldValue('status', IdeaStatus.Draft)
-                            }}>
-                            {t('idea.details.saveDraft')}
-                        </Button>}
-                    </div>
+                    <FormButtonsContainer>
+                        {children}
+                    </FormButtonsContainer>
                 </form>
             }
         </Formik>

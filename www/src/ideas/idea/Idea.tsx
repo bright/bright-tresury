@@ -44,7 +44,7 @@ const Idea: React.FC<Props> = ({network}) => {
     /**
      * TODO:// check if [idea] belongs to the currently logged in user
      */
-    const [canEdit, setCanEdit] = useState(isAuthorized())
+    const [canEdit] = useState(isAuthorized())
 
     useEffect(() => {
         if (ideaId !== undefined) {

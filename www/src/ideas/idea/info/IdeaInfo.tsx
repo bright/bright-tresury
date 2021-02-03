@@ -1,7 +1,7 @@
 import React from "react";
-import IdeaForm from "../../form/IdeaForm";
 import {IdeaDto} from "../../ideas.api";
-import IdeaDetails from "../../details/IdeaDetails";
+import IdeaDetails from "./IdeaDetails";
+import IdeaEdit from "./IdeaEdit";
 
 interface Props {
     idea: IdeaDto
@@ -10,7 +10,7 @@ interface Props {
 
 const IdeaInfo: React.FC<Props> = ({idea, canEdit}) => {
     return <>
-        {canEdit ? <IdeaForm idea={idea}/> : <IdeaDetails idea={idea}/>}
+        {canEdit ? <IdeaEdit idea={idea}/> : <IdeaDetails idea={idea}/>}
     </>
 }
 

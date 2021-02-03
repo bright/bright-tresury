@@ -43,6 +43,7 @@ export function createEmptyIdea(network: string): IdeaDto {
         contact: '',
         portfolio: '',
         links: [''],
+        status: IdeaStatus.Draft
     } as IdeaDto
 }
 
