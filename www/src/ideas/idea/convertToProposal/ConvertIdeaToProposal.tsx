@@ -51,7 +51,7 @@ const ConvertIdeaToProposal: React.FC = () => {
     return <FormContainer title={t('idea.convertToProposal.title')}>
         {idea &&
         <>
-            <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true}>
+            <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
                 <RightButton>
                     {t('idea.convertToProposal.submit')}
                 </RightButton>

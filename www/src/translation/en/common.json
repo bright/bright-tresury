@@ -34,7 +34,9 @@
         "addLink": "+ Add Link",
         "emptyFieldError": "This field cannot be empty",
         "nonZeroFieldError": "The value must me greater than zero",
-        "wrongBeneficiaryError": "Wrong beneficiary address"
+        "wrongBeneficiaryError": "Wrong beneficiary address",
+        "showAll": "Show all information",
+        "showLess": "Show less information"
       },
       "header": {
         "convertToProposal": "Convert to Proposal"
