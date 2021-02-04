@@ -1,4 +1,4 @@
-import {Module, OnModuleDestroy} from '@nestjs/common'
+import {HttpException, Module, OnModuleDestroy} from '@nestjs/common'
 import {ApiPromise, WsProvider} from '@polkadot/api'
 import {ConfigModule} from '../config/config'
 import {getLogger} from "../logging.module";
@@ -41,6 +41,11 @@ const polkadotApiFactory = {
             polkadotApiInstance.on('ready', onReadyHandler);
             polkadotApiInstance.on('error', onErrorHandler);
         }
+        try {
+            await polkadotApiInstance.isReadyOrError
+        } catch (err) {
+            throw new HttpException('No blockchain connection', 404)
+        }
         return polkadotApiInstance
     },
     inject: [BlockchainConfigToken],
@@ -57,7 +62,7 @@ export class PolkadotApiModule implements OnModuleDestroy {
         polkadotApiInstance?.off('connected', onConnectedHandler)
         polkadotApiInstance?.off('ready', onReadyHandler)
         polkadotApiInstance?.off('error', onErrorHandler)
-        polkadotApiInstance?.disconnect()
+        await polkadotApiInstance?.disconnect()
     }
 }
 

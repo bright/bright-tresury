@@ -1,4 +1,4 @@
-import {HttpException, Inject, Injectable, OnModuleDestroy} from '@nestjs/common'
+import {HttpException, Inject, Injectable, OnModuleDestroy, OnModuleInit} from '@nestjs/common'
 import {ApiPromise} from '@polkadot/api'
 import {DeriveTreasuryProposals} from "@polkadot/api-derive/types";
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
@@ -20,23 +20,21 @@ export class BlockchainService implements OnModuleDestroy {
     }
 
     async getApi(): Promise<ApiPromise> {
-        await this.polkadotApi.isReady
         return this.polkadotApi
     }
 
     async onModuleDestroy() {
+        await this.callUnsub()
+    }
+
+    async callUnsub() {
         await this.unsub?.()
+        this.unsub = undefined
     }
 
     async listenForExtrinsic(
         extrinsicHash: string,
         cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) {
-
-        try {
-            await this.polkadotApi.isReadyOrError
-        } catch (err) {
-            throw new HttpException('No blockchain connection', 404)
-        }
 
         let blocksCount = 0;
 
@@ -48,7 +46,7 @@ export class BlockchainService implements OnModuleDestroy {
             const extrinsic: Extrinsic | undefined = signedBlock.block.extrinsics.find((ex) => ex.hash.toString() === extrinsicHash)
             if (extrinsic) {
                 const events = ((await this.polkadotApi.query.system.events.at(header.hash)) as unknown) as EventRecord[];
-                await this.unsub?.()
+                await this.callUnsub()
 
                 const applyExtrinsicEvents = events
                     .filter(({phase, event}) => phase.isApplyExtrinsic)
@@ -81,18 +79,12 @@ export class BlockchainService implements OnModuleDestroy {
             // stop listening to blocks after some time - we assume the block might not be found
             // TODO set the threshold to some reasonable value
             if (blocksCount >= 50) {
-                await this.unsub?.()
+                await this.callUnsub()
             }
         })
     }
 
     async getProposals(): Promise<BlockchainProposal[]> {
-        try {
-            await this.polkadotApi.isReadyOrError
-        } catch (err) {
-            throw new HttpException('No blockchain connection', 404)
-        }
-
         logger.info('Getting proposals from blockchain...')
         const proposals: DeriveTreasuryProposals = await this.polkadotApi.derive.treasury.proposals()
 
