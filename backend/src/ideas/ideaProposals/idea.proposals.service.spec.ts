@@ -4,6 +4,7 @@ import {Repository} from "typeorm";
 import {BlockchainService} from '../../blockchain/blockchain.service';
 import {UpdateExtrinsicDto} from '../../extrinsics/dto/updateExtrinsic.dto';
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
+import {getLogger} from "../../logging.module";
 import {beforeAllSetup, cleanDatabase} from '../../utils/spec.helpers';
 import {Idea} from '../idea.entity';
 import {IdeaNetwork} from '../ideaNetwork.entity';
@@ -62,8 +63,10 @@ describe('IdeaProposalsService', () => {
             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
         }
         const createdIdea = await createIdea(partialIdea, ideasService())
-        idea = (await ideasService().findOne(createdIdea.id))!
+        idea = await ideasService().findOne(createdIdea.id)
         dto = new CreateIdeaProposalDto(idea.networks![0].id, '', '', new IdeaProposalDataDto(3))
+        getLogger().info("Idea created")
+        getLogger().info(idea)
     })
 
     it('should be defined', () => {
@@ -79,6 +82,7 @@ describe('IdeaProposalsService', () => {
 
         it('should run extractExtrinsic', async () => {
             const spy = jest.spyOn(service(), 'extractEvents').mockImplementationOnce(async (events: ExtrinsicEvent[], network: IdeaNetwork) => {
+                getLogger().info("This is a mocked extractEvents function")
                 return
             })
             await service().createProposal(idea.id, dto)

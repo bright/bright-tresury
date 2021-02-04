@@ -2,12 +2,12 @@ import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {In, Repository} from 'typeorm';
 import {getLogger} from "../logging.module";
-import {Idea} from './idea.entity';
-import {IdeaNetwork} from './ideaNetwork.entity';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
-import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
+import {Idea} from './idea.entity';
+import {IdeaNetwork} from './ideaNetwork.entity';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 
 const logger = getLogger()
@@ -121,6 +121,6 @@ export class IdeasService {
     async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number) {
         const idea = await this.findOneByNetworkId(networkId)
         await this.ideaNetworkRepository.save({id: networkId, blockchainProposalId})
-        await this.update({status: IdeaStatus.TurnedIntoProposal}, idea!.id)
+        await this.ideaRepository.save({id: idea.id, status: IdeaStatus.TurnedIntoProposal})
     }
 }
