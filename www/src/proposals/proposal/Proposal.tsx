@@ -7,7 +7,7 @@ import {ProposalContentType} from "./ProposalContentTypeTabs";
 import ProposalMilestones from "./milestones/ProposalMilestones";
 import ProposalDiscussion from "./discussion/ProposalDiscussion";
 import ProposalVoting from "./voting/ProposalVoting";
-import ProposalHeader from "./discussion/ProposalHeader";
+import ProposalHeader from "./ProposalHeader";
 import {useParams} from "react-router";
 import {getProposalByIndex, ProposalDto} from "../proposals.api";
 import config from "../../config";
