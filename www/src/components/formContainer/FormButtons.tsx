@@ -11,14 +11,17 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'space-between',
             position: 'relative',
             flexDirection: 'row-reverse',
+            flexGrow: 1,
+            alignItems: 'flex-end',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 justifyContent: 'inherit',
-                flexDirection: 'column-reverse'
+                flexDirection: 'column-reverse',
             },
         },
         buttons: {
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                width: '100%'
+                width: '100%',
+                marginTop: '2em'
             },
         },
         leftButton: {

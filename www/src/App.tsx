@@ -27,6 +27,7 @@ import Proposal from "./proposals/proposal/Proposal";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            minHeight: '100vh',
             display: 'flex',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 flexDirection: 'column'

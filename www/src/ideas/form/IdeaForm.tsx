@@ -13,10 +13,14 @@ import {isValidAddressOrEmpty} from "../../util/addressValidator";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         form: {
-            marginTop: '2em'
+            flexGrow: 1,
+            display: 'flex',
+            flexDirection: 'column',
+
         },
         foldButton: {
-            marginTop: '2em'
+            marginTop: '2em',
+            alignSelf: 'flex-start',
         },
 
     }),
