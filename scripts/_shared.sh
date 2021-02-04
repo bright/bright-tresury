@@ -15,13 +15,13 @@ export DOCKER_REGISTRY=${DOCKER_REGISTRY:-''}
 export AWS_REGION=${AWS_REGION:-eu-central-1}
 
 function docker-compose {
-    TAG=${VCS_VERSION} command docker-compose --project-name backend "${@}"
+    TAG=${VCS_VERSION} command docker-compose --project-name treasury "${@}"
 }
 
 if [[ ! -z "${DOCKER_REGISTRY}" ]]; then
     if [[ ! "${DOCKER_REGISTRY}" == */ ]]; then
         echo "Append / to DOCKER_REGISTRY=${DOCKER_REGISTRY}"
-        DOCKER_REGISTRY="${DOCKER_REGISTRY}/treasury/"
+        DOCKER_REGISTRY="${DOCKER_REGISTRY}/"
     fi
 fi
 
