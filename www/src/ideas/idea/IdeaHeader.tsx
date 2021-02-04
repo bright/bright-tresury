@@ -16,19 +16,14 @@ import {BasicInfo} from "../../components/header/BasicInfo";
 import {HeaderContainer} from "../../components/header/HeaderContainer";
 import {NetworkValues} from "../../components/header/NetworkValues";
 import {FlexBreakLine} from "../../components/header/FlexBreakLine";
-import {ContentTypeTabs} from "../../components/header/ContentTypeTabs";
+import {HeaderTabs} from "../../components/header/HeaderTabs";
 import {BasicInfoDivider} from "../../components/header/BasicInfoDivider";
 import {Status} from "../../components/header/Status";
 import {Title} from "../../components/header/Title";
+import {IdeaOrdinalNumber} from "../list/IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        ideaId: {
-            fontSize: '18px',
-            maxWidth: '60%',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden'
-        },
         flexBreakLine: {
             order: 3
         },
@@ -98,9 +93,7 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
     return <HeaderContainer>
         <CloseIcon onClose={navigateToList}/>
         <BasicInfo>
-            <div className={classes.ideaId}>
-                {idea.id}
-            </div>
+            <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
             <BasicInfoDivider/>
             <Status>
                 <IdeaStatusIndicator ideaStatus={idea.status}/>
@@ -113,9 +106,9 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
             <NetworkRewardDeposit rewardValue={networkValue}/>
         </NetworkValues>
         <FlexBreakLine className={classes.flexBreakLine}/>
-        <ContentTypeTabs className={classes.contentTypeTabs}>
+        <HeaderTabs className={classes.contentTypeTabs}>
             <IdeaContentTypeTabs/>
-        </ContentTypeTabs>
+        </HeaderTabs>
         {!!idea.id && <div className={classes.convertToProposal}><Button
             variant="contained"
             color="primary"

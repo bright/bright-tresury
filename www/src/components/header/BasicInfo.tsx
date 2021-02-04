@@ -13,7 +13,9 @@ const useStyles = makeStyles((theme: Theme) =>
             flexWrap: 'wrap',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 paddingLeft: '1.5em',
+                paddingRight: '1.5em'
             },
+            marginBottom: '24px',
         },
     }))
 

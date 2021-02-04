@@ -7,21 +7,19 @@ import clsx from "clsx";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            alignSelf: 'flex-start',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                justifyContent: 'center',
-                width: '100%',
-                marginBottom: '16px',
-            },
+            display: 'none',
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                marginTop: 0,
-                paddingLeft: '1.5em',
-                paddingRight: '1.5em'
+                display: 'initial',
+                flexGrow: 1,
+                background: 'tomato',
+                height: '32px',
+                position: 'relative',
+                backgroundColor: theme.palette.background.paper
             }
         },
     }))
 
-export const NetworkValues: React.FC<ClassNameProps> = ({className, children}) => {
+export const PaperFilterBackground: React.FC<ClassNameProps> = ({className, children}) => {
     const classes = useStyles()
     return <div className={clsx(classes.root, className)}>
         {children}

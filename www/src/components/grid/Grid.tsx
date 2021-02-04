@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) => {
             padding: `26px ${horizontalMargin}`,
             backgroundColor: theme.palette.background.paper,
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: `8px ${mobileHorizontalMargin} 26px ${mobileHorizontalMargin}`,
+                padding: `18px ${mobileHorizontalMargin} 26px ${mobileHorizontalMargin}`,
             },
         },
     })

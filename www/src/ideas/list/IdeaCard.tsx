@@ -13,9 +13,6 @@ import {NetworkCard} from "../../components/network/NetworkCard";
 import {AddressInfo} from "../../components/identicon/AddressInfo";
 import {NetworkValue} from "../../components/network/NetworkValue";
 import {NetworkCardTitle} from "../../components/network/NetworkCardTitle";
-import {NetworkValue} from "../../components/card/network/NetworkValue";
-import {TitleLabel} from "../../components/card/network/TitleLabel";
-import config from "../../config";
 import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) => createStyles({

@@ -4,6 +4,7 @@ import React from "react";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            marginTop: '24px',
             marginRight: '.5em',
             fontSize: 18,
             flexBasis: '100%'

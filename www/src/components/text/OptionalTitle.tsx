@@ -32,7 +32,7 @@ export const OptionalTitle: React.FC<Props> = ({title}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    return <p className={classes.root}>
+    return <div className={classes.root}>
         {title || <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')}/>}
-    </p>
+    </div>
 }

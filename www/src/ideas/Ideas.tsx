@@ -8,9 +8,6 @@ import IdeasHeader from "./IdeasHeader";
 import IdeasList from "./list/IdeasList";
 import {LoadingWrapper, useLoading} from "../components/loading/LoadingWrapper";
 
-export const ideasHorizontalMargin = '32px'
-export const ideasMobileHorizontalMargin = '18px'
-
 interface Props {
     network: string
 }

@@ -14,7 +14,7 @@ import {HeaderContainer} from "../../components/header/HeaderContainer";
 import {BasicInfo} from "../../components/header/BasicInfo";
 import {NetworkValues} from "../../components/header/NetworkValues";
 import {FlexBreakLine} from "../../components/header/FlexBreakLine";
-import {ContentTypeTabs} from "../../components/header/ContentTypeTabs";
+import {HeaderTabs} from "../../components/header/HeaderTabs";
 import {BasicInfoDivider} from "../../components/header/BasicInfoDivider";
 import {Title} from "../../components/header/Title";
 import {Status} from "../../components/header/Status";
@@ -74,9 +74,9 @@ const ProposalHeader: React.FC<Props> = ({proposal}) => {
 
         <FlexBreakLine className={classes.flexBreakLine}/>
 
-        <ContentTypeTabs className={classes.contentTypeTabs}>
+        <HeaderTabs className={classes.contentTypeTabs}>
             <ProposalContentTypeTabs/>
-        </ContentTypeTabs>
+        </HeaderTabs>
 
     </HeaderContainer>
 }

@@ -9,9 +9,6 @@ import ProposalsList from "./list/ProposalsList";
 import {ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName} from "./list/ProposalStatusFilters";
 import {filterProposals} from "./list/filterProposals";
 
-export const proposalsHorizontalMargin = '32px'
-export const proposalsMobileHorizontalMargin = '18px'
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
