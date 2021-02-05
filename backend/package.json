@@ -1,7 +1,7 @@
 {
-  "name": "@bright/backend",
+  "name": "@bright/treasury-backend",
+  "description": "Bright Treasury backend application",
   "version": "1.0.0",
-  "description": "API",
   "private": true,
   "scripts": {
     "clean": "npm run clean-js && npx rimraf dist",

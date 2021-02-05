@@ -16,7 +16,6 @@ describe('filter ideas', () => {
             ideas[1],
             ideas[2],
             ideas[3],
-            ideas[4],
         ]);
     })
     test('filter ideas by draft', () => {
@@ -30,7 +29,7 @@ describe('filter ideas', () => {
 
         expect(filterIdeas(ideas, IdeaFilter.Draft)).toStrictEqual([
             ideas[1],
-            ideas[3],
+            ideas[2],
         ]);
     })
     test('filter ideas by active', () => {
@@ -44,7 +43,7 @@ describe('filter ideas', () => {
 
         expect(filterIdeas(ideas, IdeaFilter.Active)).toStrictEqual([
             ideas[0],
-            ideas[3],
+            ideas[2],
         ]);
     })
     test('filter ideas by turned into proposal', () => {
