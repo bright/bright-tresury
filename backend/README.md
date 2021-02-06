@@ -13,6 +13,7 @@ Run:
 * `npm install`
 * `npm run compile`
 * `DEPLOY_ENV=development-local DATABASE_USERNAME=deployer  npm run database:migrate`
+* `DEPLOY_ENV=development-local npm run auth:core`
 * `DEPLOY_ENV=development-local npm run main`
 
 Access [api documentation](http://localhost:3001/api/documentation/)
@@ -22,6 +23,11 @@ Run tests
 * `DEPLOY_ENV=test-local DATABASE_USERNAME=deployer  npm run database:migrate`
 * to run all tests `DEPLOY_ENV=test-local npm run test`
 * to run a single test suit `DEPLOY_ENV=test-local npm run test -- testSuitName`
+
+#### Authorization
+
+We are using SuperTokens as authorization core. 
+Please see [authCore.docker.sh](authCore.docker.sh) file to find proper command used for running SuperTokens core. 
 
 ## Configuration
 

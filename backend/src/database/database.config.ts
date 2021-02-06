@@ -1,5 +1,6 @@
 import { Schema, SchemaObj } from "convict"
 import { LoggerOptions } from "typeorm/logger/LoggerOptions";
+import {stringFormat} from "../config/string.format";
 
 export interface DatabaseConfig {
     host: string
@@ -20,11 +21,7 @@ export const databaseConfigSchema: Schema<DatabaseConfig> = {
         doc: "Database connection hostname",
         default: "localhost",
         env: "DATABASE_HOST",
-        format(value: any) {
-            if (typeof value !== "string") {
-                throw new Error("must be a string")
-            }
-        }
+        format: stringFormat
     } as SchemaObj<string>,
 
     port: {
@@ -45,11 +42,7 @@ export const databaseConfigSchema: Schema<DatabaseConfig> = {
         doc: "Username used to connect to database",
         default: "treasury",
         env: "DATABASE_USERNAME",
-        format(value: any) {
-            if (typeof value !== "string") {
-                throw new Error("must be a string")
-            }
-        }
+        format: stringFormat
     } as SchemaObj<string>,
 
     password: {
@@ -71,11 +64,7 @@ export const databaseConfigSchema: Schema<DatabaseConfig> = {
     database: {
         doc: "Database name used to connect to database",
         default: "treasury",
-        format(value: any) {
-            if (typeof value !== "string") {
-                throw new Error("must be a string")
-            }
-        }
+        format: stringFormat
     } as SchemaObj<string>,
 
     logging: {

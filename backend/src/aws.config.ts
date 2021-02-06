@@ -1,4 +1,5 @@
 import { Schema, SchemaObj } from "convict";
+import {stringFormat} from "./config/string.format";
 
 // add more as you like
 type AWS_REGION = 'eu-central-1' | 'eu-west-1'
@@ -15,10 +16,6 @@ export const awsConfigSchema: Schema<AWSConfig> = {
         doc: "AWS_REGION to use",
         env: "AWS_REGION",
         default: "eu-central-1",
-        format(value: any) {
-            if (typeof value !== "string") {
-                throw new Error("must be a string")
-            }
-        }
+        format: stringFormat
     } as SchemaObj<AWS_REGION>
 }

@@ -1,4 +1,5 @@
 import { Schema, SchemaObj } from "convict";
+import {stringFormat} from "../config/string.format";
 
 export interface BlockchainConfig {
     nodeUrl: string,
@@ -12,11 +13,7 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         doc: "Url used to connect to Substrate node",
         default: "ws://substrate:9944",
         env: "SUBSTRATE_NODE_URL",
-        format(value: any) {
-            if (typeof value !== "string") {
-                throw new Error("must be a string")
-            }
-        }
+        format: stringFormat
     } as SchemaObj<string>,
     types: {
         doc: "Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.",

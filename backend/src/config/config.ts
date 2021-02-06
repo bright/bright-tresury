@@ -10,10 +10,15 @@ import { DatabaseConfig, databaseConfigSchema, DatabaseConfigToken } from "../da
 import { getLogger } from "../logging.module";
 import { AsyncFactoryProvider, propertyOfProvider } from "../utils/dependency.injection";
 import { BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken } from "../blockchain/blockchain.config";
+import {stringFormat} from "./string.format";
 
 interface EnvConfig {
     deployEnv: "production" | "development" | "development-local" | "stage" | "test" | "test-local"
-    port: number
+    port: number,
+    appName: string,
+    apiUrl: string,
+    websiteUrl: string
+    authCoreUrl: string
 }
 
 export type AppConfig = EnvConfig & {
@@ -33,8 +38,32 @@ const configSchema = convict<AppConfig>({
     port: {
         doc: "Listen port.",
         format: "port",
-        default: 3000,
+        default: 3001,
         env: "PORT"
+    },
+    appName: {
+        doc: "Name of the app",
+        format: stringFormat,
+        default: 'Bright Treasury',
+        env: "appName"
+    },
+    apiUrl: {
+        doc: "Api url",
+        format: stringFormat,
+        default: 'http://localhost:3001',
+        env: "apiUrl"
+    },
+    websiteUrl: {
+        doc: "Website url",
+        format: stringFormat,
+        default: 'http://localhost:3000',
+        env: "websiteUrl"
+    },
+    authCoreUrl: {
+        doc: "Auth core url",
+        format: stringFormat,
+        default: 'http://localhost:3567',
+        env: "authCoreUrl"
     },
     auth: authConfigSchema,
     database: databaseConfigSchema,

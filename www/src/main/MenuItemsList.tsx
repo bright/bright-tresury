@@ -7,16 +7,17 @@ import {useTranslation} from "react-i18next";
 import {NavLink} from "react-router-dom";
 import {Button} from "../components/button/Button";
 import {isAuthorized, setAuthorized} from "../util/auth.util";
+import {signOut} from "supertokens-auth-react/lib/build/recipe/emailpassword";
 
 const useStyles = makeStyles((theme: Theme) => {
-    return createStyles({
-        navLinkItem: {
-            padding: '20px 38px',
-            display: 'flex',
-            alignItems: 'center',
-            alignContent: 'center',
-            width: '100%',
-            textDecoration: 'none',
+        return createStyles({
+            navLinkItem: {
+                padding: '20px 38px',
+                display: 'flex',
+                alignItems: 'center',
+                alignContent: 'center',
+                width: '100%',
+                textDecoration: 'none',
                 minHeight: 0,
                 color: theme.palette.text.primary,
                 [theme.breakpoints.down(breakpoints.tablet)]: {
@@ -117,7 +118,10 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
                         textAlign: 'center',
                         backgroundColor: isAuthorized() ? 'orange' : 'green'
                     }}
-                    onClick={() => {
+                    onClick={async () => {
+                        if(isAuthorized()) {
+                            await signOut()
+                        }
                         setAuthorized(!isAuthorized())
                         window.location.reload()
                     }}>
