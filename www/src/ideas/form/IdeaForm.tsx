@@ -1,6 +1,6 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import {Formik} from "formik";
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import * as Yup from 'yup'
 import {Button} from "../../components/button/Button";

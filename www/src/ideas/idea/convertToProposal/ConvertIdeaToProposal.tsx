@@ -34,6 +34,7 @@ const ConvertIdeaToProposal: React.FC = () => {
         const editedIdea = {...idea, ...formIdea}
         await updateIdea(editedIdea)
             .then(() => {
+                setIdea(editedIdea)
                 setModalOpen(true)
             })
             .catch((error) => {
