@@ -1,5 +1,5 @@
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React from 'react';
+import React, {useMemo} from 'react';
 import {useTranslation} from "react-i18next";
 import {generatePath, useHistory} from "react-router-dom";
 import {Button} from "../../components/button/Button";
@@ -16,7 +16,7 @@ import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposi
 import {OptionalTitle} from "../../components/text/OptionalTitle";
 import {ROUTE_CONVERT_IDEA, ROUTE_IDEAS} from "../../routes";
 import {breakpoints} from "../../theme/theme";
-import {IdeaDto} from "../ideas.api";
+import {IdeaDto, IdeaStatus} from "../ideas.api";
 import {IdeaOrdinalNumber} from "../list/IdeaOrdinalNumber";
 import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "./status/IdeaStatusIndicator";
@@ -86,8 +86,11 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
     }
 
     const navigateToConvertToProposal = () => {
-        history.push(generatePath(ROUTE_CONVERT_IDEA, {ideaId: idea.id}),{idea})
+        history.push(generatePath(ROUTE_CONVERT_IDEA, {ideaId: idea.id}), {idea})
     }
+
+    const canConvertToProposal = useMemo(() => !!idea.id && canEdit && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active),
+        [idea, canEdit])
 
     const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
 
@@ -110,15 +113,16 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
         <HeaderTabs className={classes.contentTypeTabs}>
             <IdeaContentTypeTabs/>
         </HeaderTabs>
-        {!!idea.id && <div className={classes.convertToProposal}><Button
-            variant="contained"
-            color="primary"
-            className={classes.convertToProposalButton}
-            onClick={navigateToConvertToProposal}>
-                    {t('idea.details.header.convertToProposal')}
-                </Button>
-            </div>
-            }
+        {canConvertToProposal && <div className={classes.convertToProposal}>
+            <Button
+                variant="contained"
+                color="primary"
+                className={classes.convertToProposalButton}
+                onClick={navigateToConvertToProposal}>
+                {t('idea.details.header.convertToProposal')}
+            </Button>
+        </div>
+        }
     </HeaderContainer>
 }
 
