@@ -12,9 +12,9 @@ export function filterProposals(proposals: ProposalDto[], filter: ProposalFilter
         case ProposalFilter.Approved:
             return proposals.filter(proposal => proposal.status === ProposalStatus.Approved)
         case ProposalFilter.Rejected:
-            return proposals.filter(proposal => proposal.status === ProposalStatus.Closed)
+            return proposals.filter(proposal => proposal.status === ProposalStatus.Rejected)
         case ProposalFilter.Rewarded:
-            return proposals
+            return proposals.filter(proposal => proposal.status === ProposalStatus.Rewarded)
     }
 }
 

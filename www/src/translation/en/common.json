@@ -94,6 +94,8 @@
         "statusSubmitted": "Submitted",
         "statusApproved": "Approved",
         "statusClosed": "Closed",
+        "statusRejected": "Rejected",
+        "statusRewarded": "Rewarded",
         "proposalIndex": "# <strong>{{proposalIndex}}</strong>",
         "titlePlaceholder": "No title provided"
       },

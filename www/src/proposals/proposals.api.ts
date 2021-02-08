@@ -3,6 +3,8 @@ import {API_URL, fetchAndUnwrap} from '../api'
 export enum ProposalStatus {
     Submitted = 'submitted',
     Approved = 'approved',
+    Rejected = 'rejected',
+    Rewarded = 'rewarded',
     Closed = 'closed'
 }
 

@@ -18,6 +18,10 @@ export const ProposalStatusIndicator: React.FC<Props> = ({proposalStatus}) => {
                 return 'proposal.list.card.statusApproved'
             case ProposalStatus.Closed:
                 return 'proposal.list.card.statusClosed'
+            case ProposalStatus.Rejected:
+                return 'proposal.list.card.statusRejected'
+            case ProposalStatus.Rewarded:
+                return 'proposal.list.card.statusRewarded'
         }
     }
 
@@ -29,6 +33,10 @@ export const ProposalStatusIndicator: React.FC<Props> = ({proposalStatus}) => {
                 return '#2FD3AE'
             case ProposalStatus.Closed:
                 return '#1B1D1C'
+            case ProposalStatus.Rejected:
+                return '#1B1D1C'
+            case ProposalStatus.Rewarded:
+                return '#2FD3AE'
         }
     }
 

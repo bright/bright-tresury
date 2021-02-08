@@ -46,13 +46,26 @@ describe('filter proposals', () => {
         const proposals = [
             createProposal(ProposalStatus.Approved),
             createProposal(ProposalStatus.Submitted),
-            createProposal(ProposalStatus.Closed),
-            createProposal(ProposalStatus.Closed),
+            createProposal(ProposalStatus.Rejected),
+            createProposal(ProposalStatus.Rejected),
         ]
 
         expect(filterProposals(proposals, ProposalFilter.Rejected)).toStrictEqual([
             proposals[2],
             proposals[3],
+        ]);
+    })
+    test('filter proposals by rewarded', () => {
+        const proposals = [
+            createProposal(ProposalStatus.Approved),
+            createProposal(ProposalStatus.Rewarded),
+            createProposal(ProposalStatus.Rewarded),
+            createProposal(ProposalStatus.Rejected),
+        ]
+
+        expect(filterProposals(proposals, ProposalFilter.Rewarded)).toStrictEqual([
+            proposals[1],
+            proposals[2],
         ]);
     })
 })
