@@ -5,7 +5,7 @@ In the project directory, please run:
 ##### `yarn install`
 ##### `yarn start`
 
-Open [http://localhost:3001](http://localhost:3001) to view the app in the browser.
+Open [http://localhost:3000](http://localhost:3000) to view the app in the browser.
 
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.

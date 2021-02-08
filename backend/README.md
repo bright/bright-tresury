@@ -16,7 +16,7 @@ Run:
 * `DEPLOY_ENV=development-local npm run auth:core`
 * `DEPLOY_ENV=development-local npm run main`
 
-Access [api documentation](http://localhost:3000/api/documentation/)
+Access [api documentation](http://localhost:3001/api/documentation/)
 
 Run tests
 * `npm run compile`
