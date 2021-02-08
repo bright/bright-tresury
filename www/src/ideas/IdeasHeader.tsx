@@ -7,12 +7,12 @@ import {useTranslation} from "react-i18next";
 import {ROUTE_NEW_IDEA} from "../routes";
 import {useHistory} from "react-router-dom";
 import {TimeSelect} from "../components/select/TimeSelect";
-import {HeaderListContainer, mobileHeaderListHorizontalMargin} from "../components/headerList/HeaderListContainer";
+import {HeaderListContainer, mobileHeaderListHorizontalMargin} from "../components/header/list/HeaderListContainer";
 import {BasicInfo} from "../components/header/BasicInfo";
 import {FlexBreakLine} from "../components/header/FlexBreakLine";
-import {HeaderListTabs} from "../components/headerList/HeaderListTabs";
-import {PaperFilterBackground} from "../components/headerList/PaperFilterBackground";
-import {TimeSelectWrapper} from "../components/headerList/TimeSelectWrapper";
+import {HeaderListTabs} from "../components/header/list/HeaderListTabs";
+import {PaperFilterBackground} from "../components/header/list/PaperFilterBackground";
+import {TimeSelectWrapper} from "../components/header/list/TimeSelectWrapper";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

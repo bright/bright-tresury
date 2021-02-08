@@ -1,5 +1,5 @@
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
+import {breakpoints} from "../../../theme/theme";
 import React from "react";
 
 export const headerListHorizontalMargin = '32px'

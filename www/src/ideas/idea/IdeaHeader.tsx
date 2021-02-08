@@ -13,13 +13,13 @@ import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposi
 import {CloseIcon} from "../../components/closeIcon/CloseIcon";
 import {OptionalTitle} from "../../components/text/OptionalTitle";
 import {BasicInfo} from "../../components/header/BasicInfo";
-import {HeaderContainer} from "../../components/header/HeaderContainer";
-import {NetworkValues} from "../../components/header/NetworkValues";
+import {HeaderContainer} from "../../components/header/details/HeaderContainer";
+import {NetworkValues} from "../../components/header/details/NetworkValues";
 import {FlexBreakLine} from "../../components/header/FlexBreakLine";
 import {HeaderTabs} from "../../components/header/HeaderTabs";
-import {BasicInfoDivider} from "../../components/header/BasicInfoDivider";
-import {Status} from "../../components/header/Status";
-import {Title} from "../../components/header/Title";
+import {BasicInfoDivider} from "../../components/header/details/BasicInfoDivider";
+import {Status} from "../../components/header/details/Status";
+import {Title} from "../../components/header/details/Title";
 import {IdeaOrdinalNumber} from "../list/IdeaOrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) =>

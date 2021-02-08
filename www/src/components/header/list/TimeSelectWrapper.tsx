@@ -1,7 +1,7 @@
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
+import {breakpoints} from "../../../theme/theme";
 import React from "react";
-import {ClassNameProps} from "../props/className.props";
+import {ClassNameProps} from "../../props/className.props";
 import clsx from "clsx";
 import {headerListHorizontalMargin, mobileHeaderListHorizontalMargin} from "./HeaderListContainer";
 

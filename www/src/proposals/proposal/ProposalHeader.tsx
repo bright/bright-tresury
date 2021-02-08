@@ -10,14 +10,14 @@ import {CloseIcon} from "../../components/closeIcon/CloseIcon";
 import {ROUTE_PROPOSALS} from "../../routes";
 import {useHistory} from "react-router-dom";
 import {OptionalTitle} from "../../components/text/OptionalTitle";
-import {HeaderContainer} from "../../components/header/HeaderContainer";
+import {HeaderContainer} from "../../components/header/details/HeaderContainer";
 import {BasicInfo} from "../../components/header/BasicInfo";
-import {NetworkValues} from "../../components/header/NetworkValues";
+import {NetworkValues} from "../../components/header/details/NetworkValues";
 import {FlexBreakLine} from "../../components/header/FlexBreakLine";
 import {HeaderTabs} from "../../components/header/HeaderTabs";
-import {BasicInfoDivider} from "../../components/header/BasicInfoDivider";
-import {Title} from "../../components/header/Title";
-import {Status} from "../../components/header/Status";
+import {BasicInfoDivider} from "../../components/header/details/BasicInfoDivider";
+import {Title} from "../../components/header/details/Title";
+import {Status} from "../../components/header/details/Status";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

@@ -1,9 +1,9 @@
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
+import {breakpoints} from "../../../theme/theme";
 import React from "react";
 import clsx from "clsx";
-import {HeaderTabs} from "../header/HeaderTabs";
-import {ClassNameProps} from "../props/className.props";
+import {HeaderTabs} from "../HeaderTabs";
+import {ClassNameProps} from "../../props/className.props";
 import {mobileHeaderListHorizontalMargin} from "./HeaderListContainer";
 
 const useStyles = makeStyles((theme: Theme) =>
