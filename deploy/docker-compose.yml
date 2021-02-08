@@ -8,11 +8,3 @@ services:
     environment:
       DEPLOY_ENV: "${DEPLOY_ENV:-development}"
     restart: unless-stopped
-    depends_on:
-      - nginx
-  nginx:
-    image: "${DOCKER_REGISTRY}nginx:${TAG:-latest}"
-    build:
-      context: ../
-      dockerfile: backend/nginx.Dockerfile
-    restart: unless-stopped
