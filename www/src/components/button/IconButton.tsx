@@ -1,9 +1,11 @@
 import {IconButton as MaterialIconButton, IconButtonProps as MaterialIconButtonProps} from "@material-ui/core";
 import React from "react";
 
-export type IconButtonProps = {
+interface OwnProps {
     svg?: string
-} & MaterialIconButtonProps
+}
+
+export type IconButtonProps = OwnProps & MaterialIconButtonProps
 
 export const IconButton: React.FC<IconButtonProps> = ({children, svg, ...props}) => {
     return <MaterialIconButton {...props}>

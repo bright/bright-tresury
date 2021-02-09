@@ -27,9 +27,10 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }))
 
-export type ButtonProps = {
+interface OwnProps {
     variant?: ButtonVariant
-} & MaterialButtonProps
+}
+export type ButtonProps = OwnProps & MaterialButtonProps
 
 export const Button: React.FC<ButtonProps> = ({children, variant, ...props}) => {
     const classes = useStyles()

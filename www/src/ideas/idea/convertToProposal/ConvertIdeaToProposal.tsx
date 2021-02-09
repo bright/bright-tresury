@@ -2,12 +2,12 @@ import React, {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useParams} from "react-router";
 import {useHistory, useLocation} from "react-router-dom";
-import {LeftButton, RightButton} from "../../../components/formContainer/FormButtons";
-import FormContainer from "../../../components/formContainer/FormContainer";
+import Container from "../../../components/form/Container";
 import {ROUTE_PROPOSALS} from "../../../routes";
 import IdeaForm from "../../form/IdeaForm";
 import {getIdeaById, IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
 import SubmitProposalModal from "../../SubmitProposalModal";
+import { RightButton, LeftButton } from "../../../components/form/buttons/Buttons";
 
 const ConvertIdeaToProposal: React.FC = () => {
     const {t} = useTranslation()
@@ -57,7 +57,7 @@ const ConvertIdeaToProposal: React.FC = () => {
     const canConvertToProposal = useMemo(() => idea && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active),
         [idea])
 
-    return canConvertToProposal ? <FormContainer title={t('idea.convertToProposal.title')}>
+    return canConvertToProposal ? <Container title={t('idea.convertToProposal.title')}>
             {idea &&
             <>
                 <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
@@ -77,8 +77,8 @@ const ConvertIdeaToProposal: React.FC = () => {
                     idea={idea}/>
             </>
             }
-        </FormContainer> :
-        <FormContainer title={t('idea.convertToProposal.cannotConvertError')}/>
+        </Container> :
+        <Container title={t('idea.convertToProposal.cannotConvertError')}/>
 }
 
 export default ConvertIdeaToProposal

@@ -4,9 +4,10 @@ import React from "react";
 import {useTranslation} from "react-i18next";
 import * as Yup from "yup";
 import {Button} from "../components/button/Button";
-import {FormButtonsContainer} from "../components/formContainer/FormButtons";
-import FormContainer from "../components/formContainer/FormContainer";
-import {FormInput} from "../components/input/FormInput";
+import {ButtonsContainer} from "../components/form/buttons/ButtonsContainer";
+import Container from "../components/form/Container";
+import {Input} from "../components/form/Input";
+import {PasswordInput} from "../components/form/password/PasswordInput";
 import {signUp} from "./auth.api";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         inputField: {
             marginTop: '2em',
-            width: '50%'
+            width: '50%',
         },
 
     }),
@@ -54,7 +55,7 @@ const SignUp: React.FC = () => {
         userAgreement: Yup.boolean().isTrue(t('auth.signup.form.emptyFieldError')),
     })
 
-    return <FormContainer title={t('auth.signup.title')}>
+    return <Container title={t('auth.signup.title')}>
         <Formik
             enableReinitialize={true}
             initialValues={{
@@ -71,37 +72,31 @@ const SignUp: React.FC = () => {
               }) =>
                 <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                     <div className={classes.inputField}>
-                        <FormInput
+                        <Input
                             name="username"
                             placeholder={t('auth.signup.form.username.placeholder')}
                             label={t('auth.signup.form.username.label')}/>
                     </div>
                     <div className={classes.inputField}>
-                        <FormInput
+                        <Input
                             name="login"
                             placeholder={t('auth.signup.form.login.placeholder')}
                             label={t('auth.signup.form.login.label')}/>
                     </div>
                     <div className={classes.inputField}>
-                        <FormInput
-                            name="password"
-                            placeholder={t('auth.signup.form.password.placeholder')}
-                            label={t('auth.signup.form.password.label')}/>
-                    </div>
-                    <div className={classes.inputField}>
-                        <FormInput
+                        <PasswordInput
                             name="password"
                             placeholder={t('auth.signup.form.password.placeholder')}
                             label={t('auth.signup.form.password.label')}
                         />
                     </div>
-                    <FormButtonsContainer>
+                    <ButtonsContainer>
                         <Button variant="contained" color="primary" type='submit'>{t('auth.signup.form.submitButton')}</Button>
-                    </FormButtonsContainer>
+                    </ButtonsContainer>
                 </form>
             }
         </Formik>
-    </FormContainer>
+    </Container>
 }
 
 export default SignUp

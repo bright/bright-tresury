@@ -4,7 +4,7 @@ import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
 import * as Yup from 'yup'
 import {Button} from "../../components/button/Button";
-import {FormButtonsContainer} from "../../components/formContainer/FormButtons";
+import {ButtonsContainer} from "../../components/form/buttons/ButtonsContainer";
 import {IdeaDto} from "../ideas.api";
 import IdeaFormFields from './IdeaFormFields';
 import FoldedIdeaFormFields from './FoldedIdeaFormFields';
@@ -73,9 +73,9 @@ const IdeaForm: React.FC<Props> = ({idea, onSubmit, extendedValidation, foldable
                     {foldable && <Button className={classes.foldButton} variant='text' color='primary' onClick={() => setFolded(!folded)}>
                         {folded ? t('idea.details.form.showAll') : t('idea.details.form.showLess')}
                     </Button>}
-                    <FormButtonsContainer>
+                    <ButtonsContainer>
                         {children}
-                    </FormButtonsContainer>
+                    </ButtonsContainer>
                 </form>
             }
         </Formik>

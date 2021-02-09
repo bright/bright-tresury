@@ -3,7 +3,7 @@ import {FieldArray} from "formik";
 import React from 'react';
 import {useTranslation} from "react-i18next";
 import {Button} from "../../components/button/Button";
-import {FormInput} from "../../components/input/FormInput";
+import {Input} from "../../components/form/Input";
 import {FormSelect} from "../../components/select/FormSelect";
 import config from "../../config";
 import {breakpoints} from "../../theme/theme";
@@ -36,13 +36,13 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
     const {t} = useTranslation()
     return <>
             <div className={classes.inputField}>
-                <FormInput
+                <Input
                     name="title"
                     placeholder={t('idea.details.title')}
                     label={t('idea.details.title')}/>
             </div>
             <div className={`${classes.inputField} ${classes.smallField}`}>
-                <FormInput
+                <Input
                     name="beneficiary"
                     placeholder={t('idea.details.beneficiary')}
                     label={t('idea.details.beneficiary')}
@@ -59,7 +59,7 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                 />
             </div>
             <div className={classes.inputField}>
-                <FormInput
+                <Input
                     name="content"
                     multiline={true}
                     rows={8}
@@ -69,7 +69,7 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
             </div>
             {values.networks.map((network: IdeaNetworkDto, index: number) => {
                     return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
-                            <FormInput
+                            <Input
                                 name={`networks[${index}].value`}
                                 type={`number`}
                                 label={t('idea.details.reward')}
@@ -81,7 +81,7 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                 }
             )}
             <div className={classes.inputField}>
-                <FormInput
+                <Input
                     name="contact"
                     multiline={true}
                     rows={4}
@@ -90,7 +90,7 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                 />
             </div>
             <div className={classes.inputField}>
-                <FormInput
+                <Input
                     name="portfolio"
                     multiline={true}
                     rows={4}
@@ -103,7 +103,7 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                     <div>
                         {values.links ? values.links.map((link: string, index: number) =>
                             <div className={classes.inputField} key={index}>
-                                <FormInput
+                                <Input
                                     name={`links[${index}]`}
                                     label={index === 0 ? t('idea.details.links') : ''}
                                     placeholder={t('idea.details.form.linkPlaceholder')}

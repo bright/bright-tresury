@@ -16,11 +16,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
+export interface FormHeaderProps {
     title: string
 }
 
-const FormHeader: React.FC<Props> = ({title}) => {
+export const FormHeader: React.FC<FormHeaderProps> = ({title}) => {
     const classes = useStyles()
     const history = useHistory()
 
@@ -35,5 +35,3 @@ const FormHeader: React.FC<Props> = ({title}) => {
         <IconButton svg={crossSvg} onClick={goBack}/>
     </div>
 }
-
-export default FormHeader

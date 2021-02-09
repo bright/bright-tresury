@@ -1,7 +1,7 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React from 'react';
 import {useTranslation} from "react-i18next";
-import {FormInput} from "../../components/input/FormInput";
+import {Input} from "../../components/form/Input";
 import config from "../../config";
 import {breakpoints} from "../../theme/theme";
 import {IdeaDto, IdeaNetworkDto} from "../ideas.api";
@@ -34,13 +34,13 @@ const FoldedIdeaFormFields: React.FC<Props> = ({values}) => {
     return (
         <>
             <div className={classes.inputField}>
-                <FormInput
+                <Input
                     name="title"
                     placeholder={t('idea.details.title')}
                     label={t('idea.details.title')}/>
             </div>
             <div className={`${classes.inputField} ${classes.smallField}`}>
-                <FormInput
+                <Input
                     name="beneficiary"
                     placeholder={t('idea.details.beneficiary')}
                     label={t('idea.details.beneficiary')}
@@ -48,7 +48,7 @@ const FoldedIdeaFormFields: React.FC<Props> = ({values}) => {
             </div>
             {values.networks.map((network: IdeaNetworkDto, index: number) => {
                     return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
-                            <FormInput
+                            <Input
                                 name={`networks[${index}].value`}
                                 type={`number`}
                                 label={t('idea.details.reward')}

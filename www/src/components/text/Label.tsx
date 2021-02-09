@@ -12,11 +12,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
-    label: string
+export interface LabelProps {
+    label: string | JSX.Element
 }
 
-export const Label: React.FC<Props> = ({label}) => {
+export const Label: React.FC<LabelProps> = ({label}) => {
     const classes = useStyles()
     return <InputLabel className={classes.label}>{label}</InputLabel>
 }

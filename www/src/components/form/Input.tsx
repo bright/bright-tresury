@@ -45,12 +45,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface InputProps {
-    label?: string
+interface OwnProps {
+    label?: string | JSX.Element
     endAdornment?: string
 }
 
-export const FormInput: React.FC<InputProps & TextFieldProps> = ({label, endAdornment, ...props}) => {
+export type InputProps = OwnProps & TextFieldProps
+
+export const Input: React.FC<InputProps> = ({label, endAdornment, ...props}) => {
     const classes = useStyles()
     // @ts-ignore
     const [field, meta] = useField({...props});
