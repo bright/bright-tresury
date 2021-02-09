@@ -11,7 +11,7 @@ import {FormInput} from "../../components/input/FormInput";
 import {FormSelect} from "../../components/select/FormSelect";
 import {Button} from "../../components/button/Button";
 import config from "../../config";
-import {isValidAddress} from "../../util/addressValidator";
+import {isValidAddress, isValidAddressOrEmpty} from "../../util/addressValidator";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -82,7 +82,7 @@ const IdeaForm: React.FC<Props> = ({idea, setIdea}) => {
     const validationSchema = Yup.object({
         title: Yup.string().required(t('idea.details.form.emptyFieldError')),
         beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
-            return !address || isValidAddress(address)
+            return isValidAddressOrEmpty(address)
         })
     })
 

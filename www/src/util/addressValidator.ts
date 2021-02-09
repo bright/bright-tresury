@@ -14,3 +14,7 @@ export function isValidAddress(address: string): boolean {
         return false;
     }
 };
+
+export function isValidAddressOrEmpty(address?: string): boolean {
+    return !address || isValidAddress(address)
+}
