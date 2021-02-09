@@ -22,7 +22,7 @@ export class IsValidAddressConstraint implements ValidatorConstraintInterface {
     }
 
     defaultMessage(args: ValidationArguments) {
-        return 'Account ($value) is invalid!';
+        return 'Address ($value) is invalid';
     }
 }
 
