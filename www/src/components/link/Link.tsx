@@ -1,29 +1,15 @@
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles, Link as MaterialLink} from "@material-ui/core";
+import {Link as MaterialLink, LinkProps as MaterialLinkProps} from "@material-ui/core";
 import React from "react";
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        link: {
-            fontSize: '14px',
-            fontWeight: 600,
-            color: theme.palette.text.primary,
-        },
-    }),
-);
+export type LinkProps = MaterialLinkProps
 
-interface Props {
-    href: string
-    text?: string
-}
-
-export const Link: React.FC<Props> = ({href, text}) => {
-    const classes = useStyles()
+export const Link: React.FC<LinkProps> = ({children, href, ...props}) => {
     return <MaterialLink
+        color="inherit"
+        {...props}
         href={href}
-        className={classes.link}
         target="_blank"
         rel="noopener">
-        {text ?? href}
+        {children ?? href}
     </MaterialLink>
 }

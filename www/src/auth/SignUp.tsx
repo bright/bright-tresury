@@ -1,13 +1,15 @@
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Formik} from "formik";
 import React from "react";
-import {useTranslation} from "react-i18next";
+import {Trans, useTranslation} from "react-i18next";
 import * as Yup from "yup";
 import {Button} from "../components/button/Button";
 import {ButtonsContainer} from "../components/form/buttons/ButtonsContainer";
 import Container from "../components/form/Container";
 import {Input} from "../components/form/Input";
 import {PasswordInput} from "../components/form/password/PasswordInput";
+import {Link} from "../components/link/Link";
+import {Label} from "../components/text/Label";
 import {signUp} from "./auth.api";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,7 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: '2em',
             width: '50%',
         },
-
+        link: {
+            textDecoration: 'underline',
+        }
     }),
 );
 
@@ -88,6 +92,12 @@ const SignUp: React.FC = () => {
                             name="password"
                             placeholder={t('auth.signup.form.password.placeholder')}
                             label={t('auth.signup.form.password.label')}
+                        />
+                    </div>
+                    <div className={classes.inputField}>
+                        <Label label={<Trans id='privacy-notice'
+                                             i18nKey="auth.signup.form.privacyNotice"
+                                             components={{a: <Link className={classes.link} href=''/>}}/>}
                         />
                     </div>
                     <ButtonsContainer>

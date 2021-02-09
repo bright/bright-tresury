@@ -49,15 +49,21 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         linkSpacing: {
             marginTop: '.7em'
-        }
+        },
+        link: {
+            textDecoration: 'none',
+            fontSize: '14px',
+            fontWeight: 600,
+            color: theme.palette.text.primary,
+        },
     }),
 );
 
-interface Props {
+export interface IdeaDetailsProps {
     idea: IdeaDto
 }
 
-const IdeaDetails: React.FC<Props> = ({idea}) => {
+const IdeaDetails: React.FC<IdeaDetailsProps> = ({idea}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -104,7 +110,7 @@ const IdeaDetails: React.FC<Props> = ({idea}) => {
             <Label label={t('idea.details.links')}/>
             {nonEmptyLinks.length > 0 ? nonEmptyLinks.map((link: string, index: number) =>
                     <div className={index !== 0 ? classes.linkSpacing : ''}>
-                        <Link href={link} key={index}/>
+                        <Link className={classes.link} href={link} key={index}>{link}</Link>
                     </div>)
                 : <Placeholder value={t('idea.details.links')}/>
             }

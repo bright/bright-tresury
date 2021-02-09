@@ -23,6 +23,7 @@
     "signup": {
       "title": "Sign up",
       "form": {
+        "privacyNotice": "To see how we use your personal data please see our <a>privacy notice</a>.",
         "emptyFieldError": "This field cannot be empty",
         "username": {
           "label": "Username",
