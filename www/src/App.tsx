@@ -7,9 +7,9 @@ import Ideas from './ideas/Ideas';
 import Menu from './main/Menu';
 import Proposals from './proposals/Proposals';
 import {
-    ROUTE_CONVERT_IDEA, ROUTE_EDIT_IDEA, ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA,ROUTE_PROPOSAL,
+    ROUTE_CONVERT_IDEA, ROUTE_EDIT_IDEA, ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSAL,
     ROUTE_PROPOSALS,
-    ROUTE_ROOT
+    ROUTE_ROOT, ROUTE_SIGNUP
 } from './routes';
 import Stats from './stats/Stats';
 import {ThemeWrapper} from "./theme/ThemeWrapper";
@@ -23,6 +23,7 @@ import {EmailPasswordAuth} from "supertokens-auth-react/lib/build/recipe/emailpa
 import {initializeSupertokens} from "./supertokens";
 import ConvertIdeaToProposal from './ideas/idea/convertToProposal/ConvertIdeaToProposal';
 import Proposal from "./proposals/proposal/Proposal";
+import SignUp from './auth/SignUp';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,6 +56,7 @@ function AppRoutes() {
                         </EmailPasswordAuth>
                     </Route>
 
+                    <Route exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
                     <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>

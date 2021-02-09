@@ -11,7 +11,11 @@ export function initializeSupertokens() {
             websiteDomain: config.WEBSITE_URL,
         },
         recipeList: [
-            EmailPassword.init(),
+            EmailPassword.init({
+                    signInAndUpFeature: {
+                        disableDefaultImplementation: true
+                    }
+                }),
             Session.init()
         ]
     });

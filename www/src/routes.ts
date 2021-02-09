@@ -19,3 +19,6 @@ export const ROUTE_TIPS = '/tips'
 // region Bounties
 export const ROUTE_BOUNTIES = '/bounties'
 // endregion
+// region Auth
+export const ROUTE_SIGNUP = '/signup'
+// endregion

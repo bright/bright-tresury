@@ -19,6 +19,28 @@
     "whatForLabel": "What is Treasury app for?",
     "learnMoreLabel": "Learn more"
   },
+  "auth": {
+    "signup": {
+      "title": "Sign up",
+      "form": {
+        "emptyFieldError": "This field cannot be empty",
+        "username": {
+          "label": "Username",
+          "placeholder": "Enter your username"
+        },
+        "login": {
+          "label": "Login",
+          "placeholder": "Enter your email",
+          "emailError": "Please see if your email address is correct"
+        },
+        "password": {
+          "label": "Password",
+          "placeholder": "Enter at least 8 characters"
+        },
+        "submitButton": "Sign up"
+      }
+    }
+  },
   "idea": {
     "details": {
       "title": "Title",

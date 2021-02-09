@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: '2em',
             alignSelf: 'flex-start',
         },
-
     }),
 );
 
