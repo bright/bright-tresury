@@ -65,7 +65,8 @@
     "convertToProposal": {
       "title": "Convert to Proposal",
       "cancel": "Cancel",
-      "submit": "Submit"
+      "submit": "Submit",
+      "cannotConvertError": "This idea is already converted into proposal"
     },
     "list": {
       "card": {

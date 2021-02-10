@@ -1,4 +1,5 @@
-import React, {useEffect, useState} from "react";
+import {Typography} from "@material-ui/core";
+import React, {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useParams} from "react-router";
 import {useHistory, useLocation} from "react-router-dom";
@@ -6,7 +7,7 @@ import {LeftButton, RightButton} from "../../../components/formContainer/FormBut
 import FormContainer from "../../../components/formContainer/FormContainer";
 import {ROUTE_PROPOSALS} from "../../../routes";
 import IdeaForm from "../../form/IdeaForm";
-import {getIdeaById, IdeaDto, updateIdea} from "../../ideas.api";
+import {getIdeaById, IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
 import SubmitProposalModal from "../../SubmitProposalModal";
 
 const ConvertIdeaToProposal: React.FC = () => {
@@ -53,28 +54,32 @@ const ConvertIdeaToProposal: React.FC = () => {
         history.push(ROUTE_PROPOSALS)
     }
 
+    // TODO protect this rout with auth
+    const canConvertToProposal = useMemo(() => idea && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active),
+        [idea])
 
-    return <FormContainer title={t('idea.convertToProposal.title')}>
-        {idea &&
-        <>
-            <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
-                <RightButton>
-                    {t('idea.convertToProposal.submit')}
-                </RightButton>
-                <LeftButton
-                    type={'button'}
-                    onClick={goBack}>
-                    {t('idea.convertToProposal.cancel')}
-                </LeftButton>
-            </IdeaForm>
-            <SubmitProposalModal
-                onSuccess={goToProposals}
-                open={modalOpen}
-                onClose={() => setModalOpen(false)}
-                idea={idea}/>
-        </>
-        }
-    </FormContainer>
+    return canConvertToProposal ? <FormContainer title={t('idea.convertToProposal.title')}>
+            {idea &&
+            <>
+                <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
+                    <RightButton>
+                        {t('idea.convertToProposal.submit')}
+                    </RightButton>
+                    <LeftButton
+                        type={'button'}
+                        onClick={goBack}>
+                        {t('idea.convertToProposal.cancel')}
+                    </LeftButton>
+                </IdeaForm>
+                <SubmitProposalModal
+                    onSuccess={goToProposals}
+                    open={modalOpen}
+                    onClose={() => setModalOpen(false)}
+                    idea={idea}/>
+            </>
+            }
+        </FormContainer> :
+        <FormContainer title={t('idea.convertToProposal.cannotConvertError')}/>
 }
 
 export default ConvertIdeaToProposal
