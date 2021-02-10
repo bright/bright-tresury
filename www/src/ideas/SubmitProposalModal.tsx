@@ -13,10 +13,11 @@ export interface ExtrinsicDetails {
 interface Props {
     open: boolean,
     onClose: () => void,
+    onSuccess?: () => void
     idea: IdeaDto
 }
 
-const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
+const SubmitProposalModal: React.FC<Props> = ({open, onClose, onSuccess, idea}) => {
     const {t} = useTranslation()
     const [extrinsicDetails, setExtrinsicDetails] = useState<ExtrinsicDetails | undefined>(undefined)
 
@@ -48,6 +49,7 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, idea}) => {
                                     i18nKey="idea.details.submitProposalModal.warningMessage"
                                     components={{strong: <Strong color={'primary'}/>}}
                 />}
+                onSuccess={onSuccess}
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'treasury',

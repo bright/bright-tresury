@@ -4,6 +4,7 @@ import {useParams} from "react-router";
 import {useHistory, useLocation} from "react-router-dom";
 import {LeftButton, RightButton} from "../../../components/formContainer/FormButtons";
 import FormContainer from "../../../components/formContainer/FormContainer";
+import {ROUTE_PROPOSALS} from "../../../routes";
 import IdeaForm from "../../form/IdeaForm";
 import {getIdeaById, IdeaDto, updateIdea} from "../../ideas.api";
 import SubmitProposalModal from "../../SubmitProposalModal";
@@ -48,6 +49,10 @@ const ConvertIdeaToProposal: React.FC = () => {
         history.goBack()
     }
 
+    const goToProposals = () => {
+        history.push(ROUTE_PROPOSALS)
+    }
+
 
     return <FormContainer title={t('idea.convertToProposal.title')}>
         {idea &&
@@ -63,6 +68,7 @@ const ConvertIdeaToProposal: React.FC = () => {
                 </LeftButton>
             </IdeaForm>
             <SubmitProposalModal
+                onSuccess={goToProposals}
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
                 idea={idea}/>

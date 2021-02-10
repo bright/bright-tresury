@@ -34,8 +34,7 @@ interface Props {
 const IdeaFormFields: React.FC<Props> = ({values}) => {
     const classes = useStyles()
     const {t} = useTranslation()
-    return (
-        <>
+    return <>
             <div className={classes.inputField}>
                 <FormInput
                     name="title"
@@ -120,7 +119,6 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                 )}/>
             </div>
         </>
-    );
 }
 
 export default IdeaFormFields

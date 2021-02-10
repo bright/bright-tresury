@@ -54,13 +54,14 @@ export interface Account {
 
 export interface Props {
     onClose: () => void
+    onSuccess?: () => void
     txAttrs: TxAttrs
     setExtrinsicDetails: (data: { extrinsicHash: string, lastBlockHash: string }) => void
     title: string
     instruction: string | JSX.Element
 }
 
-const SubmittingTransaction: React.FC<Props> = ({onClose, txAttrs, setExtrinsicDetails, title, instruction}) => {
+const SubmittingTransaction: React.FC<Props> = ({onClose, onSuccess, txAttrs, setExtrinsicDetails, title, instruction}) => {
     const {t} = useTranslation()
     const [result, setResult] = useState<Result | undefined>()
     const [error, setError] = useState<any>()
@@ -175,7 +176,7 @@ const SubmittingTransaction: React.FC<Props> = ({onClose, txAttrs, setExtrinsicD
             onOk={onClose}
             title={t('substrate.error.transaction.title', {networkName: config.NETWORK_NAME})}/>
     } else {
-        return <TransactionInProgress status={result?.status} event={result?.event} onOk={onClose} eventDescription={txAttrs.eventDescription}/>
+        return <TransactionInProgress status={result?.status} event={result?.event} onOk={onSuccess ?? onClose} eventDescription={txAttrs.eventDescription}/>
     }
 }
 
