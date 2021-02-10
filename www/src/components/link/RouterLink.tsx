@@ -1,11 +1,11 @@
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import React from "react";
-import {Link} from "react-router-dom";
+import {Link as ReactRouterLink} from "react-router-dom";
+import {Link as MaterialLink} from "@material-ui/core";
 import {Strong} from "../info/Info";
 
-
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         link: {
             textDecoration: 'none',
@@ -16,15 +16,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface Props {
+export interface RouterLinkProps {
     to: string
 }
 
-export const RouterLink: React.FC<Props> = ({to, children}) => {
+export const RouterLink: React.FC<RouterLinkProps> = ({to, children}) => {
     const classes = useStyles()
-    return <Link to={to} className={classes.link}>
+    return <MaterialLink component={ReactRouterLink} to={to} className={classes.link}>
         <Strong>
             {children}
         </Strong>
-    </Link>
+    </MaterialLink>
 }

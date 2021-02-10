@@ -22,6 +22,7 @@
   "auth": {
     "signup": {
       "title": "Sign up",
+      "logInLabel": "Already have an account? <a>Log in</a>",
       "form": {
         "privacyNotice": "To see how we use your personal data please see our <a>privacy notice</a>.",
         "emptyFieldError": "This field cannot be empty",

@@ -1,4 +1,4 @@
-import {Checkbox} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Formik} from "formik";
 import React from "react";
@@ -11,9 +11,10 @@ import {CheckboxInput} from "../components/form/input/CheckboxInput";
 import {Input} from "../components/form/input/Input";
 import {PasswordInput} from "../components/form/password/PasswordInput";
 import {Link} from "../components/link/Link";
+import {RouterLink} from "../components/link/RouterLink";
 import {Label} from "../components/text/Label";
+import {ROUTE_SIGNIN} from "../routes";
 import {signUp} from "./auth.api";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,6 +31,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         link: {
             textDecoration: 'underline',
+        },
+        login: {
+            fontSize: '14px',
         }
     }),
 );
@@ -114,6 +118,11 @@ const SignUp: React.FC = () => {
                     <ButtonsContainer>
                         <Button variant="contained" color="primary" type='submit'>{t('auth.signup.form.submitButton')}</Button>
                     </ButtonsContainer>
+                    <Typography className={classes.login}>
+                        {<Trans id='privacy-notice'
+                                i18nKey="auth.signup.logInLabel"
+                                components={{a: <RouterLink to={ROUTE_SIGNIN}/>}}/>}
+                    </Typography>
                 </form>
             }
         </Formik>

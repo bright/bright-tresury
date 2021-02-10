@@ -21,4 +21,5 @@ export const ROUTE_BOUNTIES = '/bounties'
 // endregion
 // region Auth
 export const ROUTE_SIGNUP = '/signup'
+export const ROUTE_SIGNIN = '/signin'
 // endregion
