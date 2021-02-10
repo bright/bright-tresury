@@ -15,21 +15,26 @@ interface Props {
 const IdeaCreate: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const {t} = useTranslation()
     const history = useHistory()
-    const [idea, setIdea] = useState(createEmptyIdea(network))
+    const [idea] = useState(createEmptyIdea(network))
+    const [activate, setActivate] = useState(false)
 
     const save = async (formIdea: IdeaDto) => {
-        const editedIdea = {...idea, ...formIdea}
+        const editedIdea = {...idea, ...formIdea, status: activate ? IdeaStatus.Active : IdeaStatus.Draft}
         await createIdea(editedIdea)
         history.push(ROUTE_IDEAS)
     }
 
+    const doActivate = () => setActivate(true)
+    const dontActivate = () => setActivate(false)
+
     return <FormContainer title={t('idea.introduceTitle')}>
         <IdeaForm idea={idea} onSubmit={save}>
             <RightButton
-                onClick={() => {setIdea({...idea, status: IdeaStatus.Active})}}>
+                onClick={doActivate}>
                 {t('idea.details.create')}
             </RightButton>
-            <LeftButton>
+            <LeftButton
+                onClick={dontActivate}>
                 {t('idea.details.saveDraft')}
             </LeftButton>
         </IdeaForm>

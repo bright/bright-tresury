@@ -26,14 +26,15 @@ const IdeaEdit: React.FC<Props> = ({idea}) => {
         history.push(ROUTE_IDEAS)
     }
 
+    const doActivate = () => setActivate(true)
+    const dontActivate = () => setActivate(false)
+
     return <IdeaForm idea={idea} onSubmit={save}>
         <RightButton
-            onClick={() => {
-                setActivate(true)
-            }}>
+            onClick={doActivate}>
             {isDraft ? t('idea.details.editAndActivate') : t('idea.details.edit')}
         </RightButton>
-        {isDraft && <LeftButton>
+        {isDraft && <LeftButton onClick={dontActivate}>
             {t('idea.details.saveDraft')}
         </LeftButton>}
     </IdeaForm>
