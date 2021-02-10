@@ -14,6 +14,7 @@ import {Link} from "../components/link/Link";
 import {RouterLink} from "../components/link/RouterLink";
 import {Label} from "../components/text/Label";
 import {ROUTE_SIGNIN} from "../routes";
+import {breakpoints} from "../theme/theme";
 import {signUp} from "./auth.api";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -28,6 +29,12 @@ const useStyles = makeStyles((theme: Theme) =>
         inputField: {
             marginTop: '2em',
             width: '50%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '75%',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                width: '100%',
+            },
         },
         link: {
             textDecoration: 'underline',
