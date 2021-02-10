@@ -27,7 +27,23 @@ Run tests
 #### Authorization
 
 We are using SuperTokens as authorization core. 
-Please see [authCore.docker.sh](authCore.docker.sh) file to find proper command used for running SuperTokens core. 
+
+The core is running on a docker container. It needs to connect to our localhost database for
+development purposes. PostgreSQL does not allow connecting from docker container. In order to allow
+such connections please do the following:
+1. Edit your PostgreSQL config file named `pg_hba.conf` by adding the following line:
+```
+host all all 0.0.0.0/0 trust
+``` 
+2. Edit your PostgreSQL config file named `postgresql.conf` by adding the following line:
+```
+listen_addresses = '*'
+```
+
+Now please run 
+```
+DEPLOY_ENV=development-local npm run auth:core
+``` 
 
 ## Configuration
 
