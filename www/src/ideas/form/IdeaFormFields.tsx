@@ -3,7 +3,7 @@ import {FieldArray} from "formik";
 import React from 'react';
 import {useTranslation} from "react-i18next";
 import {Button} from "../../components/button/Button";
-import {Input} from "../../components/form/Input";
+import {Input} from "../../components/form/input/Input";
 import {FormSelect} from "../../components/select/FormSelect";
 import config from "../../config";
 import {breakpoints} from "../../theme/theme";

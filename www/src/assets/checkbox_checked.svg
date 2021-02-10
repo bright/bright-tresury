@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <g id="CheckBox_ticked" transform="translate(-559 -640)">
+    <g id="Rectangle_151" data-name="Rectangle 151" transform="translate(559 640)" fill="#fff" stroke="#0e65f2" stroke-width="1">
+      <rect width="20" height="20" rx="2" stroke="none"/>
+      <rect x="0.5" y="0.5" width="19" height="19" rx="1.5" fill="none"/>
+    </g>
+    <path id="tick" d="M504.016,395.583l2.966,2.766,4.563-7.311" transform="translate(61.219 255.306)" fill="none" stroke="#0e65f2" stroke-miterlimit="10" stroke-width="1.5"/>
+  </g>
+</svg>

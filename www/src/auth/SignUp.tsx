@@ -1,3 +1,4 @@
+import {Checkbox} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Formik} from "formik";
 import React from "react";
@@ -6,11 +7,13 @@ import * as Yup from "yup";
 import {Button} from "../components/button/Button";
 import {ButtonsContainer} from "../components/form/buttons/ButtonsContainer";
 import Container from "../components/form/Container";
-import {Input} from "../components/form/Input";
+import {CheckboxInput} from "../components/form/input/CheckboxInput";
+import {Input} from "../components/form/input/Input";
 import {PasswordInput} from "../components/form/password/PasswordInput";
 import {Link} from "../components/link/Link";
 import {Label} from "../components/text/Label";
 import {signUp} from "./auth.api";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,7 +59,7 @@ const SignUp: React.FC = () => {
         username: Yup.string().required(t('auth.signup.form.emptyFieldError')),
         login: Yup.string().email(t('auth.signup.form.login.emailError')).required(t('auth.signup.form.emptyFieldError')),
         password: Yup.string().required(t('auth.signup.form.emptyFieldError')).matches(/[A-Z]/, "Error A-Z").min(8, "Error"), // TODO: return multiple errors
-        userAgreement: Yup.boolean().isTrue(t('auth.signup.form.emptyFieldError')),
+        userAgreement: Yup.boolean().isTrue(t('auth.signup.form.userAgreement.emptyFieldError')),
     })
 
     return <Container title={t('auth.signup.title')}>
@@ -92,6 +95,14 @@ const SignUp: React.FC = () => {
                             name="password"
                             placeholder={t('auth.signup.form.password.placeholder')}
                             label={t('auth.signup.form.password.label')}
+                        />
+                    </div>
+                    <div className={classes.inputField}>
+                        <CheckboxInput
+                            name="userAgreement"
+                            label={<Trans id='privacy-notice'
+                                          i18nKey="auth.signup.form.userAgreement.label"
+                                          components={{a: <Link className={classes.link} href=''/>}}/>}
                         />
                     </div>
                     <div className={classes.inputField}>

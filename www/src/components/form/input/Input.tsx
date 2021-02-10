@@ -9,7 +9,8 @@ import {
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import FormGroup from "@material-ui/core/FormGroup";
 import {useField} from "formik";
-import {Label} from "../text/Label";
+import {Label} from "../../text/Label";
+import {ErrorLabel} from "./ErrorLabel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -72,8 +73,6 @@ export const Input: React.FC<InputProps> = ({label, endAdornment, ...props}) => 
                     <InputAdornment position="end">{endAdornment}</InputAdornment> : null
             }}>
         </TextField>
-        {hasError ? (
-            <InputLabel className={classes.errorLabel}>{meta.error}</InputLabel>
-        ) : null}
+        <ErrorLabel touched={meta.touched} errorMessage={meta.error}/>
     </FormGroup>
 }

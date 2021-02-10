@@ -1,7 +1,7 @@
 import React, {useMemo, useState} from "react";
 import hidePasswordIcon from "../../../assets/hide_password.svg";
 import showPasswordIcon from "../../../assets/show_password.svg";
-import {Input, InputProps} from "../Input";
+import {Input, InputProps} from "../input/Input";
 import {PasswordLabel} from "./PasswordLabel";
 
 interface OwnProps {
