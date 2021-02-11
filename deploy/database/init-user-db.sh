@@ -3,6 +3,7 @@
 psql --echo-all --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
 CREATE ROLE deployer WITH LOGIN SUPERUSER;
 CREATE ROLE web WITH LOGIN;
+
 CREATE DATABASE "treasury" WITH OWNER deployer;
 CREATE DATABASE "treasury_test" WITH OWNER deployer;
 CREATE DATABASE "treasury_authorization" WITH OWNER deployer;
