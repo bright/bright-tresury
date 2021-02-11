@@ -40,11 +40,12 @@ const polkadotApiFactory = {
             polkadotApiInstance.on('connected', onConnectedHandler);
             polkadotApiInstance.on('ready', onReadyHandler);
             polkadotApiInstance.on('error', onErrorHandler);
-        }
-        try {
-            await polkadotApiInstance.isReadyOrError
-        } catch (err) {
-            throw new HttpException('No blockchain connection', 404)
+            try {
+                await polkadotApiInstance.isReadyOrError
+            } catch (err) {
+                logger.error(err)
+                logger.error(`Error when connecting to substrate node`)
+            }
         }
         return polkadotApiInstance
     },
