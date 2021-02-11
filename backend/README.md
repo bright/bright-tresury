@@ -13,7 +13,7 @@ Run:
 * `npm install`
 * `npm run compile`
 * `DEPLOY_ENV=development-local DATABASE_USERNAME=deployer  npm run database:migrate`
-* `DEPLOY_ENV=development-local npm run auth:core`
+* `DEPLOY_ENV=development-local npm run auth:core:dev`
 * `DEPLOY_ENV=development-local npm run main`
 
 Access [api documentation](http://localhost:3001/api/documentation/)
@@ -42,7 +42,7 @@ listen_addresses = '*'
 
 Now please run 
 ```
-DEPLOY_ENV=development-local npm run auth:core
+DEPLOY_ENV=development-local npm run auth:core:dev
 ``` 
 
 ## Configuration
