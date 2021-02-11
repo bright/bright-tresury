@@ -9,12 +9,13 @@ import {ButtonsContainer} from "../components/form/buttons/ButtonsContainer";
 import Container from "../components/form/Container";
 import {CheckboxInput} from "../components/form/input/CheckboxInput";
 import {Input} from "../components/form/input/Input";
-import {PasswordInput} from "../components/form/password/PasswordInput";
+import {PasswordInput} from "../components/form/input/password/PasswordInput";
 import {Link} from "../components/link/Link";
 import {RouterLink} from "../components/link/RouterLink";
 import {Label} from "../components/text/Label";
 import {ROUTE_SIGNIN} from "../routes";
 import {breakpoints} from "../theme/theme";
+import {validateFull} from "../util/form.util";
 import {signUp} from "./auth.api";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -33,6 +34,8 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: '75%',
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
+                paddingLeft: '1em',
+                paddingRight: '1em',
                 width: '100%',
             },
         },
@@ -69,9 +72,13 @@ const SignUp: React.FC = () => {
     const validationSchema = Yup.object().shape({
         username: Yup.string().required(t('auth.signup.form.emptyFieldError')),
         login: Yup.string().email(t('auth.signup.form.login.emailError')).required(t('auth.signup.form.emptyFieldError')),
-        password: Yup.string().required(t('auth.signup.form.emptyFieldError')).matches(/[A-Z]/, "Error A-Z").min(8, "Error"), // TODO: return multiple errors
+        password: Yup.string()
+            .min(8, t('auth.signup.form.password.tooShort'))
+            .matches(/[a-z]+/, t('auth.signup.form.password.useLowerCaseLetter'))
+            .matches(/[0-9]+/, t('auth.signup.form.password.useNumber')),
         userAgreement: Yup.boolean().isTrue(t('auth.signup.form.userAgreement.emptyFieldError')),
     })
+    const passwordValidationRules = validationSchema.fields.password.tests.map(({OPTIONS}) => OPTIONS.message?.toString() || '')
 
     return <Container title={t('auth.signup.title')}>
         <Formik
@@ -82,7 +89,7 @@ const SignUp: React.FC = () => {
                 password: '',
                 userAgreement: false
             }}
-            validationSchema={validationSchema}
+            validate={validateFull(validationSchema)}
             onSubmit={onSubmit}>
             {({
                   values,
@@ -106,6 +113,7 @@ const SignUp: React.FC = () => {
                             name="password"
                             placeholder={t('auth.signup.form.password.placeholder')}
                             label={t('auth.signup.form.password.label')}
+                            validationRules={passwordValidationRules}
                         />
                     </div>
                     <div className={classes.inputField}>

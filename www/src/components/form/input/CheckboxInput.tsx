@@ -28,6 +28,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
+const useCheckboxStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            padding: '0 0 0 10px',
+        },
+    }),
+);
+
 interface OwnProps {
     label: string | JSX.Element
 }
@@ -36,6 +44,7 @@ export type CheckboxInputProps = OwnProps & CheckboxProps & FieldHookConfig<any>
 
 export const CheckboxInput: React.FC<CheckboxInputProps> = ({label, ...props}) => {
     const classes = useStyles()
+    const checkboxClasses = useCheckboxStyles()
 
     const [field, meta] = useField({...props});
     const hasError: boolean = meta.touched && Boolean(meta.error)
@@ -46,6 +55,7 @@ export const CheckboxInput: React.FC<CheckboxInputProps> = ({label, ...props}) =
                 className={classes.root}
                 control={<Checkbox
                     {...props}
+                    classes={checkboxClasses}
                     checked={field.value}
                     inputProps={{...field, ...meta}}
                     icon={<img src={checkboxEmptyIcon}/>}
