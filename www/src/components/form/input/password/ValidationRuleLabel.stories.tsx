@@ -12,12 +12,12 @@ const Template: Story<ValidationRuleLabelProps> = (args) => <ValidationRuleLabel
 
 export const NoError = Template.bind({});
 NoError.args = {
-    isError: false,
+    error: [],
     message: 'Use 8 or more characters',
 };
 
 export const WithError = Template.bind({});
 WithError.args = {
-    isError: true,
+    error: ['Use a number (e.g. 1234)'],
     message: 'Use a number (e.g. 1234)',
 };

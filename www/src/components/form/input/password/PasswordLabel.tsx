@@ -17,7 +17,7 @@ const useStyles = makeStyles(() =>
 );
 
 interface PasswordLabelProps {
-    label?: string
+    label: string
     icon: string
     onClick: () => void
 }
@@ -25,7 +25,7 @@ interface PasswordLabelProps {
 export const PasswordLabel: React.FC<PasswordLabelProps> = ({label, icon, onClick}) => {
     const classes = useStyles()
     return <div className={classes.root}>
-        {label && <div>{label}</div>}
+        <div>{label}</div>
         <IconButton className={classes.icon} svg={icon} onClick={onClick}/>
     </div>
 }
