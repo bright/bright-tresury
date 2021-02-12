@@ -44,6 +44,7 @@ const useStyles = makeStyles((theme: Theme) =>
             textDecoration: 'underline',
         },
         login: {
+            textAlign: 'center',
             fontSize: '14px',
         }
     }),

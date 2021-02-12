@@ -1,6 +1,6 @@
-import {createStyles, InputLabel, InputLabelProps, Theme} from "@material-ui/core";
+import {createStyles, Theme, Typography, TypographyProps} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import React, {useMemo} from "react";
+import React from "react";
 import {formikErrorToString} from "../../../util/form.util";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -18,7 +18,7 @@ interface OwnProps {
     errorMessage?: string | string[]
 }
 
-export type ErrorLabelProps = OwnProps & InputLabelProps
+export type ErrorLabelProps = OwnProps & TypographyProps
 
 export const ErrorLabel: React.FC<ErrorLabelProps> = ({touched, errorMessage, className, ...props}) => {
     const classes = useStyles()
@@ -26,10 +26,10 @@ export const ErrorLabel: React.FC<ErrorLabelProps> = ({touched, errorMessage, cl
     const error = formikErrorToString(errorMessage)
 
     return touched && error ?
-        <InputLabel
+        <Typography
             {...props}
             className={`${classes.errorLabel} ${className}`}>
             {error}
-        </InputLabel>
+        </Typography>
         : null
 }

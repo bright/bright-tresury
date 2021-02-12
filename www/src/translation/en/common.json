@@ -20,6 +20,8 @@
     "learnMoreLabel": "Learn more"
   },
   "auth": {
+    "passwordShow": "Show password button",
+    "passwordHide": "Hide password button",
     "signup": {
       "title": "Sign up",
       "logInLabel": "Already have an account? <a>Log in</a>",

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
             fontSize: '12px',
         },
         errorLabel: {
-            marginTop: '10px'
+            marginTop: '5px'
         }
     }),
 );
@@ -63,7 +63,7 @@ export const CheckboxInput: React.FC<CheckboxInputProps> = ({label, ...props}) =
                 />}
                 label={<Typography className={classes.label}>{label}</Typography>}
             />
-            <ErrorLabel className={classes.errorLabel} touched={meta.touched} errorMessage={meta.error}/>
         </FormGroup>
+        <ErrorLabel className={classes.errorLabel} touched={meta.touched} errorMessage={meta.error}/>
     </FormControl>
 }
