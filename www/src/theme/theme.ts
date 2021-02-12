@@ -9,7 +9,7 @@ export const theme = {
             lineHeight: 22,
             letterSpacing: 0,
             align: 'center'
-        }
+        },
     },
     palette: {
         primary: {

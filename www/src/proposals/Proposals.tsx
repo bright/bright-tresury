@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import ProposalsHeader from "./ProposalsHeader";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {LoadingWrapper, useLoading} from "../components/loading/LoadingWrapper";
@@ -24,7 +24,12 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const classes = useStyles()
     const location = useLocation()
 
-    const {loadingState, response: proposals} = useLoading(getProposalsByNetwork(network), [network])
+    const {loadingState, response: proposals, call} = useLoading(getProposalsByNetwork)
+
+    useEffect(() => {
+        call(network)
+    }, [network])
+
 
     const filter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)

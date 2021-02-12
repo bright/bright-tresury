@@ -1,4 +1,4 @@
-import React, {useMemo} from 'react';
+import React, {useEffect, useMemo} from 'react';
 import {useLocation} from 'react-router-dom';
 import {getIdeasByNetwork} from './ideas.api';
 import {IdeaDefaultFilter, IdeaFilter, IdeaFilterSearchParamName} from "./list/IdeaStatusFilters";
@@ -15,7 +15,11 @@ interface Props {
 const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
     const location = useLocation()
 
-    const {loadingState, response: ideas} = useLoading(getIdeasByNetwork(network), [network])
+    const {loadingState, response: ideas, call} = useLoading(getIdeasByNetwork)
+
+    useEffect(() => {
+        call(network)
+    }, [network])
 
     const filter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(IdeaFilterSearchParamName)

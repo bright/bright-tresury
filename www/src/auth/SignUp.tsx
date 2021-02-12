@@ -12,11 +12,13 @@ import {Input} from "../components/form/input/Input";
 import {PasswordInput} from "../components/form/input/password/PasswordInput";
 import {Link} from "../components/link/Link";
 import {RouterLink} from "../components/link/RouterLink";
+import {LoadingState, useLoading} from "../components/loading/LoadingWrapper";
 import {Label} from "../components/text/Label";
 import {ROUTE_SIGNIN} from "../routes";
 import {breakpoints} from "../theme/theme";
-import {validateFull} from "../util/form.util";
+import {fullValidatorForSchema} from "../util/form.util";
 import {signUp} from "./auth.api";
+import SignUpSuccess from "./SignUpSuccess";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,7 +27,6 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center'
-
         },
         inputField: {
             marginTop: '2em',
@@ -59,14 +60,10 @@ const SignUp: React.FC = () => {
     const {t} = useTranslation()
     const classes = useStyles()
 
+    const {loadingState, call} = useLoading(signUp)
+
     const onSubmit = async (values: SignUpValues) => {
-        signUp(values)
-            .then((result) => {
-                console.log(result)
-            })
-            .catch((error) => {
-                console.log(error)
-            });
+        await call(values)
     }
 
     const validationSchema = Yup.object().shape({
@@ -80,6 +77,12 @@ const SignUp: React.FC = () => {
     })
     const passwordValidationRules = validationSchema.fields.password.tests.map(({OPTIONS}) => OPTIONS.message?.toString() || '')
 
+    if (loadingState === LoadingState.Resolved) {
+        return <Container title={t('auth.signup.title')}>
+            <SignUpSuccess/>
+        </Container>
+    }
+
     return <Container title={t('auth.signup.title')}>
         <Formik
             enableReinitialize={true}
@@ -89,7 +92,7 @@ const SignUp: React.FC = () => {
                 password: '',
                 userAgreement: false
             }}
-            validate={validateFull(validationSchema)}
+            validate={fullValidatorForSchema(validationSchema)}
             onSubmit={onSubmit}>
             {({
                   values,
@@ -131,7 +134,12 @@ const SignUp: React.FC = () => {
                         />
                     </div>
                     <ButtonsContainer>
-                        <Button variant="contained" color="primary" type='submit'>{t('auth.signup.form.submitButton')}</Button>
+                        <Button disabled={loadingState === LoadingState.Loading}
+                                variant="contained"
+                                color="primary"
+                                type='submit'>
+                            {t('auth.signup.form.submitButton')}
+                        </Button>
                     </ButtonsContainer>
                     <Typography className={classes.login}>
                         {<Trans id='privacy-notice'

@@ -47,6 +47,11 @@
           "emptyFieldError": "You need to agree to the terms of the user agreement"
         },
         "submitButton": "Sign up"
+      },
+      "success": {
+        "title": "Congrats! You have successfully registered!",
+        "subtitle": "Please check your email to confirm the registration",
+        "mailboxImage": "Image of a mailbox"
       }
     }
   },

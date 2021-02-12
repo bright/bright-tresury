@@ -7,24 +7,16 @@ import {ObjectSchema} from "yup";
  * FieldMetaProps.error field will be an array of strings instead of a simple string
  * Use errorsToString and errorsToArray functions to access FieldMetaProps.error
  */
-export function validateFull<T>(validationSchema: ObjectSchema<any>): (values: T) => Promise<FormikErrors<T>> {
-    return (values: T) => validationSchema.validate(values, {
-        abortEarly: false
-    })
-        .then((result) => {
-            return result
-        })
-        .catch((error) => {
-            let errors: any = {}
-            error.inner.forEach((e: any) => {
-                if (!errors[e.path]) {
-                    errors[e.path] = []
-                }
-                errors[e.path].push(...e.errors)
-            })
-            return errors
-        })
+export function fullValidatorForSchema<T>(schema: ObjectSchema<any>) {
+    return (values: T) => schema.validate(values, {
+        abortEarly: false,
+        strict: false,
+    }).then(() => ({})).catch(({inner}: any) => inner.reduce((memo: any, {path, message}: any) => ({
+        ...memo,
+        [path]: (memo[path] || []).concat(message),
+    }), {}))
 }
+
 
 export function formikErrorToString(errors?: string | string[]): string | undefined {
     if (!errors) {

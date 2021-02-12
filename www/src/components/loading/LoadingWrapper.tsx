@@ -1,6 +1,7 @@
 import React, {DependencyList, useEffect, useState} from "react";
 
 export enum LoadingState {
+    Initial,
     Loading,
     Error,
     Resolved
@@ -19,25 +20,30 @@ export const LoadingWrapper: React.FC<Props> = ({loadingState, children}) => {
     </>
 }
 
-interface UseLoadingResult<T> {
+interface UseLoadingResult<T, U, V> {
+    call: (params: T) => Promise<void>
     loadingState: LoadingState
-    response?: T
+    response?: U
+    error?: V
 }
 
-export function useLoading<T>(apiCall: Promise<T>, deps?: DependencyList): UseLoadingResult<T> {
-    const [response, setResponse] = useState<T>()
-    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Loading)
+export function useLoading<T, U, V>(apiCall: (params: T) => Promise<U>): UseLoadingResult<T, U, V> {
+    const [response, setResponse] = useState<U>()
+    const [error, setError] = useState<V>()
+    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
 
-    useEffect(() => {
-        apiCall
-            .then((response: T) => {
+    const call = async (params: T) => {
+        setLoadingState(LoadingState.Loading)
+        return apiCall(params)
+            .then((response) => {
                 setResponse(response)
                 setLoadingState(LoadingState.Resolved)
             })
-            .catch(() => {
+            .catch((err: V) => {
+                setError(err)
                 setLoadingState(LoadingState.Error)
             })
-    }, deps)
+    }
 
-    return {loadingState, response} as UseLoadingResult<T>
+    return {loadingState, response, call, error} as UseLoadingResult<T, U, V>
 }
