@@ -14,3 +14,16 @@ alter default privileges in schema public grant select, insert, update, delete, 
 alter default privileges in schema public grant all on sequences to web;
 EOSQL
 done
+
+
+
+
+docker run \
+  -p 3567:3567 \
+  --env POSTGRESQL_USER=supertokens_user \
+  --env POSTGRESQL_PASSWORD=password \
+  --env POSTGRESQL_HOST=127.0.0.1 \
+  --env POSTGRESQL_PORT=5432 \
+  --env POSTGRESQL_DATABASE_NAME=treasury \
+  -d supertokens/supertokens-postgresql \
+  --network host
