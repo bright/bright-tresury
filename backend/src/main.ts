@@ -1,15 +1,19 @@
 import "reflect-metadata";
-import { SwaggerModule } from "@nestjs/swagger";
-import { join } from "path";
-import { createApp } from './app.module';
-import { AppConfig } from "./config/config";
-import { getLogger } from "./logging.module";
-import { generateSwaggerDocument } from "./swagger";
-import {initializeSupertokens} from "./supertokens.config";
+import {SwaggerModule} from "@nestjs/swagger";
+import {join} from "path";
+import {createApp} from './app.module';
+import {AppConfig} from "./config/config";
+import {getLogger} from "./logging.module";
+import {generateSwaggerDocument} from "./swagger";
+import {initializeSupertokens} from "./auth/supertokens.config";
 import supertokens from 'supertokens-node'
+import {UsersService} from "./users/users.service";
+import {SuperTokensExceptionFilter} from "./auth/supertokens.exceptionFilter";
 
 declare const module: any
 const logger = getLogger()
+
+export const baseApiPath = '/api'
 
 async function bootstrap() {
     const app = await createApp()
@@ -21,7 +25,7 @@ async function bootstrap() {
 
     const config: AppConfig = app.get('AppConfig')
 
-    initializeSupertokens(config)
+    initializeSupertokens(config, app.get(UsersService))
 
     const NODE_ENV = config.deployEnv || 'development';
     logger.info('NODE_ENV ', NODE_ENV)
@@ -37,6 +41,8 @@ async function bootstrap() {
     })
 
     app.use(supertokens.middleware());
+    app.useGlobalFilters(new SuperTokensExceptionFilter())
+    app.setGlobalPrefix(baseApiPath);
 
     logger.info('Listen on port ', config.port)
     await app.listen(config.port)

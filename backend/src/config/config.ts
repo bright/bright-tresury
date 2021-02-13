@@ -1,15 +1,14 @@
-import { Module, Provider } from "@nestjs/common";
+import {Module, Provider} from "@nestjs/common";
 import convict from 'convict'
 import * as fs from "fs";
-import { memoize } from 'lodash';
+import {memoize} from 'lodash';
 import * as path from "path";
-import { AuthConfig, authConfigSchema } from "../auth/auth.config";
-import { AWSConfig, awsConfigSchema } from "../aws.config";
-import { tryLoadParamsFromSSM } from "./config.ssm";
-import { DatabaseConfig, databaseConfigSchema, DatabaseConfigToken } from "../database/database.config"
-import { getLogger } from "../logging.module";
-import { AsyncFactoryProvider, propertyOfProvider } from "../utils/dependency.injection";
-import { BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken } from "../blockchain/blockchain.config";
+import {AWSConfig, awsConfigSchema} from "../aws.config";
+import {tryLoadParamsFromSSM} from "./config.ssm";
+import {DatabaseConfig, databaseConfigSchema, DatabaseConfigToken} from "../database/database.config"
+import {getLogger} from "../logging.module";
+import {AsyncFactoryProvider, propertyOfProvider} from "../utils/dependency.injection";
+import {BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken} from "../blockchain/blockchain.config";
 import {stringFormat} from "./string.format";
 
 interface EnvConfig {
@@ -22,7 +21,6 @@ interface EnvConfig {
 }
 
 export type AppConfig = EnvConfig & {
-    auth: AuthConfig
     database: DatabaseConfig,
     aws: AWSConfig,
     blockchain: BlockchainConfig,
@@ -65,7 +63,6 @@ const configSchema = convict<AppConfig>({
         default: 'http://localhost:3567',
         env: "authCoreUrl"
     },
-    auth: authConfigSchema,
     database: databaseConfigSchema,
     aws: awsConfigSchema,
     blockchain: blockchainConfigSchema,
@@ -104,10 +101,9 @@ const appConfigProvider: AsyncFactoryProvider<AppConfig> = {
     useFactory: async () => await loadConfig()
 }
 
-const authConfigProvider = propertyOfProvider(appConfigProvider, 'auth', 'AuthConfig');
 const databaseConfigProvider = propertyOfProvider(appConfigProvider, "database", DatabaseConfigToken)
 const blockchainConfigProvider = propertyOfProvider(appConfigProvider, "blockchain", BlockchainConfigToken)
-const providers: Provider[] = [appConfigProvider, authConfigProvider, databaseConfigProvider, blockchainConfigProvider];
+const providers: Provider[] = [appConfigProvider, databaseConfigProvider, blockchainConfigProvider];
 
 // @Global() // if we don't have to import config module everywhere
 @Module({

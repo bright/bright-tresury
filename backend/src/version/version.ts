@@ -1,9 +1,8 @@
-import { Controller, Get, Injectable, Module, Query } from '@nestjs/common';
-import { Type } from "class-transformer";
-import { IsBoolean, IsNumber } from "class-validator";
-import { UseAuth } from "../auth/auth.guard";
-import { getLogger } from "../logging.module";
-import { ApiOkResponse, ApiPropertyOptional, ApiProperty } from '@nestjs/swagger';
+import {Controller, Get, Injectable, Module, Query} from '@nestjs/common';
+import {Type} from "class-transformer";
+import {IsBoolean, IsNumber} from "class-validator";
+import {getLogger} from "../logging.module";
+import {ApiOkResponse, ApiProperty, ApiPropertyOptional} from '@nestjs/swagger';
 
 const logger = getLogger()
 
@@ -36,8 +35,7 @@ class GetVersionQuery {
     upperCase!: boolean
 }
 
-@Controller("/api/v1")
-@UseAuth()
+@Controller("/v1")
 export class VersionController {
     constructor(private readonly versionService: VersionService) {
     }

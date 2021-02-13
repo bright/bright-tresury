@@ -17,7 +17,7 @@ class GetProposalParams {
     id!: string;
 }
 
-@Controller('/api/v1/proposals')
+@Controller('/v1/proposals')
 @ApiTags('proposals')
 export class ProposalsController {
     constructor(private proposalsService: ProposalsService) {

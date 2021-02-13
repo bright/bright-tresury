@@ -4,7 +4,7 @@ import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
 import {IdeaProposalsService} from './idea.proposals.service';
 import {IdeaNetworkDto, toIdeaNetworkDto} from "../dto/ideaNetwork.dto";
 
-@Controller('/api/v1/ideas/:id/proposals')
+@Controller('/v1/ideas/:id/proposals')
 @ApiTags('ideas.proposals')
 export class IdeaProposalsController {
 

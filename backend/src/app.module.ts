@@ -1,17 +1,15 @@
-import { INestApplication, Module, ValidationPipe, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { NestFactory } from "@nestjs/core";
-import { AuthModule } from "./auth";
-import { BlockchainModule } from "./blockchain/blockchain.module";
-import { ConfigModule } from "./config/config";
-import { DatabaseModule } from "./database/database.module";
-import { LoggingModule, NestLoggerAdapter } from "./logging.module";
-import { VersionModule } from "./version/version";
-import { IdeasModule } from './ideas/ideas.module';
-import { ProposalsModule } from './proposals/proposals.module';
-import { ExtrinsicsModule } from './extrinsics/extrinsics.module';
+import {INestApplication, MiddlewareConsumer, Module, NestModule, ValidationPipe} from '@nestjs/common';
+import {NestFactory} from "@nestjs/core";
+import {ConfigModule} from "./config/config";
+import {DatabaseModule} from "./database/database.module";
+import {LoggingModule, NestLoggerAdapter} from "./logging.module";
+import {VersionModule} from "./version/version";
+import {IdeasModule} from './ideas/ideas.module';
+import {ProposalsModule} from './proposals/proposals.module';
 import {AppController} from "./app.controller";
-import { FrontendMiddleware } from './front-end.middleware';
+import {FrontendMiddleware} from './front-end.middleware';
 import {NestExpressApplication} from "@nestjs/platform-express";
+import {UsersModule} from "./users/users.module";
 
 @Module({
     imports: [
@@ -19,11 +17,11 @@ import {NestExpressApplication} from "@nestjs/platform-express";
         ConfigModule,
         DatabaseModule,
         VersionModule,
-        AuthModule,
         IdeasModule,
         // BlockchainModule,
         ProposalsModule,
         // ExtrinsicsModule,
+        UsersModule
     ],
     exports: [],
     controllers: [AppController]

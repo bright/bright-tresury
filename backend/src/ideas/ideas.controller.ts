@@ -14,7 +14,7 @@ class GetIdeasQuery {
     network?: string
 }
 
-@Controller('/api/v1/ideas')
+@Controller('/v1/ideas')
 @ApiTags('ideas')
 export class IdeasController {
 

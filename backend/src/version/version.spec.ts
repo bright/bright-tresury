@@ -1,6 +1,6 @@
-import { Test } from "@nestjs/testing";
-import { authorizationToken, beforeAllSetup, beforeSetupFullApp, request } from "../utils/spec.helpers";
-import { VersionController, VersionModule, VersionService } from "./version";
+import {Test} from "@nestjs/testing";
+import {beforeAllSetup, beforeSetupFullApp, request} from "../utils/spec.helpers";
+import {VersionController, VersionModule, VersionService} from "./version";
 
 describe(`VersionModule`, () => {
     describe(`${VersionController.name}`, () => {
@@ -46,7 +46,6 @@ describe(`/api/v1/version`, () => {
         const res = await request(app())
             .get('/api/v1/version')
             .query({ upperCase: false })
-            .use(authorizationToken({ accountId: 'test' }))
 
         expect(res).toHaveResponseStatus(200)
         expect(res.body).toHaveProperty('version')
@@ -56,7 +55,6 @@ describe(`/api/v1/version`, () => {
         const res = await request(app())
             .get('/api/v1/version')
             .query({ length: 'bad' as any })
-            .use(authorizationToken({ accountId: 'test' }))
 
         expect(res).toHaveResponseStatus(400)
     });

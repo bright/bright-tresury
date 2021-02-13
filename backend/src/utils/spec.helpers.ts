@@ -2,11 +2,9 @@ import {INestApplication} from "@nestjs/common";
 import {ModuleMetadata} from "@nestjs/common/interfaces";
 import {Test, TestingModuleBuilder} from "@nestjs/testing";
 import {memoize} from 'lodash';
-import {SuperAgentRequest} from "superagent";
 import supertest from "supertest";
 import {getConnection} from 'typeorm';
 import {AppModule, configureGlobalServices} from "../app.module";
-import {AuthService} from "../auth/auth.service";
 import {NestLoggerAdapter} from "../logging.module";
 import {Accessor} from "./accessor";
 import {tryClose} from "./closeable";
@@ -22,14 +20,6 @@ expect.extend(responseMatchers)
 export const request = memoize((app: INestApplication) => {
     return supertest(app.getHttpServer())
 })
-
-export const authorizationToken = (principalInfo: { accountId: string }, app: INestApplication = beforeSetupFullApp().get()) => {
-    return (request: SuperAgentRequest) => {
-        const authService = app.get(AuthService)
-        const tokenValue = authService.createToken(principalInfo);
-        request.set('Authorization', `Bearer ${tokenValue}`);
-    };
-}
 
 export function beforeEachSetup<T>(setupCall: () => T | PromiseLike<T>, options: { autoClose: boolean } = {autoClose: true}): Accessor<T> {
     let result: T | undefined;
@@ -89,7 +79,10 @@ export function beforeAllSetup<T>(setupCall: () => T | PromiseLike<T>, options: 
     return accessor
 }
 
-export async function createTestingApp(moduleToTest: ModuleMetadata | ModuleMetadata["imports"], customize?: (builder: TestingModuleBuilder) => TestingModuleBuilder) {
+export async function createTestingApp(
+    moduleToTest: ModuleMetadata | ModuleMetadata["imports"],
+    customize?: (builder: TestingModuleBuilder) => TestingModuleBuilder
+) {
     const moduleMetadata: ModuleMetadata = moduleToTest && 'imports' in moduleToTest
         ? moduleToTest as ModuleMetadata
         : {imports: moduleToTest as ModuleMetadata['imports']}
