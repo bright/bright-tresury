@@ -67,22 +67,28 @@ const Resources = {
 
     // logs
     CloudwatchLogsGroup: 'CloudwatchLogsGroup',
+    SubstrateCloudwatchLogsGroup: 'SubstrateCloudwatchLogsGroup',
 
     // ECS
     ECSCluster: 'ECSCluster',
     ECSSecurityGroup: 'ECSSecurityGroup',
     ECSSecurityGroupALBports: 'ECSSecurityGroupALBports',
     TaskDefinition: 'TaskDefinition',
+    SubstrateTaskDefinition: 'SubstrateTaskDefinition',
     ContainerInstances: 'ContainerInstances',
     ECSService: 'ECSService',
+    ECSSubstrateService: 'ECSSubstrateService',
 
     // load balancer
     ECSALB: 'ECSALB',
+    ECSSubALB: 'ECSSubALB',
     //ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
+    SubALBHttpListener: 'SubALBHttpListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
     ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSTargetGroup: 'ECSTargetGroup',
+    ECSSubTargetGroup: 'ECSSubTargetGroup',
     ECSAutoScalingGroup: 'ECSAutoScalingGroup',
     ECSServiceRole: 'ECSServiceRole',
 
@@ -176,15 +182,17 @@ export default cloudform({
                 BackendAllocatedStorage: 10,
                 DbName: ProjectName,
                 DbUserName: ProjectName,
-                MultiAZ: "false"
+                MultiAZ: "false",
             }
         },
         ECS: {
             stage: {
-                InstanceType: "t2.micro",
+                InstanceType: "t2.small",
                 ContainerName: `${ProjectName}-www-stage`,
                 ContainerPort: "3000",
                 Memory: "700",
+                SubstrateContainerName: `${ProjectName}-substrate-stage`,
+                SubstrateContainerPort: "9944",
                 DesiredTasksCount: 1
             },
             prod: {
@@ -197,7 +205,7 @@ export default cloudform({
         },
         Certificates: {
             stage: {
-                ARN: ""
+                ARN: "arn:aws:acm:eu-central-1:339594496974:certificate/5b31829b-fec3-4324-87e9-6660a57008cc"
             },
             prod: {
                 ARN: ""
@@ -650,6 +658,10 @@ export default cloudform({
             LogGroupName: Fn.Join('-', ['ECSLogGroup', Refs.StackName]),
             RetentionInDays: 14
         }),
+        [Resources.SubstrateCloudwatchLogsGroup]: new Logs.LogGroup({
+            LogGroupName: Fn.Join('-', ['SubstrateECSLogGroup', Refs.StackName]),
+            RetentionInDays: 14
+        }),
 
         [Resources.TaskDefinition]: new ECS.TaskDefinition({
             Family: Fn.Join('', [Refs.StackName, '-app']),
@@ -665,10 +677,6 @@ export default cloudform({
                             Name: "NODE_OPTIONS",
                             Value: "--max-old-space-size=600"
                         },
-                        // {
-                        //     Name: 'ETHEREUM_NODE_URL',
-                        //     Value: Fn.Ref('EtherumNodeUrl'),
-                        // },
                     ],
                     Cpu: 100,
                     Essential: true,
@@ -694,8 +702,55 @@ export default cloudform({
             TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn")
         }),
 
+        [Resources.SubstrateTaskDefinition]: new ECS.TaskDefinition({
+            Family: Fn.Join('', [Refs.StackName, '-app']),
+            ContainerDefinitions: [
+                {
+                    Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
+                    Cpu: 100,
+                    Essential: true,
+                    Image: "parity/polkadot:v0.8.24",
+                    Command: ['--rpc-external', '--ws-external', '--dev'],
+                    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
+                    LogConfiguration: {
+                        LogDriver: "awslogs",
+                        Options: {
+                            "awslogs-group": Fn.Ref('SubstrateCloudwatchLogsGroup'),
+                            "awslogs-region": Refs.Region,
+                            "awslogs-stream-prefix": "substrate",
+                            "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+                        }
+                    },
+                    PortMappings: [
+                        {
+                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort')
+                        }
+                    ]
+                }
+            ],
+            TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn")
+        }),
+
         [Resources.ECSALB]: new ElasticLoadBalancingV2.LoadBalancer({
             Name: Refs.StackName, // to long name
+            Scheme: "internet-facing",
+            LoadBalancerAttributes: [
+                {
+                    Key: "idle_timeout.timeout_seconds",
+                    Value: "30"
+                }
+            ],
+            Subnets: [
+                Fn.Ref(Resources.PublicASubnet),
+                Fn.Ref(Resources.PublicBSubnet)
+            ],
+            SecurityGroups: [
+                Fn.Ref(Resources.HttpHttpsServerSecurityGroup)
+            ]
+        }).dependsOn(Resources.HttpHttpsServerSecurityGroup),
+
+        [Resources.ECSSubALB]: new ElasticLoadBalancingV2.LoadBalancer({
+            Name: Fn.Join('', [Refs.StackName, '-sub']), // to long name
             Scheme: "internet-facing",
             LoadBalancerAttributes: [
                 {
@@ -738,6 +793,18 @@ export default cloudform({
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 80,
+            Protocol: "HTTP"
+        }).dependsOn(Resources.ECSServiceRole),
+
+        [Resources.SubALBHttpListener]: new ElasticLoadBalancingV2.Listener({
+            DefaultActions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                }
+            ],
+            LoadBalancerArn: Fn.Ref(Resources.ECSSubALB),
+            Port: 9944,
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
@@ -790,6 +857,37 @@ export default cloudform({
             HealthyThresholdCount: 2,
             Name: Fn.Join('-', [Resources.ECSTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
+            Protocol: "HTTP",
+            TargetGroupAttributes: [
+                {
+                    Key: "deregistration_delay.timeout_seconds",
+                    Value: "30"
+                },
+                {
+                    Key: "stickiness.enabled",
+                    Value: "true"
+                },
+                {
+                    Key: "stickiness.type",
+                    Value: "lb_cookie"
+                },
+                {
+                    Value: "86400",
+                    Key: "stickiness.lb_cookie.duration_seconds"
+                }
+            ],
+            UnhealthyThresholdCount: 5,
+            VpcId: Fn.Ref(Resources.VPC)
+        }).dependsOn(Resources.ECSALB),
+
+        [Resources.ECSSubTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
+            // HealthCheckIntervalSeconds: 20,
+            // HealthCheckPath: "/api/health",
+            // HealthCheckProtocol: "HTTP",
+            // HealthCheckTimeoutSeconds: 10,
+            // HealthyThresholdCount: 2,
+            Name: Fn.Join('-', [Resources.ECSSubTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
+            Port: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort'),
             Protocol: "HTTP",
             TargetGroupAttributes: [
                 {
@@ -875,6 +973,23 @@ export default cloudform({
             Role: Fn.Ref(Resources.ECSServiceRole),
             TaskDefinition: Fn.Ref(Resources.TaskDefinition)
         }).dependsOn(Resources.ALBHttpListener),
+
+        [Resources.ECSSubstrateService]: new ECS.Service({
+            Cluster: Fn.Ref(Resources.ECSCluster),
+            DesiredCount: Fn.FindInMap('ECS', DeployEnv, 'DesiredTasksCount'),
+            LoadBalancers: [
+                {
+                    ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
+                    ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort'),
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                }
+            ],
+            DeploymentConfiguration: {
+                MinimumHealthyPercent: 50
+            },
+            Role: Fn.Ref(Resources.ECSServiceRole),
+            TaskDefinition: Fn.Ref(Resources.SubstrateTaskDefinition)
+        }).dependsOn(Resources.SubALBHttpListener),
 
         [Resources.ECSServiceRole]: new IAM.Role({
             AssumeRolePolicyDocument: {
