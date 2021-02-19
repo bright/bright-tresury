@@ -85,8 +85,10 @@ const Resources = {
     //ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
     SubALBHttpListener: 'SubALBHttpListener',
+    SubALBWsListener: 'SubALBWsListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
     ECSSubALBListenerRule: 'ECSSubALBListenerRule',
+    ECSSubALBWsListenerRule: 'ECSSubALBWsListenerRule',
     ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSTargetGroup: 'ECSTargetGroup',
     ECSSubTargetGroup: 'ECSSubTargetGroup',
@@ -738,6 +740,10 @@ export default cloudform({
                         {
                             ContainerPort: 9933,
                             HostPort: 9933,
+                        },
+                        {
+                            ContainerPort: 9944,
+                            HostPort: 9944,
                         }
                     ]
                 }
@@ -822,6 +828,18 @@ export default cloudform({
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
+        [Resources.SubALBWsListener]: new ElasticLoadBalancingV2.Listener({
+            DefaultActions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                }
+            ],
+            LoadBalancerArn: Fn.Ref(Resources.ECSSubALB),
+            Port: 9944,
+            Protocol: "HTTP"
+        }).dependsOn(Resources.ECSServiceRole),
+
         // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
         //     Actions: [
         //         {
@@ -880,12 +898,32 @@ export default cloudform({
             Priority: 1
         }).dependsOn(Resources.SubALBHttpListener),
 
+        [Resources.ECSSubALBWsListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                }
+            ],
+            Conditions: [
+                {
+                    Field: "path-pattern",
+                    Values: ["/"]
+                }
+            ],
+            ListenerArn: Fn.Ref(Resources.SubALBWsListener),
+            Priority: 1
+        }).dependsOn(Resources.SubALBWsListener),
+
         [Resources.ECSTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
             HealthCheckPath: "/api/health",
             HealthCheckProtocol: "HTTP",
             HealthCheckTimeoutSeconds: 10,
             HealthyThresholdCount: 2,
+            Matcher: {
+                HttpCode: "200",
+            },
             Name: Fn.Join('-', [Resources.ECSTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
             Protocol: "HTTP",
@@ -941,7 +979,7 @@ export default cloudform({
             ],
             UnhealthyThresholdCount: 5,
             VpcId: Fn.Ref(Resources.VPC)
-        }).dependsOn(Resources.ECSALB),
+        }).dependsOn(Resources.ECSSubALB),
 
         [Resources.ECSAutoScalingGroup]: new AutoScaling.AutoScalingGroup({
             VPCZoneIdentifier: [
@@ -1021,7 +1059,8 @@ export default cloudform({
             },
             Role: Fn.Ref(Resources.ECSServiceRole),
             TaskDefinition: Fn.Ref(Resources.SubstrateTaskDefinition)
-        }).dependsOn(Resources.SubALBHttpListener),
+        }).dependsOn(Resources.SubALBHttpListener)
+            .dependsOn(Resources.SubALBWsListener),
 
         [Resources.ECSServiceRole]: new IAM.Role({
             AssumeRolePolicyDocument: {
