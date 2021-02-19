@@ -86,6 +86,7 @@ const Resources = {
     ALBHttpListener: 'ALBHttpListener',
     SubALBHttpListener: 'SubALBHttpListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
+    ECSSubALBListenerRule: 'ECSSubALBListenerRule',
     ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSTargetGroup: 'ECSTargetGroup',
     ECSSubTargetGroup: 'ECSSubTargetGroup',
@@ -121,6 +122,18 @@ const InternetAccessSecurity = [
         IpProtocol: "tcp",
         FromPort: 443,
         ToPort: 443,
+        CidrIp: "0.0.0.0/0"
+    },
+    {
+        IpProtocol: "tcp",
+        FromPort: 9933,
+        ToPort: 9933,
+        CidrIp: "0.0.0.0/0"
+    },
+    {
+        IpProtocol: "tcp",
+        FromPort: 9944,
+        ToPort: 9944,
         CidrIp: "0.0.0.0/0"
     }
 ]
@@ -192,7 +205,7 @@ export default cloudform({
                 ContainerPort: "3000",
                 Memory: "700",
                 SubstrateContainerName: `${ProjectName}-substrate-stage`,
-                SubstrateContainerPort: "9944",
+                SubstrateContainerPort: "9933",
                 DesiredTasksCount: 1
             },
             prod: {
@@ -649,7 +662,7 @@ export default cloudform({
         [Resources.ECSSecurityGroupALBports]: new EC2.SecurityGroupIngress({
             GroupId: Fn.Ref('ECSSecurityGroup'),
             IpProtocol: "tcp",
-            FromPort: 31000,
+            FromPort: 0,
             ToPort: 61000,
             CidrIp: Fn.FindInMap('SubnetConfig', Resources.VPC, 'CIDR')
         }),
@@ -723,7 +736,8 @@ export default cloudform({
                     },
                     PortMappings: [
                         {
-                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort')
+                            ContainerPort: 9933,
+                            HostPort: 9933,
                         }
                     ]
                 }
@@ -804,7 +818,7 @@ export default cloudform({
                 }
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSSubALB),
-            Port: 9944,
+            Port: 9933,
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
@@ -849,6 +863,23 @@ export default cloudform({
             Priority: 1
         }).dependsOn(Resources.ALBHttpListener),
 
+        [Resources.ECSSubALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                }
+            ],
+            Conditions: [
+                {
+                    Field: "path-pattern",
+                    Values: ["/"]
+                }
+            ],
+            ListenerArn: Fn.Ref(Resources.SubALBHttpListener),
+            Priority: 1
+        }).dependsOn(Resources.SubALBHttpListener),
+
         [Resources.ECSTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
             HealthCheckPath: "/api/health",
@@ -881,11 +912,12 @@ export default cloudform({
         }).dependsOn(Resources.ECSALB),
 
         [Resources.ECSSubTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
-            // HealthCheckIntervalSeconds: 20,
-            // HealthCheckPath: "/api/health",
-            // HealthCheckProtocol: "HTTP",
-            // HealthCheckTimeoutSeconds: 10,
-            // HealthyThresholdCount: 2,
+            HealthCheckIntervalSeconds: 20,
+            HealthCheckPath: "/health",
+            HealthCheckProtocol: "HTTP",
+            HealthCheckPort: "9933",
+            HealthCheckTimeoutSeconds: 10,
+            HealthyThresholdCount: 2,
             Name: Fn.Join('-', [Resources.ECSSubTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort'),
             Protocol: "HTTP",
