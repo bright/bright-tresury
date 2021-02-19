@@ -74,14 +74,11 @@ const Resources = {
     ECSSecurityGroup: 'ECSSecurityGroup',
     ECSSecurityGroupALBports: 'ECSSecurityGroupALBports',
     TaskDefinition: 'TaskDefinition',
-    SubstrateTaskDefinition: 'SubstrateTaskDefinition',
     ContainerInstances: 'ContainerInstances',
     ECSService: 'ECSService',
-    ECSSubstrateService: 'ECSSubstrateService',
 
     // load balancer
     ECSALB: 'ECSALB',
-    ECSSubALB: 'ECSSubALB',
     //ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
     SubALBHttpListener: 'SubALBHttpListener',
@@ -711,15 +708,9 @@ export default cloudform({
                         {
                             ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort')
                         }
-                    ]
-                }
-            ],
-            TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn")
-        }),
-
-        [Resources.SubstrateTaskDefinition]: new ECS.TaskDefinition({
-            Family: Fn.Join('', [Refs.StackName, '-app']),
-            ContainerDefinitions: [
+                    ],
+                    Links: [Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName')],
+                },
                 {
                     Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
                     Cpu: 100,
@@ -753,24 +744,6 @@ export default cloudform({
 
         [Resources.ECSALB]: new ElasticLoadBalancingV2.LoadBalancer({
             Name: Refs.StackName, // to long name
-            Scheme: "internet-facing",
-            LoadBalancerAttributes: [
-                {
-                    Key: "idle_timeout.timeout_seconds",
-                    Value: "30"
-                }
-            ],
-            Subnets: [
-                Fn.Ref(Resources.PublicASubnet),
-                Fn.Ref(Resources.PublicBSubnet)
-            ],
-            SecurityGroups: [
-                Fn.Ref(Resources.HttpHttpsServerSecurityGroup)
-            ]
-        }).dependsOn(Resources.HttpHttpsServerSecurityGroup),
-
-        [Resources.ECSSubALB]: new ElasticLoadBalancingV2.LoadBalancer({
-            Name: Fn.Join('', [Refs.StackName, '-sub']), // to long name
             Scheme: "internet-facing",
             LoadBalancerAttributes: [
                 {
@@ -823,7 +796,7 @@ export default cloudform({
                     TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
                 }
             ],
-            LoadBalancerArn: Fn.Ref(Resources.ECSSubALB),
+            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 9933,
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
@@ -835,7 +808,7 @@ export default cloudform({
                     TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
                 }
             ],
-            LoadBalancerArn: Fn.Ref(Resources.ECSSubALB),
+            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 9944,
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
@@ -979,7 +952,7 @@ export default cloudform({
             ],
             UnhealthyThresholdCount: 5,
             VpcId: Fn.Ref(Resources.VPC)
-        }).dependsOn(Resources.ECSSubALB),
+        }).dependsOn(Resources.ECSALB),
 
         [Resources.ECSAutoScalingGroup]: new AutoScaling.AutoScalingGroup({
             VPCZoneIdentifier: [
@@ -1035,32 +1008,19 @@ export default cloudform({
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
                     ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
                     TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
-                }
-            ],
-            DeploymentConfiguration: {
-                MinimumHealthyPercent: 50
-            },
-            Role: Fn.Ref(Resources.ECSServiceRole),
-            TaskDefinition: Fn.Ref(Resources.TaskDefinition)
-        }).dependsOn(Resources.ALBHttpListener),
-
-        [Resources.ECSSubstrateService]: new ECS.Service({
-            Cluster: Fn.Ref(Resources.ECSCluster),
-            DesiredCount: Fn.FindInMap('ECS', DeployEnv, 'DesiredTasksCount'),
-            LoadBalancers: [
+                },
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
-                    ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort'),
+                    ContainerPort: 9933,
                     TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
                 }
             ],
             DeploymentConfiguration: {
                 MinimumHealthyPercent: 50
             },
-            Role: Fn.Ref(Resources.ECSServiceRole),
-            TaskDefinition: Fn.Ref(Resources.SubstrateTaskDefinition)
-        }).dependsOn(Resources.SubALBHttpListener)
-            .dependsOn(Resources.SubALBWsListener),
+            // Role: Fn.Ref(Resources.ECSServiceRole),
+            TaskDefinition: Fn.Ref(Resources.TaskDefinition)
+        }).dependsOn(Resources.ALBHttpListener),
 
         [Resources.ECSServiceRole]: new IAM.Role({
             AssumeRolePolicyDocument: {
