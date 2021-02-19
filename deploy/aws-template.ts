@@ -802,6 +802,11 @@ export default cloudform({
         }).dependsOn(Resources.ECSServiceRole),
 
         [Resources.SubALBWsListener]: new ElasticLoadBalancingV2.Listener({
+            Certificates: [
+                {
+                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
+                }
+            ],
             DefaultActions: [
                 {
                     Type: "forward",
@@ -810,7 +815,7 @@ export default cloudform({
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 9944,
-            Protocol: "HTTP"
+            Protocol: "HTTPS"
         }).dependsOn(Resources.ECSServiceRole),
 
         // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
@@ -1011,7 +1016,7 @@ export default cloudform({
                 },
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
-                    ContainerPort: 9933,
+                    ContainerPort: 9944,
                     TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
                 }
             ],
