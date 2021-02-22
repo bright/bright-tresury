@@ -20,30 +20,30 @@ export const LoadingWrapper: React.FC<Props> = ({loadingState, children}) => {
     </>
 }
 
-interface UseLoadingResult<T, U, V> {
-    call: (params: T) => Promise<void>
+interface UseLoadingResult<ParamsType, ResponseType, ErrorType> {
+    call: (params: ParamsType) => Promise<void>
     loadingState: LoadingState
-    response?: U
-    error?: V
+    response?: ResponseType
+    error?: ErrorType
 }
 
-export function useLoading<T, U, V>(apiCall: (params: T) => Promise<U>): UseLoadingResult<T, U, V> {
-    const [response, setResponse] = useState<U>()
-    const [error, setError] = useState<V>()
+export function useLoading<ParamsType, ResponseType, ErrorType>(apiCall: (params: ParamsType) => Promise<ResponseType>): UseLoadingResult<ParamsType, ResponseType, ErrorType> {
+    const [response, setResponse] = useState<ResponseType>()
+    const [error, setError] = useState<ErrorType>()
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
 
-    const call = async (params: T) => {
+    const call = async (params: ParamsType) => {
         setLoadingState(LoadingState.Loading)
         return apiCall(params)
             .then((response) => {
                 setResponse(response)
                 setLoadingState(LoadingState.Resolved)
             })
-            .catch((err: V) => {
+            .catch((err: ErrorType) => {
                 setError(err)
                 setLoadingState(LoadingState.Error)
             })
     }
 
-    return {loadingState, response, call, error} as UseLoadingResult<T, U, V>
+    return {loadingState, response, call, error} as UseLoadingResult<ParamsType, ResponseType, ErrorType>
 }
