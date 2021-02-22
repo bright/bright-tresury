@@ -8,6 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import {useField} from "formik";
 import {FieldHookConfig} from "formik/dist/Field";
 import React from "react";
+import {useTranslation} from "react-i18next";
 import checkboxCheckedIcon from "../../../assets/checkbox_checked.svg"
 import checkboxEmptyIcon from "../../../assets/checkbox_empty.svg"
 import {ErrorLabel} from "./ErrorLabel";
@@ -45,6 +46,7 @@ export type CheckboxInputProps = OwnProps & CheckboxProps & FieldHookConfig<any>
 export const CheckboxInput: React.FC<CheckboxInputProps> = ({label, ...props}) => {
     const classes = useStyles()
     const checkboxClasses = useCheckboxStyles()
+    const {t} = useTranslation()
 
     const [field, meta] = useField({...props});
     const hasError: boolean = meta.touched && Boolean(meta.error)
@@ -58,8 +60,8 @@ export const CheckboxInput: React.FC<CheckboxInputProps> = ({label, ...props}) =
                     classes={checkboxClasses}
                     checked={field.value}
                     inputProps={{...field, ...meta}}
-                    icon={<img src={checkboxEmptyIcon}/>}
-                    checkedIcon={<img src={checkboxCheckedIcon}/>}
+                    icon={<img src={checkboxEmptyIcon} alt={t('form.inputs.checkbox.notChecked')}/>}
+                    checkedIcon={<img src={checkboxCheckedIcon} alt={t('form.inputs.checkbox.checked')}/>}
                 />}
                 label={<Typography className={classes.label}>{label}</Typography>}
             />

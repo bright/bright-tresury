@@ -10,6 +10,14 @@
       }
     }
   },
+  "form": {
+    "inputs": {
+      "checkbox": {
+        "checked": "Checked",
+        "notChecked": "Not checked"
+      }
+    }
+  },
   "menu": {
     "stats": "Stats",
     "ideas": "Ideas",
@@ -42,7 +50,9 @@
           "placeholder": "Enter at least 8 characters",
           "tooShort": "Use 8 or more characters",
           "useNumber": "Use a number (e.g. 1234)",
-          "useLowerCaseLetter": "Use a lower case letter (e.g. abc)"
+          "useLowerCaseLetter": "Use a lower case letter (e.g. abc)",
+          "validationOk": "Validation OK",
+          "validationError": "Validation Error"
         },
         "userAgreement": {
           "label": "I have read and agree to the terms of the <a>BrightTreasury user agreement</a>.",

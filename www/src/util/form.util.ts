@@ -1,4 +1,3 @@
-import {FormikErrors} from "formik/dist/types";
 import {ObjectSchema} from "yup";
 
 /*
@@ -16,7 +15,6 @@ export function fullValidatorForSchema<T>(schema: ObjectSchema<any>) {
         [path]: (memo[path] || []).concat(message),
     }), {}))
 }
-
 
 export function formikErrorToString(errors?: string | string[]): string | undefined {
     if (!errors) {

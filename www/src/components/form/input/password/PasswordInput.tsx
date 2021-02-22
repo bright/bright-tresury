@@ -25,7 +25,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({label, validationRu
     const showValidationRules = (field.value !== meta.initialValue) || meta.touched
 
     const icon = useMemo(() => show ? showPasswordIcon : hidePasswordIcon, [show])
-    const iconDescription = useMemo(() => show ? t('auth.passwordShow') : t('auth.passwordHide'), [show])
+    const iconDescription = useMemo(() => show ? t('auth.passwordShow') : t('auth.passwordHide'), [show, t])
     const type = useMemo(() => show ? "text" : "password", [show])
 
     const toggleShow = () => setShow(!show)

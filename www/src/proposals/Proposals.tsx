@@ -28,7 +28,7 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
 
     useEffect(() => {
         call(network)
-    }, [network])
+    }, [network, call])
 
 
     const filter = useMemo(() => {

@@ -19,7 +19,7 @@ const Ideas: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
 
     useEffect(() => {
         call(network)
-    }, [network])
+    }, [network, call])
 
     const filter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(IdeaFilterSearchParamName)

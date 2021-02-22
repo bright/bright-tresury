@@ -1,6 +1,7 @@
 import {createStyles} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
+import {useTranslation} from "react-i18next";
 import crossIcon from "../../../../assets/validation_rules_cross.svg";
 import tickIcon from "../../../../assets/validation_rules_tick.svg";
 import {formikErrorToArray} from "../../../../util/form.util";
@@ -36,14 +37,16 @@ export interface ValidationRuleLabelProps {
 
 export const ValidationRuleLabel: React.FC<ValidationRuleLabelProps> = ({message, error}) => {
     const classes = useStyles()
+    const {t} = useTranslation()
 
     const isError = formikErrorToArray(error)?.includes(message)
 
     const labelClass = isError ? classes.labelInactive : classes.labelActive
     const iconSrc = isError ? crossIcon : tickIcon
+    const iconAlt = isError ? t('auth.signup.form.password.validationError') : t('auth.signup.form.password.validationOk')
 
     return <div className={classes.root}>
-        <img src={iconSrc} className={classes.icon}/>
+        <img src={iconSrc} className={classes.icon} alt={iconAlt}/>
         <p className={`${classes.label} ${labelClass}`}>{message}</p>
     </div>
 }

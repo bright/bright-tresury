@@ -1,8 +1,7 @@
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
+import {createStyles, Link as MaterialLink} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
 import {Link as ReactRouterLink} from "react-router-dom";
-import {Link as MaterialLink} from "@material-ui/core";
 import {Strong} from "../info/Info";
 
 const useStyles = makeStyles(() =>
