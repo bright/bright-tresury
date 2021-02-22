@@ -15,5 +15,5 @@ const Template: Story<IdeaDetailsProps> = (args) => <IdeaDetails {...args}/>;
 const emptyIdea = createEmptyIdea('localhost')
 export const Default = Template.bind({});
 Default.args = {
-    idea: {...emptyIdea, links: ['http://google.pl']},
+    idea: {...emptyIdea, links: ['http://bright.dev']},
 };

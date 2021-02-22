@@ -4,13 +4,14 @@ import {fetchAndUnwrap} from '../api'
 interface SignUpData {
     login: string
     password: string
+    username: string
 }
 
 // TODO use API_URL once backend ready
 const authApiPath = `http://localhost:3001/auth`
 
 export function signUp(data: SignUpData) {
-    const {login, password} = data;
+    const {login, password, username} = data;
     const requestData = {
         formFields: [
             {
@@ -21,6 +22,10 @@ export function signUp(data: SignUpData) {
                 id: 'password',
                 value: password,
             },
+            {
+                id: 'username',
+                value: username,
+            }
         ],
     };
 
