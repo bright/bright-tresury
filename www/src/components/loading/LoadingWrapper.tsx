@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 
 export enum LoadingState {
     Initial,
@@ -32,7 +32,7 @@ export function useLoading<ParamsType, ResponseType, ErrorType>(apiCall: (params
     const [error, setError] = useState<ErrorType>()
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
 
-    const call = async (params: ParamsType) => {
+    const call = useCallback(async (params: ParamsType) => {
         setLoadingState(LoadingState.Loading)
         return apiCall(params)
             .then((response) => {
@@ -43,7 +43,7 @@ export function useLoading<ParamsType, ResponseType, ErrorType>(apiCall: (params
                 setError(err)
                 setLoadingState(LoadingState.Error)
             })
-    }
+    }, [apiCall])
 
     return {loadingState, response, call, error} as UseLoadingResult<ParamsType, ResponseType, ErrorType>
 }
