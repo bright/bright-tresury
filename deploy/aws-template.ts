@@ -81,13 +81,13 @@ const Resources = {
     ECSALB: 'ECSALB',
     //ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
-    SubALBHttpListener: 'SubALBHttpListener',
-    SubALBWsListener: 'SubALBWsListener',
+    SubstrateHttpListener: 'SubstrateHttpListener',
+    SubstrateWssListener: 'SubstrateWssListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
-    ECSSubALBListenerRule: 'ECSSubALBListenerRule',
-    ECSSubALBWsListenerRule: 'ECSSubALBWsListenerRule',
-    ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
-    ECSTargetGroup: 'ECSTargetGroup',
+    ECSSubstrateHttpListenerRule: 'ECSSubstrateHttpListenerRule',
+    ECSSubstrateWssListenerRule: 'ECSSubstrateWssListenerRule',
+    // ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
+    ECSAppTargetGroup: 'ECSAppTargetGroup',
     ECSSubTargetGroup: 'ECSSubTargetGroup',
     ECSAutoScalingGroup: 'ECSAutoScalingGroup',
     ECSServiceRole: 'ECSServiceRole',
@@ -200,16 +200,17 @@ export default cloudform({
         ECS: {
             stage: {
                 InstanceType: "t2.small",
-                ContainerName: `${ProjectName}-www-stage`,
+                ContainerName: `${ProjectName}-app-stage`,
                 ContainerPort: "3000",
                 Memory: "700",
                 SubstrateContainerName: `${ProjectName}-substrate-stage`,
-                SubstrateContainerPort: "9933",
+                SubstrateHttpContainerPort: "9933",
+                SubstrateWsContainerPort: "9944",
                 DesiredTasksCount: 1
             },
             prod: {
                 InstanceType: "t2.small",
-                ContainerName: `${ProjectName}-www-prod`,
+                ContainerName: `${ProjectName}-app-prod`,
                 ContainerPort: "3000",
                 Memory: "900",
                 DesiredTasksCount: 1
@@ -226,13 +227,13 @@ export default cloudform({
     },
     Resources: {
         [Resources.HttpHttpsServerSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Enables inbound HTTP and HTTPS access via port 80 and 443",
+            GroupDescription: "Enables inbound HTTP and HTTPS access via port 80, 443, 9933, 9944",
             VpcId: Fn.Ref(Resources.VPC),
             SecurityGroupIngress: InternetAccessSecurity
         }),
 
         [Resources.AccessInternetSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Enables outbound Internet access via ports 80,443",
+            GroupDescription: "Enables outbound Internet access via ports 80,443, 9933, 9944",
             VpcId: Fn.Ref(Resources.VPC),
             SecurityGroupEgress: InternetAccessSecurity
         }),
@@ -729,12 +730,12 @@ export default cloudform({
                     },
                     PortMappings: [
                         {
-                            ContainerPort: 9933,
-                            HostPort: 9933,
+                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
+                            HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
                         },
                         {
-                            ContainerPort: 9944,
-                            HostPort: 9944,
+                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
+                            HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
                         }
                     ]
                 }
@@ -781,7 +782,7 @@ export default cloudform({
             DefaultActions: [
                 {
                     Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
                 }
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
@@ -789,7 +790,7 @@ export default cloudform({
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.SubALBHttpListener]: new ElasticLoadBalancingV2.Listener({
+        [Resources.SubstrateHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
                 {
                     Type: "forward",
@@ -801,7 +802,7 @@ export default cloudform({
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.SubALBWsListener]: new ElasticLoadBalancingV2.Listener({
+        [Resources.SubstrateWssListener]: new ElasticLoadBalancingV2.Listener({
             Certificates: [
                 {
                     CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
@@ -846,7 +847,7 @@ export default cloudform({
             Actions: [
                 {
                     Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
                 }
             ],
             Conditions: [
@@ -859,7 +860,7 @@ export default cloudform({
             Priority: 1
         }).dependsOn(Resources.ALBHttpListener),
 
-        [Resources.ECSSubALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSSubstrateHttpListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: "forward",
@@ -872,11 +873,11 @@ export default cloudform({
                     Values: ["/"]
                 }
             ],
-            ListenerArn: Fn.Ref(Resources.SubALBHttpListener),
+            ListenerArn: Fn.Ref(Resources.SubstrateHttpListener),
             Priority: 1
-        }).dependsOn(Resources.SubALBHttpListener),
+        }).dependsOn(Resources.SubstrateHttpListener),
 
-        [Resources.ECSSubALBWsListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSSubstrateWssListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: "forward",
@@ -889,11 +890,11 @@ export default cloudform({
                     Values: ["/"]
                 }
             ],
-            ListenerArn: Fn.Ref(Resources.SubALBWsListener),
+            ListenerArn: Fn.Ref(Resources.SubstrateWssListener),
             Priority: 1
-        }).dependsOn(Resources.SubALBWsListener),
+        }).dependsOn(Resources.SubstrateWssListener),
 
-        [Resources.ECSTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
+        [Resources.ECSAppTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
             HealthCheckPath: "/api/health",
             HealthCheckProtocol: "HTTP",
@@ -902,7 +903,7 @@ export default cloudform({
             Matcher: {
                 HttpCode: "200",
             },
-            Name: Fn.Join('-', [Resources.ECSTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
+            Name: Fn.Join('-', [Resources.ECSAppTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
             Protocol: "HTTP",
             TargetGroupAttributes: [
@@ -931,11 +932,11 @@ export default cloudform({
             HealthCheckIntervalSeconds: 20,
             HealthCheckPath: "/health",
             HealthCheckProtocol: "HTTP",
-            HealthCheckPort: "9933",
+            HealthCheckPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
             HealthCheckTimeoutSeconds: 10,
             HealthyThresholdCount: 2,
             Name: Fn.Join('-', [Resources.ECSSubTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
-            Port: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerPort'),
+            Port: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
             Protocol: "HTTP",
             TargetGroupAttributes: [
                 {
@@ -1012,7 +1013,7 @@ export default cloudform({
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
                     ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
-                    TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
                 },
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
