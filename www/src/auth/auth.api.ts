@@ -22,10 +22,12 @@ export function signUp(data: SignUpData) {
                 id: 'password',
                 value: password,
             },
-            {
-                id: 'username',
-                value: username,
-            }
+            // TODO Uncomment when username configured in backend
+            // currently backend returns and error: "Are you sending too many / too few formFields?"
+            // {
+            //     id: 'username',
+            //     value: username,
+            // }
         ],
     };
 
