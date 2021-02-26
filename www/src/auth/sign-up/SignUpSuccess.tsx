@@ -2,8 +2,8 @@ import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {Header} from "../components/text/Header";
-import signupSuccessImg from "../assets/signup_success.svg";
+import {Header} from "../../components/text/Header";
+import signupSuccessImg from "../../assets/signup_success.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         image: {
             marginTop: '64px',
-        }
+        },
     }),
 );
 

@@ -1,10 +1,15 @@
-import {SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
+import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
 import {fetchAndUnwrap} from '../api'
 
-interface SignUpData {
+export interface SignUpData {
     login: string
     password: string
     username: string
+}
+
+export interface SignInData {
+    login: string
+    password: string
 }
 
 // TODO use API_URL once backend ready
@@ -30,4 +35,26 @@ export function signUp(data: SignUpData) {
     };
 
     return fetchAndUnwrap<SignUpAPIResponse>('POST', `${authApiPath}/signup`, requestData)
+}
+
+export function signIn(data: SignInData) {
+    const {login, password} = data;
+    const requestData = {
+        formFields: [
+            {
+                id: 'email',
+                value: login,
+            },
+            {
+                id: 'password',
+                value: password,
+            },
+        ],
+    };
+
+    return fetchAndUnwrap<SignInAPIResponse>('POST', `${authApiPath}/signin`, requestData)
+}
+
+export function signOut() {
+    return fetchAndUnwrap<SignInAPIResponse>('POST', `${authApiPath}/signout`)
 }

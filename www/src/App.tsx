@@ -1,15 +1,17 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import i18next from "i18next";
 import React, {useEffect} from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch, Redirect} from 'react-router-dom';
 import './App.css';
+import {AuthContextProvider, useAuth} from "./auth/AuthContext";
+import SignIn from "./auth/sign-in/SignIn";
 import Ideas from './ideas/Ideas';
 import Menu from './main/Menu';
 import Proposals from './proposals/Proposals';
 import {
     ROUTE_CONVERT_IDEA, ROUTE_EDIT_IDEA, ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSAL,
     ROUTE_PROPOSALS,
-    ROUTE_ROOT, ROUTE_SIGNUP
+    ROUTE_ROOT, ROUTE_SIGNIN, ROUTE_SIGNUP, ROUTE_STATS
 } from './routes';
 import Stats from './stats/Stats';
 import {ThemeWrapper} from "./theme/ThemeWrapper";
@@ -23,7 +25,7 @@ import {EmailPasswordAuth} from "supertokens-auth-react/lib/build/recipe/emailpa
 import {initializeSupertokens} from "./supertokens";
 import ConvertIdeaToProposal from './ideas/idea/convertToProposal/ConvertIdeaToProposal';
 import Proposal from "./proposals/proposal/Proposal";
-import SignUp from './auth/SignUp';
+import SignUp from './auth/sign-up/SignUp';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -39,6 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 function AppRoutes() {
     const classes = useStyles();
+    const {isUserSignedIn} = useAuth()
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
@@ -57,6 +60,9 @@ function AppRoutes() {
                     </Route>
 
                     <Route exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
+                    <Route exact={true} path={ROUTE_SIGNIN}>
+                        {isUserSignedIn ? <Redirect to={ROUTE_STATS}/> : <SignIn/>}
+                    </Route>
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
                     <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>
@@ -76,11 +82,13 @@ initializeSupertokens()
 function App() {
     console.log('front-end hello')
     return (
-        <SubstrateContextProvider>
-            <ThemeWrapper>
-                <AppRoutes/>
-            </ThemeWrapper>
-        </SubstrateContextProvider>
+        <AuthContextProvider>
+            <SubstrateContextProvider>
+                <ThemeWrapper>
+                    <AppRoutes/>
+                </ThemeWrapper>
+            </SubstrateContextProvider>
+        </AuthContextProvider>
     )
 }
 

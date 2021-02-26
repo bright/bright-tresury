@@ -11,7 +11,7 @@ import {ValidationRuleLabel} from "./ValidationRuleLabel";
 
 interface OwnProps {
     label?: string
-    validationRules: string[]
+    validationRules?: string[]
 }
 
 export type PasswordInputProps = OwnProps & Omit<TextFieldProps, "label">
@@ -38,7 +38,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({label, validationRu
             error={hasError}
             inputProps={{...field, ...meta}}
         />
-        {showValidationRules && validationRules.map((error) => {
+        {!!validationRules && showValidationRules && validationRules.map((error) => {
             return <ValidationRuleLabel message={error} error={meta?.error}/>
         })}
     </FormGroup>

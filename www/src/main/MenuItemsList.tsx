@@ -1,13 +1,12 @@
 import React from "react";
 import {createStyles, List, ListItem, Theme} from "@material-ui/core";
+import {useAuth} from "../auth/AuthContext";
 import {MENU_ITEMS, MenuItem} from "./MenuItems";
 import {makeStyles} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {useTranslation} from "react-i18next";
 import {NavLink} from "react-router-dom";
 import {Button} from "../components/button/Button";
-import {isAuthorized, setAuthorized} from "../util/auth.util";
-import {signOut} from "supertokens-auth-react/lib/build/recipe/emailpassword";
 
 const useStyles = makeStyles((theme: Theme) => {
         return createStyles({
@@ -93,6 +92,7 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
+    const {signOut, isUserSignedIn} = useAuth()
     return <List disablePadding={true} dense={true}>
         {MENU_ITEMS.map((menuItem: MenuItem, index) => (
             <ListItem disableGutters={true} button onClick={() => {
@@ -109,23 +109,20 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
                 </NavLink>
             </ListItem>
         ))}
-        {/* region: Remove this button as soon as we add authorization */}
+        {/* region: Remove this button as soon as we add header bar with logout */}
         <div style={{display: 'flex', justifyContent: 'center', marginTop: 32}}>
             <Button variant="contained"
                     style={{
                         fontSize: 10,
                         color: 'white',
                         textAlign: 'center',
-                        backgroundColor: isAuthorized() ? 'orange' : 'green'
                     }}
+                    color='primary'
+                    disabled={!isUserSignedIn}
                     onClick={async () => {
-                        if(isAuthorized()) {
-                            await signOut()
-                        }
-                        setAuthorized(!isAuthorized())
-                        window.location.reload()
+                        await signOut()
                     }}>
-                Simulate {isAuthorized() ? 'logout' : 'login'}
+                Logout
             </Button>
         </div>
         {/*endregion*/}
