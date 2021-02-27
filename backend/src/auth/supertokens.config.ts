@@ -1,10 +1,10 @@
 import supertokens from "supertokens-node";
 import {AppConfig} from "../config/config";
-import {UsersService} from "../users/users.service";
 import {getRecipeList} from "./supertokens.recipeList";
 import {baseApiPath} from "../main";
+import {SuperTokensService} from "./supertokens.service";
 
-export function initializeSupertokens(config: AppConfig, usersService: UsersService) {
+export function initializeSupertokens(config: AppConfig, superTokensService: SuperTokensService) {
     supertokens.init({
         supertokens: {
             connectionURI: config.authCoreUrl,
@@ -15,6 +15,6 @@ export function initializeSupertokens(config: AppConfig, usersService: UsersServ
             websiteDomain: config.websiteUrl,
             apiBasePath: `${baseApiPath}`
         },
-        recipeList: getRecipeList(usersService)
+        recipeList: getRecipeList(superTokensService)
     });
 }

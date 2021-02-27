@@ -19,10 +19,6 @@ export function initializeSupertokens() {
                             id: "username",
                             label: "Username",
                             placeholder: "Enter username"
-                        }, {
-                            id: "email",
-                            label: "Email",
-                            placeholder: "Enter your email"
                         }]
                     }
 

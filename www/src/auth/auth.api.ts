@@ -8,7 +8,7 @@ interface SignUpData {
 }
 
 // TODO use API_URL once backend ready
-const authApiPath = `http://localhost:3001/auth`
+const authApiPath = `http://localhost:3001/api`
 
 export function signUp(data: SignUpData) {
     const {login, password, username} = data;
@@ -22,12 +22,10 @@ export function signUp(data: SignUpData) {
                 id: 'password',
                 value: password,
             },
-            // TODO Uncomment when username configured in backend
-            // currently backend returns and error: "Are you sending too many / too few formFields?"
-            // {
-            //     id: 'username',
-            //     value: username,
-            // }
+            {
+                id: 'username',
+                value: username,
+            }
         ],
     };
 

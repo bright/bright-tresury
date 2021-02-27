@@ -6,7 +6,7 @@ import {v4 as uuid} from "uuid"
 export class User extends BaseEntity {
 
     @Column({nullable: false, type: "text", unique: true})
-    externalId: string
+    authId: string
 
     @Column({nullable: false, type: "text", unique: true})
     username: string
@@ -15,13 +15,13 @@ export class User extends BaseEntity {
     email: string
 
     constructor(
-        externalId: string,
+        authId: string,
         username: string,
         email: string,
         id?: string
     ) {
         super()
-        this.externalId = externalId
+        this.authId = authId
         this.username = username
         this.email = email
         this.id = id ?? uuid()

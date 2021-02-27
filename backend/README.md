@@ -20,7 +20,7 @@ Access [api documentation](http://localhost:3001/api/documentation/)
 
 Run tests
 * `npm run compile`
-* `DEPLOY_ENV=test-local DATABASE_USERNAME=deployer  npm run database:migrate`
+* `DEPLOY_ENV=test-local DATABASE_USERNAME=deployer npm run database:migrate`
 * to run all tests `DEPLOY_ENV=test-local npm run test`
 * to run a single test suit `DEPLOY_ENV=test-local npm run test -- testSuitName`
 

@@ -10,6 +10,7 @@ import {AppController} from "./app.controller";
 import {FrontendMiddleware} from './front-end.middleware';
 import {NestExpressApplication} from "@nestjs/platform-express";
 import {UsersModule} from "./users/users.module";
+import {SuperTokensModule} from "./auth/supertokens.module";
 
 @Module({
     imports: [
@@ -21,7 +22,8 @@ import {UsersModule} from "./users/users.module";
         // BlockchainModule,
         ProposalsModule,
         // ExtrinsicsModule,
-        UsersModule
+        SuperTokensModule,
+        UsersModule,
     ],
     exports: [],
     controllers: [AppController]

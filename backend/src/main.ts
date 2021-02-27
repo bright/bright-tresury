@@ -7,8 +7,8 @@ import {getLogger} from "./logging.module";
 import {generateSwaggerDocument} from "./swagger";
 import {initializeSupertokens} from "./auth/supertokens.config";
 import supertokens from 'supertokens-node'
-import {UsersService} from "./users/users.service";
 import {SuperTokensExceptionFilter} from "./auth/supertokens.exceptionFilter";
+import {SuperTokensService} from "./auth/supertokens.service";
 
 declare const module: any
 const logger = getLogger()
@@ -25,7 +25,7 @@ async function bootstrap() {
 
     const config: AppConfig = app.get('AppConfig')
 
-    initializeSupertokens(config, app.get(UsersService))
+    initializeSupertokens(config, app.get(SuperTokensService))
 
     const NODE_ENV = config.deployEnv || 'development';
     logger.info('NODE_ENV ', NODE_ENV)

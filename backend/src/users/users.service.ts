@@ -1,9 +1,10 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {User} from "./user.entity";
 import {CreateUserDto} from "./dto/createUser.dto";
-import {validate, validateOrReject} from "class-validator";
+import {validateOrReject} from "class-validator";
+import {plainToClass} from "class-transformer";
 
 @Injectable()
 export class UsersService {
@@ -14,41 +15,39 @@ export class UsersService {
     }
 
     async findOne(id: string): Promise<User> {
-        const user = await this.userRepository.findOne(id)
-        if (!user) {
+        try {
+            const user = await this.userRepository.findOneOrFail(id)
+            return user
+        } catch (e) {
             throw new NotFoundException('There is no user with such id')
         }
-        return user
     }
 
-    async findOneByUsername(username: string): Promise<User> {
-        const user = await this.userRepository.findOne({
-            where: {username}
-        })
-        if (!user) {
-            throw new NotFoundException('There is no user with such id')
+    async findOneByUsername(username: string): Promise<User | undefined> {
+        try {
+            const user = await this.userRepository.findOneOrFail({username})
+            return user
+        } catch (e) {
+            throw new NotFoundException('There is no user with such username')
         }
-        return user
     }
 
-    async findOneByEmail(email: string): Promise<User> {
-        const user = await this.userRepository.findOne({
-            where: {email}
-        })
-        if (!user) {
-            throw new NotFoundException('There is no user with such id')
+    async findOneByEmail(email: string): Promise<User | undefined> {
+        try {
+            const user = await this.userRepository.findOneOrFail({email})
+            return user
+        } catch (e) {
+            throw new NotFoundException('There is no user with such email')
         }
-        return user
     }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
-        await validate(createUserDto).then((errors) => {
-            // tslint:disable-next-line:no-console
-            console.error(`\n\n\nERRORS CREATEUSERDTO ${JSON.stringify(errors)}`)
-        })
-        await validateOrReject(createUserDto)
+        const valid = await this.validateUser(createUserDto)
+        if (!valid) {
+            throw new BadRequestException('Invalid user')
+        }
         const user = new User(
-            createUserDto.id,
+            createUserDto.authId,
             createUserDto.username,
             createUserDto.email
         )
@@ -59,5 +58,41 @@ export class UsersService {
     async delete(id: string) {
         const currentUser = await this.findOne(id)
         await this.userRepository.remove(currentUser)
+    }
+
+    async validateEmail(email: string): Promise<boolean> {
+        try {
+            const existingUser = await this.findOneByEmail(email)
+            return !existingUser
+        } catch (e) {
+            return true
+        }
+    }
+
+    async validateUsername(username: string): Promise<boolean> {
+        try {
+            const existingUser = await this.findOneByUsername(username)
+            return !existingUser
+        } catch (e) {
+            return true
+        }
+    }
+
+    private async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
+        try {
+
+            await validateOrReject(plainToClass(CreateUserDto, createUserDto))
+            const validUsername = await this.validateUsername(createUserDto.username)
+            if (!validUsername) {
+                return false
+            }
+            const validEmail = await this.validateEmail(createUserDto.email)
+            if (!validEmail) {
+                return false
+            }
+            return true
+        } catch (e) {
+            return false
+        }
     }
 }
