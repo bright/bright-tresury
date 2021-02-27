@@ -63,7 +63,7 @@
     "reflect-metadata": "0.1.12",
     "rxjs": "^6.5.2",
     "stack-trace": "^0.0.10",
-    "supertokens-node": "^3.4.0",
+    "supertokens-node": "^4.0.0",
     "swagger-ui-express": "^4.0.6",
     "ts-node": "^8.2.0",
     "tslint": "^5.17.0",

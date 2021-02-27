@@ -6,5 +6,5 @@ docker run \
 	-e POSTGRESQL_HOST=$IP_ADDRESS \
 	-e POSTGRESQL_PORT=5432 \
   -e POSTGRESQL_DATABASE_NAME=treasury_authorization \
-	-d supertokens/supertokens-postgresql:3.2
+	-d supertokens/supertokens-postgresql:3.3
 
