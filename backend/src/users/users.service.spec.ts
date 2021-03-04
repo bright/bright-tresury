@@ -136,6 +136,23 @@ describe(`Users Service`, () => {
                 .rejects
                 .toThrow(NotFoundException)
         })
+        it('should return user by authId', async () => {
+            const authId = uuid()
+            await getService().create({
+                authId,
+                username: 'Chuck',
+                email: 'chuck@email.com'
+            })
+
+            const user = await getService().findOneByAuthId(authId)
+
+            expect(user!.authId).toBe(authId)
+        })
+        it('should throw not found exception if wrong email', async () => {
+            await expect(getService().findOneByAuthId(uuid()))
+                .rejects
+                .toThrow(NotFoundException)
+        })
     })
 
     describe('delete', () => {

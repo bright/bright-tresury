@@ -1,6 +1,6 @@
-import { Schema, SchemaObj } from "convict"
-import { LoggerOptions } from "typeorm/logger/LoggerOptions";
-import {stringFormat} from "../config/string.format";
+import {Schema, SchemaObj} from "convict"
+import {LoggerOptions} from "typeorm/logger/LoggerOptions";
+import {stringFormat} from "../config/formats/string.format";
 
 export interface DatabaseConfig {
     host: string

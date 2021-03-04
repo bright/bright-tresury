@@ -5,10 +5,10 @@ import {createApp} from './app.module';
 import {AppConfig} from "./config/config";
 import {getLogger} from "./logging.module";
 import {generateSwaggerDocument} from "./swagger";
-import {initializeSupertokens} from "./auth/supertokens.config";
+import {initializeSupertokens} from "./auth/supertokens/supertokens.config";
 import supertokens from 'supertokens-node'
-import {SuperTokensExceptionFilter} from "./auth/supertokens.exceptionFilter";
-import {SuperTokensService} from "./auth/supertokens.service";
+import {SuperTokensExceptionFilter} from "./auth/supertokens/supertokens.exceptionFilter";
+import {SuperTokensService} from "./auth/supertokens/supertokens.service";
 
 declare const module: any
 const logger = getLogger()

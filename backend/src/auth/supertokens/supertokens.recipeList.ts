@@ -4,7 +4,7 @@ import {SuperTokensService} from "./supertokens.service";
 
 export const SuperTokensUsernameKey = 'username'
 
-export const getRecipeList = (superTokensService: SuperTokensService) => [
+export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTokensService) => [
     EmailPassword.init({
         emailVerificationFeature: {
             disableDefaultImplementation: true
@@ -20,5 +20,7 @@ export const getRecipeList = (superTokensService: SuperTokensService) => [
             handleCustomFormFieldsPostSignUp: superTokensService.handleSignUp
         },
     }),
-    Session.init()
+    Session.init({
+        cookieSecure
+    })
 ]

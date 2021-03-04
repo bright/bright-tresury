@@ -1,5 +1,5 @@
-import { Schema, SchemaObj } from "convict";
-import {stringFormat} from "../config/string.format";
+import {Schema, SchemaObj} from "convict";
+import {stringFormat} from "../config/formats/string.format";
 
 export interface BlockchainConfig {
     nodeUrl: string,

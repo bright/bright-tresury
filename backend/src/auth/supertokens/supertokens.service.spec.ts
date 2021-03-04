@@ -1,7 +1,7 @@
 import {v4 as uuid} from 'uuid';
-import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
+import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
 import {SuperTokensService} from "./supertokens.service";
-import {UsersService} from "../users/users.service";
+import {UsersService} from "../../users/users.service";
 import {SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 

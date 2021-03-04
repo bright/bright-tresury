@@ -1,13 +1,13 @@
 import supertokens from "supertokens-node";
-import {AppConfig} from "../config/config";
+import {AppConfig} from "../../config/config";
 import {getRecipeList} from "./supertokens.recipeList";
-import {baseApiPath} from "../main";
+import {baseApiPath} from "../../main";
 import {SuperTokensService} from "./supertokens.service";
 
 export function initializeSupertokens(config: AppConfig, superTokensService: SuperTokensService) {
     supertokens.init({
         supertokens: {
-            connectionURI: config.authCoreUrl,
+            connectionURI: config.authConfig.coreUrl,
         },
         appInfo: {
             appName: "Bright Treasury App",
@@ -15,6 +15,6 @@ export function initializeSupertokens(config: AppConfig, superTokensService: Sup
             websiteDomain: config.websiteUrl,
             apiBasePath: `${baseApiPath}`
         },
-        recipeList: getRecipeList(superTokensService)
+        recipeList: getRecipeList(config.authConfig.cookieSecure, superTokensService)
     });
 }

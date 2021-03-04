@@ -1,5 +1,5 @@
-import { Schema, SchemaObj } from "convict";
-import {stringFormat} from "./config/string.format";
+import {Schema, SchemaObj} from "convict";
+import {stringFormat} from "./config/formats/string.format";
 
 // add more as you like
 type AWS_REGION = 'eu-central-1' | 'eu-west-1'

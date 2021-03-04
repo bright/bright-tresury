@@ -1,7 +1,7 @@
 import {BadRequestException, Injectable} from "@nestjs/common";
-import {UsersService} from "../users/users.service";
+import {UsersService} from "../../users/users.service";
 import {User} from "supertokens-node/lib/build/recipe/emailpassword/types";
-import {CreateUserDto} from "../users/dto/createUser.dto";
+import {CreateUserDto} from "../../users/dto/createUser.dto";
 import {SuperTokensUsernameKey} from "./supertokens.recipeList";
 
 @Injectable()

@@ -9,7 +9,8 @@ import {DatabaseConfig, databaseConfigSchema, DatabaseConfigToken} from "../data
 import {getLogger} from "../logging.module";
 import {AsyncFactoryProvider, propertyOfProvider} from "../utils/dependency.injection";
 import {BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken} from "../blockchain/blockchain.config";
-import {stringFormat} from "./string.format";
+import {stringFormat} from "./formats/string.format";
+import {AuthConfig, authConfigSchema} from "./auth.config";
 
 interface EnvConfig {
     deployEnv: "production" | "development" | "development-local" | "stage" | "test" | "test-local"
@@ -17,13 +18,13 @@ interface EnvConfig {
     appName: string,
     apiUrl: string,
     websiteUrl: string
-    authCoreUrl: string
 }
 
 export type AppConfig = EnvConfig & {
     database: DatabaseConfig,
     aws: AWSConfig,
     blockchain: BlockchainConfig,
+    authConfig: AuthConfig
 };
 
 const configSchema = convict<AppConfig>({
@@ -57,15 +58,10 @@ const configSchema = convict<AppConfig>({
         default: 'http://localhost:3000',
         env: "websiteUrl"
     },
-    authCoreUrl: {
-        doc: "Auth core url",
-        format: stringFormat,
-        default: 'http://localhost:3567',
-        env: "authCoreUrl"
-    },
     database: databaseConfigSchema,
     aws: awsConfigSchema,
     blockchain: blockchainConfigSchema,
+    authConfig: authConfigSchema,
 });
 const logger = getLogger();
 

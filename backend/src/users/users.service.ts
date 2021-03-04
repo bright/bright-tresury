@@ -41,6 +41,15 @@ export class UsersService {
         }
     }
 
+    async findOneByAuthId(authId: string): Promise<User | undefined> {
+        try {
+            const user = await this.userRepository.findOneOrFail({authId})
+            return user
+        } catch (e) {
+            throw new NotFoundException('There is no user with such authId')
+        }
+    }
+
     async create(createUserDto: CreateUserDto): Promise<User> {
         const valid = await this.validateUser(createUserDto)
         if (!valid) {
