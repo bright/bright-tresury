@@ -3,7 +3,8 @@ import {User} from "../../users/user.entity";
 import {SessionRequest} from "./session.middleware";
 
 export interface SessionUser {
-    user: User
+    user: User,
+    blockchainToken?: string
 }
 
 export const ReqSession = createParamDecorator(

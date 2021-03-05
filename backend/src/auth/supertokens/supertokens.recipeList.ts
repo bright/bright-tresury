@@ -16,7 +16,7 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
                 id: SuperTokensUsernameKey,
                 validate: superTokensService.getUsernameValidationError
             }],
-            handleCustomFormFieldsPostSignUp: superTokensService.handleSignUp
+            handleCustomFormFieldsPostSignUp: superTokensService.handleCustomFormFieldsPostSignUp
         },
     }),
     Session.init({

@@ -2,9 +2,10 @@ import {MiddlewareConsumer, Module, RequestMethod} from "@nestjs/common";
 import {SessionValidator} from "./session.validator";
 import {UsersModule} from "../../users/users.module";
 import {SessionUserMiddleware} from "./session.middleware";
+import {SuperTokensModule} from "../supertokens/supertokens.module";
 
 @Module({
-    imports: [UsersModule],
+    imports: [UsersModule, SuperTokensModule],
     providers: [SessionValidator],
     exports: [SessionValidator]
 })

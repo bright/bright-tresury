@@ -48,7 +48,7 @@ describe(`SuperTokens Service`, () => {
                     value: username
                 }
             ]
-            await getService().handleSignUp(user, additionalValues)
+            await getService().handleCustomFormFieldsPostSignUp(user, additionalValues)
 
             const savedUser = await getUsersService().findOneByUsername(username)
             expect(savedUser).toBeDefined()
@@ -67,7 +67,7 @@ describe(`SuperTokens Service`, () => {
                     value: username
                 }
             ]
-            await getService().handleSignUp(user, additionalValues)
+            await getService().handleCustomFormFieldsPostSignUp(user, additionalValues)
 
             const savedUser = await getUsersService().findOneByUsername(username)
             expect(savedUser!.email).toBe(email)
