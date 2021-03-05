@@ -39,5 +39,4 @@ export class AuthController {
         await this.authService.registerBlockchainToken(req, res, blockchainToken.token)
         res.status(HttpStatus.OK).send()
     }
-
 }
