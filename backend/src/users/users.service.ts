@@ -57,7 +57,7 @@ export class UsersService {
             const user = await this.userRepository.findOneOrFail({blockchainAddress})
             return user
         } catch (e) {
-            handleFindError(e, 'There is no user with such blockchain address')
+            throw handleFindError(e, 'There is no user with such blockchain address')
         }
     }
 

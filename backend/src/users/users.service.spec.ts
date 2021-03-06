@@ -233,6 +233,9 @@ describe(`Users Service`, () => {
                 .rejects
                 .toThrow(NotFoundException)
         })
+    })
+
+    describe('find one by blockchainAddress', () => {
         it('should return user by blockchain address', async () => {
             const blockchainAddress = bobAddress
             await getService().createBlockchainUser({

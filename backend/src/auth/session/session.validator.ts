@@ -33,8 +33,8 @@ export class SessionValidator {
             if (!user) {
                 await session.revokeSession()
             } else {
-                req.session = sessionData
                 await this.superTokensService.addSessionData(req, res, {user})
+                req.session = await session.getSessionData()
             }
         }
     }

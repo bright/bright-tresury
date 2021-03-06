@@ -5,7 +5,7 @@ import {CreateUserDto} from "../../users/dto/createUser.dto";
 import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import SessionError from "supertokens-node/lib/build/recipe/session/error";
-import {getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
+import {createNewSession, getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
 import {Request, Response} from 'express'
 import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
 import {SessionUser} from "../session/session.decorator";
@@ -48,6 +48,10 @@ export class SuperTokensService {
         }
     }
 
+    async createSession(res: Response, userId: string): Promise<Session> {
+        return await createNewSession(res, userId)
+    }
+
     async getSession(req: Request, res: Response, doAntiCsrfCheck?: boolean): Promise<Session> {
         return await superTokensGetSession(req, res, doAntiCsrfCheck)
     }
@@ -58,12 +62,12 @@ export class SuperTokensService {
 
     async addSessionData(req: Request, res: Response, data: Partial<SessionUser>) {
         const session = await this.getSession(req, res, false)
-        const currentSessionData = session.getSessionData()
+        const currentSessionData = await session.getSessionData()
         await updateSessionData(
             session.getHandle(),
             {
                 ...currentSessionData,
-                data
+                ...data
             }
         )
     }
