@@ -2,7 +2,7 @@ import {Body, Controller, Get, Post, Req, Res, UseGuards} from "@nestjs/common";
 import {ApiTags} from "@nestjs/swagger";
 import {ReqSession, SessionUser} from "./session/session.decorator";
 import {SessionGuard} from "./session/session.guard";
-import {CreateBlockchainUserDto} from "./createBlockchainUser.dto";
+import {BlockchainUserSignUpDto} from "./blockchainUserSignUp.dto";
 import {AuthService} from "./auth.service";
 import {RegisterBlockchainTokenDto} from "./registerBlockchainToken.dto";
 import {Request, Response} from "express";
@@ -23,7 +23,7 @@ export class AuthController {
     }
 
     @Post('/blockchain/signup')
-    async blockchainSignUp(@Body() user: CreateBlockchainUserDto) {
+    async blockchainSignUp(@Body() user: BlockchainUserSignUpDto) {
         await this.authService.blockchainSignUp(user)
     }
 

@@ -1,6 +1,6 @@
 import {Injectable} from "@nestjs/common";
 import {SuperTokensService} from "./supertokens/supertokens.service";
-import {CreateBlockchainUserDto} from "./createBlockchainUser.dto";
+import {BlockchainUserSignUpDto} from "./blockchainUserSignUp.dto";
 import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import {UsersService} from "../users/users.service";
 import {Request, Response} from 'express'
@@ -13,7 +13,7 @@ export class AuthService {
     ) {
     }
 
-    async blockchainSignUp(blockchainUserDto: CreateBlockchainUserDto) {
+    async blockchainSignUp(blockchainUserDto: BlockchainUserSignUpDto) {
         const superTokensUser: SuperTokensUser = await this.superTokensService.signUp(blockchainUserDto.address, blockchainUserDto.token)
         const createUserDto = {
             authId: superTokensUser.id,

@@ -5,6 +5,7 @@ import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
 import {UsersService} from "./users.service";
 import {User} from "./user.entity";
 import {CreateUserDto} from "./dto/createUser.dto";
+import {CreateBlockchainUserDto} from "./dto/createBlockchainUser.dto";
 
 describe(`Users Service`, () => {
 
@@ -12,11 +13,13 @@ describe(`Users Service`, () => {
     const getService = () => app.get().get(UsersService)
     const getRepository = () => app.get().get(getRepositoryToken(User))
 
+    const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
+
     beforeEach(async () => {
         await cleanDatabase()
     })
 
-    describe('create', () => {
+    describe('create user', () => {
         it('should create user', async () => {
             const user = await getService().create({
                 authId: uuid(),
@@ -81,6 +84,74 @@ describe(`Users Service`, () => {
                 authId: uuid(),
                 username: 'Bart',
                 email: '',
+            })).rejects.toThrow(BadRequestException)
+        })
+    })
+    describe('create blockchain user', () => {
+        it('should create user', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress
+            })
+            expect(user).toBeDefined()
+        })
+        it('should save user', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress
+            })
+            const savedUser = await getRepository().findOne(user.id)
+            expect(savedUser).toBeDefined()
+        })
+        it('should throw bad request exception when address exists', async () => {
+            const user: CreateBlockchainUserDto = {
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress
+            }
+            await getService().createBlockchainUser(user)
+
+            await expect(getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bart',
+                blockchainAddress: user.blockchainAddress,
+            })).rejects.toThrow(BadRequestException)
+        })
+        it('should throw bad request exception when username exists', async () => {
+            const user: CreateBlockchainUserDto = {
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress
+            }
+            await getService().createBlockchainUser(user)
+
+            await expect(getService().createBlockchainUser({
+                authId: uuid(),
+                username: user.username,
+                blockchainAddress: bobAddress
+            })).rejects.toThrow(BadRequestException)
+        })
+        it('should throw bad request exception when auth id is empty', async () => {
+            await expect(getService().createBlockchainUser({
+                authId: '',
+                username: 'Bob',
+                blockchainAddress: bobAddress
+            })).rejects.toThrow(BadRequestException)
+        })
+        it('should throw bad request exception when username is empty', async () => {
+            await expect(getService().createBlockchainUser({
+                authId: uuid(),
+                username: '',
+                blockchainAddress: bobAddress
+            })).rejects.toThrow(BadRequestException)
+        })
+        it('should throw bad request exception when address is empty', async () => {
+            await expect(getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: '',
             })).rejects.toThrow(BadRequestException)
         })
     })
@@ -159,6 +230,23 @@ describe(`Users Service`, () => {
         })
         it('should throw not found exception if wrong email', async () => {
             await expect(getService().findOneByAuthId(uuid()))
+                .rejects
+                .toThrow(NotFoundException)
+        })
+        it('should return user by blockchain address', async () => {
+            const blockchainAddress = bobAddress
+            await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Chuck',
+                blockchainAddress
+            })
+
+            const user = await getService().findOneByBlockchainAddress(blockchainAddress)
+
+            expect(user!.blockchainAddress).toBe(blockchainAddress)
+        })
+        it('should throw not found exception if wrong blockchain address', async () => {
+            await expect(getService().findOneByBlockchainAddress(uuid()))
                 .rejects
                 .toThrow(NotFoundException)
         })

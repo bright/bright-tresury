@@ -2,7 +2,7 @@ import {BadRequestException, Injectable} from "@nestjs/common";
 import {UsersService} from "../../users/users.service";
 import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import {CreateUserDto} from "../../users/dto/createUser.dto";
-import {SuperTokensUsernameKey} from "./supertokens.recipeList";
+import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import SessionError from "supertokens-node/lib/build/recipe/session/error";
 import {getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
@@ -44,8 +44,7 @@ export class SuperTokensService {
 
     handleResponseIfRefreshTokenError(res: Response, error: any) {
         if (error.type === SessionError.TRY_REFRESH_TOKEN) {
-            const refreshHttpStatus = 440
-            res.status(refreshHttpStatus).send("Please refresh token.")
+            res.status(SessionExpiredHttpStatus).send("Please refresh token.")
         }
     }
 

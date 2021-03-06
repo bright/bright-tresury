@@ -6,6 +6,7 @@ import {CreateUserDto} from "./dto/createUser.dto";
 import {validateOrReject} from "class-validator";
 import {plainToClass} from "class-transformer";
 import {handleFindError} from "../utils/exceptions/databaseExceptions.handler";
+import {CreateBlockchainUserDto} from "./dto/createBlockchainUser.dto";
 
 @Injectable()
 export class UsersService {
@@ -51,6 +52,15 @@ export class UsersService {
         }
     }
 
+    async findOneByBlockchainAddress(blockchainAddress: string): Promise<User | undefined> {
+        try {
+            const user = await this.userRepository.findOneOrFail({blockchainAddress})
+            return user
+        } catch (e) {
+            handleFindError(e, 'There is no user with such blockchain address')
+        }
+    }
+
     async create(createUserDto: CreateUserDto): Promise<User> {
         const valid = await this.validateUser(createUserDto)
         if (!valid) {
@@ -60,6 +70,21 @@ export class UsersService {
             createUserDto.authId,
             createUserDto.username,
             createUserDto.email
+        )
+        const createdUser = await this.userRepository.save(user)
+        return (await this.userRepository.findOne(createdUser.id))!
+    }
+
+    async createBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<User> {
+        const valid = await this.validateBlockchainUser(createBlockchainUserDto)
+        if (!valid) {
+            throw new BadRequestException('Invalid user')
+        }
+        const user = new User(
+            createBlockchainUserDto.authId,
+            createBlockchainUserDto.username,
+            undefined,
+            createBlockchainUserDto.blockchainAddress
         )
         const createdUser = await this.userRepository.save(user)
         return (await this.userRepository.findOne(createdUser.id))!
@@ -80,6 +105,11 @@ export class UsersService {
         return !user
     }
 
+    async validateBlockchainAddress(blockchainAddress: string): Promise<boolean> {
+        const user = await this.userRepository.findOne({blockchainAddress})
+        return !user
+    }
+
     private async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
         try {
             await validateOrReject(plainToClass(CreateUserDto, createUserDto))
@@ -89,6 +119,23 @@ export class UsersService {
             }
             const validEmail = await this.validateEmail(createUserDto.email)
             if (!validEmail) {
+                return false
+            }
+            return true
+        } catch (e) {
+            return false
+        }
+    }
+
+    private async validateBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<boolean> {
+        try {
+            await validateOrReject(plainToClass(CreateBlockchainUserDto, createBlockchainUserDto))
+            const validUsername = await this.validateUsername(createBlockchainUserDto.username)
+            if (!validUsername) {
+                return false
+            }
+            const validAddress = await this.validateBlockchainAddress(createBlockchainUserDto.blockchainAddress)
+            if (!validAddress) {
                 return false
             }
             return true

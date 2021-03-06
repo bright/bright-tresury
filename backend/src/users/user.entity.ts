@@ -11,19 +11,24 @@ export class User extends BaseEntity {
     @Column({nullable: false, type: "text", unique: true})
     username: string
 
-    @Column({nullable: false, type: "text", unique: true})
-    email: string
+    @Column({nullable: true, type: "text", unique: true})
+    email?: string
+
+    @Column({nullable: true, type: "text", unique: true})
+    blockchainAddress?: string
 
     constructor(
         authId: string,
         username: string,
-        email: string,
+        email?: string,
+        blockchainAddress?: string,
         id?: string
     ) {
         super()
         this.authId = authId
         this.username = username
         this.email = email
+        this.blockchainAddress = blockchainAddress
         this.id = id ?? uuid()
     }
 }

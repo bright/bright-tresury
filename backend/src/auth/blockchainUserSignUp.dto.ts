@@ -1,7 +1,7 @@
 import {ApiProperty} from "@nestjs/swagger";
 import {IsNotEmpty} from "class-validator";
 
-export class CreateBlockchainUserDto {
+export class BlockchainUserSignUpDto {
     @ApiProperty({description: 'Blockchain address of a blockchain user.'})
     @IsNotEmpty()
     address!: string
