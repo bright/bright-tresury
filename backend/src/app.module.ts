@@ -3,7 +3,6 @@ import {NestFactory} from "@nestjs/core";
 import {ConfigModule} from "./config/config";
 import {DatabaseModule} from "./database/database.module";
 import {LoggingModule, NestLoggerAdapter} from "./logging.module";
-import {VersionModule} from "./version/version";
 import {IdeasModule} from './ideas/ideas.module';
 import {ProposalsModule} from './proposals/proposals.module';
 import {AppController} from "./app.controller";
@@ -12,13 +11,17 @@ import {NestExpressApplication} from "@nestjs/platform-express";
 import {UsersModule} from "./users/users.module";
 import {SuperTokensModule} from "./auth/supertokens/supertokens.module";
 import {AuthModule} from "./auth/auth.module";
+import supertokens from "supertokens-node";
+import {SuperTokensExceptionFilter} from "./auth/supertokens/supertokens.exceptionFilter";
+import {baseApiPath} from "./main";
+import {initializeSupertokens} from "./auth/supertokens/supertokens.config";
+import {SuperTokensService} from "./auth/supertokens/supertokens.service";
 
 @Module({
     imports: [
         LoggingModule,
         ConfigModule,
         DatabaseModule,
-        VersionModule,
         IdeasModule,
         // BlockchainModule,
         ProposalsModule,
@@ -37,6 +40,22 @@ export class AppModule implements NestModule {
 }
 
 export function configureGlobalServices(app: INestApplication) {
+    const config = app.get('AppConfig')
+
+    app.setGlobalPrefix(baseApiPath);
+
+    initializeSupertokens(config, app.get(SuperTokensService))
+
+    app.enableCors({
+        origin: config.websiteUrl,
+        allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders()],
+        credentials: true,
+    })
+
+    app.use(supertokens.middleware());
+    app.use(supertokens.errorHandler())
+    app.useGlobalFilters(new SuperTokensExceptionFilter())
+
     app.useGlobalPipes(
         new ValidationPipe({
             transform: true,

@@ -5,10 +5,6 @@ import {createApp} from './app.module';
 import {AppConfig} from "./config/config";
 import {getLogger} from "./logging.module";
 import {generateSwaggerDocument} from "./swagger";
-import {initializeSupertokens} from "./auth/supertokens/supertokens.config";
-import supertokens from 'supertokens-node'
-import {SuperTokensExceptionFilter} from "./auth/supertokens/supertokens.exceptionFilter";
-import {SuperTokensService} from "./auth/supertokens/supertokens.service";
 
 declare const module: any
 const logger = getLogger()
@@ -25,24 +21,12 @@ async function bootstrap() {
 
     const config: AppConfig = app.get('AppConfig')
 
-    initializeSupertokens(config, app.get(SuperTokensService))
-
     const NODE_ENV = config.deployEnv || 'development';
     logger.info('NODE_ENV ', NODE_ENV)
 
     if (NODE_ENV !== 'development') {
         app.useStaticAssets(join(__dirname, '../../../www/build'));
     }
-
-    app.enableCors({
-        origin: config.websiteUrl,
-        allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders()],
-        credentials: true,
-    })
-
-    app.use(supertokens.middleware());
-    app.useGlobalFilters(new SuperTokensExceptionFilter())
-    app.setGlobalPrefix(baseApiPath);
 
     logger.info('Listen on port ', config.port)
     await app.listen(config.port)
@@ -53,8 +37,7 @@ async function bootstrap() {
             return app.close()
         })
     }
-
-    app.use(supertokens.errorHandler())
 }
 
 bootstrap()
+

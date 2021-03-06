@@ -13,8 +13,6 @@ export class SuperTokensService {
 
     validateUsername = async (value: string): Promise<string | undefined> => {
         const valid = await this.usersService.validateUsername(value)
-        // tslint:disable-next-line:no-console
-        console.error(`\n\n valid is: ${JSON.stringify(valid)} isValid: ${!!valid}\n\n`)
         return valid ? undefined : "Username already taken"
     }
 
