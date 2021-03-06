@@ -3,6 +3,7 @@ import Session from "supertokens-node/recipe/session";
 import {SuperTokensService} from "./supertokens.service";
 
 export const SuperTokensUsernameKey = 'username'
+export const SessionExpiredHttpStatus = 440
 
 export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTokensService) => [
     EmailPassword.init({
@@ -21,6 +22,7 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
         },
     }),
     Session.init({
-        cookieSecure
+        cookieSecure,
+        sessionExpiredStatusCode: SessionExpiredHttpStatus
     })
 ]

@@ -3,6 +3,8 @@ import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import Session from "supertokens-auth-react/recipe/session";
 import config from "./config";
 
+export const SessionExpiredHttpStatus = 440
+
 export function initializeSupertokens() {
     SuperTokens.init({
         appInfo: {
@@ -24,7 +26,9 @@ export function initializeSupertokens() {
 
                 }
             }),
-            Session.init()
+            Session.init({
+                sessionExpiredStatusCode: SessionExpiredHttpStatus
+            })
         ]
     });
 

@@ -4,6 +4,7 @@ import {Response} from "express";
 import {getSession} from "supertokens-node/lib/build/recipe/session";
 import {SessionRequest} from "./session.middleware";
 import SessionError from "supertokens-node/lib/build/recipe/session/error";
+import {SessionExpiredHttpStatus} from "../supertokens/supertokens.recipeList";
 
 @Injectable()
 export class SessionValidator {
@@ -43,8 +44,7 @@ export class SessionValidator {
 
     handleResponseIfRefreshTokenError(res: Response, error: any) {
         if (error.type === SessionError.TRY_REFRESH_TOKEN) {
-            const refreshHttpStatus = 440
-            res.status(refreshHttpStatus).send("Please refresh token.")
+            res.status(SessionExpiredHttpStatus).send("Please refresh token.")
         }
     }
 
