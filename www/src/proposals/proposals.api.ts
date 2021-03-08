@@ -1,4 +1,4 @@
-import {API_URL, fetchAndUnwrap} from '../api'
+import api, {API_URL} from '../api';
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -22,10 +22,10 @@ export interface ProposalDto {
 
 const ProposalApiPath = `${API_URL}/proposals`
 
-export function getProposalsByNetwork(networkName: string): Promise<ProposalDto[]> {
-    return fetchAndUnwrap<ProposalDto[]>('GET', `${ProposalApiPath}/?network=${networkName}`)
+export function getProposalsByNetwork(networkName: string) {
+    return api.get<ProposalDto[]>(`${ProposalApiPath}/?network=${networkName}`).then((response) => response.data)
 }
 
-export function getProposalByIndex(index: string, networkName: string): Promise<ProposalDto> {
-    return fetchAndUnwrap<ProposalDto>('GET', `${ProposalApiPath}/${index}?network=${networkName}`)
+export function getProposalByIndex(index: string, networkName: string) {
+    return api.get<ProposalDto>(`${ProposalApiPath}/${index}?network=${networkName}`).then((response) => response.data)
 }

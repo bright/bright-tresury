@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 
 export enum LoadingState {
     Initial,
@@ -28,6 +28,8 @@ interface UseLoadingResult<ParamsType, ResponseType, ErrorType> {
 }
 
 export function useLoading<ParamsType, ResponseType, ErrorType>(apiCall: (params: ParamsType) => Promise<ResponseType>): UseLoadingResult<ParamsType, ResponseType, ErrorType> {
+    const ref = useRef(true)
+
     const [response, setResponse] = useState<ResponseType>()
     const [error, setError] = useState<ErrorType>()
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
@@ -36,14 +38,24 @@ export function useLoading<ParamsType, ResponseType, ErrorType>(apiCall: (params
         setLoadingState(LoadingState.Loading)
         return apiCall(params)
             .then((response) => {
+                if (!ref.current) return
                 setResponse(response)
                 setLoadingState(LoadingState.Resolved)
+                return response
             })
             .catch((err: ErrorType) => {
+                if (!ref.current) return
                 setError(err)
                 setLoadingState(LoadingState.Error)
+                throw err
             })
     }, [apiCall])
+
+    useEffect(() => {
+        return () => {
+            ref.current = false
+        }
+    }, [])
 
     return {loadingState, response, call, error} as UseLoadingResult<ParamsType, ResponseType, ErrorType>
 }

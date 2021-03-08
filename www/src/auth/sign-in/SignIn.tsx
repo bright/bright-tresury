@@ -1,9 +1,8 @@
 import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Formik} from "formik";
-import React, {useEffect} from "react";
+import React from "react";
 import {Trans, useTranslation} from "react-i18next";
-import {useHistory} from "react-router-dom";
 import * as Yup from "yup";
 import loginImg from "../../assets/login.svg";
 import {Button} from "../../components/button/Button";
@@ -12,7 +11,7 @@ import {Input} from "../../components/form/input/Input";
 import {PasswordInput} from "../../components/form/input/password/PasswordInput";
 import {RouterLink} from "../../components/link/RouterLink";
 import {LoadingState, useLoading} from "../../components/loading/LoadingWrapper";
-import {ROUTE_SIGNUP, ROUTE_STATS} from "../../routes";
+import {ROUTE_SIGNUP} from "../../routes";
 import {breakpoints} from "../../theme/theme";
 import {useAuth} from "../AuthContext";
 
@@ -75,7 +74,6 @@ interface SignInValues {
 const SignIn: React.FC = () => {
     const {t} = useTranslation()
     const classes = useStyles()
-    const history = useHistory()
 
     const {signIn} = useAuth()
 
@@ -84,12 +82,6 @@ const SignIn: React.FC = () => {
     const onSubmit = async (values: SignInValues) => {
         await call(values)
     }
-
-    useEffect(() => {
-        if (loadingState === LoadingState.Resolved) {
-            history.push(ROUTE_STATS)
-        }
-    }, [loadingState])
 
     const validationSchema = Yup.object().shape({
         login: Yup.string().required(t('auth.signup.form.emptyFieldError')),

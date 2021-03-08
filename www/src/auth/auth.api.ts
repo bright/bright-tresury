@@ -1,5 +1,5 @@
 import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
-import {fetchAndUnwrap} from '../api'
+import api from '../api';
 
 export interface SignUpData {
     login: string
@@ -34,7 +34,7 @@ export function signUp(data: SignUpData) {
         ],
     };
 
-    return fetchAndUnwrap<SignUpAPIResponse>('POST', `${authApiPath}/signup`, requestData)
+    return api.post<SignUpAPIResponse>( `${authApiPath}/signup`, requestData).then((response) => response.data)
 }
 
 export function signIn(data: SignInData) {
@@ -52,9 +52,9 @@ export function signIn(data: SignInData) {
         ],
     };
 
-    return fetchAndUnwrap<SignInAPIResponse>('POST', `${authApiPath}/signin`, requestData)
+    return api.post<SignInAPIResponse>(`${authApiPath}/signin`, requestData).then((response) => response.data)
 }
 
 export function signOut() {
-    return fetchAndUnwrap<SignInAPIResponse>('POST', `${authApiPath}/signout`)
+    return api.post<SignInAPIResponse>(`${authApiPath}/signout`).then((response) => response.data)
 }
