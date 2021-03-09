@@ -28,6 +28,7 @@ export const Tabs: React.FC<Props> = ({values}) => {
     return <div className={classes.root}>
         {values ? values.map(({label, path, svg, isDefault}) =>
             <TabLabel
+                key={label}
                 isDefault={isDefault}
                 label={label}
                 svg={svg}

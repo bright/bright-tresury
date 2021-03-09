@@ -1,17 +1,16 @@
-import {TextFieldProps} from "@material-ui/core";
 import FormGroup from "@material-ui/core/FormGroup";
-import {useField} from "formik";
+import {FieldHookConfig, useField} from "formik";
 import React from "react";
 import {Label} from "../../text/Label";
 import {ErrorLabel} from "./ErrorLabel";
-import {TextField} from "./TextField";
+import {TextField, TextFieldProps} from "./TextField";
 
 interface OwnProps {
     label?: string | JSX.Element
     endAdornment?: string
 }
 
-export type InputProps = OwnProps & Omit<TextFieldProps, "label">
+export type InputProps = OwnProps & Omit<TextFieldProps, "label"> & FieldHookConfig<string>
 
 export const Input: React.FC<InputProps> = ({label, endAdornment, name = '', ...props}) => {
 

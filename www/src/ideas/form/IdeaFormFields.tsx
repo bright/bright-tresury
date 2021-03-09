@@ -67,8 +67,8 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                     placeholder={t('idea.details.content')}
                 />
             </div>
-            {values.networks.map((network: IdeaNetworkDto, index: number) => {
-                    return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
+            {values.networks.map((network: IdeaNetworkDto, index) => {
+                    return (<div className={`${classes.inputField} ${classes.smallField}`} key={index}>
                             <Input
                                 name={`networks[${index}].value`}
                                 type={`number`}

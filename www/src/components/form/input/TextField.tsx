@@ -1,4 +1,4 @@
-import {createStyles, InputAdornment, TextField as MaterialTextField, TextFieldProps} from "@material-ui/core";
+import {createStyles, InputAdornment, TextField as MaterialTextField, TextFieldProps as MaterialTextFieldProps} from "@material-ui/core";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
 
@@ -30,13 +30,13 @@ interface OwnProps {
     endAdornment?: string
 }
 
-export type InputProps = OwnProps & TextFieldProps
+export type TextFieldProps = OwnProps & MaterialTextFieldProps
 
-export const TextField: React.FC<InputProps> = ({endAdornment, ...props}) => {
+export const TextField: React.FC<TextFieldProps> = ({endAdornment, ...props}) => {
     const classes = useStyles()
+
     return <MaterialTextField
         {...props}
-        classes={classes} // root
         variant="filled"
         InputProps={{
             classes: {...classes},

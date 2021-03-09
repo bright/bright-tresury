@@ -95,7 +95,7 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
     const {signOut, isUserSignedIn} = useAuth()
     return <List disablePadding={true} dense={true}>
         {MENU_ITEMS.map((menuItem: MenuItem, index) => (
-            <ListItem disableGutters={true} button onClick={() => {
+            <ListItem key={index} disableGutters={true} button onClick={() => {
                 if (onSelected) {
                     onSelected()
                 }

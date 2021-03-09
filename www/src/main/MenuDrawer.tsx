@@ -52,7 +52,6 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
     }
 
     return <Drawer
-        container={container}
         onClose={closeDrawer}
         anchor={'left'}
         open
