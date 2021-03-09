@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import Session from "supertokens-auth-react/lib/build/recipe/session/session";
 import {signIn as signInApi, SignInData, signOut as signOutApi, SignUpData} from './auth.api'
 
@@ -12,10 +12,8 @@ interface AuthContextState {
 }
 
 interface AuthContextUser {
-    email: string
-    username: string
-    web3Signup: boolean
-    payload: any
+    userId: string
+    payload: string
 }
 
 const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
@@ -24,28 +22,42 @@ const AuthContextProvider: React.FC = (props) => {
     const [user, setUser] = useState<AuthContextUser | undefined>()
     const [isUserSignedIn, setIsUserSignedIn] = useState(Session.doesSessionExist())
 
-    const signOut = () => {
-        return signOutApi().then(() => {
+    useEffect(() => {
+        if (isUserSignedIn) {
+            const userId = Session.getUserId()
+            Session.getJWTPayloadSecurely().then((payload) => {
+                setUser({userId, payload})
+            })
+        } else {
             setUser(undefined)
-            setIsUserSignedIn(false)
-        })
+        }
+    }, [isUserSignedIn])
+
+    const signOut = () => {
+        return signOutApi()
+            .then(() => {
+                setIsUserSignedIn(false)
+            })
+            .catch((error) => {
+                console.log(error)
+                setIsUserSignedIn(false)
+            })
     }
 
     const signIn = (signInData: SignInData) => {
-        return signInApi(signInData).then(async (result) => {
-            if (result.status === 'OK') {
-                const payload = await Session.getJWTPayloadSecurely()
-                setUser({
-                    username: result.user.id,
-                    email: result.user.email,
-                    web3Signup: false,
-                    payload
-                })
-                setIsUserSignedIn(true)
-            } else {
-                console.log(result)
-            }
-        })
+        return signInApi(signInData)
+            .then((result) => {
+                if (result.status === 'OK') {
+                    setIsUserSignedIn(true)
+                } else {
+                    setIsUserSignedIn(false)
+                    console.log(result)
+                }
+            })
+            .catch((error) => {
+                console.log(error)
+                setIsUserSignedIn(false)
+            })
     }
 
     return (
