@@ -85,7 +85,7 @@ describe(`Blockchain service`, () => {
             })
         }, 60000)
 
-        it('should start listening and find successful extrinsic with errors', async (done) => {
+        it('should start listening and find successful extrinsic with exceptions', async (done) => {
             let expectedBlockHash = ''
 
             // create and sign extrinsic which will fail as only ApproveOrigin can call this extrinsic

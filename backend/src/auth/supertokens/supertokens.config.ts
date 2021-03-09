@@ -7,7 +7,7 @@ import {SuperTokensService} from "./supertokens.service";
 export function initializeSupertokens(config: AppConfig, superTokensService: SuperTokensService) {
     supertokens.init({
         supertokens: {
-            connectionURI: config.authConfig.coreUrl,
+            connectionURI: config.auth.coreUrl,
         },
         appInfo: {
             appName: "Bright Treasury App",
@@ -15,6 +15,6 @@ export function initializeSupertokens(config: AppConfig, superTokensService: Sup
             websiteDomain: config.websiteUrl,
             apiBasePath: `${baseApiPath}`
         },
-        recipeList: getRecipeList(config.authConfig.cookieSecure, superTokensService)
+        recipeList: getRecipeList(config.auth.cookieSecure, superTokensService)
     });
 }

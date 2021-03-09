@@ -11,12 +11,12 @@ export class SuperTokensService {
     ) {
     }
 
-    validateUsername = async (value: string): Promise<string | undefined> => {
+    getUsernameValidationError = async (value: string): Promise<string | undefined> => {
         const valid = await this.usersService.validateUsername(value)
         return valid ? undefined : "Username already taken"
     }
 
-    validateEmail = async (value: string): Promise<string | undefined> => {
+    getEmailValidationError = async (value: string): Promise<string | undefined> => {
         const valid = await this.usersService.validateEmail(value)
         return valid ? undefined : "Email already used"
     }
@@ -26,13 +26,16 @@ export class SuperTokensService {
         value: any;
     }>): Promise<void> => {
         const {id, email} = user
-        const username = formFields.find((formField: { id: string, value: any }) =>
-            formField.id === SuperTokensUsernameKey
-        )!.value
+        const usernameFormField = formFields.find(({id: formFieldKey}) =>
+            formFieldKey === SuperTokensUsernameKey
+        )
+        if (!usernameFormField) {
+            throw new BadRequestException('Username was not found.')
+        }
         const createUserDto = {
             authId: id,
             email,
-            username
+            username: usernameFormField.value
         } as CreateUserDto
         await this.usersService.create(createUserDto).catch(() => {
             throw new BadRequestException()

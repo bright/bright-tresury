@@ -17,7 +17,7 @@ describe(`SuperTokens Service`, () => {
 
     describe('validate', () => {
         it('should return undefined if email is not used', async () => {
-            const validationResult = await getService().validateEmail('chuck@email.com')
+            const validationResult = await getService().getEmailValidationError('chuck@email.com')
             expect(validationResult).toBeUndefined()
         })
 
@@ -28,14 +28,14 @@ describe(`SuperTokens Service`, () => {
                 username: 'Chuck',
                 email
             })
-            const validationResult = await getService().validateEmail(email)
+            const validationResult = await getService().getEmailValidationError(email)
 
             expect(validationResult).toBeDefined()
             expect(typeof validationResult).toBe('string')
         })
 
         it('should return undefined if username is not used', async () => {
-            const validationResult = await getService().validateUsername('Chucky')
+            const validationResult = await getService().getUsernameValidationError('Chucky')
             expect(validationResult).toBeUndefined()
         })
 
@@ -46,7 +46,7 @@ describe(`SuperTokens Service`, () => {
                 username,
                 email: 'chuck@email.com'
             })
-            const validationResult = await getService().validateUsername(username)
+            const validationResult = await getService().getUsernameValidationError(username)
 
             expect(validationResult).toBeDefined()
             expect(typeof validationResult).toBe('string')

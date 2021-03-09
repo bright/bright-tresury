@@ -10,7 +10,7 @@ import {getLogger} from "../logging.module";
 import {AsyncFactoryProvider, propertyOfProvider} from "../utils/dependency.injection";
 import {BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken} from "../blockchain/blockchain.config";
 import {stringFormat} from "./formats/string.format";
-import {AuthConfig, authConfigSchema} from "./auth.config";
+import {AuthConfig, authConfigSchema, AuthConfigToken} from "../auth/auth.config";
 
 interface EnvConfig {
     deployEnv: "production" | "development" | "development-local" | "stage" | "test" | "test-local"
@@ -24,7 +24,7 @@ export type AppConfig = EnvConfig & {
     database: DatabaseConfig,
     aws: AWSConfig,
     blockchain: BlockchainConfig,
-    authConfig: AuthConfig
+    auth: AuthConfig
 };
 
 const configSchema = convict<AppConfig>({
@@ -61,7 +61,7 @@ const configSchema = convict<AppConfig>({
     database: databaseConfigSchema,
     aws: awsConfigSchema,
     blockchain: blockchainConfigSchema,
-    authConfig: authConfigSchema,
+    auth: authConfigSchema,
 });
 const logger = getLogger();
 
@@ -99,7 +99,8 @@ const appConfigProvider: AsyncFactoryProvider<AppConfig> = {
 
 const databaseConfigProvider = propertyOfProvider(appConfigProvider, "database", DatabaseConfigToken)
 const blockchainConfigProvider = propertyOfProvider(appConfigProvider, "blockchain", BlockchainConfigToken)
-const providers: Provider[] = [appConfigProvider, databaseConfigProvider, blockchainConfigProvider];
+const authConfigProvider = propertyOfProvider(appConfigProvider, "auth", AuthConfigToken)
+const providers: Provider[] = [appConfigProvider, databaseConfigProvider, blockchainConfigProvider, authConfigProvider];
 
 // @Global() // if we don't have to import config module everywhere
 @Module({

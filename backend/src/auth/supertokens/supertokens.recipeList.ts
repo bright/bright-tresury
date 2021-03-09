@@ -13,10 +13,10 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
         signUpFeature: {
             formFields: [{
                 id: SuperTokensUsernameKey,
-                validate: superTokensService.validateUsername
+                validate: superTokensService.getUsernameValidationError
             }, {
                 id: "email",
-                validate: superTokensService.validateEmail
+                validate: superTokensService.getEmailValidationError
             }],
             handleCustomFormFieldsPostSignUp: superTokensService.handleSignUp
         },

@@ -1,11 +1,13 @@
 import {Schema} from "convict"
-import {stringFormat} from "./formats/string.format";
-import {booleanFormat} from "./formats/boolean.format";
+import {stringFormat} from "../config/formats/string.format";
+import {booleanFormat} from "../config/formats/boolean.format";
 
 export interface AuthConfig {
     cookieSecure: boolean
     coreUrl: string
 }
+
+export const AuthConfigToken = 'AuthConfig'
 
 export const authConfigSchema: Schema<AuthConfig> = {
     coreUrl: {

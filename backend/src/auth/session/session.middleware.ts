@@ -11,7 +11,7 @@ export interface SessionRequest extends Request {
  * Used to extend request with current session data which can be obtained
  * using ReqSession decorator in `session.decorator.ts` file.
  *
- * It also handles refresh token errors.
+ * It also handles refresh token exceptions.
  */
 @Injectable()
 export class SessionUserMiddleware implements NestMiddleware {

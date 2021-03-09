@@ -1,10 +1,11 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {User} from "./user.entity";
 import {CreateUserDto} from "./dto/createUser.dto";
 import {validateOrReject} from "class-validator";
 import {plainToClass} from "class-transformer";
+import {handleFindError} from "../utils/exceptions/databaseExceptions.handler";
 
 @Injectable()
 export class UsersService {
@@ -19,34 +20,34 @@ export class UsersService {
             const user = await this.userRepository.findOneOrFail(id)
             return user
         } catch (e) {
-            throw new NotFoundException('There is no user with such id')
+            handleFindError(e, 'There is no user with such id')
         }
     }
 
-    async findOneByUsername(username: string): Promise<User | undefined> {
+    async findOneByUsername(username: string): Promise<User> {
         try {
             const user = await this.userRepository.findOneOrFail({username})
             return user
         } catch (e) {
-            throw new NotFoundException('There is no user with such username')
+            handleFindError(e, 'There is no user with such username')
         }
     }
 
-    async findOneByEmail(email: string): Promise<User | undefined> {
+    async findOneByEmail(email: string): Promise<User> {
         try {
             const user = await this.userRepository.findOneOrFail({email})
             return user
         } catch (e) {
-            throw new NotFoundException('There is no user with such email')
+            handleFindError(e, 'There is no user with such email')
         }
     }
 
-    async findOneByAuthId(authId: string): Promise<User | undefined> {
+    async findOneByAuthId(authId: string): Promise<User> {
         try {
             const user = await this.userRepository.findOneOrFail({authId})
             return user
         } catch (e) {
-            throw new NotFoundException('There is no user with such authId')
+            handleFindError(e, 'There is no user with such authId')
         }
     }
 
@@ -70,26 +71,17 @@ export class UsersService {
     }
 
     async validateEmail(email: string): Promise<boolean> {
-        try {
-            const existingUser = await this.findOneByEmail(email)
-            return !existingUser
-        } catch (e) {
-            return true
-        }
+        const user = await this.userRepository.findOne({email})
+        return !user
     }
 
     async validateUsername(username: string): Promise<boolean> {
-        try {
-            const existingUser = await this.findOneByUsername(username)
-            return !existingUser
-        } catch (e) {
-            return true
-        }
+        const user = await this.userRepository.findOne({username})
+        return !user
     }
 
     private async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
         try {
-
             await validateOrReject(plainToClass(CreateUserDto, createUserDto))
             const validUsername = await this.validateUsername(createUserDto.username)
             if (!validUsername) {

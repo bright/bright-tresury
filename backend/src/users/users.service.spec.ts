@@ -85,7 +85,7 @@ describe(`Users Service`, () => {
         })
     })
 
-    describe('find one', () => {
+    describe('find one by id', () => {
         it('should return user by id', async () => {
             const user = await getService().create({
                 authId: uuid(),
@@ -102,6 +102,9 @@ describe(`Users Service`, () => {
                 .rejects
                 .toThrow(NotFoundException)
         })
+    })
+
+    describe('find one by username', () => {
         it('should return user by username', async () => {
             const username = 'Chuck'
             await getService().create({
@@ -119,6 +122,9 @@ describe(`Users Service`, () => {
                 .rejects
                 .toThrow(NotFoundException)
         })
+    })
+
+    describe('find one by email', () => {
         it('should return user by email', async () => {
             const email = 'chuck@email.com'
             await getService().create({
@@ -136,6 +142,9 @@ describe(`Users Service`, () => {
                 .rejects
                 .toThrow(NotFoundException)
         })
+    })
+
+    describe('find one by authId', () => {
         it('should return user by authId', async () => {
             const authId = uuid()
             await getService().create({

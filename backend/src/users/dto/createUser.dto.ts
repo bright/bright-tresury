@@ -4,15 +4,15 @@ import {IsNotEmpty} from "class-validator";
 export class CreateUserDto {
     @ApiProperty({description: 'Authorization core id.'})
     @IsNotEmpty()
-    authId!: string
+    authId: string
 
     @ApiProperty()
     @IsNotEmpty()
-    username!: string
+    username: string
 
     @ApiProperty()
     @IsNotEmpty()
-    email!: string
+    email: string
 
     constructor(
         authId: string,

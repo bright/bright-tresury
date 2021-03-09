@@ -112,8 +112,8 @@ describe('ExtrinsicsService', () => {
             expect(actual!.status).toEqual(ExtrinsicStatuses.ExtrinsicSuccess)
         })
 
-        // todo check errors in blockchain and write proper tests
-        // it('should update extrinsic with errors', async () => {
+        // todo check exceptions in blockchain and write proper tests
+        // it('should update extrinsic with exceptions', async () => {
         //
         // })
     })
