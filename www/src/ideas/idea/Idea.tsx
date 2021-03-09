@@ -1,6 +1,7 @@
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import {useParams} from 'react-router';
+import {useAuth} from "../../auth/AuthContext";
 import {createEmptyIdea, getIdeaById, IdeaDto} from '../ideas.api';
 import IdeaHeader from "./IdeaHeader";
 import {IdeaContentType} from "./IdeaContentTypeTabs";
@@ -9,7 +10,6 @@ import IdeaInfo from "./info/IdeaInfo";
 import IdeaMilestones from "./milestones/IdeaMilestones";
 import IdeaDiscussion from "./discussion/IdeaDiscussion";
 import {breakpoints} from "../../theme/theme";
-import {isAuthorized} from "../../util/auth.util";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -41,10 +41,14 @@ const Idea: React.FC<Props> = ({network}) => {
     let {ideaId} = useParams<{ ideaId: string }>()
 
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
+
     /**
      * TODO:// check if [idea] belongs to the currently logged in user
      */
-    const [canEdit] = useState(isAuthorized())
+    const {isUserSignedIn} = useAuth()
+    const canEdit = useMemo(() => {
+        return isUserSignedIn
+    }, [idea, isUserSignedIn])
 
     useEffect(() => {
         if (ideaId !== undefined) {
