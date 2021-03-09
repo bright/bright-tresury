@@ -1,8 +1,7 @@
 import {isWidthDown, withWidth} from '@material-ui/core';
-import React, {useMemo} from 'react';
-
-import {breakpoints} from "../theme/theme";
 import {WithWidthProps} from "@material-ui/core/withWidth/withWidth";
+import React, {useMemo} from 'react';
+import {breakpoints} from "../../theme/theme";
 import MenuDrawer from "./MenuDrawer";
 import MenuMobileDrawer from "./MenuMobileDrawer";
 

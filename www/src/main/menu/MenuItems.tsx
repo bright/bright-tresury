@@ -1,14 +1,14 @@
-import statsSvg from "../assets/menu_stats.svg";
-import statsHighlightedSvg from "../assets/menu_stats_highlighted.svg";
-import ideasSvg from "../assets/menu_ideas.svg";
-import ideasHighlightedSvg from "../assets/menu_ideas_highlighted.svg";
-import proposalsSvg from "../assets/menu_proposals.svg";
-import proposalsHighlightedSvg from "../assets/menu_proposals_highlighted.svg";
-import tipsSvg from "../assets/menu_tips.svg";
-import tipsHighlightedSvg from "../assets/menu_tips_highlighted.svg";
-import bountySvg from "../assets/menu_bounty.svg";
-import bountyHighlightedSvg from "../assets/menu_bounty_highlighted.svg";
-import {ROUTE_BOUNTIES, ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_STATS, ROUTE_TIPS} from "../routes";
+import statsSvg from "../../assets/menu_stats.svg";
+import statsHighlightedSvg from "../../assets/menu_stats_highlighted.svg";
+import ideasSvg from "../../assets/menu_ideas.svg";
+import ideasHighlightedSvg from "../../assets/menu_ideas_highlighted.svg";
+import proposalsSvg from "../../assets/menu_proposals.svg";
+import proposalsHighlightedSvg from "../../assets/menu_proposals_highlighted.svg";
+import tipsSvg from "../../assets/menu_tips.svg";
+import tipsHighlightedSvg from "../../assets/menu_tips_highlighted.svg";
+import bountySvg from "../../assets/menu_bounty.svg";
+import bountyHighlightedSvg from "../../assets/menu_bounty_highlighted.svg";
+import {ROUTE_BOUNTIES, ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_STATS, ROUTE_TIPS} from "../../routes";
 
 export interface MenuItem {
     translationKey: string

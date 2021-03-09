@@ -2,21 +2,26 @@ import React, {useMemo, useState} from "react";
 import clsx from "clsx";
 import {createStyles, Drawer, isWidthDown, Theme, withWidth} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import {breakpoints} from "../theme/theme";
+import {breakpoints} from "../../theme/theme";
 import {WithWidthProps} from "@material-ui/core/withWidth/withWidth";
 import MenuItemsList from "./MenuItemsList";
-import expandMenu from "./../assets/expand_menu.svg"
-import collapseMenu from "./../assets/collapse_menu.svg"
-import {IconButton} from "../components/button/IconButton";
+import expandMenu from "../../assets/expand_menu.svg"
+import collapseMenu from "../../assets/collapse_menu.svg"
+import {IconButton} from "../../components/button/IconButton";
 import MenuAppInfo from "./MenuAppInfo";
+import {desktopTopBarHeight, tabletTopBarHeight} from "../top-bar/TopBar";
 
 const useStyles = makeStyles((theme: Theme) => {
-    const drawerWidth = 250
-    const miniDrawerWidth = 84
-    return createStyles({
-        root: {
-            background: theme.palette.background.default
-        },
+        const drawerWidth = 250
+        const miniDrawerWidth = 84
+        return createStyles({
+            root: {
+                marginTop: desktopTopBarHeight,
+                [theme.breakpoints.down(breakpoints.tablet)]: {
+                    marginTop: tabletTopBarHeight
+                },
+                background: theme.palette.background.default
+            },
             drawerIcon: {
                 marginTop: '1em'
             },

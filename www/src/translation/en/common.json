@@ -18,6 +18,9 @@
       }
     }
   },
+  "topBar": {
+    "signIn": "Sign In"
+  },
   "menu": {
     "stats": "Stats",
     "ideas": "Ideas",

@@ -1,12 +1,10 @@
-import React from "react";
 import {createStyles, List, ListItem, Theme} from "@material-ui/core";
-import {useAuth} from "../auth/AuthContext";
-import {MENU_ITEMS, MenuItem} from "./MenuItems";
 import {makeStyles} from "@material-ui/core/styles";
-import {breakpoints} from "../theme/theme";
+import React from "react";
 import {useTranslation} from "react-i18next";
 import {NavLink} from "react-router-dom";
-import {Button} from "../components/button/Button";
+import {breakpoints} from "../../theme/theme";
+import {MENU_ITEMS, MenuItem} from "./MenuItems";
 
 const useStyles = makeStyles((theme: Theme) => {
         return createStyles({
@@ -92,7 +90,6 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    const {signOut, isUserSignedIn} = useAuth()
     return <List disablePadding={true} dense={true}>
         {MENU_ITEMS.map((menuItem: MenuItem, index) => (
             <ListItem key={index} disableGutters={true} button onClick={() => {
@@ -109,23 +106,6 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
                 </NavLink>
             </ListItem>
         ))}
-        {/* region: Remove this button as soon as we add header bar with logout */}
-        <div style={{display: 'flex', justifyContent: 'center', marginTop: 32}}>
-            <Button variant="contained"
-                    style={{
-                        fontSize: 10,
-                        color: 'white',
-                        textAlign: 'center',
-                    }}
-                    color='primary'
-                    disabled={!isUserSignedIn}
-                    onClick={async () => {
-                        await signOut()
-                    }}>
-                Logout
-            </Button>
-        </div>
-        {/*endregion*/}
     </List>
 }
 

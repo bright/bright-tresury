@@ -6,7 +6,7 @@ import './App.css';
 import {AuthContextProvider, useAuth} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
 import Ideas from './ideas/Ideas';
-import Menu from './main/Menu';
+import Main from "./main/Main";
 import Proposals from './proposals/Proposals';
 import {
     ROUTE_CONVERT_IDEA, ROUTE_EDIT_IDEA, ROUTE_IDEA, ROUTE_IDEAS, ROUTE_NEW_IDEA, ROUTE_PROPOSAL,
@@ -27,39 +27,19 @@ import ConvertIdeaToProposal from './ideas/idea/convertToProposal/ConvertIdeaToP
 import Proposal from "./proposals/proposal/Proposal";
 import SignUp from './auth/sign-up/SignUp';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            minHeight: '100vh',
-            display: 'flex',
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                flexDirection: 'column'
-            },
-        }
-    }),
-);
 
 function AppRoutes() {
-    const classes = useStyles();
     const {isUserSignedIn} = useAuth()
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
     return (
         <Router>
-            <div className={classes.root}>
-                <Menu/>
+            <Main>
                 <Switch>
-                    {getSuperTokensRoutesForReactRouterDom()}
-                    <Route path="/dashboard">
-                        <EmailPasswordAuth>
-                            <div>
-                                Supertokens worked!
-                            </div>
-                        </EmailPasswordAuth>
+                    <Route exact={true} path={ROUTE_SIGNUP} >
+                        {isUserSignedIn ? <Redirect to={ROUTE_STATS}/> : <SignUp/>}
                     </Route>
-
-                    <Route exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
                     <Route exact={true} path={ROUTE_SIGNIN}>
                         {isUserSignedIn ? <Redirect to={ROUTE_STATS}/> : <SignIn/>}
                     </Route>
@@ -72,7 +52,7 @@ function AppRoutes() {
                     <Route exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
                     <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
                 </Switch>
-            </div>
+            </Main>
         </Router>
     )
 }
