@@ -20,7 +20,7 @@ export class UsersService {
             const user = await this.userRepository.findOneOrFail(id)
             return user
         } catch (e) {
-            handleFindError(e, 'There is no user with such id')
+            throw handleFindError(e, 'There is no user with such id')
         }
     }
 
@@ -29,7 +29,7 @@ export class UsersService {
             const user = await this.userRepository.findOneOrFail({username})
             return user
         } catch (e) {
-            handleFindError(e, 'There is no user with such username')
+            throw handleFindError(e, 'There is no user with such username')
         }
     }
 
@@ -38,7 +38,7 @@ export class UsersService {
             const user = await this.userRepository.findOneOrFail({email})
             return user
         } catch (e) {
-            handleFindError(e, 'There is no user with such email')
+            throw handleFindError(e, 'There is no user with such email')
         }
     }
 
@@ -47,7 +47,7 @@ export class UsersService {
             const user = await this.userRepository.findOneOrFail({authId})
             return user
         } catch (e) {
-            handleFindError(e, 'There is no user with such authId')
+            throw handleFindError(e, 'There is no user with such authId')
         }
     }
 
