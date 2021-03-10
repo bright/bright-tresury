@@ -72,7 +72,8 @@
       "form": {
         "emptyFieldError": "This field cannot be empty",
         "login": {
-          "label": "Login"
+          "label": "Login",
+          "placeholder": "Enter your email"
         },
         "password": {
           "label": "Password"
