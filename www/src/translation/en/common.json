@@ -20,6 +20,7 @@
   },
   "topBar": {
     "signIn": "Sign In",
+    "showAccountMenu": "Account menu",
     "account": {
       "account": "Account",
       "ideas": "Your Ideas (1)",

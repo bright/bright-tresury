@@ -3,7 +3,7 @@ import Menu from "@material-ui/core/Menu";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
 import React from 'react';
 import {useTranslation} from "react-i18next";
-import signInSrc from "../../../assets/caution.svg";
+import info from "../../../assets/info.svg";
 import TopBarButton from "../TopBarButton";
 import LogOutMenuItem from "./LogOutMenuItem";
 import MenuItem from "./MenuItem";
@@ -31,7 +31,8 @@ const AccountInfo: React.FC = () => {
     };
 
     return <div className={classes.root}>
-        <TopBarButton alt={'sign out'} svg={signInSrc} onClick={handleClick} aria-controls="simple-menu" aria-haspopup="true"/>
+        {/*TODO: use user's avatar instead of the predefined icon*/}
+        <TopBarButton alt={t('topBar.showAccountMenu')} svg={info} onClick={handleClick} aria-controls="simple-menu" aria-haspopup="true"/>
         <Menu
             id="simple-menu"
             anchorEl={anchorEl}
