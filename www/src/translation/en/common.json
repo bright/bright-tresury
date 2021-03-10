@@ -19,7 +19,14 @@
     }
   },
   "topBar": {
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "account": {
+      "account": "Account",
+      "ideas": "Your Ideas (1)",
+      "proposals": "Your Proposals (1)",
+      "bounties": "Your Bounties (1)",
+      "signOut": "Log out"
+    }
   },
   "menu": {
     "stats": "Stats",

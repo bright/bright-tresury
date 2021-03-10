@@ -49,9 +49,6 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
     const isTabletOrMobile = useMemo(() => isWidthDown(breakpoints.tablet, width!), [width])
     const [open, setOpen] = useState(!isTabletOrMobile)
 
-    const container =
-        window !== undefined ? () => window.document.body : undefined;
-
     const closeDrawer = () => {
         setOpen(false)
     }

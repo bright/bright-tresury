@@ -3,7 +3,7 @@ import React from 'react';
 import {useAuth} from "../../auth/AuthContext";
 import config from "../../config/index";
 import {breakpoints} from "../../theme/theme";
-import AccountInfo from "./AccountInfo";
+import AccountInfo from "./account/AccountInfo";
 import NetworkPicker from "./NetworkPicker";
 import SignInButton from "./SignInButton";
 

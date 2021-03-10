@@ -7,12 +7,15 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             height: '30px',
             width: '30px',
-        },
-        image: {
             borderStyle: 'solid',
             borderRadius: '8px',
             borderColor: '#EBEBEB',
             borderWidth: '2px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+        },
+        image: {
             padding: '1px',
         }
     }),
@@ -21,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface TopBarButtonProps {
     alt: string,
     svg: string,
-    onClick: () => void
+    onClick: (event?: React.MouseEvent<HTMLButtonElement>) => void
 }
 
 const TopBarButton: React.FC<TopBarButtonProps> = ({alt, svg, onClick}) => {
