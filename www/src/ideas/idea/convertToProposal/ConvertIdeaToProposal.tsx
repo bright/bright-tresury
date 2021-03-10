@@ -3,7 +3,7 @@ import {useTranslation} from "react-i18next";
 import {useParams} from "react-router";
 import {useHistory, useLocation} from "react-router-dom";
 import Container from "../../../components/form/Container";
-import {ROUTE_PROPOSALS} from "../../../routes";
+import {ROUTE_PROPOSALS} from "../../../routes/routes";
 import IdeaForm from "../../form/IdeaForm";
 import {getIdeaById, IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
 import SubmitProposalModal from "../../SubmitProposalModal";

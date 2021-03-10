@@ -2,7 +2,7 @@ import React, {useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useHistory} from "react-router-dom";
 import { RightButton, LeftButton } from "../../../components/form/buttons/Buttons";
-import {ROUTE_IDEAS} from "../../../routes";
+import {ROUTE_IDEAS} from "../../../routes/routes";
 import IdeaForm from "../../form/IdeaForm";
 import {IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
 

@@ -15,7 +15,7 @@ import {Link} from "../../components/link/Link";
 import {RouterLink} from "../../components/link/RouterLink";
 import {LoadingState} from "../../components/loading/LoadingWrapper";
 import {Label} from "../../components/text/Label";
-import {ROUTE_SIGNIN} from "../../routes";
+import {ROUTE_SIGNIN} from "../../routes/routes";
 import {breakpoints} from "../../theme/theme";
 import {fullValidatorForSchema} from "../../util/form.util";
 import {signUp} from "../auth.api";

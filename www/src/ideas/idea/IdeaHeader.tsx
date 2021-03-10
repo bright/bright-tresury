@@ -14,7 +14,7 @@ import {FlexBreakLine} from "../../components/header/FlexBreakLine";
 import {HeaderTabs} from "../../components/header/HeaderTabs";
 import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposit";
 import {OptionalTitle} from "../../components/text/OptionalTitle";
-import {ROUTE_CONVERT_IDEA, ROUTE_IDEAS} from "../../routes";
+import {ROUTE_CONVERT_IDEA, ROUTE_IDEAS} from "../../routes/routes";
 import {breakpoints} from "../../theme/theme";
 import {IdeaDto, IdeaStatus} from "../ideas.api";
 import IdeaContentTypeTabs from "./IdeaContentTypeTabs";

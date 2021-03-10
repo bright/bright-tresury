@@ -4,7 +4,7 @@ import React from "react";
 import {TabEntry, Tabs} from "../../components/tabs/Tabs";
 import {useTranslation} from "react-i18next";
 import {breakpoints} from "../../theme/theme";
-import {ROUTE_PROPOSALS} from "../../routes";
+import {ROUTE_PROPOSALS} from "../../routes/routes";
 import {NavSelect} from "../../components/select/NavSelect";
 
 const useStyles = makeStyles((theme: Theme) =>

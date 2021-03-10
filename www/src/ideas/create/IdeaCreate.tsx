@@ -4,7 +4,7 @@ import {useHistory} from "react-router-dom";
 import { RightButton, LeftButton } from "../../components/form/buttons/Buttons";
 import Container from "../../components/form/Container";
 import config from "../../config";
-import {ROUTE_IDEAS} from "../../routes";
+import {ROUTE_IDEAS} from "../../routes/routes";
 import IdeaForm from "../form/IdeaForm";
 import {createEmptyIdea, createIdea, IdeaDto, IdeaStatus} from "../ideas.api";
 

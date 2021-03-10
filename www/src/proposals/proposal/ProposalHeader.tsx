@@ -7,7 +7,7 @@ import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
 import {ProposalDto} from "../proposals.api";
 import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposit";
 import {CloseIcon} from "../../components/closeIcon/CloseIcon";
-import {ROUTE_PROPOSALS} from "../../routes";
+import {ROUTE_PROPOSALS} from "../../routes/routes";
 import {useHistory} from "react-router-dom";
 import {OptionalTitle} from "../../components/text/OptionalTitle";
 import {HeaderContainer} from "../../components/header/details/HeaderContainer";

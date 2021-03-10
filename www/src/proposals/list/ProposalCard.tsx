@@ -1,6 +1,6 @@
 import React from "react";
 import {generatePath} from "react-router-dom";
-import {ROUTE_PROPOSAL} from "../../routes";
+import {ROUTE_PROPOSAL} from "../../routes/routes";
 import {Divider} from "../../components/divider/Divider";
 import {makeStyles} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";

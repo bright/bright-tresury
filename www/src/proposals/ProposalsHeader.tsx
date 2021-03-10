@@ -3,7 +3,7 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {Trans} from "react-i18next";
 import ProposalStatusFilters, {ProposalFilter} from "./list/ProposalStatusFilters";
-import {ROUTE_NEW_IDEA} from "../routes";
+import {ROUTE_NEW_IDEA} from "../routes/routes";
 import {RouterLink} from "../components/link/RouterLink";
 import {TimeSelect} from "../components/select/TimeSelect";
 import {BasicInfo} from "../components/header/BasicInfo";

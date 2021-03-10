@@ -4,7 +4,7 @@ import IdeaStatusFilters, {IdeaFilter} from "./list/IdeaStatusFilters";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../theme/theme";
 import {useTranslation} from "react-i18next";
-import {ROUTE_NEW_IDEA} from "../routes";
+import {ROUTE_NEW_IDEA} from "../routes/routes";
 import {useHistory} from "react-router-dom";
 import {TimeSelect} from "../components/select/TimeSelect";
 import {HeaderListContainer, mobileHeaderListHorizontalMargin} from "../components/header/list/HeaderListContainer";

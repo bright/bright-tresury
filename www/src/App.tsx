@@ -2,7 +2,6 @@ import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom';
 import './App.css';
-import {EmailPasswordAuth} from "supertokens-auth-react/lib/build/recipe/emailpassword";
 import {AuthContextProvider, useAuth} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
 import SignUp from './auth/sign-up/SignUp';
@@ -13,6 +12,8 @@ import Ideas from './ideas/Ideas';
 import Main from "./main/Main";
 import Proposal from "./proposals/proposal/Proposal";
 import Proposals from './proposals/Proposals';
+import PrivateRoute from "./routes/PrivateRoute";
+import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 import {
     ROUTE_CONVERT_IDEA,
     ROUTE_EDIT_IDEA,
@@ -26,7 +27,7 @@ import {
     ROUTE_SIGNUP,
     ROUTE_STATS,
     ROUTE_VERIFY_EMAIL
-} from './routes';
+} from './routes/routes';
 import Stats from './stats/Stats';
 import {SubstrateContextProvider} from './substrate-lib';
 import {initializeSupertokens} from "./supertokens";
@@ -36,9 +37,11 @@ import VerifyEmail from "./auth/sign-in/VerifyEmail";
 
 function AppRoutes() {
     const {isUserSignedIn} = useAuth()
+
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
+
     return (
         <Router>
             <Main>
@@ -52,13 +55,15 @@ function AppRoutes() {
                     <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
                         <VerifyEmail/>
                     </Route>
+                    <PublicOnlyRoute exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
+                    <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
                     <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
-                    <Route exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate}/>
-                    <Route exact={true} path={ROUTE_CONVERT_IDEA} component={ConvertIdeaToProposal}/>
-                    <Route exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
+                    <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate}/>
+                    <PrivateRoute exact={true} path={ROUTE_CONVERT_IDEA} component={ConvertIdeaToProposal}/>
+                    <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
                     <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
                 </Switch>
             </Main>
