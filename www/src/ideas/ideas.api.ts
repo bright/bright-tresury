@@ -1,6 +1,5 @@
-import {API_URL} from '../api'
+import {API_URL, apiGet, apiPost, apiPatch} from '../api'
 import {ExtrinsicDetails} from "./SubmitProposalModal";
-import api from '../api';
 
 export interface IdeaNetworkDto {
     id?: string
@@ -51,19 +50,19 @@ export function createEmptyIdea(network: string): IdeaDto {
 const IdeaApiPath = `${API_URL}/ideas`
 
 export function getIdeasByNetwork(networkName: string) {
-    return api.get<IdeaDto[]>(`${IdeaApiPath}?network=${networkName}`).then((response) => response.data)
+    return apiGet<IdeaDto[]>(`${IdeaApiPath}?network=${networkName}`)
 }
 
 export function getIdeaById(id: string) {
-    return api.get<IdeaDto>(`${IdeaApiPath}/${id}`).then((response) => response.data)
+    return apiGet<IdeaDto>(`${IdeaApiPath}/${id}`)
 }
 
 export function createIdea(idea: IdeaDto) {
-    return api.post<IdeaDto>(`${IdeaApiPath}`, idea).then((response) => response.data)
+    return apiPost<IdeaDto>(`${IdeaApiPath}`, idea)
 }
 
 export function updateIdea(idea: IdeaDto) {
-    return api.patch<IdeaDto>(`${IdeaApiPath}/${idea.id}`, idea).then((response) => response.data)
+    return apiPatch<IdeaDto>(`${IdeaApiPath}/${idea.id}`, idea)
 }
 
 export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: IdeaDto, ideaNetwork: IdeaNetworkDto) {
@@ -72,5 +71,5 @@ export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: IdeaDto
         extrinsicHash: exDetails.extrinsicHash,
         lastBlockHash: exDetails.lastBlockHash,
     }
-    return api.post<IdeaDto>(`${IdeaApiPath}/${idea.id}/proposals`, data)
+    return apiPost<IdeaDto>(`${IdeaApiPath}/${idea.id}/proposals`, data)
 }
