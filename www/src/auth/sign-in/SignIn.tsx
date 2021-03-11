@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface SignInValues {
-    login: string,
+    email: string,
     password: string,
 }
 
@@ -84,14 +84,14 @@ const SignIn: React.FC = () => {
     }
 
     const validationSchema = Yup.object().shape({
-        login: Yup.string().required(t('auth.signup.form.emptyFieldError')),
+        email: Yup.string().required(t('auth.signup.form.emptyFieldError')),
     })
 
     return <Container title={t('auth.signIn.title')}>
         <Formik
             enableReinitialize={true}
             initialValues={{
-                login: '',
+                email: '',
                 password: '',
             }}
             validationSchema={validationSchema}
@@ -105,7 +105,7 @@ const SignIn: React.FC = () => {
                     {loadingState === LoadingState.Error && <p>Some error</p>}
                     <div className={classes.inputField}>
                         <Input
-                            name='login'
+                            name='email'
                             label={t('auth.signIn.form.login.label')}
                             placeholder={t('auth.signIn.form.login.placeholder')}/>
                     </div>

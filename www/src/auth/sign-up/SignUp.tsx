@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface SignUpValues {
     username: string,
-    login: string,
+    email: string,
     password: string,
     userAgreement: boolean
 }
@@ -69,7 +69,7 @@ const SignUp: React.FC = () => {
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required(t('auth.signup.form.emptyFieldError')),
-        login: Yup.string().email(t('auth.signup.form.login.emailError')).required(t('auth.signup.form.emptyFieldError')),
+        email: Yup.string().email(t('auth.signup.form.login.emailError')).required(t('auth.signup.form.emptyFieldError')),
         password: Yup.string()
             .min(8, t('auth.signup.form.password.tooShort'))
             .matches(/[a-z]+/, t('auth.signup.form.password.useLowerCaseLetter'))
@@ -89,7 +89,7 @@ const SignUp: React.FC = () => {
             enableReinitialize={true}
             initialValues={{
                 username: '',
-                login: '',
+                email: '',
                 password: '',
                 userAgreement: false
             }}
@@ -108,7 +108,7 @@ const SignUp: React.FC = () => {
                     </div>
                     <div className={classes.inputField}>
                         <Input
-                            name="login"
+                            name="email"
                             placeholder={t('auth.signup.form.login.placeholder')}
                             label={t('auth.signup.form.login.label')}/>
                     </div>
