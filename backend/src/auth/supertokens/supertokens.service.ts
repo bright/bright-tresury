@@ -16,11 +16,6 @@ export class SuperTokensService {
         return valid ? undefined : "Username already taken"
     }
 
-    getEmailValidationError = async (value: string): Promise<string | undefined> => {
-        const valid = await this.usersService.validateEmail(value)
-        return valid ? undefined : "Email already used"
-    }
-
     handleSignUp = async (user: User, formFields: Array<{
         id: string;
         value: any;

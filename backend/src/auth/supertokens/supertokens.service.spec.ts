@@ -16,24 +16,6 @@ describe(`SuperTokens Service`, () => {
     })
 
     describe('validate', () => {
-        it('should return undefined if email is not used', async () => {
-            const validationResult = await getService().getEmailValidationError('chuck@email.com')
-            expect(validationResult).toBeUndefined()
-        })
-
-        it('should return error message if email is already used', async () => {
-            const email = 'chuck@email.com'
-            await getUsersService().create({
-                authId: uuid(),
-                username: 'Chuck',
-                email
-            })
-            const validationResult = await getService().getEmailValidationError(email)
-
-            expect(validationResult).toBeDefined()
-            expect(typeof validationResult).toBe('string')
-        })
-
         it('should return undefined if username is not used', async () => {
             const validationResult = await getService().getUsernameValidationError('Chucky')
             expect(validationResult).toBeUndefined()

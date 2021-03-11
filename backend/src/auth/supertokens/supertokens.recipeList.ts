@@ -15,9 +15,6 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
             formFields: [{
                 id: SuperTokensUsernameKey,
                 validate: superTokensService.getUsernameValidationError
-            }, {
-                id: SuperTokensEmailKey,
-                validate: superTokensService.getEmailValidationError
             }],
             handleCustomFormFieldsPostSignUp: superTokensService.handleSignUp
         },
