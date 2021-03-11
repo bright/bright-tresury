@@ -10,8 +10,6 @@ export const api = axios.create({
   baseURL: API_URL
 });
 
-addAxiosInterceptors(api);
-
 export function apiGet<T>(url: string) {
   return api.get<T>(url).then((response) => response.data)
 }

@@ -1,6 +1,8 @@
+import axios from "axios";
 import SuperTokens from "supertokens-auth-react";
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
-import Session from "supertokens-auth-react/recipe/session";
+import Session, {addAxiosInterceptors} from "supertokens-auth-react/recipe/session";
+import {api} from "./api";
 import config from "./config";
 
 export const SessionExpiredHttpStatus = 440
@@ -32,4 +34,5 @@ export function initializeSupertokens() {
         ]
     });
 
+    addAxiosInterceptors(api)
 }
