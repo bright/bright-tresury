@@ -1,14 +1,15 @@
 import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
 import {apiPost} from "../api";
+import {transformSignInRequestData, transformSignUpRequestData} from "./supertokens.utils";
 
 export interface SignUpData {
-    login: string
+    email: string
     password: string
     username: string
 }
 
 export interface SignInData {
-    login: string
+    email: string
     password: string
 }
 
@@ -16,42 +17,12 @@ export interface SignInData {
 const authApiPath = `http://localhost:3001/api`
 
 export function signUp(data: SignUpData) {
-    const {login, password, username} = data;
-    const requestData = {
-        formFields: [
-            {
-                id: 'email',
-                value: login,
-            },
-            {
-                id: 'password',
-                value: password,
-            },
-            {
-                id: 'username',
-                value: username,
-            }
-        ],
-    };
-
+    const requestData = transformSignUpRequestData(data)
     return apiPost<SignUpAPIResponse>( `${authApiPath}/signup`, requestData)
 }
 
 export function signIn(data: SignInData) {
-    const {login, password} = data;
-    const requestData = {
-        formFields: [
-            {
-                id: 'email',
-                value: login,
-            },
-            {
-                id: 'password',
-                value: password,
-            },
-        ],
-    };
-
+    const requestData = transformSignInRequestData(data)
     return apiPost<SignInAPIResponse>(`${authApiPath}/signin`, requestData)
 }
 
