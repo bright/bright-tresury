@@ -44,6 +44,9 @@ export function configureGlobalServices(app: INestApplication) {
 
     app.setGlobalPrefix(baseApiPath);
 
+    // tslint:disable-next-line:no-console
+    console.error(`Hey AppConfig: ${JSON.stringify(config)}`)
+
     initializeSupertokens(config, app.get(SuperTokensService))
 
     app.enableCors({

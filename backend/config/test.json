@@ -1,4 +1,10 @@
 {
+  "apiUrl": "http://localhost:3001",
+  "websiteUrl": "http://localhost:3000",
+  "auth": {
+    "coreUrl": "http://localhost:3568",
+    "cookieSecure": false
+  },
   "database": {
     "host": "database",
     "database": "treasury_test"
