@@ -13,7 +13,7 @@ export function initializeSupertokens(config: AppConfig, superTokensService: Sup
             appName: "Bright Treasury App",
             apiDomain: config.apiUrl,
             websiteDomain: config.websiteUrl,
-            apiBasePath: `${baseApiPath}`
+            apiBasePath: `${baseApiPath}/v1`
         },
         recipeList: getRecipeList(config.auth.cookieSecure, superTokensService)
     });
