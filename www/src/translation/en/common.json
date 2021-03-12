@@ -76,7 +76,8 @@
           "placeholder": "Enter your email"
         },
         "password": {
-          "label": "Password"
+          "label": "Password",
+          "placeholder": "Enter your password"
         },
         "submitButton": "Login",
         "forgotPassword": "Forgot Password?"

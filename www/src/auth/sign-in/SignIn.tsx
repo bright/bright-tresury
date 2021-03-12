@@ -113,7 +113,7 @@ const SignIn: React.FC = () => {
                         <PasswordInput
                             name='password'
                             label={t('auth.signIn.form.password.label')}
-                        />
+                            placeholder={t('auth.signIn.form.password.placeholder')}/>
                     </div>
                     <div className={classes.buttons}>
                         <Button className={classes.button}
