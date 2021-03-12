@@ -1,7 +1,7 @@
 {
   "apiUrl": "http://localhost:3001",
   "websiteUrl": "http://localhost:3000",
-  "authConfig": {
+  "auth": {
     "coreUrl": "http://localhost:3567",
     "cookieSecure": false
   },
