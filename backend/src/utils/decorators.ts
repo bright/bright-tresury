@@ -1,5 +1,3 @@
-import { Controller } from "@nestjs/common";
-
 type Decorator = ClassDecorator | PropertyDecorator | MethodDecorator | ParameterDecorator
 type GenericDecorator = (target: object, key?: any, descriptor?: any) => any;
 export const compose = (...decorators: Decorator[]) => {
@@ -8,7 +6,3 @@ export const compose = (...decorators: Decorator[]) => {
     };
     return composed;
 }
-
-export const apiPath = (route?: string): string => "/api" + route
-
-export const ControllerApi = (route?: string) => Controller(apiPath(route))
