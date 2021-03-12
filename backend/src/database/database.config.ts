@@ -15,6 +15,7 @@ export interface DatabaseConfig {
 }
 
 export const DatabaseConfigToken = 'DatabaseConfig'
+export const AuthorizationDatabaseConfigToken = 'AuthorizationDatabaseConfig'
 
 export const databaseConfigSchema: Schema<DatabaseConfig> = {
     host: {

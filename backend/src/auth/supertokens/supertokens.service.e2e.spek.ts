@@ -2,6 +2,7 @@ import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
 import {SuperTokensService} from "./supertokens.service";
 import {UsersService} from "../../users/users.service";
+import {cleanAuthorizationDatabase, getAuthUser} from "./supertokens.spec.helpers";
 
 describe(`SuperTokens Service`, () => {
 
@@ -14,14 +15,16 @@ describe(`SuperTokens Service`, () => {
 
     beforeEach(async () => {
         await cleanDatabase()
+        await cleanAuthorizationDatabase()
     })
 
-    describe('sign up', async () => {
-        it('should save user in the database', async () => {
+    describe('sign up', () => {
+        it('should save user in the database', async (done) => {
             const superTokensUser = await getService().signUp(email, password)
-            const user = await getUsersService().findOneByAuthId(superTokensUser.id)
-            expect(user).toBeDefined()
-            expect(user.authId).toBe(superTokensUser.id)
+            const savedSuperTokensUser = await getAuthUser(superTokensUser.id)
+            expect(savedSuperTokensUser).toBeDefined()
+            expect(savedSuperTokensUser!.id).toBe(superTokensUser.id)
+            done()
         })
     })
 })

@@ -5,7 +5,7 @@ import {memoize} from 'lodash';
 import * as path from "path";
 import {AWSConfig, awsConfigSchema} from "../aws.config";
 import {tryLoadParamsFromSSM} from "./config.ssm";
-import {DatabaseConfig, databaseConfigSchema, DatabaseConfigToken} from "../database/database.config"
+import {AuthorizationDatabaseConfigToken, DatabaseConfig, databaseConfigSchema, DatabaseConfigToken} from "../database/database.config"
 import {getLogger} from "../logging.module";
 import {AsyncFactoryProvider, propertyOfProvider} from "../utils/dependency.injection";
 import {BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken} from "../blockchain/blockchain.config";
@@ -22,6 +22,7 @@ interface EnvConfig {
 
 export type AppConfig = EnvConfig & {
     database: DatabaseConfig,
+    authorizationDatabase: DatabaseConfig,
     aws: AWSConfig,
     blockchain: BlockchainConfig,
     auth: AuthConfig
@@ -59,6 +60,7 @@ const configSchema = convict<AppConfig>({
         env: "websiteUrl"
     },
     database: databaseConfigSchema,
+    authorizationDatabase: databaseConfigSchema,
     aws: awsConfigSchema,
     blockchain: blockchainConfigSchema,
     auth: authConfigSchema,
@@ -98,9 +100,12 @@ const appConfigProvider: AsyncFactoryProvider<AppConfig> = {
 }
 
 const databaseConfigProvider = propertyOfProvider(appConfigProvider, "database", DatabaseConfigToken)
+const authorizationDatabaseConfigProvider = propertyOfProvider(appConfigProvider, "authorizationDatabase", AuthorizationDatabaseConfigToken)
 const blockchainConfigProvider = propertyOfProvider(appConfigProvider, "blockchain", BlockchainConfigToken)
 const authConfigProvider = propertyOfProvider(appConfigProvider, "auth", AuthConfigToken)
-const providers: Provider[] = [appConfigProvider, databaseConfigProvider, blockchainConfigProvider, authConfigProvider];
+const providers: Provider[] = [
+    appConfigProvider, databaseConfigProvider, authorizationDatabaseConfigProvider, blockchainConfigProvider, authConfigProvider
+];
 
 // @Global() // if we don't have to import config module everywhere
 @Module({
