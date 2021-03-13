@@ -1,4 +1,3 @@
-import axios from "axios";
 import SuperTokens from "supertokens-auth-react";
 import EmailPassword from "supertokens-auth-react/recipe/emailpassword";
 import Session, {addAxiosInterceptors} from "supertokens-auth-react/recipe/session";

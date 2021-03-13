@@ -1,7 +1,7 @@
 {
   "APP_NAME": "treasury-stage",
-  "API_URL": "http://localhost:3000",
-  "WEBSITE_URL": "http://http://treasury-app-stage-1468370323.eu-central-1.elb.amazonaws.com",
+  "API_URL": "http://treasury-app-stage-1468370323.eu-central-1.elb.amazonaws.com:3000",
+  "WEBSITE_URL": "http://treasury-app-stage-1468370323.eu-central-1.elb.amazonaws.com",
   "PROVIDER_SOCKET": "wss://treasury-app-stage-1468370323.eu-central-1.elb.amazonaws.com:9944",
   "NETWORK_NAME": "localhost",
   "NETWORK_CURRENCY": "LOC",
