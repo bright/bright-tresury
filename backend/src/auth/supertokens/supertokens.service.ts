@@ -5,7 +5,7 @@ import {CreateUserDto} from "../../users/dto/createUser.dto";
 import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
-import {createNewSession, getSession as superTokensGetSession, revokeAllSessionsForUser, updateSessionData} from "supertokens-node/lib/build/recipe/session";
+import {createNewSession, getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
 import {Request, Response} from 'express'
 import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
 import {SessionUser} from "../session/session.decorator";
@@ -77,9 +77,5 @@ export class SuperTokensService {
                 ...data
             }
         )
-    }
-
-    async revokeSession(authId: string) {
-        await revokeAllSessionsForUser(authId)
     }
 }

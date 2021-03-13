@@ -82,8 +82,7 @@ export const createBlockchainSessionHandler = async (
     const res: any = await request(app)
         .post(`/api/v1/auth/blockchain/signup`)
         .send(blockchainUserSignUpDto)
-    const cookies = res.headers['set-cookie'].join('; ')
-    return new SessionHandler(cookies)
+    return createSessionHandler(res)
 }
 
 export const createUserSessionHandler = async (
@@ -96,7 +95,7 @@ export const createUserSessionHandler = async (
     }
 ): Promise<SessionHandler> => {
     const res: any = await request(app)
-        .post(`/api/signup`)
+        .post(`/api/v1/signup`)
         .send(signUpSuperTokensUser)
     return createSessionHandler(res)
 }
