@@ -13,8 +13,8 @@ import {SessionUser} from "./session/session.decorator";
 
 describe(`Auth Controller`, () => {
 
-    const baseUrl = '/api/v1'
-    const baseAuthUrl = `${baseUrl}/auth`
+    const baseUrl = '/api'
+    const baseAuthUrl = `${baseUrl}/v1/auth`
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(SuperTokensService)
@@ -125,31 +125,16 @@ describe(`Auth Controller`, () => {
             await createUserSessionHandler(app(), superTokensSignUpUser)
 
             const res: any = await request(app())
-                .post(`${baseUrl}/signin`)
+                .post(`/api/signin`)
                 .send(superTokensSignInUser)
-            const signInSessionHandler = createSessionHandler(res)
+            // tslint:disable-next-line:no-console
+            console.error(`\n\nResponse: ${JSON.stringify(res, null, 2)}`)
+            const sessionHandler = createSessionHandler(res)
 
-            const signInSession = await getService().getSession(
-                signInSessionHandler.getAuthorizedRequest(), {} as any, false
-            )
-            expect(signInSession).toBeDefined()
-        })
-    })
-
-    describe('session data', () => {
-        it('should contain user if any authorized request was made', async () => {
-            const sessionHandler = await createUserSessionHandler(app(), superTokensSignUpUser)
-            await sessionHandler.authorizeRequest(request(app()).get(`/api/health`))
-                .send()
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )
-            const sessionData = await session.getSessionData()
-
-            const user = await getUsersService().findOneByUsername(bobUsername)
-            expect(sessionData.user.id).toBe(user.id)
-            expect(sessionData.user.username).toBe(user.username)
-            expect(sessionData.user.email).toBe(user.email)
+            expect(session).toBeDefined()
         })
     })
 
