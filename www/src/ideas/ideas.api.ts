@@ -1,4 +1,4 @@
-import {API_URL, apiGet, apiPost, apiPatch} from '../api'
+import {apiGet, apiPost, apiPatch} from '../api'
 import {ExtrinsicDetails} from "./SubmitProposalModal";
 
 export interface IdeaNetworkDto {
@@ -47,7 +47,7 @@ export function createEmptyIdea(network: string): IdeaDto {
     } as IdeaDto
 }
 
-const IdeaApiPath = `${API_URL}/ideas`
+const IdeaApiPath = `/ideas`
 
 export function getIdeasByNetwork(networkName: string) {
     return apiGet<IdeaDto[]>(`${IdeaApiPath}?network=${networkName}`)

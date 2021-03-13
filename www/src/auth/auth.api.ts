@@ -1,5 +1,5 @@
 import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
-import {API_URL, apiPost, apiGet} from "../api";
+import {apiPost, apiGet} from "../api";
 import {transformSignInRequestData, transformSignUpRequestData} from "./supertokens.utils";
 
 export interface SignUpData {
@@ -15,20 +15,20 @@ export interface SignInData {
 
 export function signUp(data: SignUpData) {
     const requestData = transformSignUpRequestData(data)
-    return apiPost<SignUpAPIResponse>( `${API_URL}/signup`, requestData)
+    return apiPost<SignUpAPIResponse>( `/signup`, requestData)
 }
 
 export function signIn(data: SignInData) {
     const requestData = transformSignInRequestData(data)
-    return apiPost<SignInAPIResponse>(`${API_URL}/signin`, requestData)
+    return apiPost<SignInAPIResponse>(`/signin`, requestData)
 }
 
 export function signOut() {
-    return apiPost(`${API_URL}/signout`)
+    return apiPost(`/signout`)
 }
 
 export function getSessionData() {
-    return apiGet<any>(`${API_URL}/auth/session`)
+    return apiGet<any>(`/auth/session`)
 }
 
 export interface CreateBlockchainUserDto {
@@ -38,7 +38,7 @@ export interface CreateBlockchainUserDto {
 }
 
 export function blockchainSignUp(user: CreateBlockchainUserDto) {
-    return apiPost<any>(`${API_URL}/auth/blockchain/signup`, user)
+    return apiPost<any>(`/auth/blockchain/signup`, user)
 }
 
 export interface RegisterBlockchainTokenDto {
@@ -46,5 +46,5 @@ export interface RegisterBlockchainTokenDto {
 }
 
 export function blockchainRegisterToken(registerToken: RegisterBlockchainTokenDto): Promise<void> {
-    return apiPost<any>(`${API_URL}/auth/blockchain/register-token`, registerToken)
+    return apiPost<any>(`/auth/blockchain/register-token`, registerToken)
 }

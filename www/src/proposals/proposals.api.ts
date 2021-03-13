@@ -1,4 +1,4 @@
-import {API_URL, apiGet} from '../api';
+import {apiGet} from '../api';
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -20,7 +20,7 @@ export interface ProposalDto {
     title?: string
 }
 
-const ProposalApiPath = `${API_URL}/proposals`
+const ProposalApiPath = `/proposals`
 
 export function getProposalsByNetwork(networkName: string) {
     return apiGet<ProposalDto[]>(`${ProposalApiPath}/?network=${networkName}`)
