@@ -1,6 +1,6 @@
 import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
 import {apiPost, apiGet} from "../api";
-import {transformSignInRequestData, transformSignUpRequestData} from "./supertokens.utils";
+import {transformSignInRequestData, transformSignUpRequestData} from "./supertokens.utils/transformRequestData.utils";
 
 export interface SignUpData {
     email: string

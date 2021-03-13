@@ -1,6 +1,7 @@
 import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Formik} from "formik";
+import {FormikHelpers} from "formik/dist/types";
 import React from "react";
 import {Trans, useTranslation} from "react-i18next";
 import * as Yup from "yup";
@@ -12,12 +13,13 @@ import {Input} from "../../components/form/input/Input";
 import {PasswordInput} from "../../components/form/input/password/PasswordInput";
 import {Link} from "../../components/link/Link";
 import {RouterLink} from "../../components/link/RouterLink";
-import {LoadingState, useLoading} from "../../components/loading/LoadingWrapper";
+import {LoadingState} from "../../components/loading/LoadingWrapper";
 import {Label} from "../../components/text/Label";
 import {ROUTE_SIGNIN} from "../../routes";
 import {breakpoints} from "../../theme/theme";
 import {fullValidatorForSchema} from "../../util/form.util";
 import {signUp} from "../auth.api";
+import {useSuperTokensRequest} from "../supertokens.utils/useSuperTokensRequest";
 import SignUpSuccess from "./SignUpSuccess";
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,10 +63,10 @@ const SignUp: React.FC = () => {
     const {t} = useTranslation()
     const classes = useStyles()
 
-    const {loadingState, call} = useLoading(signUp)
+    const {call, loadingState} = useSuperTokensRequest(signUp)
 
-    const onSubmit = async (values: SignUpValues) => {
-        await call(values)
+    const onSubmit = async (values: SignUpValues, {setErrors}: FormikHelpers<SignUpValues>) => {
+        await call(values, setErrors)
     }
 
     const validationSchema = Yup.object().shape({
