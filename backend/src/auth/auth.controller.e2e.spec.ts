@@ -2,19 +2,60 @@ import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from "../utils/spec.helpers";
 import {SuperTokensService} from "./supertokens/supertokens.service";
 import {UsersService} from "../users/users.service";
-import {cleanAuthorizationDatabase, createSessionHandler, getAuthUser} from "./supertokens/supertokens.spec.helpers";
+import {
+    cleanAuthorizationDatabase,
+    createBlockchainSessionHandler,
+    createSessionHandler,
+    createUserSessionHandler,
+    getAuthUser
+} from "./supertokens/supertokens.spec.helpers";
 import {SessionUser} from "./session/session.decorator";
 
 describe(`Auth Controller`, () => {
 
-    const baseUrl = '/api/v1/auth'
+    const baseUrl = '/api'
+    const baseAuthUrl = `${baseUrl}/v1/auth`
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(SuperTokensService)
     const getUsersService = () => app.get().get(UsersService)
 
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
+    const bobEmail = 'bob@bobby.bob'
     const bobUsername = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
+
+    const blockchainSignUpUser = {address: bobAddress, username: bobUsername, token: uuid()}
+
+    const superTokensSignUpUserPassword = uuid()
+    const superTokensSignUpUser = {
+        formFields: [
+            {
+                id: 'email',
+                value: bobEmail,
+            },
+            {
+                id: 'password',
+                value: superTokensSignUpUserPassword,
+            },
+            {
+                id: 'username',
+                value: bobUsername,
+            }
+        ]
+    }
+
+    const superTokensSignInUser = {
+        formFields: [
+            {
+                id: 'email',
+                value: bobEmail,
+            },
+            {
+                id: 'password',
+                value: superTokensSignUpUserPassword,
+            }
+        ]
+    }
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -23,43 +64,31 @@ describe(`Auth Controller`, () => {
 
     describe('blockchain sign up', () => {
         it('should save user in both databases', async () => {
-            await request(app())
-                .post(`${baseUrl}/blockchain/signup`)
-                .send({address: bobAddress, username: bobUsername, token: uuid()})
+            await createBlockchainSessionHandler(app(), blockchainSignUpUser)
             const user = await getUsersService().findOneByUsername(bobUsername)
-            expect(user).toBeDefined()
             const superTokensUser = await getAuthUser(user.authId)
+
+            expect(user).toBeDefined()
             expect(superTokensUser).toBeDefined()
             expect(superTokensUser!.id).toBe(user.authId)
         })
         it('should create session', async () => {
-            const sessionHandler = await createSessionHandler(
-                app(),
-                {address: bobAddress, username: bobUsername, token: uuid()}
-            )
-
-            const token = uuid()
-            await sessionHandler.authorizeRequest(request(app())
-                .post(`${baseUrl}/blockchain/register-token`)
-            ).send({token})
-
+            const sessionHandler = await createBlockchainSessionHandler(app(), blockchainSignUpUser)
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )
+
             expect(session).toBeDefined()
         })
     })
 
     describe('register blockchain token', () => {
         it('should add token to the current session', async () => {
-            const sessionHandler = await createSessionHandler(
-                app(),
-                {address: bobAddress, username: bobUsername, token: uuid()}
-            )
+            const sessionHandler = await createBlockchainSessionHandler(app(), blockchainSignUpUser)
 
             const token = uuid()
             await sessionHandler.authorizeRequest(request(app())
-                .post(`${baseUrl}/blockchain/register-token`)
+                .post(`${baseAuthUrl}/blockchain/register-token`)
             ).send({token})
 
             const session = await getService().getSession(
@@ -69,4 +98,44 @@ describe(`Auth Controller`, () => {
             expect(sessionData.blockchainToken).toStrictEqual(token)
         })
     })
+
+    describe('sign up', () => {
+        it('should save user in both databases', async () => {
+            await createUserSessionHandler(app(), superTokensSignUpUser)
+            const user = await getUsersService().findOneByUsername(bobUsername)
+            const superTokensUser = await getAuthUser(user.authId)
+
+            expect(user).toBeDefined()
+            expect(superTokensUser).toBeDefined()
+            expect(superTokensUser!.id).toBe(user.authId)
+        })
+
+        it('should create session', async () => {
+            const sessionHandler = await createUserSessionHandler(app(), superTokensSignUpUser)
+            const session = await getService().getSession(
+                sessionHandler.getAuthorizedRequest(), {} as any, false
+            )
+
+            expect(session).toBeDefined()
+        })
+    })
+
+    describe('sign in', () => {
+        it('should create session', async () => {
+            await createUserSessionHandler(app(), superTokensSignUpUser)
+
+            const res: any = await request(app())
+                .post(`/api/signin`)
+                .send(superTokensSignInUser)
+            // tslint:disable-next-line:no-console
+            console.error(`\n\nResponse: ${JSON.stringify(res, null, 2)}`)
+            const sessionHandler = createSessionHandler(res)
+
+            const session = await getService().getSession(
+                sessionHandler.getAuthorizedRequest(), {} as any, false
+            )
+            expect(session).toBeDefined()
+        })
+    })
+
 })

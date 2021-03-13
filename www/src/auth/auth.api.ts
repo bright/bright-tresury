@@ -48,25 +48,3 @@ export interface RegisterBlockchainTokenDto {
 export function blockchainRegisterToken(registerToken: RegisterBlockchainTokenDto): Promise<void> {
     return apiPost<any>(`/auth/blockchain/register-token`, registerToken)
 }
-
-export function getSessionData() {
-    return fetchAndUnwrap<any>('GET', `${API_URL}/auth/session`)
-}
-
-export interface CreateBlockchainUserDto {
-    address: string
-    token: string
-    username: string
-}
-
-export function blockchainSignUp(user: CreateBlockchainUserDto): Promise<void> {
-    return fetchAndUnwrap<any>('POST', `${API_URL}/auth/blockchain/signup`, user)
-}
-
-export interface RegisterBlockchainTokenDto {
-    token: string
-}
-
-export function blockchainRegisterToken(registerToken: RegisterBlockchainTokenDto): Promise<void> {
-    return fetchAndUnwrap<any>('POST', `${API_URL}/auth/blockchain/register-token`, registerToken)
-}
