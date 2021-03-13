@@ -1,14 +1,15 @@
-import {BadRequestException, Injectable} from "@nestjs/common";
+import {BadRequestException, ConflictException, Injectable} from "@nestjs/common";
 import {UsersService} from "../../users/users.service";
 import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import {CreateUserDto} from "../../users/dto/createUser.dto";
 import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
-import SessionError from "supertokens-node/lib/build/recipe/session/error";
+import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
 import {createNewSession, getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
 import {Request, Response} from 'express'
 import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
 import {SessionUser} from "../session/session.decorator";
+import SessionError from "supertokens-node/lib/build/recipe/session/error";
 
 @Injectable()
 export class SuperTokensService {
@@ -57,7 +58,13 @@ export class SuperTokensService {
     }
 
     async signUp(email: string, password: string): Promise<SuperTokensUser> {
-        return await superTokensSignUp(email, password)
+        try {
+            return await superTokensSignUp(email, password)
+        } catch (error) {
+            const formattedError = error.type === EmailPasswordSessionError.EMAIL_ALREADY_EXISTS_ERROR ?
+                new ConflictException(error.message) : error
+            throw formattedError
+        }
     }
 
     async addSessionData(req: Request, res: Response, data: Partial<SessionUser>) {

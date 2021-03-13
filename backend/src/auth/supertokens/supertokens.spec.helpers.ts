@@ -2,11 +2,14 @@ import {memoize} from "lodash";
 import {Connection, getConnection} from "typeorm";
 import {AuthorizationDatabaseName} from "../../database/database.module";
 import {User} from "supertokens-node/lib/build/recipe/emailpassword/types";
+import supertest from "supertest";
+import {INestApplication} from "@nestjs/common";
+import {request} from "../../utils/spec.helpers";
+import {BlockchainUserSignUpDto} from "../blockchainUserSignUp.dto";
+import {Request} from 'express';
 
-const getAuthConnection = memoize(
-    async (): Promise<Connection> => {
-        return getConnection(AuthorizationDatabaseName);
-    })
+// region database
+const getAuthConnection = async (): Promise<Connection> => getConnection(AuthorizationDatabaseName)
 
 const authorizationTablesToRemove = memoize(
     async (): Promise<Array<{ table_name: string }>> => {
@@ -49,3 +52,37 @@ export const cleanAuthorizationDatabase = async () => {
         console.error(e)
     }
 }
+// endregion
+
+// region session
+class SessionHandler {
+    private cookies: string
+
+    constructor(cookies: string) {
+        this.cookies = cookies
+    }
+
+    getAuthorizedRequest(): Request {
+        return {
+            headers: {
+                cookie: this.cookies
+            }
+        } as Request
+    }
+
+    authorizeRequest(req: supertest.Test): supertest.Test {
+        return this.cookies ? req.set('cookie', this.cookies) : req
+    }
+}
+
+export const createSessionHandler = async (
+    app: INestApplication,
+    blockchainUserSignUpDto: BlockchainUserSignUpDto
+): Promise<SessionHandler> => {
+    const res: any = await request(app)
+        .post(`/api/v1/auth/blockchain/signup`)
+        .send(blockchainUserSignUpDto)
+    const cookies = res.headers['set-cookie'].join('; ')
+    return new SessionHandler(cookies)
+}
+// endregion
