@@ -41,6 +41,9 @@
   "auth": {
     "passwordShow": "Show password button",
     "passwordHide": "Hide password button",
+    "errors": {
+      "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct."
+    },
     "signup": {
       "title": "Sign up",
       "logInLabel": "Already have an account? <a>Log in</a>",

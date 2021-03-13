@@ -1,19 +1,23 @@
 import {FormikErrors} from "formik/dist/types";
 import {useCallback, useEffect, useRef, useState} from "react";
-import {FormBaseAPIResponse, FormFieldError} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
+import {useTranslation} from "react-i18next";
+import {FormBaseAPIResponse, FormFieldError, SignInAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
 import {LoadingState} from "../../components/loading/LoadingWrapper";
 
 interface UseSuperTokensRequestResult<Values> {
-    call: (params: Values, setErrors?: (errors: FormikErrors<Values>) => void) => Promise<void>
+    call: (params: Values, setErrors?: (errors: FormikErrors<Values>) => void) => Promise<void | SuperTokensAPIResponse>
     loadingState: LoadingState
     error?: string
 }
 
 enum SuperTokensLoadingState { FieldError }
 
+type SuperTokensAPIResponse = FormBaseAPIResponse | SignInAPIResponse
+
 export function useSuperTokensRequest<Values>(
-    apiCall: (params: Values) => Promise<FormBaseAPIResponse>
+    apiCall: (params: Values) => Promise<SuperTokensAPIResponse>
 ): UseSuperTokensRequestResult<Values> {
+    const {t} = useTranslation()
     const ref = useRef(true)
 
     const [error, setError] = useState<string | undefined>()
@@ -21,13 +25,17 @@ export function useSuperTokensRequest<Values>(
 
     const call = useCallback(async (values: Values, setErrors?: (errors: FormikErrors<Values>) => void) => {
         startLoading()
-        apiCall(values).then(async (response: FormBaseAPIResponse) => {
+        apiCall(values).then(async (response: SuperTokensAPIResponse) => {
+            console.log(response)
             switch (response.status) {
                 case "OK":
                     handleSuccess()
                     break
                 case "FIELD_ERROR":
                     await handleFieldError(response.formFields, setErrors)
+                    break
+                case "WRONG_CREDENTIALS_ERROR":
+                    await handleGeneralError(t('auth.errors.wrongCredentialsError'))
                     break
                 case "GENERAL_ERROR":
                     handleGeneralError(response.message)

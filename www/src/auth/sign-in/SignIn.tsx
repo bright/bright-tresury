@@ -1,6 +1,7 @@
 import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Formik} from "formik";
+import {FormikHelpers} from "formik/dist/types";
 import React from "react";
 import {Trans, useTranslation} from "react-i18next";
 import * as Yup from "yup";
@@ -14,6 +15,8 @@ import {LoadingState, useLoading} from "../../components/loading/LoadingWrapper"
 import {ROUTE_SIGNUP} from "../../routes";
 import {breakpoints} from "../../theme/theme";
 import {useAuth} from "../AuthContext";
+import {useSuperTokensRequest} from "../supertokens.utils/useSuperTokensRequest";
+import { FormErrorLabel } from "../../components/form/FormErrorLabel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -62,7 +65,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingRight: '1em',
                 maxWidth: '100%',
             },
-        }
+        },
     }),
 );
 
@@ -77,10 +80,10 @@ const SignIn: React.FC = () => {
 
     const {signIn} = useAuth()
 
-    const {loadingState, call} = useLoading(signIn)
+    const {loadingState, call, error} = useSuperTokensRequest(signIn)
 
-    const onSubmit = async (values: SignInValues) => {
-        await call(values)
+    const onSubmit = async (values: SignInValues, {setErrors}: FormikHelpers<SignInValues>) => {
+        await call(values, setErrors)
     }
 
     const validationSchema = Yup.object().shape({
@@ -102,7 +105,7 @@ const SignIn: React.FC = () => {
               }) =>
                 <form className={classes.form} autoComplete='off' onSubmit={handleSubmit}>
                     <img className={classes.image} src={loginImg} alt={''}/>
-                    {loadingState === LoadingState.Error && <p>Some error</p>}
+                    {loadingState === LoadingState.Error && error && <FormErrorLabel className={classes.inputField} error={error}/>}
                     <div className={classes.inputField}>
                         <Input
                             name='email'
