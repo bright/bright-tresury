@@ -104,24 +104,4 @@ export const createSessionHandler = (res: any): SessionHandler => {
     const cookies = res.headers['set-cookie'].join('; ')
     return new SessionHandler(cookies)
 }
-
-export const createUserSessionHandler = async (
-    app: INestApplication,
-    signUpSuperTokensUser: {
-        formFields: Array<{
-            id: string;
-            value: any;
-        }>
-    }
-): Promise<SessionHandler> => {
-    const res: any = await request(app)
-        .post(`/api/signup`)
-        .send(signUpSuperTokensUser)
-    return createSessionHandler(res)
-}
-
-export const createSessionHandler = (res: any): SessionHandler => {
-    const cookies = res.headers['set-cookie'].join('; ')
-    return new SessionHandler(cookies)
-}
 // endregion
