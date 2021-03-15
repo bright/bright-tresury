@@ -5,8 +5,18 @@ import {SessionRequest} from "./session.middleware";
 import {SuperTokensService} from "../supertokens/supertokens.service";
 import {SessionUser} from "./session.decorator";
 
+export const SessionResolverProvider = 'SessionResolverProvider'
+
+export interface ISessionResolver {
+    validateSession(req: SessionRequest, res: Response): Promise<boolean>
+
+    resolveUserAndUpdateSessionData(req: SessionRequest, res: Response): Promise<void>
+
+    handleResponseIfRefreshTokenError(res: Response, error: any): any
+}
+
 @Injectable()
-export class SessionValidator {
+export class SessionResolver implements ISessionResolver {
     constructor(
         private readonly userService: UsersService,
         private readonly superTokensService: SuperTokensService,

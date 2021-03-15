@@ -1,10 +1,10 @@
-import {Injectable, NestMiddleware} from "@nestjs/common";
+import {Inject, Injectable, NestMiddleware} from "@nestjs/common";
 import {NextFunction, Request, Response} from "express";
 import {SessionUser} from "./session.decorator";
-import {SessionValidator} from "./session.validator";
+import {ISessionResolver, SessionResolverProvider} from "./session.resolver";
 
 export interface SessionRequest extends Request {
-    session: SessionUser;
+    session?: SessionUser;
 }
 
 /**
@@ -16,16 +16,16 @@ export interface SessionRequest extends Request {
 @Injectable()
 export class SessionUserMiddleware implements NestMiddleware {
     constructor(
-        private readonly sessionValidator: SessionValidator,
+        @Inject(SessionResolverProvider) private readonly sessionResolver: ISessionResolver,
     ) {
     }
 
     async use(req: SessionRequest, res: Response, next: NextFunction) {
         try {
-            await this.sessionValidator.resolveUserAndUpdateSessionData(req, res)
+            await this.sessionResolver.resolveUserAndUpdateSessionData(req, res)
             next()
         } catch (error) {
-            this.sessionValidator.handleResponseIfRefreshTokenError(res, error)
+            this.sessionResolver.handleResponseIfRefreshTokenError(res, error)
             next()
         }
     }

@@ -82,15 +82,17 @@ export function beforeAllSetup<T>(setupCall: () => T | PromiseLike<T>, options: 
 
 export async function createTestingApp(
     moduleToTest: ModuleMetadata | ModuleMetadata["imports"],
-    customize?: (builder: TestingModuleBuilder) => TestingModuleBuilder
+    ...customize: Array<(builder: TestingModuleBuilder) => TestingModuleBuilder>
 ) {
     const moduleMetadata: ModuleMetadata = moduleToTest && 'imports' in moduleToTest
         ? moduleToTest as ModuleMetadata
         : {imports: moduleToTest as ModuleMetadata['imports']}
 
     let module = Test.createTestingModule(moduleMetadata);
-    if (customize) {
-        module = await customize(module)
+    for (const customization of customize) {
+        if (customization) {
+            module = await customization(module)
+        }
     }
 
     const nestApp = (await module.compile()).createNestApplication(undefined, {
@@ -104,7 +106,9 @@ export async function createTestingApp(
     return nestApp;
 }
 
-export const beforeSetupFullApp = memoize(() => {
+export const beforeSetupFullApp = memoize((
+    ...customize: Array<(builder: TestingModuleBuilder) => TestingModuleBuilder>
+) => {
     let app: INestApplication | null = null
     afterAll(async () => {
         if (app) {
@@ -113,7 +117,7 @@ export const beforeSetupFullApp = memoize(() => {
     })
 
     return beforeAllSetup(async () => {
-        app = await createTestingApp([AppModule, TypeOrmAuthorizationModule]);
+        app = await createTestingApp([AppModule, TypeOrmAuthorizationModule], ...customize);
         return app;
     });
 })

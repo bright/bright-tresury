@@ -1,7 +1,7 @@
 import {Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards} from "@nestjs/common";
 import {ApiTags} from "@nestjs/swagger";
 import {ReqSession, SessionUser} from "./session/session.decorator";
-import {SessionGuard} from "./session/session.guard";
+import {SessionGuard} from "./session/guard/session.guard";
 import {BlockchainUserSignUpDto} from "./blockchainUserSignUp.dto";
 import {AuthService} from "./auth.service";
 import {RegisterBlockchainTokenDto} from "./registerBlockchainToken.dto";

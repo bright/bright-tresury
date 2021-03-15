@@ -3,10 +3,13 @@ import {Connection, getConnection} from "typeorm";
 import {AuthorizationDatabaseName} from "../../database/authorization/authorization.database.module";
 import {User} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import supertest from "supertest";
-import {INestApplication} from "@nestjs/common";
+import {CanActivate, INestApplication} from "@nestjs/common";
 import {request} from "../../utils/spec.helpers";
 import {BlockchainUserSignUpDto} from "../blockchainUserSignUp.dto";
 import {Request} from 'express';
+import {TestingModuleBuilder} from "@nestjs/testing";
+import {SessionGuard} from "../session/guard/session.guard";
+import {ISessionResolver, SessionResolverProvider} from "../session/session.resolver";
 
 // region database
 const getAuthConnection = async (): Promise<Connection> => getConnection(AuthorizationDatabaseName)
@@ -103,5 +106,25 @@ export const createUserSessionHandler = async (
 export const createSessionHandler = (res: any): SessionHandler => {
     const cookies = res.headers['set-cookie'].join('; ')
     return new SessionHandler(cookies)
+}
+// endregion
+
+// region Guard and Middleware
+export const replaceSessionGuard = (fakeGuard: CanActivate): (b: TestingModuleBuilder) => TestingModuleBuilder => {
+    const build = (builder: TestingModuleBuilder): TestingModuleBuilder => {
+        return builder
+            .overrideGuard(SessionGuard)
+            .useValue(fakeGuard)
+    }
+    return build
+}
+
+export const replaceSessionResolver = (sessionResolver: ISessionResolver): (b: TestingModuleBuilder) => TestingModuleBuilder => {
+    const build = (builder: TestingModuleBuilder): TestingModuleBuilder => {
+        return builder
+            .overrideProvider(SessionResolverProvider)
+            .useValue(sessionResolver)
+    }
+    return build
 }
 // endregion

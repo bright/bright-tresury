@@ -1,13 +1,19 @@
 import {MiddlewareConsumer, Module, RequestMethod} from "@nestjs/common";
-import {SessionValidator} from "./session.validator";
+import {SessionResolver, SessionResolverProvider} from "./session.resolver";
 import {UsersModule} from "../../users/users.module";
 import {SessionUserMiddleware} from "./session.middleware";
 import {SuperTokensModule} from "../supertokens/supertokens.module";
 
 @Module({
     imports: [UsersModule, SuperTokensModule],
-    providers: [SessionValidator],
-    exports: [SessionValidator]
+    providers: [{
+        provide: SessionResolverProvider,
+        useClass: SessionResolver
+    }],
+    exports: [{
+        provide: SessionResolverProvider,
+        useClass: SessionResolver
+    }]
 })
 export class SessionModule {
     configure(consumer: MiddlewareConsumer) {

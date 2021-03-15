@@ -1,5 +1,5 @@
-import {CanActivate, ExecutionContext, Injectable} from '@nestjs/common';
-import {SessionValidator} from "./session.validator";
+import {CanActivate, ExecutionContext, Inject, Injectable} from '@nestjs/common';
+import {ISessionResolver, SessionResolverProvider} from "../session.resolver";
 
 /**
  * Use it in order to require authorised requests.
@@ -9,7 +9,7 @@ import {SessionValidator} from "./session.validator";
 export class SessionGuard implements CanActivate {
 
     constructor(
-        private readonly sessionValidator: SessionValidator
+        @Inject(SessionResolverProvider) private readonly sessionResolver: ISessionResolver,
     ) {
     }
 
@@ -18,6 +18,6 @@ export class SessionGuard implements CanActivate {
     ): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
         const response = context.switchToHttp().getResponse();
-        return this.sessionValidator.validateSession(request, response);
+        return this.sessionResolver.validateSession(request, response);
     }
 }
