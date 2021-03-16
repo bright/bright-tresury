@@ -42,6 +42,7 @@
     "passwordShow": "Show password button",
     "passwordHide": "Hide password button",
     "errors": {
+      "generalError": "Something went wrong. Please try again later.",
       "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct."
     },
     "signup": {

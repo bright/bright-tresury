@@ -39,6 +39,7 @@ export function useSuperTokensRequest<Values>(
                     break
                 case "GENERAL_ERROR":
                     handleGeneralError(response.message)
+                    break
             }
         }).catch((error) => {
             handleGeneralError(error)
@@ -66,7 +67,12 @@ export function useSuperTokensRequest<Values>(
     }
 
     const handleGeneralError = (error: string) => {
-        setError(error)
+        console.log(error)
+        if (typeof error === 'string') {
+            setError(error)
+        } else {
+            setError(t('auth.errors.generalError'))
+        }
         setLoadingState(LoadingState.Error)
     }
 
