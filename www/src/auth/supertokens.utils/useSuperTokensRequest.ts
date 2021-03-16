@@ -23,6 +23,36 @@ export function useSuperTokensRequest<Values>(
     const [error, setError] = useState<string | undefined>()
     const [loadingState, setLoadingState] = useState<LoadingState | SuperTokensLoadingState>(LoadingState.Initial)
 
+    const startLoading = () => {
+        setLoadingState(LoadingState.Loading)
+        setError(undefined)
+    }
+
+    const handleSuccess = () => {
+        setLoadingState(LoadingState.Resolved)
+    }
+
+    const handleFieldError = async (formFields: FormFieldError[], setErrors?: (errors: FormikErrors<Values>) => void) => {
+        if (setErrors) {
+            const errors: any = {}
+            formFields.forEach(({id, error}) => {
+                errors[id] = error
+            })
+            await setErrors(errors)
+        }
+        setLoadingState(SuperTokensLoadingState.FieldError)
+    }
+
+    const handleGeneralError = useCallback((error: string) => {
+        console.log(error)
+        if (typeof error === 'string') {
+            setError(error)
+        } else {
+            setError(t('auth.errors.generalError'))
+        }
+        setLoadingState(LoadingState.Error)
+    }, [t])
+
     const call = useCallback(async (values: Values, setErrors?: (errors: FormikErrors<Values>) => void) => {
         startLoading()
         apiCall(values).then(async (response: SuperTokensAPIResponse) => {
@@ -44,37 +74,7 @@ export function useSuperTokensRequest<Values>(
         }).catch((error) => {
             handleGeneralError(error)
         })
-    }, [apiCall])
-
-    const startLoading = () => {
-        setLoadingState(LoadingState.Loading)
-        setError(undefined)
-    }
-
-    const handleSuccess = () => {
-        setLoadingState(LoadingState.Resolved)
-    }
-
-    const handleFieldError = async (formFields: FormFieldError[], setErrors?: (errors: FormikErrors<Values>) => void) => {
-        if (setErrors) {
-            const errors: any = {}
-            formFields.forEach(({id, error}) => {
-                errors[id] = error
-            })
-            await setErrors(errors)
-        }
-        setLoadingState(SuperTokensLoadingState.FieldError)
-    }
-
-    const handleGeneralError = (error: string) => {
-        console.log(error)
-        if (typeof error === 'string') {
-            setError(error)
-        } else {
-            setError(t('auth.errors.generalError'))
-        }
-        setLoadingState(LoadingState.Error)
-    }
+    }, [apiCall, t, handleGeneralError])
 
     useEffect(() => {
         return () => {

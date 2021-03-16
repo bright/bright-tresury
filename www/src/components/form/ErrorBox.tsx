@@ -20,9 +20,9 @@ interface OwnProps {
     error: string
 }
 
-export type FormErrorLabelProps = OwnProps & TypographyProps
+export type ErrorBoxProps = OwnProps & TypographyProps
 
-export const FormErrorLabel: React.FC<FormErrorLabelProps> = ({error, className, ...props}) => {
+export const ErrorBox: React.FC<ErrorBoxProps> = ({error, className, ...props}) => {
     const classes = useStyles()
 
     return <Typography

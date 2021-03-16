@@ -24,7 +24,7 @@ const LogOutMenuItem = () => {
     }
 
     return <MenuItem onClick={onClick}>
-        <img className={classes.image} src={lockSrc}/>
+        <img className={classes.image} src={lockSrc} alt={t('topBar.account.signOut')}/>
         {t('topBar.account.signOut')}
     </MenuItem>
 }

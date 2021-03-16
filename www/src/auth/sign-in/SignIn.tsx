@@ -8,15 +8,15 @@ import * as Yup from "yup";
 import loginImg from "../../assets/login.svg";
 import {Button} from "../../components/button/Button";
 import Container from "../../components/form/Container";
+import {ErrorBox} from "../../components/form/ErrorBox";
 import {Input} from "../../components/form/input/Input";
 import {PasswordInput} from "../../components/form/input/password/PasswordInput";
 import {RouterLink} from "../../components/link/RouterLink";
-import {LoadingState, useLoading} from "../../components/loading/LoadingWrapper";
+import {LoadingState} from "../../components/loading/LoadingWrapper";
 import {ROUTE_SIGNUP} from "../../routes";
 import {breakpoints} from "../../theme/theme";
 import {useAuth} from "../AuthContext";
 import {useSuperTokensRequest} from "../supertokens.utils/useSuperTokensRequest";
-import { FormErrorLabel } from "../../components/form/FormErrorLabel";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -105,7 +105,7 @@ const SignIn: React.FC = () => {
               }) =>
                 <form className={classes.form} autoComplete='off' onSubmit={handleSubmit}>
                     <img className={classes.image} src={loginImg} alt={''}/>
-                    {loadingState === LoadingState.Error && error && <FormErrorLabel className={classes.inputField} error={error}/>}
+                    {loadingState === LoadingState.Error && error && <ErrorBox className={classes.inputField} error={error}/>}
                     <div className={classes.inputField}>
                         <Input
                             name='email'
