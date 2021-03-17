@@ -22,7 +22,13 @@ import {Status} from "../../components/header/details/Status";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         flexBreakLine: {
-            order: 3
+            order: 4
+        },
+        closeIcon: {
+            order: 3,
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                order: 2,
+            }
         },
         networkValues: {
             order: 2,
@@ -30,13 +36,13 @@ const useStyles = makeStyles((theme: Theme) =>
                 order: 4,
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                order: 2,
+                order: 3,
             }
         },
         contentTypeTabs: {
-            order: 4,
+            order: 5,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                order: 5,
+                order: 6,
             },
         },
     }),
@@ -55,7 +61,7 @@ const ProposalHeader: React.FC<Props> = ({proposal}) => {
     }
 
     return <HeaderContainer>
-        <CloseIcon onClose={navigateToList}/>
+        <CloseIcon onClose={navigateToList} className={classes.closeIcon}/>
 
         <BasicInfo>
             <ProposalIndex proposalIndex={proposal.proposalIndex}/>

@@ -1,3 +1,3 @@
 export interface ClassNameProps {
-    className: string
+    className?: string
 }

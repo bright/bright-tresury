@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             position: 'relative',
             display: 'flex',
+            flexWrap: 'wrap',
         }
     })
 )

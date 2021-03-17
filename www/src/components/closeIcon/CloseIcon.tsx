@@ -3,21 +3,14 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../../theme/theme";
 import {IconButton} from "../button/IconButton";
 import crossSvg from "../../assets/cross.svg";
+import {ClassNameProps} from "../props/className.props";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            position: 'absolute',
-            top: 32,
-            right: 32,
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                top: 20,
-                right: 16
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                top: 70,
-                right: 8,
-            }
+            alignSelf: 'self-start',
+            padding: '0 0 2em 2em',
         },
     }))
 
@@ -25,8 +18,8 @@ interface Props {
     onClose: () => void
 }
 
-export const CloseIcon: React.FC<Props> = ({onClose}) => {
+export const CloseIcon: React.FC<Props & ClassNameProps> = ({onClose, className = ''}) => {
     const classes = useStyles()
 
-    return <IconButton className={classes.root} svg={crossSvg} onClick={onClose}/>
+    return <IconButton className={clsx(classes.root, className)} svg={crossSvg} onClick={onClose}/>
 }

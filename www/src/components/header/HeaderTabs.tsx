@@ -11,9 +11,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 overflowX: 'auto',
                 paddingBottom: 0,
             },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                paddingLeft: '1.5em'
-            }
         },
     }))
 

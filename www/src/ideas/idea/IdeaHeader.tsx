@@ -35,6 +35,12 @@ const useStyles = makeStyles((theme: Theme) =>
                 order: 2,
             }
         },
+        closeIcon: {
+            order: 3,
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                order: 2,
+            },
+        },
         contentTypeTabs: {
             order: 4,
             [theme.breakpoints.down(breakpoints.tablet)]: {
@@ -95,7 +101,7 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
     const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
 
     return <HeaderContainer>
-        <CloseIcon onClose={navigateToList}/>
+        <CloseIcon onClose={navigateToList} className={classes.closeIcon}/>
         <BasicInfo>
             <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
             <BasicInfoDivider/>

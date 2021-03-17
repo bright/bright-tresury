@@ -6,13 +6,13 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             background: theme.palette.background.default,
-            padding: '32px 86px 24px 32px',
+            padding: '32px 32px 24px 32px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 padding: '24px 2.2em 24px 2.2em'
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                paddingLeft: 0,
-                paddingRight: 0
+                paddingLeft:'16px',
+                paddingRight: '16px',
             },
             display: 'flex',
             flexDirection: 'row',
