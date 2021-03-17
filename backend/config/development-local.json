@@ -9,10 +9,6 @@
     "host": "localhost",
     "database": "treasury"
   },
-  "authorizationDatabase": {
-    "host": "localhost",
-    "database": "treasury_authorization"
-  },
   "blockchain": {
     "nodeUrl": "ws://localhost:9944",
     "types": {

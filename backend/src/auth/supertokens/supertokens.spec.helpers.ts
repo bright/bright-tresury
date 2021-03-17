@@ -1,6 +1,6 @@
 import {memoize} from "lodash";
 import {Connection, getConnection} from "typeorm";
-import {AuthorizationDatabaseName} from "../../database/database.module";
+import {AuthorizationDatabaseName} from "../../database/authorization/authorization.database.module";
 import {User} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import supertest from "supertest";
 import {INestApplication} from "@nestjs/common";

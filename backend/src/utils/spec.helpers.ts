@@ -10,6 +10,7 @@ import {Accessor} from "./accessor";
 import {tryClose} from "./closeable";
 import './responseMatching';
 import {responseMatchers} from "./responseMatchingHelpers";
+import {TypeOrmAuthorizationModule} from "../database/authorization/authorization.database.module";
 
 if (!process.env.DEPLOY_ENV) {
     process.env.DEPLOY_ENV = 'test'
@@ -112,7 +113,7 @@ export const beforeSetupFullApp = memoize(() => {
     })
 
     return beforeAllSetup(async () => {
-        app = await createTestingApp([AppModule]);
+        app = await createTestingApp([AppModule, TypeOrmAuthorizationModule]);
         return app;
     });
 })

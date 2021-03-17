@@ -3,8 +3,5 @@
     "host": "host.docker.internal",
     "username": "web",
     "database": "treasury"
-  },
-  "authorizationDatabase": {
-    "username": "web"
   }
 }

@@ -4,7 +4,7 @@ import {TypeOrmModuleOptions} from "@nestjs/typeorm/dist/interfaces/typeorm-opti
 import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
 import {ConfigModule} from "../config/config";
 import {TypeOrmLoggerAdapater} from "../logging.module";
-import {AuthorizationDatabaseConfigToken, DatabaseConfig, DatabaseConfigToken} from "./database.config";
+import {DatabaseConfig, DatabaseConfigToken} from "./database.config";
 import {join, resolve} from 'path'
 
 const basePath = resolve(join(__dirname, '..', '..'))
@@ -32,30 +32,8 @@ const TypeOrmCoreModule = TypeOrmModule.forRootAsync({
     }
 });
 
-export const AuthorizationDatabaseName = 'authorization'
-
-const authorizationDatabaseStaticTypeOrmOptions: Partial<PostgresConnectionOptions> = {
-    type: "postgres",
-    name: AuthorizationDatabaseName,
-    entities: [],
-    migrations: [],
-    logger: new TypeOrmLoggerAdapater()
-}
-
-const TypeOrmAuthorizationModule = TypeOrmModule.forRootAsync({
-    imports: [ConfigModule],
-    inject: [AuthorizationDatabaseConfigToken],
-    useFactory(databaseConfig: DatabaseConfig): TypeOrmModuleOptions {
-        return {
-            type: "postgres",
-            ...authorizationDatabaseStaticTypeOrmOptions,
-            ...databaseConfig
-        }
-    }
-});
-
 @Module({
-    imports: [TypeOrmCoreModule, TypeOrmAuthorizationModule]
+    imports: [TypeOrmCoreModule]
 })
 export class DatabaseModule {
 }
