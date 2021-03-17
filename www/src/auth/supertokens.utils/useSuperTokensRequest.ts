@@ -43,8 +43,8 @@ export function useSuperTokensRequest<Values>(
         setLoadingState(SuperTokensLoadingState.FieldError)
     }
 
-    const handleGeneralError = useCallback((error: string) => {
-        console.log(error)
+    const handleGeneralError = useCallback((error?: string) => {
+        console.error(error)
         if (typeof error === 'string') {
             setError(error)
         } else {
@@ -56,7 +56,6 @@ export function useSuperTokensRequest<Values>(
     const call = useCallback(async (values: Values, setErrors?: (errors: FormikErrors<Values>) => void) => {
         startLoading()
         apiCall(values).then(async (response: SuperTokensAPIResponse) => {
-            console.log(response)
             switch (response.status) {
                 case "OK":
                     handleSuccess()
@@ -70,6 +69,8 @@ export function useSuperTokensRequest<Values>(
                 case "GENERAL_ERROR":
                     handleGeneralError(response.message)
                     break
+                default:
+                    handleGeneralError()
             }
         }).catch((error) => {
             handleGeneralError(error)
