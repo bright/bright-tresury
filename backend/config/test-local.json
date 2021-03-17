@@ -10,7 +10,6 @@
     "database": "treasury_test"
   },
   "authorizationDatabase": {
-    "username": "web",
     "host": "localhost",
     "database": "treasury_authorization_test"
   },
