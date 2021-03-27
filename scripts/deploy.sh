@@ -30,6 +30,7 @@ if [[ ${stack_exists} =~ "[]" ]]; then
     result=$(aws cloudformation create-stack --stack-name ${stack_name} \
       --disable-rollback \
       --capabilities CAPABILITY_IAM \
+      --debug \
       --template-url https://treasury-uploads-stage.s3.eu-central-1.amazonaws.com/aws.template \
       --parameters ${deploy_params} 2>&1)
 
@@ -48,6 +49,7 @@ else
     set +e
     result=$(aws cloudformation update-stack --stack-name ${stack_name} \
       --capabilities CAPABILITY_IAM \
+      --debug \
       --template-url https://treasury-uploads-stage.s3.eu-central-1.amazonaws.com/aws.template \
       --parameters ${deploy_params} 2>&1)
 

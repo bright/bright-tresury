@@ -1,5 +1,4 @@
-import cloudform from 'cloudform'
-import {
+import cloudform, {
     ApplicationAutoScaling,
     AutoScaling,
     CloudWatch,
@@ -7,16 +6,16 @@ import {
     EC2,
     ECS,
     ElasticLoadBalancingV2,
-    IAM,
-    RDS,
     Fn,
+    IAM,
+    KMS,
     Logs,
+    RDS,
     Refs,
     ResourceTag,
     S3,
-    StringParameter,
-    KMS,
-    SSM
+    SSM,
+    StringParameter
 } from 'cloudform'
 
 const ProjectName = 'treasury'
@@ -50,6 +49,10 @@ const Resources = {
     BackendDBInstanceParameters: 'BackendDBInstanceParameters',
     BackendDBInstance: 'BackendDBInstance',
     BackendDBEC2SecurityGroup: 'BackendDBEC2SecurityGroup',
+
+    // authorization core database
+    AuthCoreDBInstance: 'AuthCoreDBInstance',
+    AuthCoreDbSuffix: 'authorization',
 
     // bastion host
     BastionIPAddress: 'BastionIPAddress',
@@ -105,7 +108,8 @@ const Resources = {
     RootAwsAccountId: "339594496974",
 
     AppTaskRole: "AppTaskRole",
-    BackendDBInstanceHostParameter: "BackendDBInstanceHostParameter"
+    BackendDBInstanceHostParameter: "BackendDBInstanceHostParameter",
+    AuthCoreDBInstanceHostParameter: "AuthCoreDBInstanceHostParameter",
 }
 
 const DeployEnv = Fn.Ref('DeployEnv')
@@ -193,6 +197,26 @@ export default cloudform({
                 BackendStorageType: "gp2",
                 BackendAllocatedStorage: 10,
                 DbName: ProjectName,
+                DbUserName: ProjectName,
+                MultiAZ: "false",
+            }
+        },
+        AuthCoreDatabaseMapping: {
+            prod: {
+                AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-prod`,
+                AuthCoreInstanceType: "db.t2.micro",
+                AuthCoreStorageType: "gp2",
+                AuthCoreAllocatedStorage: 10,
+                DbName: `${ProjectName}_${Resources.AuthCoreDbSuffix}`,
+                DbUserName: ProjectName,
+                MultiAZ: "true"
+            },
+            stage: {
+                AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-stage`,
+                AuthCoreInstanceType: "db.t2.micro",
+                AuthCoreStorageType: "gp2",
+                AuthCoreAllocatedStorage: 10,
+                DbName: `${ProjectName}_${Resources.AuthCoreDbSuffix}`,
                 DbUserName: ProjectName,
                 MultiAZ: "false",
             }
@@ -414,7 +438,10 @@ export default cloudform({
             },
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.BackendDBInstance]))
+                new ResourceTag(
+                    'Name',
+                    Fn.Join('-', [Refs.StackName, Resources.BackendDBInstance, Resources.AuthCoreDBInstance])
+                )
             ]
         }),
 
@@ -442,11 +469,42 @@ export default cloudform({
             ]
         }).deletionPolicy(DeletionPolicy.Snapshot),
 
+        [Resources.AuthCoreDBInstance]: new RDS.DBInstance({
+            DBName: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbName'),
+            MasterUsername: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbUserName'),
+            DBInstanceIdentifier: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreDBInstanceIdentifier'),
+            DBParameterGroupName: Fn.Ref(Resources.BackendDBInstanceParameters),
+            DBSubnetGroupName: Fn.Ref(Resources.BackendDBSubnetGroup),
+            MasterUserPassword: Fn.Join("", ["{{resolve:ssm-secure:/", ProjectName, "-", DeployEnv, "/database/password:1}}"]),
+            EnablePerformanceInsights: true,
+            Engine: "postgres",
+            EngineVersion: "11.2",
+            AllowMajorVersionUpgrade: true,
+            DBInstanceClass: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreInstanceType'),
+            VPCSecurityGroups: [
+                Fn.GetAtt(Resources.BackendDBEC2SecurityGroup, 'GroupId')
+            ],
+            AllocatedStorage: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreAllocatedStorage'),
+            StorageType: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreStorageType'),
+            MultiAZ: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'MultiAZ'),
+            Tags: [
+                new ResourceTag('Application', Refs.StackName),
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.AuthCoreDBInstance]))
+            ]
+        }).deletionPolicy(DeletionPolicy.Snapshot),
+
         [Resources.BackendDBInstanceHostParameter]: new SSM.Parameter({
             Name: Fn.Join("", ["/", ProjectName, "-", DeployEnv, "/database/host"]),
             Type: "String",
             Value: Fn.GetAtt("BackendDBInstance", "Endpoint.Address"),
             Description: "Backend db instance host address"
+        }),
+
+        [Resources.AuthCoreDBInstanceHostParameter]: new SSM.Parameter({
+            Name: Fn.Join("", ["/", `${ProjectName}-${Resources.AuthCoreDbSuffix}`, "-", DeployEnv, "/database/host"]),
+            Type: "String",
+            Value: Fn.GetAtt("AuthCoreDBInstance", "Endpoint.Address"),
+            Description: "Auth core db instance host address"
         }),
 
         [Resources.BackendDBEC2SecurityGroup]: new EC2.SecurityGroup({
@@ -680,10 +738,10 @@ export default cloudform({
             Family: Fn.Join('', [Refs.StackName, '-app']),
             Volumes: [
                 {
-                    Host : {
+                    Host: {
                         SourcePath: "/home/ec2-user/substrate"
                     },
-                    Name : "HomeDir"
+                    Name: "HomeDir"
                 }
             ],
             ContainerDefinitions: [
@@ -748,9 +806,9 @@ export default cloudform({
                     ],
                     MountPoints: [
                         {
-                            ContainerPath : "/data",
-                            ReadOnly : false,
-                            SourceVolume : "HomeDir"
+                            ContainerPath: "/data",
+                            ReadOnly: false,
+                            SourceVolume: "HomeDir"
                         }
                     ]
                 }
