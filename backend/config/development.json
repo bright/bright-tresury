@@ -2,5 +2,9 @@
   "database": {
     "host": "database",
     "database": "treasury"
+  },
+  "authorizationDatabase": {
+    "host": "database",
+    "database": "treasury_authorization"
   }
 }

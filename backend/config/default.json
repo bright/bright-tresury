@@ -5,6 +5,7 @@
     "database": "treasury"
   },
   "authorizationDatabase": {
-    "username": "web"
+    "username": "web",
+    "database": "treasury_authorization"
   }
 }

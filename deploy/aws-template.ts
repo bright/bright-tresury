@@ -71,6 +71,7 @@ const Resources = {
     // logs
     CloudwatchLogsGroup: 'CloudwatchLogsGroup',
     SubstrateCloudwatchLogsGroup: 'SubstrateCloudwatchLogsGroup',
+    AuthCoreCloudwatchLogsGroup: 'AuthCoreCloudwatchLogsGroup',
 
     // ECS
     ECSCluster: 'ECSCluster',
@@ -84,14 +85,19 @@ const Resources = {
     ECSALB: 'ECSALB',
     //ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
+    ECSALBListenerRule: 'ECSALBListenerRule',
+    // substrate
     SubstrateHttpListener: 'SubstrateHttpListener',
     SubstrateWssListener: 'SubstrateWssListener',
-    ECSALBListenerRule: 'ECSALBListenerRule',
     ECSSubstrateHttpListenerRule: 'ECSSubstrateHttpListenerRule',
     ECSSubstrateWssListenerRule: 'ECSSubstrateWssListenerRule',
+    // authorization core
+    AuthCoreHttpListener: 'AuthCoreHttpListener',
+    ECSAuthCoreHttpListenerRule: 'ECSAuthCoreHttpListenerRule',
     // ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSAppTargetGroup: 'ECSAppTargetGroup',
     ECSSubTargetGroup: 'ECSSubTargetGroup',
+    ECSAuthCoreTargetGroup: 'ECSSubTargetGroup',
     ECSAutoScalingGroup: 'ECSAutoScalingGroup',
     ECSServiceRole: 'ECSServiceRole',
 
@@ -137,6 +143,12 @@ const InternetAccessSecurity = [
         IpProtocol: "tcp",
         FromPort: 9944,
         ToPort: 9944,
+        CidrIp: "0.0.0.0/0"
+    },
+    {
+        IpProtocol: "tcp",
+        FromPort: 3567,
+        ToPort: 3567,
         CidrIp: "0.0.0.0/0"
     }
 ]
@@ -230,6 +242,8 @@ export default cloudform({
                 SubstrateContainerName: `${ProjectName}-substrate-stage`,
                 SubstrateHttpContainerPort: "9933",
                 SubstrateWsContainerPort: "9944",
+                AuthCoreContainerName: `${ProjectName}-auth-stage`,
+                AuthCoreHttpContainerPort: "3567",
                 DesiredTasksCount: 2
             },
             prod: {
@@ -251,13 +265,13 @@ export default cloudform({
     },
     Resources: {
         [Resources.HttpHttpsServerSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Enables inbound HTTP and HTTPS access via port 80, 443, 9933, 9944",
+            GroupDescription: "Enables inbound HTTP and HTTPS access via port 80, 443, 9933, 9944, 3567",
             VpcId: Fn.Ref(Resources.VPC),
             SecurityGroupIngress: InternetAccessSecurity
         }),
 
         [Resources.AccessInternetSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Enables outbound Internet access via ports 80,443, 9933, 9944",
+            GroupDescription: "Enables outbound Internet access via ports 80,443, 9933, 9944, 3567",
             VpcId: Fn.Ref(Resources.VPC),
             SecurityGroupEgress: InternetAccessSecurity
         }),
@@ -475,7 +489,7 @@ export default cloudform({
             DBInstanceIdentifier: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreDBInstanceIdentifier'),
             DBParameterGroupName: Fn.Ref(Resources.BackendDBInstanceParameters),
             DBSubnetGroupName: Fn.Ref(Resources.BackendDBSubnetGroup),
-            MasterUserPassword: Fn.Join("", ["{{resolve:ssm-secure:/", ProjectName, "-", DeployEnv, "/database/password:1}}"]),
+            MasterUserPassword: Fn.Join("", ["{{resolve:ssm-secure:/", ProjectName, "-", DeployEnv, "/authorizationDatabase/password:1}}"]),
             EnablePerformanceInsights: true,
             Engine: "postgres",
             EngineVersion: "11.2",
@@ -501,7 +515,7 @@ export default cloudform({
         }),
 
         [Resources.AuthCoreDBInstanceHostParameter]: new SSM.Parameter({
-            Name: Fn.Join("", ["/", `${ProjectName}-${Resources.AuthCoreDbSuffix}`, "-", DeployEnv, "/database/host"]),
+            Name: Fn.Join("", ["/", ProjectName, "-", DeployEnv, "/authorizationDatabase/host"]),
             Type: "String",
             Value: Fn.GetAtt("AuthCoreDBInstance", "Endpoint.Address"),
             Description: "Auth core db instance host address"
@@ -665,7 +679,6 @@ export default cloudform({
                         AWS: [
                             Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'root']),
                             Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/treasury'])
-
                         ]
                     },
                     Action: "kms:*",
@@ -733,6 +746,10 @@ export default cloudform({
             LogGroupName: Fn.Join('-', ['SubstrateECSLogGroup', Refs.StackName]),
             RetentionInDays: 14
         }),
+        [Resources.AuthCoreCloudwatchLogsGroup]: new Logs.LogGroup({
+            LogGroupName: Fn.Join('-', ['AuthCoreECSLogGroup', Refs.StackName]),
+            RetentionInDays: 14
+        }),
 
         [Resources.TaskDefinition]: new ECS.TaskDefinition({
             Family: Fn.Join('', [Refs.StackName, '-app']),
@@ -768,7 +785,10 @@ export default cloudform({
                             ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort')
                         }
                     ],
-                    Links: [Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName')],
+                    Links: [
+                        Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
+                        Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName')
+                    ],
                 },
                 {
                     Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
@@ -795,9 +815,56 @@ export default cloudform({
                             ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
                             HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
                         },
+                    ],
+                },
+                {
+                    Name: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
+                    Environment: [
+                        {
+                            Name: "POSTGRESQL_PORT",
+                            Value: "5432"
+                        },
+                        {
+                            Name: "POSTGRESQL_DATABASE_NAME",
+                            Value: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbName')
+                        },
+                    ],
+                    Cpu: 100,
+                    Essential: true,
+                    Image: "supertokens/supertokens-postgresql:3.3",
+                    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
+                    LogConfiguration: {
+                        LogDriver: "awslogs",
+                        Options: {
+                            "awslogs-group": Fn.Ref('AuthCoreCloudwatchLogsGroup'),
+                            "awslogs-region": Refs.Region,
+                            "awslogs-stream-prefix": "auth",
+                            "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
+                        }
+                    },
+                    PortMappings: [
+                        {
+                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
+                            HostPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
+                        },
+                    ],
+                    Secrets: [
+                        {
+                            Name: "POSTGRESQL_HOST",
+                            ValueFrom: Fn.Join('', ['arn:aws:ssm:*:', Resources.RootAwsAccountId, ':parameter/', ProjectName, '-', DeployEnv, '/authorizationDatabase/host'])
+                        },
+                        {
+                            Name: "POSTGRESQL_USER",
+                            ValueFrom: Fn.Join('', ['arn:aws:ssm:*:', Resources.RootAwsAccountId, ':parameter/', ProjectName, '-', DeployEnv, '/authorizationDatabase/username'])
+                        },
+                        {
+                            Name: "POSTGRESQL_PASSWORD",
+                            ValueFrom: Fn.Join('', ['arn:aws:ssm:*:', Resources.RootAwsAccountId, ':parameter/', ProjectName, '-', DeployEnv, '/authorizationDatabase/password'])
+                        }
                     ]
                 }
             ],
+            ExecutionRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn"),
             TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn")
         }),
 
@@ -848,6 +915,7 @@ export default cloudform({
             Protocol: "HTTP"
         }).dependsOn(Resources.ECSServiceRole),
 
+        // region substrate
         [Resources.SubstrateHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
                 {
@@ -876,6 +944,21 @@ export default cloudform({
             Port: 9944,
             Protocol: "HTTPS"
         }).dependsOn(Resources.ECSServiceRole),
+        // endregion
+
+        // region authorization core
+        [Resources.AuthCoreHttpListener]: new ElasticLoadBalancingV2.Listener({
+            DefaultActions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSAuthCoreTargetGroup)
+                }
+            ],
+            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
+            Port: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
+            Protocol: "HTTP"
+        }).dependsOn(Resources.ECSServiceRole),
+        // endregion
 
         // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
         //     Actions: [
@@ -918,6 +1001,7 @@ export default cloudform({
             Priority: 1
         }).dependsOn(Resources.ALBHttpListener),
 
+        // region substrate
         [Resources.ECSSubstrateHttpListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
@@ -951,6 +1035,26 @@ export default cloudform({
             ListenerArn: Fn.Ref(Resources.SubstrateWssListener),
             Priority: 1
         }).dependsOn(Resources.SubstrateWssListener),
+        // endregion
+
+        // region authorization core
+        [Resources.ECSAuthCoreHttpListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                }
+            ],
+            Conditions: [
+                {
+                    Field: "path-pattern",
+                    Values: ["/"]
+                }
+            ],
+            ListenerArn: Fn.Ref(Resources.AuthCoreHttpListener),
+            Priority: 1
+        }).dependsOn(Resources.AuthCoreHttpListener),
+        // endregion
 
         [Resources.ECSAppTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
@@ -995,6 +1099,33 @@ export default cloudform({
             HealthyThresholdCount: 2,
             Name: Fn.Join('-', [Resources.ECSSubTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
+            Protocol: "HTTP",
+            TargetGroupAttributes: [
+                {
+                    Key: "deregistration_delay.timeout_seconds",
+                    Value: "30"
+                },
+                {
+                    Key: "stickiness.enabled",
+                    Value: "true"
+                },
+                {
+                    Key: "stickiness.type",
+                    Value: "lb_cookie"
+                },
+                {
+                    Value: "86400",
+                    Key: "stickiness.lb_cookie.duration_seconds"
+                }
+            ],
+            UnhealthyThresholdCount: 5,
+            VpcId: Fn.Ref(Resources.VPC)
+        }).dependsOn(Resources.ECSALB),
+
+        [Resources.ECSAuthCoreTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
+            HealthCheckEnabled: false,
+            Name: Fn.Join('-', [Resources.ECSAuthCoreTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
+            Port: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
             Protocol: "HTTP",
             TargetGroupAttributes: [
                 {
@@ -1076,6 +1207,11 @@ export default cloudform({
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
                     ContainerPort: 9944,
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                },
+                {
+                    ContainerName: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
+                    ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
                     TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
                 }
             ],

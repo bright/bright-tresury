@@ -7,5 +7,9 @@
       "LookupSource": "AccountId",
       "BlockWeights": "Balance"
     }
+  },
+  "authCore": {
+    "coreUrl": "http://treasury-auth-stage:3567",
+    "cookieSecure": true
   }
 }
