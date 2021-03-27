@@ -1,5 +1,5 @@
 IP_ADDRESS=$(ifconfig | grep "inet " | grep -v 127.0.0.1 | cut -d\  -f2)
-docker run \
+docker run --name authorization_core \
 	-p 3567:3567 \
 	-e POSTGRESQL_USER=authorization_manager \
 	-e POSTGRESQL_PASSWORD=password \
