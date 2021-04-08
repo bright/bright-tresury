@@ -1,5 +1,5 @@
 import { beforeSetupFullApp } from "../utils/spec.helpers";
-import { Idea } from "./idea.entity";
+import { Idea } from "./entities/idea.entity";
 import { IdeasService } from "./ideas.service";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 

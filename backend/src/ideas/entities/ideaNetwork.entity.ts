@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
-import { BaseEntity } from "../database/base.entity";
-import { Extrinsic } from "../extrinsics/extrinsic.entity";
+import { BaseEntity } from "../../database/base.entity";
+import { Extrinsic } from "../../extrinsics/extrinsic.entity";
 import { Idea } from "./idea.entity";
 
 @Entity("idea_networks")
@@ -8,7 +8,7 @@ export class IdeaNetwork extends BaseEntity {
     @Column({ nullable: false })
     name: string
 
-    @Column("decimal", { precision: 39, scale: 15, nullable: false, default: 0 })
+    @Column('decimal', { precision: 39, scale: 15, nullable: false, default: 0 })
     value: number
 
     @ManyToOne(

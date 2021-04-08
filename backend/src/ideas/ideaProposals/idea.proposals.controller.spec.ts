@@ -2,7 +2,7 @@ import {v4 as uuid} from "uuid";
 import {BlockchainService} from "../../blockchain/blockchain.service";
 import {UpdateExtrinsicDto} from "../../extrinsics/dto/updateExtrinsic.dto";
 import {beforeAllSetup, beforeSetupFullApp, cleanDatabase, request} from '../../utils/spec.helpers';
-import {Idea} from "../idea.entity";
+import {Idea} from "../entities/idea.entity";
 import {createIdea} from '../spec.helpers';
 
 const baseUrl = (id: string) => `/api/v1/ideas/${id}/proposals`

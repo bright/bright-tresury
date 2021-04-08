@@ -1,8 +1,9 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {IdeaNetworkDto, toIdeaNetworkDto} from "./ideaNetwork.dto";
-import {Idea, ideaRestrictions} from "../idea.entity";
-import {IdeaNetwork} from "../ideaNetwork.entity";
+import {Idea, ideaRestrictions} from "../entities/idea.entity";
+import {IdeaNetwork} from "../entities/ideaNetwork.entity";
 import {IdeaStatus} from "../ideaStatus";
+import {IdeaMilestoneDto} from "../ideaMilestones/dto/ideaMilestoneDto";
 
 export class IdeaDto {
     @ApiProperty()
@@ -42,6 +43,11 @@ export class IdeaDto {
     @ApiProperty({enum: IdeaStatus})
     status: IdeaStatus
 
+    @ApiProperty({
+        type: [IdeaMilestoneDto]
+    })
+    milestones!: IdeaMilestoneDto[]
+
     constructor(
         id: string,
         title: string,
@@ -70,20 +76,20 @@ export class IdeaDto {
 
 }
 
-export function toIdeaDto(idea: Idea): IdeaDto {
+export function toIdeaDto({id, title, status, networks, ordinalNumber, beneficiary, content, field, contact, portfolio, links, milestones }: Idea): IdeaDto {
     return new IdeaDto(
-        idea.id,
-        idea.title,
-        idea.status,
-        idea.networks ? idea.networks.map((ideaNetwork: IdeaNetwork) =>
+        id,
+        title,
+        status,
+        networks ? networks.map((ideaNetwork: IdeaNetwork) =>
             toIdeaNetworkDto(ideaNetwork)
         ) : [],
-        idea.ordinalNumber,
-        idea.beneficiary,
-        idea.content,
-        idea.field,
-        idea.contact,
-        idea.portfolio,
-        idea.links ? JSON.parse(idea.links) as string[] : undefined,
+        ordinalNumber,
+        beneficiary,
+        content,
+        field,
+        contact,
+        portfolio,
+        links ? JSON.parse(links) as string[] : undefined,
     )
 }

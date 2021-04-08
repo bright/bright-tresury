@@ -1,7 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {BlockchainService} from "../blockchain/blockchain.service";
 import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
-import {Idea} from '../ideas/idea.entity';
+import {Idea} from '../ideas/entities/idea.entity';
 import {IdeasService} from "../ideas/ideas.service";
 import {getLogger} from "../logging.module";
 

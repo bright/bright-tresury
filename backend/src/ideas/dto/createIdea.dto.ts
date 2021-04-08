@@ -1,7 +1,7 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested} from "class-validator";
 import {IdeaNetworkDto} from "./ideaNetwork.dto";
-import {ideaRestrictions} from "../idea.entity";
+import {ideaRestrictions} from "../entities/idea.entity";
 import {IdeaStatus} from "../ideaStatus";
 import {Type} from "class-transformer";
 import {CreateIdeaNetworkDto} from "./createIdeaNetwork.dto";

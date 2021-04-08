@@ -3,7 +3,7 @@ import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from 'typeorm';
 import {BlockchainService} from "../blockchain/blockchain.service";
 import {IdeaDto} from "../ideas/dto/idea.dto";
-import {IdeaNetwork} from "../ideas/ideaNetwork.entity";
+import {IdeaNetwork} from "../ideas/entities/ideaNetwork.entity";
 import {IdeasService} from "../ideas/ideas.service";
 import {createIdea} from "../ideas/spec.helpers";
 import {beforeAllSetup, cleanDatabase} from "../utils/spec.helpers";

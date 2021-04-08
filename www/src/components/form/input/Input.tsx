@@ -4,15 +4,17 @@ import React from "react";
 import {Label} from "../../text/Label";
 import {ErrorLabel} from "./ErrorLabel";
 import {TextField, TextFieldProps} from "./TextField";
+import {TextFieldColorScheme} from "./textFieldStyles";
 
 interface OwnProps {
     label?: string | JSX.Element
-    endAdornment?: string
+    endAdornment?: string,
+    textFieldColorScheme?: TextFieldColorScheme
 }
 
 export type InputProps = OwnProps & Omit<TextFieldProps, "label"> & FieldHookConfig<string>
 
-export const Input: React.FC<InputProps> = ({label, endAdornment, name = '', ...props}) => {
+export const Input: React.FC<InputProps> = ({label, endAdornment, name = '', textFieldColorScheme = TextFieldColorScheme.Light, ...props}) => {
 
     const [field, meta] = useField(name);
     const hasError: boolean = meta.touched && Boolean(meta.error)
@@ -21,6 +23,7 @@ export const Input: React.FC<InputProps> = ({label, endAdornment, name = '', ...
         {label ? <Label label={label}/> : null}
         <TextField
             {...props}
+            textFieldColorScheme={textFieldColorScheme}
             error={hasError}
             endAdornment={endAdornment}
             inputProps={{...field, ...meta}}

@@ -35,4 +35,5 @@ export const theme = {
 export const breakpoints = {
     mobile: 'xs' as Breakpoint,
     tablet: 'sm' as Breakpoint,
+    desktop: 'md' as Breakpoint,
 }
