@@ -11,11 +11,11 @@ set -eux
 
 pushd ${PROJECT_DIR}
 
-aws_bucket_name="${PROJECT_NAME}-uploads-${DEPLOY_ENV}"
+aws_bucket_name="${PROJECT_NAME}-deployments"
 
 npm i --prefix deploy
 npm run --prefix deploy generate-aws-template
-aws s3 cp ./deploy/aws.template s3://${aws_bucket_name}
+aws s3 cp ./deploy/aws.template s3://${aws_bucket_name}/aws-${DEPLOY_ENV}.template
 
 stack_name="${PROJECT_NAME}-app-${DEPLOY_ENV}"
 stack_exists=$(aws cloudformation list-stacks --query "StackSummaries[?StackName == '${stack_name}' && StackStatus != 'DELETE_COMPLETE']")
@@ -31,7 +31,7 @@ if [[ ${stack_exists} =~ "[]" ]]; then
       --disable-rollback \
       --capabilities CAPABILITY_IAM \
       --debug \
-      --template-url https://treasury-uploads-stage.s3.eu-central-1.amazonaws.com/aws.template \
+      --template-url https://treasury-deployments.s3.eu-central-1.amazonaws.com/aws-${DEPLOY_ENV}.template \
       --parameters ${deploy_params} 2>&1)
 
     exit_code=$?
