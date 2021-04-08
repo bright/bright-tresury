@@ -1,12 +1,13 @@
 import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from "../utils/spec.helpers";
-import {cleanAuthorizationDatabase, replaceSessionGuard, replaceSessionResolver} from "./supertokens/supertokens.spec.helpers";
 import {MockSessionGuard} from "./session/guard/session.spec.guard";
 import {HttpStatus} from "@nestjs/common";
 import {SessionUser} from "./session/session.decorator";
 import {MockSessionResolver} from "./session/session.spec.resolver";
 import {UsersService} from "../users/users.service";
 import {CreateUserDto} from "../users/dto/createUser.dto";
+import {cleanAuthorizationDatabase} from "./supertokens/specHelpers/supertokens.database.spec.helper";
+import {replaceSessionGuard, replaceSessionResolver} from "./supertokens/specHelpers/supertokens.providers.spec.helper";
 
 describe(`Auth Controller`, () => {
 

@@ -2,14 +2,13 @@ import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from "../utils/spec.helpers";
 import {SuperTokensService} from "./supertokens/supertokens.service";
 import {UsersService} from "../users/users.service";
+import {SessionUser} from "./session/session.decorator";
 import {
-    cleanAuthorizationDatabase,
     createBlockchainSessionHandler,
     createSessionHandler,
-    createUserSessionHandler,
-    getAuthUser
-} from "./supertokens/supertokens.spec.helpers";
-import {SessionUser} from "./session/session.decorator";
+    createUserSessionHandler
+} from "./supertokens/specHelpers/supertokens.session.spec.helper";
+import {cleanAuthorizationDatabase, getAuthUser} from "./supertokens/specHelpers/supertokens.database.spec.helper";
 
 describe(`Auth Controller`, () => {
 

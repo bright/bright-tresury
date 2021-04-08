@@ -1,7 +1,7 @@
 import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
 import {SuperTokensService} from "./supertokens.service";
-import {cleanAuthorizationDatabase, getAuthUser} from "./supertokens.spec.helpers";
+import {cleanAuthorizationDatabase, getAuthUser} from "./specHelpers/supertokens.database.spec.helper";
 import {ConflictException} from "@nestjs/common";
 
 describe(`SuperTokens Service`, () => {
