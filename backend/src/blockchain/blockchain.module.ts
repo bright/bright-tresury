@@ -1,4 +1,4 @@
-import {HttpException, Module, OnModuleDestroy} from '@nestjs/common'
+import {Module, OnModuleDestroy} from '@nestjs/common'
 import {ApiPromise, WsProvider} from '@polkadot/api'
 import {ConfigModule} from '../config/config'
 import {getLogger} from "../logging.module";

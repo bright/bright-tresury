@@ -8,6 +8,8 @@ export interface AWSConfig {
     region: AWS_REGION
 }
 
+export const AWSConfigToken = 'AWSConfig'
+
 export const awsConfigSchema: Schema<AWSConfig> = {
     // DO NOT ADD secret keys here
     // use either AWS_PROFILE or AWS_* credentials env variables in development and test

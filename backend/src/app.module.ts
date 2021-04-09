@@ -16,6 +16,7 @@ import {SuperTokensExceptionFilter} from "./auth/supertokens/supertokens.excepti
 import {baseApiPath} from "./main";
 import {initializeSupertokens} from "./auth/supertokens/supertokens.config";
 import {SuperTokensService} from "./auth/supertokens/supertokens.service";
+import { EmailsModule } from './emails/emails.module';
 
 @Module({
     imports: [
@@ -28,7 +29,8 @@ import {SuperTokensService} from "./auth/supertokens/supertokens.service";
         // ExtrinsicsModule,
         SuperTokensModule,
         UsersModule,
-        AuthModule
+        AuthModule,
+        EmailsModule
     ],
     exports: [],
     controllers: [AppController]

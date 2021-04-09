@@ -30,6 +30,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@aws-sdk/client-ses": "^3.8.1",
+    "@aws-sdk/types": "^3.6.1",
     "@nestjs/common": "^6.3.1",
     "@nestjs/core": "^6.3.1",
     "@nestjs/microservices": "^6.3.1",

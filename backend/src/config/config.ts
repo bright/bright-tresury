@@ -3,7 +3,8 @@ import convict from 'convict'
 import * as fs from "fs";
 import {memoize} from 'lodash';
 import * as path from "path";
-import {AWSConfig, awsConfigSchema} from "../aws.config";
+import {AWSConfig, AWSConfigToken, awsConfigSchema} from "../aws.config";
+import {EmailsConfig, emailsConfigSchema, EmailsConfigToken} from "../emails/emails.config";
 import {tryLoadParamsFromSSM} from "./config.ssm";
 import {AuthorizationDatabaseConfigToken, DatabaseConfig, databaseConfigSchema, DatabaseConfigToken} from "../database/database.config"
 import {getLogger} from "../logging.module";
@@ -25,7 +26,8 @@ export type AppConfig = EnvConfig & {
     authorizationDatabase: DatabaseConfig,
     aws: AWSConfig,
     blockchain: BlockchainConfig,
-    auth: AuthConfig
+    auth: AuthConfig,
+    emails: EmailsConfig,
 };
 
 const configSchema = convict<AppConfig>({
@@ -64,6 +66,7 @@ const configSchema = convict<AppConfig>({
     aws: awsConfigSchema,
     blockchain: blockchainConfigSchema,
     auth: authConfigSchema,
+    emails: emailsConfigSchema,
 });
 const logger = getLogger();
 
@@ -101,11 +104,11 @@ const appConfigProvider: AsyncFactoryProvider<AppConfig> = {
 
 const databaseConfigProvider = propertyOfProvider(appConfigProvider, "database", DatabaseConfigToken)
 const authorizationDatabaseConfigProvider = propertyOfProvider(appConfigProvider, "authorizationDatabase", AuthorizationDatabaseConfigToken)
+const awsConfigProvider = propertyOfProvider(appConfigProvider, "aws", AWSConfigToken)
 const blockchainConfigProvider = propertyOfProvider(appConfigProvider, "blockchain", BlockchainConfigToken)
 const authConfigProvider = propertyOfProvider(appConfigProvider, "auth", AuthConfigToken)
-const providers: Provider[] = [
-    appConfigProvider, databaseConfigProvider, authorizationDatabaseConfigProvider, blockchainConfigProvider, authConfigProvider
-];
+const emailsConfigProvider = propertyOfProvider(appConfigProvider, "emails", EmailsConfigToken)
+const providers: Provider[] = [appConfigProvider, databaseConfigProvider, authorizationDatabaseConfigProvider, awsConfigProvider, blockchainConfigProvider, authConfigProvider, emailsConfigProvider];
 
 // @Global() // if we don't have to import config module everywhere
 @Module({
