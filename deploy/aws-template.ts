@@ -230,14 +230,14 @@ export default cloudform({
                 SubstrateContainerName: `${ProjectName}-substrate-stage`,
                 SubstrateHttpContainerPort: "9933",
                 SubstrateWsContainerPort: "9944",
-                DesiredTasksCount: 1
+                DesiredTasksCount: 2
             },
             prod: {
                 InstanceType: "t2.small",
                 ContainerName: `${ProjectName}-app-prod`,
                 ContainerPort: "3000",
                 Memory: "900",
-                DesiredTasksCount: 1
+                DesiredTasksCount: 2
             }
         },
         Certificates: {
