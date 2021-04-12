@@ -736,14 +736,6 @@ export default cloudform({
 
         [Resources.TaskDefinition]: new ECS.TaskDefinition({
             Family: Fn.Join('', [Refs.StackName, '-app']),
-            Volumes: [
-                {
-                    Host: {
-                        SourcePath: "/home/ec2-user/substrate"
-                    },
-                    Name: "HomeDir"
-                }
-            ],
             ContainerDefinitions: [
                 {
                     Name: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
@@ -783,7 +775,7 @@ export default cloudform({
                     Cpu: 100,
                     Essential: true,
                     Image: "parity/polkadot:v0.8.24",
-                    Command: ['--rpc-external', '--ws-external', '--dev', '-d', '/data'],
+                    Command: ['--rpc-external', '--ws-external', '--dev'],
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {
                         LogDriver: "awslogs",
@@ -803,13 +795,6 @@ export default cloudform({
                             ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
                             HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
                         },
-                    ],
-                    MountPoints: [
-                        {
-                            ContainerPath: "/data",
-                            ReadOnly: false,
-                            SourceVolume: "HomeDir"
-                        }
                     ]
                 }
             ],
