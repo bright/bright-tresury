@@ -17,7 +17,7 @@ if [[ ! -z "${DOCKER_REGISTRY}" ]]; then
     # aws ecr get-login [--registry-ids registryId] --no-include-email | bash
     docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.yml \
-    push 
+    push
 
     docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.yml \

@@ -1,7 +1,14 @@
-import {ListIdentitiesCommand, SendEmailCommand, SESClient, VerifyEmailIdentityCommand} from '@aws-sdk/client-ses';
+import {ListIdentitiesCommand, SendTemplatedEmailCommand, SESClient, VerifyEmailIdentityCommand} from '@aws-sdk/client-ses';
 import {Inject, Injectable} from '@nestjs/common';
 import {AWSConfig, AWSConfigToken} from "../aws.config";
+import {getLogger} from "../logging.module";
 import {EmailsConfig, EmailsConfigToken} from "./emails.config";
+
+const logger = getLogger()
+
+enum Templates {
+    VerifyEmail = "TreasuryVerifyEmail"
+}
 
 @Injectable()
 export class EmailsService {
@@ -12,6 +19,7 @@ export class EmailsService {
     ) {
     }
 
+    // TODO: run on each deploy using cli or find other solution
     async initializeEmail() {
         const REGION = "eu-central-1"
         const params = {
@@ -35,41 +43,36 @@ export class EmailsService {
         return
     }
 
-    async sendEmail(to: string, subject: string, htmlData: string, textData: string) {
-        const REGION = this.awsConfig.region
-        const charset = "UTF-8"
+    async sendVerifyEmail(to: string, verifyUrl: string) {
+        const templateData = {
+            url: verifyUrl
+        }
+        // TODO check if the template exists
+        return this.sendEmail(to, Templates.VerifyEmail, templateData)
+    }
+
+    private async sendEmail(to: string, templateName: string, templateData: any) {
+        const stringifiedData = JSON.stringify(templateData)
+
+        logger.info(`Sending email to ${to} with template ${templateName} and data ${stringifiedData}`)
+
         const params = {
             Destination: {
                 CcAddresses: [],
                 ToAddresses: [to],
             },
-            Message: {
-                Body: {
-                    Html: {
-                        Charset: charset,
-                        Data: textData,
-                    },
-                    Text: {
-                        Charset: charset,
-                        Data: htmlData,
-                    },
-                },
-                Subject: {
-                    Charset: charset,
-                    Data: subject,
-                },
-            },
             Source: this.emailsConfig.emailAddress,
+            Template: templateName,
+            TemplateData: stringifiedData,
             ReplyToAddresses: [],
         };
 
-        const ses = new SESClient({region: REGION});
-
+        const ses = new SESClient({region: this.awsConfig.region});
         try {
-            const data = await ses.send(new SendEmailCommand(params));
-            console.log("Success", data);
+            const data = await ses.send(new SendTemplatedEmailCommand(params));
+            logger.info("Email sent", data)
         } catch (err) {
-            console.log("Error", err);
+            logger.error("Error sending email", err)
         }
         return
     }

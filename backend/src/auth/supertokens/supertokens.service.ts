@@ -1,20 +1,21 @@
 import {BadRequestException, ConflictException, Injectable} from "@nestjs/common";
-import {UsersService} from "../../users/users.service";
-import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
-import {CreateUserDto} from "../../users/dto/createUser.dto";
-import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
+import {Request, Response} from 'express'
 import {signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
+import {User, User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import {createNewSession, getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
-import {Request, Response} from 'express'
-import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
-import {SessionUser} from "../session/session.decorator";
 import SessionError from "supertokens-node/lib/build/recipe/session/error";
+import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
+import {CreateUserDto} from "../../users/dto/createUser.dto";
+import {UsersService} from "../../users/users.service";
+import {SessionUser} from "../session/session.decorator";
+import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 
 @Injectable()
 export class SuperTokensService {
     constructor(
         private readonly usersService: UsersService,
+        private readonly emailsService: EmailsService,
     ) {
     }
 
@@ -77,5 +78,9 @@ export class SuperTokensService {
                 ...data
             }
         )
+    }
+
+    sendVerifyEmail = async (user: User, emailVerificationURLWithToken: string): Promise<void> => {
+        await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
     }
 }
