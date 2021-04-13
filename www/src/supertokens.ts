@@ -12,11 +12,24 @@ export function initializeSupertokens() {
             appName: "Bright Treasury App",
             apiDomain: config.API_URL,
             websiteDomain: config.WEBSITE_URL,
-            apiBasePath: "/api"
+            apiBasePath: "/api/v1"
         },
         recipeList: [
             EmailPassword.init({
+                emailVerificationFeature: {
+                    mode: "REQUIRED"
+                },
+                palette: {
+                    background: '#333',
+                    error: '#ad2e2e',
+                    textTitle: "white",
+                    textLabel: "white",
+                    textInput: '#a9a9a9',
+                    textPrimary: "white",
+                    textLink: '#a9a9a9'
+                },
                 signInAndUpFeature: {
+                    disableDefaultImplementation: true,
                     signUpForm: {
                         formFields: [{
                             id: "username",

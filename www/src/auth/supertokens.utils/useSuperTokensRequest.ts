@@ -1,8 +1,9 @@
 import {FormikErrors} from "formik/dist/types";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
-import {FormBaseAPIResponse, FormFieldError, SignInAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
+import {FormBaseAPIResponse, FormFieldError, SignInAPIResponse, SignUpAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
 import {LoadingState} from "../../components/loading/LoadingWrapper";
+import {SendVerifyEmailAPIResponse} from "../auth.api";
 
 interface UseSuperTokensRequestResult<Values> {
     call: (params: Values, setErrors?: (errors: FormikErrors<Values>) => void) => Promise<void | SuperTokensAPIResponse>
@@ -12,7 +13,7 @@ interface UseSuperTokensRequestResult<Values> {
 
 enum SuperTokensLoadingState { FieldError }
 
-type SuperTokensAPIResponse = FormBaseAPIResponse | SignInAPIResponse
+type SuperTokensAPIResponse = FormBaseAPIResponse | SignInAPIResponse | SignUpAPIResponse | SendVerifyEmailAPIResponse
 
 export function useSuperTokensRequest<Values>(
     apiCall: (params: Values) => Promise<SuperTokensAPIResponse>
@@ -65,6 +66,9 @@ export function useSuperTokensRequest<Values>(
                     break
                 case "WRONG_CREDENTIALS_ERROR":
                     await handleGeneralError(t('auth.errors.wrongCredentialsError'))
+                    break
+                case 'EMAIL_ALREADY_VERIFIED_ERROR':
+                    handleGeneralError(t('auth.errors.emailAlreadyVerifiedError'))
                     break
                 case "GENERAL_ERROR":
                     handleGeneralError(response.message)

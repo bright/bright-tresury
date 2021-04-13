@@ -43,7 +43,8 @@
     "passwordHide": "Hide password button",
     "errors": {
       "generalError": "Something went wrong. Please try again later.",
-      "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct."
+      "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct.",
+      "emailAlreadyVerifiedError": "Email is already verified."
     },
     "signup": {
       "title": "Sign up",

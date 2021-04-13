@@ -13,9 +13,24 @@ export interface SignInData {
     password: string
 }
 
+export interface SendVerifyEmailAPIResponse {
+    status: 'EMAIL_ALREADY_VERIFIED_ERROR'
+}
+
 export function signUp(data: SignUpData) {
     const requestData = transformSignUpRequestData(data)
-    return apiPost<SignUpAPIResponse>( `/signup`, requestData)
+
+    return apiPost<SignUpAPIResponse | SendVerifyEmailAPIResponse>( `/signup`, requestData).then((result) => {
+        if (result.status === "OK") {
+            return sendVerifyEmail()
+        } else {
+            return result
+        }
+    })
+}
+
+export function sendVerifyEmail() {
+    return apiPost<SendVerifyEmailAPIResponse>('/user/email/verify/token')
 }
 
 export function signIn(data: SignInData) {
@@ -24,7 +39,7 @@ export function signIn(data: SignInData) {
 }
 
 export function signOut() {
-    return apiPost(`/signout`)
+    return apiPost(`/user/email/verify/token`)
 }
 
 export function getSessionData() {
