@@ -1,4 +1,4 @@
-import {ListIdentitiesCommand, SendTemplatedEmailCommand, SESClient, VerifyEmailIdentityCommand} from '@aws-sdk/client-ses';
+import {SendTemplatedEmailCommand, SESClient} from '@aws-sdk/client-ses';
 import {Inject, Injectable} from '@nestjs/common';
 import {AWSConfig, AWSConfigToken} from "../aws.config";
 import {getLogger} from "../logging.module";
@@ -19,35 +19,10 @@ export class EmailsService {
     ) {
     }
 
-    // TODO: run on each deploy using cli or find other solution
-    async initializeEmail() {
-        const REGION = "eu-central-1"
-        const params = {
-            IdentityType: "EmailAddress",
-            MaxItems: 0,
-        };
-
-        const newEmailParams = {EmailAddress: 'agnieszka.olszewska@brightinventions.pl'};
-
-        const ses = new SESClient({region: REGION});
-        try {
-            const data = await ses.send(new ListIdentitiesCommand(params));
-            if (!data.Identities?.includes(newEmailParams.EmailAddress)) {
-                const data1 = await ses.send(new VerifyEmailIdentityCommand(newEmailParams));
-                console.log(data1)
-            }
-            console.log("Success.", data);
-        } catch (err) {
-            console.error(err, err.stack);
-        }
-        return
-    }
-
     async sendVerifyEmail(to: string, verifyUrl: string) {
         const templateData = {
             url: verifyUrl
         }
-        // TODO check if the template exists
         return this.sendEmail(to, Templates.VerifyEmail, templateData)
     }
 
@@ -67,13 +42,16 @@ export class EmailsService {
             ReplyToAddresses: [],
         };
 
-        const ses = new SESClient({region: this.awsConfig.region});
+        const sesClient = new SESClient({region: this.awsConfig.region});
         try {
-            const data = await ses.send(new SendTemplatedEmailCommand(params));
+            const data = await sesClient.send(new SendTemplatedEmailCommand(params));
             logger.info("Email sent", data)
         } catch (err) {
             logger.error("Error sending email", err)
+        } finally {
+            sesClient.destroy()
         }
         return
     }
+
 }
