@@ -1,4 +1,5 @@
 import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
+import {SendVerifyEmailAPIResponse, VerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
 import {apiPost, apiGet} from "../api";
 import {transformSignInRequestData, transformSignUpRequestData} from "./supertokens.utils/transformRequestData.utils";
 
@@ -11,10 +12,6 @@ export interface SignUpData {
 export interface SignInData {
     email: string
     password: string
-}
-
-export interface SendVerifyEmailAPIResponse {
-    status: 'EMAIL_ALREADY_VERIFIED_ERROR'
 }
 
 export function signUp(data: SignUpData) {
@@ -33,13 +30,21 @@ export function sendVerifyEmail() {
     return apiPost<SendVerifyEmailAPIResponse>('/user/email/verify/token')
 }
 
+export function verifyEmail(token: string) {
+    const data = {
+        method: "token",
+        token
+    }
+    return apiPost<VerifyEmailAPIResponse>('/user/email/verify', data)
+}
+
 export function signIn(data: SignInData) {
     const requestData = transformSignInRequestData(data)
     return apiPost<SignInAPIResponse>(`/signin`, requestData)
 }
 
 export function signOut() {
-    return apiPost(`/user/email/verify/token`)
+    return apiPost(`/signout`)
 }
 
 export function getSessionData() {

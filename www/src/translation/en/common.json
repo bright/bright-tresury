@@ -97,6 +97,20 @@
         },
         "submitButton": "Login",
         "forgotPassword": "Forgot Password?"
+      },
+      "verifyEmail": {
+        "success": {
+          "title": "Sign up success",
+          "subtitle": "Welcome to the family!",
+          "information": "You have successfully registered. <a>Log in</a> and experience Bright Treasury app’s potential to the fullest!"
+        },
+        "error": {
+          "title": "Sign up error",
+          "subtitle": "Oops.. Seems like something went wrong",
+          "information": "Either your email has already been confirmed or the token has expired",
+          "resendEmail": "Resend email",
+          "emailResent": "Please check your email to confirm the registration"
+        }
       }
     }
   },

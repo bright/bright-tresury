@@ -20,6 +20,7 @@ export const ROUTE_TIPS = '/tips'
 export const ROUTE_BOUNTIES = '/bounties'
 // endregion
 // region Auth
-export const ROUTE_SIGNUP = '/signup'
-export const ROUTE_SIGNIN = '/signin'
+export const ROUTE_SIGNUP = '/auth/signup'
+export const ROUTE_SIGNIN = '/auth/signin'
+export const ROUTE_VERIFY_EMAIL = '/auth/verify-email'
 // endregion

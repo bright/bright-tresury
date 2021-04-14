@@ -2,6 +2,7 @@ import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom';
 import './App.css';
+import {EmailPasswordAuth} from "supertokens-auth-react/lib/build/recipe/emailpassword";
 import {AuthContextProvider, useAuth} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
 import SignUp from './auth/sign-up/SignUp';
@@ -23,13 +24,15 @@ import {
     ROUTE_ROOT,
     ROUTE_SIGNIN,
     ROUTE_SIGNUP,
-    ROUTE_STATS
+    ROUTE_STATS,
+    ROUTE_VERIFY_EMAIL
 } from './routes';
 import Stats from './stats/Stats';
 import {SubstrateContextProvider} from './substrate-lib';
 import {initializeSupertokens} from "./supertokens";
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
+import VerifyEmail from "./auth/sign-in/VerifyEmail";
 
 function AppRoutes() {
     const {isUserSignedIn} = useAuth()
@@ -45,6 +48,9 @@ function AppRoutes() {
                     </Route>
                     <Route exact={true} path={ROUTE_SIGNIN}>
                         {isUserSignedIn ? <Redirect to={ROUTE_STATS}/> : <SignIn/>}
+                    </Route>
+                    <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
+                        <VerifyEmail/>
                     </Route>
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>

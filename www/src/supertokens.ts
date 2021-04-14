@@ -17,16 +17,8 @@ export function initializeSupertokens() {
         recipeList: [
             EmailPassword.init({
                 emailVerificationFeature: {
-                    mode: "REQUIRED"
-                },
-                palette: {
-                    background: '#333',
-                    error: '#ad2e2e',
-                    textTitle: "white",
-                    textLabel: "white",
-                    textInput: '#a9a9a9',
-                    textPrimary: "white",
-                    textLink: '#a9a9a9'
+                    mode: "OFF",
+                    disableDefaultImplementation: true,
                 },
                 signInAndUpFeature: {
                     disableDefaultImplementation: true,

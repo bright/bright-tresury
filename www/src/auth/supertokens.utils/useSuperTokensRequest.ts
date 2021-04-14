@@ -2,8 +2,8 @@ import {FormikErrors} from "formik/dist/types";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {FormBaseAPIResponse, FormFieldError, SignInAPIResponse, SignUpAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
+import {SendVerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
 import {LoadingState} from "../../components/loading/LoadingWrapper";
-import {SendVerifyEmailAPIResponse} from "../auth.api";
 
 interface UseSuperTokensRequestResult<Values> {
     call: (params: Values, setErrors?: (errors: FormikErrors<Values>) => void) => Promise<void | SuperTokensAPIResponse>
