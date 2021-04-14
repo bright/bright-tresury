@@ -1,7 +1,7 @@
 import React from 'react';
 import {useTranslation} from "react-i18next";
 import signInSrc from '../../assets/lock.svg'
-import {ROUTE_SIGNIN} from "../../routes";
+import {ROUTE_SIGNIN} from "../../routes/routes";
 import TopBarButton from "./TopBarButton";
 import { useHistory } from 'react-router-dom';
 
