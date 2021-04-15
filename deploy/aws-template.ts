@@ -1123,7 +1123,12 @@ export default cloudform({
         }).dependsOn(Resources.ECSALB),
 
         [Resources.ECSAuthCoreTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
-            HealthCheckEnabled: false,
+            HealthCheckIntervalSeconds: 20,
+            HealthCheckPath: "/hello",
+            HealthCheckProtocol: "HTTP",
+            HealthCheckPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
+            HealthCheckTimeoutSeconds: 10,
+            HealthyThresholdCount: 2,
             Name: Fn.Join('-', [Resources.ECSAuthCoreTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
             Protocol: "HTTP",
