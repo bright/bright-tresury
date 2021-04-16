@@ -16,10 +16,4 @@ describe('EmailsService', () => {
         expect(service).toBeDefined();
     });
 
-    describe('send email', () => {
-        it('should send email', async () => {
-            // const result = await service().sendEmail()
-            // expect(result).toBe(true)
-        })
-    })
 });

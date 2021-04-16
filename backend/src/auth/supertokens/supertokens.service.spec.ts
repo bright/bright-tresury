@@ -1,4 +1,8 @@
+import {TestingModuleBuilder} from "@nestjs/testing";
 import {v4 as uuid} from 'uuid';
+import {EmailsService} from "../../emails/emails.service";
+import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
+import {IdeaNetwork} from "../../ideas/ideaNetwork.entity";
 import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
 import {SuperTokensService} from "./supertokens.service";
 import {UsersService} from "../../users/users.service";
@@ -72,6 +76,21 @@ describe(`SuperTokens Service`, () => {
             const savedUser = await getUsersService().findOneByUsername(username)
             expect(savedUser!.email).toBe(email)
             expect(savedUser!.username).toBe(username)
+        })
+    })
+
+    describe('send verify email template', () => {
+        it('should send email', async () => {
+            const spy = jest.spyOn(app.get().get(EmailsService), 'sendVerifyEmail').mockImplementationOnce(async (to: string, verifyUrl: string) => {
+                return
+            })
+            const user = {
+                id: uuid(),
+                email: 'chuck@email.com',
+            } as SuperTokensUser
+            const verifyUrlWithToken = 'http://example.com?token=aaa'
+            await getService().sendVerifyEmail(user, verifyUrlWithToken)
+            expect(spy).toHaveBeenCalledWith(user.email, verifyUrlWithToken)
         })
     })
 })
