@@ -10,8 +10,8 @@ export class AddIdeaMilestonesAndIdeaMilestoneNetworksTables1617873510302 implem
               "updatedAt" timestamp with time zone not null default CURRENT_TIMESTAMP ,
               "ordinalNumber" serial not null,
               "subject" text not null,
-              "dateFrom" timestamp with time zone null,
-              "dateTo" timestamp with time zone null,
+              "dateFrom" date null,
+              "dateTo" date null,
               "description" text null,
               "ideaId" uuid REFERENCES ideas (id) ON DELETE CASCADE ON UPDATE CASCADE
             )

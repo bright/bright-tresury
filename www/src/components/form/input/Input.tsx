@@ -23,7 +23,7 @@ export const Input: React.FC<InputProps> = ({label, endAdornment, name = '', tex
         {label ? <Label label={label}/> : null}
         <TextField
             {...props}
-            textFieldColorScheme={textFieldColorScheme}
+            colorScheme={textFieldColorScheme}
             error={hasError}
             endAdornment={endAdornment}
             inputProps={{...field, ...meta}}

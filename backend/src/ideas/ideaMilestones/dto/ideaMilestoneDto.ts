@@ -1,4 +1,4 @@
-import {ApiProperty} from "@nestjs/swagger";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {IdeaMilestone} from "../entities/idea.milestone.entity";
 import {
     IdeaMilestoneNetworkDto,
@@ -6,25 +6,38 @@ import {
 } from "./ideaMilestoneNetworkDto";
 
 export class IdeaMilestoneDto {
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Id from the database'
+    })
     id: string
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Ordinal number of the milestone'
+    })
     ordinalNumber: number
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Subject of the milestone'
+    })
     subject: string
 
-    @ApiProperty()
-    dateFrom?: Date | null
+    @ApiPropertyOptional({
+        description: 'Date of start of the milestone'
+    })
+    dateFrom?: Date
 
-    @ApiProperty()
-    dateTo?: Date | null
+    @ApiPropertyOptional({
+        description: 'Date of end of the milestone'
+    })
+    dateTo?: Date
 
-    @ApiProperty()
-    description?: string | null
+    @ApiPropertyOptional({
+        description: 'Description of the milestone'
+    })
+    description?: string
 
     @ApiProperty({
+        description: 'Networks of the milestone',
         type: [IdeaMilestoneNetworkDto]
     })
     networks: IdeaMilestoneNetworkDto[]
@@ -34,9 +47,9 @@ export class IdeaMilestoneDto {
         ordinalNumber: number,
         subject: string,
         networks: IdeaMilestoneNetworkDto[],
-        dateFrom?: Date | null,
-        dateTo?: Date | null,
-        description?: string | null
+        dateFrom?: Date,
+        dateTo?: Date,
+        description?: string
     ) {
         this.id = id
         this.ordinalNumber = ordinalNumber

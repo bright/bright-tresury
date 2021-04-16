@@ -36,20 +36,30 @@ export const IdeaMilestones = ({ ideaId, canEdit, networks }: Props) => {
     return (
         <LoadingWrapper loadingState={loadingState}>
             <>
-                { ideaMilestones.length === 0 && <EmptyIdeaMilestonesArrayInfo /> }
-                { canEdit &&
-                    <CreateIdeaMilestoneButton
+                { ideaMilestones.length === 0
+                    ? <EmptyIdeaMilestonesArrayInfo />
+                    : null
+                }
+                { canEdit
+                    ? <CreateIdeaMilestoneButton
                         text={t('idea.milestones.createMilestone')}
                         onClick={() => setIsCreateIdeaMilestoneModalOpen(true)}
-                    />
+                      />
+                    : null
                 }
-                <IdeaMilestonesList ideaId={ideaId} canEdit={canEdit} ideaMilestones={ideaMilestones} fetchIdeaMilestones={fetchIdeaMilestones} />
-                {isCreateIdeaMilestoneModalOpen &&
-                    <CreateIdeaMilestoneModal
+                <IdeaMilestonesList
+                    ideaId={ideaId}
+                    canEdit={canEdit}
+                    ideaMilestones={ideaMilestones}
+                    fetchIdeaMilestones={fetchIdeaMilestones}
+                />
+                { isCreateIdeaMilestoneModalOpen
+                    ? <CreateIdeaMilestoneModal
                         ideaId={ideaId}
                         network={networks[0].name}
                         handleCloseModal={handleCreateIdeaMilestoneModalClose}
-                    />
+                      />
+                    : null
                 }
             </>
         </LoadingWrapper>

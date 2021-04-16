@@ -15,7 +15,9 @@ export const CreateIdeaMilestoneModalContent = ({ formValues, onCancel, onSumbit
 
     return (
         <>
-            <h2 id='modal-title'>{t('idea.milestones.modal.createMilestone')}</h2>
+            <h2 id='modal-title'>
+                {t('idea.milestones.modal.createMilestone')}
+            </h2>
             <IdeaMilestoneForm values={formValues} readonly={false} onSubmit={onSumbit}>
                 <Button type='button' color='primary' variant='text' onClick={onCancel}>
                     {t('idea.milestones.modal.form.buttons.cancel')}

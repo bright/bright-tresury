@@ -4,9 +4,9 @@ export interface IdeaMilestoneDto {
     id: string,
     ordinalNumber: number
     subject: string,
-    dateFrom?: Date | null,
-    dateTo?: Date | null,
-    description?: string | null
+    dateFrom?: Date,
+    dateTo?: Date,
+    description?: string
     networks: IdeaMilestoneNetworkDto[]
 }
 

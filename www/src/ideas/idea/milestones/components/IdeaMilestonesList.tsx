@@ -51,11 +51,21 @@ export const IdeaMilestonesList = ({ ideaId, canEdit, ideaMilestones, fetchIdeaM
                     </li>
                 ))}
             </ul>
-            { focusedIdeaMilestone && isEditIdeaMilestoneModalOpen &&
-                    <EditIdeaMilestoneModal ideaId={ideaId} ideaMilestoneId={focusedIdeaMilestone.id} ideaMilestone={focusedIdeaMilestone} handleCloseModal={handleEditIdeaMilestoneModalClose} />
+            { focusedIdeaMilestone && isEditIdeaMilestoneModalOpen
+                ? <EditIdeaMilestoneModal
+                    ideaId={ideaId}
+                    ideaMilestoneId={focusedIdeaMilestone.id}
+                    ideaMilestone={focusedIdeaMilestone}
+                    handleCloseModal={handleEditIdeaMilestoneModalClose}
+                  />
+                : null
             }
-            { focusedIdeaMilestone && isDisplayIdeaMilestoneModalOpen &&
-                    <DisplayIdeaMilestoneModal ideaMilestone={focusedIdeaMilestone} handleCloseModal={handleDisplayIdeaMilestoneModalClose} />
+            { focusedIdeaMilestone && isDisplayIdeaMilestoneModalOpen
+                ? <DisplayIdeaMilestoneModal
+                    ideaMilestone={focusedIdeaMilestone}
+                    handleCloseModal={handleDisplayIdeaMilestoneModalClose}
+                  />
+                : null
             }
         </>
 

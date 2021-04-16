@@ -67,7 +67,7 @@ export class IdeaMilestonesService {
         return await this.ideaMilestoneRepository.save({
             ...currentIdeaMilestone,
             ...updateIdeaMilestoneDto,
-            networks: updatedNetworks ? updatedNetworks : currentIdeaMilestone.networks
+            networks: updatedNetworks ?? currentIdeaMilestone.networks
         })
     }
 }

@@ -3,17 +3,23 @@ import {IdeaMilestoneNetwork} from "../entities/idea.milestone.network.entity";
 import {IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID} from "class-validator";
 
 export class IdeaMilestoneNetworkDto {
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Id from the database'
+    })
     @IsOptional()
     @IsUUID('4')
     id?: string
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Name of the network'
+    })
     @IsNotEmpty()
     @IsString()
     name: string
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Value of the network'
+    })
     @IsNotEmpty()
     @IsNumber()
     value: number

@@ -25,7 +25,7 @@ export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldC
 
     return (
         <FormGroup>
-            { label && <Label label={label} /> }
+            { label ? <Label label={label} /> : null }
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <MaterialDatePicker
                     {...props}
@@ -35,7 +35,8 @@ export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldC
                     clearable
                     disableToolbar
                     error={hasError}
-                    format={'dd/MM/yyyy'}
+                    format={'yyyy-MM-dd'}
+                    value={field.value !== undefined ? field.value : null}
                     onChange={date => helpers.setValue(date)}
                     InputProps={{
                         classes: {...classes},

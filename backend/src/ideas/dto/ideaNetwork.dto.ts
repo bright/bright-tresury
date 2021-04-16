@@ -4,15 +4,22 @@ import {IdeaNetwork} from "../entities/ideaNetwork.entity";
 import {ExtrinsicDto, toExtrinsicDto} from "../../extrinsics/dto/extrinsic.dto";
 
 export class IdeaNetworkDto {
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Id from the database'
+    })
     @IsOptional()
     id?: string
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Name of the network'
+    })
     @IsNotEmpty()
     name: string
 
-    @ApiProperty({type: Number})
+    @ApiProperty({
+        description: 'Value of the network',
+        type: Number
+    })
     @IsNumber()
     value: number
 

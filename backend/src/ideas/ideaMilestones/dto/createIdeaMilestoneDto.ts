@@ -1,30 +1,43 @@
-import {ApiProperty} from "@nestjs/swagger";
-import {ArrayMinSize, IsDateString, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
+import {ArrayMinSize, IsDateString, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {IdeaMilestoneNetworkDto} from "./ideaMilestoneNetworkDto";
 
 export class CreateIdeaMilestoneDto {
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Subject of the milestone'
+    })
     @IsNotEmpty()
     @IsString()
     subject: string
 
-    @ApiProperty()
+    @ApiPropertyOptional({
+        description: 'Date of start of the milestone'
+    })
     @IsOptional()
-    @IsDateString()
-    dateFrom?: Date | null
+    // https://github.com/typestack/class-validator/issues/407
+    @IsISO8601()
+    dateFrom?: Date
 
-    @ApiProperty()
+    @ApiPropertyOptional({
+        description: 'Date of end of the milestone'
+    })
     @IsOptional()
-    @IsDateString()
-    dateTo?: Date | null
+    // https://github.com/typestack/class-validator/issues/407
+    @IsISO8601()
+    dateTo?: Date
 
-    @ApiProperty()
+    @ApiPropertyOptional({
+        description: 'Description of the milestone'
+    })
     @IsOptional()
     @IsString()
-    description?: string | null
+    description?: string
 
-    @ApiProperty({ type: [IdeaMilestoneNetworkDto] })
+    @ApiProperty({
+        description: 'Networks of the milestone',
+        type: [IdeaMilestoneNetworkDto]
+    })
     @Type(() => IdeaMilestoneNetworkDto)
     @IsNotEmpty()
     @ValidateNested({ each: true })
@@ -34,9 +47,9 @@ export class CreateIdeaMilestoneDto {
     constructor(
         subject: string,
         networks: IdeaMilestoneNetworkDto[],
-        dateFrom?: Date | null,
-        dateTo?: Date | null,
-        description?: string | null
+        dateFrom?: Date,
+        dateTo?: Date,
+        description?: string
     ) {
         this.subject = subject
         this.networks = networks

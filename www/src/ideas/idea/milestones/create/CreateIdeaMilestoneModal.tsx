@@ -15,9 +15,9 @@ export const CreateIdeaMilestoneModal = ({ ideaId, network, handleCloseModal }: 
     const formValues: IdeaMilestoneFormValues = useMemo(() => {
         return {
             subject: '',
-            dateFrom: null,
-            dateTo: null,
-            description: null,
+            dateFrom: undefined,
+            dateTo: undefined,
+            description: '',
             networks: [{ name: network, value: 0 } as IdeaMilestoneNetworkDto]
         }
     }, [network])
@@ -41,7 +41,11 @@ export const CreateIdeaMilestoneModal = ({ ideaId, network, handleCloseModal }: 
             aria-labelledby="modal-title"
             maxWidth={'md'}
         >
-            <CreateIdeaMilestoneModalContent formValues={formValues} onCancel={() => handleCloseModal(false)} onSumbit={submit} />
+            <CreateIdeaMilestoneModalContent
+                formValues={formValues}
+                onCancel={() => handleCloseModal(false)}
+                onSumbit={submit}
+            />
         </Modal>
     )
 }

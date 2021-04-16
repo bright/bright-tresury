@@ -34,7 +34,12 @@ export const DisplayIdeaMilestoneModal = ({ ideaMilestone, handleCloseModal }: P
             aria-labelledby="modal-title"
             maxWidth={'md'}
         >
-            <DisplayIdeaMilestoneModalContent ideaMilestoneOrdinalNumber={ideaMilestone.ordinalNumber} formValues={formValues} onCancel={handleCloseModal} onSumbit={submit} />
+            <DisplayIdeaMilestoneModalContent
+                ideaMilestoneOrdinalNumber={ideaMilestone.ordinalNumber}
+                formValues={formValues}
+                onCancel={handleCloseModal}
+                onSumbit={submit}
+            />
         </Modal>
     )
 }

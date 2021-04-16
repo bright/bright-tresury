@@ -43,7 +43,11 @@ export const EditIdeaMilestoneModal = ({ ideaId, ideaMilestoneId, ideaMilestone,
             aria-labelledby="modal-title"
             maxWidth={'md'}
         >
-            <EditIdeaMilestoneModalContent formValues={formValues} onCancel={() => handleCloseModal(false)} onSumbit={submit} />
+            <EditIdeaMilestoneModalContent
+                formValues={formValues}
+                onCancel={() => handleCloseModal(false)}
+                onSumbit={submit}
+            />
         </Modal>
     )
 }

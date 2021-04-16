@@ -5,14 +5,14 @@ import {TextFieldColorScheme} from "./textFieldStyles";
 
 interface OwnProps {
     endAdornment?: string
-    textFieldColorScheme?: TextFieldColorScheme
+    colorScheme?: TextFieldColorScheme
 }
 
 export type TextFieldProps = OwnProps & MaterialTextFieldProps
 
-export const TextField: React.FC<TextFieldProps> = ({endAdornment, textFieldColorScheme = TextFieldColorScheme.Light, ...props}) => {
+export const TextField: React.FC<TextFieldProps> = ({endAdornment, colorScheme = TextFieldColorScheme.Light, ...props}) => {
 
-    const classes = useTextFieldStyles({ colorScheme: textFieldColorScheme })
+    const classes = useTextFieldStyles({ colorScheme })
 
     return <MaterialTextField
         {...props}

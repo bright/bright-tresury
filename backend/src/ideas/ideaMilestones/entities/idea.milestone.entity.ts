@@ -12,18 +12,18 @@ export class IdeaMilestone extends BaseEntity {
     )
     idea: Idea
 
-    @Column({ nullable: false, type: 'integer', generated: 'increment'})
+    @Column({ type: 'integer', generated: 'increment'})
     @Generated('increment')
     ordinalNumber!: number
 
-    @Column({ nullable: false, type: 'text' })
+    @Column({ type: 'text' })
     subject: string
 
-    @Column({ nullable: true, type: 'timestamp with time zone' })
-    dateFrom?: Date | null
+    @Column({ nullable: true, type: 'date' })
+    dateFrom?: Date
 
-    @Column({ nullable: true, type: 'timestamp with time zone' })
-    dateTo?: Date | null
+    @Column({ nullable: true, type: 'date' })
+    dateTo?: Date
 
     @OneToMany(
         () => IdeaMilestoneNetwork,
@@ -37,15 +37,15 @@ export class IdeaMilestone extends BaseEntity {
     networks: IdeaMilestoneNetwork[]
 
     @Column({ nullable: true, type: 'text'})
-    description?: string | null
+    description?: string
 
     constructor(
         idea: Idea,
         subject: string,
         networks: IdeaMilestoneNetwork[],
-        dateFrom?: Date | null,
-        dateTo?: Date | null,
-        description?: string | null
+        dateFrom?: Date,
+        dateTo?: Date,
+        description?: string
     ) {
         super();
         this.idea = idea
