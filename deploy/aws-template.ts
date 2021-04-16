@@ -96,8 +96,10 @@ const Resources = {
     ECSAuthCoreHttpListenerRule: 'ECSAuthCoreHttpListenerRule',
     // ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSAppTargetGroup: 'ECSAppTargetGroup',
+    // It is Substrate target group with a shorter name to match the name requirement of max 32 chars
     ECSSubTargetGroup: 'ECSSubTargetGroup',
-    ECSAuthCoreTargetGroup: 'ECSSubTargetGroup',
+    // It is AuthCore target group with a shorter name to match the name requirement of max 32 chars
+    ECSAutTargetGroup: 'ECSAutTargetGroup',
     ECSAutoScalingGroup: 'ECSAutoScalingGroup',
     ECSServiceRole: 'ECSServiceRole',
 
@@ -244,14 +246,14 @@ export default cloudform({
                 SubstrateWsContainerPort: "9944",
                 AuthCoreContainerName: `${ProjectName}-auth-stage`,
                 AuthCoreHttpContainerPort: "3567",
-                DesiredTasksCount: 2
+                DesiredTasksCount: 1
             },
             prod: {
                 InstanceType: "t2.small",
                 ContainerName: `${ProjectName}-app-prod`,
                 ContainerPort: "3000",
                 Memory: "900",
-                DesiredTasksCount: 2
+                DesiredTasksCount: 1
             }
         },
         Certificates: {
@@ -829,6 +831,20 @@ export default cloudform({
                             Value: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbName')
                         },
                     ],
+                    Secrets: [
+                        {
+                            Name: "POSTGRESQL_HOST",
+                            ValueFrom: Fn.Join('', ['arn:aws:ssm:', Refs.Region, `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/authorizationDatabase/host"])
+                        },
+                        {
+                            Name: "POSTGRESQL_USER",
+                            ValueFrom: Fn.Join('', ['arn:aws:ssm:', Refs.Region, `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/authorizationDatabase/username"])
+                        },
+                        {
+                            Name: "POSTGRESQL_PASSWORD",
+                            ValueFrom: Fn.Join('', ['arn:aws:ssm:', Refs.Region, `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/authorizationDatabase/password"])
+                        }
+                    ],
                     Cpu: 100,
                     Essential: true,
                     Image: "supertokens/supertokens-postgresql:3.3",
@@ -847,20 +863,6 @@ export default cloudform({
                             ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
                             HostPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
                         },
-                    ],
-                    Secrets: [
-                        {
-                            Name: "POSTGRESQL_HOST",
-                            ValueFrom: Fn.Join('', ['arn:aws:ssm:*:', Resources.RootAwsAccountId, ':parameter/', ProjectName, '-', DeployEnv, '/authorizationDatabase/host'])
-                        },
-                        {
-                            Name: "POSTGRESQL_USER",
-                            ValueFrom: Fn.Join('', ['arn:aws:ssm:*:', Resources.RootAwsAccountId, ':parameter/', ProjectName, '-', DeployEnv, '/authorizationDatabase/username'])
-                        },
-                        {
-                            Name: "POSTGRESQL_PASSWORD",
-                            ValueFrom: Fn.Join('', ['arn:aws:ssm:*:', Resources.RootAwsAccountId, ':parameter/', ProjectName, '-', DeployEnv, '/authorizationDatabase/password'])
-                        }
                     ]
                 }
             ],
@@ -951,7 +953,7 @@ export default cloudform({
             DefaultActions: [
                 {
                     Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSAuthCoreTargetGroup)
+                    TargetGroupArn: Fn.Ref(Resources.ECSAutTargetGroup)
                 }
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
@@ -1122,14 +1124,14 @@ export default cloudform({
             VpcId: Fn.Ref(Resources.VPC)
         }).dependsOn(Resources.ECSALB),
 
-        [Resources.ECSAuthCoreTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
+        [Resources.ECSAutTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
             HealthCheckPath: "/hello",
             HealthCheckProtocol: "HTTP",
             HealthCheckPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
             HealthCheckTimeoutSeconds: 10,
             HealthyThresholdCount: 2,
-            Name: Fn.Join('-', [Resources.ECSAuthCoreTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
+            Name: Fn.Join('-', [Resources.ECSAutTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
             Protocol: "HTTP",
             TargetGroupAttributes: [
@@ -1217,7 +1219,7 @@ export default cloudform({
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
                     ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
+                    TargetGroupArn: Fn.Ref(Resources.ECSAutTargetGroup)
                 }
             ],
             DeploymentConfiguration: {
