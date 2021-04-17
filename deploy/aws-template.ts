@@ -116,6 +116,8 @@ const Resources = {
     RootAwsAccountId: "339594496974",
 
     AppTaskRole: "AppTaskRole",
+    AppTaskExecutionRole: "AppTaskExecutionRole",
+    AppAuthorizationAccessPolicy: "AppAuthorizationAccessPolicy",
     BackendDBInstanceHostParameter: "BackendDBInstanceHostParameter",
     AuthCoreDBInstanceHostParameter: "AuthCoreDBInstanceHostParameter",
 }
@@ -240,7 +242,7 @@ export default cloudform({
                 InstanceType: "t2.small",
                 ContainerName: `${ProjectName}-app-stage`,
                 ContainerPort: "3000",
-                Memory: "700",
+                Memory: "600",
                 SubstrateContainerName: `${ProjectName}-substrate-stage`,
                 SubstrateHttpContainerPort: "9933",
                 SubstrateWsContainerPort: "9944",
@@ -721,6 +723,51 @@ export default cloudform({
             ]
         }),
 
+        [Resources.AppTaskExecutionRole]: new IAM.Role({
+            AssumeRolePolicyDocument: {
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [
+                                "ecs-tasks.amazonaws.com"
+                            ]
+                        },
+                        "Action": [
+                            "sts:AssumeRole"
+                        ]
+                    }
+                ]
+            },
+            Path: "/",
+            ManagedPolicyArns: [
+                Fn.Ref(Resources.AppApiS3AccessPolicy),
+                Fn.Ref(Resources.AppApiSESAccessPolicy),
+                Fn.Ref(Resources.AppApiParametersAccessPolicy),
+                Fn.Ref(Resources.AppAuthorizationAccessPolicy)
+            ]
+        }),
+
+        [Resources.AppAuthorizationAccessPolicy]: new IAM.ManagedPolicy({
+            PolicyDocument: {
+                "Version": "2012-10-17",
+                "Statement": [
+                    {
+                        "Effect": "Allow",
+                        "Action": [
+                            "ecr:GetAuthorizationToken",
+                            "ecr:BatchCheckLayerAvailability",
+                            "ecr:GetDownloadUrlForLayer",
+                            "ecr:BatchGetImage",
+                            "logs:CreateLogStream",
+                            "logs:PutLogEvents"
+                        ],
+                        "Resource": "*"
+                    }
+                ]
+            }
+        }),
+
         [Resources.AppApiAccessCredentials]: new IAM.AccessKey({
             UserName: Fn.Ref(Resources.AppApiAccessUser)
         }),
@@ -866,7 +913,7 @@ export default cloudform({
                     ]
                 }
             ],
-            ExecutionRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn"),
+            ExecutionRoleArn: Fn.GetAtt(Resources.AppTaskExecutionRole, "Arn"),
             TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn")
         }),
 
