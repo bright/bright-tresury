@@ -50,7 +50,7 @@ else
     result=$(aws cloudformation update-stack --stack-name ${stack_name} \
       --capabilities CAPABILITY_IAM \
       --debug \
-      --template-url https://treasury-uploads-stage.s3.eu-central-1.amazonaws.com/aws.template \
+      --template-url https://treasury-deployments.s3.eu-central-1.amazonaws.com/aws-${DEPLOY_ENV}.template \
       --parameters ${deploy_params} 2>&1)
 
     exit_code=$?
