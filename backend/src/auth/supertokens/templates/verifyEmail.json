@@ -1,8 +1,0 @@
-{
-  "Template": {
-    "TemplateName": "TreasuryVerifyEmail",
-    "SubjectPart": "Welcome to BrightTreasury!",
-    "HtmlPart": "<!doctype html>\n<html>\n\n<head>\n    <meta name=\"viewport\" content=\"width=device-width\"/>\n    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>\n    <title>Verify Email</title>\n    <style>\n        body {\n            font-family: \"Proxima Nova\", sans-serif;\n            -webkit-font-smoothing: antialiased;\n            font-size: 14px;\n            line-height: 1.4;\n            margin: 0;\n            padding: 0;\n            -ms-text-size-adjust: 100%;\n            -webkit-text-size-adjust: 100%;\n        }\n\n        .container {\n            text-align: center;\n            margin: 36px;\n        }\n\n        .title {\n            font-size: 26px;\n            font-weight: bold;\n            margin-bottom: 16px;\n        }\n\n        .subtitle {\n            margin-bottom: 36px;\n        }\n\n        .button {\n            background-color: #0E65F2;\n            border-radius: 6px;\n            border-width: 0;\n            padding: 10px 24px;\n            font-weight: bold;\n            color: #FFF !important;\n            text-decoration: none;\n        }\n    </style>\n</head>\n\n<body class=\"\">\n<div class=\"container\">\n    <p class=\"title\">Welcome to BrightTreasury!</p>\n    <p class=\"subtitle\">Please confirm your registration and login to Treasury app</p>\n    <div>\n        <a href=\"{{ url }}\" class=\"button\">Confirm</a>\n    </div>\n</div>\n</body>\n\n</html>\n",
-    "TextPart": "Please confirm your registration and login to Treasury app: {{url}}"
-  }
-}

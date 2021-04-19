@@ -6,8 +6,8 @@
   "scripts": {
     "clean": "npm run clean-js && npx rimraf dist",
     "clean-js": "find src -name '*.js' -exec rm {} +",
-    "compile": "tsc",
-    "compile:watch": "tsc --watch",
+    "compile": "nest build",
+    "compile:watch": "nest build --watch",
     "test": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand",
     "test:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand --detectOpenHandles | bunyan -o short",
     "test:watch": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --watch | bunyan -o short",
@@ -56,6 +56,7 @@
     "convict": "^4.4.1",
     "debug": "^4.1.1",
     "fastify-formbody": "^3.1.0",
+    "handlebars": "^4.7.7",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.20",
     "nodemailer": "^6.5.0",

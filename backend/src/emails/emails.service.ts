@@ -1,21 +1,20 @@
-import {SESClient, SendRawEmailCommand} from '@aws-sdk/client-ses';
+import {SendRawEmailCommand, SESClient} from '@aws-sdk/client-ses';
 import {Inject, Injectable} from '@nestjs/common';
+import * as fs from "fs";
+import handlebars from 'handlebars';
+import {createTransport} from 'nodemailer';
 import Mail from "nodemailer/lib/mailer";
+import * as path from "path";
 import {AWSConfig, AWSConfigToken} from "../aws.config";
 import {getLogger} from "../logging.module";
 import {EmailsConfig, EmailsConfigToken} from "./emails.config";
-import { createTransport } from 'nodemailer';
 
 const logger = getLogger()
 
-enum Templates {
-    VerifyEmail = "TreasuryVerifyEmail"
-}
-
 @Injectable()
 export class EmailsService {
-    private nodemailerTransport: Mail;
-    private sesClient: SESClient;
+    private nodemailerTransport: Mail
+    private readonly sesClient: SESClient
 
     constructor(
         @Inject(EmailsConfigToken) private readonly emailsConfig: EmailsConfig,
@@ -31,52 +30,64 @@ export class EmailsService {
     }
 
     async sendVerifyEmail(to: string, verifyUrl: string) {
+        logger.info(`Sending verify email to ${to}`)
         const templateData = {
             url: verifyUrl
         }
-        return this.sendEmail(to, Templates.VerifyEmail, templateData)
+        const subject = 'Welcome to BrightTreasury!'
+        const text = `Please confirm your registration and login to Treasury app: ${verifyUrl}`
+        const html = this.compileTemplate('verifyEmailTemplate', templateData)
+        return this.sendEmail(to, subject, text, html)
     }
 
-    async sendEmail(to: string, templateName: string, templateData: any) {
-        const stringifiedData = JSON.stringify(templateData)
-
-        logger.info(`Sending email to ${to} with template ${templateName} and data ${stringifiedData}`)
+    async sendEmail(to: string, subject: string, text: string, html: string) {
+        logger.info(`Sending email to ${to} with subject ${subject}`)
 
         const params = {
             from: this.emailsConfig.emailAddress,
             to,
-            subject: 'Message',
-            text: 'I hope this message gets sent!',
-            ses: {
-                // optional extra arguments for SendRawEmail
-                Tags: [
-                    {
-                        Name: 'tag_name',
-                        Value: 'tag_value'
-                    }
-                ]
-            }
-            // Destination: {
-            //     CcAddresses: [],
-            //     ToAddresses: [to],
-            // },
-            // Source: this.emailsConfig.emailAddress,
-            // Template: templateName,
-            // TemplateData: stringifiedData,
-            // ReplyToAddresses: [],
+            subject,
+            text,
+            html,
         };
 
-        // const sesClient = new SESClient({region: this.awsConfig.region});
         try {
-            // const data = await sesClient.send(new SendTemplatedEmailCommand(params));
             const data = await this.nodemailerTransport.sendMail(params)
             logger.info("Email sent", data)
         } catch (err) {
             logger.error("Error sending email", err)
-        } finally {
-            // sesClient.destroy()
         }
         return
+    }
+
+    compileTemplate(name: string, data: any): string {
+        try {
+            const emailTemplateSource = this.getTemplateSource(name)
+            if (!emailTemplateSource) {
+                logger.error(`Error compiling template ${name}. Template not found`)
+                return ''
+            }
+            const template = handlebars.compile(emailTemplateSource)
+            const html = template(data)
+            return html
+        } catch (err) {
+            logger.error(`Error compiling template ${name} with data ${JSON.stringify(data)}`, err)
+            return ''
+        }
+    }
+
+    private getTemplateSource(name: string) {
+        const baseTemplatesDir = path.join(__dirname, "/../emails/templates/")
+        const fallbackTemplatesDir = path.join(__dirname, "/../../emails/templates/")
+        const templatesDir = fs.existsSync(baseTemplatesDir) ? baseTemplatesDir : (fs.existsSync(fallbackTemplatesDir) ? fallbackTemplatesDir : undefined)
+        if (!templatesDir) {
+            return undefined
+        }
+        const templateFile = path.join(templatesDir, `${name}.hbs`)
+        if (!fs.existsSync(templateFile)) {
+            return undefined
+        }
+        return fs.readFileSync(templateFile, "utf8")
     }
 
 }
