@@ -23,8 +23,6 @@ export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldC
 
     const hasError: boolean = meta.touched && Boolean(meta.error)
 
-    console.log(field.value)
-
     return (
         <FormGroup>
             { label ? <Label label={label} /> : null }

@@ -50,7 +50,7 @@ const Idea = ({ network }: Props) => {
     const {isUserSignedIn} = useAuth()
 
     const canEdit = useMemo(() => {
-        return !isUserSignedIn
+        return isUserSignedIn
     }, [idea, isUserSignedIn])
 
     useEffect(() => {
