@@ -12,8 +12,9 @@ interface Props {
     network: string
 }
 
-const IdeaCreate: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
-    const {t} = useTranslation()
+const IdeaCreate = ({network = config.NETWORK_NAME}: Props) => {
+
+    const { t } = useTranslation()
     const history = useHistory()
     const [idea] = useState(createEmptyIdea(network))
     const [activate, setActivate] = useState(false)

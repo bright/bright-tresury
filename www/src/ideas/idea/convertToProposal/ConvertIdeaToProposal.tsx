@@ -9,7 +9,7 @@ import {getIdeaById, IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
 import SubmitProposalModal from "../../SubmitProposalModal";
 import { RightButton, LeftButton } from "../../../components/form/buttons/Buttons";
 
-const ConvertIdeaToProposal: React.FC = () => {
+const ConvertIdeaToProposal = () => {
     const {t} = useTranslation()
     const [modalOpen, setModalOpen] = useState(false)
     const [idea, setIdea] = useState<IdeaDto | undefined>()

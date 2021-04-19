@@ -38,16 +38,16 @@ interface Props {
 const Idea = ({ network }: Props) => {
     const classes = useStyles()
 
-    let {ideaId} = useParams<{ ideaId: string }>()
+    let { path } = useRouteMatch();
 
-    let {path} = useRouteMatch();
+    let { ideaId } = useParams<{ ideaId: string }>()
 
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
     /**
      * TODO:// check if [idea] belongs to the currently logged in user
      */
-    const {isUserSignedIn} = useAuth()
+    const { isUserSignedIn } = useAuth()
 
     const canEdit = useMemo(() => {
         return isUserSignedIn
