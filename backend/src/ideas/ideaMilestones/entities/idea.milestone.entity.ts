@@ -2,6 +2,7 @@ import {BaseEntity} from "../../../database/base.entity";
 import {Column, Entity, Generated, ManyToOne, OneToMany} from "typeorm";
 import {IdeaMilestoneNetwork} from "./idea.milestone.network.entity";
 import {Idea} from "../../entities/idea.entity";
+import {Nil} from "../../../utils/types";
 
 @Entity('idea_milestones')
 export class IdeaMilestone extends BaseEntity {
@@ -20,10 +21,10 @@ export class IdeaMilestone extends BaseEntity {
     subject: string
 
     @Column({ nullable: true, type: 'date' })
-    dateFrom?: Date
+    dateFrom: Nil<Date>
 
     @Column({ nullable: true, type: 'date' })
-    dateTo?: Date
+    dateTo: Nil<Date>
 
     @OneToMany(
         () => IdeaMilestoneNetwork,
@@ -37,15 +38,15 @@ export class IdeaMilestone extends BaseEntity {
     networks: IdeaMilestoneNetwork[]
 
     @Column({ nullable: true, type: 'text'})
-    description?: string
+    description: Nil<string>
 
     constructor(
         idea: Idea,
         subject: string,
         networks: IdeaMilestoneNetwork[],
-        dateFrom?: Date,
-        dateTo?: Date,
-        description?: string
+        dateFrom: Nil<Date>,
+        dateTo: Nil<Date>,
+        description: Nil<string>
     ) {
         super();
         this.idea = idea

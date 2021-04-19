@@ -1,4 +1,4 @@
-import {createStyles, DialogProps as MaterialModalProps, Theme} from "@material-ui/core";
+import {createStyles, DialogProps as MaterialDialogProps, Theme} from "@material-ui/core";
 import Dialog from "@material-ui/core/Dialog";
 import {makeStyles} from "@material-ui/core/styles";
 import React from "react";
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }))
 
-export type Props = MaterialModalProps
+export type Props = MaterialDialogProps
 
 export const Modal: React.FC<Props> = ({children, ...props}) => {
     const classes = useStyles()

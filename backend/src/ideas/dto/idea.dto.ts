@@ -7,7 +7,7 @@ import {IdeaMilestoneDto} from "../ideaMilestones/dto/ideaMilestoneDto";
 
 export class IdeaDto {
     @ApiProperty({
-        description: 'Id from the database'
+        description: 'Id of the idea'
     })
     id!: string
 

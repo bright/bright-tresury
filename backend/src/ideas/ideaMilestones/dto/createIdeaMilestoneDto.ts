@@ -2,6 +2,7 @@ import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {ArrayMinSize, IsDateString, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {IdeaMilestoneNetworkDto} from "./ideaMilestoneNetworkDto";
+import {Nil} from "../../../utils/types";
 
 export class CreateIdeaMilestoneDto {
     @ApiProperty({
@@ -17,7 +18,7 @@ export class CreateIdeaMilestoneDto {
     @IsOptional()
     // https://github.com/typestack/class-validator/issues/407
     @IsISO8601()
-    dateFrom?: Date
+    dateFrom: Nil<Date>
 
     @ApiPropertyOptional({
         description: 'Date of end of the milestone'
@@ -25,14 +26,14 @@ export class CreateIdeaMilestoneDto {
     @IsOptional()
     // https://github.com/typestack/class-validator/issues/407
     @IsISO8601()
-    dateTo?: Date
+    dateTo: Nil<Date>
 
     @ApiPropertyOptional({
         description: 'Description of the milestone'
     })
     @IsOptional()
     @IsString()
-    description?: string
+    description: Nil<string>
 
     @ApiProperty({
         description: 'Networks of the milestone',
@@ -47,9 +48,9 @@ export class CreateIdeaMilestoneDto {
     constructor(
         subject: string,
         networks: IdeaMilestoneNetworkDto[],
-        dateFrom?: Date,
-        dateTo?: Date,
-        description?: string
+        dateFrom: Nil<Date>,
+        dateTo: Nil<Date>,
+        description: Nil<string>
     ) {
         this.subject = subject
         this.networks = networks

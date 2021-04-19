@@ -1,32 +1,16 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import {Modal} from "../../../../components/modal/Modal";
 import {DisplayIdeaMilestoneModalContent} from "./DisplayIdeaMilestoneModalContent";
-import {IdeaMilestoneFormValues} from "../form/IdeaMilestoneForm";
 import {IdeaMilestoneDto} from "../idea.milestones.api";
+import {IdeaDto} from "../../../ideas.api";
 
 interface Props {
+    idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
     handleCloseModal: () => void
 }
 
-export const DisplayIdeaMilestoneModal = ({ ideaMilestone, handleCloseModal }: Props) => {
-
-    const formValues: IdeaMilestoneFormValues = useMemo(() => {
-        const { subject, dateFrom, dateTo, description, networks } = ideaMilestone
-        return {
-            subject,
-            dateFrom,
-            dateTo,
-            description,
-            networks
-        }
-    }, [ideaMilestone.id, ideaMilestone])
-
-    const submit = (ideaMilestoneFormValues: IdeaMilestoneFormValues) => {
-        // Submit mock to be able reuse formik form to display milestone values
-        // https://github.com/formium/formik/issues/2675 (waiting for the linked feature)
-    }
-
+export const DisplayIdeaMilestoneModal = ({ idea, ideaMilestone, handleCloseModal }: Props) => {
     return (
         <Modal
             open={true}
@@ -35,10 +19,9 @@ export const DisplayIdeaMilestoneModal = ({ ideaMilestone, handleCloseModal }: P
             maxWidth={'md'}
         >
             <DisplayIdeaMilestoneModalContent
-                ideaMilestoneOrdinalNumber={ideaMilestone.ordinalNumber}
-                formValues={formValues}
-                onCancel={handleCloseModal}
-                onSumbit={submit}
+                idea={idea}
+                ideaMilestone={ideaMilestone}
+                handleCloseModal={handleCloseModal}
             />
         </Modal>
     )

@@ -5,7 +5,7 @@ import {ExtrinsicDto, toExtrinsicDto} from "../../extrinsics/dto/extrinsic.dto";
 
 export class IdeaNetworkDto {
     @ApiPropertyOptional({
-        description: 'Id from the database'
+        description: 'Id of the idea network'
     })
     @IsOptional()
     id?: string
@@ -17,7 +17,7 @@ export class IdeaNetworkDto {
     name: string
 
     @ApiProperty({
-        description: 'Value of the network',
+        description: 'Reward for the idea in the network',
         type: Number
     })
     @IsNumber()

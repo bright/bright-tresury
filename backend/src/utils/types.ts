@@ -36,3 +36,5 @@ export function StaticImpelements<T>() {
     return (constructor: T) => {
     }
 }
+
+export type Nil<T> = T | null | undefined

@@ -1,12 +1,13 @@
 import {apiGet, apiPatch, apiPost} from "../../../api";
+import {Nil} from "../../../util/types";
 
 export interface IdeaMilestoneDto {
     id: string,
     ordinalNumber: number
     subject: string,
-    dateFrom?: Date,
-    dateTo?: Date,
-    description?: string
+    dateFrom: Nil<Date>,
+    dateTo: Nil<Date>,
+    description: Nil<string>,
     networks: IdeaMilestoneNetworkDto[]
 }
 

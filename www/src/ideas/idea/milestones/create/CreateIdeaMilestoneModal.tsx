@@ -1,50 +1,32 @@
-import React, {useMemo} from 'react'
-import {createIdeaMilestone, CreateIdeaMilestoneDto, IdeaMilestoneNetworkDto} from "../idea.milestones.api";
+import React from 'react'
 import {Modal} from "../../../../components/modal/Modal";
 import {CreateIdeaMilestoneModalContent} from "./CreateIdeaMilestoneModalContent";
-import {IdeaMilestoneFormValues} from "../form/IdeaMilestoneForm";
+import {IdeaDto} from "../../../ideas.api";
 
 interface Props {
-    ideaId: string
-    network: string
-    handleCloseModal: (isIdeaMilestoneSuccessfullyCreated: boolean) => void
+    idea: IdeaDto
+    handleCloseModal: () => void
+    fetchIdeaMilestones: () => Promise<void>
 }
 
-export const CreateIdeaMilestoneModal = ({ ideaId, network, handleCloseModal }: Props) => {
+export const CreateIdeaMilestoneModal = ({ idea, handleCloseModal, fetchIdeaMilestones }: Props) => {
 
-    const formValues: IdeaMilestoneFormValues = useMemo(() => {
-        return {
-            subject: '',
-            dateFrom: undefined,
-            dateTo: undefined,
-            description: '',
-            networks: [{ name: network, value: 0 } as IdeaMilestoneNetworkDto]
-        }
-    }, [network])
-
-    const submit = async ({ subject, dateFrom, dateTo, description, networks }: IdeaMilestoneFormValues) => {
-        const createIdeaMilestoneDto: CreateIdeaMilestoneDto = {
-            subject,
-            dateFrom,
-            dateTo,
-            description,
-            networks
-        }
-        await createIdeaMilestone(ideaId, createIdeaMilestoneDto)
-        handleCloseModal(true)
+    const handleSuccessfulFormSubmit = () => {
+        handleCloseModal()
+        fetchIdeaMilestones()
     }
 
     return (
         <Modal
             open={true}
-            onClose={() => handleCloseModal(false)}
+            onClose={handleCloseModal}
             aria-labelledby="modal-title"
             maxWidth={'md'}
         >
             <CreateIdeaMilestoneModalContent
-                formValues={formValues}
-                onCancel={() => handleCloseModal(false)}
-                onSumbit={submit}
+                idea={idea}
+                handleCloseModal={handleCloseModal}
+                handleSuccessfulFormSubmit={handleSuccessfulFormSubmit}
             />
         </Modal>
     )

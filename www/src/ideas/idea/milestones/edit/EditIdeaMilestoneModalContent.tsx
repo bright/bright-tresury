@@ -1,15 +1,18 @@
 import React from 'react'
-import {IdeaMilestoneForm, IdeaMilestoneFormValues} from "../form/IdeaMilestoneForm";
+import {IdeaMilestoneForm, IdeaMilestoneFormMode} from "../form/IdeaMilestoneForm";
 import {useTranslation} from "react-i18next";
 import {Button} from "../../../../components/button/Button";
+import {IdeaMilestoneDto} from "../idea.milestones.api";
+import {IdeaDto} from "../../../ideas.api";
 
 interface Props {
-    formValues: IdeaMilestoneFormValues
-    onCancel: () => void
-    onSumbit: (ideaMilestone: IdeaMilestoneFormValues) => void
+    idea: IdeaDto
+    ideaMilestone: IdeaMilestoneDto
+    handleCloseModal: () => void
+    handleSuccessfulFormSubmit: () => void
 }
 
-export const EditIdeaMilestoneModalContent = ({ formValues, onCancel, onSumbit }: Props) => {
+export const EditIdeaMilestoneModalContent = ({ idea, ideaMilestone, handleCloseModal, handleSuccessfulFormSubmit }: Props) => {
 
     const { t } = useTranslation()
 
@@ -18,8 +21,13 @@ export const EditIdeaMilestoneModalContent = ({ formValues, onCancel, onSumbit }
             <h2 id='modal-title'>
                 {t('idea.milestones.modal.editMilestone')}
             </h2>
-            <IdeaMilestoneForm values={formValues} readonly={false} onSubmit={onSumbit}>
-                <Button type='button' color='primary' variant='text' onClick={onCancel}>
+            <IdeaMilestoneForm
+                idea={idea}
+                ideaMilestone={ideaMilestone}
+                mode={IdeaMilestoneFormMode.Edit}
+                onSuccessfulSubmit={handleSuccessfulFormSubmit}
+            >
+                <Button type='button' color='primary' variant='text' onClick={handleCloseModal}>
                     {t('idea.milestones.modal.form.buttons.cancel')}
                 </Button>
                 <Button type='submit' color='primary'>

@@ -4,7 +4,7 @@ import {IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID} from "class-validato
 
 export class IdeaMilestoneNetworkDto {
     @ApiProperty({
-        description: 'Id from the database'
+        description: 'Id of the idea milestone network'
     })
     @IsOptional()
     @IsUUID('4')
@@ -18,7 +18,7 @@ export class IdeaMilestoneNetworkDto {
     name: string
 
     @ApiProperty({
-        description: 'Value of the network'
+        description: 'Reward for the milestone in the network'
     })
     @IsNotEmpty()
     @IsNumber()

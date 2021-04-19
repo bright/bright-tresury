@@ -23,6 +23,8 @@ export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldC
 
     const hasError: boolean = meta.touched && Boolean(meta.error)
 
+    console.log(field.value)
+
     return (
         <FormGroup>
             { label ? <Label label={label} /> : null }
@@ -36,7 +38,6 @@ export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldC
                     disableToolbar
                     error={hasError}
                     format={'yyyy-MM-dd'}
-                    value={field.value !== undefined ? field.value : null}
                     onChange={date => helpers.setValue(date)}
                     InputProps={{
                         classes: {...classes},

@@ -9,7 +9,7 @@ import {Route, Switch, useRouteMatch} from 'react-router-dom';
 import IdeaInfo from "./info/IdeaInfo";
 import IdeaDiscussion from "./discussion/IdeaDiscussion";
 import {breakpoints} from "../../theme/theme";
-import {IdeaMilestonesWrapper} from "./milestones/IdeaMilestonesWrapper";
+import {IdeaMilestones} from "./milestones/IdeaMilestones";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,7 +50,7 @@ const Idea = ({ network }: Props) => {
     const {isUserSignedIn} = useAuth()
 
     const canEdit = useMemo(() => {
-        return isUserSignedIn
+        return !isUserSignedIn
     }, [idea, isUserSignedIn])
 
     useEffect(() => {
@@ -73,7 +73,7 @@ const Idea = ({ network }: Props) => {
                         <IdeaInfo idea={idea} canEdit={canEdit} />
                     </Route>
                     <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
-                        <IdeaMilestonesWrapper idea={idea} canEdit={canEdit} />
+                        <IdeaMilestones idea={idea} canEdit={canEdit} />
                     </Route>
                     <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
                         <IdeaDiscussion />

@@ -4,10 +4,11 @@ import {
     IdeaMilestoneNetworkDto,
     mapIdeaMilestoneNetworkEntityToIdeaMilestoneNetworkDto
 } from "./ideaMilestoneNetworkDto";
+import {Nil} from "../../../utils/types";
 
 export class IdeaMilestoneDto {
     @ApiProperty({
-        description: 'Id from the database'
+        description: 'Id of the idea milestone'
     })
     id: string
 
@@ -22,19 +23,21 @@ export class IdeaMilestoneDto {
     subject: string
 
     @ApiPropertyOptional({
-        description: 'Date of start of the milestone'
+        description: 'Date of start of the milestone',
+        type: Date
     })
-    dateFrom?: Date
+    dateFrom: Nil<Date>
 
     @ApiPropertyOptional({
-        description: 'Date of end of the milestone'
+        description: 'Date of end of the milestone',
+        type: Date
     })
-    dateTo?: Date
+    dateTo: Nil<Date>
 
     @ApiPropertyOptional({
         description: 'Description of the milestone'
     })
-    description?: string
+    description: Nil<string>
 
     @ApiProperty({
         description: 'Networks of the milestone',
@@ -47,9 +50,9 @@ export class IdeaMilestoneDto {
         ordinalNumber: number,
         subject: string,
         networks: IdeaMilestoneNetworkDto[],
-        dateFrom?: Date,
-        dateTo?: Date,
-        description?: string
+        dateFrom: Nil<Date>,
+        dateTo: Nil<Date>,
+        description: Nil<string>
     ) {
         this.id = id
         this.ordinalNumber = ordinalNumber

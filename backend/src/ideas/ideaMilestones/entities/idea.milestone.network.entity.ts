@@ -11,7 +11,7 @@ export class IdeaMilestoneNetwork extends BaseEntity {
     )
     ideaMilestone!: IdeaMilestone
 
-    @Column({ nullable: false, type: 'text' })
+    @Column({ type: 'text' })
     name: string
 
     @Column("decimal", { precision: 39, scale: 15, nullable: false, default: 0 })

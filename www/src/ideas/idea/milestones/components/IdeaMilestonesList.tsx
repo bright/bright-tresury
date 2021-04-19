@@ -2,28 +2,24 @@ import React, {useState} from 'react'
 import {IdeaMilestoneDto} from "../idea.milestones.api";
 import {EditIdeaMilestoneModal} from "../edit/EditIdeaMilestoneModal";
 import {DisplayIdeaMilestoneModal} from "../display/DisplayIdeaMilestoneModal";
+import {IdeaDto} from "../../../ideas.api";
 
 interface Props {
-    ideaId: string
-    canEdit: boolean
+    idea: IdeaDto
     ideaMilestones: IdeaMilestoneDto[]
-    fetchIdeaMilestones: (ideaId: string) => Promise<void>
+    canEdit: boolean
+    fetchIdeaMilestones: () => Promise<void>
 }
 
-export const IdeaMilestonesList = ({ ideaId, canEdit, ideaMilestones, fetchIdeaMilestones }: Props) => {
+export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMilestones }: Props) => {
 
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
     const [isEditIdeaMilestoneModalOpen, setisEditIdeaMilestoneModalOpen] = useState<boolean>(false)
     const [isDisplayIdeaMilestoneModalOpen, setisDisplayIdeaMilestoneModalOpen] = useState<boolean>(false)
 
-    const handleEditIdeaMilestoneModalClose = (isIdeaMilestoneSuccessfullyEdited: boolean) => {
-
+    const handleEditIdeaMilestoneModalClose = () => {
         setisEditIdeaMilestoneModalOpen(false)
         setFocusedIdeaMilestone(null)
-
-        if (isIdeaMilestoneSuccessfullyEdited) {
-            fetchIdeaMilestones(ideaId)
-        }
     }
 
     const handleDisplayIdeaMilestoneModalClose = () => {
@@ -53,15 +49,16 @@ export const IdeaMilestonesList = ({ ideaId, canEdit, ideaMilestones, fetchIdeaM
             </ul>
             { focusedIdeaMilestone && isEditIdeaMilestoneModalOpen
                 ? <EditIdeaMilestoneModal
-                    ideaId={ideaId}
-                    ideaMilestoneId={focusedIdeaMilestone.id}
+                    idea={idea}
                     ideaMilestone={focusedIdeaMilestone}
                     handleCloseModal={handleEditIdeaMilestoneModalClose}
+                    fetchIdeaMilestones={fetchIdeaMilestones}
                   />
                 : null
             }
             { focusedIdeaMilestone && isDisplayIdeaMilestoneModalOpen
                 ? <DisplayIdeaMilestoneModal
+                    idea={idea}
                     ideaMilestone={focusedIdeaMilestone}
                     handleCloseModal={handleDisplayIdeaMilestoneModalClose}
                   />

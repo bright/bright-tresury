@@ -175,6 +175,7 @@
         "editMilestone": "Edit Milestone",
         "form": {
           "emptyFieldError": "This field cannot be empty",
+          "endDatePriorToStartDateError": "End date can't be prior to the start date",
           "yourMilestone": "Your Milestone",
           "milestoneSubject": "Subject of a Milestone",
           "date": "Date",
@@ -183,6 +184,7 @@
           "budget": "Budget",
           "description": "Description",
           "describeMilestone": "Describe the Milestone",
+          "apiCallErrorMessage": "Something went wrong. Try again.",
           "buttons": {
             "cancel": "Cancel",
             "create": "Create",

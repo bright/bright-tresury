@@ -1,52 +1,35 @@
-import React, {useMemo} from 'react'
+import React from 'react'
 import {Modal} from "../../../../components/modal/Modal";
 import {EditIdeaMilestoneModalContent} from "./EditIdeaMilestoneModalContent";
-import {IdeaMilestoneFormValues} from "../form/IdeaMilestoneForm";
-import {IdeaMilestoneDto, patchIdeaMilestone, PatchIdeaMilestoneDto} from "../idea.milestones.api";
+import {IdeaMilestoneDto} from "../idea.milestones.api";
+import {IdeaDto} from "../../../ideas.api";
 
 interface Props {
-    ideaId: string
-    ideaMilestoneId: string
+    idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    handleCloseModal: (isIdeaMilestoneSuccessfullyEdited: boolean) => void
+    handleCloseModal: () => void
+    fetchIdeaMilestones: () => Promise<void>
 }
 
-export const EditIdeaMilestoneModal = ({ ideaId, ideaMilestoneId, ideaMilestone, handleCloseModal }: Props) => {
+export const EditIdeaMilestoneModal = ({ idea, ideaMilestone, handleCloseModal, fetchIdeaMilestones }: Props) => {
 
-    const formValues: IdeaMilestoneFormValues = useMemo(() => {
-        const { subject, dateFrom, dateTo, description, networks } = ideaMilestone
-        return {
-            subject,
-            dateFrom,
-            dateTo,
-            description,
-            networks
-        }
-    }, [ideaMilestoneId, ideaMilestone])
-
-    const submit = async ({ subject, dateFrom, dateTo, description, networks }: IdeaMilestoneFormValues) => {
-        const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = {
-            subject,
-            dateFrom,
-            dateTo,
-            description,
-            networks
-        }
-        await patchIdeaMilestone(ideaId, ideaMilestoneId, patchIdeaMilestoneDto)
-        handleCloseModal(true)
+    const handleSuccessfulFormSubmit = () => {
+        handleCloseModal()
+        fetchIdeaMilestones()
     }
 
     return (
         <Modal
             open={true}
-            onClose={() => handleCloseModal(false)}
+            onClose={handleCloseModal}
             aria-labelledby="modal-title"
             maxWidth={'md'}
         >
             <EditIdeaMilestoneModalContent
-                formValues={formValues}
-                onCancel={() => handleCloseModal(false)}
-                onSumbit={submit}
+                idea={idea}
+                ideaMilestone={ideaMilestone}
+                handleCloseModal={handleCloseModal}
+                handleSuccessfulFormSubmit={handleSuccessfulFormSubmit}
             />
         </Modal>
     )
