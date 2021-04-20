@@ -1,20 +1,76 @@
+import {HttpStatus, UnauthorizedException} from "@nestjs/common";
+import {getRepositoryToken} from "@nestjs/typeorm";
+import supertest from "supertest";
+import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import {v4 as uuid, validate as uuidValidate} from 'uuid';
+import {SessionUser} from "../auth/session/session.decorator";
+import {cleanAuthorizationDatabase} from "../auth/supertokens/specHelpers/supertokens.database.spec.helper";
+import {User} from "../users/user.entity";
 import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
 import {Idea} from './entities/idea.entity';
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
-import {createIdea} from './spec.helpers';
+import {createIdea, createSessionUser} from './spec.helpers';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
+import {SuperTokensService} from "../auth/supertokens/supertokens.service";
 
 const baseUrl = '/api/v1/ideas'
 
 describe(`/api/v1/ideas`, () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(IdeasService)
+    const getSuperTokensService = () => app.get().get(SuperTokensService)
+
+    let cookies: string
+
+    let user: SessionUser
 
     beforeEach(async () => {
         await cleanDatabase()
+        await cleanAuthorizationDatabase()
+
+        const pass = uuid()
+        const email = 'user@example.com'
+        const data = {
+            formFields: [
+                {id: 'email', value: email},
+                {id: 'password', value: pass},
+                {id: 'username', value: 'name'},
+            ]
+        }
+
+        const res: any = await request(app())
+            .post(`/api/v1/signup`)
+            .send(data)
+
+        const appUser = await app().get(getRepositoryToken(User)).findOne({email})
+        user = {user: appUser}
+
+        cookies = res.headers['set-cookie'].join('; ')
+
+        let emailVerificationToken = ''
+        jest.spyOn(getSuperTokensService(), 'sendVerifyEmail').mockImplementation(
+            async (user1: SuperTokensUser, emailVerificationURLWithToken: string) => {
+                const tokenQueryParam = 'token='
+                const tokenStartIndex = emailVerificationURLWithToken.indexOf(tokenQueryParam) + tokenQueryParam.length
+                emailVerificationToken = emailVerificationURLWithToken.substr(tokenStartIndex)
+            })
+
+        await request(app())
+            .post(`/api/v1/user/email/verify/token`)
+
+        await request(app())
+            .post(`/api/v1/user/email/verify`)
+            .send({
+                method: "token",
+                token: emailVerificationToken
+            })
     })
+
+    const authorizeRequest = (req: supertest.Test) => {
+        return cookies ? req.set('cookie', cookies) : req
+    }
+
     describe('GET', () => {
         it('should return 200', () => {
             return request(app())
@@ -23,7 +79,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas', async (done) => {
-            await createIdea({title: 'Test title'})
+            await createIdea({title: 'Test title'}, user)
 
             const result = await request(app())
                 .get(baseUrl)
@@ -34,9 +90,9 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas for selected network', async (done) => {
-            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}]})
-            await createIdea({title: 'Test title2', networks: [{name: 'polkadot', value: 4}, {name: 'kusama', value: 20}]})
-            await createIdea({title: 'Test title3', networks: [{name: 'polkadot', value: 11}]})
+            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}]}, user)
+            await createIdea({title: 'Test title2', networks: [{name: 'polkadot', value: 4}, {name: 'kusama', value: 20}]}, user)
+            await createIdea({title: 'Test title3', networks: [{name: 'polkadot', value: 11}]}, user)
 
             const result = await request(app())
                 .get(`${baseUrl}?network=kusama`)
@@ -62,7 +118,7 @@ describe(`/api/v1/ideas`, () => {
                 networks: [{name: 'kusama', value: 241}, {name: 'polkadot', value: 12}],
                 beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 content: 'content'
-            })
+            }, user)
 
             const result = await request(app())
                 .get(`${baseUrl}/${idea.id}`)
@@ -93,106 +149,106 @@ describe(`/api/v1/ideas`, () => {
 
     describe('POST', () => {
         it('should return created for minimal valid data', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama', value: 3}]})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 3}]}))
                 .expect(201)
         })
 
         it('should return bad request if no networks', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: null})
+                .send({title: 'Test title', networks: null}))
                 .expect(400)
         })
 
         it('should return bad request if empty networks', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: []})
+                .send({title: 'Test title', networks: []}))
                 .expect(400)
         })
 
         it('should return bad request if network without a value', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama', value: null}]})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: null}]}))
                 .expect(400)
         })
 
         it('should return bad request if network without a name', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: null, value: 5}]})
+                .send({title: 'Test title', networks: [{name: null, value: 5}]}))
                 .expect(400)
         })
 
         it('should return bad request if network without a value', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: null}]})
+                .send({title: 'Test title', networks: [{name: null}]}))
                 .expect(400)
         })
 
         it('should return bad request if links are not array', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama', value: 2}], links: 'link'})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 2}], links: 'link'}))
                 .expect(400)
         })
 
         it('should return bad request if links are strings array', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama', value: 2}], links: 'https://somelink.com'})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 2}], links: 'https://somelink.com'}))
                 .expect(400)
         })
 
         it('should return bad request for empty title', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: '', networks: [{name: 'kusama', value: 2}]})
+                .send({title: '', networks: [{name: 'kusama', value: 2}]}))
                 .expect(400)
         })
 
         it('should return bad request for wrong beneficiary', () => {
             const beneficiary = '5GrwvaEF5zXb26Fz9rcQpDW'
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
                     networks: [{name: 'kusama', value: 2}],
                     beneficiary
-                })
+                }))
                 .expect(400)
         })
 
         it('should return created for empty beneficiary', () => {
             const beneficiary = ''
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
                     networks: [{name: 'kusama', value: 2}],
                     beneficiary
-                })
+                }))
                 .expect(201)
         })
 
         it('should return created for correct beneficiary', () => {
             const beneficiary = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
                     networks: [{name: 'kusama', value: 2}],
                     beneficiary
-                })
+                }))
                 .expect(201)
         })
 
         it('should return created for all valid data', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
@@ -203,12 +259,12 @@ describe(`/api/v1/ideas`, () => {
                     contact: 'Test contact',
                     portfolio: 'Test portfolio',
                     links: ['Test link'],
-                })
+                }))
                 .expect(201)
         })
 
         it('should return created idea for valid data', async (done) => {
-            const response = await request(app())
+            const response = await authorizeRequest(request(app())
                 .post(`${baseUrl}`)
                 .send({
                     title: 'Test title',
@@ -219,7 +275,7 @@ describe(`/api/v1/ideas`, () => {
                     contact: 'Test contact',
                     portfolio: 'Test portfolio',
                     links: ['Test link'],
-                })
+                }))
 
             const body = response.body
             expect(uuidValidate(body.id)).toBe(true)
@@ -238,9 +294,9 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should create an idea and networks', async (done) => {
-            const result = await request(app())
+            const result = await authorizeRequest(request(app())
                 .post(`${baseUrl}`)
-                .send({title: 'Test title', networks: [{name: 'kusama', value: 10}]})
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 10}]}))
 
             const ideasService = app.get().get(IdeasService)
             const actual = await ideasService.findOne(result.body.id)
@@ -251,35 +307,42 @@ describe(`/api/v1/ideas`, () => {
             expect(Number(actual!.networks![0].value)).toBe(10)
             done()
         })
+
+        it('should return forbidden for not authorized request', () => {
+            return request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 3}]})
+                .expect(HttpStatus.FORBIDDEN)
+        })
     })
 
     describe('PATCH', () => {
         it('should return status ok for minimal patch data', async (done) => {
-            const idea = await createIdea({title: 'Test title'})
-            await request(app())
+            const idea = await createIdea({title: 'Test title'}, user)
+            await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
-                .send({title: 'Test title 2'})
+                .send({title: 'Test title 2'}))
                 .expect(200)
             done()
         })
         it('should return not found if wrong id', () => {
-            return request(app())
+            return authorizeRequest(request(app())
                 .patch(`${baseUrl}/${uuid()}`)
-                .send({title: 'Test title 2'})
+                .send({title: 'Test title 2'}))
                 .expect(404)
         })
         it('should patch title', async (done) => {
-            const idea = await createIdea({title: 'Test title'})
-            const response = await request(app())
+            const idea = await createIdea({title: 'Test title'}, user)
+            const response = await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
-                .send({title: 'Test title 2'})
+                .send({title: 'Test title 2'}))
                 .expect(200)
             expect(response.body.title).toBe('Test title 2')
             done()
         })
         it('should patch network', async (done) => {
-            const idea = await createIdea({title: 'Test title', networks: [{name: 'kusama', value: 13}]})
-            const response = await request(app())
+            const idea = await createIdea({title: 'Test title', networks: [{name: 'kusama', value: 13}]}, user)
+            const response = await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
                     networks: [
@@ -288,7 +351,7 @@ describe(`/api/v1/ideas`, () => {
                             value: 33
                         }
                     ]
-                })
+                }))
                 .expect(200)
             expect(response.body.networks[0].id).toBe(idea.networks[0].id)
             expect(response.body.networks[0].value).toBe(33)
@@ -299,12 +362,12 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}],
                 links: ['The link']
-            })
-            const response = await request(app())
+            }, user)
+            const response = await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
                     links: ['patched link']
-                })
+                }))
                 .expect(200)
             expect(response.body.links[0]).toBe('patched link')
             done()
@@ -314,12 +377,12 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}],
                 links: ['The link']
-            })
-            await request(app())
+            }, user)
+            await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
                     links: 'Updated link'
-                })
+                }))
                 .expect(400)
             done()
         })
@@ -327,12 +390,12 @@ describe(`/api/v1/ideas`, () => {
             const idea = await createIdea({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}]
-            })
-            const response = await request(app())
+            }, user)
+            const response = await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
                     status: IdeaStatus.Active
-                })
+                }))
                 .expect(200)
             expect(response.body.status).toBe(IdeaStatus.Active)
             done()
@@ -341,12 +404,12 @@ describe(`/api/v1/ideas`, () => {
             const idea = await createIdea({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}]
-            })
-            await request(app())
+            }, user)
+            await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
                     status: 'unknown_idea_status'
-                })
+                }))
                 .expect(400)
             done()
         })
@@ -356,10 +419,10 @@ describe(`/api/v1/ideas`, () => {
                 networks: [{name: 'kusama', value: 10}],
                 beneficiary: 'abcd-1234',
                 content: 'Test content'
-            })
-            const response = await request(app())
+            }, user)
+            const response = await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
-                .send({title: 'Test title 2'})
+                .send({title: 'Test title 2'}))
                 .expect(200)
             const body = response.body
             expect(body.title).not.toBe('Test title')
@@ -369,55 +432,91 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should not patch ordinal number', async (done) => {
-            const idea = await createIdea({})
+            const idea = await createIdea({}, user)
             const ordinalNumber = idea.ordinalNumber + 13
-            const response = await request(app())
+            const response = await authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
-                .send({ordinalNumber})
+                .send({ordinalNumber}))
                 .expect(200)
             expect(response.body.ordinalNumber).not.toBe(ordinalNumber)
             done()
         })
         it('should not pass ordinal number to the service', async (done) => {
             const spyOnPatchIdea = jest.spyOn(getService(), 'update')
-            const idea = await createIdea({})
+            const idea = await createIdea({}, user)
             const ordinalNumber = idea.ordinalNumber + 13
+            await authorizeRequest(request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({ordinalNumber}))
+                .expect(200)
+            expect(spyOnPatchIdea).toHaveBeenCalledWith({}, idea.id, expect.objectContaining({
+                user: expect.objectContaining({id : user.user.id})
+            }))
+            done()
+        })
+
+        it('should return forbidden for not authorized request', async (done) => {
+            const idea = await createIdea({title: 'Test title'}, user)
             await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
-                .send({ordinalNumber})
-                .expect(200)
-            expect(spyOnPatchIdea).toHaveBeenCalledWith({}, idea.id)
+                .send({title: 'Test title 2'})
+                .expect(HttpStatus.FORBIDDEN)
+            done()
+        })
+
+        it('should return unauthorized for idea created by other user', async (done) => {
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const idea = await createIdea({title: 'Test title'}, otherUser)
+            await authorizeRequest(request(app())
+                .patch(`${baseUrl}/${idea.id}`)
+                .send({title: 'Test title 2'}))
+                .expect(HttpStatus.UNAUTHORIZED)
             done()
         })
     })
     describe('DELETE', () => {
         it('should delete idea', async (done) => {
-            const idea = await createIdea({title: 'Test title'})
-            await request(app())
-                .delete(`${baseUrl}/${idea.id}`)
+            const idea = await createIdea({title: 'Test title'}, user)
+            await authorizeRequest(request(app())
+                .delete(`${baseUrl}/${idea.id}`))
                 .expect(200)
-            await request(app())
-                .get(`${baseUrl}/${idea.id}`)
-                .send()
+            await authorizeRequest(request(app())
+                .get(`${baseUrl}/${idea.id}`))
                 .expect(404)
             done()
         })
         it('should delete idea with networks', async (done) => {
-            const idea = await createIdea({title: 'Test title', networks: [{name: 'polkadot', value: 47}]})
-            await request(app())
-                .del(`${baseUrl}/${idea.id}`)
-                .send()
+            const idea = await createIdea({title: 'Test title', networks: [{name: 'polkadot', value: 47}]}, user)
+            await authorizeRequest(request(app())
+                .delete(`${baseUrl}/${idea.id}`))
                 .expect(200)
-            await request(app())
-                .get(`${baseUrl}/${idea.id}`)
+            await authorizeRequest(request(app())
+                .get(`${baseUrl}/${idea.id}`))
                 .expect(404)
             done()
         })
         it('should return not found if wrong id', (done) => {
-            request(app())
-                .del(`${baseUrl}/${uuid()}`)
+            authorizeRequest(request(app())
+                .delete(`${baseUrl}/${uuid()}`))
                 .expect(404)
                 .end(done)
+        })
+
+        it('should return forbidden for not authorized request', async (done) => {
+            const idea = await createIdea({title: 'Test title'}, user)
+            await request(app())
+                .delete(`${baseUrl}/${idea.id}`)
+                .expect(HttpStatus.FORBIDDEN)
+            done()
+        })
+
+        it('should return unauthorized for idea created by other user', async (done) => {
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const idea = await createIdea({title: 'Test title'}, otherUser)
+            await authorizeRequest(request(app())
+                .delete(`${baseUrl}/${idea.id}`))
+                .expect(HttpStatus.UNAUTHORIZED)
+            done()
         })
     })
 })

@@ -1,5 +1,6 @@
-import {Column, Entity, Generated, OneToMany} from "typeorm";
+import {Column, Entity, Generated, ManyToOne, OneToMany} from "typeorm";
 import {BaseEntity} from "../../database/base.entity";
+import {User} from "../users/user.entity";
 import {IdeaNetwork} from "./ideaNetwork.entity";
 import {v4 as uuid} from 'uuid';
 import {DefaultIdeaStatus, IdeaStatus} from "../ideaStatus";
@@ -60,6 +61,12 @@ export class Idea extends BaseEntity {
     })
     status: IdeaStatus
 
+    @ManyToOne(() => User)
+    owner?: User
+
+    @Column({nullable: false, type: "text"})
+    ownerId!: string
+
     @OneToMany(
         () => IdeaMilestone,
         (ideaMilestone) => ideaMilestone.idea,
@@ -75,6 +82,7 @@ export class Idea extends BaseEntity {
         title: string,
         networks: IdeaNetwork[],
         status: IdeaStatus,
+        owner: User,
         beneficiary?: string,
         content?: string,
         field?: string,
@@ -94,5 +102,6 @@ export class Idea extends BaseEntity {
         this.portfolio = portfolio
         this.links = links
         this.id = id ?? uuid()
+        this.owner = owner
     }
 }

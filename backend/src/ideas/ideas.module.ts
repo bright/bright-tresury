@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import {SessionModule} from "../auth/session/session.module";
 import { ExtrinsicsModule } from "../extrinsics/extrinsics.module";
 import { IdeaProposalsController } from "./ideaProposals/idea.proposals.controller";
 import { IdeaProposalsService } from "./ideaProposals/idea.proposals.service";
@@ -17,6 +18,7 @@ import {IdeaMilestonesService} from "./ideaMilestones/idea.milestones.service";
   imports: [
       DatabaseModule,
       ExtrinsicsModule,
+      SessionModule,
       TypeOrmModule.forFeature([Idea]),
       TypeOrmModule.forFeature([IdeaNetwork]),
       TypeOrmModule.forFeature([IdeaMilestone]),

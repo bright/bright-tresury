@@ -1,13 +1,17 @@
-import {NotFoundException} from '@nestjs/common';
+import {BadRequestException, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {getRepositoryToken} from "@nestjs/typeorm";
+import {create} from "domain";
 import {v4 as uuid} from 'uuid';
+import {SessionUser} from "../auth/session/session.decorator";
+import {cleanAuthorizationDatabase} from "../auth/supertokens/specHelpers/supertokens.database.spec.helper";
 import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
+import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
+import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
-import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
-import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
+import {createSessionUser} from "./spec.helpers";
 
 describe(`/api/v1/ideas`, () => {
 
@@ -15,19 +19,24 @@ describe(`/api/v1/ideas`, () => {
     const getService = () => app.get().get(IdeasService)
     const getIdeaNetworkRepository = () => app.get().get(getRepositoryToken(IdeaNetwork))
 
+    let sessionUser: SessionUser
+
     beforeEach(async () => {
         await cleanDatabase()
+        await cleanAuthorizationDatabase()
+
+        sessionUser = await createSessionUser()
     })
     describe('find', () => {
         it('should return ideas', async (done) => {
             await getService().create({
                 title: 'Test title 1',
                 networks: [{name: 'kusama', value: 10}]
-            })
+            }, sessionUser)
             await getService().create({
                 title: 'Test title 2',
                 networks: [{name: 'kusama', value: 10}]
-            })
+            }, sessionUser)
 
             const ideas = await getService().find()
 
@@ -38,15 +47,15 @@ describe(`/api/v1/ideas`, () => {
             await getService().create({
                 title: 'Test title 1',
                 networks: [{name: 'kusama', value: 10}]
-            })
+            }, sessionUser)
             await getService().create({
                 title: 'Test title 2',
                 networks: [{name: 'polkadot', value: 10}]
-            })
+            }, sessionUser)
             await getService().create({
                 title: 'Test title 2',
                 networks: [{name: 'polkadot', value: 10}]
-            })
+            }, sessionUser)
 
             const ideas = await getService().find('polkadot')
 
@@ -60,7 +69,7 @@ describe(`/api/v1/ideas`, () => {
             const idea = await getService().create({
                 title: 'Test title 1',
                 networks: [{name: 'kusama', value: 10}]
-            })
+            }, sessionUser)
             idea.networks[0].blockchainProposalId = 0
             await getIdeaNetworkRepository().save(idea.networks[0])
 
@@ -76,7 +85,7 @@ describe(`/api/v1/ideas`, () => {
             const idea = await getService().create({
                 title: 'Test title 1',
                 networks: [{name: 'other_network', value: 10}]
-            })
+            }, sessionUser)
             idea.networks[0].blockchainProposalId = 0
             await getIdeaNetworkRepository().save(idea.networks[0])
 
@@ -90,7 +99,7 @@ describe(`/api/v1/ideas`, () => {
             const idea = await getService().create({
                 title: 'Test title 1',
                 networks: [{name: 'kusama', value: 10}]
-            })
+            }, sessionUser)
             idea.networks[0].blockchainProposalId = 0
             await getIdeaNetworkRepository().save(idea.networks[0])
 
@@ -108,7 +117,7 @@ describe(`/api/v1/ideas`, () => {
                 networks: [{name: 'kusama', value: 15}, {name: 'polkadot', value: 14}],
                 beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 content: 'content'
-            })
+            }, sessionUser)
 
             const savedIdea = (await getService().findOne(idea.id))!
 
@@ -132,20 +141,21 @@ describe(`/api/v1/ideas`, () => {
     })
 
     describe('create', () => {
-        it('should create and save idea', async () => {
+        it('should create and save idea with owner', async () => {
             const createdIdea = await getService().create({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
-            } as CreateIdeaDto)
+            } as CreateIdeaDto, sessionUser)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea).toBeDefined()
+            expect(savedIdea.ownerId).toBe(sessionUser.user.id)
         })
 
         it('should create and save idea with default idea status', async () => {
             const createdIdea = await getService().create({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
-            } as CreateIdeaDto)
+            } as CreateIdeaDto, sessionUser)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea.status).toBe(DefaultIdeaStatus)
         })
@@ -155,7 +165,7 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto],
                 status: IdeaStatus.Draft
-            } as CreateIdeaDto)
+            } as CreateIdeaDto, sessionUser)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea.status).toBe(IdeaStatus.Draft)
         })
@@ -165,7 +175,7 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto],
                 status: IdeaStatus.Active
-            } as CreateIdeaDto)
+            } as CreateIdeaDto, sessionUser)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea.status).toBe(IdeaStatus.Active)
         })
@@ -174,7 +184,7 @@ describe(`/api/v1/ideas`, () => {
             const createdIdea = await getService().create({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
-            } as CreateIdeaDto)
+            } as CreateIdeaDto, sessionUser)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea.ordinalNumber).toBeDefined()
         })
@@ -183,11 +193,11 @@ describe(`/api/v1/ideas`, () => {
             const createdFirstIdea = await getService().create({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
-            } as CreateIdeaDto)
+            } as CreateIdeaDto, sessionUser)
             const createdSecondIdea = await getService().create({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 1} as IdeaNetworkDto]
-            } as CreateIdeaDto)
+            } as CreateIdeaDto, sessionUser)
             expect(createdSecondIdea.ordinalNumber).toBe(createdFirstIdea.ordinalNumber + 1)
         })
 
@@ -201,7 +211,7 @@ describe(`/api/v1/ideas`, () => {
                 contact: 'Test contact',
                 portfolio: 'Test portfolio',
                 links: ['Test link'],
-            })
+            }, sessionUser)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea.title).toBe('Test title')
             expect(savedIdea.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
@@ -214,7 +224,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should create and save idea with networks', async (done) => {
-            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 10}]})
+            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 10}]}, sessionUser)
             const savedIdea = await getService().findOne(createdIdea.id)
             expect(savedIdea).toBeDefined()
             expect(savedIdea.title).toBe('Test title')
@@ -227,8 +237,8 @@ describe(`/api/v1/ideas`, () => {
 
     describe('update', () => {
         it('should update and save idea with updated title', async () => {
-            const idea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 44}]})
-            const updatedIdea = await getService().update({title: 'Test title updated'}, idea.id)
+            const idea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 44}]}, sessionUser)
+            const updatedIdea = await getService().update({title: 'Test title updated'}, idea.id, sessionUser)
             expect(updatedIdea.title).toBe('Test title updated')
         })
         it('should update and save idea with updated title and not updated other properties', async () => {
@@ -236,8 +246,8 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 44}],
                 portfolio: 'Test portfolio'
-            })
-            await getService().update({title: 'Test title updated'}, idea.id)
+            }, sessionUser)
+            await getService().update({title: 'Test title updated'}, idea.id, sessionUser)
             const savedIdea = await getService().findOne(idea.id)
             expect(savedIdea.title).toBe('Test title updated')
             expect(savedIdea.networks[0].name).toBe('kusama')
@@ -249,8 +259,8 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 44}],
                 links: ['Test link']
-            })
-            await getService().update({links: ['New Link']}, idea.id)
+            }, sessionUser)
+            await getService().update({links: ['New Link']}, idea.id, sessionUser)
             const savedIdea = await getService().findOne(idea.id)
             expect(savedIdea.links).toBe(JSON.stringify(['New Link']))
         })
@@ -258,16 +268,16 @@ describe(`/api/v1/ideas`, () => {
             const idea = await getService().create({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 44}],
-            })
+            }, sessionUser)
             await getService().update({
                 networks: [{...idea.networks[0], value: 249}]
-            }, idea.id)
+            }, idea.id, sessionUser)
             const savedIdea = await getService().findOne(idea.id)
             expect(savedIdea.networks[0].name).toBe('kusama')
             expect(savedIdea.networks[0].value).toBe('249.000000000000000')
         })
         it('should throw not found if wrong id', async (done) => {
-            await expect(getService().update({}, uuid()))
+            await expect(getService().update({}, uuid(), sessionUser))
                 .rejects
                 .toThrow(NotFoundException)
             done()
@@ -276,10 +286,23 @@ describe(`/api/v1/ideas`, () => {
             const idea = await getService().create({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 44}]
-            })
-            await getService().update({status: IdeaStatus.Active}, idea.id)
+            }, sessionUser)
+            await getService().update({status: IdeaStatus.Active}, idea.id, sessionUser)
             const savedIdea = await getService().findOne(idea.id)
             expect(savedIdea.status).toBe(IdeaStatus.Active)
+        })
+
+        it('should throw unauthorized exception when trying to update not own idea', async (done) => {
+            const idea = await getService().create({
+                title: 'Test title',
+                networks: [{name: 'kusama', value: 44}]
+            }, sessionUser)
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
+
+            await expect(getService().update({status: IdeaStatus.Active}, idea.id, otherUser))
+                .rejects
+                .toThrow(UnauthorizedException)
+            done()
         })
     })
     describe('turn into proposal', () => {
@@ -288,9 +311,9 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 beneficiary: uuid(),
                 networks: [{name: 'kusama', value: 42}]
-            })
+            }, sessionUser)
             const blockchainProposalId = 31234
-            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId)
+            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, sessionUser)
             const updatedIdea = await getService().findOne(createdIdea.id)
             expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposal)
         })
@@ -299,28 +322,43 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 beneficiary: uuid(),
                 networks: [{name: 'kusama', value: 42}]
-            })
+            }, sessionUser)
             const blockchainProposalId = 31234
-            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId)
+            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, sessionUser)
             const updatedIdeaNetwork = await getIdeaNetworkRepository().findOne(createdIdea.networks[0].id)
             expect(updatedIdeaNetwork!.blockchainProposalId).toBe(blockchainProposalId)
         })
         it('should throw not found exception for wrong network id', async () => {
-            await expect(getService().turnIdeaIntoProposalByNetworkId(uuid(), 1234))
+            await expect(getService().turnIdeaIntoProposalByNetworkId(uuid(), 1234, sessionUser))
                 .rejects
                 .toThrow(NotFoundException)
         })
         it('should throw empty beneficiary exception if idea beneficiary is empty', async () => {
-            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]})
-            await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, 1234))
+            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]}, sessionUser)
+            await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, 1234, sessionUser))
                 .rejects
                 .toThrow(EmptyBeneficiaryException)
+        })
+        it('should throw unauthorized exception when trying to turn not own idea', async (done) => {
+            const createdIdea = await getService().create({
+                title: 'Test title',
+                beneficiary: uuid(),
+                networks: [{name: 'kusama', value: 42}]
+            }, sessionUser)
+            const blockchainProposalId = 31234
+
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
+
+            await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, otherUser))
+                .rejects
+                .toThrow(UnauthorizedException)
+            done()
         })
     })
     describe('delete', () => {
         it('should delete idea', async (done) => {
-            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]})
-            await getService().delete(createdIdea.id)
+            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]}, sessionUser)
+            await getService().delete(createdIdea.id, sessionUser)
             await expect(getService().findOne(createdIdea.id))
                 .rejects
                 .toThrow(NotFoundException)
@@ -330,6 +368,15 @@ describe(`/api/v1/ideas`, () => {
             await expect(getService().findOne(uuid()))
                 .rejects
                 .toThrow(NotFoundException)
+            done()
+        })
+        it('should throw unauthorized exception when trying to delete not own idea', async (done) => {
+            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]}, sessionUser)
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
+
+            await expect(getService().delete(createdIdea.id, otherUser))
+                .rejects
+                .toThrow(UnauthorizedException)
             done()
         })
     })

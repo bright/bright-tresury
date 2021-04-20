@@ -5,7 +5,7 @@ import {BlockchainService} from "../blockchain/blockchain.service";
 import {IdeaDto} from "../ideas/dto/idea.dto";
 import {IdeaNetwork} from "../ideas/entities/ideaNetwork.entity";
 import {IdeasService} from "../ideas/ideas.service";
-import {createIdea} from "../ideas/spec.helpers";
+import {createIdea, createSessionUser} from "../ideas/spec.helpers";
 import {beforeAllSetup, cleanDatabase} from "../utils/spec.helpers";
 import {ProposalsModule} from "./proposals.module";
 import {ProposalsService} from "./proposals.service";
@@ -56,7 +56,8 @@ describe('ProposalsService', () => {
         })
 
         it('should return idea details for proposals', async () => {
-            const idea = await createIdea({title: 'Some title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, ideasService())
+            const user = await createSessionUser()
+            const idea = await createIdea({title: 'Some title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, user, ideasService())
             idea.networks[0].blockchainProposalId = 0
             await ideasNetworkRepository().save(idea.networks[0])
 
@@ -86,7 +87,11 @@ describe('ProposalsService', () => {
         })
 
         it('should return idea details', async () => {
-            const idea = await createIdea({title: 'Some title', content: 'Content', networks: [{name: 'localhost', value: 10}]} as IdeaDto, ideasService())
+            const user = await createSessionUser()
+            const idea = await createIdea(
+                {title: 'Some title', content: 'Content', networks: [{name: 'localhost', value: 10}]} as IdeaDto,
+                user,
+                ideasService())
             idea.networks[0].blockchainProposalId = 0
             await ideasNetworkRepository().save(idea.networks[0])
 

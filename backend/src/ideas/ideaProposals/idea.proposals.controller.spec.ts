@@ -3,7 +3,7 @@ import {BlockchainService} from "../../blockchain/blockchain.service";
 import {UpdateExtrinsicDto} from "../../extrinsics/dto/updateExtrinsic.dto";
 import {beforeAllSetup, beforeSetupFullApp, cleanDatabase, request} from '../../utils/spec.helpers';
 import {Idea} from "../entities/idea.entity";
-import {createIdea} from '../spec.helpers';
+import {createIdea, createSessionUser} from '../spec.helpers';
 
 const baseUrl = (id: string) => `/api/v1/ideas/${id}/proposals`
 
@@ -45,10 +45,11 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
 
     beforeEach(async () => {
         await cleanDatabase()
+        const user = await createSessionUser()
         idea = await createIdea({
             beneficiary: uuid(),
             networks: [{name: 'local', value: 2}]
-        })
+        }, user)
         data.ideaNetworkId = idea.networks![0].id
     })
 

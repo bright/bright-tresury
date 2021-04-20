@@ -71,18 +71,22 @@ export class IdeaDto {
     })
     milestones!: IdeaMilestoneDto[]
 
+    @ApiProperty()
+    ownerId: string
+
     constructor(
         id: string,
         title: string,
         status: IdeaStatus,
         networks: IdeaNetworkDto[],
         ordinalNumber: number,
+        ownerId: string,
         beneficiary?: string,
         content?: string,
         field?: string,
         contact?: string,
         portfolio?: string,
-        links?: string[],
+        links?: string[]
     ) {
         this.id = id
         this.title = title
@@ -95,11 +99,12 @@ export class IdeaDto {
         this.portfolio = portfolio
         this.links = links
         this.status = status
+        this.ownerId = ownerId
     }
 
 }
 
-export function toIdeaDto({id, title, status, networks, ordinalNumber, beneficiary, content, field, contact, portfolio, links, milestones }: Idea): IdeaDto {
+export function toIdeaDto({id, title, status, networks, ordinalNumber, ownerId, beneficiary, content, field, contact, portfolio, links, milestones }: Idea): IdeaDto {
     return new IdeaDto(
         id,
         title,
@@ -108,6 +113,7 @@ export function toIdeaDto({id, title, status, networks, ordinalNumber, beneficia
             toIdeaNetworkDto(ideaNetwork)
         ) : [],
         ordinalNumber,
+        ownerId,
         beneficiary,
         content,
         field,

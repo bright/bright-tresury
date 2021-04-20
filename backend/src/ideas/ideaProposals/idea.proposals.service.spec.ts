@@ -1,6 +1,7 @@
 import {Test} from '@nestjs/testing';
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
+import {SessionUser} from "../../auth/session/session.decorator";
 import {BlockchainService} from '../../blockchain/blockchain.service';
 import {UpdateExtrinsicDto} from '../../extrinsics/dto/updateExtrinsic.dto';
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
@@ -11,7 +12,7 @@ import {IdeaNetwork} from '../entities/ideaNetwork.entity';
 import {IdeasModule} from "../ideas.module";
 import {IdeasService} from "../ideas.service";
 import {IdeaStatus} from "../ideaStatus";
-import {createIdea} from "../spec.helpers";
+import {createIdea, createSessionUser} from "../spec.helpers";
 import {CreateIdeaProposalDto, IdeaProposalDataDto} from "./dto/createIdeaProposal.dto";
 import {IdeaProposalsService} from "./idea.proposals.service";
 
@@ -33,6 +34,7 @@ describe('IdeaProposalsService', () => {
 
     let idea: Idea
     let dto: CreateIdeaProposalDto
+    let sessionUser: SessionUser
 
     const blockchainService = {
         listenForExtrinsic: (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => void) => {
@@ -61,7 +63,8 @@ describe('IdeaProposalsService', () => {
             networks: [{name: 'local', value: 10}],
             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
         }
-        const createdIdea = await createIdea(partialIdea, ideasService())
+        sessionUser = await createSessionUser()
+        const createdIdea = await createIdea(partialIdea, sessionUser, ideasService())
         idea = await ideasService().findOne(createdIdea.id)
         dto = new CreateIdeaProposalDto(idea.networks![0].id, '', '', new IdeaProposalDataDto(3))
     })
@@ -72,7 +75,7 @@ describe('IdeaProposalsService', () => {
 
     describe('createProposal', () => {
         it('should assign extrinsic to idea network', async (done) => {
-            await service().createProposal(idea.id, dto)
+            await service().createProposal(idea.id, dto, sessionUser)
             setTimeout(async () => {
                 const actual = await ideaNetworkRepository().findOne(idea.networks![0].id, {relations: ['extrinsic']})
                 expect(actual!.extrinsic).toBeTruthy()
@@ -84,7 +87,7 @@ describe('IdeaProposalsService', () => {
             const spy = jest.spyOn(service(), 'extractEvents').mockImplementationOnce(async (events: ExtrinsicEvent[], network: IdeaNetwork) => {
                 return
             })
-            await service().createProposal(idea.id, dto)
+            await service().createProposal(idea.id, dto, sessionUser)
             setTimeout(async () => {
                 expect(spy).toHaveBeenCalled()
                 done()
@@ -92,10 +95,10 @@ describe('IdeaProposalsService', () => {
         })
 
         it('should throw empty beneficiary exception if idea beneficiary is empty', async () => {
-            const createdIdea = await ideasService().create({title: '', networks: [{name: 'local', value: 10}]})
+            const createdIdea = await ideasService().create({title: '', networks: [{name: 'local', value: 10}]}, sessionUser)
             const actualIdea = (await ideasService().findOne(createdIdea.id))!
             const actualDto = new CreateIdeaProposalDto(actualIdea.networks![0].id, '', '', new IdeaProposalDataDto(3))
-            await expect(service().createProposal(actualIdea.id, actualDto))
+            await expect(service().createProposal(actualIdea.id, actualDto, sessionUser))
                 .rejects
                 .toThrow(EmptyBeneficiaryException)
         })
@@ -103,13 +106,13 @@ describe('IdeaProposalsService', () => {
 
     describe('extractExtrinsic', () => {
         it('should assign blockchainProposalId to idea network', async () => {
-            await service().extractEvents(extrinsic.events, idea.networks![0])
+            await service().extractEvents(extrinsic.events, idea.networks![0], sessionUser)
             const i = await ideaNetworkRepository()
             const actual = await i.findOne(idea.networks![0].id)
             expect(actual!.blockchainProposalId).toBe(proposalIndex)
         })
         it(`should change idea status to turned into proposal`, async () => {
-            await service().extractEvents(extrinsic.events, idea.networks![0])
+            await service().extractEvents(extrinsic.events, idea.networks![0], sessionUser)
             const repository = await ideaRepository()
             const actualIdea = await repository.findOne(idea.id)
             expect(actualIdea!.status).toBe(IdeaStatus.TurnedIntoProposal)

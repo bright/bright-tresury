@@ -1,6 +1,7 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {In, Repository} from 'typeorm';
+import {SessionUser} from "../auth/session/session.decorator";
 import {getLogger} from "../logging.module";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
@@ -71,8 +72,11 @@ export class IdeasService {
         return result
     }
 
-    async update(updateIdea: UpdateIdeaDto, id: string): Promise<Idea> {
+    async update(updateIdea: UpdateIdeaDto, id: string, user: SessionUser): Promise<Idea> {
         const currentIdea = await this.findOne(id)
+        if (currentIdea.ownerId !== user.user.id) {
+            throw new UnauthorizedException()
+        }
         await this.ideaRepository.save({
             ...currentIdea,
             ...updateIdea,
@@ -93,7 +97,7 @@ export class IdeasService {
         ))!
     }
 
-    async create(createIdeaDto: CreateIdeaDto): Promise<Idea> {
+    async create(createIdeaDto: CreateIdeaDto, user: SessionUser): Promise<Idea> {
         const idea = new Idea(
             createIdeaDto.title,
             createIdeaDto.networks.map((network: CreateIdeaNetworkDto) => new IdeaNetwork(
@@ -101,6 +105,7 @@ export class IdeasService {
                 network.value
             )),
             createIdeaDto.status ?? DefaultIdeaStatus,
+            user.user,
             createIdeaDto.beneficiary,
             createIdeaDto.content,
             createIdeaDto.field,
@@ -114,13 +119,19 @@ export class IdeasService {
         ))!
     }
 
-    async delete(id: string) {
+    async delete(id: string, user: SessionUser) {
         const currentIdea = await this.findOne(id)
+        if (currentIdea.ownerId !== user.user.id) {
+            throw new UnauthorizedException()
+        }
         await this.ideaRepository.remove(currentIdea)
     }
 
-    async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number) {
+    async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number, user: SessionUser) {
         const idea = await this.findOneByNetworkId(networkId)
+        if (idea.ownerId !== user.user.id) {
+            throw new UnauthorizedException()
+        }
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()
         }

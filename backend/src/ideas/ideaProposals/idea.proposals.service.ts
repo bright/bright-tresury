@@ -1,6 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
+import {SessionUser} from "../../auth/session/session.decorator";
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
 import {ExtrinsicsService} from "../../extrinsics/extrinsics.service";
 import {getLogger} from "../../logging.module";
@@ -20,7 +21,7 @@ export class IdeaProposalsService {
     ) {
     }
 
-    async createProposal(ideaId: string, dto: CreateIdeaProposalDto): Promise<IdeaNetwork> {
+    async createProposal(ideaId: string, dto: CreateIdeaProposalDto, user: SessionUser): Promise<IdeaNetwork> {
         const idea = await this.ideaService.findOne(ideaId)
 
         if (!idea.beneficiary) {
@@ -33,7 +34,7 @@ export class IdeaProposalsService {
         }
 
         const callback = async (events: ExtrinsicEvent[]) => {
-            return await this.extractEvents(events, network)
+            return await this.extractEvents(events, network, user)
         }
 
         const extrinsic = await this.extrinsicsService.listenForExtrinsic(dto, callback)
@@ -44,7 +45,7 @@ export class IdeaProposalsService {
         return network
     }
 
-    async extractEvents(events: ExtrinsicEvent[], network: IdeaNetwork): Promise<void> {
+    async extractEvents(events: ExtrinsicEvent[], network: IdeaNetwork, user: SessionUser): Promise<void> {
         logger.info('Extracting events for section: treasury, method: Proposed')
         const proposedEvent = events.find((event) => event.section === 'treasury' && event.method === 'Proposed')
         if (proposedEvent) {
@@ -53,7 +54,7 @@ export class IdeaProposalsService {
             const proposalIndex = Number(proposedEvent?.data.find((d) => d.name === 'ProposalIndex')?.value)
             logger.info(`Proposal index is ${proposalIndex}`)
             if (!isNaN(proposalIndex)) {
-                await this.ideaService.turnIdeaIntoProposalByNetworkId(network.id, proposalIndex)
+                await this.ideaService.turnIdeaIntoProposalByNetworkId(network.id, proposalIndex, user)
                 return
             }
         } else {

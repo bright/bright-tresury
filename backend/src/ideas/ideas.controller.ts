@@ -1,6 +1,8 @@
-import {BadRequestException, Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
+import {BadRequestException, Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Patch, Post, Query, UseGuards} from '@nestjs/common';
 import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiPropertyOptional, ApiTags} from '@nestjs/swagger';
 import {validate as uuidValidate} from 'uuid';
+import {SessionGuard} from "../auth/session/guard/session.guard";
+import {ReqSession, SessionUser} from "../auth/session/session.decorator";
 import {Idea} from './entities/idea.entity';
 import {IdeasService} from './ideas.service';
 import {IdeaDto, toIdeaDto} from "./dto/idea.dto";
@@ -61,8 +63,9 @@ export class IdeasController {
         description: 'Title must not be empty.',
     })
     @Post()
-    async createIdea(@Body() createIdeaDto: CreateIdeaDto): Promise<IdeaDto> {
-        const idea = await this.ideasService.create(createIdeaDto)
+    @UseGuards(SessionGuard)
+    async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionUser): Promise<IdeaDto> {
+        const idea = await this.ideasService.create(createIdeaDto, session)
         return toIdeaDto(idea)
     }
 
@@ -77,8 +80,9 @@ export class IdeasController {
         description: 'No idea found',
     })
     @Patch(':id')
-    async updateIdea(@Body() updateIdeaDto: UpdateIdeaDto, @Param('id') id: string): Promise<IdeaDto> {
-        const idea = await this.ideasService.update(updateIdeaDto, id)
+    @UseGuards(SessionGuard)
+    async updateIdea(@Body() updateIdeaDto: UpdateIdeaDto, @Param('id') id: string, @ReqSession() session: SessionUser): Promise<IdeaDto> {
+        const idea = await this.ideasService.update(updateIdeaDto, id, session)
         return toIdeaDto(idea)
     }
 
@@ -90,7 +94,8 @@ export class IdeasController {
         description: 'No idea found.',
     })
     @Delete(':id')
-    async delete(@Param('id') id: string) {
-        await this.ideasService.delete(id)
+    @UseGuards(SessionGuard)
+    async delete(@Param('id') id: string, @ReqSession() session: SessionUser) {
+        await this.ideasService.delete(id, session)
     }
 }
