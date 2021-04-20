@@ -26,9 +26,9 @@ export function getIdeaMilestones(ideaId: string) {
 }
 
 export function createIdeaMilestone(ideaId: string, data: CreateIdeaMilestoneDto) {
-    return apiPost<IdeaMilestoneDto>(`/ideas/${ideaId}/milestones`, data)
+    return apiPost<IdeaMilestoneDto>(`/ideasx/${ideaId}/milestones`, data)
 }
 
 export function patchIdeaMilestone(ideaId: string, ideaMilestoneId: string, data: PatchIdeaMilestoneDto) {
-    return apiPatch<IdeaMilestoneDto>(`/ideas/${ideaId}/milestones/${ideaMilestoneId}`, data)
+    return apiPatch<IdeaMilestoneDto>(`/ideasx/${ideaId}/milestones/${ideaMilestoneId}`, data)
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import {IdeaMilestoneForm, IdeaMilestoneFormMode} from "../form/IdeaMilestoneForm";
+import {IdeaMilestoneForm} from "../form/IdeaMilestoneForm";
 import {useTranslation} from "react-i18next";
 import {Button} from "../../../../components/button/Button";
 import {IdeaMilestoneDto} from "../idea.milestones.api";
@@ -19,7 +19,7 @@ export const DisplayIdeaMilestone = ({ idea, ideaMilestone, handleCloseModal }: 
         <IdeaMilestoneForm
             idea={idea}
             ideaMilestone={ideaMilestone}
-            mode={IdeaMilestoneFormMode.Display}
+            readonly={true}
         >
             <Button type='button' color='primary' variant='text' onClick={handleCloseModal}>
                 {t('idea.milestones.modal.form.buttons.cancel')}
