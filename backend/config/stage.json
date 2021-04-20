@@ -10,6 +10,6 @@
   },
   "auth": {
     "coreUrl": "http://treasury-auth-stage:3567",
-    "cookieSecure": true
+    "cookieSecure": false
   }
 }
