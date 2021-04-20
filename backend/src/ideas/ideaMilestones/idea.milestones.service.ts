@@ -7,6 +7,7 @@ import {Idea} from "../entities/idea.entity";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
 import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
 import {IdeaMilestoneNetworkDto} from "./dto/ideaMilestoneNetworkDto";
+import retryTimes = jest.retryTimes;
 
 @Injectable()
 export class IdeaMilestonesService {
@@ -30,6 +31,14 @@ export class IdeaMilestonesService {
             where: { idea },
             relations: ['networks']
         })
+    }
+
+    async findOne(ideaMilestoneId: string): Promise<IdeaMilestone> {
+        const ideaMilestone = await this.ideaMilestoneRepository.findOne(ideaMilestoneId, { relations: ['networks'] })
+        if (!ideaMilestone) {
+            throw new NotFoundException('Idea milestone with the given id not found')
+        }
+        return ideaMilestone
     }
 
     async create(ideaId: string, { subject, dateFrom, dateTo, description, networks }: CreateIdeaMilestoneDto): Promise<IdeaMilestone> {
