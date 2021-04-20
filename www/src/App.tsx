@@ -44,10 +44,10 @@ function AppRoutes() {
             <Main>
                 <Switch>
                     <Route exact={true} path={ROUTE_SIGNUP} >
-                        {isUserSignedIn ? <Redirect to={ROUTE_STATS}/> : <SignUp/>}
+                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignUp/>}
                     </Route>
                     <Route exact={true} path={ROUTE_SIGNIN}>
-                        {isUserSignedIn ? <Redirect to={ROUTE_STATS}/> : <SignIn/>}
+                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignIn/>}
                     </Route>
                     <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
                         <VerifyEmail/>
