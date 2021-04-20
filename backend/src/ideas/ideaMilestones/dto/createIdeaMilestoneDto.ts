@@ -13,7 +13,8 @@ export class CreateIdeaMilestoneDto {
     subject: string
 
     @ApiPropertyOptional({
-        description: 'Date of start of the milestone'
+        description: 'Date of start of the milestone',
+        type: Date
     })
     @IsOptional()
     // https://github.com/typestack/class-validator/issues/407
@@ -21,7 +22,8 @@ export class CreateIdeaMilestoneDto {
     dateFrom: Nil<Date>
 
     @ApiPropertyOptional({
-        description: 'Date of end of the milestone'
+        description: 'Date of end of the milestone',
+        type: Date
     })
     @IsOptional()
     // https://github.com/typestack/class-validator/issues/407
