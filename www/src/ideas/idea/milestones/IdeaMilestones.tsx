@@ -47,14 +47,12 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
                     canEdit={canEdit}
                     fetchIdeaMilestones={fetchIdeaMilestones}
                 />
-                { isCreateIdeaMilestoneModalOpen
-                    ? <CreateIdeaMilestoneModal
-                        idea={idea}
-                        handleCloseModal={() => setIsCreateIdeaMilestoneModalOpen(false)}
-                        fetchIdeaMilestones={fetchIdeaMilestones}
-                      />
-                    : null
-                }
+                <CreateIdeaMilestoneModal
+                    open={isCreateIdeaMilestoneModalOpen}
+                    idea={idea}
+                    handleCloseModal={() => setIsCreateIdeaMilestoneModalOpen(false)}
+                    fetchIdeaMilestones={fetchIdeaMilestones}
+                />
             </>
         </LoadingWrapper>
     )

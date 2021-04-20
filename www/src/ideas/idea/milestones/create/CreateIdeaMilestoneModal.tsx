@@ -5,12 +5,13 @@ import {IdeaDto} from "../../../ideas.api";
 import {useTranslation} from "react-i18next";
 
 interface Props {
+    open: boolean
     idea: IdeaDto
     handleCloseModal: () => void
     fetchIdeaMilestones: () => Promise<void>
 }
 
-export const CreateIdeaMilestoneModal = ({ idea, handleCloseModal, fetchIdeaMilestones }: Props) => {
+export const CreateIdeaMilestoneModal = ({ open, idea, handleCloseModal, fetchIdeaMilestones }: Props) => {
 
     const { t } = useTranslation()
 
@@ -21,7 +22,7 @@ export const CreateIdeaMilestoneModal = ({ idea, handleCloseModal, fetchIdeaMile
 
     return (
         <Modal
-            open={true}
+            open={open}
             onClose={handleCloseModal}
             aria-labelledby="modal-title"
             maxWidth={'md'}

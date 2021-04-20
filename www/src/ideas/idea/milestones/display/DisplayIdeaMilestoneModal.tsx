@@ -6,18 +6,19 @@ import {IdeaDto} from "../../../ideas.api";
 import {useTranslation} from "react-i18next";
 
 interface Props {
+    open: boolean
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
     handleCloseModal: () => void
 }
 
-export const DisplayIdeaMilestoneModal = ({ idea, ideaMilestone, handleCloseModal }: Props) => {
+export const DisplayIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseModal }: Props) => {
 
     const { t } = useTranslation()
 
     return (
         <Modal
-            open={true}
+            open={open}
             onClose={handleCloseModal}
             aria-labelledby="modal-title"
             maxWidth={'md'}
