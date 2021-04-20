@@ -1,7 +1,8 @@
 import React from 'react'
 import {Modal} from "../../../../components/modal/Modal";
-import {CreateIdeaMilestoneModalContent} from "./CreateIdeaMilestoneModalContent";
+import {CreateIdeaMilestone} from "./CreateIdeaMilestone";
 import {IdeaDto} from "../../../ideas.api";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     idea: IdeaDto
@@ -10,6 +11,8 @@ interface Props {
 }
 
 export const CreateIdeaMilestoneModal = ({ idea, handleCloseModal, fetchIdeaMilestones }: Props) => {
+
+    const { t } = useTranslation()
 
     const handleSuccessfulFormSubmit = () => {
         handleCloseModal()
@@ -23,11 +26,16 @@ export const CreateIdeaMilestoneModal = ({ idea, handleCloseModal, fetchIdeaMile
             aria-labelledby="modal-title"
             maxWidth={'md'}
         >
-            <CreateIdeaMilestoneModalContent
-                idea={idea}
-                handleCloseModal={handleCloseModal}
-                handleSuccessfulFormSubmit={handleSuccessfulFormSubmit}
-            />
+            <>
+                <h2 id='modal-title'>
+                    {t('idea.milestones.modal.createMilestone')}
+                </h2>
+                <CreateIdeaMilestone
+                    idea={idea}
+                    handleCloseModal={handleCloseModal}
+                    handleSuccessfulFormSubmit={handleSuccessfulFormSubmit}
+                />
+            </>
         </Modal>
     )
 }

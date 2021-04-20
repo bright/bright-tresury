@@ -1,8 +1,9 @@
 import React from 'react'
 import {Modal} from "../../../../components/modal/Modal";
-import {EditIdeaMilestoneModalContent} from "./EditIdeaMilestoneModalContent";
+import {EditIdeaMilestone} from "./EditIdeaMilestone";
 import {IdeaMilestoneDto} from "../idea.milestones.api";
 import {IdeaDto} from "../../../ideas.api";
+import {useTranslation} from "react-i18next";
 
 interface Props {
     idea: IdeaDto
@@ -12,6 +13,8 @@ interface Props {
 }
 
 export const EditIdeaMilestoneModal = ({ idea, ideaMilestone, handleCloseModal, fetchIdeaMilestones }: Props) => {
+
+    const { t } = useTranslation()
 
     const handleSuccessfulFormSubmit = () => {
         handleCloseModal()
@@ -25,12 +28,17 @@ export const EditIdeaMilestoneModal = ({ idea, ideaMilestone, handleCloseModal, 
             aria-labelledby="modal-title"
             maxWidth={'md'}
         >
-            <EditIdeaMilestoneModalContent
-                idea={idea}
-                ideaMilestone={ideaMilestone}
-                handleCloseModal={handleCloseModal}
-                handleSuccessfulFormSubmit={handleSuccessfulFormSubmit}
-            />
+            <>
+                <h2 id='modal-title'>
+                    {t('idea.milestones.modal.editMilestone')}
+                </h2>
+                <EditIdeaMilestone
+                    idea={idea}
+                    ideaMilestone={ideaMilestone}
+                    handleCloseModal={handleCloseModal}
+                    handleSuccessfulFormSubmit={handleSuccessfulFormSubmit}
+                />
+            </>
         </Modal>
     )
 }
