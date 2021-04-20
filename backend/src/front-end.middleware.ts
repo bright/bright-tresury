@@ -1,13 +1,14 @@
-import { Injectable, NestMiddleware } from '@nestjs/common'
-import { Response, Request } from 'express'
+import {Injectable, NestMiddleware} from '@nestjs/common'
+import {Request, Response} from 'express'
 import * as path from 'path'
+import {baseApiPath} from "./main";
 
-const ROUTE_PREFIX = 'api'
 const resolvePath = (file: string) => path.join(__dirname, `../../../www/build/${file}`)
+
 @Injectable()
 export class FrontendMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: () => void) {
-    if (req.baseUrl.includes(ROUTE_PREFIX)) {
+    if (req.baseUrl.includes(baseApiPath)) {
       next();
     } else {
       console.log('FRONT-END serving')
