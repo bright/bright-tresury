@@ -27,7 +27,7 @@ export class IdeaMilestonesService {
             throw new NotFoundException('Idea with the given id not found')
         }
         return await this.ideaMilestoneRepository.find({
-            where: { ideaId },
+            where: { idea },
             relations: ['networks']
         })
     }
@@ -37,7 +37,7 @@ export class IdeaMilestonesService {
         if (!idea) {
             throw new NotFoundException('Idea with the given id not found')
         }
-        return await this.ideaMilestoneRepository.save(
+        const savedIdeaMilestone = await this.ideaMilestoneRepository.save(
             new IdeaMilestone(
                 idea,
                 subject,
@@ -47,6 +47,7 @@ export class IdeaMilestonesService {
                 description
             )
         )
+        return (await this.ideaMilestoneRepository.findOne(savedIdeaMilestone.id, { relations: ['networks'] }))!
     }
 
     async update(ideaMilestoneId: string, updateIdeaMilestoneDto: UpdateIdeaMilestoneDto): Promise<IdeaMilestone> {
@@ -64,10 +65,12 @@ export class IdeaMilestonesService {
             return { ...existingNetwork, ...updatedNetwork }
         })
 
-        return await this.ideaMilestoneRepository.save({
+        await this.ideaMilestoneRepository.save({
             ...currentIdeaMilestone,
             ...updateIdeaMilestoneDto,
             networks: updatedNetworks ?? currentIdeaMilestone.networks
         })
+
+        return (await this.ideaMilestoneRepository.findOne(currentIdeaMilestone.id, { relations: ['networks'] }))!
     }
 }
