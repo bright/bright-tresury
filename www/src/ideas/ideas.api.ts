@@ -21,10 +21,6 @@ export interface IdeaNetworkDto {
     value: number
 }
 
-export type CreateIdeaDto = Omit<IdeaDto, 'id' | 'ordinalNumber'>
-
-export type PatchIdeaMilestoneDto = Partial<IdeaDto>
-
 export enum IdeaStatus {
     Draft = 'draft',
     Active = 'active',
