@@ -1,18 +1,47 @@
-import {IdeaMilestonesController} from "./idea.milestones.controller";
-import {Test, TestingModule} from "@nestjs/testing";
+import {beforeSetupFullApp, cleanDatabase, request} from "../../utils/spec.helpers";
+// import {IdeasService} from "../ideas.service";
+// import {createIdea} from "../spec.helpers";
 
-describe('IdeaMilestonesController', () => {
-  let controller: IdeaMilestonesController;
+const baseUrl = () => `/api/v1/ideas`
+
+describe('/api/v1/ideas/:ideaId/milestones', () => {
+
+  const app = beforeSetupFullApp()
+  // const getService = () => app.get().get(IdeasService)
 
   beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      controllers: [IdeaMilestonesController],
-    }).compile();
+    await cleanDatabase()
+  })
 
-    controller = module.get<IdeaMilestonesController>(IdeaMilestonesController);
-  });
+  describe('GET', () => {
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+    it('should return 200', async () => {
+
+      // const idea = await createIdea({title: 'Test title'}, getService())
+
+      return request(app())
+          .get(baseUrl())
+          .expect(200)
+    })
+
+    it('should return 200', async () => {
+
+      // const idea = await createIdea({title: 'Test title'}, getService())
+
+      return request(app())
+          .get(baseUrl())
+          .expect(200)
+    })
+
+    it('should return 200', async () => {
+
+      // const idea = await createIdea({title: 'Test title'}, getService())
+
+      return request(app())
+          .get(baseUrl())
+          .expect(200)
+    })
+
+  })
+
 });
