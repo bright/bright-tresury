@@ -59,7 +59,7 @@ interface SignInValues {
     password: string,
 }
 
-const SignInForm: React.FC = () => {
+const SignInForm = () => {
     const {t} = useTranslation()
     const classes = useStyles()
 

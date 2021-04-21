@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const VerifyEmailError: React.FC = () => {
+const VerifyEmailError = () => {
     const {t} = useTranslation()
     const classes = useStyles()
 

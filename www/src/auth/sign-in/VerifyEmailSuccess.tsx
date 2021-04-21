@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const VerifyEmailSuccess: React.FC = () => {
+const VerifyEmailSuccess = () => {
     const {t} = useTranslation()
     const classes = useStyles()
     const {isUserSignedIn} = useAuth()

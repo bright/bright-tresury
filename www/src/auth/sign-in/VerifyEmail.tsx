@@ -6,7 +6,7 @@ import VerifyEmailSuccess from "./VerifyEmailSuccess";
 
 const TOKEN_PARAM_NAME = 'token'
 
-const VerifyEmail: React.FC = () => {
+const VerifyEmail = () => {
     const location = useLocation()
     const [success, setSuccess] = useState<boolean | undefined>()
 

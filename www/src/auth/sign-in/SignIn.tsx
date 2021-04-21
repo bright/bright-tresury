@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const SignIn: React.FC = () => {
+const SignIn = () => {
     const {t} = useTranslation()
     const classes = useStyles()
 
