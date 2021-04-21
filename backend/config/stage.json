@@ -1,4 +1,6 @@
 {
+  "apiUrl": "http://treasury-app-stage-147576773.eu-central-1.elb.amazonaws.com:3000",
+  "websiteUrl": "http://treasury-app-stage-147576773.eu-central-1.elb.amazonaws.com",
   "port": 3000,
   "blockchain": {
     "nodeUrl": "ws://treasury-substrate-stage:9944",
