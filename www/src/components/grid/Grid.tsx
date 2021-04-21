@@ -4,16 +4,21 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {breakpoints} from "../../theme/theme";
 import {GridItem} from "./GridItem";
 
-const horizontalMargin = '32px'
-const mobileHorizontalMargin = '18px'
+const DEFAULT_HORIZONTAL_PADDING = '32px'
+const DEFAULT_MOBILE_HORIZONTAL_PADDING = '18px'
 
-const useStyles = makeStyles((theme: Theme) => {
+interface StylesProps {
+    horizontalPadding: string
+    mobileHorizontalPadding: string
+}
+
+const useStyles = makeStyles<Theme, StylesProps>((theme) => {
     return createStyles({
         root: {
-            padding: `26px ${horizontalMargin}`,
+            padding: props => `26px ${props.horizontalPadding}`,
             backgroundColor: theme.palette.background.paper,
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: `18px ${mobileHorizontalMargin} 26px ${mobileHorizontalMargin}`,
+                padding: props => `18px ${props.mobileHorizontalPadding} 26px ${props.mobileHorizontalPadding}`,
             },
         },
     })
@@ -22,12 +27,20 @@ const useStyles = makeStyles((theme: Theme) => {
 interface GridProps<T> {
     items: T[]
     renderItem: (item: T) => JSX.Element
+    horizontalPadding?: string,
+    mobileHorizontalPadding?: string
 }
 
 export type IGrid<T = any> = React.FC<GridProps<T>>
 
-export const Grid: IGrid = ({items, renderItem}) => {
-    const classes = useStyles()
+export const Grid: IGrid = (
+    { items, renderItem, horizontalPadding = DEFAULT_HORIZONTAL_PADDING, mobileHorizontalPadding = DEFAULT_MOBILE_HORIZONTAL_PADDING }
+) => {
+
+    const classes = useStyles({
+        horizontalPadding,
+        mobileHorizontalPadding
+    })
 
     return <MaterialGrid container spacing={2} className={classes.root}>
         {items.map((item, index: number) =>

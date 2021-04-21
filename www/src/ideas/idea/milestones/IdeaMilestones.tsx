@@ -3,7 +3,7 @@ import {getIdeaMilestones} from "./idea.milestones.api";
 import {EmptyIdeaMilestonesArrayInfo} from "./components/IdeaEmptyMilestonesArrayInfo";
 import {CreateIdeaMilestoneModal} from "./create/CreateIdeaMilestoneModal";
 import {IdeaDto} from "../../ideas.api";
-import {IdeaMilestonesList} from "./components/IdeaMilestonesList";
+import {IdeaMilestonesList} from "./list/IdeaMilestonesList";
 import {LoadingWrapper, useLoading} from "../../../components/loading/LoadingWrapper";
 import {CreateIdeaMilestoneButton} from "./components/CreateIdeaMilestoneButton";
 import {useTranslation} from "react-i18next";

@@ -14,7 +14,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         transition: 'transform 0.2s',
         width: '100%',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        cursor: 'pointer'
     },
     content: {
         margin: '0 20px 0 24px'
@@ -34,19 +35,31 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 interface Props {
     network?: string
     redirectTo?: string
+    showNetworkAccentLine?: boolean
 }
 
-export const NetworkCard: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({children, network = config.NETWORK_NAME, redirectTo, ...props}) => {
+export const NetworkCard: React.FC<Props & HTMLAttributes<HTMLDivElement>> = ({
+  children, network = config.NETWORK_NAME, showNetworkAccentLine = true, redirectTo, ...props }
+) => {
+
     const classes = useStyles()
 
-    const content = <div className={classes.content}>
-        {children}
-    </div>
+    const content = (
+        <div className={classes.content}>
+            { children }
+        </div>
+    )
 
-    return <Card className={classes.root} {...props}>
-        <div className={classes.networkAccentLine}/>
-        {redirectTo ? <Link className={classes.link} to={redirectTo}>
-            {content}
-        </Link> : content}
-    </Card>
+    return (
+        <Card className={classes.root} {...props}>
+            { showNetworkAccentLine
+                ? <div className={classes.networkAccentLine} />
+                : null
+            }
+            { redirectTo
+                ? <Link className={classes.link} to={redirectTo}>{content}</Link>
+                : content
+            }
+        </Card>
+    )
 }

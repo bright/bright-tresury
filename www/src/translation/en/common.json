@@ -1,4 +1,10 @@
 {
+  "common": {
+    "dateTime": {
+      "day": "day",
+      "days": "days"
+    }
+  },
   "components": {
     "timeSelect": {
       "currentSpendTime": "Current Spend Time"
@@ -205,6 +211,12 @@
             "create": "Create",
             "save": "Save"
           }
+        }
+      },
+      "list": {
+        "card": {
+          "ordinalNumber": "Milestone - ",
+          "noDescriptionProvided": "No description provided"
         }
       }
     },

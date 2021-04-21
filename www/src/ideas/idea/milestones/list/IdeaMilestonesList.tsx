@@ -3,6 +3,9 @@ import {IdeaMilestoneDto} from "../idea.milestones.api";
 import {EditIdeaMilestoneModal} from "../edit/EditIdeaMilestoneModal";
 import {DisplayIdeaMilestoneModal} from "../display/DisplayIdeaMilestoneModal";
 import {IdeaDto} from "../../../ideas.api";
+import {Grid} from "../../../../components/grid/Grid";
+import {IdeaMilestoneCard} from "./IdeaMilestoneCard";
+import {mobileHeaderListHorizontalMargin} from "../../../../components/header/list/HeaderListContainer";
 
 interface Props {
     idea: IdeaDto
@@ -36,17 +39,18 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
         setFocusedIdeaMilestone(ideaMilestone)
     }
 
+    const renderIdeaMilestoneCard = (ideaMilestone: IdeaMilestoneDto) => {
+        return <IdeaMilestoneCard ideaMilestone={ideaMilestone} onClick={handleIdeaMilestoneClick} />
+    }
+
     return (
         <>
-            <ul>
-                {ideaMilestones.map((ideaMilestone: IdeaMilestoneDto) => (
-                    <li key={ideaMilestone.id} onClick={() => handleIdeaMilestoneClick(ideaMilestone)}>
-                        <div>
-                            <span>{ideaMilestone.subject} ({ideaMilestone.id})</span>
-                        </div>
-                    </li>
-                ))}
-            </ul>
+            <Grid
+                items={ideaMilestones}
+                renderItem={renderIdeaMilestoneCard}
+                horizontalPadding={'0px'}
+                mobileHorizontalPadding={mobileHeaderListHorizontalMargin}
+            />
             { focusedIdeaMilestone
                 ? <EditIdeaMilestoneModal
                     open={isEditIdeaMilestoneModalOpen}
