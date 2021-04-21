@@ -88,7 +88,8 @@ const SignInForm = () => {
               handleSubmit,
           }) =>
             <form className={classes.form} autoComplete='off' onSubmit={handleSubmit}>
-                {loadingState === LoadingState.Error && error && <ErrorBox className={classes.inputField} error={error}/>}
+                {(loadingState === LoadingState.Error && error) ? <ErrorBox className={classes.inputField} error={error}/>
+                    : null}
                 <div className={classes.inputField}>
                     <Input
                         name='email'

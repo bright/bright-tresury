@@ -1,4 +1,5 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
+import {Loader} from "./Loader";
 
 export enum LoadingState {
     Initial,
@@ -14,7 +15,7 @@ interface Props {
 export const LoadingWrapper: React.FC<Props> = ({loadingState, children}) => {
     return <>
         {/* TODO: add loading indicator and handle errors */}
-        {loadingState === LoadingState.Loading && <p>Loading</p>}
+        {loadingState === LoadingState.Loading && <Loader/>}
         {loadingState === LoadingState.Error && <p>Error</p>}
         {loadingState === LoadingState.Resolved && children}
     </>
