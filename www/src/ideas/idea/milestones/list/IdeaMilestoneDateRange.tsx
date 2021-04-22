@@ -37,7 +37,7 @@ export const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: Props) => {
         return (
             <div className={classes.root}>
                 <span className={classes.dates}>
-                    {format(new Date(dateFrom), 'dd-MM')} - {dateTo}
+                    {format(new Date(dateFrom), 'dd-MM')} - {format(new Date(dateTo), 'dd-MM-yyyy')}
                 </span>
                 <span className={classes.separator}>|</span>
                 <span className={classes.difference}>
