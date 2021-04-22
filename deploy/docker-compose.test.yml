@@ -27,7 +27,7 @@ services:
       test: pg_isready -U postgres; do sleep 1; done
     restart: unless-stopped
   substrate:
-    image: parity/polkadot:v0.8.24
+    image: parity/polkadot:v0.8.30
     ports:
       - "9944:9944"
     command: --rpc-external --ws-external --dev

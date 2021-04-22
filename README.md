@@ -19,6 +19,10 @@ To run backend and frontend in development mode see the corresponding readme fil
 
 You can connect to any of the live Substrate based network (*currently configured in code*). To run a local Polkadot node go to [Polkadot GitHub page](https://github.com/paritytech/polkadot). You can download it and run locally or in a docker container. In both scenarios run the node in development mode (with `--dev` flag).
 
+TLDR: run docker command:
+
+```docker run -p 9944:9944 -p 9933:9933 parity/polkadot:v0.8.30 --rpc-external --ws-external --dev```
+
 ### Genesis config
 
 If you have downloaded the source code, you can change some of the config values.

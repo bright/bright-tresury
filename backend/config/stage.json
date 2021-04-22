@@ -3,12 +3,7 @@
   "websiteUrl": "http://treasury-app-stage-147576773.eu-central-1.elb.amazonaws.com",
   "port": 3000,
   "blockchain": {
-    "nodeUrl": "ws://treasury-substrate-stage:9944",
-    "types": {
-      "Address": "AccountId",
-      "LookupSource": "AccountId",
-      "BlockWeights": "Balance"
-    }
+    "nodeUrl": "ws://treasury-substrate-stage:9944"
   },
   "auth": {
     "coreUrl": "http://treasury-auth-stage:3567",

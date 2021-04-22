@@ -11,7 +11,7 @@
     "PERCENT": 5
   },
   "CUSTOM_TYPES": {
-    "Address": "AccountId",
-    "LookupSource": "AccountId"
+    "Address": "MultiAddress",
+    "LookupSource": "MultiAddress"
   }
 }

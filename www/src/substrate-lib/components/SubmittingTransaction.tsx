@@ -1,3 +1,4 @@
+import {SubmittableResult} from "@polkadot/api";
 import {DispatchError} from "@polkadot/types/interfaces";
 import {EventMetadataLatest} from "@polkadot/types/interfaces/metadata";
 import {ISubmittableResult} from "@polkadot/types/types";
@@ -12,7 +13,7 @@ import SignAndSubmit from "./SignAndSubmit";
 import SubstrateLoading from "./SubstrateLoading";
 import TransactionError from "./TransactionError";
 import TransactionInProgress from "./TransactionInProgress";
-import {getFromAcct, transformParams} from "./utils";
+import {getFromAcct, isNumType, transformParams} from "./utils";
 
 export interface Result {
     status: Status,
@@ -79,7 +80,8 @@ const SubmittingTransaction: React.FC<Props> = ({onClose, onSuccess, txAttrs, se
         }
     }, [keyring, keyringState])
 
-    const txResHandler = (result: ISubmittableResult) => {
+    const txResHandler = (result: SubmittableResult) => {
+        debugger
         const txResult = {status: result.status} as Result
 
         const applyExtrinsicEvent = result.events
@@ -123,8 +125,10 @@ const SubmittingTransaction: React.FC<Props> = ({onClose, onSuccess, txAttrs, se
         }
 
         // TODO should be set as general properties
-        const properties = await api.rpc.system.properties()
-        const decimals = properties.tokenDecimals.unwrapOr(new BN(15)).toNumber()
+        const chainInfo = await api.registry.getChainProperties()
+        const tokenDecimals = chainInfo?.tokenDecimals.unwrapOr(undefined)?.toString()
+        const parsedTokenDecimals = tokenDecimals ? parseInt(tokenDecimals) : NaN
+        const decimals = !isNaN(parsedTokenDecimals) ? parsedTokenDecimals : 12
 
         const transformed = transformParams(inputParams, decimals);
 

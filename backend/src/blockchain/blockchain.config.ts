@@ -18,10 +18,9 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     types: {
         doc: "Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.",
         default: {
-            "Address": "AccountId",
-            "LookupSource": "AccountId",
-            "BlockWeights": "Balance"
-          },
+            "Address": "MultiAddress",
+            "LookupSource": "MultiAddress",
+        },
         env: "SUBSTRATE_TYPES",
         format(value: any) {
             if (typeof value !== "object") {
