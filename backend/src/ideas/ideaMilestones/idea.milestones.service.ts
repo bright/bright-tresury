@@ -71,10 +71,14 @@ export class IdeaMilestonesService {
             const existingNetwork =
                 currentIdeaMilestone.networks.find((currentIdeaMilestoneNetwork: IdeaMilestoneNetwork) => currentIdeaMilestoneNetwork.id === updatedNetwork.id)
 
-            return { ...existingNetwork, ...updatedNetwork }
+            if (existingNetwork) {
+                return { ...existingNetwork, ...updatedNetwork }
+            }
+
+            return this.ideaMilestoneNetworkRepository.create({ name: updatedNetwork.name, value: updatedNetwork.value })
         })
 
-        await this.ideaMilestoneRepository.save({
+        await this.ideaMilestoneRepository.save( {
             ...currentIdeaMilestone,
             ...updateIdeaMilestoneDto,
             networks: updatedNetworks ?? currentIdeaMilestone.networks

@@ -5,14 +5,11 @@ import {IdeasService} from "../ideas.service";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {IdeaMilestoneDto} from "./dto/ideaMilestoneDto";
 import {IdeaMilestonesService} from "./idea.milestones.service";
-import {addDays, format, subDays} from 'date-fns'
 import {HttpStatus} from "@nestjs/common";
 import {v4 as uuid, validate as uuidValidate} from 'uuid';
 import {IdeaMilestone} from "./entities/idea.milestone.entity";
 
 const baseUrl = (ideaId: string) => `/api/v1/ideas/${ideaId}/milestones`
-
-const formatIdeaMilestoneDate = (date: Date) => format(date, 'yyyy-MM-dd')
 
 describe('/api/v1/ideas/:ideaId/milestones', () => {
 
@@ -53,7 +50,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
     })
 
     it ('should return idea milestones', async () => {
-      const ideaMilestone = await createIdeaMilestone(
+      await createIdeaMilestone(
           idea.id,
           new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null),
           getIdeaMilestonesService()
@@ -65,11 +62,11 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
       const body = result.body as IdeaMilestoneDto[]
 
       expect(body.length).toBe(1)
-      expect(body[0].subject).toBe(ideaMilestone.subject)
+      expect(body[0].subject).toBe('ideaMilestoneSubject')
     })
 
     it ('should return milestones only of the given idea', async () => {
-      const ideaMilestone = await createIdeaMilestone(
+      await createIdeaMilestone(
           idea.id,
           new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null),
           getIdeaMilestonesService()
@@ -88,20 +85,17 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
       const body = result.body as IdeaMilestoneDto[]
 
       expect(body.length).toBe(1)
-      expect(body[0].subject).toBe(ideaMilestone.subject)
+      expect(body[0].subject).toBe('ideaMilestoneSubject')
     })
 
     it ('should return milestones containing correct data', async () => {
-
-      const date = new Date()
-
-      const ideaMilestone = await createIdeaMilestone(
+      await createIdeaMilestone(
           idea.id,
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{ name: 'polkadot', value: 100 }],
-              date,
-              date,
+              new Date(2021, 3, 20),
+              new Date(2021, 3, 21),
               'ideaMilestoneDescription'
           ),
           getIdeaMilestonesService()
@@ -113,13 +107,13 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
       const body = result.body as IdeaMilestoneDto[]
 
       expect(body.length).toBe(1)
-      expect(body[0].subject).toBe(ideaMilestone.subject)
+      expect(body[0].subject).toBe('ideaMilestoneSubject')
       expect(body[0].networks.length).toBe(1)
-      expect(body[0].networks[0].name).toBe(ideaMilestone.networks[0].name)
-      expect(body[0].networks[0].value).toBe(Number(ideaMilestone.networks[0].value))
-      expect(body[0].dateFrom).toBe(ideaMilestone.dateFrom)
-      expect(body[0].dateTo).toBe(ideaMilestone.dateTo)
-      expect(body[0].description).toBe(ideaMilestone.description)
+      expect(body[0].networks[0].name).toBe('polkadot')
+      expect(body[0].networks[0].value).toBe(100)
+      expect(body[0].dateFrom).toBe('2021-04-20')
+      expect(body[0].dateTo).toBe('2021-04-21')
+      expect(body[0].description).toBe('ideaMilestoneDescription')
     })
 
   })
@@ -299,28 +293,22 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
               .send({
                   subject: 'ideaMilestoneSubject',
                   networks: [{name: 'polkadot', value: 10}],
-                  dateFrom: new Date(),
-                  dateTo: new Date(),
+                  dateFrom: '2021-04-20',
+                  dateTo: '2021-04-21',
                   description: 'ideaDescription'
               })
               .expect(HttpStatus.CREATED)
       })
 
       it(`should return created idea milestone if all correct data is given`, async () => {
-          const subject = 'ideaMilestoneSubject'
-          const networks = [{name: 'polkadot', value: 10}]
-          const date = new Date()
-          const formattedDate = formatIdeaMilestoneDate(date)
-          const description = 'ideaDescription'
-
           const response = await request(app())
               .post(baseUrl(idea.id))
               .send({
-                  subject,
-                  networks,
-                  dateFrom: date,
-                  dateTo: date,
-                  description
+                  subject: 'ideaMilestoneSubject',
+                  networks: [{name: 'polkadot', value: 10}],
+                  dateFrom: '2021-04-20',
+                  dateTo: '2021-04-21',
+                  description: 'ideaDescription'
               })
               .expect(HttpStatus.CREATED)
 
@@ -328,13 +316,13 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
           expect(uuidValidate(body.id)).toBe(true)
           expect(body.ordinalNumber).toBeDefined()
-          expect(body.subject).toBe(subject)
+          expect(body.subject).toBe('ideaMilestoneSubject')
           expect(body.networks.length).toBe(1)
-          expect(body.networks[0].name).toBe(networks[0].name)
-          expect(body.networks[0].value).toBe(Number(networks[0].value))
-          expect(body.dateFrom).toBe(formattedDate)
-          expect(body.dateTo).toBe(formattedDate)
-          expect(body.description).toBe(description)
+          expect(body.networks[0].name).toBe('polkadot')
+          expect(body.networks[0].value).toBe(10)
+          expect(body.dateFrom).toBe('2021-04-20')
+          expect(body.dateTo).toBe('2021-04-21')
+          expect(body.description).toBe('ideaDescription')
       })
 
   })
@@ -349,8 +337,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             new CreateIdeaMilestoneDto(
                 'ideaMilestoneSubject',
                 [{name: 'polkadot', value: 100}],
-                new Date(),
-                new Date(),
+                new Date(2021, 3, 20),
+                new Date(2021, 3, 21),
                 'ideaMilestoneDescription'
             ),
             getIdeaMilestonesService()
@@ -367,31 +355,26 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
     })
 
     it(`should patch subject correctly`, async () => {
-        const newSubject = 'notEmptySubject'
-
         const response = await request(app())
             .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
             .send({
-                subject: newSubject
+                subject: 'notEmptySubject'
             })
             .expect(HttpStatus.OK)
 
         const body = response.body as IdeaMilestoneDto
 
-        expect(body.subject).toBe(newSubject)
+        expect(body.subject).toBe('notEmptySubject')
     })
 
     it(`should patch networks correctly`, async () => {
-
-        const newNetworkValue = 500
-
         const response = await request(app())
             .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
             .send({
                 networks: [
                     {
                       ...ideaMilestone.networks[0],
-                      value: newNetworkValue
+                      value: 500
                   }
               ]
             })
@@ -400,81 +383,67 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         const body = response.body as IdeaMilestoneDto
 
         expect(body.networks).toBeDefined()
-        expect(body.networks[0].name).toBe(ideaMilestone.networks[0].name)
-        expect(body.networks[0].value).toBe(newNetworkValue)
+        expect(body.networks[0].name).toBe('polkadot')
+        expect(body.networks[0].value).toBe(500)
     })
 
     it(`should patch dateFrom correctly`, async () => {
-
-        const newDateFrom = subDays(new Date(ideaMilestone.dateFrom!), 3)
-        const newDateFromFormatted = formatIdeaMilestoneDate(newDateFrom)
-
         const response = await request(app())
               .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
               .send({
-                  dateFrom: newDateFrom
+                  dateFrom: '2021-04-19'
               })
               .expect(HttpStatus.OK)
 
         const body = response.body as IdeaMilestoneDto
 
-        expect(body.dateFrom).toBe(newDateFromFormatted)
+        expect(body.dateFrom).toBe('2021-04-19')
     })
 
     it(`should patch dateTo correctly`, async () => {
-
-        const newDateTo = addDays(new Date(ideaMilestone.dateFrom!), 3)
-        const newDateToFormatted = formatIdeaMilestoneDate(newDateTo)
-
         const response = await request(app())
               .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
               .send({
-                  dateTo: newDateTo
+                  dateTo: '2021-04-22'
               })
               .expect(HttpStatus.OK)
 
         const body = response.body as IdeaMilestoneDto
 
-        expect(body.dateTo).toBe(newDateToFormatted)
+        expect(body.dateTo).toBe('2021-04-22')
     })
 
     it(`should patch description correctly`, async () => {
-
-        const newDescription = 'newDescription'
-
         const response = await request(app())
               .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
               .send({
-                  description: newDescription
+                  description: 'newDescription'
               })
               .expect(HttpStatus.OK)
 
         const body = response.body as IdeaMilestoneDto
 
-        expect(body.description).toBe(newDescription)
+        expect(body.description).toBe('newDescription')
     })
 
     it(`should not change data which was not patched`, async () => {
-
-        const newSubject = 'newSubject'
-
         const response = await request(app())
               .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
               .send({
-                  subject: newSubject
+                  subject: 'newSubject'
               })
               .expect(HttpStatus.OK)
 
         const body = response.body as IdeaMilestoneDto
 
         expect(body.ordinalNumber).toBe(ideaMilestone.ordinalNumber)
-        expect(body.subject).toBe(newSubject)
-        expect(body.networks.length).toBe(ideaMilestone.networks.length)
-        expect(body.networks[0].name).toBe(ideaMilestone.networks[0].name)
-        expect(body.networks[0].value).toBe(Number(ideaMilestone.networks[0].value))
-        expect(body.dateFrom).toBe(ideaMilestone.dateFrom)
-        expect(body.dateTo).toBe(ideaMilestone.dateTo)
-        expect(body.description).toBe(ideaMilestone.description)
+        expect(body.subject).toBe('newSubject')
+        expect(body.networks.length).toBe(1)
+        expect(body.networks[0].name).toBe('polkadot')
+        expect(body.networks[0].value).toBe(100)
+        expect(body.dateFrom).toBe('2021-04-20')
+        expect(body.dateTo).toBe('2021-04-21')
+        expect(body.description).toBe('ideaMilestoneDescription')
     })
 
   })

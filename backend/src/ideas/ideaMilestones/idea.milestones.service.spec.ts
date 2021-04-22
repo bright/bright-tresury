@@ -7,10 +7,6 @@ import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {v4 as uuid} from 'uuid'
 import {NotFoundException} from "@nestjs/common";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
-import {addDays, format, subDays} from "date-fns";
-import {IdeaMilestone} from "./entities/idea.milestone.entity";
-
-const formatIdeaMilestoneDate = (date: Date) => format(date, 'yyyy-MM-dd')
 
 describe(`/api/v1/ideas`, () => {
 
@@ -104,8 +100,8 @@ describe(`/api/v1/ideas`, () => {
       const createIdeaMilestoneDto = new CreateIdeaMilestoneDto(
           'ideaMilestoneSubject',
           [{name: 'polkadot', value: 50}, {name: 'kusama', value: 100}],
-          new Date(),
-          new Date(),
+          new Date(2021, 3, 20),
+          new Date(2021, 3, 21),
           'ideaMilestoneDescription'
       )
 
@@ -116,14 +112,14 @@ describe(`/api/v1/ideas`, () => {
 
       const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id)
 
-      expect(foundIdeaMilestone.subject).toBe(createdIdeaMilestone.subject)
+      expect(foundIdeaMilestone.subject).toBe('ideaMilestoneSubject')
       expect(foundIdeaMilestone.networks).toBeDefined()
       expect(foundIdeaMilestone.networks.length).toBe(2)
       expect(foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === 'kusama')).toBeDefined()
       expect(foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === 'polkadot')).toBeDefined()
-      expect(foundIdeaMilestone.dateFrom).toBe(formatIdeaMilestoneDate(createIdeaMilestoneDto.dateFrom!))
-      expect(foundIdeaMilestone.dateTo).toBe(formatIdeaMilestoneDate(createIdeaMilestoneDto.dateTo!))
-      expect(foundIdeaMilestone.description).toBe(createIdeaMilestoneDto.description)
+      expect(foundIdeaMilestone.dateFrom).toBe('2021-04-20')
+      expect(foundIdeaMilestone.dateTo).toBe('2021-04-21')
+      expect(foundIdeaMilestone.description).toBe('ideaMilestoneDescription')
       expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
     })
 
@@ -161,47 +157,31 @@ describe(`/api/v1/ideas`, () => {
     })
 
     it('should create and save idea milestone with all valid data', async () => {
-
-      const fullCreateIdeaMilestoneDto = new CreateIdeaMilestoneDto(
-          'ideaMilestoneSubject',
-          [{name: 'polkadot', value: 100}],
-          new Date(),
-          new Date(),
-          'ideaMilestoneDescription'
+      const createdIdeaMilestone = await getIdeaMilestonesService().create(idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              new Date(2021, 3, 20),
+              new Date(2021, 3, 21),
+              'ideaMilestoneDescription'
+          )
       )
-
-      const createdIdeaMilestone = await getIdeaMilestonesService().create(idea.id, fullCreateIdeaMilestoneDto)
 
       const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id)
 
-      expect(foundIdeaMilestone.subject).toBe(fullCreateIdeaMilestoneDto.subject)
+      expect(foundIdeaMilestone.subject).toBe('ideaMilestoneSubject')
       expect(foundIdeaMilestone.networks).toBeDefined()
       expect(foundIdeaMilestone.networks.length).toBe(1)
       expect(foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === 'polkadot')).toBeDefined()
-      expect(foundIdeaMilestone.dateFrom).toBe(formatIdeaMilestoneDate(fullCreateIdeaMilestoneDto.dateFrom!))
-      expect(foundIdeaMilestone.dateTo).toBe(formatIdeaMilestoneDate(fullCreateIdeaMilestoneDto.dateTo!))
-      expect(foundIdeaMilestone.description).toBe(fullCreateIdeaMilestoneDto.description)
+      expect(foundIdeaMilestone.dateFrom).toBe('2021-04-20')
+      expect(foundIdeaMilestone.dateTo).toBe('2021-04-21')
+      expect(foundIdeaMilestone.description).toBe('ideaMilestoneDescription')
       expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
     })
 
   })
 
   describe('update', () => {
-
-    let ideaMilestone: IdeaMilestone
-
-    beforeEach(async () => {
-      ideaMilestone = await getIdeaMilestonesService().create(
-          idea.id,
-          new CreateIdeaMilestoneDto(
-            'ideaMilestoneSubject',
-            [{name: 'polkadot', value: 100}],
-            new Date(),
-            new Date(),
-            'ideaMilestoneDescription'
-          )
-      )
-    })
 
     it('should throw not found if wrong id', async () => {
       await expect(getIdeaMilestonesService().update(uuid(), { }))
@@ -210,39 +190,68 @@ describe(`/api/v1/ideas`, () => {
     })
 
     it('should update and save idea milestone with updated subject', async () => {
-      const subject = 'Updated subject'
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              new Date(),
+              new Date(),
+              'ideaMilestoneDescription'
+          )
+      )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { subject })
+      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated subject' })
+
       const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
 
-      expect(updatedIdeaMilestone.subject).toBe(subject)
+      expect(updatedIdeaMilestone.subject).toBe('Updated subject')
     })
 
     it('should update and save idea milestone with updated subject and not change other data', async () => {
-      const subject = 'Updated description'
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              new Date(2021, 3, 20),
+              new Date(2021, 3, 21),
+              'ideaMilestoneDescription'
+          )
+      )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { subject })
+      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated description' })
+
       const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
 
-      expect(updatedIdeaMilestone.subject).toBe(subject)
+      expect(updatedIdeaMilestone.subject).toBe('Updated description')
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(1)
-      expect(updatedIdeaMilestone.networks[0].name).toBe(ideaMilestone.networks[0].name)
-      expect(updatedIdeaMilestone.networks[0].value).toBe(ideaMilestone.networks[0].value)
-      expect(updatedIdeaMilestone.dateFrom).toBe(ideaMilestone.dateFrom)
-      expect(updatedIdeaMilestone.dateTo).toBe(ideaMilestone.dateTo)
-      expect(updatedIdeaMilestone.description).toBe(ideaMilestone.description)
+      expect(updatedIdeaMilestone.networks[0].name).toBe('polkadot')
+      expect(updatedIdeaMilestone.networks[0].value).toBe('100.000000000000000')
+      expect(updatedIdeaMilestone.dateFrom).toBe('2021-04-20')
+      expect(updatedIdeaMilestone.dateTo).toBe('2021-04-21')
+      expect(updatedIdeaMilestone.description).toBe('ideaMilestoneDescription')
       expect(updatedIdeaMilestone.ordinalNumber).toBe(ideaMilestone.ordinalNumber)
     })
 
-    it('should update and save idea milestone with updated networks', async () => {
-      const value = 999
+    it(`should update and save idea milestone with updated network's value`, async () => {
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              null,
+              null,
+              'ideaMilestoneDescription'
+          )
+      )
 
       await getIdeaMilestonesService().update(ideaMilestone.id, {
         networks: [
           {
             ...ideaMilestone.networks[0],
-            value
+            value: 999
           }
         ]
       })
@@ -251,37 +260,180 @@ describe(`/api/v1/ideas`, () => {
 
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(1)
-      expect(updatedIdeaMilestone.networks[0].name).toBe(ideaMilestone.networks[0].name)
-      expect(updatedIdeaMilestone.networks[0].value).toBe(`${value}.000000000000000`)
+      expect(updatedIdeaMilestone.networks[0].name).toBe('polkadot')
+      expect(updatedIdeaMilestone.networks[0].value).toBe(`999.000000000000000`)
+    })
+
+    it(`should update and save idea milestone with updated network's name`, async () => {
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              null,
+              null,
+              'ideaMilestoneDescription'
+          )
+      )
+
+      await getIdeaMilestonesService().update(ideaMilestone.id, {
+        networks: [
+          {
+            ...ideaMilestone.networks[0],
+            name: 'updatedNetworkName'
+          }
+        ]
+      })
+
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
+
+      expect(updatedIdeaMilestone.networks).toBeDefined()
+      expect(updatedIdeaMilestone.networks.length).toBe(1)
+      expect(updatedIdeaMilestone.networks[0].name).toBe('updatedNetworkName')
+      expect(updatedIdeaMilestone.networks[0].value).toBe('100.000000000000000')
+    })
+
+    it(`should update and save idea milestone with a new network added`, async () => {
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              null,
+              null,
+              'ideaMilestoneDescription'
+          )
+      )
+
+      await getIdeaMilestonesService().update(ideaMilestone.id, {
+        networks: [
+            ...ideaMilestone.networks,
+            {
+              name: 'kusama',
+              value: 150
+            }
+        ]
+      })
+
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
+
+      expect(updatedIdeaMilestone.networks).toBeDefined()
+      expect(updatedIdeaMilestone.networks.length).toBe(2)
+
+      const firstNetwork = updatedIdeaMilestone.networks.find(({ name }: IdeaMilestoneNetwork) => name === 'polkadot')
+      const secondNetwork = updatedIdeaMilestone.networks.find(({ name }: IdeaMilestoneNetwork) => name === 'kusama')
+
+      expect(firstNetwork).toBeDefined()
+      expect(firstNetwork!.value).toBe('100.000000000000000')
+
+      expect(secondNetwork).toBeDefined()
+      expect(secondNetwork!.value).toBe('150.000000000000000')
+    })
+
+    it(`should update and save idea milestone with one network removed`, async () => {
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}, {name: 'kusama', value: 150}],
+              null,
+              null,
+              'ideaMilestoneDescription'
+          )
+      )
+
+      const ideaMilestoneNetworkToRemain = ideaMilestone.networks.find(({ name }: IdeaMilestoneNetwork) => name === 'polkadot')!
+
+      await getIdeaMilestonesService().update(ideaMilestone.id, {
+        networks: [
+          ideaMilestoneNetworkToRemain
+        ]
+      })
+
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
+
+      expect(updatedIdeaMilestone.networks).toBeDefined()
+      expect(updatedIdeaMilestone.networks.length).toBe(1)
+      expect(updatedIdeaMilestone.networks[0].name).toBe('polkadot')
+      expect(updatedIdeaMilestone.networks[0].value).toBe('100.000000000000000')
+    })
+
+    it(`should update and save idea milestone with all networks removed`, async () => {
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              null,
+              null,
+              'ideaMilestoneDescription'
+          )
+      )
+
+      await getIdeaMilestonesService().update(ideaMilestone.id, {
+        networks: []
+      })
+
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
+
+      expect(updatedIdeaMilestone.networks).toBeDefined()
+      expect(updatedIdeaMilestone.networks.length).toBe(0)
     })
 
     it('should update and save idea milestone with updated dateFrom', async () => {
-      const dateFrom = subDays(new Date(ideaMilestone.dateFrom!), 3)
-      const formattedDateFrom = formatIdeaMilestoneDate(dateFrom)
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              new Date(2021, 3, 20),
+              new Date(2021, 3, 21),
+              'ideaMilestoneDescription'
+          )
+      )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { dateFrom })
+      await getIdeaMilestonesService().update(ideaMilestone.id, { dateFrom: new Date(2021, 3, 19) })
+
       const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
 
-      expect(updatedIdeaMilestone.dateFrom).toBe(formattedDateFrom)
+      expect(updatedIdeaMilestone.dateFrom).toBe('2021-04-19')
     })
 
     it('should update and save idea milestone with updated dateTo', async () => {
-      const dateTo = addDays(new Date(ideaMilestone.dateTo!), 3)
-      const formattedDateTo = formatIdeaMilestoneDate(dateTo)
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              new Date(2021, 3, 20),
+              new Date(2021, 3, 21),
+              'ideaMilestoneDescription'
+          )
+      )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { dateTo })
+      await getIdeaMilestonesService().update(ideaMilestone.id, { dateTo: new Date(2021, 3, 22) })
+
       const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
 
-      expect(updatedIdeaMilestone.dateTo).toBe(formattedDateTo)
+      expect(updatedIdeaMilestone.dateTo).toBe('2021-04-22')
     })
 
     it('should update and save idea milestone with updated description', async () => {
-      const description = 'Updated description'
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              null,
+              null,
+              'ideaMilestoneDescription'
+          )
+      )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { description })
+      await getIdeaMilestonesService().update(ideaMilestone.id, { description: 'Updated description' })
       const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id)
 
-      expect(updatedIdeaMilestone.description).toBe(description)
+      expect(updatedIdeaMilestone.description).toBe('Updated description')
     })
 
   })
