@@ -27,6 +27,6 @@ RUN npm install
 
 ADD --chown=node backend/ ${SERVER_TARGET_DIR}/
 
-RUN npm run compile
+RUN npm run compile:docker
 
 CMD npm run main:dist

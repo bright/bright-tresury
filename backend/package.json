@@ -7,6 +7,7 @@
     "clean": "npm run clean-js && npx rimraf dist",
     "clean-js": "find src -name '*.js' -exec rm {} +",
     "compile": "nest build",
+    "compile:docker": "npx @nestjs/cli",
     "compile:watch": "nest build --watch",
     "test": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand",
     "test:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand --detectOpenHandles | bunyan -o short",
