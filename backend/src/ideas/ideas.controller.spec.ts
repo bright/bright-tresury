@@ -1,23 +1,17 @@
-import {HttpStatus, UnauthorizedException} from "@nestjs/common";
-import {getRepositoryToken} from "@nestjs/typeorm";
-import supertest from "supertest";
-import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
+import {HttpStatus} from "@nestjs/common";
 import {v4 as uuid, validate as uuidValidate} from 'uuid';
-import {SessionUser} from "../auth/session/session.decorator";
 import {cleanAuthorizationDatabase} from "../auth/supertokens/specHelpers/supertokens.database.spec.helper";
 import {
     createUserSessionHandler,
     createUserSessionHandlerWithVerifiedEmail,
     SessionHandler
 } from "../auth/supertokens/specHelpers/supertokens.session.spec.helper";
-import {User} from "../users/user.entity";
 import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
 import {Idea} from './entities/idea.entity';
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
-import {createIdea, createSessionUser} from './spec.helpers';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {SuperTokensService} from "../auth/supertokens/supertokens.service";
+import {createIdea, createSessionUser} from './spec.helpers';
 
 const baseUrl = '/api/v1/ideas'
 
@@ -72,14 +66,55 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
 
-        // TODO
-        // it('should return draft ideas of a logged in user', async (done) => {
-        //
-        // })
+        it('should not return draft ideas for anonymous user', async (done) => {
+            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}], status: IdeaStatus.Draft}, sessionHandler.user)
 
-        // it('should not return draft ideas of other users', async (done) => {
-        //
-        // })
+            const result = await request(app())
+                .get(`${baseUrl}`)
+
+            expect(result.body.length).toBe(0)
+
+            done()
+        })
+
+
+        it('should return draft ideas of a logged in user', async (done) => {
+            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}], status: IdeaStatus.Draft}, sessionHandler.user)
+
+            const result = await sessionHandler.authorizeRequest(request(app())
+                .get(baseUrl))
+
+            expect(result.body.length).toBe(1)
+
+            const body = result.body as Idea[]
+            expect(body[0].status).toBe('draft')
+            done()
+        })
+
+        it('should not return draft ideas of other users', async (done) => {
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            await createIdea({title: 'Test title', status: IdeaStatus.Draft}, otherUser)
+
+            const result = await sessionHandler.authorizeRequest(request(app())
+                .get(baseUrl))
+
+            expect(result.body.length).toBe(0)
+            done()
+        })
+
+        it('should return active ideas of other users', async (done) => {
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const idea = await createIdea({title: 'Test title', status: IdeaStatus.Active}, otherUser)
+
+            const result = await sessionHandler.authorizeRequest(request(app())
+                .get(baseUrl))
+
+            expect(result.body.length).toBe(1)
+            const body = result.body as Idea[]
+            expect(body[0].id).toBe(idea.id)
+            expect(body[0].status).toBe('active')
+            done()
+        })
     })
 
     describe('GET /:id', () => {
@@ -109,6 +144,43 @@ describe(`/api/v1/ideas`, () => {
             return request(app())
                 .get(`${baseUrl}/6ec0bd7f-11c0-43da-975e-2a8ad9ebae0b`)
                 .expect(404)
+        })
+
+        it('should return not found for draft idea for anonymous user', async () => {
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const idea = await createIdea({title: 'Test title', status: IdeaStatus.Draft}, otherUser)
+            return request(app())
+                .get(`${baseUrl}/${idea.id}`)
+                .expect(404)
+        })
+
+        it('should return not found for draft idea of other user', async () => {
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const idea = await createIdea({title: 'Test title', status: IdeaStatus.Draft}, otherUser)
+            return sessionHandler.authorizeRequest(request(app())
+                .get(`${baseUrl}/${idea.id}`))
+                .expect(404)
+        })
+
+        it('should return active idea of other user', async () => {
+            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const idea = await createIdea({title: 'Test title', status: IdeaStatus.Active}, otherUser)
+            const result = await sessionHandler.authorizeRequest(request(app())
+                .get(`${baseUrl}/${idea.id}`))
+                .expect(200)
+
+            expect(result.body.id).toBe(idea.id)
+            expect(result.body.status).toBe('active')
+        })
+
+        it('should return draft idea of a logged in user', async () => {
+            const idea = await createIdea({title: 'Test title', status: IdeaStatus.Draft}, sessionHandler.user)
+            const result = await sessionHandler.authorizeRequest(request(app())
+                .get(`${baseUrl}/${idea.id}`))
+                .expect(200)
+
+            expect(result.body.id).toBe(idea.id)
+            expect(result.body.status).toBe('draft')
         })
 
         it('should return bad request for not valid uuid param', () => {
@@ -270,7 +342,7 @@ describe(`/api/v1/ideas`, () => {
                 .send({title: 'Test title', networks: [{name: 'kusama', value: 10}]}))
 
             const ideasService = app.get().get(IdeasService)
-            const actual = await ideasService.findOne(result.body.id)
+            const actual = await ideasService.findOne(result.body.id, sessionHandler.user)
             expect(actual).toBeDefined()
             expect(actual!.title).toBe('Test title')
             expect(actual!.networks!.length).toBe(1)

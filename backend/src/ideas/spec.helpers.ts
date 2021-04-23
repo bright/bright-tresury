@@ -4,9 +4,10 @@ import {v4 as uuid} from "uuid";
 import {SessionUser} from "../auth/session/session.decorator";
 import {User} from "../users/user.entity";
 import {beforeSetupFullApp} from "../utils/spec.helpers";
+import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {Idea} from "./entities/idea.entity";
 import {IdeasService} from "./ideas.service";
-import {CreateIdeaDto} from "./dto/createIdea.dto";
+import {IdeaStatus} from "./ideaStatus";
 import {IdeaMilestonesService} from "./ideaMilestones/idea.milestones.service";
 import {IdeaMilestone} from "./ideaMilestones/entities/idea.milestone.entity";
 import {CreateIdeaMilestoneDto} from "./ideaMilestones/dto/createIdeaMilestoneDto";
@@ -17,7 +18,8 @@ export async function createIdea(idea: Partial<CreateIdeaDto>, sessionUser: Sess
         title: 'title',
         networks: [],
         beneficiary: undefined,
-        content: ''
+        content: '',
+        status: IdeaStatus.Active,
     }
     const service: IdeasService = ideasService ?? beforeSetupFullApp().get().get(IdeasService)
     return await service.create({ ...defaultIdea, ...idea }, sessionUser)

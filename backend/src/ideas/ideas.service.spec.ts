@@ -20,22 +20,26 @@ describe(`/api/v1/ideas`, () => {
     const getIdeaNetworkRepository = () => app.get().get(getRepositoryToken(IdeaNetwork))
 
     let sessionUser: SessionUser
+    let otherSessionUser: SessionUser
 
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
 
         sessionUser = await createSessionUser()
+        otherSessionUser = await createSessionUser({username: 'other', email: 'other@example.com'})
     })
     describe('find', () => {
         it('should return ideas', async (done) => {
             await getService().create({
                 title: 'Test title 1',
-                networks: [{name: 'kusama', value: 10}]
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Active,
             }, sessionUser)
             await getService().create({
                 title: 'Test title 2',
-                networks: [{name: 'kusama', value: 10}]
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.TurnedIntoProposal,
             }, sessionUser)
 
             const ideas = await getService().find()
@@ -46,20 +50,59 @@ describe(`/api/v1/ideas`, () => {
         it('should return polkadot ideas', async (done) => {
             await getService().create({
                 title: 'Test title 1',
-                networks: [{name: 'kusama', value: 10}]
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Active,
             }, sessionUser)
             await getService().create({
                 title: 'Test title 2',
-                networks: [{name: 'polkadot', value: 10}]
+                networks: [{name: 'polkadot', value: 10}],
+                status: IdeaStatus.Active,
             }, sessionUser)
             await getService().create({
                 title: 'Test title 2',
-                networks: [{name: 'polkadot', value: 10}]
+                networks: [{name: 'polkadot', value: 10}],
+                status: IdeaStatus.Active,
             }, sessionUser)
 
             const ideas = await getService().find('polkadot')
 
             expect(ideas.length).toBe(2)
+            done()
+        })
+        it('should return own draft ideas', async (done) => {
+            await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Draft,
+            }, sessionUser)
+
+            const ideas = await getService().find(undefined, sessionUser)
+
+            expect(ideas.length).toBe(1)
+            done()
+        })
+        it('should not return other draft ideas', async (done) => {
+            await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Draft,
+            }, otherSessionUser)
+
+            const ideas = await getService().find(undefined, sessionUser)
+
+            expect(ideas.length).toBe(0)
+            done()
+        })
+        it('should not return draft ideas with no user', async (done) => {
+            await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Draft,
+            }, otherSessionUser)
+
+            const ideas = await getService().find(undefined)
+
+            expect(ideas.length).toBe(0)
             done()
         })
     })
@@ -136,6 +179,42 @@ describe(`/api/v1/ideas`, () => {
             await expect(getService().findOne(uuid()))
                 .rejects
                 .toThrow(NotFoundException)
+            done()
+        })
+        it('should return own draft idea', async (done) => {
+            const idea = await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Draft,
+            }, sessionUser)
+
+            const savedIdea = await getService().findOne(idea.id, sessionUser)
+
+            expect(savedIdea).toBeDefined()
+            done()
+        })
+        it('should not return other draft idea', async (done) => {
+            const idea = await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Draft,
+            }, otherSessionUser)
+
+            const savedIdea = await getService().findOne(idea.id, sessionUser)
+
+            expect(savedIdea).toBeUndefined()
+            done()
+        })
+        it('should not return draft idea with no user', async (done) => {
+            const idea = await getService().create({
+                title: 'Test title 1',
+                networks: [{name: 'kusama', value: 10}],
+                status: IdeaStatus.Draft,
+            }, otherSessionUser)
+
+            const savedIdea = await getService().findOne(idea.id)
+
+            expect(savedIdea).toBeUndefined()
             done()
         })
     })

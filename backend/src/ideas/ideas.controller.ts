@@ -28,8 +28,8 @@ export class IdeasController {
         description: 'Respond with all ideas.',
         type: [IdeaDto],
     })
-    async getIdeas(@Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
-        const ideas = await this.ideasService.find(query?.network)
+    async getIdeas(@ReqSession() session: SessionUser, @Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
+        const ideas = await this.ideasService.find(query?.network, session)
         return ideas.map((idea: Idea) => toIdeaDto(idea))
     }
 
@@ -44,11 +44,11 @@ export class IdeasController {
     @ApiBadRequestResponse({
         description: 'Not valid uuid parameter.',
     })
-    async getIdea(@Param('id') id: string): Promise<IdeaDto> {
+    async getIdea(@Param('id') id: string, @ReqSession() session: SessionUser): Promise<IdeaDto> {
         if (!uuidValidate(id)) {
             throw new BadRequestException('Not valid uuid parameter.')
         }
-        const idea = await this.ideasService.findOne(id)
+        const idea = await this.ideasService.findOne(id, session)
         if (!idea) {
             throw new NotFoundException('Idea not found.')
         }

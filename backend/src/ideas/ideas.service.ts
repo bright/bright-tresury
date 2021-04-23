@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
-import {In, Repository} from 'typeorm';
+import {Brackets, In, Not, Repository} from 'typeorm';
 import {SessionUser} from "../auth/session/session.decorator";
 import {getLogger} from "../logging.module";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
@@ -24,20 +24,36 @@ export class IdeasService {
     ) {
     }
 
-    async find(networkName?: string): Promise<Idea[]> {
+    async find(networkName?: string, user?: SessionUser): Promise<Idea[]> {
         try {
             return networkName ? await this.ideaRepository.createQueryBuilder('idea')
-                .leftJoinAndSelect('idea.networks', 'network')
-                .where('network.name = :networkName', {networkName})
-                .getMany() : await this.ideaRepository.find()
+                    .leftJoinAndSelect('idea.networks', 'network')
+                    .where('network.name = :networkName', {networkName})
+                    .andWhere(new Brackets((qb) => {
+                        qb.where('idea.status != :draftStatus', {draftStatus: IdeaStatus.Draft})
+                            .orWhere('idea.ownerId = :ownerId', {ownerId: user?.user.id})
+                    }))
+                    .getMany()
+                : await this.ideaRepository.find({
+                    where: [
+                        {status: Not(IdeaStatus.Draft)},
+                        {ownerId: user?.user.id}
+                    ]
+                })
         } catch (error) {
             logger.error(error)
             return []
         }
     }
 
-    async findOne(id: string): Promise<Idea> {
-        const idea = await this.ideaRepository.findOne(id, {relations: ['networks']})
+    async findOne(id: string, user?: SessionUser): Promise<Idea> {
+        const idea = await this.ideaRepository.findOne(id, {
+            relations: ['networks'],
+            where: [
+                {status: Not(IdeaStatus.Draft)},
+                {ownerId: user?.user.id}
+            ]
+        })
         if (!idea) {
             throw new NotFoundException('There is no idea with such id')
         }

@@ -24,6 +24,10 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
         cookieSecure,
         sessionExpiredStatusCode: SessionExpiredHttpStatus
     }),
+    /*
+    We need to init this recipe separately to enable using supertokens function directly (i.e. isEmailVerified)
+    To enable api endpoints for email verification, it is enough to configure emailVerificationFeature in EmailPassword recipe
+     */
     EmailVerification.init({
         getEmailForUserId: superTokensService.getEmailForUserId
     }),
