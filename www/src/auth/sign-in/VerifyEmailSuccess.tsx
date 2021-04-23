@@ -5,7 +5,7 @@ import successImg from "../../assets/email_verify_success.svg";
 import Container from "../../components/form/Container";
 import {RouterLink} from "../../components/link/RouterLink";
 import {Header} from "../../components/text/Header";
-import {ROUTE_SIGNIN} from "../../routes";
+import {ROUTE_SIGNIN} from "../../routes/routes";
 import {breakpoints} from "../../theme/theme";
 import {useAuth} from "../AuthContext";
 

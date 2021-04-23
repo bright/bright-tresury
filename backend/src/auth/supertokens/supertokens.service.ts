@@ -1,16 +1,19 @@
 import {BadRequestException, ConflictException, Injectable} from "@nestjs/common";
 import {Request, Response} from 'express'
-import {signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
+import {getUserById, signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
 import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import {createNewSession, getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
 import SessionError from "supertokens-node/lib/build/recipe/session/error";
 import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
 import {EmailsService} from "../../emails/emails.service";
+import {getLogger} from "../../logging.module";
 import {CreateUserDto} from "../../users/dto/createUser.dto";
+import {User} from "../../users/user.entity";
 import {UsersService} from "../../users/users.service";
 import {SessionUser} from "../session/session.decorator";
 import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
+import {isEmailVerified as superTokensIsEmailVerified} from "supertokens-node/lib/build/recipe/emailverification";
 
 @Injectable()
 export class SuperTokensService {
@@ -59,6 +62,19 @@ export class SuperTokensService {
         return await superTokensGetSession(req, res, doAntiCsrfCheck)
     }
 
+    async isEmailVerified(user: User): Promise<boolean> {
+        if (!user.email) {
+            return false
+        }
+        try {
+            const result = await superTokensIsEmailVerified(user.authId, user.email)
+            return result
+        } catch (err) {
+            getLogger().info(err)
+        }
+        return false
+    }
+
     async signUp(email: string, password: string): Promise<SuperTokensUser> {
         try {
             return await superTokensSignUp(email, password)
@@ -83,5 +99,10 @@ export class SuperTokensService {
 
     sendVerifyEmail = async (user: SuperTokensUser, emailVerificationURLWithToken: string): Promise<void> => {
         await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
+    }
+
+    getEmailForUserId = async (userId: string): Promise<string> => {
+        const user = await getUserById(userId)
+        return user?.email ?? userId
     }
 }

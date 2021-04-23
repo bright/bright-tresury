@@ -71,6 +71,15 @@ describe(`/api/v1/ideas`, () => {
             expect(actualIdea2!.networks[0].name).toBe('kusama')
             done()
         })
+
+        // TODO
+        // it('should return draft ideas of a logged in user', async (done) => {
+        //
+        // })
+
+        // it('should not return draft ideas of other users', async (done) => {
+        //
+        // })
     })
 
     describe('GET /:id', () => {
@@ -275,6 +284,15 @@ describe(`/api/v1/ideas`, () => {
                 .post(`${baseUrl}`)
                 .send({title: 'Test title', networks: [{name: 'kusama', value: 3}]})
                 .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it('should return forbidden for not verified user', async (done) => {
+            const sessionHandlerNotVerified = await createUserSessionHandler(app(), 'not.verified@example.com', 'not-verified')
+            await sessionHandlerNotVerified.authorizeRequest(request(app())
+                .post(`${baseUrl}`)
+                .send({title: 'Test title', networks: [{name: 'kusama', value: 3}]}))
+                .expect(HttpStatus.FORBIDDEN)
+            done()
         })
     })
 

@@ -2,13 +2,12 @@ import {INestApplication} from "@nestjs/common";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Request} from "express";
 import supertest from "supertest";
-import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
+import {createEmailVerificationToken, verifyEmailUsingToken} from "supertokens-node/lib/build/recipe/emailverification";
 import {v4 as uuid} from "uuid";
 import {User} from "../../../users/user.entity"
 import {request} from "../../../utils/spec.helpers";
 import {BlockchainUserSignUpDto} from "../../blockchainUserSignUp.dto";
 import {SessionUser} from "../../session/session.decorator";
-import {SuperTokensService} from "../supertokens.service";
 
 export class SessionHandler {
     readonly user: SessionUser
@@ -55,25 +54,9 @@ export const createUserSessionHandlerWithVerifiedEmail = async (
 }
 
 export const verifyEmail = async (app: INestApplication, sessionHandler: SessionHandler) => {
-    let emailVerificationToken = ''
-    jest.spyOn(app.get(SuperTokensService), 'sendVerifyEmail').mockImplementation(
-        async (user1: SuperTokensUser, emailVerificationURLWithToken: string) => {
-            const tokenQueryParam = 'token='
-            const tokenStartIndex = emailVerificationURLWithToken.indexOf(tokenQueryParam) + tokenQueryParam.length
-            emailVerificationToken = emailVerificationURLWithToken.substr(tokenStartIndex)
-        })
-
-    await sessionHandler.authorizeRequest(request(app)
-        .post(`/api/v1/user/email/verify/token`))
-
-    await request(app)
-        .post(`/api/v1/user/email/verify`)
-        .send({
-            method: "token",
-            token: emailVerificationToken
-        })
+    const token = await createEmailVerificationToken(sessionHandler.user.user.authId, sessionHandler.user.user.email!)
+    await verifyEmailUsingToken(token)
 }
-
 
 export const createUserSessionHandler = async (
     app: INestApplication,

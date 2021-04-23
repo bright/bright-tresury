@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Injectable, UnauthorizedException} from "@nestjs/common";
 import {UsersService} from "../../users/users.service";
 import {Response} from "express";
 import {SessionRequest} from "./session.middleware";
@@ -35,8 +35,10 @@ export class SessionResolver implements ISessionResolver {
     async resolveUserAndUpdateSessionData(req: SessionRequest, res: Response) {
         const session = await this.superTokensService.getSession(req, res, false)
         const sessionData = await session.getSessionData()
+
+        let sessionUser: SessionUser | undefined;
         if (sessionData.user) {
-            req.session = sessionData as SessionUser
+            sessionUser = sessionData as SessionUser
         } else {
             const userId = await session.getUserId();
             const user = await this.userService.findOneByAuthId(userId);
@@ -44,7 +46,15 @@ export class SessionResolver implements ISessionResolver {
                 await session.revokeSession()
             } else {
                 await this.superTokensService.addSessionData(req, res, {user})
-                req.session = await session.getSessionData()
+                sessionUser = await session.getSessionData()
+            }
+        }
+        if (sessionUser) {
+            const isEmailVerified = await this.superTokensService.isEmailVerified(sessionUser.user)
+            if (isEmailVerified) {
+                req.session = sessionUser
+            } else {
+                throw new UnauthorizedException()
             }
         }
     }
