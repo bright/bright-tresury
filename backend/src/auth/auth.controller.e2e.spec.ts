@@ -26,22 +26,6 @@ describe(`Auth Controller`, () => {
     const blockchainSignUpUser = {address: bobAddress, username: bobUsername, token: uuid()}
 
     const superTokensSignUpUserPassword = uuid()
-    const superTokensSignUpUser = {
-        formFields: [
-            {
-                id: 'email',
-                value: bobEmail,
-            },
-            {
-                id: 'password',
-                value: superTokensSignUpUserPassword,
-            },
-            {
-                id: 'username',
-                value: bobUsername,
-            }
-        ]
-    }
 
     const superTokensSignInUser = {
         formFields: [
@@ -100,7 +84,7 @@ describe(`Auth Controller`, () => {
 
     describe('sign up', () => {
         it('should save user in both databases', async () => {
-            await createUserSessionHandler(app(), superTokensSignUpUser)
+            await createUserSessionHandler(app(), bobEmail, bobUsername, superTokensSignUpUserPassword)
             const user = await getUsersService().findOneByUsername(bobUsername)
             const superTokensUser = await getAuthUser(user.authId)
 
@@ -110,7 +94,7 @@ describe(`Auth Controller`, () => {
         })
 
         it('should create session', async () => {
-            const sessionHandler = await createUserSessionHandler(app(), superTokensSignUpUser)
+            const sessionHandler = await createUserSessionHandler(app(), bobEmail, bobUsername, superTokensSignUpUserPassword)
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )
@@ -121,12 +105,13 @@ describe(`Auth Controller`, () => {
 
     describe('sign in', () => {
         it('should create session', async () => {
-            await createUserSessionHandler(app(), superTokensSignUpUser)
+            await createUserSessionHandler(app(), bobEmail, bobUsername, superTokensSignUpUserPassword)
 
             const res: any = await request(app())
                 .post(`${baseUrl}/signin`)
                 .send(superTokensSignInUser)
-            const signInSessionHandler = createSessionHandler(res)
+            const user = await getUsersService().findOneByEmail(bobEmail)
+            const signInSessionHandler = createSessionHandler(res, user)
 
             const signInSession = await getService().getSession(
                 signInSessionHandler.getAuthorizedRequest(), {} as any, false
@@ -137,7 +122,7 @@ describe(`Auth Controller`, () => {
 
     describe('session data', () => {
         it('should contain user if any authorized request was made', async () => {
-            const sessionHandler = await createUserSessionHandler(app(), superTokensSignUpUser)
+            const sessionHandler = await createUserSessionHandler(app(), bobEmail, bobUsername, superTokensSignUpUserPassword)
             await sessionHandler.authorizeRequest(request(app()).get(`/api/health`))
                 .send()
             const session = await getService().getSession(
