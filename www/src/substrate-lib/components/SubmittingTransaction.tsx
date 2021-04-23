@@ -11,7 +11,7 @@ import SignAndSubmit from "./SignAndSubmit";
 import SubstrateLoading from "./SubstrateLoading";
 import TransactionError from "./TransactionError";
 import TransactionInProgress from "./TransactionInProgress";
-import {getFromAcct, transformParams} from "./utils";
+import {getFromAcct, isNumType, transformParams} from "./utils";
 import {useAccounts} from "../hooks/useAccounts";
 
 export interface Result {
