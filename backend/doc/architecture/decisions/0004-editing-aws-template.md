@@ -19,4 +19,4 @@ without any errors.
 
 ## Consequences
 
-Each time we update `aws-template.ts` we should create a separate stack to test the if everything works correctly.
+Each time we update `aws-template.ts` we should create a separate stack to test if everything works correctly.
