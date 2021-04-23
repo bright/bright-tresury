@@ -25,7 +25,6 @@ Default.args = {
     onCancel: () => {
         console.log('cancel')
     },
-    accounts: [],
     txAttrs: {
         palletRpc: '',
         callable: '',

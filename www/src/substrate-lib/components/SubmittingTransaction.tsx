@@ -3,7 +3,7 @@ import {DispatchError} from "@polkadot/types/interfaces";
 import {EventMetadataLatest} from "@polkadot/types/interfaces/metadata";
 import {ISubmittableResult} from "@polkadot/types/types";
 import BN from "bn.js";
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Trans, useTranslation} from "react-i18next";
 import config from "../../config";
 import {useSubstrate} from "../index";
@@ -14,6 +14,8 @@ import SubstrateLoading from "./SubstrateLoading";
 import TransactionError from "./TransactionError";
 import TransactionInProgress from "./TransactionInProgress";
 import {getFromAcct, isNumType, transformParams} from "./utils";
+import {getFromAcct, transformParams} from "./utils";
+import {useAccounts} from "../hooks/useAccounts";
 
 export interface Result {
     status: Status,
@@ -48,11 +50,6 @@ export interface InputParam {
     type?: string
 }
 
-export interface Account {
-    name: string,
-    address: string
-}
-
 export interface Props {
     onClose: () => void
     onSuccess?: () => void
@@ -69,16 +66,7 @@ const SubmittingTransaction: React.FC<Props> = ({onClose, onSuccess, txAttrs, se
     const [submitting, setSubmitting] = useState(false)
     const {keyringState, keyring, api, apiState} = useSubstrate();
 
-    const [accounts, setAccounts] = useState<Account[]>([])
-
-    useEffect(() => {
-        if (keyringState === KeyringState.READY && keyring) {
-            const keyringAccounts = keyring.getAccounts().map((account) => {
-                return {name: account.meta?.name || '', address: account.address} as Account
-            })
-            setAccounts(keyringAccounts)
-        }
-    }, [keyring, keyringState])
+    const accounts = useAccounts()
 
     const txResHandler = (result: SubmittableResult) => {
         const txResult = {status: result.status} as Result
@@ -169,7 +157,8 @@ const SubmittingTransaction: React.FC<Props> = ({onClose, onSuccess, txAttrs, se
         />
     } else if (!submitting) {
         return (
-            <SignAndSubmit title={title} instruction={instruction} accounts={accounts} txAttrs={txAttrs} onCancel={onClose} onSubmit={onSubmit}/>
+            <SignAndSubmit title={title} instruction={instruction} txAttrs={txAttrs} onCancel={onClose}
+                           onSubmit={onSubmit}/>
         )
     } else if (result && result.error) {
         return <ExtrinsicFailed error={result.error} onOk={onClose}/>
