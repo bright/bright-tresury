@@ -124,7 +124,7 @@ const Resources = {
 
 const DeployEnv = Fn.Ref('DeployEnv')
 
-const InternetAccessSecurity = [
+const InboundAccessSecurity = [
     {
         IpProtocol: "tcp",
         FromPort: 80,
@@ -153,6 +153,33 @@ const InternetAccessSecurity = [
         IpProtocol: "tcp",
         FromPort: 3567,
         ToPort: 3567,
+        CidrIp: "0.0.0.0/0"
+    }
+]
+
+const OutboundAccessSecurity = [
+    {
+        IpProtocol: "tcp",
+        FromPort: 80,
+        ToPort: 80,
+        CidrIp: "0.0.0.0/0"
+    },
+    {
+        IpProtocol: "tcp",
+        FromPort: 443,
+        ToPort: 443,
+        CidrIp: "0.0.0.0/0"
+    },
+    {
+        IpProtocol: "tcp",
+        FromPort: 9933,
+        ToPort: 9933,
+        CidrIp: "0.0.0.0/0"
+    },
+    {
+        IpProtocol: "tcp",
+        FromPort: 9944,
+        ToPort: 9944,
         CidrIp: "0.0.0.0/0"
     }
 ]
@@ -271,13 +298,13 @@ export default cloudform({
         [Resources.HttpHttpsServerSecurityGroup]: new EC2.SecurityGroup({
             GroupDescription: "Enables inbound HTTP and HTTPS access via port 80, 443, 9933, 9944, 3567",
             VpcId: Fn.Ref(Resources.VPC),
-            SecurityGroupIngress: InternetAccessSecurity
+            SecurityGroupIngress: InboundAccessSecurity
         }),
 
         [Resources.AccessInternetSecurityGroup]: new EC2.SecurityGroup({
             GroupDescription: "Enables outbound Internet access via ports 80,443, 9933, 9944, 3567",
             VpcId: Fn.Ref(Resources.VPC),
-            SecurityGroupEgress: InternetAccessSecurity
+            SecurityGroupEgress: OutboundAccessSecurity
         }),
 
         [Resources.VPC]: new EC2.VPC({
