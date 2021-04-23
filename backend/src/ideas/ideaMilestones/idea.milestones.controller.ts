@@ -1,5 +1,12 @@
 import {Body, Controller, Get, Param, Patch, Post} from '@nestjs/common';
-import {ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags} from "@nestjs/swagger";
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiParam,
+    ApiTags
+} from "@nestjs/swagger";
 import {IdeaMilestonesService} from "./idea.milestones.service";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {IdeaMilestoneDto, mapIdeaMilestoneEntityToIdeaMilestoneDto} from "./dto/ideaMilestoneDto";
@@ -40,6 +47,9 @@ export class IdeaMilestonesController {
     @ApiNotFoundResponse({
         description: 'Idea with the given id not found.'
     })
+    @ApiBadRequestResponse({
+        description: 'End date of the milestone cannot be prior to the start date'
+    })
     async create(@Param('ideaId') ideaId: string, @Body() createIdeaMilestoneDto: CreateIdeaMilestoneDto): Promise<IdeaMilestoneDto> {
         const ideaMilestone = await this.ideaMilestonesService.create(ideaId, createIdeaMilestoneDto)
         return mapIdeaMilestoneEntityToIdeaMilestoneDto(ideaMilestone)
@@ -60,6 +70,9 @@ export class IdeaMilestonesController {
     })
     @ApiNotFoundResponse({
         description: 'Idea milestone with the given id not found'
+    })
+    @ApiBadRequestResponse({
+        description: 'End date of the milestone cannot be prior to the start date'
     })
     async update(@Param('ideaMilestoneId') ideaMilestoneId: string, @Body() updateIdeaMilestoneDto: UpdateIdeaMilestoneDto) {
         const updatedIdeaMilestone = await this.ideaMilestonesService.update(ideaMilestoneId, updateIdeaMilestoneDto)

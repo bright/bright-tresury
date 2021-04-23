@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {IdeaMilestone} from "./entities/idea.milestone.entity";
 import {InjectRepository} from "@nestjs/typeorm";
@@ -7,7 +7,7 @@ import {Idea} from "../entities/idea.entity";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
 import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
 import {IdeaMilestoneNetworkDto} from "./dto/ideaMilestoneNetworkDto";
-import retryTimes = jest.retryTimes;
+import {isBefore} from 'date-fns'
 
 @Injectable()
 export class IdeaMilestonesService {
@@ -46,6 +46,11 @@ export class IdeaMilestonesService {
         if (!idea) {
             throw new NotFoundException('Idea with the given id not found')
         }
+
+        if (dateFrom && dateTo && isBefore(new Date(dateTo), new Date(dateFrom))) {
+            throw new BadRequestException('End date of the milestone cannot be prior to the start date')
+        }
+
         const savedIdeaMilestone = await this.ideaMilestoneRepository.save(
             new IdeaMilestone(
                 idea,
@@ -65,6 +70,13 @@ export class IdeaMilestonesService {
 
         if (!currentIdeaMilestone) {
             throw new NotFoundException('Idea milestone with the given id not found')
+        }
+
+        const dateFrom = updateIdeaMilestoneDto.dateFrom ?? currentIdeaMilestone.dateFrom
+        const dateTo = updateIdeaMilestoneDto.dateTo ?? currentIdeaMilestone.dateTo
+
+        if (dateFrom && dateTo && isBefore(new Date(dateTo), new Date(dateFrom))) {
+            throw new BadRequestException('End date of the milestone cannot be prior to the start date')
         }
 
         const updatedNetworks = updateIdeaMilestoneDto.networks && updateIdeaMilestoneDto.networks.map((updatedNetwork: IdeaMilestoneNetworkDto) => {

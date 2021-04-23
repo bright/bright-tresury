@@ -5,7 +5,7 @@ import {Idea} from "../entities/idea.entity";
 import {createIdea} from "../spec.helpers";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {v4 as uuid} from 'uuid'
-import {NotFoundException} from "@nestjs/common";
+import {BadRequestException, NotFoundException} from "@nestjs/common";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
 
 describe(`/api/v1/ideas`, () => {
@@ -135,6 +135,18 @@ describe(`/api/v1/ideas`, () => {
         null
     )
 
+    it('should throw bad request exception if start and end dates of idea milestone are given and end date is prior to start date', async () => {
+      await expect(getIdeaMilestonesService().create(idea.id, new CreateIdeaMilestoneDto(
+        'ideaMilestoneSubject',
+          [{name: 'polkadot', value: 100}],
+          new Date(2021, 3, 21),
+          new Date(2021, 3, 20),
+          'ideaMilestoneDescription'
+      )))
+          .rejects
+          .toThrow(BadRequestException)
+    })
+
     it ('should create and save an idea milestone', async () => {
       const createdIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto)
       const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id)
@@ -187,6 +199,24 @@ describe(`/api/v1/ideas`, () => {
       await expect(getIdeaMilestonesService().update(uuid(), { }))
           .rejects
           .toThrow(NotFoundException)
+    })
+
+    it('should throw bad request exception if updated end date of the milestone is prior to start date', async () => {
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              new Date(2021, 3, 20),
+              new Date(2021, 3, 21),
+              'ideaMilestoneDescription'
+          )
+      )
+
+      await expect(getIdeaMilestonesService().update(
+          ideaMilestone.id, { dateTo: new Date(2021, 3, 19)}))
+          .rejects
+          .toThrow(BadRequestException)
     })
 
     it('should update and save idea milestone with updated subject', async () => {
