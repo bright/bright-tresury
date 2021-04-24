@@ -1,5 +1,5 @@
 {
-  "APP_NAME": "treasury-development",
+  "APP_NAME": "Bright Treasury",
   "API_URL": "http://localhost:3001",
   "WEBSITE_URL": "http://localhost:3000",
   "PROVIDER_SOCKET": "ws://localhost:9944",

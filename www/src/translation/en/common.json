@@ -105,14 +105,16 @@
             "validationError": "Validation Error"
           },
           "successSubtitle": "Please check your email to confirm the registration"
-        },
-        "blockchainSignUp": {
-          "successSubtitle": "Start your experience with Bright Treasury"
-        },
-        "success": {
-          "title": "Congrats! You have successfully registered!",
-          "mailboxImage": "Image of a mailbox"
         }
+      },
+      "blockchainSignUp": {
+        "extensionNotDetected": "Polkadot-js extension not detected.\nNo web 3 account integration could be found. To be able to vote on-chain, visit\nthis page on a computer with polkadot-js extension.",
+        "signUpWithEmail": "Sign up with your email",
+        "successSubtitle": "Start your experience with Bright Treasury"
+      },
+      "success": {
+        "title": "Congrats! You have successfully registered!",
+        "mailboxImage": "Image of a mailbox"
       }
     },
     "signIn": {

@@ -13,7 +13,7 @@ import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/Terms
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
 import {AlreadyLoggedIn} from "../common/AlreadyLoggedIn";
-import {SignUpInputWrapper} from "../common/SignUpInputWrapper";
+import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
 import {SignUpFormWrapper} from "../common/SignUpFormWrapper";
 
 interface EmailSignUpValues {
@@ -62,32 +62,32 @@ const EmailSignUp: React.FC = () => {
               handleSubmit,
           }) =>
             <SignUpFormWrapper handleSubmit={handleSubmit}>
-                <SignUpInputWrapper>
+                <SignUpComponentWrapper>
                     <Input
                         name="username"
                         placeholder={t('auth.signUp.emailSignUp.form.username.placeholder')}
                         label={t('auth.signUp.emailSignUp.form.username.label')}/>
-                </SignUpInputWrapper>
-                <SignUpInputWrapper>
+                </SignUpComponentWrapper>
+                <SignUpComponentWrapper>
                     <Input
                         name="email"
                         placeholder={t('auth.signUp.emailSignUp.form.login.placeholder')}
                         label={t('auth.signUp.emailSignUp.form.login.label')}/>
-                </SignUpInputWrapper>
-                <SignUpInputWrapper>
+                </SignUpComponentWrapper>
+                <SignUpComponentWrapper>
                     <PasswordInput
                         name="password"
                         placeholder={t('auth.signUp.emailSignUp.form.password.placeholder')}
                         label={t('auth.signUp.emailSignUp.form.password.label')}
                         validationRules={passwordValidationRules}
                     />
-                </SignUpInputWrapper>
-                <SignUpInputWrapper>
+                </SignUpComponentWrapper>
+                <SignUpComponentWrapper>
                     <TermsAgreementCheckbox/>
-                </SignUpInputWrapper>
-                <SignUpInputWrapper>
+                </SignUpComponentWrapper>
+                <SignUpComponentWrapper>
                     <PrivacyNotice/>
-                </SignUpInputWrapper>
+                </SignUpComponentWrapper>
                 <SignUpButton disabled={loadingState === LoadingState.Loading}/>
                 <AlreadyLoggedIn/>
             </SignUpFormWrapper>

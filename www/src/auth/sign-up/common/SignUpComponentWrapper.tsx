@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) => {
     }
 })
 
-export const SignUpInputWrapper: React.FC = ({children}) => {
+export const SignUpComponentWrapper: React.FC = ({children}) => {
     const classes = useStyles()
 
     return <div className={classes.inputField}>

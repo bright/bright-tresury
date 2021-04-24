@@ -8,7 +8,7 @@ import {Route, Switch, useRouteMatch} from "react-router-dom";
 import BlockchainSignUp from "./blockchain/BlockchainSignUp";
 import {ToggleEntry} from "../../components/toggle/SingleToggleButton";
 import {Location} from "history";
-import {breakpoints} from "../../theme/theme";
+import {SignUpComponentWrapper} from "./common/SignUpComponentWrapper";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,16 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'center'
         },
         toggle: {
-            marginTop: '2em',
-            width: '50%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '75%',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                paddingLeft: '1em',
-                paddingRight: '1em',
-                width: '100%',
-            },
+            width: '100%',
         }
     }),
 );
@@ -72,11 +63,13 @@ const SignUp: React.FC = () => {
 
     return <Container title={t('auth.signUp.title')}>
         <div className={classes.toggleContainer}>
-            <ToggleButton
-                className={classes.toggle}
-                toggleEntries={toggleEntries}
-                isActive={isActiveToggle}
-            />
+            <SignUpComponentWrapper>
+                <ToggleButton
+                    className={classes.toggle}
+                    toggleEntries={toggleEntries}
+                    isActive={isActiveToggle}
+                />
+            </SignUpComponentWrapper>
         </div>
         <Switch>
             <Route exact={true} path={path}>
