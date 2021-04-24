@@ -50,21 +50,3 @@ export function signOut() {
 export function getSessionData() {
     return apiGet<any>(`/auth/session`)
 }
-
-export interface CreateBlockchainUserDto {
-    address: string
-    token: string
-    username: string
-}
-
-export function blockchainSignUp(user: CreateBlockchainUserDto) {
-    return apiPost<any>(`/auth/blockchain/signup`, user)
-}
-
-export interface RegisterBlockchainTokenDto {
-    token: string
-}
-
-export function blockchainRegisterToken(registerToken: RegisterBlockchainTokenDto): Promise<void> {
-    return apiPost<any>(`/auth/blockchain/register-token`, registerToken)
-}

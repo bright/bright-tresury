@@ -6,8 +6,6 @@ import * as Yup from "yup";
 import Container from "../../../components/form/Container";
 import {LoadingState} from "../../../components/loading/LoadingWrapper";
 import {fullValidatorForSchema} from "../../../util/form.util";
-import {blockchainSignUp} from "../../auth.api";
-import {useSuperTokensRequest} from "../../supertokens.utils/useSuperTokensRequest";
 import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/TermsAgreementCheckbox";
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
@@ -19,6 +17,7 @@ import {Account} from "../../../substrate-lib/hooks/useAccounts";
 import SignUpSuccess from "../common/SignUpSucces";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
+import {useBlockchainSignUp} from "./handleBlockchainSignup";
 
 interface BlockchainSignUpValues {
     account: Account,
@@ -28,10 +27,10 @@ interface BlockchainSignUpValues {
 const BlockchainSignUp: React.FC = () => {
     const {t} = useTranslation()
 
-    const {call, loadingState} = useSuperTokensRequest(blockchainSignUp)
+    const {call: signUpCall, loadingState} = useBlockchainSignUp()
 
     const onSubmit = async (values: BlockchainSignUpValues, {setErrors}: FormikHelpers<BlockchainSignUpValues>) => {
-        // TODO:// create blockchain sign up logic
+        signUpCall(values.account)
     }
 
     const validationSchema = Yup.object().shape({
