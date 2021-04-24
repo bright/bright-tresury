@@ -5,23 +5,38 @@ import config from "../../../config";
 import {LoadingState} from "../../../components/loading/LoadingWrapper";
 import {useCallback, useState} from "react";
 import {stringToHex} from '@polkadot/util';
+import {FormikErrors} from "formik/dist/types";
+import {BlockchainSignUpValues} from "./BlockchainSignUp";
+import {useTranslation} from "react-i18next";
 
 interface UseBlockchainSignUpResult {
-    call: (account: Account) => Promise<void>
+    call: (
+        values: BlockchainSignUpValues,
+        setErrors?: (errors: FormikErrors<BlockchainSignUpValues>) => void
+    ) => Promise<void>
     loadingState: LoadingState
 }
 
 export function useBlockchainSignUp(): UseBlockchainSignUpResult {
+    const {t} = useTranslation()
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
 
-    const call = useCallback(async (account: Account) => {
+    const call = useCallback(async (
+        values: BlockchainSignUpValues,
+        setErrors?: (errors: FormikErrors<BlockchainSignUpValues>) => void
+    ) => {
         setLoadingState(LoadingState.Loading)
-        return handleBlockchainSignup(account)
+        return handleBlockchainSignup(values.account)
             .then(() => {
                 setLoadingState(LoadingState.Resolved)
             })
             .catch((e) => {
                 setLoadingState(LoadingState.Error)
+                if (setErrors) {
+                    setErrors({
+                        'account': t('auth.signUp.blockchainSignUp.failureMessage')
+                    })
+                }
             })
     }, [])
 
@@ -54,20 +69,9 @@ export async function handleBlockchainSignup(account: Account) {
         type: 'bytes'
     });
 
-    const confirmSignUpResponse = await confirmAddressSignUp({
+    await confirmAddressSignUp({
         address: account.address,
         network: config.NETWORK_NAME,
         signature
     });
-
-    if (confirmSignUpResponse?.token) {
-        handleTokenChange(confirmSignUpResponse.token, currentUser);
-        setModal({
-            content: 'Add an email in settings if you want to be able to recover your account!',
-            title: 'Add optional email'
-        });
-        history.goBack();
-    } else {
-        throw new Error('Web3 sign up failed');
-    }
 }

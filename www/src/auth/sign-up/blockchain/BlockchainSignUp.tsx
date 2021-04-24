@@ -19,7 +19,7 @@ import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
 import {useBlockchainSignUp} from "./handleBlockchainSignup";
 
-interface BlockchainSignUpValues {
+export interface BlockchainSignUpValues {
     account: Account,
     userAgreement: boolean
 }
@@ -30,7 +30,7 @@ const BlockchainSignUp: React.FC = () => {
     const {call: signUpCall, loadingState} = useBlockchainSignUp()
 
     const onSubmit = async (values: BlockchainSignUpValues, {setErrors}: FormikHelpers<BlockchainSignUpValues>) => {
-        signUpCall(values.account)
+        await signUpCall(values, setErrors)
     }
 
     const validationSchema = Yup.object().shape({
