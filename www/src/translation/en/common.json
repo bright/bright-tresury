@@ -103,11 +103,14 @@
             "useLowerCaseLetter": "Use a lower case letter (e.g. abc)",
             "validationOk": "Validation OK",
             "validationError": "Validation Error"
-          }
+          },
+          "successSubtitle": "Please check your email to confirm the registration"
+        },
+        "blockchainSignUp": {
+          "successSubtitle": "Start your experience with Bright Treasury"
         },
         "success": {
           "title": "Congrats! You have successfully registered!",
-          "subtitle": "Please check your email to confirm the registration",
           "mailboxImage": "Image of a mailbox"
         }
       }

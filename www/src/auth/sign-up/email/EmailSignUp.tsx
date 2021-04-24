@@ -9,7 +9,6 @@ import {LoadingState} from "../../../components/loading/LoadingWrapper";
 import {fullValidatorForSchema} from "../../../util/form.util";
 import {signUp} from "../../auth.api";
 import {useSuperTokensRequest} from "../../supertokens.utils/useSuperTokensRequest";
-import EmailSignUpSuccess from "./EmailSignUpSuccess";
 import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/TermsAgreementCheckbox";
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";

@@ -24,15 +24,19 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const BlockchainSignUpSuccess: React.FC = () => {
+interface Props {
+    subtitle: string
+}
+
+const SignUpSuccess: React.FC<Props> = ({subtitle}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
     return <div className={classes.root}>
         <Header>{t('auth.signup.success.title')}</Header>
-        <Typography className={classes.subtitle}>{t('auth.signup.success.subtitle')}</Typography>
+        <Typography className={classes.subtitle}>{subtitle}</Typography>
         <img className={classes.image} src={signupSuccessImg} alt={t('auth.signup.success.mailboxImage')}/>
     </div>
 }
 
-export default BlockchainSignUpSuccess
+export default SignUpSuccess

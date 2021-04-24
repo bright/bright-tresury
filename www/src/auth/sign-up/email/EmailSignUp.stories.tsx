@@ -2,13 +2,16 @@
 import {Meta, Story} from '@storybook/react/types-6-0';
 import React from 'react';
 import EmailSignUp from './EmailSignUp';
+import {MemoryRouter} from "react-router";
 
 export default {
     title: 'EmailSignUp',
     component: EmailSignUp,
 } as Meta;
 
-const Template: Story = (args) => <EmailSignUp {...args} />;
+const Template: Story = (args) => <MemoryRouter>
+    <EmailSignUp {...args} />
+</MemoryRouter>;
 
 export const Default = Template.bind({});
 Default.args = {};
