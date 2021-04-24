@@ -12,11 +12,13 @@ import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/Terms
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
 import {AlreadyLoggedIn} from "../common/AlreadyLoggedIn";
-import {SignUpInputWrapper} from "../common/SignUpInputWrapper";
+import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
 import {SignUpFormWrapper} from "../common/SignUpFormWrapper";
 import {AccountSelect} from "../../../components/select/AccountSelect";
 import {Account} from "../../../substrate-lib/hooks/useAccounts";
 import SignUpSuccess from "../common/SignUpSucces";
+import {isWeb3Injected} from "@polkadot/extension-dapp";
+import {ExtensionNotDetected} from "./ExtensionNotDetected";
 
 interface BlockchainSignUpValues {
     account: Account,
@@ -35,6 +37,10 @@ const BlockchainSignUp: React.FC = () => {
     const validationSchema = Yup.object().shape({
         ...GetUserAgreementYupSchema(t)
     })
+
+    if (!isWeb3Injected) {
+        return <ExtensionNotDetected/>
+    }
 
     if (loadingState === LoadingState.Resolved) {
         return <Container title={t('auth.signup.title')}>
@@ -58,15 +64,15 @@ const BlockchainSignUp: React.FC = () => {
               handleSubmit,
           }) =>
             <SignUpFormWrapper handleSubmit={handleSubmit}>
-                <SignUpInputWrapper>
+                <SignUpComponentWrapper>
                     <AccountSelect account={values.account}/>
-                </SignUpInputWrapper>
-                <SignUpInputWrapper>
+                </SignUpComponentWrapper>
+                <SignUpComponentWrapper>
                     <TermsAgreementCheckbox/>
-                </SignUpInputWrapper>
-                <SignUpInputWrapper>
+                </SignUpComponentWrapper>
+                <SignUpComponentWrapper>
                     <PrivacyNotice/>
-                </SignUpInputWrapper>
+                </SignUpComponentWrapper>
                 <SignUpButton disabled={loadingState === LoadingState.Loading}/>
                 <AlreadyLoggedIn/>
             </SignUpFormWrapper>
