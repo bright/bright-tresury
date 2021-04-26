@@ -1,15 +1,15 @@
-import {Test} from '@nestjs/testing';
+import {UnauthorizedException} from "@nestjs/common";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {SessionUser} from "../../auth/session/session.decorator";
+import {cleanAuthorizationDatabase} from "../../auth/supertokens/specHelpers/supertokens.database.spec.helper";
 import {BlockchainService} from '../../blockchain/blockchain.service';
 import {UpdateExtrinsicDto} from '../../extrinsics/dto/updateExtrinsic.dto';
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
-import {beforeAllSetup, cleanDatabase} from '../../utils/spec.helpers';
+import {beforeAllSetup, beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
 import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
 import {Idea} from '../entities/idea.entity';
 import {IdeaNetwork} from '../entities/ideaNetwork.entity';
-import {IdeasModule} from "../ideas.module";
 import {IdeasService} from "../ideas.service";
 import {IdeaStatus} from "../ideaStatus";
 import {createIdea, createSessionUser} from "../spec.helpers";
@@ -36,28 +36,23 @@ describe('IdeaProposalsService', () => {
     let dto: CreateIdeaProposalDto
     let sessionUser: SessionUser
 
-    const blockchainService = {
-        listenForExtrinsic: (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => void) => {
-            cb(extrinsic)
-        }
-    }
+    const app = beforeSetupFullApp()
+    const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
+    const service = beforeAllSetup(() => app().get<IdeaProposalsService>(IdeaProposalsService))
+    const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
+    const ideaNetworkRepository = beforeAllSetup(() => app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
+    const ideaRepository = beforeAllSetup(() => app().get<Repository<Idea>>(getRepositoryToken(Idea)))
 
-    const module = beforeAllSetup(async () =>
-        await Test.createTestingModule({
-            imports: [IdeasModule]
-        })
-            .overrideProvider(BlockchainService)
-            .useValue(blockchainService)
-            .compile()
-    )
-
-    const service = beforeAllSetup(() => module().get<IdeaProposalsService>(IdeaProposalsService))
-    const ideasService = beforeAllSetup(() => module().get<IdeasService>(IdeasService))
-    const ideaNetworkRepository = beforeAllSetup(() => module().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
-    const ideaRepository = beforeAllSetup(() => module().get<Repository<Idea>>(getRepositoryToken(Idea)))
+    beforeAll(() => {
+        jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementation(
+            async (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
+                await cb(extrinsic)
+            })
+    })
 
     beforeEach(async () => {
         await cleanDatabase()
+        await cleanAuthorizationDatabase()
 
         const partialIdea = {
             networks: [{name: 'local', value: 10}],
@@ -65,7 +60,7 @@ describe('IdeaProposalsService', () => {
         }
         sessionUser = await createSessionUser()
         const createdIdea = await createIdea(partialIdea, sessionUser, ideasService())
-        idea = await ideasService().findOne(createdIdea.id)
+        idea = await ideasService().findOne(createdIdea.id, sessionUser)
         dto = new CreateIdeaProposalDto(idea.networks![0].id, '', '', new IdeaProposalDataDto(3))
     })
 
@@ -96,11 +91,18 @@ describe('IdeaProposalsService', () => {
 
         it('should throw empty beneficiary exception if idea beneficiary is empty', async () => {
             const createdIdea = await ideasService().create({title: '', networks: [{name: 'local', value: 10}]}, sessionUser)
-            const actualIdea = (await ideasService().findOne(createdIdea.id))!
+            const actualIdea = (await ideasService().findOne(createdIdea.id, sessionUser))!
             const actualDto = new CreateIdeaProposalDto(actualIdea.networks![0].id, '', '', new IdeaProposalDataDto(3))
             await expect(service().createProposal(actualIdea.id, actualDto, sessionUser))
                 .rejects
                 .toThrow(EmptyBeneficiaryException)
+        })
+
+        it('should throw unauthorized exception when creating proposal from not own idea', async () => {
+            const otherSessionUser = await createSessionUser({username: 'other', email: 'other@example.com'})
+            await expect(service().createProposal(idea.id, dto, otherSessionUser))
+                .rejects
+                .toThrow(UnauthorizedException)
         })
     })
 

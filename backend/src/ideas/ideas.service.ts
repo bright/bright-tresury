@@ -7,10 +7,10 @@ import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
+import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 import {Idea} from './entities/idea.entity';
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 
 const logger = getLogger()
 
@@ -47,14 +47,10 @@ export class IdeasService {
     }
 
     async findOne(id: string, user?: SessionUser): Promise<Idea> {
-        const idea = await this.ideaRepository.findOne(id, {
-            relations: ['networks'],
-            where: [
-                {status: Not(IdeaStatus.Draft)},
-                {ownerId: user?.user.id}
-            ]
-        })
-        if (!idea) {
+        const idea = await this.ideaRepository.findOne(id, {relations: ['networks']})
+        if (!idea ||
+            (idea.status === IdeaStatus.Draft && (!user || idea.ownerId !== user.user.id)) // not the owner trying to access a draft idea
+        ) {
             throw new NotFoundException('There is no idea with such id')
         }
         return idea
@@ -89,7 +85,7 @@ export class IdeasService {
     }
 
     async update(updateIdea: UpdateIdeaDto, id: string, user: SessionUser): Promise<Idea> {
-        const currentIdea = await this.findOne(id)
+        const currentIdea = await this.findOne(id, user)
         if (currentIdea.ownerId !== user.user.id) {
             throw new UnauthorizedException()
         }
@@ -136,7 +132,7 @@ export class IdeasService {
     }
 
     async delete(id: string, user: SessionUser) {
-        const currentIdea = await this.findOne(id)
+        const currentIdea = await this.findOne(id, user)
         if (currentIdea.ownerId !== user.user.id) {
             throw new UnauthorizedException()
         }

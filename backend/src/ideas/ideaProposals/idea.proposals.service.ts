@@ -22,7 +22,7 @@ export class IdeaProposalsService {
     }
 
     async createProposal(ideaId: string, dto: CreateIdeaProposalDto, user: SessionUser): Promise<IdeaNetwork> {
-        const idea = await this.ideaService.findOne(ideaId)
+        const idea = await this.ideaService.findOne(ideaId, user)
 
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()

@@ -1,7 +1,8 @@
+import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
 import {getLogger} from "../logging.module";
 
 export const mockedBlockchainService = {
-    getProposals: () => {
+    getProposals: async  () => {
         getLogger().info('Mock implementation of getproposals')
         return [
             {
@@ -20,6 +21,6 @@ export const mockedBlockchainService = {
                 value: 1000,
                 status: 'approval',
             }
-        ]
+        ] as BlockchainProposal[]
     }
 }

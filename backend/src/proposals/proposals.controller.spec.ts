@@ -1,50 +1,42 @@
-import {INestApplication} from "@nestjs/common";
 import {getRepositoryToken} from "@nestjs/typeorm";
-import {AppModule} from "../app.module";
 import {BlockchainService} from "../blockchain/blockchain.service";
 import {IdeaDto} from "../ideas/dto/idea.dto";
 import {Idea} from "../ideas/entities/idea.entity";
 import {IdeaNetwork} from "../ideas/entities/ideaNetwork.entity";
-import {IdeasService} from "../ideas/ideas.service";
-import {createIdea} from "../ideas/spec.helpers";
-import {cleanDatabase, createTestingApp, request} from '../utils/spec.helpers';
+import {createIdea, createSessionUser} from "../ideas/spec.helpers";
+import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
 import {ProposalDto} from "./dto/proposal.dto";
 import {mockedBlockchainService} from "./spec.helpers";
 
 const baseUrl = '/api/v1/proposals'
 
 describe(`/api/v1/proposals`, () => {
-    let app: INestApplication
+    const app = beforeSetupFullApp()
     let idea: Idea
 
-    beforeAll(async () => {
-        app = await createTestingApp([AppModule], (builder) =>
-            builder.overrideProvider(BlockchainService)
-                .useValue(mockedBlockchainService))
-    })
-
-    afterAll(async () => {
-        if (app) {
-            await app.close()
-        }
+    beforeAll(() => {
+        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
+            mockedBlockchainService.getProposals
+        )
     })
 
     beforeEach(async () => {
         await cleanDatabase()
-        idea = await createIdea({title: 'Title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, app.get(IdeasService))
+        const sessionUser = await createSessionUser()
+        idea = await createIdea({title: 'Title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, sessionUser)
         idea.networks[0].blockchainProposalId = 0
-        await app.get(getRepositoryToken(IdeaNetwork)).save(idea.networks[0])
+        await app().get(getRepositoryToken(IdeaNetwork)).save(idea.networks[0])
     })
     describe('GET /?network=:networkName', () => {
         it('should return 200 for selected network', () => {
-            return request(app)
+            return request(app())
                 .get(`${baseUrl}?network=localhost`)
                 .expect(200)
         })
 
         it('should return proposals for selected network', async () => {
 
-            const result = await request(app)
+            const result = await request(app())
                 .get(`${baseUrl}?network=localhost`)
 
             expect(result.body.length).toBe(2)
@@ -71,7 +63,7 @@ describe(`/api/v1/proposals`, () => {
         })
 
         it('should return 400 for empty network param', async () => {
-            await request(app)
+            await request(app())
                 .get(baseUrl)
                 .expect(400)
         })
@@ -79,32 +71,31 @@ describe(`/api/v1/proposals`, () => {
 
     describe('GET /:proposalId?network=:networkName', () => {
         it('should return 200 for existing proposal in selected network', () => {
-            return request(app)
+            return request(app())
                 .get(`${baseUrl}/0?network=localhost`)
                 .expect(200)
         })
 
         it('should return 400 for empty network param', async () => {
-            await request(app)
+            await request(app())
                 .get(`${baseUrl}/0`)
                 .expect(400)
         })
 
         it('should return 400 for not valid proposal id', async () => {
-            await request(app)
+            await request(app())
                 .get(`${baseUrl}/not-a-number?network=localhost`)
                 .expect(400)
         })
 
-
         it('should return 404 for not existing proposal', async () => {
-            await request(app)
+            await request(app())
                 .get(`${baseUrl}/123?network=localhost`)
                 .expect(404)
         })
 
         it('should return proposal details', async () => {
-            const result = await request(app)
+            const result = await request(app())
                 .get(`${baseUrl}/0?network=localhost`)
 
             const actual = result.body as ProposalDto

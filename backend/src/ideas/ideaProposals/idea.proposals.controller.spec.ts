@@ -1,15 +1,23 @@
+import {HttpStatus} from "@nestjs/common";
 import {v4 as uuid} from "uuid";
+import {cleanAuthorizationDatabase} from "../../auth/supertokens/specHelpers/supertokens.database.spec.helper";
+import {
+    createUserSessionHandler,
+    createUserSessionHandlerWithVerifiedEmail,
+    SessionHandler
+} from "../../auth/supertokens/specHelpers/supertokens.session.spec.helper";
 import {BlockchainService} from "../../blockchain/blockchain.service";
 import {UpdateExtrinsicDto} from "../../extrinsics/dto/updateExtrinsic.dto";
 import {beforeAllSetup, beforeSetupFullApp, cleanDatabase, request} from '../../utils/spec.helpers';
 import {Idea} from "../entities/idea.entity";
-import {createIdea, createSessionUser} from '../spec.helpers';
+import {createIdea} from '../spec.helpers';
 
 const baseUrl = (id: string) => `/api/v1/ideas/${id}/proposals`
 
 describe(`/api/v1/ideas/:id/proposals`, () => {
     const app = beforeSetupFullApp()
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
+    let sessionHandler: SessionHandler
 
     let idea: Idea
     const data = {
@@ -45,26 +53,27 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
 
     beforeEach(async () => {
         await cleanDatabase()
-        const user = await createSessionUser()
+        await cleanAuthorizationDatabase()
+        sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
         idea = await createIdea({
             beneficiary: uuid(),
             networks: [{name: 'local', value: 2}]
-        }, user)
+        }, sessionHandler.user)
         data.ideaNetworkId = idea.networks![0].id
     })
 
     describe('POST', () => {
         it('should return 202', () => {
-            return request(app())
+            return sessionHandler.authorizeRequest(request(app())
                 .post(baseUrl(idea.id))
-                .send(data)
+                .send(data))
                 .expect(202)
         })
 
         it('should return network with created extrinsic', async () => {
-            const result = await request(app())
+            const result = await sessionHandler.authorizeRequest(request(app())
                 .post(baseUrl(idea.id))
-                .send(data)
+                .send(data))
 
             expect(result.body.name).toBe('local')
             expect(result.body.extrinsic).toBeDefined()
@@ -74,17 +83,40 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
         })
 
         it('should return 404 for not existing idea', () => {
-            return request(app())
+            return sessionHandler.authorizeRequest(request(app())
                 .post(baseUrl(uuid()))
-                .send(data)
+                .send(data))
                 .expect(404)
         })
 
         it('should return 404 for not existing idea network', () => {
+            return sessionHandler.authorizeRequest(request(app())
+                .post(baseUrl(idea.id))
+                .send({...data, ideaNetworkId: uuid()}))
+                .expect(404)
+        })
+
+        it('should return forbidden for not authorized request', async () => {
             return request(app())
                 .post(baseUrl(idea.id))
-                .send({ ...data, ideaNetworkId: uuid() })
-                .expect(404)
+                .send(data)
+                .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it('should return unauthorized for idea created by other user', async () => {
+            const otherUserSessionHandler = await createUserSessionHandlerWithVerifiedEmail(app(), 'other@example.com', 'other')
+            return otherUserSessionHandler.authorizeRequest(request(app())
+                .post(baseUrl(idea.id))
+                .send(data))
+                .expect(HttpStatus.UNAUTHORIZED)
+        })
+
+        it('should return forbidden for not verified user', async () => {
+            const notVerifiedUserSessionHandler = await createUserSessionHandler(app(), 'other@example.com', 'other')
+            return notVerifiedUserSessionHandler.authorizeRequest(request(app())
+                .post(baseUrl(idea.id))
+                .send(data))
+                .expect(HttpStatus.FORBIDDEN)
         })
 
     })

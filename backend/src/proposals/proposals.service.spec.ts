@@ -1,4 +1,3 @@
-import {Test} from '@nestjs/testing';
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from 'typeorm';
 import {BlockchainService} from "../blockchain/blockchain.service";
@@ -6,24 +5,22 @@ import {IdeaDto} from "../ideas/dto/idea.dto";
 import {IdeaNetwork} from "../ideas/entities/ideaNetwork.entity";
 import {IdeasService} from "../ideas/ideas.service";
 import {createIdea, createSessionUser} from "../ideas/spec.helpers";
-import {beforeAllSetup, cleanDatabase} from "../utils/spec.helpers";
-import {ProposalsModule} from "./proposals.module";
+import {beforeAllSetup, beforeSetupFullApp, cleanDatabase} from "../utils/spec.helpers";
 import {ProposalsService} from "./proposals.service";
 import {mockedBlockchainService} from "./spec.helpers";
 
 describe('ProposalsService', () => {
-    const module = beforeAllSetup(async () =>
-        await Test.createTestingModule({
-            imports: [ProposalsModule]
-        })
-            .overrideProvider(BlockchainService)
-            .useValue(mockedBlockchainService)
-            .compile()
-    )
+    const app = beforeSetupFullApp()
 
-    const service = beforeAllSetup(() => module().get<ProposalsService>(ProposalsService))
-    const ideasService = beforeAllSetup(() => module().get<IdeasService>(IdeasService))
-    const ideasNetworkRepository = beforeAllSetup(() => module().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
+    const service = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
+    const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
+    const ideasNetworkRepository = beforeAllSetup(() => app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
+
+    beforeAll(() => {
+        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
+            mockedBlockchainService.getProposals
+        )
+    })
 
     beforeEach(async () => {
         await cleanDatabase()
