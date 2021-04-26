@@ -3,6 +3,7 @@ import {Column, Entity, Generated, ManyToOne, OneToMany} from "typeorm";
 import {IdeaMilestoneNetwork} from "./idea.milestone.network.entity";
 import {Idea} from "../../entities/idea.entity";
 import {Nil} from "../../../utils/types";
+import {defaultIdeaMilestoneStatus, IdeaMilestoneStatus} from "../ideaMilestoneStatus";
 
 @Entity('idea_milestones')
 export class IdeaMilestone extends BaseEntity {
@@ -16,6 +17,14 @@ export class IdeaMilestone extends BaseEntity {
     @Column({ type: 'integer', generated: 'increment'})
     @Generated('increment')
     ordinalNumber!: number
+
+    @Column({
+        type: "enum",
+        enum: IdeaMilestoneStatus,
+        default: defaultIdeaMilestoneStatus,
+        nullable: false
+    })
+    status!: IdeaMilestoneStatus
 
     @Column({ type: 'text' })
     subject: string
