@@ -1,7 +1,7 @@
 import {BadRequestException, Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Patch, Post, Query} from '@nestjs/common';
 import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiPropertyOptional, ApiTags} from '@nestjs/swagger';
 import {validate as uuidValidate} from 'uuid';
-import {Idea} from './idea.entity';
+import {Idea} from './entities/idea.entity';
 import {IdeasService} from './ideas.service';
 import {IdeaDto, toIdeaDto} from "./dto/idea.dto";
 import {CreateIdeaDto} from "./dto/createIdea.dto";

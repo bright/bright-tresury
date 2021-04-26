@@ -1,4 +1,4 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
+import {createStyles, makeStyles} from '@material-ui/core/styles';
 import {Formik} from "formik";
 import React, {useState} from 'react';
 import {useTranslation} from "react-i18next";
@@ -10,7 +10,7 @@ import IdeaFormFields from './IdeaFormFields';
 import FoldedIdeaFormFields from './FoldedIdeaFormFields';
 import {isValidAddressOrEmpty} from "../../util/addressValidator";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         form: {
             flexGrow: 1,

@@ -1,8 +1,9 @@
 import {Column, Entity, Generated, OneToMany} from "typeorm";
-import {BaseEntity} from "../database/base.entity";
+import {BaseEntity} from "../../database/base.entity";
 import {IdeaNetwork} from "./ideaNetwork.entity";
 import {v4 as uuid} from 'uuid';
-import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
+import {DefaultIdeaStatus, IdeaStatus} from "../ideaStatus";
+import {IdeaMilestone} from "../ideaMilestones/entities/idea.milestone.entity";
 
 export const ideaRestrictions = {
     field: {
@@ -58,6 +59,17 @@ export class Idea extends BaseEntity {
         nullable: false
     })
     status: IdeaStatus
+
+    @OneToMany(
+        () => IdeaMilestone,
+        (ideaMilestone) => ideaMilestone.idea,
+        {
+            cascade: true,
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        }
+    )
+    milestones?: IdeaMilestone[]
 
     constructor(
         title: string,

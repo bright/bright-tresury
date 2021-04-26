@@ -1,7 +1,7 @@
 import {v4 as uuid, validate as uuidValidate} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
-import {Idea} from './idea.entity';
-import {IdeaNetwork} from './ideaNetwork.entity';
+import {Idea} from './entities/idea.entity';
+import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {createIdea} from './spec.helpers';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";

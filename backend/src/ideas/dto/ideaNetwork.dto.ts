@@ -1,18 +1,25 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {IsNotEmpty, IsNumber, IsOptional} from "class-validator";
-import {IdeaNetwork} from "../ideaNetwork.entity";
+import {IdeaNetwork} from "../entities/ideaNetwork.entity";
 import {ExtrinsicDto, toExtrinsicDto} from "../../extrinsics/dto/extrinsic.dto";
 
 export class IdeaNetworkDto {
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Id of the idea network'
+    })
     @IsOptional()
     id?: string
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Name of the network'
+    })
     @IsNotEmpty()
     name: string
 
-    @ApiProperty({type: Number})
+    @ApiProperty({
+        description: 'Reward for the idea in the network',
+        type: Number
+    })
     @IsNumber()
     value: number
 

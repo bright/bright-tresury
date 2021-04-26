@@ -1,46 +1,75 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {IdeaNetworkDto, toIdeaNetworkDto} from "./ideaNetwork.dto";
-import {Idea, ideaRestrictions} from "../idea.entity";
-import {IdeaNetwork} from "../ideaNetwork.entity";
+import {Idea, ideaRestrictions} from "../entities/idea.entity";
+import {IdeaNetwork} from "../entities/ideaNetwork.entity";
 import {IdeaStatus} from "../ideaStatus";
+import {IdeaMilestoneDto} from "../ideaMilestones/dto/ideaMilestoneDto";
 
 export class IdeaDto {
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Id of the idea'
+    })
     id!: string
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Description of the idea'
+    })
     title!: string
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Reason of the idea'
+    })
     content?: string
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Blockchain address of the idea beneficiary'
+    })
     beneficiary?: string
 
-    @ApiPropertyOptional({maxLength: ideaRestrictions.field.maxLength})
+    @ApiPropertyOptional({
+        description: 'Field of the idea',
+        maxLength: ideaRestrictions.field.maxLength
+    })
     field?: string
 
     @ApiProperty({
+        description: 'Networks of the idea',
         type: [IdeaNetworkDto]
     })
     networks!: IdeaNetworkDto[]
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Contact to the idea proposer'
+    })
     contact?: string
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Portfolio of the idea proposer'
+    })
     portfolio?: string
 
     @ApiPropertyOptional({
+        description: 'External links connected with the idea',
         type: [String]
     })
     links?: string[]
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Ordinal number of the idea'
+    })
     ordinalNumber: number
 
-    @ApiProperty({enum: IdeaStatus})
+    @ApiProperty({
+        description: 'Status of the idea',
+        enum: IdeaStatus
+    })
     status: IdeaStatus
+
+    @ApiProperty({
+        description: 'Milestones of the idea',
+        type: [IdeaMilestoneDto]
+    })
+    milestones!: IdeaMilestoneDto[]
 
     constructor(
         id: string,
@@ -70,20 +99,20 @@ export class IdeaDto {
 
 }
 
-export function toIdeaDto(idea: Idea): IdeaDto {
+export function toIdeaDto({id, title, status, networks, ordinalNumber, beneficiary, content, field, contact, portfolio, links, milestones }: Idea): IdeaDto {
     return new IdeaDto(
-        idea.id,
-        idea.title,
-        idea.status,
-        idea.networks ? idea.networks.map((ideaNetwork: IdeaNetwork) =>
+        id,
+        title,
+        status,
+        networks ? networks.map((ideaNetwork: IdeaNetwork) =>
             toIdeaNetworkDto(ideaNetwork)
         ) : [],
-        idea.ordinalNumber,
-        idea.beneficiary,
-        idea.content,
-        idea.field,
-        idea.contact,
-        idea.portfolio,
-        idea.links ? JSON.parse(idea.links) as string[] : undefined,
+        ordinalNumber,
+        beneficiary,
+        content,
+        field,
+        contact,
+        portfolio,
+        links ? JSON.parse(links) as string[] : undefined,
     )
 }

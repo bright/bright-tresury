@@ -55,6 +55,7 @@
     "class-transformer": "^0.2.3",
     "class-validator": "^0.9.1",
     "convict": "^4.4.1",
+    "date-fns": "^2.21.1",
     "debug": "^4.1.1",
     "fastify-formbody": "^3.1.0",
     "handlebars": "^4.7.7",

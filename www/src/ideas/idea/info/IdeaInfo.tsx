@@ -8,10 +8,15 @@ interface Props {
     canEdit: boolean
 }
 
-const IdeaInfo: React.FC<Props> = ({idea, canEdit}) => {
-    return <>
-        {canEdit ? <IdeaEdit idea={idea}/> : <IdeaDetails idea={idea}/>}
-    </>
+const IdeaInfo = ({ idea, canEdit }: Props) => {
+    return (
+        <>
+            { canEdit
+                ? <IdeaEdit idea={idea}/>
+                : <IdeaDetails idea={idea}/>
+            }
+        </>
+    )
 }
 
 export default IdeaInfo

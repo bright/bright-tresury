@@ -6,8 +6,8 @@ import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
-import {Idea} from './idea.entity';
-import {IdeaNetwork} from './ideaNetwork.entity';
+import {Idea} from './entities/idea.entity';
+import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 

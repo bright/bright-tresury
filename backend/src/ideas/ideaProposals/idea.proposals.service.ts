@@ -4,7 +4,7 @@ import {Repository} from 'typeorm';
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
 import {ExtrinsicsService} from "../../extrinsics/extrinsics.service";
 import {getLogger} from "../../logging.module";
-import {IdeaNetwork} from '../ideaNetwork.entity';
+import {IdeaNetwork} from '../entities/ideaNetwork.entity';
 import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
 import {IdeasService} from "../ideas.service";
 import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";

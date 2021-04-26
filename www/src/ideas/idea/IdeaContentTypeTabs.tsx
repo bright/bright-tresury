@@ -12,7 +12,7 @@ export enum IdeaContentType {
     Discussion = "discussion"
 }
 
-const IdeaContentTypeTabs: React.FC<{}> = () => {
+const IdeaContentTypeTabs = () => {
     const {t} = useTranslation()
 
     const getTranslation = (ideaContentType: IdeaContentType): string => {

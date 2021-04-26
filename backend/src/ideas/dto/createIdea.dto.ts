@@ -1,7 +1,7 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested} from "class-validator";
 import {IdeaNetworkDto} from "./ideaNetwork.dto";
-import {ideaRestrictions} from "../idea.entity";
+import {ideaRestrictions} from "../entities/idea.entity";
 import {IdeaStatus} from "../ideaStatus";
 import {Type} from "class-transformer";
 import {CreateIdeaNetworkDto} from "./createIdeaNetwork.dto";
@@ -10,25 +10,33 @@ import {IsValidAddress} from "../../utils/address/address.validator";
 const AllowedIdeaStatuses = [IdeaStatus.Draft, IdeaStatus.Active]
 
 export class CreateIdeaDto {
-    @ApiProperty()
+    @ApiProperty({ description: 'Title of the idea' })
     @IsNotEmpty()
     title!: string
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Reason of the idea'
+    })
     @IsOptional()
     content?: string
 
-    @ApiProperty()
+    @ApiProperty({
+        description: 'Blockchain address of the idea beneficiary'
+    })
     @IsOptional()
     @IsValidAddress()
     beneficiary?: string
 
-    @ApiPropertyOptional({maxLength: ideaRestrictions.field.maxLength})
+    @ApiPropertyOptional({
+        description: 'Field of the idea',
+        maxLength: ideaRestrictions.field.maxLength
+    })
     @MaxLength(ideaRestrictions.field.maxLength)
     @IsOptional()
     field?: string
 
     @ApiProperty({
+        description: 'Networks of the idea',
         type: [IdeaNetworkDto]
     })
     @IsNotEmpty()
@@ -37,15 +45,20 @@ export class CreateIdeaDto {
     @ArrayMinSize(1)
     networks!: CreateIdeaNetworkDto[]
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Contact to the idea proposer'
+    })
     @IsOptional()
     contact?: string
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Portfolio of the idea proposer'
+    })
     @IsOptional()
     portfolio?: string
 
     @ApiPropertyOptional({
+        description: 'External links connected with the idea',
         type: [String]
     })
     @IsArray()
@@ -53,6 +66,7 @@ export class CreateIdeaDto {
     links?: string[]
 
     @ApiPropertyOptional({
+        description: 'Status of the idea',
         enum: IdeaStatus,
         oneOf: AllowedIdeaStatuses.map((status: IdeaStatus) => {
             return {type: status}

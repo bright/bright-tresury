@@ -2,7 +2,7 @@ import {NotFoundException} from '@nestjs/common';
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
-import {IdeaNetwork} from './ideaNetwork.entity';
+import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {CreateIdeaDto} from "./dto/createIdea.dto";

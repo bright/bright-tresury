@@ -181,6 +181,33 @@
         "closed": "Closed"
       }
     },
+    "milestones": {
+      "createMilestone": "+ Create Milestone",
+      "emptyMilestonesArrayInfo": "Please add milestones for this idea, milestones will allow our community appereciate the idea more and understand it better",
+      "modal": {
+        "milestone": "Milestone",
+        "createMilestone": "Create Milestone",
+        "editMilestone": "Edit Milestone",
+        "form": {
+          "emptyFieldError": "This field cannot be empty",
+          "endDatePriorToStartDateError": "End date can't be prior to the start date",
+          "yourMilestone": "Your Milestone",
+          "milestoneSubject": "Subject of a Milestone",
+          "date": "Date",
+          "selectFrom": "Select From",
+          "selectTo": "Select To",
+          "budget": "Budget",
+          "description": "Description",
+          "describeMilestone": "Describe the Milestone",
+          "apiCallErrorMessage": "Something went wrong. Try again.",
+          "buttons": {
+            "cancel": "Cancel",
+            "create": "Create",
+            "save": "Save"
+          }
+        }
+      }
+    },
     "introduceTitle": "Introduce Idea",
     "editTitle": "Edit Idea",
     "introduce": "+ Introduce Idea"

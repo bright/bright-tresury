@@ -1,14 +1,9 @@
 import {apiGet, apiPost, apiPatch} from '../api'
 import {ExtrinsicDetails} from "./SubmitProposalModal";
 
-export interface IdeaNetworkDto {
-    id?: string
-    name: string
-    value: number
-}
-
 export interface IdeaDto {
-    id?: string
+    id: string
+    ordinalNumber: number
     title: string
     beneficiary: string
     field?: string
@@ -18,7 +13,12 @@ export interface IdeaDto {
     portfolio?: string
     links?: string[]
     status: IdeaStatus
-    ordinalNumber: number
+}
+
+export interface IdeaNetworkDto {
+    id?: string
+    name: string
+    value: number
 }
 
 export enum IdeaStatus {
