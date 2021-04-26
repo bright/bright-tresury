@@ -1,9 +1,10 @@
 import i18next from "i18next";
 import React, {useEffect} from 'react';
-import {BrowserRouter as Router, Redirect, Route, Switch} from 'react-router-dom';
+import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
 import {AuthContextProvider, useAuth} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
+import VerifyEmail from "./auth/sign-in/VerifyEmail";
 import SignUp from './auth/sign-up/SignUp';
 import IdeaCreate from "./ideas/create/IdeaCreate";
 import ConvertIdeaToProposal from './ideas/idea/convertToProposal/ConvertIdeaToProposal';
@@ -25,7 +26,6 @@ import {
     ROUTE_ROOT,
     ROUTE_SIGNIN,
     ROUTE_SIGNUP,
-    ROUTE_STATS,
     ROUTE_VERIFY_EMAIL
 } from './routes/routes';
 import Stats from './stats/Stats';
@@ -33,11 +33,8 @@ import {SubstrateContextProvider} from './substrate-lib';
 import {initializeSupertokens} from "./supertokens";
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
-import VerifyEmail from "./auth/sign-in/VerifyEmail";
 
 function AppRoutes() {
-    const {isUserSignedIn} = useAuth()
-
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
@@ -46,12 +43,6 @@ function AppRoutes() {
         <Router>
             <Main>
                 <Switch>
-                    <Route exact={true} path={ROUTE_SIGNUP} >
-                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignUp/>}
-                    </Route>
-                    <Route exact={true} path={ROUTE_SIGNIN}>
-                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignIn/>}
-                    </Route>
                     <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
                         <VerifyEmail/>
                     </Route>

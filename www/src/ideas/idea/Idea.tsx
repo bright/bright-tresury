@@ -44,13 +44,9 @@ const Idea = ({ network }: Props) => {
 
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
-    /**
-     * TODO:// check if [idea] belongs to the currently logged in user
-     */
-    const { isUserSignedIn } = useAuth()
-
+    const {isUserSignedIn, user} = useAuth()
     const canEdit = useMemo(() => {
-        return isUserSignedIn
+        return isUserSignedIn && idea.ownerId === user?.id
     }, [idea, isUserSignedIn])
 
     useEffect(() => {

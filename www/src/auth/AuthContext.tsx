@@ -13,8 +13,9 @@ interface AuthContextState {
 }
 
 interface AuthContextUser {
-    userId: string
-    payload: string
+    id: string
+    username: string
+    email: string
 }
 
 const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
@@ -25,9 +26,8 @@ const AuthContextProvider: React.FC = (props) => {
 
     useEffect(() => {
         if (isUserSignedIn) {
-            const userId = Session.getUserId()
-            Session.getJWTPayloadSecurely().then((payload) => {
-                setUser({userId, payload})
+            Session.getJWTPayloadSecurely().then((payload: AuthContextUser) => {
+                setUser(payload)
             })
         } else {
             setUser(undefined)

@@ -17,12 +17,15 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
                 id: SuperTokensUsernameKey,
                 validate: superTokensService.getUsernameValidationError
             }],
-            handleCustomFormFieldsPostSignUp: superTokensService.handleCustomFormFieldsPostSignUp
+            handlePostSignUp: superTokensService.handleCustomFormFieldsPostSignUp
         },
+        sessionFeature: {
+            setJwtPayload: superTokensService.setJwtPayload
+        }
     }),
     Session.init({
         cookieSecure,
-        sessionExpiredStatusCode: SessionExpiredHttpStatus
+        sessionExpiredStatusCode: SessionExpiredHttpStatus,
     }),
     /*
     We need to init this recipe separately to enable using supertokens function directly (i.e. isEmailVerified)

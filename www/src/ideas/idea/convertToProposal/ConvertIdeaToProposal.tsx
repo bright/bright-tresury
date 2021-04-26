@@ -2,12 +2,13 @@ import React, {useEffect, useMemo, useState} from "react";
 import {useTranslation} from "react-i18next";
 import {useParams} from "react-router";
 import {useHistory, useLocation} from "react-router-dom";
+import {useAuth} from "../../../auth/AuthContext";
 import Container from "../../../components/form/Container";
 import {ROUTE_PROPOSALS} from "../../../routes/routes";
 import IdeaForm from "../../form/IdeaForm";
 import {getIdeaById, IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
 import SubmitProposalModal from "../../SubmitProposalModal";
-import { RightButton, LeftButton } from "../../../components/form/buttons/Buttons";
+import {RightButton, LeftButton} from "../../../components/form/buttons/Buttons";
 
 const ConvertIdeaToProposal = () => {
     const {t} = useTranslation()
@@ -15,6 +16,7 @@ const ConvertIdeaToProposal = () => {
     const [idea, setIdea] = useState<IdeaDto | undefined>()
     const location = useLocation()
     let {ideaId} = useParams<{ ideaId: string }>()
+    const {isUserSignedIn, user} = useAuth()
 
     useEffect(() => {
         const state = location.state as { idea?: IdeaDto }
@@ -53,8 +55,9 @@ const ConvertIdeaToProposal = () => {
         history.push(ROUTE_PROPOSALS)
     }
 
-    // TODO protect this rout with auth
-    const canConvertToProposal = useMemo(() => idea && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active),
+    const canConvertToProposal = useMemo(() => idea
+        && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active)
+        && (isUserSignedIn && user?.id === idea.ownerId),
         [idea])
 
     return canConvertToProposal ? <Container title={t('idea.convertToProposal.title')}>

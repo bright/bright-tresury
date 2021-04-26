@@ -34,6 +34,10 @@ export class SessionResolver implements ISessionResolver {
 
     async resolveUserAndUpdateSessionData(req: SessionRequest, res: Response) {
         const session = await this.superTokensService.getSession(req, res, false)
+        if (!session) {
+            return
+        }
+
         const sessionData = await session.getSessionData()
 
         let sessionUser: SessionUser | undefined;

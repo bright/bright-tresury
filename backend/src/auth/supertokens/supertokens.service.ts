@@ -2,8 +2,8 @@ import {BadRequestException, ConflictException, Injectable} from "@nestjs/common
 import {Request, Response} from 'express'
 import {getUserById, signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
-import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
-import {createNewSession, getSession as superTokensGetSession, updateSessionData} from "supertokens-node/lib/build/recipe/session";
+import {TypeFormField, User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
+import {createNewSession, getSession as superTokensGetSession, updateJWTPayload, updateSessionData} from "supertokens-node/lib/build/recipe/session";
 import SessionError from "supertokens-node/lib/build/recipe/session/error";
 import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
 import {EmailsService} from "../../emails/emails.service";
@@ -14,6 +14,12 @@ import {UsersService} from "../../users/users.service";
 import {SessionUser} from "../session/session.decorator";
 import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {isEmailVerified as superTokensIsEmailVerified} from "supertokens-node/lib/build/recipe/emailverification";
+
+export interface JWTPayload {
+    id: string,
+    username: string,
+    email: string,
+}
 
 @Injectable()
 export class SuperTokensService {
@@ -58,7 +64,7 @@ export class SuperTokensService {
         return await createNewSession(res, userId)
     }
 
-    async getSession(req: Request, res: Response, doAntiCsrfCheck?: boolean): Promise<Session> {
+    async getSession(req: Request, res: Response, doAntiCsrfCheck?: boolean): Promise<Session | undefined> {
         return await superTokensGetSession(req, res, doAntiCsrfCheck)
     }
 
@@ -87,14 +93,16 @@ export class SuperTokensService {
 
     async addSessionData(req: Request, res: Response, data: Partial<SessionUser>) {
         const session = await this.getSession(req, res, false)
-        const currentSessionData = await session.getSessionData()
-        await updateSessionData(
-            session.getHandle(),
-            {
-                ...currentSessionData,
-                ...data
-            }
-        )
+        if (session) {
+            const currentSessionData = await session.getSessionData()
+            await updateSessionData(
+                session.getHandle(),
+                {
+                    ...currentSessionData,
+                    ...data
+                }
+            )
+        }
     }
 
     sendVerifyEmail = async (user: SuperTokensUser, emailVerificationURLWithToken: string): Promise<void> => {
@@ -104,5 +112,21 @@ export class SuperTokensService {
     getEmailForUserId = async (userId: string): Promise<string> => {
         const user = await getUserById(userId)
         return user?.email ?? userId
+    }
+
+    setJwtPayload = async (superTokensUser: SuperTokensUser, formFields: TypeFormField[], action: "signin" | "signup"): Promise<JWTPayload> => {
+        const payload = {
+            email: superTokensUser.email,
+            id: '',
+            username: '',
+        }
+        try {
+            const user = await this.usersService.findOneByEmail(superTokensUser.email)
+            payload.id = user.id
+            payload.username = user.username
+        } catch (err) {
+            getLogger().error(err)
+        }
+        return payload
     }
 }

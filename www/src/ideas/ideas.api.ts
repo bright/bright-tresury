@@ -13,6 +13,7 @@ export interface IdeaDto {
     portfolio?: string
     links?: string[]
     status: IdeaStatus
+    ownerId: string
 }
 
 export interface IdeaNetworkDto {
