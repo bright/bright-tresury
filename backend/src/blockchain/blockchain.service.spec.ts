@@ -15,8 +15,8 @@ describe(`Blockchain service`, () => {
     let api: ApiPromise
     let keyring: Keyring
     let aliceKeypair: KeyringPair
-    const aliceAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-    const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
+    const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
+    const bobAddress = '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3'
 
     const module = beforeAllSetup(async () =>
         await Test.createTestingModule({
@@ -68,7 +68,9 @@ describe(`Blockchain service`, () => {
                 })
                 expect(result!.data).toStrictEqual({
                     value: 10,
-                    beneficiary: bobAddress
+                    beneficiary: {
+                        Id: bobAddress
+                    }
                 })
                 done()
             })
