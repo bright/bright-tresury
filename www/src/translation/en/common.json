@@ -195,6 +195,7 @@
         "statusDraft": "Draft",
         "statusActive": "Active",
         "statusTurnedIntoProposal": "Turned into Proposal",
+        "statusTurnedIntoProposalByMilestone": "Turned into Proposal by Milestone",
         "statusClosed": "Closed",
         "beneficiary": "(Beneficiary)"
       },
@@ -217,6 +218,7 @@
         "editMilestone": "Edit Milestone",
         "form": {
           "emptyFieldError": "This field cannot be empty",
+          "nonZeroFieldError": "The value must be greater than zero",
           "endDatePriorToStartDateError": "End date can't be prior to the start date",
           "yourMilestone": "Your Milestone",
           "milestoneSubject": "Subject of a Milestone",
@@ -230,13 +232,20 @@
           "buttons": {
             "cancel": "Cancel",
             "create": "Create",
-            "save": "Save"
+            "save": "Save",
+            "submit": "Submit"
           }
         }
       },
       "list": {
         "card": {
           "noDescriptionProvided": "No description provided"
+        }
+      },
+      "convertToProposal": {
+        "convertToProposal": "Convert to Proposal",
+        "submit": {
+          "title": "You are about to convert your idea milestone into proposal"
         }
       }
     },

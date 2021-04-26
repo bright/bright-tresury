@@ -9,6 +9,9 @@ import {IdeaMilestoneNetworkDto} from "./dto/ideaMilestoneNetworkDto";
 import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
 import {IdeaMilestone} from "./entities/idea.milestone.entity";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
+import {IdeaMilestoneStatus} from "./ideaMilestoneStatus";
+import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
+import {IdeaStatus} from "../ideaStatus";
 
 @Injectable()
 export class IdeaMilestonesService {
@@ -54,6 +57,7 @@ export class IdeaMilestonesService {
             new IdeaMilestone(
                 idea,
                 subject,
+                IdeaMilestoneStatus.Active,
                 networks.map(({ name, value }: IdeaMilestoneNetworkDto) => new IdeaMilestoneNetwork(name, value)),
                 dateFrom,
                 dateTo,
@@ -96,5 +100,29 @@ export class IdeaMilestonesService {
         })
 
         return (await this.ideaMilestoneRepository.findOne(currentIdeaMilestone.id, { relations: ['networks'] }))!
+    }
+
+    async convertIdeaMilestoneToProposal(
+        ideaId: string,
+        ideaMilestoneId: string,
+        ideaMilestoneNetworkId: string,
+        blockchainProposalId: number
+    ): Promise<void> {
+
+        await this.ideaRepository.save({
+            id: ideaId,
+            status: IdeaStatus.TurnedIntoProposalByMilestone
+        })
+
+        await this.ideaMilestoneRepository.save({
+            id: ideaMilestoneId,
+            status: IdeaMilestoneStatus.TurnedIntoProposal
+        })
+
+        await this.ideaMilestoneNetworkRepository.save({
+            id: ideaMilestoneNetworkId,
+            blockchainProposalId
+        })
+
     }
 }

@@ -6,6 +6,7 @@ import {IdeaDto} from "../../../ideas.api";
 import {Grid} from "../../../../components/grid/Grid";
 import {IdeaMilestoneCard} from "./IdeaMilestoneCard";
 import {mobileHeaderListHorizontalMargin} from "../../../../components/header/list/HeaderListContainer";
+import {ConvertIdeaMilestoneToProposal} from "../convertToProposal/ConvertIdeaMilestoneToProposal";
 
 interface Props {
     idea: IdeaDto
@@ -17,6 +18,7 @@ interface Props {
 export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMilestones }: Props) => {
 
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
+    const [ideaMilestoneToConvertToProposal, setIdeaMilestoneToConvertToProposal] = useState<IdeaMilestoneDto | null>(null)
     const [isEditIdeaMilestoneModalOpen, setisEditIdeaMilestoneModalOpen] = useState<boolean>(false)
     const [isDisplayIdeaMilestoneModalOpen, setisDisplayIdeaMilestoneModalOpen] = useState<boolean>(false)
 
@@ -39,6 +41,12 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
         setFocusedIdeaMilestone(ideaMilestone)
     }
 
+    const handleConvertIdeaMilestoneToProposal = (ideaMilestone: IdeaMilestoneDto) => {
+        setIdeaMilestoneToConvertToProposal(ideaMilestone)
+    }
+
+    const handleConvertIdeaMilestoneToProposalCancel = () => setIdeaMilestoneToConvertToProposal(null)
+
     const renderIdeaMilestoneCard = (ideaMilestone: IdeaMilestoneDto) => {
         return <IdeaMilestoneCard ideaMilestone={ideaMilestone} onClick={handleIdeaMilestoneClick} />
     }
@@ -57,6 +65,7 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
                     idea={idea}
                     ideaMilestone={focusedIdeaMilestone}
                     handleCloseModal={handleEditIdeaMilestoneModalClose}
+                    handleConvertIdeaMilestoneToProposal={handleConvertIdeaMilestoneToProposal}
                     fetchIdeaMilestones={fetchIdeaMilestones}
                   />
                 : null
@@ -67,6 +76,14 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
                     idea={idea}
                     ideaMilestone={focusedIdeaMilestone}
                     handleCloseModal={handleDisplayIdeaMilestoneModalClose}
+                  />
+                : null
+            }
+            { ideaMilestoneToConvertToProposal
+                ? <ConvertIdeaMilestoneToProposal
+                    idea={idea}
+                    ideaMilestone={ideaMilestoneToConvertToProposal}
+                    onCancel={handleConvertIdeaMilestoneToProposalCancel}
                   />
                 : null
             }

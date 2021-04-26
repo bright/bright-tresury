@@ -1,19 +1,22 @@
-import React from 'react'
+import React, {useMemo} from 'react'
 import {Modal} from "../../../../components/modal/Modal";
 import {EditIdeaMilestone} from "./EditIdeaMilestone";
-import {IdeaMilestoneDto} from "../idea.milestones.api";
-import {IdeaDto} from "../../../ideas.api";
+import {IdeaMilestoneDto, IdeaMilestoneStatus} from "../idea.milestones.api";
+import {IdeaDto, IdeaStatus} from "../../../ideas.api";
 import {useTranslation} from "react-i18next";
+import {IdeaMilestoneModalHeader} from "../components/IdeaMilestoneModalHeader";
+import {Button} from "../../../../components/button/Button";
 
 interface Props {
     open: boolean
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
     handleCloseModal: () => void
+    handleConvertIdeaMilestoneToProposal: (ideaMilestone: IdeaMilestoneDto) => void
     fetchIdeaMilestones: () => Promise<void>
 }
 
-export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseModal, fetchIdeaMilestones }: Props) => {
+export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseModal, handleConvertIdeaMilestoneToProposal, fetchIdeaMilestones }: Props) => {
 
     const { t } = useTranslation()
 
@@ -21,6 +24,10 @@ export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseM
         handleCloseModal()
         fetchIdeaMilestones()
     }
+
+    const canConvertToProposal = useMemo(() => {
+        return [IdeaStatus.Draft, IdeaStatus.Active].includes(idea.status) && ideaMilestone.status === IdeaMilestoneStatus.Active
+    }, [idea.status, ideaMilestone.status])
 
     return (
         <Modal
@@ -30,9 +37,25 @@ export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseM
             maxWidth={'md'}
         >
             <>
-                <h2 id='modal-title'>
-                    {t('idea.milestones.modal.editMilestone')}
-                </h2>
+                <IdeaMilestoneModalHeader>
+                    <h2 id='modal-title'>
+                        {t('idea.milestones.modal.editMilestone')}
+                    </h2>
+                    { canConvertToProposal
+                        ? (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                onClick={() => {
+                                    handleCloseModal()
+                                    handleConvertIdeaMilestoneToProposal(ideaMilestone)
+                                }}>
+                                {t('idea.details.header.convertToProposal')}
+                            </Button>
+                        )
+                        : null
+                    }
+                </IdeaMilestoneModalHeader>
                 <EditIdeaMilestone
                     idea={idea}
                     ideaMilestone={ideaMilestone}

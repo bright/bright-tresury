@@ -7,10 +7,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [Idea.Milestone.ProposalsController],
+      controllers: [IdeaMilestoneProposalsController],
     }).compile();
 
-    controller = module.get<Idea.Milestone.ProposalsController>(Idea.Milestone.ProposalsController);
+    controller = module.get<IdeaMilestoneProposalsController>(IdeaMilestoneProposalsController);
   });
 
   it('should be defined', () => {

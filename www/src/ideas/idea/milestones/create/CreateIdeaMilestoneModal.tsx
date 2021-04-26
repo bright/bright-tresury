@@ -3,6 +3,7 @@ import {Modal} from "../../../../components/modal/Modal";
 import {CreateIdeaMilestone} from "./CreateIdeaMilestone";
 import {IdeaDto} from "../../../ideas.api";
 import {useTranslation} from "react-i18next";
+import {IdeaMilestoneModalHeader} from "../components/IdeaMilestoneModalHeader";
 
 interface Props {
     open: boolean
@@ -28,9 +29,11 @@ export const CreateIdeaMilestoneModal = ({ open, idea, handleCloseModal, fetchId
             maxWidth={'md'}
         >
             <>
-                <h2 id='modal-title'>
-                    {t('idea.milestones.modal.createMilestone')}
-                </h2>
+                <IdeaMilestoneModalHeader>
+                    <h2 id='modal-title'>
+                        {t('idea.milestones.modal.createMilestone')}
+                    </h2>
+                </IdeaMilestoneModalHeader>
                 <CreateIdeaMilestone
                     idea={idea}
                     handleCloseModal={handleCloseModal}

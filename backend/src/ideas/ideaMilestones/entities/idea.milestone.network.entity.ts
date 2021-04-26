@@ -1,6 +1,7 @@
 import {BaseEntity} from "../../../database/base.entity";
-import {Column, Entity, ManyToOne} from "typeorm";
+import {Column, Entity, JoinColumn, ManyToOne, OneToOne} from "typeorm";
 import {IdeaMilestone} from "./idea.milestone.entity";
+import {Extrinsic} from "../../../extrinsics/extrinsic.entity";
 
 @Entity('idea_milestone_networks')
 export class IdeaMilestoneNetwork extends BaseEntity {
@@ -17,9 +18,18 @@ export class IdeaMilestoneNetwork extends BaseEntity {
     @Column("decimal", { precision: 39, scale: 15, nullable: false, default: 0 })
     value: number
 
-    constructor(name: string, value: number) {
+    @OneToOne(() => Extrinsic)
+    @JoinColumn()
+    extrinsic: Extrinsic | null
+
+    @Column({ nullable: true, type: "integer", })
+    blockchainProposalId: number | null
+
+    constructor(name: string, value: number, extrinsic = null, blockchainProposalId = null) {
         super();
         this.name = name
         this.value = value
+        this.extrinsic = extrinsic
+        this.blockchainProposalId = blockchainProposalId
     }
 }

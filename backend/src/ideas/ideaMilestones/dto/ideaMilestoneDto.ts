@@ -5,6 +5,7 @@ import {
     mapIdeaMilestoneNetworkEntityToIdeaMilestoneNetworkDto
 } from "./ideaMilestoneNetworkDto";
 import {Nil} from "../../../utils/types";
+import {IdeaMilestoneStatus} from "../ideaMilestoneStatus";
 
 export class IdeaMilestoneDto {
     @ApiProperty({
@@ -45,10 +46,17 @@ export class IdeaMilestoneDto {
     })
     networks: IdeaMilestoneNetworkDto[]
 
+    @ApiProperty({
+        description: 'Status of the milestone',
+        enum: IdeaMilestoneStatus
+    })
+    status: IdeaMilestoneStatus
+
     constructor(
         id: string,
         ordinalNumber: number,
         subject: string,
+        status: IdeaMilestoneStatus,
         networks: IdeaMilestoneNetworkDto[],
         dateFrom: Nil<Date>,
         dateTo: Nil<Date>,
@@ -57,6 +65,7 @@ export class IdeaMilestoneDto {
         this.id = id
         this.ordinalNumber = ordinalNumber
         this.subject = subject
+        this.status = status
         this.networks = networks
         this.dateFrom = dateFrom
         this.dateTo = dateTo
@@ -65,8 +74,8 @@ export class IdeaMilestoneDto {
 }
 
 export const mapIdeaMilestoneEntityToIdeaMilestoneDto = (
-    { id, ordinalNumber, subject, networks, dateFrom, dateTo, description }: IdeaMilestone
+    { id, ordinalNumber, subject, status, networks, dateFrom, dateTo, description }: IdeaMilestone
 ): IdeaMilestoneDto => {
     const mappedNetworks = networks.map((network) => mapIdeaMilestoneNetworkEntityToIdeaMilestoneNetworkDto(network))
-    return new IdeaMilestoneDto(id, ordinalNumber, subject, mappedNetworks, dateFrom, dateTo, description)
+    return new IdeaMilestoneDto(id, ordinalNumber, subject, status, mappedNetworks, dateFrom, dateTo, description)
 }

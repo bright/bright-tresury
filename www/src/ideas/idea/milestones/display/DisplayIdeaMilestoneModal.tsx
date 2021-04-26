@@ -4,6 +4,7 @@ import {DisplayIdeaMilestone} from "./DisplayIdeaMilestone";
 import {IdeaMilestoneDto} from "../idea.milestones.api";
 import {IdeaDto} from "../../../ideas.api";
 import {useTranslation} from "react-i18next";
+import {IdeaMilestoneModalHeader} from "../components/IdeaMilestoneModalHeader";
 
 interface Props {
     open: boolean
@@ -24,9 +25,11 @@ export const DisplayIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleClo
             maxWidth={'md'}
         >
             <>
-                <h2 id='modal-title'>
-                    {t('idea.milestones.modal.milestone')} - <b>{ideaMilestone.ordinalNumber}</b>
-                </h2>
+                <IdeaMilestoneModalHeader>
+                    <h2 id='modal-title'>
+                        {t('idea.milestones.modal.milestone')} - <b>{ideaMilestone.ordinalNumber}</b>
+                    </h2>
+                </IdeaMilestoneModalHeader>
                 <DisplayIdeaMilestone
                     idea={idea}
                     ideaMilestone={ideaMilestone}

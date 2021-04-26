@@ -13,6 +13,8 @@ import {IdeaMilestone} from "./ideaMilestones/entities/idea.milestone.entity";
 import {IdeaMilestoneNetwork} from "./ideaMilestones/entities/idea.milestone.network.entity";
 import {IdeaMilestonesController} from "./ideaMilestones/idea.milestones.controller";
 import {IdeaMilestonesService} from "./ideaMilestones/idea.milestones.service";
+import {IdeaMilestoneProposalsService} from "./ideaMilestones/ideaMilestoneProposals/idea.milestone.proposals.service";
+import {IdeaMilestoneProposalsController} from "./ideaMilestones/ideaMilestoneProposals/idea.milestone.proposals.controller";
 
 @Module({
   imports: [
@@ -27,12 +29,14 @@ import {IdeaMilestonesService} from "./ideaMilestones/idea.milestones.service";
   providers: [
       IdeasService,
       IdeaProposalsService,
-      IdeaMilestonesService
+      IdeaMilestonesService,
+      IdeaMilestoneProposalsService,
   ],
   controllers: [
       IdeasController,
       IdeaProposalsController,
-      IdeaMilestonesController
+      IdeaMilestonesController,
+      IdeaMilestoneProposalsController,
   ],
   exports: [IdeasService]
 })

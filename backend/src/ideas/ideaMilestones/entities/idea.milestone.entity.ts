@@ -24,7 +24,7 @@ export class IdeaMilestone extends BaseEntity {
         default: defaultIdeaMilestoneStatus,
         nullable: false
     })
-    status!: IdeaMilestoneStatus
+    status: IdeaMilestoneStatus
 
     @Column({ type: 'text' })
     subject: string
@@ -52,6 +52,7 @@ export class IdeaMilestone extends BaseEntity {
     constructor(
         idea: Idea,
         subject: string,
+        status: IdeaMilestoneStatus,
         networks: IdeaMilestoneNetwork[],
         dateFrom: Nil<Date>,
         dateTo: Nil<Date>,
@@ -60,6 +61,7 @@ export class IdeaMilestone extends BaseEntity {
         super();
         this.idea = idea
         this.subject = subject
+        this.status = status
         this.networks = networks
         this.dateFrom = dateFrom
         this.dateTo = dateTo
