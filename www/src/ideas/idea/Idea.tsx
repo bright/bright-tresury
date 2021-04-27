@@ -44,10 +44,10 @@ const Idea = ({ network }: Props) => {
 
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
-    const {isUserSignedIn, user} = useAuth()
+    const {isUserVerified, user} = useAuth()
     const canEdit = useMemo(() => {
-        return isUserSignedIn && idea.ownerId === user?.id
-    }, [idea, isUserSignedIn])
+        return isUserVerified && idea.ownerId === user?.id
+    }, [idea, isUserVerified, user])
 
     useEffect(() => {
         if (ideaId !== undefined) {

@@ -1,5 +1,5 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {SignInAPIResponse, SignUpAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
 import Session from "supertokens-auth-react/lib/build/recipe/session/session";
 import {signIn as signInApi, SignInData, signOut as signOutApi, SignUpData} from './auth.api'
@@ -10,12 +10,14 @@ interface AuthContextState {
     signOut: () => Promise<void>
     user?: AuthContextUser
     isUserSignedIn: boolean
+    isUserVerified: boolean
 }
 
 interface AuthContextUser {
     id: string
     username: string
     email: string
+    isEmailVerified: boolean
 }
 
 const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
@@ -33,6 +35,8 @@ const AuthContextProvider: React.FC = (props) => {
             setUser(undefined)
         }
     }, [isUserSignedIn])
+
+    const isUserVerified = useMemo(() => isUserSignedIn && !!user?.isEmailVerified, [isUserSignedIn, user])
 
     const signOut = () => {
         return signOutApi()
@@ -64,7 +68,7 @@ const AuthContextProvider: React.FC = (props) => {
     }
 
     return (
-        <AuthContext.Provider value={{user, isUserSignedIn, signIn, signOut}} {...props}/>
+        <AuthContext.Provider value={{user, isUserSignedIn, isUserVerified, signIn, signOut}} {...props}/>
     )
 }
 

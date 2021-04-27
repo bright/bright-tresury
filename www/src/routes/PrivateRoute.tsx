@@ -6,9 +6,10 @@ import {ROUTE_SIGNIN} from "./routes";
 type PublicOnlyRoute = RouteProps
 
 const PrivateRoute: React.FC<PublicOnlyRoute> = ({component: Component, ...props}) => {
-    const {isUserSignedIn} = useAuth()
+    const {isUserVerified} = useAuth()
 
-    if (isUserSignedIn) {
+    // TODO redirect *somewhere* when user logged in but not verified (waiting for designs)
+    if (isUserVerified) {
         return <Route {...props} component={Component}/>
     } else {
         return <Route {...props}>

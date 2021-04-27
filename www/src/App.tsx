@@ -2,7 +2,7 @@ import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
-import {AuthContextProvider, useAuth} from "./auth/AuthContext";
+import {AuthContextProvider} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
 import VerifyEmail from "./auth/sign-in/VerifyEmail";
 import SignUp from './auth/sign-up/SignUp';

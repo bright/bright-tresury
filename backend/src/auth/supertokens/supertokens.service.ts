@@ -16,9 +16,10 @@ import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.re
 import {isEmailVerified as superTokensIsEmailVerified} from "supertokens-node/lib/build/recipe/emailverification";
 
 export interface JWTPayload {
-    id: string,
-    username: string,
-    email: string,
+    id: string
+    username: string
+    email: string
+    isEmailVerified: boolean
 }
 
 @Injectable()
@@ -119,11 +120,13 @@ export class SuperTokensService {
             email: superTokensUser.email,
             id: '',
             username: '',
+            isEmailVerified: false
         }
         try {
             const user = await this.usersService.findOneByEmail(superTokensUser.email)
             payload.id = user.id
             payload.username = user.username
+            payload.isEmailVerified = await this.isEmailVerified(user)
         } catch (err) {
             getLogger().error(err)
         }

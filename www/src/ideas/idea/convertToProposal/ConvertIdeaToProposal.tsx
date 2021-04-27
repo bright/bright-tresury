@@ -16,7 +16,7 @@ const ConvertIdeaToProposal = () => {
     const [idea, setIdea] = useState<IdeaDto | undefined>()
     const location = useLocation()
     let {ideaId} = useParams<{ ideaId: string }>()
-    const {isUserSignedIn, user} = useAuth()
+    const {isUserVerified, user} = useAuth()
 
     useEffect(() => {
         const state = location.state as { idea?: IdeaDto }
@@ -57,8 +57,8 @@ const ConvertIdeaToProposal = () => {
 
     const canConvertToProposal = useMemo(() => idea
         && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active)
-        && (isUserSignedIn && user?.id === idea.ownerId),
-        [idea])
+        && (isUserVerified && user?.id === idea.ownerId),
+        [idea, isUserVerified, user])
 
     return canConvertToProposal ? <Container title={t('idea.convertToProposal.title')}>
             {idea &&
