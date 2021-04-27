@@ -5,21 +5,21 @@ import {Repository} from "typeorm";
 import {SessionUser} from "../../auth/session/session.decorator";
 import {IdeasService} from "../ideas.service";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
-import {IdeaMilestoneNetworkDto} from "./dto/ideaMilestoneNetworkDto";
-import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
-import {IdeaMilestone} from "./entities/idea.milestone.entity";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
+import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
+import {IdeaMilestoneNetworkDto} from "./dto/ideaMilestoneNetworkDto";
+import {IdeaMilestone} from "./entities/idea.milestone.entity";
 import {IdeaMilestoneStatus} from "./ideaMilestoneStatus";
 
 @Injectable()
 export class IdeaMilestonesService {
 
     constructor(
-        private readonly ideasService: IdeasService,
         @InjectRepository(IdeaMilestone)
         private readonly ideaMilestoneRepository: Repository<IdeaMilestone>,
         @InjectRepository(IdeaMilestoneNetwork)
-        private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>
+        private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
+        private readonly ideasService: IdeasService
     ) {
     }
 
