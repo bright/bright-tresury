@@ -91,9 +91,6 @@ const Resources = {
     SubstrateWssListener: 'SubstrateWssListener',
     ECSSubstrateHttpListenerRule: 'ECSSubstrateHttpListenerRule',
     ECSSubstrateWssListenerRule: 'ECSSubstrateWssListenerRule',
-    // authorization core
-    AuthCoreHttpListener: 'AuthCoreHttpListener',
-    ECSAuthCoreHttpListenerRule: 'ECSAuthCoreHttpListenerRule',
     // ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSAppTargetGroup: 'ECSAppTargetGroup',
     // It is Substrate target group with a shorter name to match the name requirement of max 32 chars
@@ -1022,20 +1019,6 @@ export default cloudform({
         }).dependsOn(Resources.ECSServiceRole),
         // endregion
 
-        // region authorization core
-        [Resources.AuthCoreHttpListener]: new ElasticLoadBalancingV2.Listener({
-            DefaultActions: [
-                {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSAutTargetGroup)
-                }
-            ],
-            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
-            Port: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
-            Protocol: "HTTP"
-        }).dependsOn(Resources.ECSServiceRole),
-        // endregion
-
         // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
         //     Actions: [
         //         {
@@ -1111,25 +1094,6 @@ export default cloudform({
             ListenerArn: Fn.Ref(Resources.SubstrateWssListener),
             Priority: 1
         }).dependsOn(Resources.SubstrateWssListener),
-        // endregion
-
-        // region authorization core
-        [Resources.ECSAuthCoreHttpListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
-            Actions: [
-                {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
-                }
-            ],
-            Conditions: [
-                {
-                    Field: "path-pattern",
-                    Values: ["/"]
-                }
-            ],
-            ListenerArn: Fn.Ref(Resources.AuthCoreHttpListener),
-            Priority: 1
-        }).dependsOn(Resources.AuthCoreHttpListener),
         // endregion
 
         [Resources.ECSAppTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
