@@ -1,16 +1,17 @@
-import {CacheModule, Module} from "@nestjs/common";
+import {Module} from "@nestjs/common";
 import {AuthBlockchainController} from "./auth-blockchain.controller";
 import {UsersModule} from "../../users/users.module";
 import {SuperTokensModule} from "../supertokens/supertokens.module";
 import {SessionModule} from "../session/session.module";
 import {AuthBlockchainService} from "./auth-blockchain.service";
+import {CachingModule} from "../../cache/cache.module";
 
 @Module({
     imports: [
         UsersModule,
         SessionModule,
         SuperTokensModule,
-        CacheModule
+        CachingModule
     ],
     controllers: [AuthBlockchainController],
     providers: [AuthBlockchainService],
