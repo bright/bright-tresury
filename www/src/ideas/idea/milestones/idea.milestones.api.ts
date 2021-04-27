@@ -1,7 +1,5 @@
 import {apiGet, apiPatch, apiPost} from "../../../api";
 import {Nil} from "../../../util/types";
-import {ExtrinsicDetails} from "../../SubmitProposalModal";
-import {IdeaDto, IdeaNetworkDto} from "../../ideas.api";
 
 export enum IdeaMilestoneStatus {
     Active = 'active',
@@ -53,5 +51,5 @@ export function convertIdeaMilestoneToProposal(
     ideaMilestoneNetworkId: string,
     data: ConvertIdeaMilestoneToProposalDto
 ) {
-    return apiPost<IdeaMilestoneDto>(`/ideas/${ideaId}/milestones/${ideaMilestoneId}/proposals`, data)
+    return apiPost<IdeaMilestoneNetworkDto>(`/ideas/${ideaId}/milestones/${ideaMilestoneId}/proposals`, data)
 }

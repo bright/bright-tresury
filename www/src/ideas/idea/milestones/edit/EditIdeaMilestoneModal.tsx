@@ -26,7 +26,7 @@ export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseM
     }
 
     const canConvertToProposal = useMemo(() => {
-        return [IdeaStatus.Draft, IdeaStatus.Active].includes(idea.status) && ideaMilestone.status === IdeaMilestoneStatus.Active
+        return idea.status !== IdeaStatus.TurnedIntoProposal && ideaMilestone.status !== IdeaMilestoneStatus.TurnedIntoProposal
     }, [idea.status, ideaMilestone.status])
 
     return (
