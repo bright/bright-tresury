@@ -7,17 +7,20 @@ import {Repository} from "typeorm";
 import {IdeasService} from "../../ideas.service";
 import {IdeaMilestonesService} from "../idea.milestones.service";
 import {IdeaMilestoneNetwork} from "../entities/idea.milestone.network.entity";
-import {getLogger} from "../../../logging.module";
 import {ExtrinsicsService} from "../../../extrinsics/extrinsics.service";
 import {IdeaStatus} from "../../ideaStatus";
 import {IdeaMilestoneStatus} from "../ideaMilestoneStatus";
-
-const logger = getLogger()
+import {Idea} from "../../entities/idea.entity";
+import {IdeaMilestone} from "../entities/idea.milestone.entity";
 
 @Injectable()
 export class IdeaMilestoneProposalsService {
 
     constructor(
+        @InjectRepository(Idea)
+        private readonly ideaRepository: Repository<Idea>,
+        @InjectRepository(IdeaMilestone)
+        private readonly ideaMilestoneRepository: Repository<IdeaMilestone>,
         @InjectRepository(IdeaMilestoneNetwork)
         private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
         private readonly ideasService: IdeasService,
@@ -29,14 +32,10 @@ export class IdeaMilestoneProposalsService {
     async createProposal(
         ideaId: string,
         ideaMilestoneId: string,
-        createIdeaMilestoneProposalDto: CreateIdeaMilestoneProposalDto
+        { ideaMilestoneNetworkId,  extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto
     ): Promise<IdeaMilestoneNetwork> {
 
         const idea = await this.ideasService.findOne(ideaId)
-
-        if (!idea) {
-            throw new NotFoundException('Idea with the given id not found')
-        }
 
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()
@@ -48,15 +47,11 @@ export class IdeaMilestoneProposalsService {
 
         const ideaMilestone = await this.ideaMilestonesService.findOne(ideaMilestoneId)
 
-        if (!ideaMilestone) {
-            throw new NotFoundException('Idea milestone with the given id not found')
-        }
-
         if (ideaMilestone.status === IdeaMilestoneStatus.TurnedIntoProposal) {
             throw new BadRequestException('Idea milestone with the given id is already converted to proposal')
         }
 
-        const ideaMilestoneNetwork = await ideaMilestone.networks.find(({ id }) => id === createIdeaMilestoneProposalDto.ideaMilestoneNetworkId)
+        const ideaMilestoneNetwork = await ideaMilestone.networks.find(({ id }) => id === ideaMilestoneNetworkId)
 
         if (!ideaMilestoneNetwork) {
             throw new NotFoundException('Idea milestone network with the given id not found')
@@ -66,51 +61,57 @@ export class IdeaMilestoneProposalsService {
             throw new BadRequestException('Value of the idea milestone network with the given id has to be greater than zero')
         }
 
-        const callback = async (events: ExtrinsicEvent[]) => {
-            return await this.extractEvents(events, ideaId, ideaMilestoneId, ideaMilestoneNetwork.id)
+        const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
+
+            const blockchainProposalIndex = this.extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents)
+
+            if (blockchainProposalIndex) {
+                await this.convertIdeaMilestoneToProposal(idea, ideaMilestone, ideaMilestoneNetwork, blockchainProposalIndex)
+            }
         }
 
-        const extrinsic = await this.extrinsicsService.listenForExtrinsic(createIdeaMilestoneProposalDto, callback)
+        ideaMilestoneNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic({ extrinsicHash, lastBlockHash }, callback)
 
-        ideaMilestoneNetwork.extrinsic = extrinsic
-
-        await this.ideaMilestoneNetworkRepository.save({
-            id: ideaMilestoneNetwork.id,
-            extrinsic
-        })
+        await this.ideaMilestoneNetworkRepository.save(ideaMilestoneNetwork)
 
         return ideaMilestoneNetwork
     }
 
-    async extractEvents(
-        events: ExtrinsicEvent[],
-        ideaId: string,
-        ideaMilestoneId: string,
-        ideaMilestoneNetworkId: string
-    ): Promise<void> {
+    extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
+        const event = extrinsicEvents.find(({ section, method }) => section === 'treasury' && method === 'Proposed')
 
-        logger.info('Extracting events for section: treasury, method: Proposed')
-
-        const proposedEvent = events.find(({ section, method }) => section === 'treasury' && method === 'Proposed')
-
-        if (proposedEvent) {
-
-            logger.info('Event found')
-            logger.info(proposedEvent)
-
-            const proposalIndex = Number(proposedEvent?.data.find(({ name }) => name === 'ProposalIndex')?.value)
-
-            logger.info(`Proposal index is ${proposalIndex}`)
+        if (event) {
+            const proposalIndex = Number(event?.data.find(({ name }) => name === 'ProposalIndex')?.value)
 
             if (!isNaN(proposalIndex)) {
-                await this.ideaMilestonesService.convertIdeaMilestoneToProposal(ideaId, ideaMilestoneId, ideaMilestoneNetworkId, proposalIndex)
-                return
+                return proposalIndex
             }
-
-        } else {
-            logger.warn('Event not found')
         }
 
         return
     }
+
+    private async convertIdeaMilestoneToProposal(
+        idea: Idea,
+        ideaMilestone: IdeaMilestone,
+        ideaMilestoneNetwork: IdeaMilestoneNetwork,
+        blockchainProposalIndex: number
+    ): Promise<void> {
+
+        await this.ideaRepository.save({
+            ...idea,
+            status: IdeaStatus.TurnedIntoProposalByMilestone
+        })
+
+        await this.ideaMilestoneRepository.save({
+            ...ideaMilestone,
+            status: IdeaMilestoneStatus.TurnedIntoProposal
+        })
+
+        await this.ideaMilestoneNetworkRepository.save({
+            ...ideaMilestoneNetwork,
+            blockchainProposalId: blockchainProposalIndex
+        })
+    }
+
 }

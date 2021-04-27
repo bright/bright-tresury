@@ -1,5 +1,5 @@
 import {Body, Controller, HttpCode, HttpStatus, Param, Post} from '@nestjs/common';
-import {ApiAcceptedResponse, ApiNotFoundResponse, ApiParam, ApiTags} from "@nestjs/swagger";
+import {ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags} from "@nestjs/swagger";
 import {IdeaMilestoneProposalsService} from "./idea.milestone.proposals.service";
 import {CreateIdeaMilestoneProposalDto} from "./dto/CreateIdeaMilestoneProposalDto";
 import {
@@ -17,7 +17,6 @@ export class IdeaMilestoneProposalsController {
     }
 
     @Post()
-    @HttpCode(HttpStatus.ACCEPTED)
     @ApiParam({
         name: 'ideaId',
         description: 'Idea id',
@@ -26,13 +25,22 @@ export class IdeaMilestoneProposalsController {
         name: 'ideaMilestoneId',
         description: 'Idea milestone id',
     })
+    @HttpCode(HttpStatus.ACCEPTED)
     @ApiAcceptedResponse({
         description: 'Accepted to find a proposal extrinsic and create an entry.'
     })
     @ApiNotFoundResponse({
         description: 'Idea/Idea milestone/Idea milestone network not found'
     })
-    async createProposal(
+    @ApiBadRequestResponse({
+        description: `
+            Idea with the given id is already converted to proposal or
+            Beneficiary of the idea with the given id is not given or
+            Idea milestone with the given id is already converted to proposal or
+            Value of the idea milestone network with the given id is not greater than zero
+        `
+    })
+    async create(
         @Param('ideaId') ideaId: string,
         @Param('ideaMilestoneId') ideaMilestoneId: string,
         @Body() createIdeaMilestoneProposalDto: CreateIdeaMilestoneProposalDto
