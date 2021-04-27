@@ -660,7 +660,7 @@ export default cloudform({
                             "ses:SendEmail",
                             "ses:SendRawEmail"
                         ],
-                        Resource: Fn.Join('', ['arn:aws:ses:eu-west-1:', Refs.AccountId, ':*'])
+                        Resource: Fn.Join('', ['arn:aws:ses:eu-central-1:', Refs.AccountId, ':*'])
                     }
                 ]
             }
