@@ -516,13 +516,13 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
 
-        it('should return unauthorized for idea created by other user', async (done) => {
+        it('should return not found for idea created by other user', async (done) => {
             const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title'}, otherUser)
             await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'}))
-                .expect(HttpStatus.UNAUTHORIZED)
+                .expect(HttpStatus.NOT_FOUND)
             done()
         })
 
@@ -581,12 +581,12 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
 
-        it('should return unauthorized for idea created by other user', async (done) => {
+        it('should return not found for idea created by other user', async (done) => {
             const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title'}, otherUser)
             await sessionHandler.authorizeRequest(request(app())
                 .delete(`${baseUrl}/${idea.id}`))
-                .expect(HttpStatus.UNAUTHORIZED)
+                .expect(HttpStatus.NOT_FOUND)
             done()
         })
     })

@@ -419,7 +419,7 @@ describe(`/api/v1/ideas`, () => {
                 .rejects
                 .toThrow(EmptyBeneficiaryException)
         })
-        it('should throw unauthorized exception when trying to turn not own idea', async (done) => {
+        it('should throw not found exception when trying to turn not own idea', async (done) => {
             const createdIdea = await getService().create({
                 title: 'Test title',
                 beneficiary: uuid(),
@@ -431,7 +431,7 @@ describe(`/api/v1/ideas`, () => {
 
             await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, otherUser))
                 .rejects
-                .toThrow(UnauthorizedException)
+                .toThrow(NotFoundException)
             done()
         })
     })

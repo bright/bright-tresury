@@ -86,9 +86,8 @@ export class IdeasService {
 
     async update(updateIdea: UpdateIdeaDto, id: string, user: SessionUser): Promise<Idea> {
         const currentIdea = await this.findOne(id, user)
-        if (currentIdea.ownerId !== user.user.id) {
-            throw new UnauthorizedException()
-        }
+        currentIdea.canEditOrThrow(user.user)
+        
         await this.ideaRepository.save({
             ...currentIdea,
             ...updateIdea,
@@ -133,17 +132,14 @@ export class IdeasService {
 
     async delete(id: string, user: SessionUser) {
         const currentIdea = await this.findOne(id, user)
-        if (currentIdea.ownerId !== user.user.id) {
-            throw new UnauthorizedException()
-        }
+        currentIdea.canEditOrThrow(user.user)
+
         await this.ideaRepository.remove(currentIdea)
     }
 
     async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number, user: SessionUser) {
         const idea = await this.findOneByNetworkId(networkId)
-        if (idea.ownerId !== user.user.id) {
-            throw new UnauthorizedException()
-        }
+        idea.canEditOrThrow(user.user)
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()
         }
