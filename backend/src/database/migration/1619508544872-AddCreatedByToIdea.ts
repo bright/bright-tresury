@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class AddCreatedByToIdea1615651917366 implements MigrationInterface {
+export class AddCreatedByToIdea1619508544872 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`

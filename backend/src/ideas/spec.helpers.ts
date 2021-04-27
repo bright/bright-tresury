@@ -28,10 +28,11 @@ export async function createIdea(idea: Partial<CreateIdeaDto>, sessionUser: Sess
 export async function createIdeaMilestone(
     ideaId: string,
     createIdeaMilestoneDto: CreateIdeaMilestoneDto,
+    sessionUser: SessionUser,
     ideaMilestonesService?: IdeaMilestonesService
 ): Promise<IdeaMilestone> {
     const service: IdeaMilestonesService = ideaMilestonesService ?? beforeSetupFullApp().get().get(IdeaMilestonesService)
-    return await service.create(ideaId, createIdeaMilestoneDto)
+    return await service.create(ideaId, createIdeaMilestoneDto, sessionUser)
 }
 
 export async function createSessionUser(user: Partial<User> = {}, usersRepository?: Repository<User>): Promise<SessionUser> {

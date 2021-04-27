@@ -78,7 +78,7 @@ describe(`Auth Controller`, () => {
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )
-            const sessionData = await session.getSessionData() as SessionUser
+            const sessionData = await session?.getSessionData() as SessionUser
             expect(sessionData.blockchainToken).toStrictEqual(token)
         })
     })
@@ -129,7 +129,7 @@ describe(`Auth Controller`, () => {
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )
-            const sessionData = await session.getSessionData()
+            const sessionData = await session?.getSessionData()
 
             const user = await getUsersService().findOneByUsername(bobUsername)
             expect(sessionData.user.id).toBe(user.id)

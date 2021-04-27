@@ -1,10 +1,11 @@
+import {NotFoundException} from "@nestjs/common";
 import {Column, Entity, Generated, ManyToOne, OneToMany} from "typeorm";
-import {BaseEntity} from "../../database/base.entity";
-import {User} from "../users/user.entity";
-import {IdeaNetwork} from "./ideaNetwork.entity";
 import {v4 as uuid} from 'uuid';
-import {DefaultIdeaStatus, IdeaStatus} from "../ideaStatus";
+import {BaseEntity} from "../../database/base.entity";
+import {User} from "../../users/user.entity";
 import {IdeaMilestone} from "../ideaMilestones/entities/idea.milestone.entity";
+import {DefaultIdeaStatus, IdeaStatus} from "../ideaStatus";
+import {IdeaNetwork} from "./ideaNetwork.entity";
 
 export const ideaRestrictions = {
     field: {
@@ -103,5 +104,25 @@ export class Idea extends BaseEntity {
         this.links = links
         this.id = id ?? uuid()
         this.owner = owner
+    }
+
+    canEdit = (user: User) => {
+        return this.ownerId === user.id
+    }
+
+    canEditOrThrow = (user: User) => {
+        if (!this.canEdit(user)) {
+            throw new NotFoundException('Idea milestone with the given id not found')
+        }
+    }
+
+    canGet = (user: User) => {
+        return this.status !== IdeaStatus.Draft || this.ownerId === user.id
+    }
+
+    canGetOrThrow = (user: User) => {
+        if (!this.canGet(user)) {
+            throw new NotFoundException('Idea milestone with the given id not found')
+        }
     }
 }

@@ -1,16 +1,11 @@
-import {Body, Controller, Get, Param, Patch, Post} from '@nestjs/common';
-import {
-    ApiBadRequestResponse,
-    ApiCreatedResponse,
-    ApiNotFoundResponse,
-    ApiOkResponse,
-    ApiParam,
-    ApiTags
-} from "@nestjs/swagger";
-import {IdeaMilestonesService} from "./idea.milestones.service";
+import {Body, Controller, Get, Param, Patch, Post, UseGuards} from '@nestjs/common';
+import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags} from "@nestjs/swagger";
+import {SessionGuard} from "../../auth/session/guard/session.guard";
+import {ReqSession, SessionUser} from "../../auth/session/session.decorator";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {IdeaMilestoneDto, mapIdeaMilestoneEntityToIdeaMilestoneDto} from "./dto/ideaMilestoneDto";
 import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
+import {IdeaMilestonesService} from "./idea.milestones.service";
 
 @Controller('/v1/ideas/:ideaId/milestones')
 @ApiTags('ideas.milestones')
@@ -30,8 +25,8 @@ export class IdeaMilestonesController {
     @ApiNotFoundResponse({
         description: 'Idea with the given id not found.',
     })
-    async getAll(@Param('ideaId') ideaId: string): Promise<IdeaMilestoneDto[]> {
-        const ideaMilestones = await this.ideaMilestonesService.find(ideaId)
+    async getAll(@Param('ideaId') ideaId: string, @ReqSession() session: SessionUser): Promise<IdeaMilestoneDto[]> {
+        const ideaMilestones = await this.ideaMilestonesService.find(ideaId, session)
         return ideaMilestones.map((ideaMilestone) => mapIdeaMilestoneEntityToIdeaMilestoneDto(ideaMilestone))
     }
 
@@ -50,8 +45,11 @@ export class IdeaMilestonesController {
     @ApiBadRequestResponse({
         description: 'End date of the milestone cannot be prior to the start date'
     })
-    async create(@Param('ideaId') ideaId: string, @Body() createIdeaMilestoneDto: CreateIdeaMilestoneDto): Promise<IdeaMilestoneDto> {
-        const ideaMilestone = await this.ideaMilestonesService.create(ideaId, createIdeaMilestoneDto)
+    @UseGuards(SessionGuard)
+    async create(@Param('ideaId') ideaId: string,
+                 @Body() createIdeaMilestoneDto: CreateIdeaMilestoneDto,
+                 @ReqSession() session: SessionUser): Promise<IdeaMilestoneDto> {
+        const ideaMilestone = await this.ideaMilestonesService.create(ideaId, createIdeaMilestoneDto, session)
         return mapIdeaMilestoneEntityToIdeaMilestoneDto(ideaMilestone)
     }
 
@@ -74,8 +72,11 @@ export class IdeaMilestonesController {
     @ApiBadRequestResponse({
         description: 'End date of the milestone cannot be prior to the start date'
     })
-    async update(@Param('ideaMilestoneId') ideaMilestoneId: string, @Body() updateIdeaMilestoneDto: UpdateIdeaMilestoneDto) {
-        const updatedIdeaMilestone = await this.ideaMilestonesService.update(ideaMilestoneId, updateIdeaMilestoneDto)
+    @UseGuards(SessionGuard)
+    async update(@Param('ideaMilestoneId') ideaMilestoneId: string,
+                 @Body() updateIdeaMilestoneDto: UpdateIdeaMilestoneDto,
+                 @ReqSession() session: SessionUser) {
+        const updatedIdeaMilestone = await this.ideaMilestonesService.update(ideaMilestoneId, updateIdeaMilestoneDto, session)
         return mapIdeaMilestoneEntityToIdeaMilestoneDto(updatedIdeaMilestone)
     }
 

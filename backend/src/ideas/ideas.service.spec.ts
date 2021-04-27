@@ -6,8 +6,8 @@ import {cleanAuthorizationDatabase} from "../auth/supertokens/specHelpers/supert
 import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
+import {Idea} from "./entities/idea.entity";
 import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
-import {Idea} from './idea.entity';
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
