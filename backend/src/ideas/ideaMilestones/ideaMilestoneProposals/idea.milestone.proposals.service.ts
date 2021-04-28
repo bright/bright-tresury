@@ -92,24 +92,24 @@ export class IdeaMilestoneProposalsService {
     }
 
     private async convertIdeaMilestoneToProposal(
-        idea: Idea,
-        ideaMilestone: IdeaMilestone,
-        ideaMilestoneNetwork: IdeaMilestoneNetwork,
+        validIdea: Idea,
+        validIdeaMilestone: IdeaMilestone,
+        validIdeaMilestoneNetwork: IdeaMilestoneNetwork,
         blockchainProposalIndex: number
     ): Promise<void> {
 
         await this.ideaRepository.save({
-            ...idea,
+            ...validIdea,
             status: IdeaStatus.TurnedIntoProposalByMilestone
         })
 
         await this.ideaMilestoneRepository.save({
-            ...ideaMilestone,
+            ...validIdeaMilestone,
             status: IdeaMilestoneStatus.TurnedIntoProposal
         })
 
         await this.ideaMilestoneNetworkRepository.save({
-            ...ideaMilestoneNetwork,
+            ...validIdeaMilestoneNetwork,
             blockchainProposalId: blockchainProposalIndex
         })
     }
