@@ -24,3 +24,6 @@ export const ROUTE_SIGNUP = '/auth/signup'
 export const ROUTE_SIGNIN = '/auth/signin'
 export const ROUTE_VERIFY_EMAIL = '/auth/verify-email'
 // endregion
+// region Account
+export const ROUTE_ACCOUNT = '/account'
+// endregion

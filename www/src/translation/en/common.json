@@ -44,6 +44,16 @@
     "whatForLabel": "What is Treasury app for?",
     "learnMoreLabel": "Learn more"
   },
+  "account": {
+    "title": "Account",
+    "regularUser": {
+      "username": "Username",
+      "login": "Login",
+      "resetPassword": "ResetPassword"
+    },
+    "blockchainUser": {
+    }
+  },
   "auth": {
     "passwordShow": "Show password button",
     "passwordHide": "Hide password button",

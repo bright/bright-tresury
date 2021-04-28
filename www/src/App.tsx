@@ -3,6 +3,7 @@ import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
+import Account from "./auth/account/Account";
 import {AuthContextProvider} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
 import VerifyEmail from "./auth/sign-in/VerifyEmail";
@@ -17,6 +18,7 @@ import Proposals from './proposals/Proposals';
 import PrivateRoute from "./routes/PrivateRoute";
 import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 import {
+    ROUTE_ACCOUNT,
     ROUTE_CONVERT_IDEA,
     ROUTE_EDIT_IDEA,
     ROUTE_IDEA,
@@ -67,6 +69,7 @@ function AppRoutes() {
                     <PrivateRoute exact={true} path={ROUTE_CONVERT_IDEA} component={ConvertIdeaToProposal}/>
                     <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
                     <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
+                    <Route exact={false} path={ROUTE_ACCOUNT} component={Account}/>
                 </Switch>
             </Main>
         </Router>
