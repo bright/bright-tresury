@@ -23,7 +23,10 @@ const useStyles = makeStyles((theme: Theme) => {
                 background: theme.palette.background.default,
             },
             paper: {
-                paddingBottom: desktopTopBarHeight
+                paddingBottom: desktopTopBarHeight,
+                [theme.breakpoints.down(breakpoints.tablet)]: {
+                    paddingBottom: tabletTopBarHeight
+                },
             },
             drawerIcon: {
                 marginTop: '1em'
