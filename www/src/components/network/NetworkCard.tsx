@@ -29,9 +29,12 @@ export const NetworkCard = (
     const classes = useStyles()
 
     const cardContent = (
-        <div className={classes.cardContent}>
-            {children}
-        </div>
+        <>
+            <div className={classes.networkAccentLine} />
+            <div className={classes.cardContent}>
+                {children}
+            </div>
+        </>
     )
 
     return (
@@ -39,13 +42,11 @@ export const NetworkCard = (
             { redirectTo
                 ? (
                     <LinkCard {...props} redirectTo={redirectTo}>
-                        <div className={classes.networkAccentLine} />
                         {cardContent}
                     </LinkCard>
                 )
                 : (
                     <Card {...props}>
-                        <div className={classes.networkAccentLine} />
                         {cardContent}
                     </Card>
                 )
