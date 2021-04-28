@@ -74,8 +74,7 @@ export class SuperTokensService {
             return false
         }
         try {
-            const result = await superTokensIsEmailVerified(user.authId, user.email)
-            return result
+            return superTokensIsEmailVerified(user.authId, user.email)
         } catch (err) {
             getLogger().info(err)
         }
@@ -110,7 +109,7 @@ export class SuperTokensService {
         await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
     }
 
-    getEmailForUserId = async (userId: string): Promise<string> => {
+    getEmailOrIdForUserId = async (userId: string): Promise<string> => {
         const user = await getUserById(userId)
         return user?.email ?? userId
     }

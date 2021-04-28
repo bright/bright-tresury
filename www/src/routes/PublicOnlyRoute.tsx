@@ -3,9 +3,9 @@ import {Redirect, Route, RouteProps} from "react-router-dom";
 import {useAuth} from "../auth/AuthContext";
 import {ROUTE_ROOT} from "./routes";
 
-type PublicOnlyRoute = RouteProps
+export type PublicOnlyRouteProps = RouteProps
 
-const PublicOnlyRoute: React.FC<PublicOnlyRoute> = ({ component: Component, ...props}) => {
+const PublicOnlyRoute = ({ component: Component, ...props}: PublicOnlyRouteProps) => {
     const {isUserSignedIn} = useAuth()
 
     if (isUserSignedIn) {

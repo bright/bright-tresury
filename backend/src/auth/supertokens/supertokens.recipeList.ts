@@ -32,6 +32,6 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
     To enable api endpoints for email verification, it is enough to configure emailVerificationFeature in EmailPassword recipe
      */
     EmailVerification.init({
-        getEmailForUserId: superTokensService.getEmailForUserId
+        getEmailForUserId: superTokensService.getEmailOrIdForUserId
     }),
 ]
