@@ -13,6 +13,9 @@ export const desktopTopBarHeight = '68px'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            position: 'fixed',
+            top: '0',
+            overflow: 'hidden',
             width: '100%',
             height: desktopTopBarHeight,
             [theme.breakpoints.down(breakpoints.tablet)]: {
@@ -23,6 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            zIndex: 1
         }
     }),
 );

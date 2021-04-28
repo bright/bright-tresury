@@ -20,7 +20,10 @@ const useStyles = makeStyles((theme: Theme) => {
                 [theme.breakpoints.down(breakpoints.tablet)]: {
                     marginTop: tabletTopBarHeight
                 },
-                background: theme.palette.background.default
+                background: theme.palette.background.default,
+            },
+            paper: {
+                paddingBottom: desktopTopBarHeight
             },
             drawerIcon: {
                 marginTop: '1em'
@@ -62,7 +65,7 @@ const MenuDrawer: React.FC<WithWidthProps> = ({width}) => {
             [classes.drawerClose]: !open
         })}
         classes={{
-            paper: clsx(classes.root, {
+            paper: clsx(classes.root, classes.paper, {
                 [classes.drawerOpen]: open,
                 [classes.drawerClose]: !open
             })

@@ -14,7 +14,6 @@ import {IdeaMilestones} from "./milestones/IdeaMilestones";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            height: '100vh',
             width: '100%',
             backgroundColor: theme.palette.background.paper
         },

@@ -11,8 +11,6 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
         marginTop: 32,
         marginBottom: 32,
         padding: '32px 32px 0 32px',
-        position: 'absolute',
-        bottom: 0,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'

@@ -1,3 +1,4 @@
+import {createStyles, makeStyles} from "@material-ui/core/styles";
 import i18next from "i18next";
 import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
@@ -34,12 +35,23 @@ import {initializeSupertokens} from "./supertokens";
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
 
+const useStyles = makeStyles(() =>
+    createStyles({
+        root: {
+            width: '100%',
+            height: '100vh',
+        },
+    }))
+
 function AppRoutes() {
+    const classes = useStyles()
+    const {isUserSignedIn} = useAuth()
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
 
     return (
+        <div className={classes.root}>
         <Router>
             <Main>
                 <Switch>
@@ -59,6 +71,7 @@ function AppRoutes() {
                 </Switch>
             </Main>
         </Router>
+        </div>
     )
 }
 
