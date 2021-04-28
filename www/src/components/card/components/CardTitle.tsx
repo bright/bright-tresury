@@ -1,8 +1,8 @@
 import React from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
-import {Placeholder} from "../text/Placeholder";
 import {useTranslation} from "react-i18next";
+import {breakpoints} from "../../../theme/theme";
+import {Placeholder} from "../../text/Placeholder";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,11 +33,19 @@ interface Props {
     title?: string
 }
 
-export const NetworkCardTitle: React.FC<Props> = ({title}) => {
-    const classes = useStyles()
-    const {t} = useTranslation()
+export const CardTitle = ({ title }: Props) => {
 
-    return <p className={classes.root}>
-        {title || <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')}/>}
-    </p>
+    const classes = useStyles()
+    const { t } = useTranslation()
+
+    return (
+        <p className={classes.root}>
+            { title
+                ? title
+                : (
+                    <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')} />
+                )
+            }
+        </p>
+    )
 }

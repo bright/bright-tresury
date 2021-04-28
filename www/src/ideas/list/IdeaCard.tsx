@@ -9,10 +9,10 @@ import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
 import {NetworkCard} from "../../components/network/NetworkCard";
 import {AddressInfo} from "../../components/identicon/AddressInfo";
 import {NetworkValue} from "../../components/network/NetworkValue";
-import {NetworkCardTitle} from "../../components/network/NetworkCardTitle";
 import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
 import {CardHeader} from "../../components/card/components/CardHeader";
 import {CardDetails} from "../../components/card/components/CardDetails";
+import {CardTitle} from "../../components/card/components/CardTitle";
 
 interface Props {
     idea: IdeaDto
@@ -33,7 +33,7 @@ export const IdeaCard = ({ idea }: Props) => {
             <Divider/>
 
             <CardDetails>
-                <NetworkCardTitle title={idea.title} />
+                <CardTitle title={idea.title} />
                 { idea.networks.length > 0
                     ? <NetworkValue value={idea.networks[0].value} />
                     : null

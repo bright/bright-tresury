@@ -4,13 +4,13 @@ import {makeStyles} from "@material-ui/core/styles";
 import {createStyles} from "@material-ui/core";
 import {Divider} from "../../../../components/divider/Divider";
 import {IdeaMilestoneOrdinalNumber} from "./IdeaMilestoneOrdinalNumber";
-import {NetworkCardTitle} from "../../../../components/network/NetworkCardTitle";
 import {NetworkValue} from "../../../../components/network/NetworkValue";
 import {IdeaMilestoneDescription} from "./IdeaMilestoneDescription";
 import {IdeaMilestoneDateRange} from "./IdeaMilestoneDateRange";
 import {Card} from "../../../../components/card/Card";
 import {CardDetails} from "../../../../components/card/components/CardDetails";
 import {CardHeader} from "../../../../components/card/components/CardHeader";
+import {CardTitle} from "../../../../components/card/components/CardTitle";
 
 const useStyles = makeStyles(() => createStyles({
     cardContent: {
@@ -44,7 +44,7 @@ export const IdeaMilestoneCard = ({ ideaMilestone, onClick }: Props) => {
                 <Divider />
 
                 <CardDetails>
-                    <NetworkCardTitle title={ideaMilestone.subject} />
+                    <CardTitle title={ideaMilestone.subject} />
                     { ideaMilestone.networks && ideaMilestone.networks.length > 0
                         ? <NetworkValue value={ideaMilestone.networks[0].value} />
                         : null
