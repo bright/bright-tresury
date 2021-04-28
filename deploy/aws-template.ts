@@ -95,8 +95,6 @@ const Resources = {
     ECSAppTargetGroup: 'ECSAppTargetGroup',
     // It is Substrate target group with a shorter name to match the name requirement of max 32 chars
     ECSSubTargetGroup: 'ECSSubTargetGroup',
-    // It is AuthCore target group with a shorter name to match the name requirement of max 32 chars
-    ECSAutTargetGroup: 'ECSAutTargetGroup',
     ECSAutoScalingGroup: 'ECSAutoScalingGroup',
     ECSServiceRole: 'ECSServiceRole',
 
@@ -1162,38 +1160,6 @@ export default cloudform({
             VpcId: Fn.Ref(Resources.VPC)
         }).dependsOn(Resources.ECSALB),
 
-        [Resources.ECSAutTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
-            HealthCheckIntervalSeconds: 20,
-            HealthCheckPath: "/hello",
-            HealthCheckProtocol: "HTTP",
-            HealthCheckPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
-            HealthCheckTimeoutSeconds: 10,
-            HealthyThresholdCount: 2,
-            Name: Fn.Join('-', [Resources.ECSAutTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
-            Port: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
-            Protocol: "HTTP",
-            TargetGroupAttributes: [
-                {
-                    Key: "deregistration_delay.timeout_seconds",
-                    Value: "30"
-                },
-                {
-                    Key: "stickiness.enabled",
-                    Value: "true"
-                },
-                {
-                    Key: "stickiness.type",
-                    Value: "lb_cookie"
-                },
-                {
-                    Value: "86400",
-                    Key: "stickiness.lb_cookie.duration_seconds"
-                }
-            ],
-            UnhealthyThresholdCount: 5,
-            VpcId: Fn.Ref(Resources.VPC)
-        }).dependsOn(Resources.ECSALB),
-
         [Resources.ECSAutoScalingGroup]: new AutoScaling.AutoScalingGroup({
             VPCZoneIdentifier: [
                 Fn.Ref(Resources.PrivateASubnet),
@@ -1253,11 +1219,6 @@ export default cloudform({
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
                     ContainerPort: 9944,
                     TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
-                },
-                {
-                    ContainerName: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
-                    ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
-                    TargetGroupArn: Fn.Ref(Resources.ECSAutTargetGroup)
                 }
             ],
             DeploymentConfiguration: {
