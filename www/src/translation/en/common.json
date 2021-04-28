@@ -121,6 +121,7 @@
     }
   },
   "idea": {
+    "ordinalNumberPrefix": "Idea - ",
     "details": {
       "title": "Title",
       "beneficiary": "Beneficiary",
@@ -172,7 +173,6 @@
     "list": {
       "card": {
         "statusDraft": "Draft",
-        "ideaNumber": "Idea - <strong>{{ordinalNumber}}</strong>",
         "statusActive": "Active",
         "statusTurnedIntoProposal": "Turned into Proposal",
         "statusClosed": "Closed",
@@ -189,6 +189,7 @@
     },
     "milestones": {
       "createMilestone": "+ Create Milestone",
+      "ordinalNumberPrefix": "Milestone - ",
       "emptyMilestonesArrayInfo": "Please add milestones for this idea, milestones will allow our community appereciate the idea more and understand it better",
       "modal": {
         "milestone": "Milestone",
@@ -215,7 +216,6 @@
       },
       "list": {
         "card": {
-          "ordinalNumber": "Milestone - ",
           "noDescriptionProvided": "No description provided"
         }
       }

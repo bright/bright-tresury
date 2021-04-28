@@ -1,17 +1,13 @@
 import React from "react";
-import {useTranslation} from "react-i18next";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
-import {Theme} from "@material-ui/core";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             paddingRight: '10px',
             whiteSpace: 'nowrap',
-            color: theme.palette.text.disabled
         },
         ordinalNumber: {
-            color: '#1B1D1C',
             fontSize: '16px',
             fontWeight: 700
         }
@@ -19,17 +15,17 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface Props {
+    prefix: string
     ordinalNumber: number
 }
 
-export const IdeaMilestoneOrdinalNumber = ({ ordinalNumber }: Props) => {
+export const OrdinalNumber = ({ prefix, ordinalNumber }: Props) => {
 
     const classes = useStyles()
-    const { t } = useTranslation()
 
     return (
         <div className={classes.root}>
-            {t('idea.milestones.list.card.ordinalNumber')}
+            {prefix}
             <span className={classes.ordinalNumber}>
                 {ordinalNumber}
             </span>

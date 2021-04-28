@@ -17,9 +17,9 @@ import {OptionalTitle} from "../../components/text/OptionalTitle";
 import {ROUTE_CONVERT_IDEA, ROUTE_IDEAS} from "../../routes";
 import {breakpoints} from "../../theme/theme";
 import {IdeaDto, IdeaStatus} from "../ideas.api";
-import {IdeaOrdinalNumber} from "../list/IdeaOrdinalNumber";
 import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "./status/IdeaStatusIndicator";
+import {OrdinalNumber} from "../../components/ordinalNumber/OrdinalNumber";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -103,7 +103,7 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
     return <HeaderContainer>
         <CloseIcon onClose={navigateToList} className={classes.closeIcon}/>
         <BasicInfo>
-            <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber}/>
+            <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
             <BasicInfoDivider/>
             <Status>
                 <IdeaStatusIndicator ideaStatus={idea.status}/>

@@ -9,10 +9,10 @@ import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
 import {NetworkCard} from "../../components/network/NetworkCard";
 import {AddressInfo} from "../../components/identicon/AddressInfo";
 import {NetworkValue} from "../../components/network/NetworkValue";
-import {IdeaOrdinalNumber} from "./IdeaOrdinalNumber";
 import {CardHeader} from "../../components/card/components/CardHeader";
 import {CardDetails} from "../../components/card/components/CardDetails";
 import {CardTitle} from "../../components/card/components/CardTitle";
+import {OrdinalNumber} from "../../components/ordinalNumber/OrdinalNumber";
 
 interface Props {
     idea: IdeaDto
@@ -26,7 +26,7 @@ export const IdeaCard = ({ idea }: Props) => {
         <NetworkCard redirectTo={`${generatePath(ROUTE_IDEA, {ideaId: idea.id})}/${IdeaContentType.Info}`}>
 
             <CardHeader>
-                <IdeaOrdinalNumber ordinalNumber={idea.ordinalNumber} />
+                <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
                 <IdeaStatusIndicator ideaStatus={idea.status} />
             </CardHeader>
 
