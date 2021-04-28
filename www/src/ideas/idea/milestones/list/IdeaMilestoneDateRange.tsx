@@ -23,6 +23,8 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
     }
 }))
 
+const DIFFERENCE_IN_DAYS_WHEN_ONLY_ONE_DATE_SPECIFIED: number = 1
+
 interface Props {
     dateFrom: Nil<Date>
     dateTo: Nil<Date>
@@ -55,7 +57,7 @@ export const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: Props) => {
                 </span>
                 <span className={classes.separator}>|</span>
                 <span className={classes.difference}>
-                    <IdeaMilestoneDateRangeDifference differenceBetweenDatesInDays={1} />
+                    <IdeaMilestoneDateRangeDifference differenceBetweenDatesInDays={DIFFERENCE_IN_DAYS_WHEN_ONLY_ONE_DATE_SPECIFIED} />
                 </span>
             </div>
         )
