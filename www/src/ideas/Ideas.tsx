@@ -5,7 +5,7 @@ import {IdeaDefaultFilter, IdeaFilter, IdeaFilterSearchParamName} from "./list/I
 import config from '../config';
 import {filterIdeas} from "./list/filterIdeas";
 import IdeasHeader from "./IdeasHeader";
-import IdeasList from "./list/IdeasList";
+import {IdeasList} from "./list/IdeasList";
 import {LoadingWrapper, useLoading} from "../components/loading/LoadingWrapper";
 
 interface Props {
