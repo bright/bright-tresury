@@ -12,6 +12,9 @@ import {IdeaStatus} from "../../ideaStatus";
 import {IdeaMilestoneStatus} from "../ideaMilestoneStatus";
 import {Idea} from "../../entities/idea.entity";
 import {IdeaMilestone} from "../entities/idea.milestone.entity";
+import {getLogger} from "../../../logging.module";
+
+const logger = getLogger()
 
 @Injectable()
 export class IdeaMilestoneProposalsService {
@@ -78,15 +81,28 @@ export class IdeaMilestoneProposalsService {
     }
 
     extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
+
+        logger.info('Looking for a blockchain proposal index after convert idea milestone to proposal')
+        logger.info('Extracting event from extrinsicEvents with section: treasury, method: Proposed')
+
         const event = extrinsicEvents.find(({ section, method }) => section === 'treasury' && method === 'Proposed')
 
         if (event) {
+
+            logger.info('Event found')
+
             const proposalIndex = Number(event?.data.find(({ name }) => name === 'ProposalIndex')?.value)
+
+            logger.info(`Found blockchain proposal index: ${proposalIndex}`)
 
             if (!isNaN(proposalIndex)) {
                 return proposalIndex
             }
+
+            logger.info('Found blockchain proposal index is NaN')
         }
+
+        logger.info('Event not found')
 
         return
     }
