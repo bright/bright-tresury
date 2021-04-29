@@ -10,7 +10,9 @@ import {BlockchainUserSignUpDto} from "../../blockchainUserSignUp.dto";
 import {SessionData} from "../../session/session.decorator";
 
 export class SessionHandler {
+
     readonly sessionData: SessionData
+
     private readonly cookies: string
 
     constructor(cookies: string, user: User) {

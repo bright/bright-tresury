@@ -6,7 +6,6 @@ import {cleanAuthorizationDatabase} from "../auth/supertokens/specHelpers/supert
 import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
-import {Idea} from "./entities/idea.entity";
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
@@ -16,7 +15,6 @@ describe(`IdeasService`, () => {
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(IdeasService)
-    const getIdeasRepository = () => app.get().get(getRepositoryToken(Idea))
     const getIdeaNetworkRepository = () => app.get().get(getRepositoryToken(IdeaNetwork))
 
     let sessionData: SessionData
@@ -377,6 +375,7 @@ describe(`IdeasService`, () => {
                 networks: [{name: 'kusama', value: 44}],
                 status: IdeaStatus.Active
             }, sessionData)
+
             const otherUser = await createSessionData({username: 'otherUser', email: 'other@email.com'})
 
             await expect(getService().update({status: IdeaStatus.Active}, idea.id, otherUser))
@@ -405,6 +404,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {title: 'Test title', networks: [{name: 'kusama', value: 42}], status: IdeaStatus.Active},
                 sessionData)
+
             const otherUser = await createSessionData({username: 'otherUser', email: 'other@email.com'})
 
             await expect(getService().delete(createdIdea.id, otherUser))

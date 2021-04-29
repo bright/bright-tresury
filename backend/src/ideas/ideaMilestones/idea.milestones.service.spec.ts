@@ -17,13 +17,16 @@ describe(`/api/v1/ideas`, () => {
   const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
   let idea: Idea
+
   let sessionData: SessionData
   let otherSessionData: SessionData
 
   beforeEach(async () => {
     await cleanDatabase()
+
     sessionData = await createSessionData()
     otherSessionData = await createSessionData({username: 'other', email: 'other@example.com'})
+
     idea = await createIdea({
         title: 'ideaTitle',
         networks: [{name: 'polkadot', value: 100}]

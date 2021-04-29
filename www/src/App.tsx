@@ -10,7 +10,7 @@ import VerifyEmail from "./auth/sign-in/VerifyEmail";
 import SignUp from './auth/sign-up/SignUp';
 import IdeaCreate from "./ideas/create/IdeaCreate";
 import TurnIdeaIntoProposal from './ideas/idea/turnIntoProposal/TurnIdeaIntoProposal';
-import Idea from "./ideas/idea/Idea";
+import { Idea } from "./ideas/idea/Idea";
 import Ideas from './ideas/Ideas';
 import Main from "./main/Main";
 import Proposal from "./proposals/proposal/Proposal";

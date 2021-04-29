@@ -62,7 +62,6 @@ const TurnIdeaIntoProposal = () => {
         && (isUserVerified && user?.id === idea.ownerId),
         [idea, isUserVerified, user])
 
-
     const onTurn = useCallback((extrinsicDetails: ExtrinsicDetails) => {
         if (idea) {
             turnIdeaIntoProposal(extrinsicDetails, idea, idea.networks[0])
@@ -95,7 +94,11 @@ const TurnIdeaIntoProposal = () => {
             </>
             }
         </Container> :
+<<<<<<< HEAD
+        <Container title={t('idea.turnIntoProposal.cannotTurnError')} />
+=======
         <Container title={t('idea.turnIntoProposal.cannotTurnError')}/>
+>>>>>>> cbbad66... TREAS-8 Rename all frontend components with their content to use turnXIntoProposal instead of convertXToProposal
 }
 
 export default TurnIdeaIntoProposal
