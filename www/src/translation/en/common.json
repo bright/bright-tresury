@@ -46,10 +46,11 @@
   },
   "account": {
     "title": "Account",
-    "regularUser": {
+    "emailPassword": {
       "username": "Username",
       "login": "Login",
-      "resetPassword": "ResetPassword"
+      "resetPassword": "ResetPassword",
+      "addEmailCredentials": "Add Email Credentials"
     },
     "blockchainUser": {
     }

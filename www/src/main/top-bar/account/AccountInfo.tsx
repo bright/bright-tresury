@@ -5,7 +5,7 @@ import React from 'react';
 import {useTranslation} from "react-i18next";
 import {useHistory} from "react-router-dom";
 import info from "../../../assets/info.svg";
-import {ROUTE_ACCOUNT} from "../../../routes";
+import { ROUTE_ACCOUNT } from "../../../routes/routes";
 import TopBarButton from "../TopBarButton";
 import LogOutMenuItem from "./LogOutMenuItem";
 import MenuItem from "./MenuItem";

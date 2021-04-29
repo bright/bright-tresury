@@ -13,7 +13,7 @@ interface UseSuperTokensRequestResult<Values> {
 
 enum SuperTokensLoadingState { FieldError }
 
-type SuperTokensAPIResponse = FormBaseAPIResponse | SignInAPIResponse | SignUpAPIResponse | SendVerifyEmailAPIResponse
+export type SuperTokensAPIResponse = FormBaseAPIResponse | SignInAPIResponse | SignUpAPIResponse | SendVerifyEmailAPIResponse
 
 export function useSuperTokensRequest<Values>(
     apiCall: (params: Values) => Promise<SuperTokensAPIResponse>

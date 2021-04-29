@@ -3,7 +3,8 @@ import React from "react";
 import {useTranslation} from "react-i18next";
 import Avatar from "../../components/avatar/Avatar";
 import Container from "../../components/form/Container";
-import RegularUser from "./regularUser/RegularUser";
+import {breakpoints} from "../../theme/theme";
+import EmailPasswordAccount from "./emailPassword/EmailPasswordAccount";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -11,7 +12,15 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             flexDirection: 'row',
             marginTop: '21px',
-            width: '50%'
+            width: '50%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '75%',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                paddingLeft: '1em',
+                paddingRight: '1em',
+                width: '100%',
+            },
         },
         avatarContainer: {
             width: '46px',
@@ -43,7 +52,7 @@ const Account = () => {
                 <Avatar/>
             </div>
             <div className={classes.content}>
-                <RegularUser/>
+                <EmailPasswordAccount/>
                 <div className={classes.spacer}/>
             </div>
         </div>

@@ -13,11 +13,12 @@ interface AuthContextState {
     isUserVerified: boolean
 }
 
-interface AuthContextUser {
+export interface AuthContextUser {
     id: string
     username: string
     email: string
     isEmailVerified: boolean
+    isEmailPassword: boolean
 }
 
 const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
@@ -29,7 +30,8 @@ const AuthContextProvider: React.FC = (props) => {
     useEffect(() => {
         if (isUserSignedIn) {
             Session.getJWTPayloadSecurely().then((payload: AuthContextUser) => {
-                setUser(payload)
+                // TODO: get isWeb3 from backend
+                setUser({...payload, isEmailPassword: false})
             })
         } else {
             setUser(undefined)

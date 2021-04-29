@@ -1,0 +1,30 @@
+import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import React from "react";
+import {useTranslation} from "react-i18next";
+import {Button} from "../../../components/button/Button";
+import {useAuth} from "../../AuthContext";
+import DisabledFormField from "./components/DisabledFormField";
+
+const useStyles = makeStyles(() =>
+    createStyles({
+        spacing: {
+            marginTop: '32px',
+        },
+    }),
+);
+
+const EmailPasswordAccountDetails = () => {
+    const {t} = useTranslation()
+    const classes = useStyles()
+    const {user} = useAuth()
+
+    return <div>
+        <DisabledFormField title={t('account.emailPassword.username')} value={user?.username ?? ''}/>
+        <DisabledFormField className={classes.spacing} title={t('account.emailPassword.login')} value={user?.email ?? ''}/>
+        {/* TODO: add reset password button behaviour*/}
+        <Button className={classes.spacing} variant='text' color='primary'>{t('account.emailPassword.resetPassword')}</Button>
+
+    </div>
+}
+
+export default EmailPasswordAccountDetails
