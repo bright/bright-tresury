@@ -45,7 +45,6 @@ const useStyles = makeStyles(() =>
 
 function AppRoutes() {
     const classes = useStyles()
-    const {isUserSignedIn} = useAuth()
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })

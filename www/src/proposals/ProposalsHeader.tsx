@@ -34,6 +34,7 @@ const useStyles = makeStyles((theme: Theme) => {
             order: 4,
         },
         statusFilters: {
+            overflowX: 'auto',
             order: 3,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 3,
