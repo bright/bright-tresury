@@ -48,15 +48,14 @@ export class IdeasService {
 
     async findOne(id: string, user?: SessionUser): Promise<Idea> {
         const idea = await this.ideaRepository.findOne(id, {relations: ['networks']})
-        if (!idea ||
-            (idea.status === IdeaStatus.Draft && (!user || idea.ownerId !== user.user.id)) // not the owner trying to access a draft idea
-        ) {
+        if (!idea) {
             throw new NotFoundException('There is no idea with such id')
         }
+        idea.canGetOrThrow(user?.user)
         return idea
     }
 
-    async findOneByNetworkId(networkId: string): Promise<Idea> {
+    async findOneByNetworkId(networkId: string, user: SessionUser): Promise<Idea> {
         const ideaNetwork = await this.ideaNetworkRepository.findOne(networkId, {relations: ['idea']})
         if (!ideaNetwork) {
             throw new NotFoundException(`There is no idea network with id ${networkId}`)
@@ -64,6 +63,7 @@ export class IdeasService {
         if (!ideaNetwork.idea) {
             throw new NotFoundException(`There is no idea for network with id: ${networkId}`)
         }
+        ideaNetwork.idea.canGetOrThrow(user.user)
         return ideaNetwork.idea
     }
 
@@ -87,7 +87,7 @@ export class IdeasService {
     async update(updateIdea: UpdateIdeaDto, id: string, user: SessionUser): Promise<Idea> {
         const currentIdea = await this.findOne(id, user)
         currentIdea.canEditOrThrow(user.user)
-        
+
         await this.ideaRepository.save({
             ...currentIdea,
             ...updateIdea,
@@ -138,7 +138,7 @@ export class IdeasService {
     }
 
     async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number, user: SessionUser) {
-        const idea = await this.findOneByNetworkId(networkId)
+        const idea = await this.findOneByNetworkId(networkId, user)
         idea.canEditOrThrow(user.user)
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()

@@ -1,4 +1,4 @@
-import {UnauthorizedException} from "@nestjs/common";
+import {ForbiddenException, UnauthorizedException} from "@nestjs/common";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {SessionUser} from "../../auth/session/session.decorator";
@@ -98,11 +98,11 @@ describe('IdeaProposalsService', () => {
                 .toThrow(EmptyBeneficiaryException)
         })
 
-        it('should throw unauthorized exception when creating proposal from not own idea', async () => {
+        it('should throw forbidden exception when creating proposal from not own idea', async () => {
             const otherSessionUser = await createSessionUser({username: 'other', email: 'other@example.com'})
             await expect(service().createProposal(idea.id, dto, otherSessionUser))
                 .rejects
-                .toThrow(UnauthorizedException)
+                .toThrow(ForbiddenException)
         })
     })
 

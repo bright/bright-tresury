@@ -1,4 +1,4 @@
-import {NotFoundException} from "@nestjs/common";
+import {ForbiddenException, NotFoundException} from "@nestjs/common";
 import {Column, Entity, Generated, ManyToOne, OneToMany} from "typeorm";
 import {v4 as uuid} from 'uuid';
 import {BaseEntity} from "../../database/base.entity";
@@ -112,17 +112,17 @@ export class Idea extends BaseEntity {
 
     canEditOrThrow = (user: User) => {
         if (!this.canEdit(user)) {
-            throw new NotFoundException('Idea milestone with the given id not found')
+            throw new ForbiddenException('The given user has no access to this idea')
         }
     }
 
-    canGet = (user: User) => {
-        return this.status !== IdeaStatus.Draft || this.ownerId === user.id
+    canGet = (user?: User) => {
+        return this.status !== IdeaStatus.Draft || this.ownerId === user?.id
     }
 
-    canGetOrThrow = (user: User) => {
+    canGetOrThrow = (user?: User) => {
         if (!this.canGet(user)) {
-            throw new NotFoundException('Idea milestone with the given id not found')
+            throw new NotFoundException('There is no idea with such id')
         }
     }
 }

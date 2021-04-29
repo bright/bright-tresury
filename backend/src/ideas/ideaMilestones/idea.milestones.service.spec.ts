@@ -1,4 +1,4 @@
-import {BadRequestException, NotFoundException} from "@nestjs/common";
+import {BadRequestException, ForbiddenException, NotFoundException} from "@nestjs/common";
 import {v4 as uuid} from 'uuid'
 import {SessionUser} from "../../auth/session/session.decorator";
 import {beforeSetupFullApp, cleanDatabase} from "../../utils/spec.helpers";
@@ -252,7 +252,7 @@ describe(`/api/v1/ideas`, () => {
       expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
     })
 
-    it('should throw not found for not owner', async () => {
+    it('should throw forbidden for not owner', async () => {
       await expect(getIdeaMilestonesService().create(idea.id,
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
@@ -262,7 +262,7 @@ describe(`/api/v1/ideas`, () => {
               'ideaMilestoneDescription'
           ), otherUser))
           .rejects
-          .toThrow(NotFoundException)
+          .toThrow(ForbiddenException)
     })
 
   })
@@ -540,7 +540,7 @@ describe(`/api/v1/ideas`, () => {
       expect(updatedIdeaMilestone.description).toBe('Updated description')
     })
 
-    it('should throw not found for not owner', async () => {
+    it('should throw forbidden for not owner', async () => {
       const ideaMilestone = await getIdeaMilestonesService().create(
           idea.id,
           new CreateIdeaMilestoneDto(
@@ -553,7 +553,7 @@ describe(`/api/v1/ideas`, () => {
       )
       await expect(getIdeaMilestonesService().update(ideaMilestone.id, { description: 'Updated description' }, otherUser))
           .rejects
-          .toThrow(NotFoundException)
+          .toThrow(ForbiddenException)
     })
   })
 

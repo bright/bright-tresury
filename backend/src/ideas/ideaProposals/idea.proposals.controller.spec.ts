@@ -103,12 +103,12 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
                 .expect(HttpStatus.FORBIDDEN)
         })
 
-        it('should return unauthorized for idea created by other user', async () => {
+        it('should return forbidden for idea created by other user', async () => {
             const otherUserSessionHandler = await createUserSessionHandlerWithVerifiedEmail(app(), 'other@example.com', 'other')
             return otherUserSessionHandler.authorizeRequest(request(app())
                 .post(baseUrl(idea.id))
                 .send(data))
-                .expect(HttpStatus.UNAUTHORIZED)
+                .expect(HttpStatus.FORBIDDEN)
         })
 
         it('should return forbidden for not verified user', async () => {

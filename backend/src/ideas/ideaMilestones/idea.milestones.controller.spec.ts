@@ -372,7 +372,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.description).toBe('ideaDescription')
         })
 
-        it('should return not found for an idea of other users', async () => {
+        it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
             const otherIdea = await createIdea(
                 {title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}]},
@@ -383,10 +383,10 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     subject: 'ideaMilestoneSubject',
                     networks: [{name: 'polkadot', value: 10}],
                 }))
-                .expect(HttpStatus.NOT_FOUND)
+                .expect(HttpStatus.FORBIDDEN)
         })
 
-        it('should return bad request for not authorized user', async () => {
+        it('should return forbidden for not authorized user', async () => {
             await request(app())
                 .post(baseUrl(idea.id))
                 .send({
@@ -396,7 +396,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 .expect(HttpStatus.FORBIDDEN)
         })
 
-        it('should return bad request for not verified user', async () => {
+        it('should return forbidden for not verified user', async () => {
             const notVerifiedSessionHandler = await createUserSessionHandler(app(), 'other@example.com', 'other')
             await notVerifiedSessionHandler.authorizeRequest(request(app())
                 .post(baseUrl(idea.id))
@@ -529,7 +529,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.description).toBe('ideaMilestoneDescription')
         })
 
-        it('should return not found for an idea of other users', async () => {
+        it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
             const draftIdea = await createIdea(
                 {title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft},
@@ -541,7 +541,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     subject: 'ideaMilestoneSubject',
                     networks: [{name: 'polkadot', value: 10}],
                 }))
-                .expect(HttpStatus.NOT_FOUND)
+                .expect(HttpStatus.FORBIDDEN)
         })
 
         it('should return bad request for not authorized user', async () => {

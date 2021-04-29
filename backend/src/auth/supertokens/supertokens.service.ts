@@ -1,4 +1,4 @@
-import {BadRequestException, ConflictException, Injectable} from "@nestjs/common";
+import {BadRequestException, ConflictException, Injectable, NotFoundException} from "@nestjs/common";
 import {Request, Response} from 'express'
 import {getUserById, signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
@@ -14,6 +14,8 @@ import {UsersService} from "../../users/users.service";
 import {SessionUser} from "../session/session.decorator";
 import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {isEmailVerified as superTokensIsEmailVerified} from "supertokens-node/lib/build/recipe/emailverification";
+
+const logger = getLogger()
 
 export interface JWTPayload {
     id: string
@@ -76,7 +78,7 @@ export class SuperTokensService {
         try {
             return superTokensIsEmailVerified(user.authId, user.email)
         } catch (err) {
-            getLogger().info(err)
+            logger.info(err)
         }
         return false
     }
@@ -109,9 +111,17 @@ export class SuperTokensService {
         await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
     }
 
-    getEmailOrIdForUserId = async (userId: string): Promise<string> => {
+    getEmailForUserId = async (userId: string): Promise<string> => {
         const user = await getUserById(userId)
-        return user?.email ?? userId
+        if (!user) {
+            /*
+            Supertokens documentation does not clearly specify what this function should return if no user found for e given user id
+            Supertokens sometimes hide the errors thrown, so we log the behaviour explicitly.
+             */
+            logger.error('No user found for the given user id in getEmailForUserId function')
+            throw new NotFoundException('No user found for the giver user id')
+        }
+        return user.email
     }
 
     setJwtPayload = async (superTokensUser: SuperTokensUser, formFields: TypeFormField[], action: "signin" | "signup"): Promise<JWTPayload> => {
@@ -127,7 +137,7 @@ export class SuperTokensService {
             payload.username = user.username
             payload.isEmailVerified = await this.isEmailVerified(user)
         } catch (err) {
-            getLogger().error(err)
+            logger.error(err)
         }
         return payload
     }

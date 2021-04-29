@@ -1,4 +1,4 @@
-import {NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {ForbiddenException, NotFoundException} from '@nestjs/common';
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {v4 as uuid} from 'uuid';
 import {SessionUser} from "../auth/session/session.decorator";
@@ -7,13 +7,13 @@ import {beforeSetupFullApp, cleanDatabase} from '../utils/spec.helpers';
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {Idea} from "./entities/idea.entity";
-import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
+import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 import {IdeasService} from './ideas.service';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 import {createSessionUser} from "./spec.helpers";
 
-describe(`/api/v1/ideas`, () => {
+describe(`IdeasService`, () => {
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(IdeasService)
@@ -372,16 +372,17 @@ describe(`/api/v1/ideas`, () => {
             expect(savedIdea.status).toBe(IdeaStatus.Active)
         })
 
-        it('should throw not found exception when trying to update not own idea', async (done) => {
+        it('should throw forbidden exception when trying to update not own idea', async (done) => {
             const idea = await getService().create({
                 title: 'Test title',
-                networks: [{name: 'kusama', value: 44}]
+                networks: [{name: 'kusama', value: 44}],
+                status: IdeaStatus.Active
             }, sessionUser)
             const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
 
             await expect(getService().update({status: IdeaStatus.Active}, idea.id, otherUser))
                 .rejects
-                .toThrow(NotFoundException)
+                .toThrow(ForbiddenException)
             done()
         })
     })
@@ -419,11 +420,12 @@ describe(`/api/v1/ideas`, () => {
                 .rejects
                 .toThrow(EmptyBeneficiaryException)
         })
-        it('should throw not found exception when trying to turn not own idea', async (done) => {
+        it('should throw forbidden exception when trying to turn not own idea', async (done) => {
             const createdIdea = await getService().create({
                 title: 'Test title',
                 beneficiary: uuid(),
-                networks: [{name: 'kusama', value: 42}]
+                networks: [{name: 'kusama', value: 42}],
+                status: IdeaStatus.Active
             }, sessionUser)
             const blockchainProposalId = 31234
 
@@ -431,7 +433,7 @@ describe(`/api/v1/ideas`, () => {
 
             await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, otherUser))
                 .rejects
-                .toThrow(NotFoundException)
+                .toThrow(ForbiddenException)
             done()
         })
     })
@@ -450,13 +452,15 @@ describe(`/api/v1/ideas`, () => {
                 .toThrow(NotFoundException)
             done()
         })
-        it('should throw not found exception when trying to delete not own idea', async (done) => {
-            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]}, sessionUser)
+        it('should throw forbidden exception when trying to delete not own idea', async (done) => {
+            const createdIdea = await getService().create(
+                {title: 'Test title', networks: [{name: 'kusama', value: 42}], status: IdeaStatus.Active},
+                sessionUser)
             const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
 
             await expect(getService().delete(createdIdea.id, otherUser))
                 .rejects
-                .toThrow(NotFoundException)
+                .toThrow(ForbiddenException)
             done()
         })
     })
