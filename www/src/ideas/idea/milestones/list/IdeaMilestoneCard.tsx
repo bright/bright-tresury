@@ -12,11 +12,20 @@ import {CardTitle} from "../../../../components/card/components/CardTitle";
 import {useTranslation} from "react-i18next";
 import {CardHeader} from "../../../../components/card/components/CardHeader";
 import {OrdinalNumber} from "../../../../components/ordinalNumber/OrdinalNumber";
+import {IdeaMilestoneStatusIndicator} from "../status/IdeaMilestoneStatusIndicator";
 
 const useStyles = makeStyles(() => createStyles({
     cardContent: {
         margin: '0 20px 0 24px',
         cursor: 'pointer'
+    },
+    headerStatusAndDateRange: {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        justifyContent: 'flex-end',
+        gap: '5px',
+        height: '45px',
     },
     description: {
         height: '50px',
@@ -43,7 +52,11 @@ export const IdeaMilestoneCard = ({ ideaMilestone, onClick }: Props) => {
                         prefix={t('idea.milestones.ordinalNumberPrefix')}
                         ordinalNumber={ideaMilestone.ordinalNumber}
                     />
-                    <IdeaMilestoneDateRange dateFrom={ideaMilestone.dateFrom} dateTo={ideaMilestone.dateTo} />
+                    <div className={classes.headerStatusAndDateRange}>
+                        <IdeaMilestoneStatusIndicator status={ideaMilestone.status} />
+                        <IdeaMilestoneDateRange dateFrom={ideaMilestone.dateFrom} dateTo={ideaMilestone.dateTo} />
+                    </div>
+
                 </CardHeader>
 
                 <Divider />

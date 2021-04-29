@@ -65,7 +65,7 @@ export class IdeaMilestoneProposalsService {
 
             const blockchainProposalIndex = this.extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents)
 
-            if (blockchainProposalIndex) {
+            if (blockchainProposalIndex !== undefined) {
                 await this.convertIdeaMilestoneToProposal(idea, ideaMilestone, ideaMilestoneNetwork, blockchainProposalIndex)
             }
         }

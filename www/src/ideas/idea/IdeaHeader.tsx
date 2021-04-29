@@ -105,7 +105,7 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
             <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
             <BasicInfoDivider/>
             <Status>
-                <IdeaStatusIndicator ideaStatus={idea.status}/>
+                <IdeaStatusIndicator status={idea.status}/>
             </Status>
             <Title>
                 <OptionalTitle title={idea.title}/>

@@ -27,7 +27,7 @@ export const IdeaCard = ({ idea }: Props) => {
 
             <CardHeader>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
-                <IdeaStatusIndicator ideaStatus={idea.status} />
+                <IdeaStatusIndicator status={idea.status} />
             </CardHeader>
 
             <Divider/>

@@ -2,16 +2,18 @@ import React from "react";
 import {IdeaStatus} from "../../ideas.api";
 import {useTranslation} from "react-i18next";
 import {Status} from "../../../components/status/Status";
+import {theme} from "../../../theme/theme";
 
 interface Props {
-    ideaStatus: IdeaStatus
+    status: IdeaStatus
 }
 
-export const IdeaStatusIndicator: React.FC<Props> = ({ideaStatus}) => {
-    const {t} = useTranslation()
+export const IdeaStatusIndicator = ({ status }: Props) => {
+
+    const { t } = useTranslation()
 
     const getStatusTranslationKey = (): string => {
-        switch (ideaStatus) {
+        switch (status) {
             case IdeaStatus.Draft:
                 return 'idea.list.card.statusDraft'
             case IdeaStatus.Active:
@@ -26,18 +28,19 @@ export const IdeaStatusIndicator: React.FC<Props> = ({ideaStatus}) => {
     }
 
     const getStatusColor = (): string => {
-        switch (ideaStatus) {
+        switch (status) {
             case IdeaStatus.Draft:
-                return '#B159A9'
+                return theme.palette.status.draft
             case IdeaStatus.Active:
-                return '#0E65F2'
+                return theme.palette.status.active
             case IdeaStatus.TurnedIntoProposal:
+                return theme.palette.status.turnedIntoProposal
             case IdeaStatus.TurnedIntoProposalByMilestone:
-                return '#2FD3AE'
+                return theme.palette.status.turnedIntoProposalByMilestone
             case IdeaStatus.Closed:
-                return '#1B1D1C'
+                return theme.palette.status.closed
         }
     }
 
-    return <Status label={t(getStatusTranslationKey())} color={getStatusColor()}/>
+    return <Status label={t(getStatusTranslationKey())} color={getStatusColor()} />
 }

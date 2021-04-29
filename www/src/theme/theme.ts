@@ -32,6 +32,13 @@ export const theme = {
         warning: {
             main: '#FF0000',
         },
+        status: {
+            draft: '#B159A9',
+            active: '#0E65F2',
+            turnedIntoProposal: '#2FD3AE',
+            turnedIntoProposalByMilestone: '#2FD3AE',
+            closed: '#1B1D1C'
+        }
     }
 }
 

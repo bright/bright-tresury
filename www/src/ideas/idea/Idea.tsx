@@ -34,7 +34,7 @@ interface Props {
     network: string
 }
 
-const Idea = ({ network }: Props) => {
+export const Idea = ({ network }: Props) => {
     const classes = useStyles()
 
     let { path } = useRouteMatch();
@@ -44,6 +44,7 @@ const Idea = ({ network }: Props) => {
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
     const {isUserVerified, user} = useAuth()
+
     const canEdit = useMemo(() => {
         return isUserVerified && idea.ownerId === user?.id
     }, [idea, isUserVerified, user])
@@ -78,5 +79,3 @@ const Idea = ({ network }: Props) => {
         </div>
     );
 }
-
-export default Idea
