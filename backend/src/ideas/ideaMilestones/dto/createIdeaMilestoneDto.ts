@@ -1,10 +1,8 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {ArrayMinSize, IsEnum, IsIn, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
+import {ArrayMinSize, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
 import {IdeaMilestoneNetworkDto} from "./ideaMilestoneNetworkDto";
 import {Nil} from "../../../utils/types";
-import {IdeaStatus} from "../../ideaStatus";
-import {IdeaMilestoneStatus} from "../ideaMilestoneStatus";
 
 export class CreateIdeaMilestoneDto {
     @ApiProperty({
