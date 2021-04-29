@@ -1,8 +1,6 @@
 import {SubmittableResult} from "@polkadot/api";
 import {DispatchError} from "@polkadot/types/interfaces";
 import {EventMetadataLatest} from "@polkadot/types/interfaces/metadata";
-import {ISubmittableResult} from "@polkadot/types/types";
-import BN from "bn.js";
 import React, {useState} from 'react';
 import {Trans, useTranslation} from "react-i18next";
 import config from "../../config";
@@ -13,7 +11,6 @@ import SignAndSubmit from "./SignAndSubmit";
 import SubstrateLoading from "./SubstrateLoading";
 import TransactionError from "./TransactionError";
 import TransactionInProgress from "./TransactionInProgress";
-import {getFromAcct, isNumType, transformParams} from "./utils";
 import {getFromAcct, transformParams} from "./utils";
 import {useAccounts} from "../hooks/useAccounts";
 

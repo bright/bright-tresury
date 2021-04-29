@@ -22,7 +22,7 @@ export const ROUTE_BOUNTIES = '/bounties'
 // region Auth
 export const ROUTE_SIGNUP = '/auth/signup'
 export const ROUTE_SIGNUP_EMAIL = 'auth/signup/email'
-export const ROUTE_SIGNIN = 'auth/signin'
+export const ROUTE_SIGNIN = '/auth/signin'
 export const ROUTE_VERIFY_EMAIL = '/auth/verify-email'
 // endregion
 // region Account
