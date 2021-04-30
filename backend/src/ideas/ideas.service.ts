@@ -1,4 +1,4 @@
-import {Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Brackets, In, Not, Repository} from 'typeorm';
 import {SessionUser} from "../auth/session/session.decorator";
@@ -7,10 +7,9 @@ import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {UpdateIdeaDto} from "./dto/updateIdea.dto";
-import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 import {Idea} from './entities/idea.entity';
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
-import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
+import { DefaultIdeaStatus, IdeaStatus } from './ideaStatus'
 
 const logger = getLogger()
 
@@ -137,13 +136,4 @@ export class IdeasService {
         await this.ideaRepository.remove(currentIdea)
     }
 
-    async turnIdeaIntoProposalByNetworkId(networkId: string, blockchainProposalId: number, user: SessionUser) {
-        const idea = await this.findOneByNetworkId(networkId, user)
-        idea.canEditOrThrow(user.user)
-        if (!idea.beneficiary) {
-            throw new EmptyBeneficiaryException()
-        }
-        await this.ideaNetworkRepository.save({id: networkId, blockchainProposalId})
-        await this.ideaRepository.save({id: idea.id, status: IdeaStatus.TurnedIntoProposal})
-    }
 }

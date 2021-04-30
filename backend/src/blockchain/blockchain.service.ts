@@ -1,4 +1,4 @@
-import {HttpException, Inject, Injectable, OnModuleDestroy, OnModuleInit} from '@nestjs/common'
+import {Inject, Injectable, OnModuleDestroy} from '@nestjs/common'
 import {ApiPromise} from '@polkadot/api'
 import {DeriveTreasuryProposals} from "@polkadot/api-derive/types";
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
@@ -104,4 +104,32 @@ export class BlockchainService implements OnModuleDestroy {
             return toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Approval)
         }))
     }
+
+    extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
+
+        logger.info('Looking for a blockchain proposal index')
+        logger.info('Extracting event from extrinsicEvents with section: treasury, method: Proposed')
+
+        const event = extrinsicEvents.find(({ section, method }) => section === 'treasury' && method === 'Proposed')
+
+        if (event) {
+
+            logger.info('Event found')
+
+            const proposalIndex = Number(event?.data.find(({ name }) => name === 'ProposalIndex')?.value)
+
+            logger.info(`Found blockchain proposal index: ${proposalIndex}`)
+
+            if (!isNaN(proposalIndex)) {
+                return proposalIndex
+            }
+
+            logger.info('Found blockchain proposal index is NaN')
+        }
+
+        logger.info('Event not found')
+
+        return
+    }
+
 }

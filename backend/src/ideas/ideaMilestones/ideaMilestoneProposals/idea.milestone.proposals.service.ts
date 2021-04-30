@@ -12,9 +12,7 @@ import {IdeaStatus} from "../../ideaStatus";
 import {IdeaMilestoneStatus} from "../ideaMilestoneStatus";
 import {Idea} from "../../entities/idea.entity";
 import {IdeaMilestone} from "../entities/idea.milestone.entity";
-import {getLogger} from "../../../logging.module";
-
-const logger = getLogger()
+import { BlockchainService } from '../../../blockchain/blockchain.service'
 
 @Injectable()
 export class IdeaMilestoneProposalsService {
@@ -28,7 +26,8 @@ export class IdeaMilestoneProposalsService {
         private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
         private readonly ideasService: IdeasService,
         private readonly ideaMilestonesService: IdeaMilestonesService,
-        private readonly extrinsicsService: ExtrinsicsService
+        private readonly extrinsicsService: ExtrinsicsService,
+        private readonly blockchainService: BlockchainService
     ) {
     }
 
@@ -66,7 +65,7 @@ export class IdeaMilestoneProposalsService {
 
         const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
 
-            const blockchainProposalIndex = this.extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents)
+            const blockchainProposalIndex = this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents)
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaMilestoneIntoProposal(idea, ideaMilestone, ideaMilestoneNetwork, blockchainProposalIndex)
@@ -78,33 +77,6 @@ export class IdeaMilestoneProposalsService {
         await this.ideaMilestoneNetworkRepository.save(ideaMilestoneNetwork)
 
         return ideaMilestoneNetwork
-    }
-
-    extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
-
-        logger.info('Looking for a blockchain proposal index after convert idea milestone to proposal')
-        logger.info('Extracting event from extrinsicEvents with section: treasury, method: Proposed')
-
-        const event = extrinsicEvents.find(({ section, method }) => section === 'treasury' && method === 'Proposed')
-
-        if (event) {
-
-            logger.info('Event found')
-
-            const proposalIndex = Number(event?.data.find(({ name }) => name === 'ProposalIndex')?.value)
-
-            logger.info(`Found blockchain proposal index: ${proposalIndex}`)
-
-            if (!isNaN(proposalIndex)) {
-                return proposalIndex
-            }
-
-            logger.info('Found blockchain proposal index is NaN')
-        }
-
-        logger.info('Event not found')
-
-        return
     }
 
     // all entities passed to this function as arguments should be already validated

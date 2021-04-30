@@ -8,7 +8,6 @@ import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {IdeaNetworkDto} from "./dto/ideaNetwork.dto";
 import {Idea} from "./entities/idea.entity";
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
-import {EmptyBeneficiaryException} from "./exceptions/emptyBeneficiary.exception";
 import {IdeasService} from './ideas.service';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
 import {createSessionUser} from "./spec.helpers";
@@ -386,57 +385,7 @@ describe(`IdeasService`, () => {
             done()
         })
     })
-    describe('turn into proposal', () => {
-        it('should turn into proposal', async () => {
-            const createdIdea = await getService().create({
-                title: 'Test title',
-                beneficiary: uuid(),
-                networks: [{name: 'kusama', value: 42}]
-            }, sessionUser)
-            const blockchainProposalId = 31234
-            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, sessionUser)
-            const updatedIdea = await getService().findOne(createdIdea.id, sessionUser)
-            expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposal)
-        })
-        it('should turn into proposal and update network with blockchain proposal id', async () => {
-            const createdIdea = await getService().create({
-                title: 'Test title',
-                beneficiary: uuid(),
-                networks: [{name: 'kusama', value: 42}]
-            }, sessionUser)
-            const blockchainProposalId = 31234
-            await getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, sessionUser)
-            const updatedIdeaNetwork = await getIdeaNetworkRepository().findOne(createdIdea.networks[0].id)
-            expect(updatedIdeaNetwork!.blockchainProposalId).toBe(blockchainProposalId)
-        })
-        it('should throw not found exception for wrong network id', async () => {
-            await expect(getService().turnIdeaIntoProposalByNetworkId(uuid(), 1234, sessionUser))
-                .rejects
-                .toThrow(NotFoundException)
-        })
-        it('should throw empty beneficiary exception if idea beneficiary is empty', async () => {
-            const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]}, sessionUser)
-            await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, 1234, sessionUser))
-                .rejects
-                .toThrow(EmptyBeneficiaryException)
-        })
-        it('should throw forbidden exception when trying to turn not own idea', async (done) => {
-            const createdIdea = await getService().create({
-                title: 'Test title',
-                beneficiary: uuid(),
-                networks: [{name: 'kusama', value: 42}],
-                status: IdeaStatus.Active
-            }, sessionUser)
-            const blockchainProposalId = 31234
 
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
-
-            await expect(getService().turnIdeaIntoProposalByNetworkId(createdIdea.networks[0].id, blockchainProposalId, otherUser))
-                .rejects
-                .toThrow(ForbiddenException)
-            done()
-        })
-    })
     describe('delete', () => {
         it('should delete idea', async (done) => {
             const createdIdea = await getService().create({title: 'Test title', networks: [{name: 'kusama', value: 42}]}, sessionUser)

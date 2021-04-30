@@ -1,67 +1,87 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {SessionUser} from "../../auth/session/session.decorator";
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
 import {ExtrinsicsService} from "../../extrinsics/extrinsics.service";
-import {getLogger} from "../../logging.module";
 import {IdeaNetwork} from '../entities/ideaNetwork.entity';
 import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
 import {IdeasService} from "../ideas.service";
 import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
-
-const logger = getLogger()
+import { BlockchainService } from '../../blockchain/blockchain.service'
+import { Idea } from '../entities/idea.entity'
+import { IdeaStatus } from '../ideaStatus'
+import { IdeaMilestoneNetwork } from '../ideaMilestones/entities/idea.milestone.network.entity'
 
 @Injectable()
 export class IdeaProposalsService {
     constructor(
-        @InjectRepository(IdeaNetwork) private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
+        @InjectRepository(Idea)
+        private readonly ideaRepository: Repository<Idea>,
+        @InjectRepository(IdeaNetwork)
+        private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
         private readonly extrinsicsService: ExtrinsicsService,
-        private readonly ideaService: IdeasService,
+        private readonly ideasService: IdeasService,
+        private readonly blockchainService: BlockchainService
     ) {
     }
 
-    async createProposal(ideaId: string, dto: CreateIdeaProposalDto, user: SessionUser): Promise<IdeaNetwork> {
-        const idea = await this.ideaService.findOne(ideaId, user)
+    async createProposal(ideaId: string, createIdeaProposalDto: CreateIdeaProposalDto, user: SessionUser): Promise<IdeaNetwork> {
+
+        const idea = await this.ideasService.findOne(ideaId, user)
+
         idea.canEditOrThrow(user.user)
 
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()
         }
 
-        const network = await idea.networks?.find((n) => n.id === dto.ideaNetworkId)
-        if (!network) {
-            throw new NotFoundException('Idea network not found.')
+        if (idea.status === IdeaStatus.TurnedIntoProposal || idea.status === IdeaStatus.TurnedIntoProposalByMilestone) {
+            throw new BadRequestException(`Idea with the given id or at least one of it's milestones is already converted to proposal`)
+        }
+
+        const ideaNetwork = await idea.networks?.find(({ id }) => id === createIdeaProposalDto.ideaNetworkId)
+
+        if (!ideaNetwork) {
+            throw new NotFoundException('Idea network with the given id not found')
+        }
+
+        if (ideaNetwork.value === 0) {
+            throw new BadRequestException('Value of the idea network with the given id has to be greater than zero')
         }
 
         const callback = async (events: ExtrinsicEvent[]) => {
-            return await this.extractEvents(events, network, user)
+
+            const blockchainProposalIndex = this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(events)
+
+            if (blockchainProposalIndex !== undefined) {
+                await this.turnIdeaIntoProposal(idea, ideaNetwork, blockchainProposalIndex)
+            }
         }
 
-        const extrinsic = await this.extrinsicsService.listenForExtrinsic(dto, callback)
+        ideaNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic(createIdeaProposalDto, callback)
 
-        network.extrinsic = extrinsic
-        await this.ideaNetworkRepository.save({id: network.id, extrinsic})
+        await this.ideaNetworkRepository.save(ideaNetwork)
 
-        return network
+        return ideaNetwork
     }
 
-    async extractEvents(events: ExtrinsicEvent[], network: IdeaNetwork, user: SessionUser): Promise<void> {
-        logger.info('Extracting events for section: treasury, method: Proposed')
-        const proposedEvent = events.find((event) => event.section === 'treasury' && event.method === 'Proposed')
-        if (proposedEvent) {
-            logger.info('Event found')
-            logger.info(proposedEvent)
-            const proposalIndex = Number(proposedEvent?.data.find((d) => d.name === 'ProposalIndex')?.value)
-            logger.info(`Proposal index is ${proposalIndex}`)
-            if (!isNaN(proposalIndex)) {
-                await this.ideaService.turnIdeaIntoProposalByNetworkId(network.id, proposalIndex, user)
-                return
-            }
-        } else {
-            logger.warn('Event not found')
-        }
-        return
+    // all entities passed to this function as arguments should be already validated
+    private async turnIdeaIntoProposal(
+        validIdea: Idea,
+        validIdeaNetwork: IdeaNetwork,
+        blockchainProposalIndex: number
+    ): Promise<void> {
+
+        await this.ideaRepository.save({
+            ...validIdea,
+            status: IdeaStatus.TurnedIntoProposal
+        })
+
+        await this.ideaNetworkRepository.save({
+            ...validIdeaNetwork,
+            blockchainProposalId: blockchainProposalIndex
+        })
     }
 
 }

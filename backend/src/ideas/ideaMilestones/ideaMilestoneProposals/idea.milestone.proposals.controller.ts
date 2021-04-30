@@ -27,7 +27,7 @@ export class IdeaMilestoneProposalsController {
     })
     @HttpCode(HttpStatus.ACCEPTED)
     @ApiAcceptedResponse({
-        description: 'Accepted to find a proposal extrinsic and create an entry.'
+        description: 'Accepted to find a proposal extrinsic and create an entry'
     })
     @ApiNotFoundResponse({
         description: 'Idea/Idea milestone/Idea milestone network not found'
