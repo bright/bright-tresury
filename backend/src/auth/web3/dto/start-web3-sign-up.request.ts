@@ -1,4 +1,4 @@
-export interface StartBlockchainSignUpRequest {
+export interface StartWeb3SignUpRequest {
     address: string
 }
 

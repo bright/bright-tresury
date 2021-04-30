@@ -85,7 +85,7 @@ export class BlockchainService implements OnModuleDestroy {
     }
 
     async getProposals(): Promise<BlockchainProposal[]> {
-        logger.info('Getting proposals from blockchain...')
+        logger.info('Getting proposals from web3...')
         const proposals: DeriveTreasuryProposals = await this.polkadotApi.derive.treasury.proposals()
 
         const proposalCount = proposals.proposalCount.toNumber()
