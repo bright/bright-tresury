@@ -29,6 +29,8 @@ import {
     ROUTE_ROOT,
     ROUTE_SIGNIN,
     ROUTE_SIGNUP,
+    ROUTE_SIGNUP_WEB3_SUCCESS,
+    ROUTE_STATS,
     ROUTE_VERIFY_EMAIL
 } from './routes/routes';
 import Stats from './stats/Stats';
@@ -36,6 +38,9 @@ import {SubstrateContextProvider} from './substrate-lib';
 import {initializeSupertokens} from "./supertokens";
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
+import VerifyEmail from "./auth/sign-in/VerifyEmail";
+import SignUp from "./auth/sign-up/SignUp";
+import {Web3SignUpSuccess} from "./auth/sign-up/web3/Web3SignUpSuccess";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -54,33 +59,34 @@ function AppRoutes() {
 
     return (
         <div className={classes.root}>
-        <Router>
-            <Main>
-                <Switch>
-                    <Route exact={false} path={ROUTE_SIGNUP}>
-                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignUp/>}
-                    </Route>
-                    <Route exact={true} path={ROUTE_SIGNIN}>
-                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignIn/>}
-                    </Route>
-                    <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
-                        <VerifyEmail/>
-                    </Route>
-                    <PublicOnlyRoute exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
-                    <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
-                    <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
-                    <Route exact={true} path={ROUTE_STATS} component={Stats}/>
-                    <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
-                    <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>
-                    <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
-                    <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate}/>
-                    <PrivateRoute exact={true} path={ROUTE_TURN_IDEA} component={TurnIdeaIntoProposal}/>
-                    <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
-                    <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
-                    <Route exact={false} path={ROUTE_ACCOUNT} component={Account}/>
-                </Switch>
-            </Main>
-        </Router>
+            <Router>
+                <Main>
+                    <Switch>
+                        <Route exact={false} path={ROUTE_SIGNUP}>
+                            {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignUp/>}
+                        </Route>
+                        <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={Web3SignUpSuccess}/>
+                        <Route exact={true} path={ROUTE_SIGNIN}>
+                            {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignIn/>}
+                        </Route>
+                        <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
+                            <VerifyEmail/>
+                        </Route>
+                        <PublicOnlyRoute exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
+                        <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
+                        <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
+                        <Route exact={true} path={ROUTE_STATS} component={Stats}/>
+                        <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
+                        <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>
+                        <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
+                        <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate}/>
+                        <PrivateRoute exact={true} path={ROUTE_CONVERT_IDEA} component={ConvertIdeaToProposal}/>
+                        <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
+                        <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
+                        <Route exact={false} path={ROUTE_ACCOUNT} component={Account}/>
+                    </Switch>
+                </Main>
+            </Router>
         </div>
     )
 }

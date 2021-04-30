@@ -1,4 +1,4 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
 import React from "react";
 import {useTranslation} from "react-i18next";
 import Container from "../../components/form/Container";
@@ -10,7 +10,7 @@ import {ToggleEntry} from "../../components/toggle/SingleToggleButton";
 import {Location} from "history";
 import {SignUpComponentWrapper} from "./common/SignUpComponentWrapper";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         toggleContainer: {
             display: 'flex',

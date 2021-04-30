@@ -14,7 +14,9 @@ interface UseWeb3SignUpResult {
     error?: string
 }
 
-export function useWeb3SignUp(): UseWeb3SignUpResult {
+export function useWeb3SignUp(
+    signUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
+): UseWeb3SignUpResult {
     const {t} = useTranslation()
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
     const [error, setError] = useState<string | undefined>()
@@ -24,7 +26,7 @@ export function useWeb3SignUp(): UseWeb3SignUpResult {
     ) => {
         setLoadingState(LoadingState.Loading)
         try {
-            await handleWeb3Signup(values.account)
+            await signUp(values)
             setLoadingState(LoadingState.Resolved)
         } catch (e) {
             setLoadingState(LoadingState.Error)
@@ -36,12 +38,6 @@ export function useWeb3SignUp(): UseWeb3SignUpResult {
 }
 
 export async function handleWeb3Signup(account: Account) {
-    // const web3Accounts = await getWeb3Accounts();
-    // const web3Account = web3Accounts.find(web3Account => web3Account.address === account.address)
-    // if (!web3Account) {
-    //     throw new Error('No web3 account associated')
-    // }
-    // TODO - sprawdz czy to dziala
     const injected = await web3FromAddress(account.address);
     if (!injected) {
         throw new Error('Injected was not found for this address')

@@ -12,11 +12,13 @@ import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
 import {SignUpFormWrapper} from "../common/SignUpFormWrapper";
 import {AccountSelect} from "../../../components/select/AccountSelect";
 import {Account} from "../../../substrate-lib/hooks/useAccounts";
-import SignUpSuccess from "../common/SignUpSucces";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
 import {useWeb3SignUp} from "./handleWeb3Signup";
 import {ErrorBox} from "../../../components/form/ErrorBox";
+import {useAuth} from "../../AuthContext";
+import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes";
+import {useHistory} from 'react-router-dom';
 
 export interface Web3SignUpValues {
     account: Account,
@@ -25,8 +27,11 @@ export interface Web3SignUpValues {
 
 const Web3SignUp: React.FC = () => {
     const {t} = useTranslation()
+    const history = useHistory()
 
-    const {call: signUpCall, loadingState, error} = useWeb3SignUp()
+    const {web3SignUp} = useAuth()
+
+    const {call: signUpCall, loadingState, error} = useWeb3SignUp(web3SignUp)
 
     const onSubmit = async (values: Web3SignUpValues) => {
         await signUpCall(values)
@@ -41,7 +46,7 @@ const Web3SignUp: React.FC = () => {
     }
 
     if (loadingState === LoadingState.Resolved) {
-        return <SignUpSuccess subtitle={t('auth.signUp.web3SignUp.successSubtitle')}/>
+        history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
     }
 
     return <Formik
