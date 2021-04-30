@@ -15,12 +15,14 @@ import {IdeaMilestonesController} from "./ideaMilestones/idea.milestones.control
 import {IdeaMilestonesService} from "./ideaMilestones/idea.milestones.service";
 import {IdeaMilestoneProposalsService} from "./ideaMilestones/ideaMilestoneProposals/idea.milestone.proposals.service";
 import {IdeaMilestoneProposalsController} from "./ideaMilestones/ideaMilestoneProposals/idea.milestone.proposals.controller";
+import { BlockchainModule } from '../blockchain/blockchain.module'
 
 @Module({
   imports: [
       DatabaseModule,
       ExtrinsicsModule,
       SessionModule,
+      BlockchainModule,
       TypeOrmModule.forFeature([Idea]),
       TypeOrmModule.forFeature([IdeaNetwork]),
       TypeOrmModule.forFeature([IdeaMilestone]),

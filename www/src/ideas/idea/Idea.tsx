@@ -34,7 +34,7 @@ interface Props {
     network: string
 }
 
-export const Idea = ({ network }: Props) => {
+const Idea = ({ network }: Props) => {
     const classes = useStyles()
 
     let { path } = useRouteMatch();
@@ -79,3 +79,5 @@ export const Idea = ({ network }: Props) => {
         </div>
     );
 }
+
+export default Idea

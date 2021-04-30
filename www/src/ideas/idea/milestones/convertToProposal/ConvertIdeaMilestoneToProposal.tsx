@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import {ConvertIdeaMilestoneToProposalModal} from "./ConvertIdeaMilestoneToProposalModal";
 import {IdeaMilestoneDto} from "../idea.milestones.api";
 import {IdeaDto} from "../../../ideas.api";
-import {ROUTE_PROPOSALS} from "../../../../routes";
+import {ROUTE_PROPOSALS} from "../../../../routes/routes";
 import {useHistory} from "react-router-dom";
 import {SubmitConvertIdeaMilestoneToProposalModal} from "./SubmitConvertIdeaMilestoneToProposalModal";
 
