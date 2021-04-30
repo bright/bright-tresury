@@ -17,29 +17,29 @@ describe(`/api/v1/ideas`, () => {
   const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
   let idea: Idea
-  let sessionUser: SessionData
-  let otherUser: SessionData
+  let sessionData: SessionData
+  let otherSessionData: SessionData
 
   beforeEach(async () => {
     await cleanDatabase()
-    sessionUser = await createSessionUser()
-    otherUser = await createSessionUser({username: 'other', email: 'other@example.com'})
+    sessionData = await createSessionUser()
+    otherSessionData = await createSessionUser({username: 'other', email: 'other@example.com'})
     idea = await createIdea({
         title: 'ideaTitle',
         networks: [{name: 'polkadot', value: 100}]
-      }, sessionUser, getIdeasService())
+      }, sessionData, getIdeasService())
   })
 
   describe('find', () => {
 
     it('should throw not found exception for not existing idea', async () => {
-      await expect(getIdeaMilestonesService().find(uuid(), sessionUser))
+      await expect(getIdeaMilestonesService().find(uuid(), sessionData))
           .rejects
           .toThrow(NotFoundException)
     })
 
     it('should return empty array for idea without milestones', async () => {
-      const ideaMilestones = await getIdeaMilestonesService().find(idea.id, sessionUser)
+      const ideaMilestones = await getIdeaMilestonesService().find(idea.id, sessionData)
       expect(ideaMilestones.length).toBe(0)
     })
 
@@ -52,17 +52,17 @@ describe(`/api/v1/ideas`, () => {
           description: null
       }
 
-      await getIdeaMilestonesService().create(idea.id, createIdeaMilestoneDto, sessionUser)
-      await getIdeaMilestonesService().create(idea.id, createIdeaMilestoneDto, sessionUser)
+      await getIdeaMilestonesService().create(idea.id, createIdeaMilestoneDto, sessionData)
+      await getIdeaMilestonesService().create(idea.id, createIdeaMilestoneDto, sessionData)
 
-      const ideaMilestones = await getIdeaMilestonesService().find(idea.id, sessionUser)
+      const ideaMilestones = await getIdeaMilestonesService().find(idea.id, sessionData)
 
       expect(ideaMilestones.length).toBe(2)
     })
 
     it('should return idea milestones only for the given idea', async () => {
 
-      const anotherIdea = await createIdea({ title: 'anotherIdeaTitle', networks: [{name: 'polkadot', value: 100}]}, sessionUser)
+      const anotherIdea = await createIdea({ title: 'anotherIdeaTitle', networks: [{name: 'polkadot', value: 100}]}, sessionData)
 
       await getIdeaMilestonesService().create(
           idea.id,
@@ -73,7 +73,7 @@ describe(`/api/v1/ideas`, () => {
               null,
               null
           ),
-          sessionUser
+          sessionData
       )
       await getIdeaMilestonesService().create(
           anotherIdea.id,
@@ -84,17 +84,17 @@ describe(`/api/v1/ideas`, () => {
               null,
               null
           ),
-          sessionUser
+          sessionData
       )
 
-      const ideaMilestones = await getIdeaMilestonesService().find(idea.id, sessionUser)
+      const ideaMilestones = await getIdeaMilestonesService().find(idea.id, sessionData)
 
       expect(ideaMilestones.length).toBe(1)
       expect(ideaMilestones[0].subject).toBe('ideaMilestoneSubject1')
     })
 
     it('should return idea milestones for draft idea for owner', async () => {
-      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionUser)
+      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionData)
       await getIdeaMilestonesService().create(
           draftIdea.id,
           new CreateIdeaMilestoneDto(
@@ -104,17 +104,17 @@ describe(`/api/v1/ideas`, () => {
               null,
               null
           ),
-          sessionUser
+          sessionData
       )
-      const result = await getIdeaMilestonesService().find(draftIdea.id, sessionUser)
+      const result = await getIdeaMilestonesService().find(draftIdea.id, sessionData)
       expect(result.length).toBe(1)
       expect(result[0].subject).toBe('draftIdeaMilestoneSubject1')
     })
 
     it('should throw not found for draft idea for not owner', async () => {
-      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionUser)
+      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionData)
 
-      await expect(getIdeaMilestonesService().findOne(draftIdea.id, otherUser))
+      await expect(getIdeaMilestonesService().findOne(draftIdea.id, otherSessionData))
           .rejects
           .toThrow(NotFoundException)
     })
@@ -124,7 +124,7 @@ describe(`/api/v1/ideas`, () => {
   describe('findOne', () => {
 
     it('should throw not found exception for not existing idea milestone', async () => {
-      await expect(getIdeaMilestonesService().findOne(uuid(), sessionUser))
+      await expect(getIdeaMilestonesService().findOne(uuid(), sessionData))
           .rejects
           .toThrow(NotFoundException)
     })
@@ -142,10 +142,10 @@ describe(`/api/v1/ideas`, () => {
       const createdIdeaMilestone = await getIdeaMilestonesService().create(
           idea.id,
           createIdeaMilestoneDto,
-          sessionUser
+          sessionData
       )
 
-      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionUser)
+      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionData)
 
       expect(foundIdeaMilestone.subject).toBe('ideaMilestoneSubject')
       expect(foundIdeaMilestone.networks).toBeDefined()
@@ -159,7 +159,7 @@ describe(`/api/v1/ideas`, () => {
     })
 
     it('should return idea milestone for draft idea for owner', async () => {
-      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionUser)
+      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionData)
       const milestone = await getIdeaMilestonesService().create(
           draftIdea.id,
           new CreateIdeaMilestoneDto(
@@ -169,17 +169,17 @@ describe(`/api/v1/ideas`, () => {
               null,
               null
           ),
-          sessionUser
+          sessionData
       )
-      const result = await getIdeaMilestonesService().findOne(milestone.id, sessionUser)
+      const result = await getIdeaMilestonesService().findOne(milestone.id, sessionData)
       expect(result).toBeDefined()
       expect(result.subject).toBe('draftIdeaMilestoneSubject1')
     })
 
     it('should throw not found for draft idea for not owner', async () => {
-      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionUser)
+      const draftIdea = await createIdea({ title: 'draftIdeaTitle', networks: [{name: 'polkadot', value: 100}], status: IdeaStatus.Draft}, sessionData)
 
-      await expect(getIdeaMilestonesService().findOne(draftIdea.id, otherUser))
+      await expect(getIdeaMilestonesService().findOne(draftIdea.id, otherSessionData))
           .rejects
           .toThrow(NotFoundException)
     })
@@ -203,28 +203,28 @@ describe(`/api/v1/ideas`, () => {
           new Date(2021, 3, 21),
           new Date(2021, 3, 20),
           'ideaMilestoneDescription'
-      ), sessionUser))
+      ), sessionData))
           .rejects
           .toThrow(BadRequestException)
     })
 
     it ('should create and save an idea milestone', async () => {
-      const createdIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionUser)
-      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionUser)
+      const createdIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionData)
+      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionData)
 
       expect(foundIdeaMilestone).toBeDefined()
     })
 
     it('should add auto generated ordinal number', async () => {
-      const createdIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionUser)
-      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionUser)
+      const createdIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionData)
+      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionData)
 
       expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
     })
 
     it('should auto increment ordinal number', async () => {
-      const firstCreatedIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionUser)
-      const secondCreatedIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionUser)
+      const firstCreatedIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionData)
+      const secondCreatedIdeaMilestone = await getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionData)
 
       expect(secondCreatedIdeaMilestone.ordinalNumber).toBe(firstCreatedIdeaMilestone.ordinalNumber + 1)
     })
@@ -237,10 +237,10 @@ describe(`/api/v1/ideas`, () => {
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
-      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionUser)
+      const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionData)
 
       expect(foundIdeaMilestone.subject).toBe('ideaMilestoneSubject')
       expect(foundIdeaMilestone.networks).toBeDefined()
@@ -260,7 +260,7 @@ describe(`/api/v1/ideas`, () => {
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
-          ), otherUser))
+          ), otherSessionData))
           .rejects
           .toThrow(ForbiddenException)
     })
@@ -270,7 +270,7 @@ describe(`/api/v1/ideas`, () => {
   describe('update', () => {
 
     it('should throw not found if wrong id', async () => {
-      await expect(getIdeaMilestonesService().update(uuid(), { }, sessionUser))
+      await expect(getIdeaMilestonesService().update(uuid(), { }, sessionData))
           .rejects
           .toThrow(NotFoundException)
     })
@@ -284,11 +284,11 @@ describe(`/api/v1/ideas`, () => {
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
       await expect(getIdeaMilestonesService().update(
-          ideaMilestone.id, { dateTo: new Date(2021, 3, 19)}, sessionUser))
+          ideaMilestone.id, { dateTo: new Date(2021, 3, 19)}, sessionData))
           .rejects
           .toThrow(BadRequestException)
     })
@@ -302,12 +302,12 @@ describe(`/api/v1/ideas`, () => {
               new Date(),
               new Date(),
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated subject' }, sessionUser)
+      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated subject' }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.subject).toBe('Updated subject')
     })
@@ -321,12 +321,12 @@ describe(`/api/v1/ideas`, () => {
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated description' }, sessionUser)
+      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated description' }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.subject).toBe('Updated description')
       expect(updatedIdeaMilestone.networks).toBeDefined()
@@ -348,7 +348,7 @@ describe(`/api/v1/ideas`, () => {
               null,
               null,
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
       await getIdeaMilestonesService().update(ideaMilestone.id, {
@@ -358,9 +358,9 @@ describe(`/api/v1/ideas`, () => {
             value: 999
           }
         ]
-      }, sessionUser)
+      }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(1)
@@ -377,7 +377,7 @@ describe(`/api/v1/ideas`, () => {
               null,
               null,
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
       await getIdeaMilestonesService().update(ideaMilestone.id, {
@@ -387,9 +387,9 @@ describe(`/api/v1/ideas`, () => {
             name: 'updatedNetworkName'
           }
         ]
-      }, sessionUser)
+      }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(1)
@@ -406,7 +406,7 @@ describe(`/api/v1/ideas`, () => {
               null,
               null,
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
       await getIdeaMilestonesService().update(ideaMilestone.id, {
@@ -414,12 +414,12 @@ describe(`/api/v1/ideas`, () => {
             ...ideaMilestone.networks,
             {
               name: 'kusama',
-              value: 150
+              value: 150,
             }
         ]
-      }, sessionUser)
+      }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(2)
@@ -443,7 +443,7 @@ describe(`/api/v1/ideas`, () => {
               null,
               null,
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
       const ideaMilestoneNetworkToRemain = ideaMilestone.networks.find(({ name }: IdeaMilestoneNetwork) => name === 'polkadot')!
@@ -452,9 +452,9 @@ describe(`/api/v1/ideas`, () => {
         networks: [
           ideaMilestoneNetworkToRemain
         ]
-      }, sessionUser)
+      }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(1)
@@ -471,14 +471,14 @@ describe(`/api/v1/ideas`, () => {
               null,
               null,
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
       await getIdeaMilestonesService().update(ideaMilestone.id, {
         networks: []
-      }, sessionUser)
+      }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(0)
@@ -493,12 +493,12 @@ describe(`/api/v1/ideas`, () => {
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { dateFrom: new Date(2021, 3, 19) }, sessionUser)
+      await getIdeaMilestonesService().update(ideaMilestone.id, { dateFrom: new Date(2021, 3, 19) }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.dateFrom).toBe('2021-04-19')
     })
@@ -512,12 +512,12 @@ describe(`/api/v1/ideas`, () => {
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { dateTo: new Date(2021, 3, 22) }, sessionUser)
+      await getIdeaMilestonesService().update(ideaMilestone.id, { dateTo: new Date(2021, 3, 22) }, sessionData)
 
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.dateTo).toBe('2021-04-22')
     })
@@ -531,11 +531,11 @@ describe(`/api/v1/ideas`, () => {
               null,
               null,
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { description: 'Updated description' }, sessionUser)
-      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionUser)
+      await getIdeaMilestonesService().update(ideaMilestone.id, { description: 'Updated description' }, sessionData)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
       expect(updatedIdeaMilestone.description).toBe('Updated description')
     })
@@ -549,9 +549,9 @@ describe(`/api/v1/ideas`, () => {
               null,
               null,
               'ideaMilestoneDescription'
-          ), sessionUser
+          ), sessionData
       )
-      await expect(getIdeaMilestonesService().update(ideaMilestone.id, { description: 'Updated description' }, otherUser))
+      await expect(getIdeaMilestonesService().update(ideaMilestone.id, { description: 'Updated description' }, otherSessionData))
           .rejects
           .toThrow(ForbiddenException)
     })

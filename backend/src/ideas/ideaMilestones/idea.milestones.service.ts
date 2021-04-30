@@ -7,9 +7,9 @@ import {IdeasService} from "../ideas.service";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
 import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
-import {IdeaMilestoneNetworkDto} from "./dto/ideaMilestoneNetworkDto";
 import {IdeaMilestone} from "./entities/idea.milestone.entity";
 import {IdeaMilestoneStatus} from "./ideaMilestoneStatus";
+import { CreateIdeaMilestoneNetworkDto } from './dto/createIdeaMilestoneNetworkDto'
 
 @Injectable()
 export class IdeaMilestonesService {
@@ -64,7 +64,7 @@ export class IdeaMilestonesService {
                 idea,
                 subject,
                 IdeaMilestoneStatus.Active,
-                networks.map(({ name, value }: IdeaMilestoneNetworkDto) => new IdeaMilestoneNetwork(name, value)),
+                networks.map(({ name, value }: CreateIdeaMilestoneNetworkDto) => new IdeaMilestoneNetwork(name, value)),
                 dateFrom,
                 dateTo,
                 description
@@ -94,7 +94,7 @@ export class IdeaMilestonesService {
             throw new BadRequestException('End date of the milestone cannot be prior to the start date')
         }
 
-        const updatedNetworks = updateIdeaMilestoneDto.networks && updateIdeaMilestoneDto.networks.map((updatedNetwork: IdeaMilestoneNetworkDto) => {
+        const updatedNetworks = updateIdeaMilestoneDto.networks && updateIdeaMilestoneDto.networks.map((updatedNetwork: CreateIdeaMilestoneNetworkDto) => {
             const existingNetwork =
                 currentIdeaMilestone.networks.find((currentIdeaMilestoneNetwork: IdeaMilestoneNetwork) => currentIdeaMilestoneNetwork.id === updatedNetwork.id)
 

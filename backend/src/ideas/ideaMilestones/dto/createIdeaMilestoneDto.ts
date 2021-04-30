@@ -1,8 +1,8 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
 import {ArrayMinSize, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
 import {Type} from "class-transformer";
-import {IdeaMilestoneNetworkDto} from "./ideaMilestoneNetworkDto";
 import {Nil} from "../../../utils/types";
+import { CreateIdeaMilestoneNetworkDto } from './createIdeaMilestoneNetworkDto'
 
 export class CreateIdeaMilestoneDto {
     @ApiProperty({
@@ -39,17 +39,17 @@ export class CreateIdeaMilestoneDto {
 
     @ApiProperty({
         description: 'Networks of the milestone',
-        type: [IdeaMilestoneNetworkDto]
+        type: [CreateIdeaMilestoneNetworkDto]
     })
-    @Type(() => IdeaMilestoneNetworkDto)
+    @Type(() => CreateIdeaMilestoneNetworkDto)
     @IsNotEmpty()
     @ValidateNested({ each: true })
     @ArrayMinSize(1)
-    networks: IdeaMilestoneNetworkDto[]
+    networks: CreateIdeaMilestoneNetworkDto[]
 
     constructor(
         subject: string,
-        networks: IdeaMilestoneNetworkDto[],
+        networks: CreateIdeaMilestoneNetworkDto[],
         dateFrom: Nil<Date>,
         dateTo: Nil<Date>,
         description: Nil<string>

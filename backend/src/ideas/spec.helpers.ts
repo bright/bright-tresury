@@ -12,7 +12,10 @@ import {IdeaMilestonesService} from "./ideaMilestones/idea.milestones.service";
 import {IdeaMilestone} from "./ideaMilestones/entities/idea.milestone.entity";
 import {CreateIdeaMilestoneDto} from "./ideaMilestones/dto/createIdeaMilestoneDto";
 
-export async function createIdea(idea: Partial<CreateIdeaDto>, sessionUser: SessionData, ideasService?: IdeasService
+export async function createIdea(
+    idea: Partial<CreateIdeaDto>,
+    sessionData: SessionData,
+    ideasService?: IdeasService
 ): Promise<Idea> {
     const defaultIdea: CreateIdeaDto = {
         title: 'title',
@@ -22,20 +25,23 @@ export async function createIdea(idea: Partial<CreateIdeaDto>, sessionUser: Sess
         status: IdeaStatus.Active,
     }
     const service: IdeasService = ideasService ?? beforeSetupFullApp().get().get(IdeasService)
-    return await service.create({ ...defaultIdea, ...idea }, sessionUser)
+    return await service.create({ ...defaultIdea, ...idea }, sessionData)
 }
 
 export async function createIdeaMilestone(
     ideaId: string,
     createIdeaMilestoneDto: CreateIdeaMilestoneDto,
-    sessionUser: SessionData,
+    sessionData: SessionData,
     ideaMilestonesService?: IdeaMilestonesService
 ): Promise<IdeaMilestone> {
     const service: IdeaMilestonesService = ideaMilestonesService ?? beforeSetupFullApp().get().get(IdeaMilestonesService)
-    return await service.create(ideaId, createIdeaMilestoneDto, sessionUser)
+    return await service.create(ideaId, createIdeaMilestoneDto, sessionData)
 }
 
-export async function createSessionUser(user: Partial<User> = {}, usersRepository?: Repository<User>): Promise<SessionData> {
+export async function createSessionUser(
+    user: Partial<User> = {},
+    usersRepository?: Repository<User>
+): Promise<SessionData> {
     const defaultUser = new User(
         user.id ?? uuid(),
         user.username ?? 'chuck',
