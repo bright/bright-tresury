@@ -7,6 +7,11 @@ import {ToggleButtonGroup} from "../../components/toggle/ToggleButtonGroup";
 import {Redirect, Route, Switch, useRouteMatch} from "react-router-dom";
 import Web3SignUp from "./web3/Web3SignUp";
 import {ToggleEntry} from "../../components/toggle/ToggleButton";
+import {ToggleButton} from "../../components/toggle/ToggleButton";
+import {Route, Switch, useRouteMatch} from "react-router-dom";
+import Web3SignUp from "./web3/Web3SignUp";
+import {ToggleEntry} from "../../components/toggle/SingleToggleButton";
+import {Location} from "history";
 import {SignUpComponentWrapper} from "./common/SignUpComponentWrapper";
 
 const useStyles = makeStyles(() =>
