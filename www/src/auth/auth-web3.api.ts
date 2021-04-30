@@ -6,7 +6,7 @@ export interface StartBlockchainSignUpResponse {
 }
 
 export function startAddressSignUp(address: string): Promise<StartBlockchainSignUpResponse> {
-    return apiPost<StartBlockchainSignUpResponse>(`/auth/blockchain/signup/start`, {address})
+    return apiPost<StartBlockchainSignUpResponse>(`/auth/web3/signup/start`, {address})
 }
 
 export interface ConfirmBlockchainSignUpRequest {
@@ -16,5 +16,5 @@ export interface ConfirmBlockchainSignUpRequest {
 }
 
 export function confirmAddressSignUp(address: ConfirmBlockchainSignUpRequest): Promise<void> {
-    return apiPost<void>(`/auth/blockchain/signup/confirm`, address)
+    return apiPost<void>(`/auth/web3/signup/confirm`, address)
 }

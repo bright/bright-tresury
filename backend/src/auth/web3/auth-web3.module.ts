@@ -1,9 +1,9 @@
 import {Module} from "@nestjs/common";
-import {AuthBlockchainController} from "./auth-blockchain.controller";
+import {AuthWeb3Controller} from "./auth-web3.controller";
 import {UsersModule} from "../../users/users.module";
 import {SuperTokensModule} from "../supertokens/supertokens.module";
 import {SessionModule} from "../session/session.module";
-import {AuthBlockchainService} from "./auth-blockchain.service";
+import {AuthWeb3Service} from "./auth-web3.service";
 import {CachingModule} from "../../cache/cache.module";
 
 @Module({
@@ -13,9 +13,9 @@ import {CachingModule} from "../../cache/cache.module";
         SuperTokensModule,
         CachingModule
     ],
-    controllers: [AuthBlockchainController],
-    providers: [AuthBlockchainService],
-    exports: [AuthBlockchainService]
+    controllers: [AuthWeb3Controller],
+    providers: [AuthWeb3Service],
+    exports: [AuthWeb3Service]
 })
-export class AuthBlockchainModule {
+export class AuthWeb3Module {
 }

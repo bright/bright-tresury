@@ -45,7 +45,7 @@ describe(`Auth Controller`, () => {
         await cleanAuthorizationDatabase()
     })
 
-    describe('blockchain sign up', () => {
+    describe('web3 sign up', () => {
         it('should save user in both databases', async () => {
             await createBlockchainSessionHandler(app(), blockchainSignUpUser)
             const user = await getUsersService().findOneByUsername(bobUsername)
@@ -67,6 +67,7 @@ describe(`Auth Controller`, () => {
 
     // TODO: enable this test when blockchain user is automatically verified
     describe.skip('register blockchain token', () => {
+    // describe('register web3 token', () => {
         it('should add token to the current session', async () => {
             const sessionHandler = await createBlockchainSessionHandler(app(), blockchainSignUpUser)
 

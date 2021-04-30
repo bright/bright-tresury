@@ -87,7 +87,7 @@ describe(`Users Service`, () => {
             })).rejects.toThrow(BadRequestException)
         })
     })
-    describe('create blockchain user', () => {
+    describe('create web3 user', () => {
         it('should create user', async () => {
             const user = await getService().createBlockchainUser({
                 authId: uuid(),
@@ -236,7 +236,7 @@ describe(`Users Service`, () => {
     })
 
     describe('find one by blockchainAddress', () => {
-        it('should return user by blockchain address', async () => {
+        it('should return user by web3 address', async () => {
             const blockchainAddress = bobAddress
             await getService().createBlockchainUser({
                 authId: uuid(),
@@ -248,7 +248,7 @@ describe(`Users Service`, () => {
 
             expect(user!.blockchainAddress).toBe(blockchainAddress)
         })
-        it('should throw not found exception if wrong blockchain address', async () => {
+        it('should throw not found exception if wrong web3 address', async () => {
             await expect(getService().findOneByBlockchainAddress(uuid()))
                 .rejects
                 .toThrow(NotFoundException)

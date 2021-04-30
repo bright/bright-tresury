@@ -5,7 +5,7 @@ import Container from "../../components/form/Container";
 import EmailSignUp from "./email/EmailSignUp";
 import {ToggleButton} from "../../components/toggle/ToggleButton";
 import {Route, Switch, useRouteMatch} from "react-router-dom";
-import BlockchainSignUp from "./blockchain/BlockchainSignUp";
+import Web3SignUp from "./web3/Web3SignUp";
 import {ToggleEntry} from "../../components/toggle/SingleToggleButton";
 import {Location} from "history";
 import {SignUpComponentWrapper} from "./common/SignUpComponentWrapper";
@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-enum SignUpOption { Email = 'email', Blockchain = 'blockchain'}
+enum SignUpOption { Email = 'email', Web3 = 'web3'}
 
 const DefaultSignUpOption = SignUpOption.Email
 
@@ -36,8 +36,8 @@ const SignUp: React.FC = () => {
         switch (option) {
             case SignUpOption.Email:
                 return t('auth.signUp.emailSignUpLabel')
-            case SignUpOption.Blockchain:
-                return t('auth.signUp.blockchainSignUpLabel')
+            case SignUpOption.Web3:
+                return t('auth.signUp.web3SignUpLabel')
         }
     }
 
@@ -78,8 +78,8 @@ const SignUp: React.FC = () => {
             <Route exact={true} path={`${path}/${SignUpOption.Email}`}>
                 <EmailSignUp/>
             </Route>
-            <Route exact={true} path={`${path}/${SignUpOption.Blockchain}`}>
-                <BlockchainSignUp/>
+            <Route exact={true} path={`${path}/${SignUpOption.Web3}`}>
+                <Web3SignUp/>
             </Route>
         </Switch>
     </Container>

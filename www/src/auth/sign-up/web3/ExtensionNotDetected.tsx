@@ -30,9 +30,9 @@ export const ExtensionNotDetected: React.FC = () => {
 
     return <div className={classes.root}>
         <SignUpComponentWrapper>
-            <p className={classes.info}>{t('auth.signUp.blockchainSignUp.extensionNotDetected')}</p>
+            <p className={classes.info}>{t('auth.signUp.web3SignUp.extensionNotDetected')}</p>
             <Button variant={'text'} className={classes.button} onClick={() => history.push(ROUTE_SIGNUP_EMAIL)}>
-                {t('auth.signUp.blockchainSignUp.signUpWithEmail')}
+                {t('auth.signUp.web3SignUp.signUpWithEmail')}
             </Button>
         </SignUpComponentWrapper>
     </div>

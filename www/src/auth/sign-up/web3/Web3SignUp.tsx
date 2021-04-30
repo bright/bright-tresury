@@ -15,30 +15,20 @@ import {Account} from "../../../substrate-lib/hooks/useAccounts";
 import SignUpSuccess from "../common/SignUpSucces";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
-import {useBlockchainSignUp} from "./handleBlockchainSignup";
+import {useWeb3SignUp} from "./handleWeb3Signup";
 import {ErrorBox} from "../../../components/form/ErrorBox";
-import {makeStyles, Theme} from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme: Theme) => {
-    return {
-        errorBox: {
-            marginTop: '1em'
-        }
-    }
-})
-
-export interface BlockchainSignUpValues {
+export interface Web3SignUpValues {
     account: Account,
     userAgreement: boolean
 }
 
-const BlockchainSignUp: React.FC = () => {
-    const classes = useStyles()
+const Web3SignUp: React.FC = () => {
     const {t} = useTranslation()
 
-    const {call: signUpCall, loadingState, error} = useBlockchainSignUp()
+    const {call: signUpCall, loadingState, error} = useWeb3SignUp()
 
-    const onSubmit = async (values: BlockchainSignUpValues) => {
+    const onSubmit = async (values: Web3SignUpValues) => {
         await signUpCall(values)
     }
 
@@ -51,7 +41,7 @@ const BlockchainSignUp: React.FC = () => {
     }
 
     if (loadingState === LoadingState.Resolved) {
-        return <SignUpSuccess subtitle={t('auth.signUp.blockchainSignUp.successSubtitle')}/>
+        return <SignUpSuccess subtitle={t('auth.signUp.web3SignUp.successSubtitle')}/>
     }
 
     return <Formik
@@ -70,9 +60,9 @@ const BlockchainSignUp: React.FC = () => {
               handleSubmit,
           }) =>
             <SignUpFormWrapper handleSubmit={handleSubmit}>
-                {error && <div className={classes.errorBox}>
+                {error && <SignUpComponentWrapper>
                     <ErrorBox error={error}/>
-                </div>}
+                </SignUpComponentWrapper>}
                 <SignUpComponentWrapper>
                     <AccountSelect account={values.account}/>
                 </SignUpComponentWrapper>
@@ -89,4 +79,4 @@ const BlockchainSignUp: React.FC = () => {
     </Formik>
 }
 
-export default BlockchainSignUp
+export default Web3SignUp

@@ -1,41 +1,41 @@
 import {web3FromAddress} from "@polkadot/extension-dapp";
 import {Account} from '../../../substrate-lib/hooks/useAccounts';
-import {confirmAddressSignUp, startAddressSignUp} from "../../auth-blockchain.api";
+import {confirmAddressSignUp, startAddressSignUp} from "../../auth-web3.api";
 import config from "../../../config";
 import {LoadingState} from "../../../components/loading/LoadingWrapper";
 import {useCallback, useState} from "react";
 import {stringToHex} from '@polkadot/util';
-import {BlockchainSignUpValues} from "./BlockchainSignUp";
+import {Web3SignUpValues} from "./Web3SignUp";
 import {useTranslation} from "react-i18next";
 
-interface UseBlockchainSignUpResult {
-    call: (values: BlockchainSignUpValues) => Promise<void>
+interface UseWeb3SignUpResult {
+    call: (values: Web3SignUpValues) => Promise<void>
     loadingState: LoadingState
     error?: string
 }
 
-export function useBlockchainSignUp(): UseBlockchainSignUpResult {
+export function useWeb3SignUp(): UseWeb3SignUpResult {
     const {t} = useTranslation()
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
     const [error, setError] = useState<string | undefined>()
 
     const call = useCallback(async (
-        values: BlockchainSignUpValues
+        values: Web3SignUpValues
     ) => {
         setLoadingState(LoadingState.Loading)
         try {
-            await handleBlockchainSignup(values.account)
+            await handleWeb3Signup(values.account)
             setLoadingState(LoadingState.Resolved)
         } catch (e) {
             setLoadingState(LoadingState.Error)
-            setError(t('auth.signUp.blockchainSignUp.failureMessage'))
+            setError(t('auth.signUp.web3SignUp.failureMessage'))
         }
     }, [])
 
     return {call, loadingState, error}
 }
 
-export async function handleBlockchainSignup(account: Account) {
+export async function handleWeb3Signup(account: Account) {
     // const web3Accounts = await getWeb3Accounts();
     // const web3Account = web3Accounts.find(web3Account => web3Account.address === account.address)
     // if (!web3Account) {

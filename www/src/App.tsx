@@ -4,7 +4,7 @@ import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
 import Account from "./auth/account/Account";
-import {AuthContextProvider} from "./auth/AuthContext";
+import {AuthContextProvider, useAuth} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
 import VerifyEmail from "./auth/sign-in/VerifyEmail";
 import SignUp from './auth/sign-up/SignUp';
@@ -47,6 +47,7 @@ const useStyles = makeStyles(() =>
 
 function AppRoutes() {
     const classes = useStyles()
+    const {isUserSignedIn} = useAuth()
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
@@ -68,6 +69,7 @@ function AppRoutes() {
                     <PublicOnlyRoute exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
                     <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
                     <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
+                    <Route exact={true} path={ROUTE_STATS} component={Stats}/>
                     <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>
                     <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>

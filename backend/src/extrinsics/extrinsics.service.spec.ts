@@ -112,7 +112,7 @@ describe('ExtrinsicsService', () => {
             expect(actual!.status).toEqual(ExtrinsicStatuses.ExtrinsicSuccess)
         })
 
-        // todo check exceptions in blockchain and write proper tests
+        // todo check exceptions in web3 and write proper tests
         // it('should update extrinsic with exceptions', async () => {
         //
         // })
@@ -134,7 +134,7 @@ describe('ExtrinsicsService', () => {
             expect(actual.data).toStrictEqual(createExtrinsicDto.data)
         })
 
-        it('should run blockchain service listener', async () => {
+        it('should run web3 service listener', async () => {
             const spy = jest.spyOn(blockchainService, 'listenForExtrinsic')
 
             await service().listenForExtrinsic(createExtrinsicDto)

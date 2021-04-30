@@ -75,7 +75,7 @@
     "signUp": {
       "title": "Sign up",
       "emailSignUpLabel": "E-mail sign up",
-      "blockchainSignUpLabel": "Web 3 address sign up",
+      "web3SignUpLabel": "Web 3 address sign up",
       "logInLabel": "Already have an account? <a>Log in</a>",
       "submitButton": "Sign up",
       "userAgreement": {
@@ -107,7 +107,7 @@
           "successSubtitle": "Please check your email to confirm the registration"
         }
       },
-      "blockchainSignUp": {
+      "web3SignUp": {
         "failureMessage": "Signing up with blockchain account failed.",
         "extensionNotDetected": "Polkadot-js extension not detected.\nNo web 3 account integration could be found. To be able to vote on-chain, visit\nthis page on a computer with polkadot-js extension.",
         "signUpWithEmail": "Sign up with your email",

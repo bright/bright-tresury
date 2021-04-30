@@ -35,7 +35,7 @@ export class SessionHandler {
 
 export const createBlockchainSessionHandler = async (
     app: INestApplication,
-    blockchainUserSignUpDto: BlockchainUserSignUpDto
+    blockchainUserSignUpDto: any // TODO: adjust tests after adding web3 signup
 ): Promise<SessionHandler> => {
     const res: any = await request(app)
         .post(`/api/v1/auth/blockchain/signup`)
