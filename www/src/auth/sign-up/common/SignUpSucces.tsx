@@ -4,6 +4,7 @@ import React from "react";
 import {useTranslation} from "react-i18next";
 import {Header} from "../../../components/text/Header";
 import signupSuccessImg from "../../../assets/signup_success.svg";
+import Container from "../../../components/form/Container";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -32,11 +33,13 @@ const SignUpSuccess: React.FC<Props> = ({subtitle}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    return <div className={classes.root}>
-        <Header>{t('auth.signup.success.title')}</Header>
-        <Typography className={classes.subtitle}>{subtitle}</Typography>
-        <img className={classes.image} src={signupSuccessImg} alt={t('auth.signup.success.mailboxImage')}/>
-    </div>
+    return <Container>
+        <div className={classes.root}>
+            <Header>{t('auth.signUp.success.title')}</Header>
+            <Typography className={classes.subtitle}>{subtitle}</Typography>
+            <img className={classes.image} src={signupSuccessImg} alt={t('auth.signUp.success.mailboxImage')}/>
+        </div>
+    </Container>
 }
 
 export default SignUpSuccess

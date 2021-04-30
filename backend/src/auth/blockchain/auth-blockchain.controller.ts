@@ -14,12 +14,12 @@ export class AuthBlockchainController {
     ) {
     }
 
-    @Post('signup/start')
+    @Post('/signup/start')
     async startSignUp(@Body() startRequest: StartBlockchainSignUpRequest): Promise<StartBlockchainSignUpResponse> {
         return this.authBlockchainService.startSignUp(startRequest)
     }
 
-    @Post('signup/confirm')
+    @Post('/signup/confirm')
     async confirmSignUp(
         @Body() confirmRequest: ConfirmBlockchainSignUpRequest,
         @Res() res: Response

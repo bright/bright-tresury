@@ -1,9 +1,7 @@
 import {Formik} from "formik";
-import {FormikHelpers} from "formik/dist/types";
 import React from "react";
 import {useTranslation} from "react-i18next";
 import * as Yup from "yup";
-import Container from "../../../components/form/Container";
 import {LoadingState} from "../../../components/loading/LoadingWrapper";
 import {fullValidatorForSchema} from "../../../util/form.util";
 import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/TermsAgreementCheckbox";
@@ -18,6 +16,16 @@ import SignUpSuccess from "../common/SignUpSucces";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
 import {useBlockchainSignUp} from "./handleBlockchainSignup";
+import {ErrorBox} from "../../../components/form/ErrorBox";
+import {makeStyles, Theme} from "@material-ui/core/styles";
+
+const useStyles = makeStyles((theme: Theme) => {
+    return {
+        errorBox: {
+            marginTop: '1em'
+        }
+    }
+})
 
 export interface BlockchainSignUpValues {
     account: Account,
@@ -25,12 +33,13 @@ export interface BlockchainSignUpValues {
 }
 
 const BlockchainSignUp: React.FC = () => {
+    const classes = useStyles()
     const {t} = useTranslation()
 
-    const {call: signUpCall, loadingState} = useBlockchainSignUp()
+    const {call: signUpCall, loadingState, error} = useBlockchainSignUp()
 
-    const onSubmit = async (values: BlockchainSignUpValues, {setErrors}: FormikHelpers<BlockchainSignUpValues>) => {
-        await signUpCall(values, setErrors)
+    const onSubmit = async (values: BlockchainSignUpValues) => {
+        await signUpCall(values)
     }
 
     const validationSchema = Yup.object().shape({
@@ -42,9 +51,7 @@ const BlockchainSignUp: React.FC = () => {
     }
 
     if (loadingState === LoadingState.Resolved) {
-        return <Container title={t('auth.signup.title')}>
-            <SignUpSuccess subtitle={t('auth.signup.blockchainSignUp.successSubtitle')}/>
-        </Container>
+        return <SignUpSuccess subtitle={t('auth.signUp.blockchainSignUp.successSubtitle')}/>
     }
 
     return <Formik
@@ -63,6 +70,9 @@ const BlockchainSignUp: React.FC = () => {
               handleSubmit,
           }) =>
             <SignUpFormWrapper handleSubmit={handleSubmit}>
+                {error && <div className={classes.errorBox}>
+                    <ErrorBox error={error}/>
+                </div>}
                 <SignUpComponentWrapper>
                     <AccountSelect account={values.account}/>
                 </SignUpComponentWrapper>

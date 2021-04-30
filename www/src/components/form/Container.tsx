@@ -22,14 +22,14 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 export interface ContainerProps {
-    title: string
+    title?: string
 }
 
 const Container: React.FC<ContainerProps> = ({title, children}) => {
     const classes = useStyles()
 
     return <div className={classes.root}>
-        <FormHeader title={title}/>
+        {title && <FormHeader title={title}/>}
         {children}
     </div>
 }

@@ -54,8 +54,8 @@ export class AuthBlockchainService {
     }
 
     private async validateIfUserAlreadyExist(address: string) {
-        const existingUser = await this.userService.findOneByBlockchainAddress(address)
-        if (existingUser) {
+        const isValid = await this.userService.validateBlockchainAddress(address)
+        if (!isValid) {
             throw new ConflictException('User with this address already exists')
         }
     }
@@ -64,15 +64,26 @@ export class AuthBlockchainService {
         const username = uuid();
         const password = uuid();
 
-        const superTokensUser: SuperTokensUser = await this.superTokensService.signUp(address, password)
-        const createUserDto = {
-            authId: superTokensUser.id,
-            username,
-            blockchainAddress: address,
-        } as CreateBlockchainUserDto
-        await this.userService.createBlockchainUser(createUserDto)
+        try {
+            // tslint:disable-next-line:no-console
+            console.error('Creating Supertokens user')
+            const superTokensUser: SuperTokensUser = await this.superTokensService.signUp(address, password)
+            const createUserDto = {
+                authId: superTokensUser.id,
+                username,
+                blockchainAddress: address,
+            } as CreateBlockchainUserDto
+            // tslint:disable-next-line:no-console
+            console.error('Creating Blockchain user')
+            await this.userService.createBlockchainUser(createUserDto)
 
-        await this.superTokensService.createSession(res, superTokensUser.id)
+            // tslint:disable-next-line:no-console
+            console.error('Creating session')
+            await this.superTokensService.createSession(res, superTokensUser.id)
+        } catch (e) {
+            // tslint:disable-next-line:no-console
+            console.error('Supertokens failure', e)
+        }
     }
 
     private getSignMessageCacheKey = (address: string) => `SignMessage:${address}`

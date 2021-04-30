@@ -16,7 +16,7 @@ async function bootstrap() {
 
     const document = generateSwaggerDocument(app)
 
-    SwaggerModule.setup('api/documentation', app, document)
+    SwaggerModule.setup(`${baseApiPath}/documentation`, app, document)
     logger.info('Configured swagger at path: api/documentation')
 
     const config: AppConfig = app.get('AppConfig')
