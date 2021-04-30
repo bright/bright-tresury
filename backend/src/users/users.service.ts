@@ -7,6 +7,7 @@ import {validateOrReject} from "class-validator";
 import {plainToClass} from "class-transformer";
 import {handleFindError} from "../utils/exceptions/databaseExceptions.handler";
 import {CreateBlockchainUserDto} from "./dto/createBlockchainUser.dto";
+import {BlockchainAddress} from "./blockchainAddress/blockchainAddress.entity";
 
 @Injectable()
 export class UsersService {
@@ -84,7 +85,10 @@ export class UsersService {
             createBlockchainUserDto.authId,
             createBlockchainUserDto.username,
             undefined,
-            createBlockchainUserDto.blockchainAddress
+            {
+                address: createBlockchainUserDto.blockchainAddress
+                user:
+            } as BlockchainAddress
         )
         const createdUser = await this.userRepository.save(user)
         return (await this.userRepository.findOne(createdUser.id))!
