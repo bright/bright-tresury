@@ -69,7 +69,7 @@ export class IdeaMilestoneProposalsService {
             const blockchainProposalIndex = this.extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents)
 
             if (blockchainProposalIndex !== undefined) {
-                await this.convertIdeaMilestoneToProposal(idea, ideaMilestone, ideaMilestoneNetwork, blockchainProposalIndex)
+                await this.turnIdeaMilestoneIntoProposal(idea, ideaMilestone, ideaMilestoneNetwork, blockchainProposalIndex)
             }
         }
 
@@ -107,7 +107,8 @@ export class IdeaMilestoneProposalsService {
         return
     }
 
-    private async convertIdeaMilestoneToProposal(
+    // all entities passed to this function as arguments should be already validated
+    private async turnIdeaMilestoneIntoProposal(
         validIdea: Idea,
         validIdeaMilestone: IdeaMilestone,
         validIdeaMilestoneNetwork: IdeaMilestoneNetwork,
