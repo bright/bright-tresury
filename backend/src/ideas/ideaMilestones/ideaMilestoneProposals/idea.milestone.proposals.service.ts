@@ -13,6 +13,7 @@ import {IdeaMilestoneStatus} from "../ideaMilestoneStatus";
 import {Idea} from "../../entities/idea.entity";
 import {IdeaMilestone} from "../entities/idea.milestone.entity";
 import { BlockchainService } from '../../../blockchain/blockchain.service'
+import { SessionData } from '../../../auth/session/session.decorator'
 
 @Injectable()
 export class IdeaMilestoneProposalsService {
@@ -34,10 +35,13 @@ export class IdeaMilestoneProposalsService {
     async createProposal(
         ideaId: string,
         ideaMilestoneId: string,
-        { ideaMilestoneNetworkId,  extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto
+        { ideaMilestoneNetworkId,  extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto,
+        sessionData: SessionData
     ): Promise<IdeaMilestoneNetwork> {
 
-        const idea = await this.ideasService.findOne(ideaId)
+        const idea = await this.ideasService.findOne(ideaId, sessionData)
+
+        idea.canEditOrThrow(sessionData.user)
 
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()
@@ -47,7 +51,7 @@ export class IdeaMilestoneProposalsService {
             throw new BadRequestException('Idea with the given id is already converted to proposal')
         }
 
-        const ideaMilestone = await this.ideaMilestonesService.findOne(ideaMilestoneId)
+        const ideaMilestone = await this.ideaMilestonesService.findOne(ideaMilestoneId, sessionData)
 
         if (ideaMilestone.status === IdeaMilestoneStatus.TurnedIntoProposal) {
             throw new BadRequestException('Idea milestone with the given id is already converted to proposal')

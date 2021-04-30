@@ -3,7 +3,7 @@ import {UsersService} from "../../users/users.service";
 import {Response} from "express";
 import {SessionRequest} from "./session.middleware";
 import {SuperTokensService} from "../supertokens/supertokens.service";
-import {SessionUser} from "./session.decorator";
+import {SessionData} from "./session.decorator";
 
 export const SessionResolverProvider = 'SessionResolverProvider'
 
@@ -40,9 +40,9 @@ export class SessionResolver implements ISessionResolver {
 
         const sessionData = await session.getSessionData()
 
-        let sessionUser: SessionUser | undefined;
+        let sessionUser: SessionData | undefined;
         if (sessionData.user) {
-            sessionUser = sessionData as SessionUser
+            sessionUser = sessionData as SessionData
         } else {
             const userId = await session.getUserId();
             const user = await this.userService.findOneByAuthId(userId);

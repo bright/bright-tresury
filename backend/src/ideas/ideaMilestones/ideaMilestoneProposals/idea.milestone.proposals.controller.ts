@@ -1,4 +1,4 @@
-import {Body, Controller, HttpCode, HttpStatus, Param, Post} from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common'
 import {ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags} from "@nestjs/swagger";
 import {IdeaMilestoneProposalsService} from "./idea.milestone.proposals.service";
 import {CreateIdeaMilestoneProposalDto} from "./dto/CreateIdeaMilestoneProposalDto";
@@ -6,6 +6,8 @@ import {
     IdeaMilestoneNetworkDto,
     mapIdeaMilestoneNetworkEntityToIdeaMilestoneNetworkDto
 } from "../dto/ideaMilestoneNetworkDto";
+import { SessionGuard } from '../../../auth/session/guard/session.guard'
+import { ReqSession, SessionData } from '../../../auth/session/session.decorator'
 
 @Controller('/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals')
 @ApiTags('idea.milestone.proposals')
@@ -40,12 +42,19 @@ export class IdeaMilestoneProposalsController {
             Value of the idea milestone network with the given id is not greater than zero
         `
     })
+    @UseGuards(SessionGuard)
     async create(
         @Param('ideaId') ideaId: string,
         @Param('ideaMilestoneId') ideaMilestoneId: string,
-        @Body() createIdeaMilestoneProposalDto: CreateIdeaMilestoneProposalDto
+        @Body() createIdeaMilestoneProposalDto: CreateIdeaMilestoneProposalDto,
+        @ReqSession() sessionData: SessionData
     ): Promise<IdeaMilestoneNetworkDto> {
-        const ideaMilestoneNetwork = await this.ideaMilestoneProposalsService.createProposal(ideaId, ideaMilestoneId, createIdeaMilestoneProposalDto)
+        const ideaMilestoneNetwork = await this.ideaMilestoneProposalsService.createProposal(
+            ideaId,
+            ideaMilestoneId,
+            createIdeaMilestoneProposalDto,
+            sessionData
+        )
         return mapIdeaMilestoneNetworkEntityToIdeaMilestoneNetworkDto(ideaMilestoneNetwork)
     }
 

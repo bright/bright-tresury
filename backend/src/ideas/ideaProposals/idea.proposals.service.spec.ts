@@ -1,7 +1,7 @@
 import {ForbiddenException, UnauthorizedException} from "@nestjs/common";
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
-import {SessionUser} from "../../auth/session/session.decorator";
+import {SessionData} from "../../auth/session/session.decorator";
 import {cleanAuthorizationDatabase} from "../../auth/supertokens/specHelpers/supertokens.database.spec.helper";
 import {BlockchainService} from '../../blockchain/blockchain.service';
 import {UpdateExtrinsicDto} from '../../extrinsics/dto/updateExtrinsic.dto';
@@ -34,7 +34,7 @@ describe('IdeaProposalsService', () => {
 
     let idea: Idea
     let dto: CreateIdeaProposalDto
-    let sessionUser: SessionUser
+    let sessionUser: SessionData
 
     const app = beforeSetupFullApp()
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))

@@ -1,6 +1,6 @@
 import {BadRequestException, ForbiddenException, NotFoundException} from "@nestjs/common";
 import {v4 as uuid} from 'uuid'
-import {SessionUser} from "../../auth/session/session.decorator";
+import {SessionData} from "../../auth/session/session.decorator";
 import {beforeSetupFullApp, cleanDatabase} from "../../utils/spec.helpers";
 import {Idea} from "../entities/idea.entity";
 import {IdeasService} from "../ideas.service";
@@ -17,8 +17,8 @@ describe(`/api/v1/ideas`, () => {
   const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
   let idea: Idea
-  let sessionUser: SessionUser
-  let otherUser: SessionUser
+  let sessionUser: SessionData
+  let otherUser: SessionData
 
   beforeEach(async () => {
     await cleanDatabase()

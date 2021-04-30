@@ -1,7 +1,7 @@
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {v4 as uuid} from "uuid";
-import {SessionUser} from "../auth/session/session.decorator";
+import {SessionData} from "../auth/session/session.decorator";
 import {User} from "../users/user.entity";
 import {beforeSetupFullApp} from "../utils/spec.helpers";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
@@ -12,7 +12,7 @@ import {IdeaMilestonesService} from "./ideaMilestones/idea.milestones.service";
 import {IdeaMilestone} from "./ideaMilestones/entities/idea.milestone.entity";
 import {CreateIdeaMilestoneDto} from "./ideaMilestones/dto/createIdeaMilestoneDto";
 
-export async function createIdea(idea: Partial<CreateIdeaDto>, sessionUser: SessionUser, ideasService?: IdeasService
+export async function createIdea(idea: Partial<CreateIdeaDto>, sessionUser: SessionData, ideasService?: IdeasService
 ): Promise<Idea> {
     const defaultIdea: CreateIdeaDto = {
         title: 'title',
@@ -28,14 +28,14 @@ export async function createIdea(idea: Partial<CreateIdeaDto>, sessionUser: Sess
 export async function createIdeaMilestone(
     ideaId: string,
     createIdeaMilestoneDto: CreateIdeaMilestoneDto,
-    sessionUser: SessionUser,
+    sessionUser: SessionData,
     ideaMilestonesService?: IdeaMilestonesService
 ): Promise<IdeaMilestone> {
     const service: IdeaMilestonesService = ideaMilestonesService ?? beforeSetupFullApp().get().get(IdeaMilestonesService)
     return await service.create(ideaId, createIdeaMilestoneDto, sessionUser)
 }
 
-export async function createSessionUser(user: Partial<User> = {}, usersRepository?: Repository<User>): Promise<SessionUser> {
+export async function createSessionUser(user: Partial<User> = {}, usersRepository?: Repository<User>): Promise<SessionData> {
     const defaultUser = new User(
         user.id ?? uuid(),
         user.username ?? 'chuck',

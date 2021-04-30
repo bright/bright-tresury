@@ -7,10 +7,10 @@ import {v4 as uuid} from "uuid";
 import {User} from "../../../users/user.entity"
 import {request} from "../../../utils/spec.helpers";
 import {BlockchainUserSignUpDto} from "../../blockchainUserSignUp.dto";
-import {SessionUser} from "../../session/session.decorator";
+import {SessionData} from "../../session/session.decorator";
 
 export class SessionHandler {
-    readonly user: SessionUser
+    readonly user: SessionData
     private readonly cookies: string
 
     constructor(cookies: string, user: User) {

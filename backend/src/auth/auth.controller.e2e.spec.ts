@@ -2,7 +2,7 @@ import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from "../utils/spec.helpers";
 import {SuperTokensService} from "./supertokens/supertokens.service";
 import {UsersService} from "../users/users.service";
-import {SessionUser} from "./session/session.decorator";
+import {SessionData} from "./session/session.decorator";
 import {
     createBlockchainSessionHandler,
     createSessionHandler,
@@ -78,7 +78,7 @@ describe(`Auth Controller`, () => {
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )
-            const sessionData = await session?.getSessionData() as SessionUser
+            const sessionData = await session?.getSessionData() as SessionData
             expect(sessionData.blockchainToken).toStrictEqual(token)
         })
     })

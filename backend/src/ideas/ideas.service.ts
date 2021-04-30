@@ -1,7 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Brackets, In, Not, Repository} from 'typeorm';
-import {SessionUser} from "../auth/session/session.decorator";
+import {SessionData} from "../auth/session/session.decorator";
 import {getLogger} from "../logging.module";
 import {CreateIdeaDto} from "./dto/createIdea.dto";
 import {CreateIdeaNetworkDto} from "./dto/createIdeaNetwork.dto";
@@ -23,20 +23,20 @@ export class IdeasService {
     ) {
     }
 
-    async find(networkName?: string, user?: SessionUser): Promise<Idea[]> {
+    async find(networkName?: string, sessionData?: SessionData): Promise<Idea[]> {
         try {
             return networkName ? await this.ideaRepository.createQueryBuilder('idea')
                     .leftJoinAndSelect('idea.networks', 'network')
                     .where('network.name = :networkName', {networkName})
                     .andWhere(new Brackets((qb) => {
                         qb.where('idea.status != :draftStatus', {draftStatus: IdeaStatus.Draft})
-                            .orWhere('idea.ownerId = :ownerId', {ownerId: user?.user.id})
+                            .orWhere('idea.ownerId = :ownerId', {ownerId: sessionData?.user.id})
                     }))
                     .getMany()
                 : await this.ideaRepository.find({
                     where: [
                         {status: Not(IdeaStatus.Draft)},
-                        {ownerId: user?.user.id}
+                        {ownerId: sessionData?.user.id}
                     ]
                 })
         } catch (error) {
@@ -45,16 +45,16 @@ export class IdeasService {
         }
     }
 
-    async findOne(id: string, user?: SessionUser): Promise<Idea> {
+    async findOne(id: string, sessionData?: SessionData): Promise<Idea> {
         const idea = await this.ideaRepository.findOne(id, {relations: ['networks']})
         if (!idea) {
             throw new NotFoundException('There is no idea with such id')
         }
-        idea.canGetOrThrow(user?.user)
+        idea.canGetOrThrow(sessionData?.user)
         return idea
     }
 
-    async findOneByNetworkId(networkId: string, user: SessionUser): Promise<Idea> {
+    async findOneByNetworkId(networkId: string, sessionData: SessionData): Promise<Idea> {
         const ideaNetwork = await this.ideaNetworkRepository.findOne(networkId, {relations: ['idea']})
         if (!ideaNetwork) {
             throw new NotFoundException(`There is no idea network with id ${networkId}`)
@@ -62,7 +62,7 @@ export class IdeasService {
         if (!ideaNetwork.idea) {
             throw new NotFoundException(`There is no idea for network with id: ${networkId}`)
         }
-        ideaNetwork.idea.canGetOrThrow(user.user)
+        ideaNetwork.idea.canGetOrThrow(sessionData.user)
         return ideaNetwork.idea
     }
 
@@ -83,9 +83,10 @@ export class IdeasService {
         return result
     }
 
-    async update(updateIdea: UpdateIdeaDto, id: string, user: SessionUser): Promise<Idea> {
-        const currentIdea = await this.findOne(id, user)
-        currentIdea.canEditOrThrow(user.user)
+    async update(updateIdea: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<Idea> {
+        const currentIdea = await this.findOne(id, sessionData)
+
+        currentIdea.canEditOrThrow(sessionData.user)
 
         await this.ideaRepository.save({
             ...currentIdea,
@@ -107,7 +108,7 @@ export class IdeasService {
         ))!
     }
 
-    async create(createIdeaDto: CreateIdeaDto, user: SessionUser): Promise<Idea> {
+    async create(createIdeaDto: CreateIdeaDto, sessionData: SessionData): Promise<Idea> {
         const idea = new Idea(
             createIdeaDto.title,
             createIdeaDto.networks.map((network: CreateIdeaNetworkDto) => new IdeaNetwork(
@@ -115,7 +116,7 @@ export class IdeasService {
                 network.value
             )),
             createIdeaDto.status ?? DefaultIdeaStatus,
-            user.user,
+            sessionData.user,
             createIdeaDto.beneficiary,
             createIdeaDto.content,
             createIdeaDto.field,
@@ -129,9 +130,9 @@ export class IdeasService {
         ))!
     }
 
-    async delete(id: string, user: SessionUser) {
-        const currentIdea = await this.findOne(id, user)
-        currentIdea.canEditOrThrow(user.user)
+    async delete(id: string, sessionData: SessionData) {
+        const currentIdea = await this.findOne(id, sessionData)
+        currentIdea.canEditOrThrow(sessionData.user)
 
         await this.ideaRepository.remove(currentIdea)
     }

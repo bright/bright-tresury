@@ -2,7 +2,7 @@ import {BadRequestException, Body, Controller, Delete, Get, HttpStatus, NotFound
 import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiPropertyOptional, ApiTags} from '@nestjs/swagger';
 import {validate as uuidValidate} from 'uuid';
 import {SessionGuard} from "../auth/session/guard/session.guard";
-import {ReqSession, SessionUser} from "../auth/session/session.decorator";
+import {ReqSession, SessionData} from "../auth/session/session.decorator";
 import {Idea} from './entities/idea.entity';
 import {IdeasService} from './ideas.service';
 import {IdeaDto, toIdeaDto} from "./dto/idea.dto";
@@ -28,7 +28,7 @@ export class IdeasController {
         description: 'Respond with all ideas.',
         type: [IdeaDto],
     })
-    async getIdeas(@ReqSession() session: SessionUser, @Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
+    async getIdeas(@ReqSession() session: SessionData, @Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
         const ideas = await this.ideasService.find(query?.network, session)
         return ideas.map((idea: Idea) => toIdeaDto(idea))
     }
@@ -44,7 +44,7 @@ export class IdeasController {
     @ApiBadRequestResponse({
         description: 'Not valid uuid parameter.',
     })
-    async getIdea(@Param('id') id: string, @ReqSession() session: SessionUser): Promise<IdeaDto> {
+    async getIdea(@Param('id') id: string, @ReqSession() session: SessionData): Promise<IdeaDto> {
         if (!uuidValidate(id)) {
             throw new BadRequestException('Not valid uuid parameter.')
         }
@@ -64,7 +64,7 @@ export class IdeasController {
     })
     @Post()
     @UseGuards(SessionGuard)
-    async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionUser): Promise<IdeaDto> {
+    async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionData): Promise<IdeaDto> {
         const idea = await this.ideasService.create(createIdeaDto, session)
         return toIdeaDto(idea)
     }
@@ -81,7 +81,7 @@ export class IdeasController {
     })
     @Patch(':id')
     @UseGuards(SessionGuard)
-    async updateIdea(@Body() updateIdeaDto: UpdateIdeaDto, @Param('id') id: string, @ReqSession() session: SessionUser): Promise<IdeaDto> {
+    async updateIdea(@Body() updateIdeaDto: UpdateIdeaDto, @Param('id') id: string, @ReqSession() session: SessionData): Promise<IdeaDto> {
         const idea = await this.ideasService.update(updateIdeaDto, id, session)
         return toIdeaDto(idea)
     }
@@ -95,7 +95,7 @@ export class IdeasController {
     })
     @Delete(':id')
     @UseGuards(SessionGuard)
-    async delete(@Param('id') id: string, @ReqSession() session: SessionUser) {
+    async delete(@Param('id') id: string, @ReqSession() session: SessionData) {
         await this.ideasService.delete(id, session)
     }
 }

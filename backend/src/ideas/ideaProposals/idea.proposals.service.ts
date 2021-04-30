@@ -1,17 +1,16 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common'
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
-import {SessionUser} from "../../auth/session/session.decorator";
+import {SessionData} from "../../auth/session/session.decorator";
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
 import {ExtrinsicsService} from "../../extrinsics/extrinsics.service";
 import {IdeaNetwork} from '../entities/ideaNetwork.entity';
 import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
 import {IdeasService} from "../ideas.service";
 import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
-import { BlockchainService } from '../../blockchain/blockchain.service'
-import { Idea } from '../entities/idea.entity'
-import { IdeaStatus } from '../ideaStatus'
-import { IdeaMilestoneNetwork } from '../ideaMilestones/entities/idea.milestone.network.entity'
+import {BlockchainService} from '../../blockchain/blockchain.service'
+import {Idea} from '../entities/idea.entity'
+import {IdeaStatus} from '../ideaStatus'
 
 @Injectable()
 export class IdeaProposalsService {
@@ -26,11 +25,11 @@ export class IdeaProposalsService {
     ) {
     }
 
-    async createProposal(ideaId: string, createIdeaProposalDto: CreateIdeaProposalDto, user: SessionUser): Promise<IdeaNetwork> {
+    async createProposal(ideaId: string, createIdeaProposalDto: CreateIdeaProposalDto, sessionData: SessionData): Promise<IdeaNetwork> {
 
-        const idea = await this.ideasService.findOne(ideaId, user)
+        const idea = await this.ideasService.findOne(ideaId, sessionData)
 
-        idea.canEditOrThrow(user.user)
+        idea.canEditOrThrow(sessionData.user)
 
         if (!idea.beneficiary) {
             throw new EmptyBeneficiaryException()

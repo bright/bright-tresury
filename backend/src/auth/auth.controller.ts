@@ -1,6 +1,6 @@
 import {Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards} from "@nestjs/common";
 import {ApiTags} from "@nestjs/swagger";
-import {ReqSession, SessionUser} from "./session/session.decorator";
+import {ReqSession, SessionData} from "./session/session.decorator";
 import {SessionGuard} from "./session/guard/session.guard";
 import {BlockchainUserSignUpDto} from "./blockchainUserSignUp.dto";
 import {AuthService} from "./auth.service";
@@ -18,7 +18,7 @@ export class AuthController {
 
     @Get('/session')
     @UseGuards(SessionGuard)
-    async getSessionData(@ReqSession() session?: SessionUser): Promise<SessionUser | undefined> {
+    async getSessionData(@ReqSession() session?: SessionData): Promise<SessionData | undefined> {
         return session
     }
 
@@ -34,7 +34,7 @@ export class AuthController {
         @Req() req: Request,
         @Res() res: Response,
         @Body() blockchainToken: RegisterBlockchainTokenDto,
-        @ReqSession() session: SessionUser
+        @ReqSession() session: SessionData
     ) {
         await this.authService.registerBlockchainToken(req, res, blockchainToken.token)
         res.status(HttpStatus.OK).send()

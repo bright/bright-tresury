@@ -1,13 +1,13 @@
 import {Injectable} from "@nestjs/common";
 import {Response} from "express";
-import {SessionUser} from "./session.decorator";
+import {SessionData} from "./session.decorator";
 import {ISessionResolver} from "./session.resolver";
 import {SessionRequest} from "./session.middleware";
 
 @Injectable()
 export class MockSessionResolver implements ISessionResolver {
 
-    sessionUser?: SessionUser
+    sessionUser?: SessionData
 
     async validateSession(req: SessionRequest, res: Response): Promise<boolean> {
         return !!this.sessionUser

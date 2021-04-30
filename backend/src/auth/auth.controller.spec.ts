@@ -2,7 +2,7 @@ import {v4 as uuid} from 'uuid';
 import {beforeSetupFullApp, cleanDatabase, request} from "../utils/spec.helpers";
 import {MockSessionGuard} from "./session/guard/session.spec.guard";
 import {HttpStatus} from "@nestjs/common";
-import {SessionUser} from "./session/session.decorator";
+import {SessionData} from "./session/session.decorator";
 import {MockSessionResolver} from "./session/session.spec.resolver";
 import {UsersService} from "../users/users.service";
 import {CreateUserDto} from "../users/dto/createUser.dto";
@@ -23,7 +23,7 @@ describe(`Auth Controller`, () => {
     const bobEmail = 'bob@bobby.bob'
     const bobUsername = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
-    let sessionUser: SessionUser
+    let sessionUser: SessionData
 
     beforeAll(async () => {
         const user = await getUsersService().create({

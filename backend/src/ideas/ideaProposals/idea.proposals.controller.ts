@@ -1,7 +1,7 @@
 import {Body, Controller, HttpCode, HttpStatus, Param, Post, UseGuards} from '@nestjs/common';
 import {ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags} from '@nestjs/swagger'
 import {SessionGuard} from "../../auth/session/guard/session.guard";
-import {ReqSession, SessionUser} from "../../auth/session/session.decorator";
+import {ReqSession, SessionData} from "../../auth/session/session.decorator";
 import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
 import {IdeaProposalsService} from './idea.proposals.service';
 import {IdeaNetworkDto, toIdeaNetworkDto} from "../dto/ideaNetwork.dto";
@@ -38,9 +38,9 @@ export class IdeaProposalsController {
     async createProposal(
         @Param('id') ideaId: string,
         @Body() createIdeaProposalDto: CreateIdeaProposalDto,
-        @ReqSession() session: SessionUser
+        @ReqSession() sessionData: SessionData
     ): Promise<IdeaNetworkDto> {
-        const ideaNetwork = await this.ideaProposalsService.createProposal(ideaId, createIdeaProposalDto, session)
+        const ideaNetwork = await this.ideaProposalsService.createProposal(ideaId, createIdeaProposalDto, sessionData)
         return toIdeaNetworkDto(ideaNetwork)
     }
 }

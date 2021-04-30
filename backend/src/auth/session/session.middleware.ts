@@ -1,10 +1,10 @@
 import {Inject, Injectable, NestMiddleware} from "@nestjs/common";
 import {NextFunction, Request, Response} from "express";
-import {SessionUser} from "./session.decorator";
+import {SessionData} from "./session.decorator";
 import {ISessionResolver, SessionResolverProvider} from "./session.resolver";
 
 export interface SessionRequest extends Request {
-    session?: SessionUser;
+    session?: SessionData;
 }
 
 /**

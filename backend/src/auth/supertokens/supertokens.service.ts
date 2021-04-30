@@ -11,7 +11,7 @@ import {getLogger} from "../../logging.module";
 import {CreateUserDto} from "../../users/dto/createUser.dto";
 import {User} from "../../users/user.entity";
 import {UsersService} from "../../users/users.service";
-import {SessionUser} from "../session/session.decorator";
+import {SessionData} from "../session/session.decorator";
 import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {isEmailVerified as superTokensIsEmailVerified} from "supertokens-node/lib/build/recipe/emailverification";
 
@@ -93,7 +93,7 @@ export class SuperTokensService {
         }
     }
 
-    async addSessionData(req: Request, res: Response, data: Partial<SessionUser>) {
+    async addSessionData(req: Request, res: Response, data: Partial<SessionData>) {
         const session = await this.getSession(req, res, false)
         if (session) {
             const currentSessionData = await session.getSessionData()

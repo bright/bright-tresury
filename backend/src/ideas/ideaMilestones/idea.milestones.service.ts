@@ -2,7 +2,7 @@ import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common
 import {InjectRepository} from "@nestjs/typeorm";
 import {isBefore} from 'date-fns'
 import {Repository} from "typeorm";
-import {SessionUser} from "../../auth/session/session.decorator";
+import {SessionData} from "../../auth/session/session.decorator";
 import {IdeasService} from "../ideas.service";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
@@ -23,8 +23,8 @@ export class IdeaMilestonesService {
     ) {
     }
 
-    async find(ideaId: string, session: SessionUser): Promise<IdeaMilestone[]> {
-        const idea = await this.ideasService.findOne(ideaId, session)
+    async find(ideaId: string, sessionData: SessionData): Promise<IdeaMilestone[]> {
+        const idea = await this.ideasService.findOne(ideaId, sessionData)
         if (!idea) {
             throw new NotFoundException('Idea with the given id not found')
         }
@@ -34,18 +34,26 @@ export class IdeaMilestonesService {
         })
     }
 
-    async findOne(ideaMilestoneId: string, session: SessionUser): Promise<IdeaMilestone> {
-        const ideaMilestone = await this.ideaMilestoneRepository.findOne(ideaMilestoneId, { relations: ['networks', 'idea'] })
+    async findOne(ideaMilestoneId: string, sessionData: SessionData): Promise<IdeaMilestone> {
+        const ideaMilestone = await this.ideaMilestoneRepository.findOne(ideaMilestoneId, {
+            relations: ['networks', 'idea']
+        })
         if (!ideaMilestone) {
             throw new NotFoundException('Idea milestone with the given id not found')
         }
-        ideaMilestone.idea.canGetOrThrow(session.user)
+        ideaMilestone.idea.canGetOrThrow(sessionData.user)
         return ideaMilestone
     }
 
-    async create(ideaId: string, { subject, dateFrom, dateTo, description, networks }: CreateIdeaMilestoneDto, session: SessionUser): Promise<IdeaMilestone> {
-        const idea = await this.ideasService.findOne(ideaId, session)
-        idea.canEditOrThrow(session.user)
+    async create(
+        ideaId: string,
+        { subject, dateFrom, dateTo, description, networks }: CreateIdeaMilestoneDto,
+        sessionData: SessionData
+    ): Promise<IdeaMilestone> {
+
+        const idea = await this.ideasService.findOne(ideaId, sessionData)
+
+        idea.canEditOrThrow(sessionData.user)
 
         if (dateFrom && dateTo && isBefore(new Date(dateTo), new Date(dateFrom))) {
             throw new BadRequestException('End date of the milestone cannot be prior to the start date')
@@ -65,13 +73,19 @@ export class IdeaMilestonesService {
         return (await this.ideaMilestoneRepository.findOne(savedIdeaMilestone.id, { relations: ['networks'] }))!
     }
 
-    async update(ideaMilestoneId: string, updateIdeaMilestoneDto: UpdateIdeaMilestoneDto, session: SessionUser): Promise<IdeaMilestone> {
+    async update(
+        ideaMilestoneId: string,
+        updateIdeaMilestoneDto: UpdateIdeaMilestoneDto,
+        sessionData: SessionData
+    ): Promise<IdeaMilestone> {
 
         const currentIdeaMilestone = await this.ideaMilestoneRepository.findOne(ideaMilestoneId, { relations: ['networks', 'idea'] })
+
         if (!currentIdeaMilestone) {
             throw new NotFoundException('Idea milestone with the given id not found')
         }
-        currentIdeaMilestone.idea.canEditOrThrow(session.user)
+
+        currentIdeaMilestone.idea.canEditOrThrow(sessionData.user)
 
         const dateFrom = updateIdeaMilestoneDto.dateFrom ?? currentIdeaMilestone.dateFrom
         const dateTo = updateIdeaMilestoneDto.dateTo ?? currentIdeaMilestone.dateTo
