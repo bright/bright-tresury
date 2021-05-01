@@ -55,7 +55,7 @@ export class UsersService {
         }
     }
 
-    async findOneByBlockchainAddress(blockchainAddress: string): Promise<User | undefined> {
+    async findOneByBlockchainAddress(blockchainAddress: string): Promise<User> {
         const users = await this.userRepository.find({
             where: {
                 blockchainAddresses: {

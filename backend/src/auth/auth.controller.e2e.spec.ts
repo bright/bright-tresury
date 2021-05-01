@@ -13,7 +13,6 @@ import {cleanAuthorizationDatabase, getAuthUser} from "./supertokens/specHelpers
 describe(`Auth Controller`, () => {
 
     const baseUrl = '/api/v1'
-    const baseAuthUrl = `${baseUrl}/auth`
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(SuperTokensService)
@@ -22,8 +21,6 @@ describe(`Auth Controller`, () => {
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const bobEmail = 'bob@bobby.bob'
     const bobUsername = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
-
-    const blockchainSignUpUser = {address: bobAddress, username: bobUsername, token: uuid()}
 
     const superTokensSignUpUserPassword = uuid()
 
@@ -47,8 +44,8 @@ describe(`Auth Controller`, () => {
 
     describe('web3 sign up', () => {
         it('should save user in both databases', async () => {
-            await createBlockchainSessionHandler(app(), blockchainSignUpUser)
-            const user = await getUsersService().findOneByUsername(bobUsername)
+            await createBlockchainSessionHandler(app(), bobAddress)
+            const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
             const superTokensUser = await getAuthUser(user.authId)
 
             expect(user).toBeDefined()
@@ -56,7 +53,7 @@ describe(`Auth Controller`, () => {
             expect(superTokensUser!.id).toBe(user.authId)
         })
         it('should create session', async () => {
-            const sessionHandler = await createBlockchainSessionHandler(app(), blockchainSignUpUser)
+            const sessionHandler = await createBlockchainSessionHandler(app(), bobAddress)
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )

@@ -6,7 +6,8 @@ import {createEmailVerificationToken, verifyEmailUsingToken} from "supertokens-n
 import {v4 as uuid} from "uuid";
 import {User} from "../../../users/user.entity"
 import {request} from "../../../utils/spec.helpers";
-import {BlockchainUserSignUpDto} from "../../blockchainUserSignUp.dto";
+import {AuthWeb3Service} from "../../web3/auth-web3.service";
+import {v4 as uuid} from 'uuid';
 import {SessionData} from "../../session/session.decorator";
 
 export class SessionHandler {
@@ -35,13 +36,26 @@ export class SessionHandler {
 
 export const createBlockchainSessionHandler = async (
     app: INestApplication,
-    blockchainUserSignUpDto: any // TODO: adjust tests after adding web3 signup
+    address: string
 ): Promise<SessionHandler> => {
-    const res: any = await request(app)
-        .post(`/api/v1/auth/blockchain/signup`)
-        .send(blockchainUserSignUpDto)
-    const user = await app.get(getRepositoryToken(User)).findOne({blockchainAddress: blockchainUserSignUpDto.address})
-    return createSessionHandler(res, user)
+    const web3Service = app.get(AuthWeb3Service)
+    /**
+     * Mock signature validation so that we don't use real blockchain for signing.
+     */
+    jest.spyOn(web3Service, 'validateSignature').mockImplementation((): boolean => true)
+
+    await request(app)
+        .post(`/api/v1/auth/web3/signup/start`)
+        .send({address})
+
+    const confirmSignUpRes: any = await request(app)
+        .post(`/api/v1/auth/web3/signup/confirm`)
+        .send({
+            address,
+            network: 'localhost',
+            signature: uuid()
+        })
+    return createSessionHandler(confirmSignUpRes)
 }
 
 export const createUserSessionHandlerWithVerifiedEmail = async (
