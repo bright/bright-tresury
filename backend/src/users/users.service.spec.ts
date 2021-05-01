@@ -6,12 +6,14 @@ import {UsersService} from "./users.service";
 import {User} from "./user.entity";
 import {CreateUserDto} from "./dto/createUser.dto";
 import {CreateBlockchainUserDto} from "./dto/createBlockchainUser.dto";
+import {BlockchainAddress} from "./blockchainAddress/blockchainAddress.entity";
 
 describe(`Users Service`, () => {
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(UsersService)
     const getRepository = () => app.get().get(getRepositoryToken(User))
+    const getBlockchainAddressRepository = () => app.get().get(getRepositoryToken(BlockchainAddress))
 
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
@@ -104,6 +106,17 @@ describe(`Users Service`, () => {
             })
             const savedUser = await getRepository().findOne(user.id)
             expect(savedUser).toBeDefined()
+        })
+        it('should save user and address', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress
+            })
+            const savedUser = await getRepository().findOne(user.id)
+            expect(savedUser).toBeDefined()
+            const savedAddress = await getBlockchainAddressRepository().findOne(user.blockchainAddresses![0].id)
+            expect(savedAddress.address).toBe(bobAddress)
         })
         it('should throw bad request exception when address exists', async () => {
             const user: CreateBlockchainUserDto = {
@@ -246,7 +259,7 @@ describe(`Users Service`, () => {
 
             const user = await getService().findOneByBlockchainAddress(blockchainAddress)
 
-            expect(user!.blockchainAddress).toBe(blockchainAddress)
+            expect(user).toBeDefined()
         })
         it('should throw not found exception if wrong web3 address', async () => {
             await expect(getService().findOneByBlockchainAddress(uuid()))
@@ -266,6 +279,23 @@ describe(`Users Service`, () => {
             await expect(getService().findOne(user.id))
                 .rejects
                 .toThrow(NotFoundException)
+        })
+        it('deletes user and blockchain addresses', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Chuck',
+                blockchainAddress: bobAddress
+            })
+            await getService().delete(user.id)
+            await expect(getService().findOne(user.id))
+                .rejects
+                .toThrow(NotFoundException)
+            const addresses = await getBlockchainAddressRepository().find({
+                user: {
+                    id: user.id
+                }
+            })
+            expect(addresses.length).toBe(0)
         })
         it('deleting not existing user throws not found exception', async () => {
             await expect(getService().delete(uuid()))

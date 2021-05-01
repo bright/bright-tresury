@@ -5,10 +5,12 @@ import {SuperTokensModule} from "../supertokens/supertokens.module";
 import {SessionModule} from "../session/session.module";
 import {AuthWeb3Service} from "./auth-web3.service";
 import {CachingModule} from "../../cache/cache.module";
+import {BlockchainAddressModule} from "../../users/blockchainAddress/blockchainAddress.module";
 
 @Module({
     imports: [
         UsersModule,
+        BlockchainAddressModule,
         SessionModule,
         SuperTokensModule,
         CachingModule

@@ -10,6 +10,7 @@ import {v4 as uuid} from 'uuid';
 import {CacheManager} from "../../cache/cache.manager";
 import {decodeAddress, signatureVerify} from '@polkadot/util-crypto';
 import {u8aToHex} from '@polkadot/util';
+import {BlockchainAddressService} from "../../users/blockchainAddress/blockchainAddress.service";
 
 @Injectable()
 export class AuthWeb3Service {
@@ -21,6 +22,7 @@ export class AuthWeb3Service {
 
     constructor(
         private readonly userService: UsersService,
+        private readonly blockchainAddressService: BlockchainAddressService,
         private readonly superTokensService: SuperTokensService,
         private readonly cacheManager: CacheManager
     ) {
@@ -54,7 +56,7 @@ export class AuthWeb3Service {
     }
 
     private async validateIfUserAlreadyExist(address: string) {
-        const isValid = await this.userService.validateBlockchainAddress(address)
+        const isValid = await this.blockchainAddressService.validateAddress(address)
         if (!isValid) {
             throw new ConflictException('User with this address already exists')
         }

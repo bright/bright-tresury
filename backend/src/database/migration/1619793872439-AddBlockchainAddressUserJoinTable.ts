@@ -7,6 +7,9 @@ export class AddBlockchainAddressUserJoinTable1619793872439 implements Migration
         await queryRunner.query(`
             create table user_blockchain_address
             (
+                "id" uuid primary key,
+                "createdAt" timestamp with time zone not null default CURRENT_TIMESTAMP,
+                "updatedAt" timestamp with time zone not null default CURRENT_TIMESTAMP,
                 "userId" uuid not null
                 constraint user_blockchain_address_users_id_fk
                 references users

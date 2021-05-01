@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
+import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {User} from "./user.entity";
@@ -8,19 +8,24 @@ import {plainToClass} from "class-transformer";
 import {handleFindError} from "../utils/exceptions/databaseExceptions.handler";
 import {CreateBlockchainUserDto} from "./dto/createBlockchainUser.dto";
 import {BlockchainAddress} from "./blockchainAddress/blockchainAddress.entity";
+import {BlockchainAddressService} from "./blockchainAddress/blockchainAddress.service";
 
 @Injectable()
 export class UsersService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
+        private readonly blockchainAddressService: BlockchainAddressService,
     ) {
     }
 
     async findOne(id: string): Promise<User> {
         try {
-            const user = await this.userRepository.findOneOrFail(id)
-            return user
+            return await this.userRepository.findOneOrFail(
+                id, {
+                    relations: ['blockchainAddresses']
+                }
+            )
         } catch (e) {
             throw handleFindError(e, 'There is no user with such id')
         }
@@ -28,8 +33,7 @@ export class UsersService {
 
     async findOneByUsername(username: string): Promise<User> {
         try {
-            const user = await this.userRepository.findOneOrFail({username})
-            return user
+            return await this.userRepository.findOneOrFail({username})
         } catch (e) {
             throw handleFindError(e, 'There is no user with such username')
         }
@@ -37,8 +41,7 @@ export class UsersService {
 
     async findOneByEmail(email: string): Promise<User> {
         try {
-            const user = await this.userRepository.findOneOrFail({email})
-            return user
+            return await this.userRepository.findOneOrFail({email})
         } catch (e) {
             throw handleFindError(e, 'There is no user with such email')
         }
@@ -46,19 +49,24 @@ export class UsersService {
 
     async findOneByAuthId(authId: string): Promise<User> {
         try {
-            const user = await this.userRepository.findOneOrFail({authId})
-            return user
+            return await this.userRepository.findOneOrFail({authId})
         } catch (e) {
             throw handleFindError(e, 'There is no user with such authId')
         }
     }
 
     async findOneByBlockchainAddress(blockchainAddress: string): Promise<User | undefined> {
-        try {
-            const user = await this.userRepository.findOneOrFail({blockchainAddress})
-            return user
-        } catch (e) {
-            throw handleFindError(e, 'There is no user with such web3 address')
+        const users = await this.userRepository.find({
+            where: {
+                blockchainAddresses: {
+                    address: blockchainAddress
+                }
+            },
+        })
+        if (!users || users.length !== 1) {
+            throw new NotFoundException('User not found')
+        } else {
+            return users[0]
         }
     }
 
@@ -73,7 +81,7 @@ export class UsersService {
             createUserDto.email
         )
         const createdUser = await this.userRepository.save(user)
-        return (await this.userRepository.findOne(createdUser.id))!
+        return (await this.findOne(createdUser.id))!
     }
 
     async createBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<User> {
@@ -81,17 +89,18 @@ export class UsersService {
         if (!valid) {
             throw new BadRequestException('Invalid user')
         }
-        const user = new User(
+        const user = await this.userRepository.save(new User(
             createBlockchainUserDto.authId,
             createBlockchainUserDto.username,
             undefined,
-            {
-                address: createBlockchainUserDto.blockchainAddress
-                user:
-            } as BlockchainAddress
-        )
-        const createdUser = await this.userRepository.save(user)
-        return (await this.userRepository.findOne(createdUser.id))!
+            [],
+        ))
+        await this.blockchainAddressService.create(new BlockchainAddress(
+            createBlockchainUserDto.blockchainAddress,
+            user,
+            true,
+        ))
+        return (await this.findOne(user.id))!
     }
 
     async delete(id: string) {
@@ -109,11 +118,6 @@ export class UsersService {
         return !user
     }
 
-    async validateBlockchainAddress(blockchainAddress: string): Promise<boolean> {
-        const user = await this.userRepository.findOne({blockchainAddress})
-        return !user
-    }
-
     private async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
         try {
             await validateOrReject(plainToClass(CreateUserDto, createUserDto))
@@ -121,11 +125,8 @@ export class UsersService {
             if (!validUsername) {
                 return false
             }
-            const validEmail = await this.validateEmail(createUserDto.email)
-            if (!validEmail) {
-                return false
-            }
-            return true
+            return await this.validateEmail(createUserDto.email);
+
         } catch (e) {
             return false
         }
@@ -138,11 +139,7 @@ export class UsersService {
             if (!validUsername) {
                 return false
             }
-            const validAddress = await this.validateBlockchainAddress(createBlockchainUserDto.blockchainAddress)
-            if (!validAddress) {
-                return false
-            }
-            return true
+            return await this.blockchainAddressService.validateAddress(createBlockchainUserDto.blockchainAddress);
         } catch (e) {
             return false
         }

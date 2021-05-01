@@ -8,8 +8,11 @@ export class BlockchainAddress extends BaseEntity {
     @Column({nullable: false, type: "text", unique: true})
     address: string
 
-    @ManyToOne(() => User, (user) => user.blockchainAddresses)
-    user: User;
+    @ManyToOne(
+        () => User,
+        (user) => user.blockchainAddresses
+    )
+    user: User
 
     @Column({nullable: false, type: "boolean", default: false})
     isPrimary: boolean
@@ -17,7 +20,7 @@ export class BlockchainAddress extends BaseEntity {
     constructor(
         address: string,
         user: User,
-        isPrimary: boolean
+        isPrimary: boolean,
     ) {
         super()
         this.address = address

@@ -15,8 +15,16 @@ export class User extends BaseEntity {
     @Column({nullable: true, type: "text", unique: true})
     email?: string
 
-    @OneToMany(() => BlockchainAddress, (blockchainAddress) => blockchainAddress.user)
-    blockchainAddresses: BlockchainAddress[];
+    @OneToMany(
+        () => BlockchainAddress,
+        (blockchainAddress) => blockchainAddress.user,
+        {
+            cascade: true,
+            onDelete: 'CASCADE',
+            onUpdate: 'CASCADE'
+        }
+    )
+    blockchainAddresses?: BlockchainAddress[];
 
     constructor(
         authId: string,
@@ -29,7 +37,7 @@ export class User extends BaseEntity {
         this.authId = authId
         this.username = username
         this.email = email
-        this.blockchainAddresses = blockchainAddresses ?? []
+        this.blockchainAddresses = blockchainAddresses
         this.id = id ?? uuid()
     }
 }
