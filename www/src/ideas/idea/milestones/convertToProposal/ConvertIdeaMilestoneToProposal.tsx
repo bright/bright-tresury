@@ -17,24 +17,24 @@ export const ConvertIdeaMilestoneToProposal = ({ idea, ideaMilestone, onCancel }
     const history = useHistory()
 
     const [patchedIdeaMilestone, setPatchedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
-    const [convertIdeaMilestoneToProposalModalOpen, setConvertIdeaMilestoneToProposalModalOpen] = useState<boolean>(true)
-    const [submitConvertIdeaMilestoneToProposalModalOpen, setSubmitConvertIdeaMilestoneToProposalModalOpen] = useState<boolean>(false)
+    const [convertModalOpen, setConvertModalOpen] = useState<boolean>(true)
+    const [submitModalOpen, setSubmitModalOpen] = useState<boolean>(false)
 
-    const handleConvertIdeaMilestoneToProposalModalClose = () => {
-        setConvertIdeaMilestoneToProposalModalOpen(false)
+    const handleConvertModalClose = () => {
+        setConvertModalOpen(false)
         onCancel()
     }
 
-    const handleSubmitConvertIdeaMilestoneToProposalModelClose = () => {
-        setSubmitConvertIdeaMilestoneToProposalModalOpen(false)
+    const handleSubmitModalClose = () => {
+        setSubmitModalOpen(false)
         setPatchedIdeaMilestone(null)
         onCancel()
     }
 
     const handleConvertSubmit = (patchedIdeaMilestone: IdeaMilestoneDto) => {
         setPatchedIdeaMilestone(patchedIdeaMilestone)
-        setConvertIdeaMilestoneToProposalModalOpen(false)
-        setSubmitConvertIdeaMilestoneToProposalModalOpen(true)
+        setConvertModalOpen(false)
+        setSubmitModalOpen(true)
     }
 
     const goToProposals = () => {
@@ -44,19 +44,19 @@ export const ConvertIdeaMilestoneToProposal = ({ idea, ideaMilestone, onCancel }
     return (
         <>
             <ConvertIdeaMilestoneToProposalModal
-                open={convertIdeaMilestoneToProposalModalOpen}
+                open={convertModalOpen}
                 idea={idea}
                 ideaMilestone={ideaMilestone}
-                handleCloseModal={handleConvertIdeaMilestoneToProposalModalClose}
+                handleCloseModal={handleConvertModalClose}
                 handleConvertSubmit={handleConvertSubmit}
             />
             { patchedIdeaMilestone
                 ? <SubmitConvertIdeaMilestoneToProposalModal
-                    open={submitConvertIdeaMilestoneToProposalModalOpen}
+                    open={submitModalOpen}
                     idea={idea}
                     ideaMilestone={patchedIdeaMilestone}
                     onSuccess={goToProposals}
-                    onClose={handleSubmitConvertIdeaMilestoneToProposalModelClose}
+                    onClose={handleSubmitModalClose}
                  />
                 : null
             }
