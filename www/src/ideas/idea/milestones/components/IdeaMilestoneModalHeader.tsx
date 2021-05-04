@@ -1,23 +1,16 @@
 import React from "react";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
+import styled from '@material-ui/core/styles/styled'
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        root: {
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between'
-        }
-    }),
-);
+const StyledDiv = styled('div')({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between'
+});
 
 export const IdeaMilestoneModalHeader: React.FC = ({ children }) => {
-
-    const classes = useStyles()
-
     return (
-        <div className={classes.root}>
+        <StyledDiv>
             {children}
-        </div>
+        </StyledDiv>
     )
 }
