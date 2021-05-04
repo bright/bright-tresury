@@ -4,7 +4,6 @@ import {SuperTokensService} from "./supertokens/supertokens.service";
 import {UsersService} from "../users/users.service";
 import {SessionData} from "./session/session.decorator";
 import {
-    createBlockchainSessionHandler,
     createSessionHandler,
     createUserSessionHandler
 } from "./supertokens/specHelpers/supertokens.session.spec.helper";
@@ -18,7 +17,6 @@ describe(`Auth Controller`, () => {
     const getService = () => app.get().get(SuperTokensService)
     const getUsersService = () => app.get().get(UsersService)
 
-    const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const bobEmail = 'bob@bobby.bob'
     const bobUsername = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 

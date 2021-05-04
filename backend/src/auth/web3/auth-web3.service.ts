@@ -11,6 +11,7 @@ import {CacheManager} from "../../cache/cache.manager";
 import {decodeAddress, signatureVerify} from '@polkadot/util-crypto';
 import {u8aToHex} from '@polkadot/util';
 import {BlockchainAddressService} from "../../users/blockchainAddress/blockchainAddress.service";
+import {isValidAddress} from "../../utils/address/address.validator";
 
 @Injectable()
 export class AuthWeb3Service {
@@ -29,7 +30,7 @@ export class AuthWeb3Service {
     }
 
     async startSignUp(startDto: StartWeb3SignUpRequest): Promise<StartBlockchainSignUpResponse> {
-        await this.validateIfUserAlreadyExist(startDto.address)
+        await this.validateAddress(startDto.address)
 
         const signMessage = uuid()
         const signMessageKey = this.getSignMessageCacheKey(startDto.address)
@@ -39,7 +40,7 @@ export class AuthWeb3Service {
     }
 
     async confirmSignUp(confirmRequest: ConfirmWeb3SignUpRequest, res: Response): Promise<void> {
-        await this.validateIfUserAlreadyExist(confirmRequest.address)
+        await this.validateAddress(confirmRequest.address)
 
         const signMessageKey = this.getSignMessageCacheKey(confirmRequest.address)
         const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
@@ -55,9 +56,21 @@ export class AuthWeb3Service {
         }
     }
 
-    private async validateIfUserAlreadyExist(address: string) {
-        const isValid = await this.blockchainAddressService.validateAddress(address)
+    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignUpRequest): boolean => {
+        const publicAddressKey = decodeAddress(confirmRequest.address);
+        const publicHexAddressKey = u8aToHex(publicAddressKey);
+
+        const result = signatureVerify(signMessage, confirmRequest.signature, publicHexAddressKey)
+        return result.isValid
+    }
+
+    private async validateAddress(address: string) {
+        const isValid = isValidAddress(address)
         if (!isValid) {
+            throw new BadRequestException('Incorrect address')
+        }
+        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
+        if (!doesAddressExist) {
             throw new ConflictException('User with this address already exists')
         }
     }
@@ -77,13 +90,5 @@ export class AuthWeb3Service {
     }
 
     private getSignMessageCacheKey = (address: string) => `SignMessage:${address}`
-
-    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignUpRequest): boolean => {
-        const publicAddressKey = decodeAddress(confirmRequest.address);
-        const publicHexAddressKey = u8aToHex(publicAddressKey);
-
-        const result = signatureVerify(signMessage, confirmRequest.signature, publicHexAddressKey)
-        return result.isValid
-    }
 
 }

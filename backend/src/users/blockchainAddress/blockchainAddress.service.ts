@@ -2,7 +2,6 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {BlockchainAddress} from "./blockchainAddress.entity";
-import {isValidAddress} from "../../utils/address/address.validator";
 
 @Injectable()
 export class BlockchainAddressService {
@@ -17,11 +16,7 @@ export class BlockchainAddressService {
         return (await this.blockchainAddressRepository.findOne(createdAddress.id))!
     }
 
-    async validateAddress(address: string): Promise<boolean> {
-        const isValid = isValidAddress(address)
-        if (!isValid) {
-            return false
-        }
+    async doesAddressExist(address: string): Promise<boolean> {
         const existingAddress = await this.blockchainAddressRepository.findOne({address})
         return !existingAddress
     }

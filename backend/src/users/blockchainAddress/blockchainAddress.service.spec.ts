@@ -50,8 +50,8 @@ describe(`Users Service`, () => {
     })
 
     describe('validate address', () => {
-        it('not existing proper address is valid', async () => {
-            const isValid = await getService().validateAddress(bobAddress)
+        it('not existing address is valid', async () => {
+            const isValid = await getService().doesAddressExist(bobAddress)
             expect(isValid).toBe(true)
         })
         it('already existing address is not valid', async () => {
@@ -61,11 +61,7 @@ describe(`Users Service`, () => {
                 true
             ))
 
-            const isValid = await getService().validateAddress(bobAddress)
-            expect(isValid).toBe(false)
-        })
-        it('invalid address is not valid', async () => {
-            const isValid = await getService().validateAddress(uuid())
+            const isValid = await getService().doesAddressExist(bobAddress)
             expect(isValid).toBe(false)
         })
     })

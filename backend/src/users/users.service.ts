@@ -9,6 +9,7 @@ import {handleFindError} from "../utils/exceptions/databaseExceptions.handler";
 import {CreateBlockchainUserDto} from "./dto/createBlockchainUser.dto";
 import {BlockchainAddress} from "./blockchainAddress/blockchainAddress.entity";
 import {BlockchainAddressService} from "./blockchainAddress/blockchainAddress.service";
+import {isValidAddress} from "../utils/address/address.validator";
 
 @Injectable()
 export class UsersService {
@@ -139,7 +140,11 @@ export class UsersService {
             if (!validUsername) {
                 return false
             }
-            return await this.blockchainAddressService.validateAddress(createBlockchainUserDto.blockchainAddress);
+            const validAddress = isValidAddress(createBlockchainUserDto.blockchainAddress)
+            if (!validAddress) {
+                return false
+            }
+            return await this.blockchainAddressService.doesAddressExist(createBlockchainUserDto.blockchainAddress);
         } catch (e) {
             return false
         }
