@@ -19,6 +19,13 @@ export interface AuthContextUser {
     email: string
     isEmailVerified: boolean
     isEmailPassword: boolean
+    isWeb3: boolean
+    web3Addresses: Web3Address[]
+}
+
+export interface Web3Address {
+    address: string
+    isPrimary: boolean
 }
 
 const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
@@ -31,7 +38,13 @@ const AuthContextProvider: React.FC = (props) => {
         if (isUserSignedIn) {
             Session.getJWTPayloadSecurely().then((payload: AuthContextUser) => {
                 // TODO: get isWeb3 from backend
-                setUser({...payload, isEmailPassword: false})
+                setUser({
+                    ...payload, isEmailPassword: false, isWeb3: true, web3Addresses:
+                        [
+                            {address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', isPrimary: true},
+                            {address: '5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY', isPrimary: false},
+                        ]
+                })
             })
         } else {
             setUser(undefined)

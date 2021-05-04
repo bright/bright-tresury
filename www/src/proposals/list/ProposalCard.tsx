@@ -10,7 +10,7 @@ import {ProposalStatusIndicator} from "../status/ProposalStatusIndicator";
 import {ProposalContentType} from "../proposal/ProposalContentTypeTabs";
 import {ProposalIndex} from "./ProposalIndex";
 import {NetworkCard} from "../../components/network/NetworkCard";
-import {AddressInfo} from "../../components/identicon/AddressInfo";
+import {AddressInfoWithLabel} from "../../components/identicon/AddressInfoWithLabel";
 import {NetworkValue} from "../../components/network/NetworkValue";
 import {CardHeader} from "../../components/card/components/CardHeader";
 import {CardDetails} from "../../components/card/components/CardDetails";
@@ -54,8 +54,8 @@ const ProposalCard = ({ proposal }: Props) => {
             <Divider/>
 
             <div className={classes.accountsWrapper}>
-                <AddressInfo label={t('proposal.list.card.beneficiary')} address={proposal.beneficiary} />
-                <AddressInfo label={t('proposal.list.card.proposer')} address={proposal.proposer} />
+                <AddressInfoWithLabel label={t('proposal.list.card.beneficiary')} address={proposal.beneficiary} />
+                <AddressInfoWithLabel label={t('proposal.list.card.proposer')} address={proposal.proposer} />
             </div>
         </NetworkCard>
     )

@@ -52,7 +52,11 @@
       "resetPassword": "ResetPassword",
       "addEmailCredentials": "Add Email Credentials"
     },
-    "blockchainUser": {
+    "web3": {
+      "web3Account": "Web3 Account",
+      "unlink": "Unlink account",
+      "primary": "Primary account",
+      "add": "+ Add blockchain account"
     }
   },
   "auth": {

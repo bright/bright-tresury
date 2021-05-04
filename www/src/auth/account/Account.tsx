@@ -5,6 +5,8 @@ import Avatar from "../../components/avatar/Avatar";
 import Container from "../../components/form/Container";
 import {breakpoints} from "../../theme/theme";
 import EmailPasswordAccount from "./emailPassword/EmailPasswordAccount";
+import Web3Account from "./web3/Web3Account";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,15 +14,6 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             flexDirection: 'row',
             marginTop: '21px',
-            width: '50%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '75%',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                paddingLeft: '1em',
-                paddingRight: '1em',
-                width: '100%',
-            },
         },
         avatarContainer: {
             width: '46px',
@@ -39,6 +32,23 @@ const useStyles = makeStyles((theme: Theme) =>
             marginTop: '32px',
             marginBottom: '32px',
         },
+        halfWidth: {
+            width: '50%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '75%',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                paddingLeft: '1em',
+                paddingRight: '1em',
+                width: '100%',
+            },
+        },
+        wide: {
+            width: '75%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '100%',
+            },
+        }
     }),
 );
 
@@ -52,8 +62,14 @@ const Account = () => {
                 <Avatar/>
             </div>
             <div className={classes.content}>
-                <EmailPasswordAccount/>
-                <div className={classes.spacer}/>
+                <div className={classes.halfWidth}>
+                    <EmailPasswordAccount/>
+                </div>
+                <div className={clsx(classes.spacer, classes.halfWidth)}/>
+                <div className={classes.wide}>
+                    <Web3Account/>
+                </div>
+                <div className={clsx(classes.spacer, classes.halfWidth)}/>
             </div>
         </div>
     </Container>

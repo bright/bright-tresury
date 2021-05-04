@@ -7,7 +7,7 @@ import {useTranslation} from "react-i18next";
 import {IdeaContentType} from "../idea/IdeaContentTypeTabs";
 import {IdeaStatusIndicator} from "../idea/status/IdeaStatusIndicator";
 import {NetworkCard} from "../../components/network/NetworkCard";
-import {AddressInfo} from "../../components/identicon/AddressInfo";
+import {AddressInfoWithLabel} from "../../components/identicon/AddressInfoWithLabel";
 import {NetworkValue} from "../../components/network/NetworkValue";
 import {CardHeader} from "../../components/card/components/CardHeader";
 import {CardDetails} from "../../components/card/components/CardDetails";
@@ -42,7 +42,7 @@ export const IdeaCard = ({ idea }: Props) => {
 
             <Divider/>
 
-            <AddressInfo label={t('idea.list.card.beneficiary')} address={idea.beneficiary} />
+            <AddressInfoWithLabel label={t('idea.list.card.beneficiary')} address={idea.beneficiary} />
 
         </NetworkCard>
     )

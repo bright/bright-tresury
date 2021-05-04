@@ -1,6 +1,7 @@
 import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles, InputLabel} from "@material-ui/core";
+import {createStyles, InputLabel as MaterialInputLabel, InputLabelProps as MaterialInputLabelProps} from "@material-ui/core";
 import React from "react";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,11 +13,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export interface LabelProps {
+interface OwnProps {
     label: string | JSX.Element
 }
 
-export const Label: React.FC<LabelProps> = ({label}) => {
+export type LabelProps = OwnProps & MaterialInputLabelProps
+
+export const Label = ({label, className}: LabelProps) => {
     const classes = useStyles()
-    return <InputLabel className={classes.label}>{label}</InputLabel>
+    return <MaterialInputLabel className={clsx(classes.label, className)}>{label}</MaterialInputLabel>
 }

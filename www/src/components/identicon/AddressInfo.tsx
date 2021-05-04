@@ -1,5 +1,6 @@
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React, {useMemo} from "react";
+import {breakpoints} from "../../theme/theme";
 import {ellipseTextInTheMiddle} from "../../util/stringUtil";
 import {Identicon} from "./Identicon";
 
@@ -9,50 +10,40 @@ const useStyles = makeStyles((theme: Theme) => {
             display: 'flex',
             alignItems: 'center'
         },
-        info: {
-            display: 'flex',
-            marginLeft: '.75em',
-            flexDirection: 'row',
-        },
-        value: {
-            fontSize: '1em',
-            height: '1em',
-            fontWeight: 600,
-            marginTop: '24px',
-            marginBottom: '4px'
-        },
-        label: {
-            fontSize: '12px',
-            fontWeight: 700,
-            marginBottom: '24px',
-            marginTop: '0',
-            color: theme.palette.text.disabled
+        address: {
+            marginLeft: '.5em',
+            fontSize: '14px',
+            fontWeight: 500,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '18px'
+            },
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '16px'
+            }
         },
     })
 });
 
-interface Props {
-    label: string
-    address?: string
+interface OwnProps {
+    address: string
 }
 
-export const AddressInfo: React.FC<Props> = ({address, label}) => {
+export type AddressInfoProps = OwnProps
+
+export const AddressInfo = ({address}: AddressInfoProps) => {
     const classes = useStyles()
 
     const addressFragment = useMemo(() => {
-        if (!address) return ''
+        if (!address) {
+            return ''
+        }
         return ellipseTextInTheMiddle(address, 12)
     }, [address])
 
     return <div className={classes.root}>
-        {address && <Identicon address={address}/>}
-        <div className={classes.info}>
-            <div>
-                <p className={classes.value}>
-                    {addressFragment}
-                </p>
-                <p className={classes.label}>{label}</p>
-            </div>
+        <Identicon address={address}/>
+        <div className={classes.address}>
+            {addressFragment}
         </div>
     </div>
 }

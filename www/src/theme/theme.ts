@@ -28,7 +28,10 @@ export const theme = {
         background: {
             default: '#FFFFFF',
             paper: '#F5F5F5'
-        }
+        },
+        warning: {
+            main: '#FF0000',
+        },
     }
 }
 
