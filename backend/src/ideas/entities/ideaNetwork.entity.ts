@@ -2,6 +2,7 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
 import { BaseEntity } from "../../database/base.entity";
 import { Extrinsic } from "../../extrinsics/extrinsic.entity";
 import { Idea } from "./idea.entity";
+import { BadRequestException } from '@nestjs/common'
 
 @Entity("idea_networks")
 export class IdeaNetwork extends BaseEntity {
@@ -30,5 +31,11 @@ export class IdeaNetwork extends BaseEntity {
         this.value = value
         this.extrinsic = extrinsic
         this.blockchainProposalId = blockchainProposalId
+    }
+
+    canTurnIntoProposalOrThrow = () => {
+        if (this.value === 0) {
+            throw new BadRequestException('Value of the idea network with the given id has to be greater than zero')
+        }
     }
 }

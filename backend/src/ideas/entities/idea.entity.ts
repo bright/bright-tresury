@@ -1,4 +1,4 @@
-import {ForbiddenException, NotFoundException} from "@nestjs/common";
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import {Column, Entity, Generated, ManyToOne, OneToMany} from "typeorm";
 import {v4 as uuid} from 'uuid';
 import {BaseEntity} from "../../database/base.entity";
@@ -6,6 +6,7 @@ import {User} from "../../users/user.entity";
 import {IdeaMilestone} from "../ideaMilestones/entities/idea.milestone.entity";
 import {DefaultIdeaStatus, IdeaStatus} from "../ideaStatus";
 import {IdeaNetwork} from "./ideaNetwork.entity";
+import { EmptyBeneficiaryException } from '../exceptions/emptyBeneficiary.exception'
 
 export const ideaRestrictions = {
     field: {
@@ -125,4 +126,23 @@ export class Idea extends BaseEntity {
             throw new NotFoundException('There is no idea with such id')
         }
     }
+
+    canTurnIntoProposalOrThrow = () => {
+        if (!this.beneficiary) {
+            throw new EmptyBeneficiaryException()
+        }
+        if ([IdeaStatus.TurnedIntoProposal, IdeaStatus.TurnedIntoProposalByMilestone].includes(this.status)) {
+            throw new BadRequestException(`Idea with the given id or at least one of it's milestones is already turned into proposal`)
+        }
+    }
+
+    canTurnMilestoneIntoProposalOrThrow = () => {
+        if (!this.beneficiary) {
+            throw new EmptyBeneficiaryException()
+        }
+        if (this.status === IdeaStatus.TurnedIntoProposal) {
+            throw new BadRequestException('Idea with the given id is already turned into proposal')
+        }
+    }
+
 }

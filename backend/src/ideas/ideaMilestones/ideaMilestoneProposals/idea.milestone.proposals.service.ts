@@ -1,6 +1,5 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {CreateIdeaMilestoneProposalDto} from "./dto/CreateIdeaMilestoneProposalDto";
-import {EmptyBeneficiaryException} from "../../exceptions/emptyBeneficiary.exception";
 import {ExtrinsicEvent} from "../../../extrinsics/extrinsicEvent";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
@@ -35,7 +34,7 @@ export class IdeaMilestoneProposalsService {
     async createProposal(
         ideaId: string,
         ideaMilestoneId: string,
-        { ideaMilestoneNetworkId,  extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto,
+        { ideaMilestoneNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto,
         sessionData: SessionData
     ): Promise<IdeaMilestoneNetwork> {
 
@@ -43,19 +42,11 @@ export class IdeaMilestoneProposalsService {
 
         idea.canEditOrThrow(sessionData.user)
 
-        if (!idea.beneficiary) {
-            throw new EmptyBeneficiaryException()
-        }
-
-        if (idea.status === IdeaStatus.TurnedIntoProposal) {
-            throw new BadRequestException('Idea with the given id is already converted to proposal')
-        }
+        idea.canTurnMilestoneIntoProposalOrThrow()
 
         const ideaMilestone = await this.ideaMilestonesService.findOne(ideaMilestoneId, sessionData)
 
-        if (ideaMilestone.status === IdeaMilestoneStatus.TurnedIntoProposal) {
-            throw new BadRequestException('Idea milestone with the given id is already converted to proposal')
-        }
+        ideaMilestone.canTurnIntoProposalOrThrow()
 
         const ideaMilestoneNetwork = await ideaMilestone.networks.find(({ id }) => id === ideaMilestoneNetworkId)
 
@@ -63,9 +54,7 @@ export class IdeaMilestoneProposalsService {
             throw new NotFoundException('Idea milestone network with the given id not found')
         }
 
-        if (ideaMilestoneNetwork.value === 0) {
-            throw new BadRequestException('Value of the idea milestone network with the given id has to be greater than zero')
-        }
+        ideaMilestoneNetwork.canTurnIntoProposalOrThrow()
 
         const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
 

@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common'
+import {Injectable, NotFoundException} from '@nestjs/common'
 import {InjectRepository} from '@nestjs/typeorm';
 import {Repository} from 'typeorm';
 import {SessionData} from "../../auth/session/session.decorator";
@@ -7,7 +7,6 @@ import {ExtrinsicsService} from "../../extrinsics/extrinsics.service";
 import {IdeaNetwork} from '../entities/ideaNetwork.entity';
 import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
 import {IdeasService} from "../ideas.service";
-import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
 import {BlockchainService} from '../../blockchain/blockchain.service'
 import {Idea} from '../entities/idea.entity'
 import {IdeaStatus} from '../ideaStatus'
@@ -31,13 +30,7 @@ export class IdeaProposalsService {
 
         idea.canEditOrThrow(sessionData.user)
 
-        if (!idea.beneficiary) {
-            throw new EmptyBeneficiaryException()
-        }
-
-        if (idea.status === IdeaStatus.TurnedIntoProposal || idea.status === IdeaStatus.TurnedIntoProposalByMilestone) {
-            throw new BadRequestException(`Idea with the given id or at least one of it's milestones is already converted to proposal`)
-        }
+        idea.canTurnIntoProposalOrThrow()
 
         const ideaNetwork = await idea.networks?.find(({ id }) => id === createIdeaProposalDto.ideaNetworkId)
 
@@ -45,9 +38,7 @@ export class IdeaProposalsService {
             throw new NotFoundException('Idea network with the given id not found')
         }
 
-        if (ideaNetwork.value === 0) {
-            throw new BadRequestException('Value of the idea network with the given id has to be greater than zero')
-        }
+        ideaNetwork.canTurnIntoProposalOrThrow()
 
         const callback = async (events: ExtrinsicEvent[]) => {
 

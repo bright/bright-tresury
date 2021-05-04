@@ -4,6 +4,7 @@ import {IdeaMilestoneNetwork} from "./idea.milestone.network.entity";
 import {Idea} from "../../entities/idea.entity";
 import {Nil} from "../../../utils/types";
 import {defaultIdeaMilestoneStatus, IdeaMilestoneStatus} from "../ideaMilestoneStatus";
+import { BadRequestException } from '@nestjs/common'
 
 @Entity('idea_milestones')
 export class IdeaMilestone extends BaseEntity {
@@ -66,5 +67,11 @@ export class IdeaMilestone extends BaseEntity {
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         this.description = description
+    }
+
+    canTurnIntoProposalOrThrow = () => {
+        if (this.status === IdeaMilestoneStatus.TurnedIntoProposal) {
+            throw new BadRequestException('Idea milestone with the given id is already turned into proposal')
+        }
     }
 }
