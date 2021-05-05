@@ -4,7 +4,7 @@ import React, {useEffect} from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import './App.css';
 import Account from "./auth/account/Account";
-import {AuthContextProvider, useAuth} from "./auth/AuthContext";
+import {AuthContextProvider} from "./auth/AuthContext";
 import SignIn from "./auth/sign-in/SignIn";
 import VerifyEmail from "./auth/sign-in/VerifyEmail";
 import SignUp from './auth/sign-up/SignUp';
@@ -38,8 +38,6 @@ import {SubstrateContextProvider} from './substrate-lib';
 import {initializeSupertokens} from "./supertokens";
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
-import VerifyEmail from "./auth/sign-in/VerifyEmail";
-import SignUp from "./auth/sign-up/SignUp";
 import {Web3SignUpSuccess} from "./auth/sign-up/web3/Web3SignUpSuccess";
 
 const useStyles = makeStyles(() =>
@@ -52,7 +50,6 @@ const useStyles = makeStyles(() =>
 
 function AppRoutes() {
     const classes = useStyles()
-    const {isUserSignedIn} = useAuth()
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
@@ -62,18 +59,12 @@ function AppRoutes() {
             <Router>
                 <Main>
                     <Switch>
-                        <Route exact={false} path={ROUTE_SIGNUP}>
-                            {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignUp/>}
-                        </Route>
+                        <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp}/>
+                        <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
                         <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={Web3SignUpSuccess}/>
-                        <Route exact={true} path={ROUTE_SIGNIN}>
-                            {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignIn/>}
-                        </Route>
                         <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
                             <VerifyEmail/>
                         </Route>
-                        <PublicOnlyRoute exact={true} path={ROUTE_SIGNUP} component={SignUp}/>
-                        <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
                         <Route exact={true} path={ROUTE_ROOT} component={Stats}/>
                         <Route exact={true} path={ROUTE_STATS} component={Stats}/>
                         <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals}/>

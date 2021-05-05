@@ -2,7 +2,6 @@ import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {Header} from "../../../components/text/Header";
 import signupSuccessImg from "../../../assets/signup_success.svg";
 import Container from "../../../components/form/Container";
 
@@ -33,9 +32,8 @@ const SignUpSuccess: React.FC<Props> = ({subtitle}) => {
     const classes = useStyles()
     const {t} = useTranslation()
 
-    return <Container>
+    return <Container title={t('auth.signUp.success.title')}>
         <div className={classes.root}>
-            <Header>{t('auth.signUp.success.title')}</Header>
             <Typography className={classes.subtitle}>{subtitle}</Typography>
             <img className={classes.image} src={signupSuccessImg} alt={t('auth.signUp.success.mailboxImage')}/>
         </div>

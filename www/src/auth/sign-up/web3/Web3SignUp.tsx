@@ -17,8 +17,8 @@ import {ExtensionNotDetected} from "./ExtensionNotDetected";
 import {useWeb3SignUp} from "./handleWeb3Signup";
 import {ErrorBox} from "../../../components/form/ErrorBox";
 import {useAuth} from "../../AuthContext";
-import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes";
 import {useHistory} from 'react-router-dom';
+import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes/routes";
 
 export interface Web3SignUpValues {
     account: Account,

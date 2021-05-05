@@ -1,9 +1,10 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {SignInAPIResponse, SignUpAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
 import Session from "supertokens-auth-react/lib/build/recipe/session/session";
 import {signIn as signInApi, SignInData, signOut as signOutApi, SignUpData} from './auth.api'
 import {Web3SignUpValues} from "./sign-up/web3/Web3SignUp";
+import {handleWeb3Signup} from "./sign-up/web3/handleWeb3Signup";
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
