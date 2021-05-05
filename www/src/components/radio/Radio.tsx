@@ -1,8 +1,8 @@
 import {Radio as MaterialRadio, RadioProps as MaterialRadioProps} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
-import emptyIcon from "../../assets/checkbox_empty.svg";
-import checkedIcon from "../../assets/checkbox_checked.svg";
+import emptyIcon from "../../assets/radio_empty.svg";
+import checkedIcon from "../../assets/radio_checked.svg";
 
 const useStyles = makeStyles(() =>
     createStyles({
