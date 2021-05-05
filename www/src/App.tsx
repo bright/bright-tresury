@@ -56,6 +56,12 @@ function AppRoutes() {
         <Router>
             <Main>
                 <Switch>
+                    <Route exact={false} path={ROUTE_SIGNUP}>
+                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignUp/>}
+                    </Route>
+                    <Route exact={true} path={ROUTE_SIGNIN}>
+                        {isUserSignedIn ? <Redirect to={ROUTE_ROOT}/> : <SignIn/>}
+                    </Route>
                     <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
                         <VerifyEmail/>
                     </Route>

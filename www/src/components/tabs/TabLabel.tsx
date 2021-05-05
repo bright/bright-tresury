@@ -51,7 +51,6 @@ export const TabLabel: React.FC<Props> = ({label, svg, path, isDefault}) => {
                 return `${location.pathname}${location.search}` === path ? true : isActiveByDefault
             }}
             activeClassName={classes.selected}>
-            {isDefault}
             {svg ? <img className={classes.labelIcon} src={svg} alt={''}/> : null}
             {label}
         </NavLink>

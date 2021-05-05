@@ -1,18 +1,23 @@
-import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
-import {Trans, useTranslation} from "react-i18next";
+import {useTranslation} from "react-i18next";
 import Container from "../../components/form/Container";
-import {RouterLink} from "../../components/link/RouterLink";
-import {ROUTE_SIGNIN} from "../../routes/routes";
-import { breakpoints } from "../../theme/theme";
-import {signUp} from "../auth.api";
-import SignUpForm from "./SignUpForm";
+import EmailSignUp from "./email/EmailSignUp";
+import {ToggleButton} from "../../components/toggle/ToggleButton";
+import {Route, Switch, useRouteMatch} from "react-router-dom";
+import BlockchainSignUp from "./blockchain/BlockchainSignUp";
+import {ToggleEntry} from "../../components/toggle/SingleToggleButton";
+import {Location} from "history";
+import {breakpoints} from "../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        content: {
-            alignSelf: 'center',
+        toggleContainer: {
+            display: 'flex',
+            justifyContent: 'center'
+        },
+        toggle: {
+            marginTop: '2em',
             width: '50%',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 width: '75%',
@@ -22,27 +27,68 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingRight: '1em',
                 width: '100%',
             },
-        },
-        login: {
-            textAlign: 'center',
-            fontSize: '14px',
         }
     }),
 );
+
+enum SignUpOption { Email = 'email', Blockchain = 'blockchain'}
+
+const DefaultSignUpOption = SignUpOption.Email
 
 const SignUp: React.FC = () => {
     const {t} = useTranslation()
     const classes = useStyles()
 
-    return <Container title={t('auth.signup.title')}>
-        <div className={classes.content}>
-        <SignUpForm submit={signUp} submitButtonLabel={t('auth.signup.form.submitButton')}/>
-        <Typography className={classes.login}>
-            {<Trans id='privacy-notice'
-                    i18nKey="auth.signup.logInLabel"
-                    components={{a: <RouterLink to={ROUTE_SIGNIN}/>}}/>}
-        </Typography>
+    let {path} = useRouteMatch();
+
+    const getTranslation = (option: SignUpOption): string => {
+        switch (option) {
+            case SignUpOption.Email:
+                return t('auth.signUp.emailSignUpLabel')
+            case SignUpOption.Blockchain:
+                return t('auth.signUp.blockchainSignUpLabel')
+        }
+    }
+
+
+    const signUpOptions = Object.values(SignUpOption)
+
+    const toggleEntries = signUpOptions.map((option: SignUpOption) => {
+        return {
+            label: getTranslation(option),
+            path: `${path}/${option}`
+        } as ToggleEntry
+    })
+
+    const isActiveToggle = (entry: ToggleEntry, location: Location) => {
+        const isEntryPath = entry.path === location.pathname
+        if (isEntryPath) {
+            return true
+        } else {
+            const isAnyEntryPath = toggleEntries.find((entry) => entry.path === location.pathname)
+            return isAnyEntryPath ? false : entry.label === getTranslation(DefaultSignUpOption)
+        }
+    }
+
+    return <Container title={t('auth.signUp.title')}>
+        <div className={classes.toggleContainer}>
+            <ToggleButton
+                className={classes.toggle}
+                toggleEntries={toggleEntries}
+                isActive={isActiveToggle}
+            />
         </div>
+        <Switch>
+            <Route exact={true} path={path}>
+                <EmailSignUp/>
+            </Route>
+            <Route exact={true} path={`${path}/${SignUpOption.Email}`}>
+                <EmailSignUp/>
+            </Route>
+            <Route exact={true} path={`${path}/${SignUpOption.Blockchain}`}>
+                <BlockchainSignUp/>
+            </Route>
+        </Switch>
     </Container>
 }
 

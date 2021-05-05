@@ -2,8 +2,8 @@ import {Typography} from "@material-ui/core";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import {Header} from "../../components/text/Header";
-import signupSuccessImg from "../../assets/signup_success.svg";
+import {Header} from "../../../components/text/Header";
+import signupSuccessImg from "../../../assets/signup_success.svg";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const SignUpSuccess: React.FC = () => {
+const BlockchainSignUpSuccess: React.FC = () => {
     const classes = useStyles()
     const {t} = useTranslation()
 
@@ -35,4 +35,4 @@ const SignUpSuccess: React.FC = () => {
     </div>
 }
 
-export default SignUpSuccess
+export default BlockchainSignUpSuccess

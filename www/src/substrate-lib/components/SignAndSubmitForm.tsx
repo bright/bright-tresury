@@ -3,10 +3,9 @@ import {Formik} from "formik";
 import React, {createRef} from 'react';
 import {useTranslation} from 'react-i18next';
 import {Button} from "../../components/button/Button";
-import {FormSelect} from "../../components/select/FormSelect";
-import {ISelect} from "../../components/select/Select";
 import config from '../../config';
 import {Account, InputParam, TxAttrs} from './SubmittingTransaction';
+import {AccountSelect} from "../../components/select/AccountSelect";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -43,8 +42,6 @@ export interface Props {
 interface Values {
     account: Account
 }
-
-const TypedSelect = FormSelect as ISelect<Account>
 
 const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accounts}) => {
     const classes = useStyles()
@@ -99,15 +96,9 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit, accoun
                         <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
                         <p className={classes.networkTitle}>{config.NETWORK_NAME}</p>
                         <form autoComplete="off" onSubmit={handleSubmit} className={classes.formContainer}>
-                            <TypedSelect
-                                variant={"outlined"}
-                                name="account"
-                                label={t('substrate.form.selectAccount')}
-                                options={[emptyAccount, ...accounts]}
-                                value={values.account}
-                                renderOption={(value: Account) => {
-                                    return value.name ?? value.address
-                                }}
+                            <AccountSelect
+                                account={values.account}
+                                accounts={accounts}
                             />
                             <div className={classes.buttons}>
                                 <Button variant={"text"} color="primary" type="button" onClick={onCancel}>

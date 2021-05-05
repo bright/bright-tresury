@@ -72,40 +72,44 @@
       "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct.",
       "emailAlreadyVerifiedError": "Email is already verified."
     },
-    "signup": {
+    "signUp": {
       "title": "Sign up",
+      "emailSignUpLabel": "E-mail sign up",
+      "blockchainSignUpLabel": "Web 3 address sign up",
       "logInLabel": "Already have an account? <a>Log in</a>",
-      "form": {
-        "privacyNotice": "To see how we use your personal data please see our <a>privacy notice</a>.",
-        "emptyFieldError": "This field cannot be empty",
-        "username": {
-          "label": "Username",
-          "placeholder": "Enter your username"
-        },
-        "login": {
-          "label": "Login",
-          "placeholder": "Enter your email",
-          "emailError": "Please see if your email address is correct"
-        },
-        "password": {
-          "label": "Password",
-          "placeholder": "Enter at least 8 characters",
-          "tooShort": "Use 8 or more characters",
-          "useNumber": "Use a number (e.g. 1234)",
-          "useLowerCaseLetter": "Use a lower case letter (e.g. abc)",
-          "validationOk": "Validation OK",
-          "validationError": "Validation Error"
-        },
-        "userAgreement": {
-          "label": "I have read and agree to the terms of the <a>BrightTreasury user agreement</a>.",
-          "emptyFieldError": "You need to agree to the terms of the user agreement"
-        },
-        "submitButton": "Sign up"
+      "submitButton": "Sign up",
+      "userAgreement": {
+        "label": "I have read and agree to the terms of the <a>BrightTreasury user agreement</a>.",
+        "emptyFieldError": "You need to agree to the terms of the user agreement"
       },
-      "success": {
-        "title": "Congrats! You have successfully registered!",
-        "subtitle": "Please check your email to confirm the registration",
-        "mailboxImage": "Image of a mailbox"
+      "emptyFieldError": "This field cannot be empty",
+      "privacyNotice": "To see how we use your personal data please see our <a>privacy notice</a>.",
+      "emailSignUp": {
+        "form": {
+          "username": {
+            "label": "Username",
+            "placeholder": "Enter your username"
+          },
+          "login": {
+            "label": "Login",
+            "placeholder": "Enter your email",
+            "emailError": "Please see if your email address is correct"
+          },
+          "password": {
+            "label": "Password",
+            "placeholder": "Enter at least 8 characters",
+            "tooShort": "Use 8 or more characters",
+            "useNumber": "Use a number (e.g. 1234)",
+            "useLowerCaseLetter": "Use a lower case letter (e.g. abc)",
+            "validationOk": "Validation OK",
+            "validationError": "Validation Error"
+          }
+        },
+        "success": {
+          "title": "Congrats! You have successfully registered!",
+          "subtitle": "Please check your email to confirm the registration",
+          "mailboxImage": "Image of a mailbox"
+        }
       }
     },
     "signIn": {
