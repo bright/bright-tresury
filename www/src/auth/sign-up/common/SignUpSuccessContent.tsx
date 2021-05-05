@@ -1,13 +1,12 @@
-import {Typography} from "@material-ui/core";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
 import React from "react";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
+import {Header} from "../../../components/text/Header";
 import {useTranslation} from "react-i18next";
-import emailSignUpSuccess from "../../../assets/email_signup_success.svg";
-import {SignUpSuccessContent} from "../common/SignUpSuccessContent";
 
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
+            marginTop: '4em',
             flexGrow: 1,
             display: 'flex',
             flexDirection: 'column',
@@ -24,13 +23,16 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const EmailSignUpSuccess: React.FC = () => {
-    const classes = useStyles()
-    const {t} = useTranslation()
-
-    return <SignUpSuccessContent successImg={emailSignUpSuccess}>
-        <Typography className={classes.subtitle}>{t('auth.signUp.emailSignUp.form.successSubtitle')}</Typography>
-    </SignUpSuccessContent>
+interface Props {
+    successImg: string
 }
 
-export default EmailSignUpSuccess
+export const SignUpSuccessContent: React.FC<Props> = ({successImg, children}) => {
+    const classes = useStyles()
+    const {t} = useTranslation()
+    return <div className={classes.root}>
+        <Header>{t('auth.signUp.success.title')}</Header>
+        {children}
+        <img className={classes.image} src={successImg} alt={t('auth.signUp.success.mailboxImage')}/>
+    </div>
+}

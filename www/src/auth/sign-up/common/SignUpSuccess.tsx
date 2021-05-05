@@ -1,38 +1,34 @@
 import React from "react";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
-import {Header} from "../../../components/text/Header";
 import {useTranslation} from "react-i18next";
+import {SignUpSuccessContent} from "./SignUpSuccessContent";
+import signUpSuccessImg from "../../../assets/successful_sign_up.svg";
+import {Theme} from "@material-ui/core";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
+import {Link} from "react-router-dom";
+import {ROUTE_ROOT} from "../../../routes/routes";
+import Container from "../../../components/form/Container";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            marginTop: '4em',
-            flexGrow: 1,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-        },
         subtitle: {
             marginTop: '36px',
-            fontSize: '14px',
+            fontSize: '18px',
+            color: theme.palette.primary.main,
+            textDecoration: 'none',
+            fontWeight: 'bold'
         },
-        image: {
-            marginTop: '64px',
-        },
-    }),
-);
+    })
+)
 
-interface Props {
-    successImg: string
-}
-
-export const SignUpSuccess: React.FC<Props> = ({successImg, children}) => {
+export const SignUpSuccess: React.FC = () => {
     const classes = useStyles()
     const {t} = useTranslation()
-    return <div className={classes.root}>
-        <Header>{t('auth.signUp.success.title')}</Header>
-        {children}
-        <img className={classes.image} src={successImg} alt={t('auth.signUp.success.mailboxImage')}/>
-    </div>
+
+    return <Container title={t('auth.signUp.title')}>
+        <SignUpSuccessContent successImg={signUpSuccessImg}>
+            <Link to={ROUTE_ROOT} className={classes.subtitle}>
+                {t('auth.signUp.web3SignUp.successSubtitle')}
+            </Link>
+        </SignUpSuccessContent>
+    </Container>
 }

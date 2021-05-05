@@ -38,7 +38,7 @@ import {SubstrateContextProvider} from './substrate-lib';
 import {initializeSupertokens} from "./supertokens";
 import {ThemeWrapper} from "./theme/ThemeWrapper";
 import {getTranslation} from "./translation/translationStorage";
-import {Web3SignUpSuccess} from "./auth/sign-up/web3/Web3SignUpSuccess";
+import {SignUpSuccess} from "./auth/sign-up/common/SignUpSuccess";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -62,7 +62,7 @@ function AppRoutes() {
                         <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp}
                                          redirectTo={ROUTE_SIGNUP_WEB3_SUCCESS}/>
                         <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
-                        <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={Web3SignUpSuccess}/>
+                        <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={SignUpSuccess}/>
                         <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
                             <VerifyEmail/>
                         </Route>

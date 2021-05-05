@@ -18,6 +18,7 @@ import {useWeb3SignUp} from "./handleWeb3Signup";
 import {ErrorBox} from "../../../components/form/ErrorBox";
 import {useHistory} from 'react-router-dom';
 import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes/routes";
+import {useAuth} from "../../AuthContext";
 
 export interface Web3SignUpValues {
     account: Account,
@@ -28,7 +29,9 @@ const Web3SignUp: React.FC = () => {
     const {t} = useTranslation()
     const history = useHistory()
 
-    const {call: signUpCall, loadingState, error} = useWeb3SignUp()
+    const {web3SignUp} = useAuth()
+
+    const {call: signUpCall, loadingState, error} = useWeb3SignUp(web3SignUp)
 
     const onSubmit = async (values: Web3SignUpValues) => {
         await signUpCall(values)
