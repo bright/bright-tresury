@@ -10,12 +10,12 @@ import {BlockchainUserSignUpDto} from "../../blockchainUserSignUp.dto";
 import {SessionData} from "../../session/session.decorator";
 
 export class SessionHandler {
-    readonly user: SessionData
+    readonly sessionData: SessionData
     private readonly cookies: string
 
     constructor(cookies: string, user: User) {
         this.cookies = cookies
-        this.user = {user}
+        this.sessionData = {user}
     }
 
     getAuthorizedRequest(): Request {
@@ -54,13 +54,13 @@ export const createUserSessionHandlerWithVerifiedEmail = async (
 }
 
 export const verifyEmail = async (app: INestApplication, sessionHandler: SessionHandler) => {
-    const token = await createEmailVerificationToken(sessionHandler.user.user.authId, sessionHandler.user.user.email!)
+    const token = await createEmailVerificationToken(sessionHandler.sessionData.user.authId, sessionHandler.sessionData.user.email!)
     await verifyEmailUsingToken(token)
 }
 
 export const createUserSessionHandler = async (
     app: INestApplication,
-    email: string = 'chukc@example.com',
+    email: string = 'chuck@example.com',
     username: string = 'chuck',
     password: string = uuid()
 ): Promise<SessionHandler> => {

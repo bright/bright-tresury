@@ -4,7 +4,7 @@ import {BlockchainService} from "../blockchain/blockchain.service";
 import {IdeaDto} from "../ideas/dto/idea.dto";
 import {IdeaNetwork} from "../ideas/entities/ideaNetwork.entity";
 import {IdeasService} from "../ideas/ideas.service";
-import {createIdea, createSessionUser} from "../ideas/spec.helpers";
+import {createIdea, createSessionData} from "../ideas/spec.helpers";
 import {beforeAllSetup, beforeSetupFullApp, cleanDatabase} from "../utils/spec.helpers";
 import {ProposalsService} from "./proposals.service";
 import {mockedBlockchainService} from "./spec.helpers";
@@ -53,7 +53,7 @@ describe('ProposalsService', () => {
         })
 
         it('should return idea details for proposals', async () => {
-            const user = await createSessionUser()
+            const user = await createSessionData()
             const idea = await createIdea({title: 'Some title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, user, ideasService())
             idea.networks[0].blockchainProposalId = 0
             await ideasNetworkRepository().save(idea.networks[0])
@@ -84,7 +84,7 @@ describe('ProposalsService', () => {
         })
 
         it('should return idea details', async () => {
-            const user = await createSessionUser()
+            const user = await createSessionData()
             const idea = await createIdea(
                 {title: 'Some title', content: 'Content', networks: [{name: 'localhost', value: 10}]} as IdeaDto,
                 user,

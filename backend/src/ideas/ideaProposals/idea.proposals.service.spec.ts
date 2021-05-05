@@ -12,7 +12,7 @@ import {Idea} from '../entities/idea.entity';
 import {IdeaNetwork} from '../entities/ideaNetwork.entity';
 import {IdeasService} from "../ideas.service";
 import {IdeaStatus} from "../ideaStatus";
-import {createIdea, createSessionUser} from "../spec.helpers";
+import {createIdea, createSessionData} from "../spec.helpers";
 import {CreateIdeaProposalDto, IdeaProposalDataDto} from "./dto/createIdeaProposal.dto";
 import {IdeaProposalsService} from "./idea.proposals.service";
 
@@ -58,7 +58,7 @@ describe('IdeaProposalsService', () => {
             networks: [{name: 'local', value: 10}],
             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
         }
-        sessionData = await createSessionUser()
+        sessionData = await createSessionData()
         const createdIdea = await createIdea(partialIdea, sessionData, ideasService())
         idea = await ideasService().findOne(createdIdea.id, sessionData)
         dto = new CreateIdeaProposalDto(idea.networks![0].id, '', '', new IdeaProposalDataDto(3))
@@ -99,7 +99,7 @@ describe('IdeaProposalsService', () => {
         })
 
         it('should throw forbidden exception when creating proposal from not own idea', async () => {
-            const otherSessionUser = await createSessionUser({username: 'other', email: 'other@example.com'})
+            const otherSessionUser = await createSessionData({username: 'other', email: 'other@example.com'})
             await expect(service().createProposal(idea.id, dto, otherSessionUser))
                 .rejects
                 .toThrow(ForbiddenException)

@@ -38,7 +38,15 @@ export async function createIdeaMilestone(
     return await service.create(ideaId, createIdeaMilestoneDto, sessionData)
 }
 
-export async function createSessionUser(
+export async function createIdeaMilestoneByEntity(
+    ideaMilestone: IdeaMilestone,
+    ideaMilestoneRepository?: Repository<IdeaMilestone>
+): Promise<IdeaMilestone> {
+    const repository: Repository<IdeaMilestone> = ideaMilestoneRepository ?? beforeSetupFullApp().get().get(getRepositoryToken(IdeaMilestone))
+    return await repository.save(ideaMilestone)
+}
+
+export async function createSessionData(
     user: Partial<User> = {},
     usersRepository?: Repository<User>
 ): Promise<SessionData> {

@@ -3,7 +3,7 @@ import {BlockchainService} from "../blockchain/blockchain.service";
 import {IdeaDto} from "../ideas/dto/idea.dto";
 import {Idea} from "../ideas/entities/idea.entity";
 import {IdeaNetwork} from "../ideas/entities/ideaNetwork.entity";
-import {createIdea, createSessionUser} from "../ideas/spec.helpers";
+import {createIdea, createSessionData} from "../ideas/spec.helpers";
 import {beforeSetupFullApp, cleanDatabase, request} from '../utils/spec.helpers';
 import {ProposalDto} from "./dto/proposal.dto";
 import {mockedBlockchainService} from "./spec.helpers";
@@ -22,7 +22,7 @@ describe(`/api/v1/proposals`, () => {
 
     beforeEach(async () => {
         await cleanDatabase()
-        const sessionUser = await createSessionUser()
+        const sessionUser = await createSessionData()
         idea = await createIdea({title: 'Title', networks: [{name: 'localhost', value: 10}]} as IdeaDto, sessionUser)
         idea.networks[0].blockchainProposalId = 0
         await app().get(getRepositoryToken(IdeaNetwork)).save(idea.networks[0])

@@ -10,7 +10,7 @@ import {Idea} from "./entities/idea.entity";
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {createSessionUser} from "./spec.helpers";
+import {createSessionData} from "./spec.helpers";
 
 describe(`IdeasService`, () => {
 
@@ -26,8 +26,8 @@ describe(`IdeasService`, () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
 
-        sessionData = await createSessionUser()
-        otherSessionData = await createSessionUser({username: 'other', email: 'other@example.com'})
+        sessionData = await createSessionData()
+        otherSessionData = await createSessionData({username: 'other', email: 'other@example.com'})
     })
     describe('find', () => {
         it('should return ideas', async (done) => {
@@ -377,7 +377,7 @@ describe(`IdeasService`, () => {
                 networks: [{name: 'kusama', value: 44}],
                 status: IdeaStatus.Active
             }, sessionData)
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'other@email.com'})
 
             await expect(getService().update({status: IdeaStatus.Active}, idea.id, otherUser))
                 .rejects
@@ -405,7 +405,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {title: 'Test title', networks: [{name: 'kusama', value: 42}], status: IdeaStatus.Active},
                 sessionData)
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'other@email.com'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'other@email.com'})
 
             await expect(getService().delete(createdIdea.id, otherUser))
                 .rejects

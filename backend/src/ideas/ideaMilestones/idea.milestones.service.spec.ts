@@ -5,7 +5,7 @@ import {beforeSetupFullApp, cleanDatabase} from "../../utils/spec.helpers";
 import {Idea} from "../entities/idea.entity";
 import {IdeasService} from "../ideas.service";
 import {IdeaStatus} from "../ideaStatus";
-import {createIdea, createSessionUser} from "../spec.helpers";
+import {createIdea, createSessionData} from "../spec.helpers";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
 import {IdeaMilestoneNetwork} from "./entities/idea.milestone.network.entity";
 import {IdeaMilestonesService} from "./idea.milestones.service";
@@ -22,8 +22,8 @@ describe(`/api/v1/ideas`, () => {
 
   beforeEach(async () => {
     await cleanDatabase()
-    sessionData = await createSessionUser()
-    otherSessionData = await createSessionUser({username: 'other', email: 'other@example.com'})
+    sessionData = await createSessionData()
+    otherSessionData = await createSessionData({username: 'other', email: 'other@example.com'})
     idea = await createIdea({
         title: 'ideaTitle',
         networks: [{name: 'polkadot', value: 100}]

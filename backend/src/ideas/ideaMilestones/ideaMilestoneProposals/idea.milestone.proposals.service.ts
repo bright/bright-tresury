@@ -1,16 +1,16 @@
-import {Injectable, NotFoundException} from '@nestjs/common';
-import {CreateIdeaMilestoneProposalDto} from "./dto/CreateIdeaMilestoneProposalDto";
-import {ExtrinsicEvent} from "../../../extrinsics/extrinsicEvent";
-import {InjectRepository} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-import {IdeasService} from "../../ideas.service";
-import {IdeaMilestonesService} from "../idea.milestones.service";
-import {IdeaMilestoneNetwork} from "../entities/idea.milestone.network.entity";
-import {ExtrinsicsService} from "../../../extrinsics/extrinsics.service";
-import {IdeaStatus} from "../../ideaStatus";
-import {IdeaMilestoneStatus} from "../ideaMilestoneStatus";
-import {Idea} from "../../entities/idea.entity";
-import {IdeaMilestone} from "../entities/idea.milestone.entity";
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { CreateIdeaMilestoneProposalDto } from './dto/CreateIdeaMilestoneProposalDto'
+import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { IdeasService } from '../../ideas.service'
+import { IdeaMilestonesService } from '../idea.milestones.service'
+import { IdeaMilestoneNetwork } from '../entities/idea.milestone.network.entity'
+import { ExtrinsicsService } from '../../../extrinsics/extrinsics.service'
+import { IdeaStatus } from '../../ideaStatus'
+import { IdeaMilestoneStatus } from '../ideaMilestoneStatus'
+import { Idea } from '../../entities/idea.entity'
+import { IdeaMilestone } from '../entities/idea.milestone.entity'
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { SessionData } from '../../../auth/session/session.decorator'
 
@@ -27,7 +27,7 @@ export class IdeaMilestoneProposalsService {
         private readonly ideasService: IdeasService,
         private readonly ideaMilestonesService: IdeaMilestonesService,
         private readonly extrinsicsService: ExtrinsicsService,
-        private readonly blockchainService: BlockchainService
+        private readonly blockchainService: BlockchainService,
     ) {
     }
 
@@ -35,7 +35,7 @@ export class IdeaMilestoneProposalsService {
         ideaId: string,
         ideaMilestoneId: string,
         { ideaMilestoneNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto,
-        sessionData: SessionData
+        sessionData: SessionData,
     ): Promise<IdeaMilestoneNetwork> {
 
         const idea = await this.ideasService.findOne(ideaId, sessionData)
@@ -65,7 +65,10 @@ export class IdeaMilestoneProposalsService {
             }
         }
 
-        ideaMilestoneNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic({ extrinsicHash, lastBlockHash }, callback)
+        ideaMilestoneNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic({
+            extrinsicHash,
+            lastBlockHash,
+        }, callback)
 
         await this.ideaMilestoneNetworkRepository.save(ideaMilestoneNetwork)
 
@@ -73,26 +76,26 @@ export class IdeaMilestoneProposalsService {
     }
 
     // all entities passed to this function as arguments should be already validated
-    private async turnIdeaMilestoneIntoProposal(
+    async turnIdeaMilestoneIntoProposal(
         validIdea: Idea,
         validIdeaMilestone: IdeaMilestone,
         validIdeaMilestoneNetwork: IdeaMilestoneNetwork,
-        blockchainProposalIndex: number
+        blockchainProposalIndex: number,
     ): Promise<void> {
 
         await this.ideaRepository.save({
             ...validIdea,
-            status: IdeaStatus.TurnedIntoProposalByMilestone
+            status: IdeaStatus.TurnedIntoProposalByMilestone,
         })
 
         await this.ideaMilestoneRepository.save({
             ...validIdeaMilestone,
-            status: IdeaMilestoneStatus.TurnedIntoProposal
+            status: IdeaMilestoneStatus.TurnedIntoProposal,
         })
 
         await this.ideaMilestoneNetworkRepository.save({
             ...validIdeaMilestoneNetwork,
-            blockchainProposalId: blockchainProposalIndex
+            blockchainProposalId: blockchainProposalIndex,
         })
     }
 

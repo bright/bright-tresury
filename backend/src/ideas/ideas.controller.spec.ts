@@ -11,7 +11,7 @@ import {Idea} from './entities/idea.entity';
 import {IdeaNetwork} from './entities/ideaNetwork.entity';
 import {IdeasService} from './ideas.service';
 import {DefaultIdeaStatus, IdeaStatus} from "./ideaStatus";
-import {createIdea, createSessionUser} from './spec.helpers';
+import {createIdea, createSessionData} from './spec.helpers';
 
 const baseUrl = '/api/v1/ideas'
 
@@ -35,7 +35,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas', async (done) => {
-            await createIdea({title: 'Test title'}, sessionHandler.user)
+            await createIdea({title: 'Test title'}, sessionHandler.sessionData)
 
             const result = await request(app())
                 .get(baseUrl)
@@ -46,9 +46,9 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas for selected network', async (done) => {
-            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}]}, sessionHandler.user)
-            await createIdea({title: 'Test title2', networks: [{name: 'polkadot', value: 4}, {name: 'kusama', value: 20}]}, sessionHandler.user)
-            await createIdea({title: 'Test title3', networks: [{name: 'polkadot', value: 11}]}, sessionHandler.user)
+            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}]}, sessionHandler.sessionData)
+            await createIdea({title: 'Test title2', networks: [{name: 'polkadot', value: 4}, {name: 'kusama', value: 20}]}, sessionHandler.sessionData)
+            await createIdea({title: 'Test title3', networks: [{name: 'polkadot', value: 11}]}, sessionHandler.sessionData)
 
             const result = await request(app())
                 .get(`${baseUrl}?network=kusama`)
@@ -67,7 +67,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should not return draft ideas for anonymous user', async (done) => {
-            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}], status: IdeaStatus.Draft}, sessionHandler.user)
+            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}], status: IdeaStatus.Draft}, sessionHandler.sessionData)
 
             const result = await request(app())
                 .get(`${baseUrl}`)
@@ -79,7 +79,7 @@ describe(`/api/v1/ideas`, () => {
 
 
         it('should return draft ideas of a logged in user', async (done) => {
-            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}], status: IdeaStatus.Draft}, sessionHandler.user)
+            await createIdea({title: 'Test title1', networks: [{name: 'kusama', value: 15}], status: IdeaStatus.Draft}, sessionHandler.sessionData)
 
             const result = await sessionHandler.authorizeRequest(request(app())
                 .get(baseUrl))
@@ -92,7 +92,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should not return draft ideas of other users', async (done) => {
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'otherEmail'})
             await createIdea({title: 'Test title', status: IdeaStatus.Draft}, otherUser)
 
             const result = await sessionHandler.authorizeRequest(request(app())
@@ -103,7 +103,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return active ideas of other users', async (done) => {
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title', status: IdeaStatus.Active}, otherUser)
 
             const result = await sessionHandler.authorizeRequest(request(app())
@@ -124,7 +124,7 @@ describe(`/api/v1/ideas`, () => {
                 networks: [{name: 'kusama', value: 241}, {name: 'polkadot', value: 12}],
                 beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 content: 'content'
-            }, sessionHandler.user)
+            }, sessionHandler.sessionData)
 
             const result = await request(app())
                 .get(`${baseUrl}/${idea.id}`)
@@ -147,7 +147,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return not found for draft idea for anonymous user', async () => {
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title', status: IdeaStatus.Draft}, otherUser)
             return request(app())
                 .get(`${baseUrl}/${idea.id}`)
@@ -155,7 +155,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return not found for draft idea of other user', async () => {
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title', status: IdeaStatus.Draft}, otherUser)
             return sessionHandler.authorizeRequest(request(app())
                 .get(`${baseUrl}/${idea.id}`))
@@ -163,7 +163,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return active idea of other user', async () => {
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title', status: IdeaStatus.Active}, otherUser)
             const result = await sessionHandler.authorizeRequest(request(app())
                 .get(`${baseUrl}/${idea.id}`))
@@ -174,7 +174,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return draft idea of a logged in user', async () => {
-            const idea = await createIdea({title: 'Test title', status: IdeaStatus.Draft}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title', status: IdeaStatus.Draft}, sessionHandler.sessionData)
             const result = await sessionHandler.authorizeRequest(request(app())
                 .get(`${baseUrl}/${idea.id}`))
                 .expect(200)
@@ -342,7 +342,7 @@ describe(`/api/v1/ideas`, () => {
                 .send({title: 'Test title', networks: [{name: 'kusama', value: 10}]}))
 
             const ideasService = app.get().get(IdeasService)
-            const actual = await ideasService.findOne(result.body.id, sessionHandler.user)
+            const actual = await ideasService.findOne(result.body.id, sessionHandler.sessionData)
             expect(actual).toBeDefined()
             expect(actual!.title).toBe('Test title')
             expect(actual!.networks!.length).toBe(1)
@@ -370,7 +370,7 @@ describe(`/api/v1/ideas`, () => {
 
     describe('PATCH', () => {
         it('should return status ok for minimal patch data', async (done) => {
-            const idea = await createIdea({title: 'Test title'}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title'}, sessionHandler.sessionData)
             await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'}))
@@ -384,7 +384,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(404)
         })
         it('should patch title', async (done) => {
-            const idea = await createIdea({title: 'Test title'}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title'}, sessionHandler.sessionData)
             const response = await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'}))
@@ -393,7 +393,7 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should patch network', async (done) => {
-            const idea = await createIdea({title: 'Test title', networks: [{name: 'kusama', value: 13}]}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title', networks: [{name: 'kusama', value: 13}]}, sessionHandler.sessionData)
             const response = await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
@@ -414,7 +414,7 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}],
                 links: ['The link']
-            }, sessionHandler.user)
+            }, sessionHandler.sessionData)
             const response = await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
@@ -429,7 +429,7 @@ describe(`/api/v1/ideas`, () => {
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}],
                 links: ['The link']
-            }, sessionHandler.user)
+            }, sessionHandler.sessionData)
             await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
@@ -442,7 +442,7 @@ describe(`/api/v1/ideas`, () => {
             const idea = await createIdea({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}]
-            }, sessionHandler.user)
+            }, sessionHandler.sessionData)
             const response = await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
@@ -456,7 +456,7 @@ describe(`/api/v1/ideas`, () => {
             const idea = await createIdea({
                 title: 'Test title',
                 networks: [{name: 'kusama', value: 13}]
-            }, sessionHandler.user)
+            }, sessionHandler.sessionData)
             await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({
@@ -471,7 +471,7 @@ describe(`/api/v1/ideas`, () => {
                 networks: [{name: 'kusama', value: 10}],
                 beneficiary: 'abcd-1234',
                 content: 'Test content'
-            }, sessionHandler.user)
+            }, sessionHandler.sessionData)
             const response = await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'}))
@@ -484,7 +484,7 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should not patch ordinal number', async (done) => {
-            const idea = await createIdea({}, sessionHandler.user)
+            const idea = await createIdea({}, sessionHandler.sessionData)
             const ordinalNumber = idea.ordinalNumber + 13
             const response = await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
@@ -495,20 +495,20 @@ describe(`/api/v1/ideas`, () => {
         })
         it('should not pass ordinal number to the service', async (done) => {
             const spyOnPatchIdea = jest.spyOn(getService(), 'update')
-            const idea = await createIdea({}, sessionHandler.user)
+            const idea = await createIdea({}, sessionHandler.sessionData)
             const ordinalNumber = idea.ordinalNumber + 13
             await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({ordinalNumber}))
                 .expect(200)
             expect(spyOnPatchIdea).toHaveBeenCalledWith({}, idea.id, expect.objectContaining({
-                user: expect.objectContaining({id : sessionHandler.user.user.id})
+                user: expect.objectContaining({id : sessionHandler.sessionData.user.id})
             }))
             done()
         })
 
         it('should return forbidden for not authorized request', async (done) => {
-            const idea = await createIdea({title: 'Test title'}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title'}, sessionHandler.sessionData)
             await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'})
@@ -517,7 +517,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return forbidden for idea created by other user', async (done) => {
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title'}, otherUser)
             await sessionHandler.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
@@ -528,7 +528,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return forbidden for not verified user', async (done) => {
             const sessionHandlerNotVerified = await createUserSessionHandler(app(), 'not.verified@example.com', 'not-verified')
-            const idea = await createIdea({title: 'Test title'}, sessionHandlerNotVerified.user)
+            const idea = await createIdea({title: 'Test title'}, sessionHandlerNotVerified.sessionData)
             await sessionHandlerNotVerified.authorizeRequest(request(app())
                 .patch(`${baseUrl}/${idea.id}`)
                 .send({title: 'Test title 2'}))
@@ -538,7 +538,7 @@ describe(`/api/v1/ideas`, () => {
     })
     describe('DELETE', () => {
         it('should delete idea', async (done) => {
-            const idea = await createIdea({title: 'Test title'}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title'}, sessionHandler.sessionData)
             await sessionHandler.authorizeRequest(request(app())
                 .delete(`${baseUrl}/${idea.id}`))
                 .expect(200)
@@ -548,7 +548,7 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
         it('should delete idea with networks', async (done) => {
-            const idea = await createIdea({title: 'Test title', networks: [{name: 'polkadot', value: 47}]}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title', networks: [{name: 'polkadot', value: 47}]}, sessionHandler.sessionData)
             await sessionHandler.authorizeRequest(request(app())
                 .delete(`${baseUrl}/${idea.id}`))
                 .expect(200)
@@ -565,7 +565,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return forbidden for not authorized request', async (done) => {
-            const idea = await createIdea({title: 'Test title'}, sessionHandler.user)
+            const idea = await createIdea({title: 'Test title'}, sessionHandler.sessionData)
             await request(app())
                 .delete(`${baseUrl}/${idea.id}`)
                 .expect(HttpStatus.FORBIDDEN)
@@ -574,7 +574,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return forbidden for not verified user', async (done) => {
             const sessionHandlerNotVerified = await createUserSessionHandler(app(), 'not.verified@example.com', 'not-verified')
-            const idea = await createIdea({title: 'Test title'}, sessionHandlerNotVerified.user)
+            const idea = await createIdea({title: 'Test title'}, sessionHandlerNotVerified.sessionData)
             await sessionHandlerNotVerified.authorizeRequest(request(app())
                 .delete(`${baseUrl}/${idea.id}`))
                 .expect(HttpStatus.FORBIDDEN)
@@ -582,7 +582,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return forbidden for idea created by other user', async (done) => {
-            const otherUser = await createSessionUser({username: 'otherUser', email: 'otherEmail'})
+            const otherUser = await createSessionData({username: 'otherUser', email: 'otherEmail'})
             const idea = await createIdea({title: 'Test title'}, otherUser)
             await sessionHandler.authorizeRequest(request(app())
                 .delete(`${baseUrl}/${idea.id}`))

@@ -58,7 +58,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
         idea = await createIdea({
             beneficiary: uuid(),
             networks: [{name: 'local', value: 2}]
-        }, sessionHandler.user)
+        }, sessionHandler.sessionData)
         data.ideaNetworkId = idea.networks![0].id
     })
 
