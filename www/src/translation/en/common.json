@@ -50,7 +50,11 @@
       "username": "Username",
       "login": "Login",
       "resetPassword": "ResetPassword",
-      "addEmailCredentials": "Add Email Credentials"
+      "addEmailCredentials": "Add Email Credentials",
+      "emailVerificationNeeded": "Email verification needed",
+      "resendEmail": "Resend verification email",
+      "emailResent": "Verification email resent",
+      "emailSendingError": "An error occured when sending email, please try again later"
     },
     "web3": {
       "web3Account": "Web3 Account",

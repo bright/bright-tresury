@@ -4,12 +4,14 @@ import {useTranslation} from "react-i18next";
 import {Button} from "../../../components/button/Button";
 import {useAuth} from "../../AuthContext";
 import DisabledFormField from "./components/DisabledFormField";
+import EmailNotVerifiedError from "./components/EmailNotVerifiedError";
 
 const useStyles = makeStyles(() =>
     createStyles({
         spacing: {
             marginTop: '32px',
         },
+
     }),
 );
 
@@ -19,10 +21,12 @@ const EmailPasswordAccountDetails = () => {
     const {user} = useAuth()
 
     return <div>
-        <DisabledFormField title={t('account.emailPassword.username')} value={user?.username ?? ''}/>
+        <DisabledFormField className={classes.spacing} title={t('account.emailPassword.username')} value={user?.username ?? ''}/>
         <DisabledFormField className={classes.spacing} title={t('account.emailPassword.login')} value={user?.email ?? ''}/>
         {/* TODO: add reset password button behaviour*/}
-        <Button className={classes.spacing} variant='text' color='primary'>{t('account.emailPassword.resetPassword')}</Button>
+        {!user?.isEmailVerified ? <EmailNotVerifiedError/> :
+            <Button className={classes.spacing} variant='text' color='primary'>{t('account.emailPassword.resetPassword')}</Button>
+        }
 
     </div>
 }
