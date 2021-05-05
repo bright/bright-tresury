@@ -17,7 +17,29 @@ import { IdeaMilestoneNetworkDto } from '../dto/ideaMilestoneNetworkDto'
 import { Idea } from '../../entities/idea.entity'
 import { IdeaMilestone } from '../entities/idea.milestone.entity'
 import { IdeaMilestoneNetwork } from '../entities/idea.milestone.network.entity'
-import { CreateIdeaMilestoneProposalDto } from './dto/CreateIdeaMilestoneProposalDto'
+import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
+import { BlockchainService } from '../../../blockchain/blockchain.service'
+
+const updateExtrinsicDto: UpdateExtrinsicDto = {
+    blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
+    events: [{
+        section: 'treasury',
+        method: 'Proposed',
+        data: [{
+            name: 'ProposalIndex',
+            value: "3",
+        }],
+    },
+    ],
+} as UpdateExtrinsicDto
+
+const createIdeaMilestoneProposalDto = (ideaMilestoneNetworkId: string) => {
+    return {
+        ideaMilestoneNetworkId,
+        extrinsicHash: '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
+        lastBlockHash: '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f'
+    }
+}
 
 const createIdeaMilestoneDto = (networkValue: number = 100) => new CreateIdeaMilestoneDto(
     'ideaMilestoneSubject',
@@ -35,19 +57,31 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
 
     const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
     const ideaMilestonesService = beforeAllSetup(() => app.get().get<IdeaMilestonesService>(IdeaMilestonesService))
+    const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
 
     let verifiedUserSessionHandler: SessionHandler
 
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
+
         verifiedUserSessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
     })
 
     describe('POST', () => {
 
         let idea: Idea
-        let createIdeaMilestoneProposalDto: CreateIdeaMilestoneProposalDto
+
+        beforeAll(() => {
+            jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementation(
+                async (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
+                    await cb(updateExtrinsicDto)
+                })
+        })
+
+        afterAll(() => {
+            jest.clearAllMocks()
+        })
 
         beforeEach(async () => {
             idea = await createIdea(
@@ -56,11 +90,6 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),
-            )
-            createIdeaMilestoneProposalDto = new CreateIdeaMilestoneProposalDto(
-                '',
-                '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
-                '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f',
             )
         })
 
@@ -73,11 +102,9 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return request(app())
                 .post(baseUrl(idea.id, ideaMilestone.id))
-                .send(createIdeaMilestoneProposalDto)
+                .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id))
                 .expect(HttpStatus.FORBIDDEN)
 
         })
@@ -93,12 +120,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return otherVerifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.FORBIDDEN)
 
         })
@@ -114,12 +139,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return notVerifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.FORBIDDEN)
 
         })
@@ -133,12 +156,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(uuid(), ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.NOT_FOUND)
 
         })
@@ -160,12 +181,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(ideaWithEmptyBeneficiaryAddress.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.BAD_REQUEST)
 
         })
@@ -188,12 +207,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(ideaWithTurnedIntoProposalStatus.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.BAD_REQUEST)
 
         })
@@ -207,12 +224,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, uuid()))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.NOT_FOUND)
 
         })
@@ -233,12 +248,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto( ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.BAD_REQUEST)
 
         })
@@ -252,12 +265,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = uuid()
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(uuid())),
             ).expect(HttpStatus.NOT_FOUND)
 
         })
@@ -271,12 +282,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.BAD_REQUEST)
 
         })
@@ -290,12 +299,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             return verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             ).expect(HttpStatus.ACCEPTED)
 
         })
@@ -309,12 +316,10 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             const result = await verifiedUserSessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl(idea.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto),
+                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
             )
 
             const body = result.body as IdeaMilestoneNetworkDto

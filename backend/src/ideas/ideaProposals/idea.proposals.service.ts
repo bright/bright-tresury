@@ -57,7 +57,7 @@ export class IdeaProposalsService {
     }
 
     // all entities passed to this function as arguments should be already validated
-    private async turnIdeaIntoProposal(
+    async turnIdeaIntoProposal(
         validIdea: Idea,
         validIdeaNetwork: IdeaNetwork,
         blockchainProposalIndex: number

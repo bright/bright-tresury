@@ -26,6 +26,19 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
 import { IdeaMilestone } from '../entities/idea.milestone.entity'
 
+const updateExtrinsicDto: UpdateExtrinsicDto = {
+    blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
+    events: [{
+        section: 'treasury',
+        method: 'Proposed',
+        data: [{
+            name: 'ProposalIndex',
+            value: "3",
+        }],
+    },
+    ],
+} as UpdateExtrinsicDto
+
 const createIdeaMilestoneDto = (ideaMilestoneNetworkValue: number = 100) => new CreateIdeaMilestoneDto(
     'subject',
     [{ name: 'polkadot', value: ideaMilestoneNetworkValue }],
@@ -69,26 +82,11 @@ describe('IdeaMilestoneProposalsService', () => {
 
         let createIdeaMilestoneProposalDto: CreateIdeaMilestoneProposalDto
 
-        const blockchainProposalIndexMock = 3
-
-        const extrinsic: UpdateExtrinsicDto = {
-            blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
-            events: [{
-                section: 'treasury',
-                method: 'Proposed',
-                data: [{
-                    name: 'ProposalIndex',
-                    value: blockchainProposalIndexMock.toString(),
-                }],
-            },
-            ],
-        } as UpdateExtrinsicDto
-
         beforeEach(async () => {
 
             jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementationOnce(
                 async (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
-                    await cb(extrinsic)
+                    await cb(updateExtrinsicDto)
                 },
             )
 
@@ -364,6 +362,25 @@ describe('IdeaMilestoneProposalsService', () => {
             await ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData)
 
             expect(turnIdeaMilestoneIntoProposalSpy).not.toHaveBeenCalled()
+
+        })
+
+        it('should return idea milestone network with extrinsic assigned', async () => {
+
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(),
+                sessionData,
+                ideaMilestonesService(),
+            )
+
+            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
+
+            const result = await ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData)
+
+            expect(result.extrinsic).toBeDefined()
+            expect(result.extrinsic!.extrinsicHash).toBe( '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41')
+            expect(result.extrinsic!.lastBlockHash).toBe( '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f')
 
         })
 

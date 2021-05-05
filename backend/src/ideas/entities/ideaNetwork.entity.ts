@@ -34,7 +34,7 @@ export class IdeaNetwork extends BaseEntity {
     }
 
     canTurnIntoProposalOrThrow = () => {
-        if (this.value === 0) {
+        if (Number(this.value) === 0) {
             throw new BadRequestException('Value of the idea network with the given id has to be greater than zero')
         }
     }

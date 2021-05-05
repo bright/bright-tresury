@@ -1,4 +1,4 @@
-import {ForbiddenException, UnauthorizedException} from "@nestjs/common";
+import {BadRequestException, ForbiddenException, NotFoundException} from '@nestjs/common'
 import {getRepositoryToken} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {SessionData} from "../../auth/session/session.decorator";
@@ -8,116 +8,307 @@ import {UpdateExtrinsicDto} from '../../extrinsics/dto/updateExtrinsic.dto';
 import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
 import {beforeAllSetup, beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
 import {EmptyBeneficiaryException} from "../exceptions/emptyBeneficiary.exception";
-import {Idea} from '../entities/idea.entity';
 import {IdeaNetwork} from '../entities/ideaNetwork.entity';
 import {IdeasService} from "../ideas.service";
 import {IdeaStatus} from "../ideaStatus";
-import {createIdea, createSessionData} from "../spec.helpers";
+import { createIdea, createSessionData } from '../spec.helpers'
 import {CreateIdeaProposalDto, IdeaProposalDataDto} from "./dto/createIdeaProposal.dto";
 import {IdeaProposalsService} from "./idea.proposals.service";
+import { v4 as uuid } from 'uuid'
+import { Idea } from '../entities/idea.entity'
+
+const updateExtrinsicDto: UpdateExtrinsicDto = {
+    blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
+    events: [{
+        section: 'treasury',
+        method: 'Proposed',
+        data: [{
+            name: 'ProposalIndex',
+            value: "3",
+        }],
+    },
+    ],
+} as UpdateExtrinsicDto
 
 describe('IdeaProposalsService', () => {
-    const blockHash = '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04'
-    const proposalIndex = 3
-    const extrinsic = {
-        blockHash,
-        events: [{
-            section: 'treasury',
-            method: 'Proposed',
-            data: [{
-                name: 'ProposalIndex',
-                value: proposalIndex.toString()
-            }]
-        }
-        ]
-    } as UpdateExtrinsicDto
-
-    let idea: Idea
-    let dto: CreateIdeaProposalDto
-    let sessionData: SessionData
 
     const app = beforeSetupFullApp()
-    const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
-    const service = beforeAllSetup(() => app().get<IdeaProposalsService>(IdeaProposalsService))
-    const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
-    const ideaNetworkRepository = beforeAllSetup(() => app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
-    const ideaRepository = beforeAllSetup(() => app().get<Repository<Idea>>(getRepositoryToken(Idea)))
 
-    beforeAll(() => {
-        jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementation(
-            async (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
-                await cb(extrinsic)
-            })
-    })
+    const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
+    const ideaProposalsService = beforeAllSetup(() => app().get<IdeaProposalsService>(IdeaProposalsService))
+    const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
+
+    const ideaNetworkRepository = beforeAllSetup(() => app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)))
+
+    let idea: Idea
+    let sessionData: SessionData
+    let otherSessionData: SessionData
 
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
 
-        const partialIdea = {
-            networks: [{name: 'local', value: 10}],
-            beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-        }
         sessionData = await createSessionData()
-        const createdIdea = await createIdea(partialIdea, sessionData, ideasService())
-        idea = await ideasService().findOne(createdIdea.id, sessionData)
-        dto = new CreateIdeaProposalDto(idea.networks![0].id, '', '', new IdeaProposalDataDto(3))
-    })
+        otherSessionData = await createSessionData({ username: 'other', email: 'other@example.com' })
 
-    it('should be defined', () => {
-        expect(service).toBeDefined();
-    });
+        idea = await createIdea(
+            {
+                beneficiary: uuid(),
+                networks: [{ name: 'polkadot', value: 100 }]
+            },
+            sessionData,
+            ideasService()
+        )
+    })
 
     describe('createProposal', () => {
-        it('should assign extrinsic to idea network', async (done) => {
-            await service().createProposal(idea.id, dto, sessionData)
-            setTimeout(async () => {
-                const actual = await ideaNetworkRepository().findOne(idea.networks![0].id, {relations: ['extrinsic']})
-                expect(actual!.extrinsic).toBeTruthy()
-                done()
-            }, 4000)
+
+        let createIdeaProposalDto: CreateIdeaProposalDto
+
+        beforeEach(async () => {
+
+            jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementationOnce(
+                async (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
+                    await cb(updateExtrinsicDto)
+                },
+            )
+
+            createIdeaProposalDto = new CreateIdeaProposalDto(
+                '',
+                '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
+                '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f',
+                new IdeaProposalDataDto(3)
+            )
         })
 
-        // it('should run extractExtrinsic', async (done) => {
-        //     const spy = jest.spyOn(service(), 'extractEvents').mockImplementationOnce(async (events: ExtrinsicEvent[], network: IdeaNetwork) => {
-        //         return
-        //     })
-        //     await service().createProposal(idea.id, dto, sessionData)
-        //     setTimeout(async () => {
-        //         expect(spy).toHaveBeenCalled()
-        //         done()
-        //     }, 4000)
-        // })
-
-        it('should throw empty beneficiary exception if idea beneficiary is empty', async () => {
-            const createdIdea = await ideasService().create({title: '', networks: [{name: 'local', value: 10}]}, sessionData)
-            const actualIdea = (await ideasService().findOne(createdIdea.id, sessionData))!
-            const actualDto = new CreateIdeaProposalDto(actualIdea.networks![0].id, '', '', new IdeaProposalDataDto(3))
-            await expect(service().createProposal(actualIdea.id, actualDto, sessionData))
-                .rejects
-                .toThrow(EmptyBeneficiaryException)
+        afterEach(() => {
+            jest.clearAllMocks()
         })
 
-        it('should throw forbidden exception when creating proposal from not own idea', async () => {
-            const otherSessionUser = await createSessionData({username: 'other', email: 'other@example.com'})
-            await expect(service().createProposal(idea.id, dto, otherSessionUser))
-                .rejects
-                .toThrow(ForbiddenException)
+        it('should throw not found exception for not existing idea', async () => {
+
+            createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
+
+            await expect(
+                ideaProposalsService().createProposal(uuid(), createIdeaProposalDto, sessionData)
+            ).rejects.toThrow(NotFoundException)
+
         })
+
+        it('should throw forbidden exception for idea created by other user', async () => {
+
+            createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
+
+            await expect(
+                ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, otherSessionData)
+            ).rejects.toThrow(ForbiddenException)
+
+        })
+
+        it('should throw empty beneficiary exception for idea with empty beneficiary address', async () => {
+
+            const ideaWithEmptyBeneficiaryAddress = await createIdea(
+                {
+                    beneficiary: '',
+                    networks: [{ name: 'polkadot', value: 100 }]
+                },
+                sessionData,
+                ideasService(),
+            )
+
+            createIdeaProposalDto.ideaNetworkId = ideaWithEmptyBeneficiaryAddress.networks[0].id
+
+            await (expect(
+                ideaProposalsService().createProposal(
+                    ideaWithEmptyBeneficiaryAddress.id,
+                    createIdeaProposalDto,
+                    sessionData
+                ),
+            )).rejects.toThrow(EmptyBeneficiaryException)
+
+        })
+
+        it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
+
+            const ideaWithTurnedIntoProposalStatus = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    status: IdeaStatus.TurnedIntoProposal,
+                    networks: [{ name: 'polkadot', value: 100 }]
+                },
+                sessionData,
+                ideasService(),
+            )
+
+            createIdeaProposalDto.ideaNetworkId = ideaWithTurnedIntoProposalStatus.networks[0].id
+
+            await (expect(
+                ideaProposalsService().createProposal(
+                    ideaWithTurnedIntoProposalStatus.id,
+                    createIdeaProposalDto,
+                    sessionData
+                ),
+            )).rejects.toThrow(BadRequestException)
+
+        })
+
+        it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async () => {
+
+            const ideaWithTurnedIntoProposalByMilestoneStatus = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    status: IdeaStatus.TurnedIntoProposalByMilestone,
+                    networks: [{ name: 'polkadot', value: 100 }]
+                },
+                sessionData,
+                ideasService(),
+            )
+
+            createIdeaProposalDto.ideaNetworkId = ideaWithTurnedIntoProposalByMilestoneStatus.networks[0].id
+
+            await (expect(
+                ideaProposalsService().createProposal(
+                    ideaWithTurnedIntoProposalByMilestoneStatus.id,
+                    createIdeaProposalDto,
+                    sessionData
+                ),
+            )).rejects.toThrow(BadRequestException)
+
+        })
+
+        it('should throw not found exception for not existing idea network', async () => {
+
+            createIdeaProposalDto.ideaNetworkId = uuid()
+
+            await (expect(
+                ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, sessionData),
+            )).rejects.toThrow(NotFoundException)
+
+        })
+
+        it('should throw bad request exception for idea network which value in equal 0', async () => {
+
+            const ideaWithZeroNetworkValue = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    networks: [{ name: 'polkadot', value: 0 }]
+                },
+                sessionData,
+                ideasService()
+            )
+
+            createIdeaProposalDto.ideaNetworkId = ideaWithZeroNetworkValue.networks[0].id
+
+            await (expect(
+                ideaProposalsService().createProposal(ideaWithZeroNetworkValue.id, createIdeaProposalDto, sessionData),
+            )).rejects.toThrow(BadRequestException)
+
+        })
+
+        it('should assign extrinsic to idea network', async () => {
+
+            createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
+
+            await ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, sessionData)
+
+            const ideaNetwork = await ideaNetworkRepository().findOne(
+                createIdeaProposalDto.ideaNetworkId,
+                {
+                    relations: ['extrinsic'],
+                },
+            )
+
+            expect(ideaNetwork!.extrinsic).toBeDefined()
+
+        })
+
+        it('should call extractBlockchainProposalIndexFromExtrinsicEvents method from BlockchainService', async () => {
+
+            const extractBlockchainProposalIndexFromExtrinsicEventsSpy
+                = jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents')
+
+            createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
+
+            await ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, sessionData)
+
+            expect(extractBlockchainProposalIndexFromExtrinsicEventsSpy).toHaveBeenCalled()
+
+        })
+
+        it('should call turnIdeaIntoProposal if blockchainProposalIndex was found', async () => {
+
+            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+                (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
+                    return 3
+                },
+            )
+
+            const turnIdeaIntoProposalSpy = jest.spyOn(ideaProposalsService(), 'turnIdeaIntoProposal')
+
+            createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
+
+            await ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, sessionData)
+
+            expect(turnIdeaIntoProposalSpy).toHaveBeenCalled()
+
+        })
+
+        it('should not call turnIdeaIntoProposal if blockchainProposalIndex was not found', async () => {
+
+            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+                (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
+                    return undefined
+                },
+            )
+
+            const turnIdeaIntoProposalSpy = jest.spyOn(ideaProposalsService(), 'turnIdeaIntoProposal')
+
+            createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
+
+            await ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, sessionData)
+
+            expect(turnIdeaIntoProposalSpy).not.toHaveBeenCalled()
+
+        })
+
+        it('should return idea network with extrinsic assigned', async () => {
+
+            createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
+
+            const result = await ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, sessionData)
+
+            expect(result.extrinsic).toBeDefined()
+            expect(result.extrinsic!.extrinsicHash).toBe( '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41')
+            expect(result.extrinsic!.lastBlockHash).toBe( '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f')
+            expect(result.extrinsic!.data).toBeDefined()
+            expect(result.extrinsic!.data.nextProposalId).toBe(3)
+
+        })
+
     })
 
-    // describe('extractExtrinsic', () => {
-    //     it('should assign blockchainProposalId to idea network', async () => {
-    //         await service().extractEvents(extrinsic.events, idea.networks![0], sessionData)
-    //         const i = await ideaNetworkRepository()
-    //         const actual = await i.findOne(idea.networks![0].id)
-    //         expect(actual!.blockchainProposalId).toBe(proposalIndex)
-    //     })
-    //     it(`should change idea status to turned into proposal`, async () => {
-    //         await service().extractEvents(extrinsic.events, idea.networks![0], sessionData)
-    //         const repository = await ideaRepository()
-    //         const actualIdea = await repository.findOne(idea.id)
-    //         expect(actualIdea!.status).toBe(IdeaStatus.TurnedIntoProposal)
-    //     })
-    // })
+    describe('turnIdeaIntoProposal', () => {
+
+        it(`should change idea status to ${IdeaStatus.TurnedIntoProposal}`, async () => {
+
+            await ideaProposalsService().turnIdeaIntoProposal(idea, idea.networks[0], 3)
+
+            const updatedIdea = await ideasService().findOne(idea.id, sessionData)
+
+            expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposal)
+
+        })
+
+        it('should assign blockchainProposalIndex to idea network', async () => {
+
+            await ideaProposalsService().turnIdeaIntoProposal(idea, idea.networks[0], 3)
+
+            const updatedIdeaNetwork = await ideaNetworkRepository().findOne(idea.networks[0].id)
+
+            expect(updatedIdeaNetwork!.blockchainProposalId).toBe(3)
+
+        })
+
+    })
+
 });
