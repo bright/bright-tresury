@@ -3,7 +3,7 @@ import {Trans, useTranslation} from "react-i18next";
 import {Strong} from '../components/info/Info';
 import {Modal} from '../components/modal/Modal';
 import SubmittingTransaction from "../substrate-lib/components/SubmittingTransaction";
-import {convertIdeaToProposal, IdeaDto} from './ideas.api';
+import {turnIdeaIntoProposal, IdeaDto} from './ideas.api';
 
 export interface ExtrinsicDetails {
     extrinsicHash: string
@@ -21,9 +21,9 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, onSuccess, idea}) 
     const {t} = useTranslation()
     const [extrinsicDetails, setExtrinsicDetails] = useState<ExtrinsicDetails | undefined>(undefined)
 
-    const convert = useCallback(() => {
+    const turn = useCallback(() => {
         if (extrinsicDetails) {
-            convertIdeaToProposal(extrinsicDetails, idea, idea.networks[0])
+            turnIdeaIntoProposal(extrinsicDetails, idea, idea.networks[0])
                 .then((result) => {
                     console.log(result)
                 })
@@ -34,8 +34,8 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, onSuccess, idea}) 
     }, [extrinsicDetails, idea])
 
     useEffect(() => {
-        convert()
-    }, [convert])
+        turn()
+    }, [turn])
 
     return (
         <Modal

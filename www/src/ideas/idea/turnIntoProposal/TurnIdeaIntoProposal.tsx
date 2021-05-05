@@ -10,7 +10,8 @@ import {getIdeaById, IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
 import SubmitProposalModal from "../../SubmitProposalModal";
 import {RightButton, LeftButton} from "../../../components/form/buttons/Buttons";
 
-const ConvertIdeaToProposal = () => {
+const TurnIdeaIntoProposal = () => {
+
     const {t} = useTranslation()
     const [modalOpen, setModalOpen] = useState(false)
     const [idea, setIdea] = useState<IdeaDto | undefined>()
@@ -55,22 +56,22 @@ const ConvertIdeaToProposal = () => {
         history.push(ROUTE_PROPOSALS)
     }
 
-    const canConvertToProposal = useMemo(() => idea
+    const canTurnIntoProposal = useMemo(() => idea
         && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active)
         && (isUserVerified && user?.id === idea.ownerId),
         [idea, isUserVerified, user])
 
-    return canConvertToProposal ? <Container title={t('idea.convertToProposal.title')}>
+    return canTurnIntoProposal ? <Container title={t('idea.turnIntoProposal.title')}>
             {idea &&
             <>
                 <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
                     <RightButton>
-                        {t('idea.convertToProposal.submit')}
+                        {t('idea.turnIntoProposal.submit')}
                     </RightButton>
                     <LeftButton
                         type={'button'}
                         onClick={goBack}>
-                        {t('idea.convertToProposal.cancel')}
+                        {t('idea.turnIntoProposal.cancel')}
                     </LeftButton>
                 </IdeaForm>
                 <SubmitProposalModal
@@ -81,7 +82,7 @@ const ConvertIdeaToProposal = () => {
             </>
             }
         </Container> :
-        <Container title={t('idea.convertToProposal.cannotConvertError')}/>
+        <Container title={t('idea.turnIntoProposal.cannotConvertError')}/>
 }
 
-export default ConvertIdeaToProposal
+export default TurnIdeaIntoProposal

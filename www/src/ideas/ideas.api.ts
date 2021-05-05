@@ -67,7 +67,7 @@ export function updateIdea(idea: IdeaDto) {
     return apiPatch<IdeaDto>(`${IdeaApiPath}/${idea.id}`, idea)
 }
 
-export function convertIdeaToProposal(exDetails: ExtrinsicDetails, idea: IdeaDto, ideaNetwork: IdeaNetworkDto) {
+export function turnIdeaIntoProposal(exDetails: ExtrinsicDetails, idea: IdeaDto, ideaNetwork: IdeaNetworkDto) {
     const data = {
         ideaNetworkId: ideaNetwork.id,
         extrinsicHash: exDetails.extrinsicHash,

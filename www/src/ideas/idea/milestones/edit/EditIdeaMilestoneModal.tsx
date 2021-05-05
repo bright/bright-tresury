@@ -50,7 +50,7 @@ export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseM
                                     handleCloseModal()
                                     handleConvertIdeaMilestoneToProposal(ideaMilestone)
                                 }}>
-                                {t('idea.details.header.convertToProposal')}
+                                {t('idea.details.header.turnIntoProposal')}
                             </Button>
                         )
                         : null

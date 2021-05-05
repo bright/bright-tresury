@@ -16,7 +16,7 @@ interface Props {
     handleConvertSubmit: (ideaMilestone: IdeaMilestoneDto) => void
 }
 
-export const ConvertIdeaMilestoneToProposalModal = ({ open, idea, ideaMilestone, handleCloseModal, handleConvertSubmit }: Props) => {
+export const TurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMilestone, handleCloseModal, handleConvertSubmit }: Props) => {
 
     const { t } = useTranslation()
 
@@ -50,7 +50,7 @@ export const ConvertIdeaMilestoneToProposalModal = ({ open, idea, ideaMilestone,
                     <>
                         <IdeaMilestoneModalHeader>
                             <h2 id='modal-title'>
-                                {t('idea.milestones.convertToProposal.convertToProposal')}
+                                {t('idea.milestones.turnIntoProposal.turnIntoProposal')}
                             </h2>
                         </IdeaMilestoneModalHeader>
                         <IdeaMilestoneForm
@@ -72,8 +72,8 @@ export const ConvertIdeaMilestoneToProposalModal = ({ open, idea, ideaMilestone,
                 : (
                     <TransactionError
                         onOk={handleCloseModal}
-                        title={t('idea.milestones.convertToProposal.emptyBeneficiaryValidationError.title')}
-                        subtitle={t('idea.milestones.convertToProposal.emptyBeneficiaryValidationError.subtitle')}
+                        title={t('idea.milestones.turnIntoProposal.emptyBeneficiaryValidationError.title')}
+                        subtitle={t('idea.milestones.turnIntoProposal.emptyBeneficiaryValidationError.subtitle')}
                     />
                 )
             }

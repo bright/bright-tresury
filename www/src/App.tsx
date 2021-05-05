@@ -9,7 +9,7 @@ import SignIn from "./auth/sign-in/SignIn";
 import VerifyEmail from "./auth/sign-in/VerifyEmail";
 import SignUp from './auth/sign-up/SignUp';
 import IdeaCreate from "./ideas/create/IdeaCreate";
-import ConvertIdeaToProposal from './ideas/idea/convertToProposal/ConvertIdeaToProposal';
+import TurnIdeaIntoProposal from './ideas/idea/turnIntoProposal/TurnIdeaIntoProposal';
 import Idea from "./ideas/idea/Idea";
 import Ideas from './ideas/Ideas';
 import Main from "./main/Main";
@@ -66,7 +66,7 @@ function AppRoutes() {
                     <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
                     <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate}/>
-                    <PrivateRoute exact={true} path={ROUTE_CONVERT_IDEA} component={ConvertIdeaToProposal}/>
+                    <PrivateRoute exact={true} path={ROUTE_CONVERT_IDEA} component={TurnIdeaIntoProposal}/>
                     <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
                     <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
                     <Route exact={false} path={ROUTE_ACCOUNT} component={Account}/>

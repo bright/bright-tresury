@@ -6,7 +6,7 @@ import {IdeaDto} from "../../../ideas.api";
 import {Grid} from "../../../../components/grid/Grid";
 import {IdeaMilestoneCard} from "./IdeaMilestoneCard";
 import {mobileHeaderListHorizontalMargin} from "../../../../components/header/list/HeaderListContainer";
-import {ConvertIdeaMilestoneToProposal} from "../convertToProposal/ConvertIdeaMilestoneToProposal";
+import {TurnIdeaMilestoneIntoProposal} from "../turnIntoProposal/TurnIdeaMilestoneIntoProposal";
 
 interface Props {
     idea: IdeaDto
@@ -80,7 +80,7 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
                 : null
             }
             { ideaMilestoneToConvertToProposal
-                ? <ConvertIdeaMilestoneToProposal
+                ? <TurnIdeaMilestoneIntoProposal
                     idea={idea}
                     ideaMilestone={ideaMilestoneToConvertToProposal}
                     onCancel={handleConvertIdeaMilestoneToProposalCancel}

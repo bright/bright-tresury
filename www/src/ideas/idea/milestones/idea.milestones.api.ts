@@ -27,7 +27,7 @@ export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumbe
 
 export type PatchIdeaMilestoneDto = Partial<IdeaMilestoneDto>
 
-export interface ConvertIdeaMilestoneToProposalDto {
+export interface TurnIdeaMilestoneIntoProposalDto {
     ideaMilestoneNetworkId: string
     extrinsicHash: string
     lastBlockHash: string
@@ -45,11 +45,11 @@ export function patchIdeaMilestone(ideaId: string, ideaMilestoneId: string, data
     return apiPatch<IdeaMilestoneDto>(`/ideas/${ideaId}/milestones/${ideaMilestoneId}`, data)
 }
 
-export function convertIdeaMilestoneToProposal(
+export function turnIdeaMilestoneIntoProposal(
     ideaId: string,
     ideaMilestoneId: string,
     ideaMilestoneNetworkId: string,
-    data: ConvertIdeaMilestoneToProposalDto
+    data: TurnIdeaMilestoneIntoProposalDto
 ) {
     return apiPost<IdeaMilestoneNetworkDto>(`/ideas/${ideaId}/milestones/${ideaMilestoneId}/proposals`, data)
 }

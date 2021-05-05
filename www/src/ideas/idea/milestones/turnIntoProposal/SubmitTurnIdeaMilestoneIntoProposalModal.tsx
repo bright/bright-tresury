@@ -6,8 +6,8 @@ import {ExtrinsicDetails} from "../../../SubmitProposalModal";
 import SubmittingTransaction from "../../../../substrate-lib/components/SubmittingTransaction";
 import {Strong} from "../../../../components/info/Info";
 import {
-    convertIdeaMilestoneToProposal,
-    ConvertIdeaMilestoneToProposalDto,
+    turnIdeaMilestoneIntoProposal,
+    TurnIdeaMilestoneIntoProposalDto,
     IdeaMilestoneDto
 } from "../idea.milestones.api";
 
@@ -19,30 +19,30 @@ interface Props {
     onClose: () => void
 }
 
-export const SubmitConvertIdeaMilestoneToProposalModal = ({ open, idea, ideaMilestone, onSuccess, onClose }: Props) => {
+export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMilestone, onSuccess, onClose }: Props) => {
 
     const { t } = useTranslation()
 
     const [extrinsicDetails, setExtrinsicDetails] = useState<ExtrinsicDetails | null>(null)
 
-    const convert = useCallback(() => {
+    const turn = useCallback(() => {
         if (extrinsicDetails) {
 
-            const convertIdeaMilestoneToProposalDto: ConvertIdeaMilestoneToProposalDto = {
+            const turnIdeaMilestoneIntoProposalDto: TurnIdeaMilestoneIntoProposalDto = {
                 ideaMilestoneNetworkId: ideaMilestone.networks[0].id,
                 extrinsicHash: extrinsicDetails.extrinsicHash,
                 lastBlockHash: extrinsicDetails.lastBlockHash
             }
 
-            convertIdeaMilestoneToProposal(idea.id, ideaMilestone.id, ideaMilestone.networks[0].id, convertIdeaMilestoneToProposalDto)
+            turnIdeaMilestoneIntoProposal(idea.id, ideaMilestone.id, ideaMilestone.networks[0].id, turnIdeaMilestoneIntoProposalDto)
                 .then((result) => console.log(result))
                 .catch((err) => console.log(err))
         }
     }, [extrinsicDetails])
 
     useEffect(() => {
-        convert()
-    }, [convert])
+        turn()
+    }, [turn])
 
     return (
         <Modal
@@ -53,7 +53,7 @@ export const SubmitConvertIdeaMilestoneToProposalModal = ({ open, idea, ideaMile
             maxWidth={'md'}
         >
             <SubmittingTransaction
-                title={t('idea.milestones.convertToProposal.submit.title')}
+                title={t('idea.milestones.turnIntoProposal.submit.title')}
                 instruction={
                     <Trans
                         id='modal-description'

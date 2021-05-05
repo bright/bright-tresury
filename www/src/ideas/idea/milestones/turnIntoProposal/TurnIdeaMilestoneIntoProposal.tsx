@@ -1,10 +1,10 @@
 import React, {useState} from "react";
-import {ConvertIdeaMilestoneToProposalModal} from "./ConvertIdeaMilestoneToProposalModal";
+import {TurnIdeaMilestoneIntoProposalModal} from "./TurnIdeaMilestoneIntoProposalModal";
 import {IdeaMilestoneDto} from "../idea.milestones.api";
 import {IdeaDto} from "../../../ideas.api";
 import {ROUTE_PROPOSALS} from "../../../../routes/routes";
 import {useHistory} from "react-router-dom";
-import {SubmitConvertIdeaMilestoneToProposalModal} from "./SubmitConvertIdeaMilestoneToProposalModal";
+import {SubmitTurnIdeaMilestoneIntoProposalModal} from "./SubmitTurnIdeaMilestoneIntoProposalModal";
 
 interface Props {
     idea: IdeaDto
@@ -12,16 +12,16 @@ interface Props {
     onCancel: () => void
 }
 
-export const ConvertIdeaMilestoneToProposal = ({ idea, ideaMilestone, onCancel }: Props) => {
+export const TurnIdeaMilestoneIntoProposal = ({ idea, ideaMilestone, onCancel }: Props) => {
 
     const history = useHistory()
 
     const [patchedIdeaMilestone, setPatchedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
-    const [convertModalOpen, setConvertModalOpen] = useState<boolean>(true)
+    const [turnModalOpen, setTurnModalOpen] = useState<boolean>(true)
     const [submitModalOpen, setSubmitModalOpen] = useState<boolean>(false)
 
-    const handleConvertModalClose = () => {
-        setConvertModalOpen(false)
+    const handleTurnModalClose = () => {
+        setTurnModalOpen(false)
         onCancel()
     }
 
@@ -31,9 +31,9 @@ export const ConvertIdeaMilestoneToProposal = ({ idea, ideaMilestone, onCancel }
         onCancel()
     }
 
-    const handleConvertSubmit = (patchedIdeaMilestone: IdeaMilestoneDto) => {
+    const handleTurnSubmit = (patchedIdeaMilestone: IdeaMilestoneDto) => {
         setPatchedIdeaMilestone(patchedIdeaMilestone)
-        setConvertModalOpen(false)
+        setTurnModalOpen(false)
         setSubmitModalOpen(true)
     }
 
@@ -43,15 +43,15 @@ export const ConvertIdeaMilestoneToProposal = ({ idea, ideaMilestone, onCancel }
 
     return (
         <>
-            <ConvertIdeaMilestoneToProposalModal
-                open={convertModalOpen}
+            <TurnIdeaMilestoneIntoProposalModal
+                open={turnModalOpen}
                 idea={idea}
                 ideaMilestone={ideaMilestone}
-                handleCloseModal={handleConvertModalClose}
-                handleConvertSubmit={handleConvertSubmit}
+                handleCloseModal={handleTurnModalClose}
+                handleConvertSubmit={handleTurnSubmit}
             />
             { patchedIdeaMilestone
-                ? <SubmitConvertIdeaMilestoneToProposalModal
+                ? <SubmitTurnIdeaMilestoneIntoProposalModal
                     open={submitModalOpen}
                     idea={idea}
                     ideaMilestone={patchedIdeaMilestone}
