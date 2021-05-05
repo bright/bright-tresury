@@ -1,16 +1,13 @@
 import * as React from "react";
 import {useEffect, useMemo, useState} from "react";
-import {SignInAPIResponse, SignUpAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
+import {SignInAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
 import Session from "supertokens-auth-react/lib/build/recipe/session/session";
-import {signIn as signInApi, SignInData, signOut as signOutApi, SignUpData} from './auth.api'
-import {Web3SignUpValues} from "./sign-up/web3/Web3SignUp";
-import {handleWeb3Signup} from "./sign-up/web3/handleWeb3Signup";
+import {signIn as signInApi, SignInData, signOut as signOutApi} from './auth.api'
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
     signIn: (signInData: SignInData) => Promise<SignInAPIResponse>
     signOut: () => Promise<void>
-    web3SignUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
@@ -81,20 +78,8 @@ const AuthContextProvider: React.FC = (props) => {
             })
     }
 
-    const web3SignUp = (web3SignUpValues: Web3SignUpValues) => {
-        return handleWeb3Signup(web3SignUpValues.account)
-            .then(() => {
-                setIsUserSignedIn(true)
-            })
-            .catch((error) => {
-                console.log(error)
-                setIsUserSignedIn(false)
-                throw error
-            })
-    }
-
     return (
-        <AuthContext.Provider value={{user, isUserSignedIn, isUserVerified, signIn, signOut, web3SignUp}} {...props}/>
+        <AuthContext.Provider value={{user, isUserSignedIn, isUserVerified, signIn, signOut}} {...props}/>
     )
 }
 

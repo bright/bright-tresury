@@ -15,7 +15,7 @@ import {SignUpButton} from "../common/SignUpButton";
 import {AlreadyLoggedIn} from "../common/AlreadyLoggedIn";
 import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
 import {SignUpFormWrapper} from "../common/SignUpFormWrapper";
-import SignUpSuccess from "../common/SignUpSucces";
+import EmailSignUpSuccess from "./EmailSignUpSucces";
 
 interface EmailSignUpValues {
     username: string,
@@ -45,7 +45,7 @@ const EmailSignUp: React.FC = () => {
     const passwordValidationRules = validationSchema.fields.password.tests.map(({OPTIONS}) => OPTIONS.message?.toString() || '')
 
     if (loadingState === LoadingState.Resolved) {
-        return <SignUpSuccess subtitle={t('auth.signUp.emailSignUp.successSubtitle')}/>
+        return <EmailSignUpSuccess/>
     }
 
     return <Formik

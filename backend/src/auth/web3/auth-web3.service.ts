@@ -85,8 +85,8 @@ export class AuthWeb3Service {
             username,
             blockchainAddress: address,
         } as CreateBlockchainUserDto
-        const user = await this.userService.createBlockchainUser(createUserDto)
-        const session = await this.superTokensService.createSession(res, superTokensUser.id)
+        await this.userService.createBlockchainUser(createUserDto)
+        await this.superTokensService.createSession(res, superTokensUser.id)
     }
 
     private getSignMessageCacheKey = (address: string) => `SignMessage:${address}`

@@ -59,7 +59,8 @@ function AppRoutes() {
             <Router>
                 <Main>
                     <Switch>
-                        <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp}/>
+                        <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp}
+                                         redirectTo={ROUTE_SIGNUP_WEB3_SUCCESS}/>
                         <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn}/>
                         <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={Web3SignUpSuccess}/>
                         <Route exact={true} path={ROUTE_VERIFY_EMAIL}>

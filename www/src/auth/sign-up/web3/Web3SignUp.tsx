@@ -16,7 +16,6 @@ import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
 import {useWeb3SignUp} from "./handleWeb3Signup";
 import {ErrorBox} from "../../../components/form/ErrorBox";
-import {useAuth} from "../../AuthContext";
 import {useHistory} from 'react-router-dom';
 import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes/routes";
 
@@ -29,9 +28,7 @@ const Web3SignUp: React.FC = () => {
     const {t} = useTranslation()
     const history = useHistory()
 
-    const {web3SignUp} = useAuth()
-
-    const {call: signUpCall, loadingState, error} = useWeb3SignUp(web3SignUp)
+    const {call: signUpCall, loadingState, error} = useWeb3SignUp()
 
     const onSubmit = async (values: Web3SignUpValues) => {
         await signUpCall(values)

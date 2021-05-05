@@ -14,9 +14,7 @@ interface UseWeb3SignUpResult {
     error?: string
 }
 
-export function useWeb3SignUp(
-    signUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
-): UseWeb3SignUpResult {
+export function useWeb3SignUp(): UseWeb3SignUpResult {
     const {t} = useTranslation()
     const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
     const [error, setError] = useState<string | undefined>()
@@ -26,7 +24,7 @@ export function useWeb3SignUp(
     ) => {
         setLoadingState(LoadingState.Loading)
         try {
-            await signUp(values)
+            await handleWeb3Signup(values.account)
             setLoadingState(LoadingState.Resolved)
         } catch (e) {
             setLoadingState(LoadingState.Error)
