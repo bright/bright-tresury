@@ -3,7 +3,6 @@ import {Button} from "../../../components/button/Button";
 import React from "react";
 import {makeStyles, Theme} from "@material-ui/core/styles";
 import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
-import {ROUTE_SIGNUP_EMAIL} from "../../../routes";
 import {useHistory} from "react-router";
 import {ROUTE_SIGNUP_EMAIL} from "../../../routes/routes";
 
