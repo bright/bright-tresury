@@ -3,12 +3,12 @@ import {getRepositoryToken} from "@nestjs/typeorm";
 import {Request} from "express";
 import supertest from "supertest";
 import {createEmailVerificationToken, verifyEmailUsingToken} from "supertokens-node/lib/build/recipe/emailverification";
-import {v4 as uuid} from "uuid";
 import {User} from "../../../users/user.entity"
 import {request} from "../../../utils/spec.helpers";
 import {AuthWeb3Service} from "../../web3/auth-web3.service";
 import {v4 as uuid} from 'uuid';
 import {SessionData} from "../../session/session.decorator";
+import {UsersService} from "../../../users/users.service";
 
 export class SessionHandler {
 
@@ -55,7 +55,8 @@ export const createBlockchainSessionHandler = async (
             network: 'localhost',
             signature: uuid()
         })
-    return createSessionHandler(confirmSignUpRes)
+    const user = await app.get(UsersService).findOneByBlockchainAddress(address)
+    return createSessionHandler(confirmSignUpRes, user)
 }
 
 export const createUserSessionHandlerWithVerifiedEmail = async (
