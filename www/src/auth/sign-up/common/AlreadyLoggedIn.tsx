@@ -1,9 +1,9 @@
 import {Trans} from "react-i18next";
 import {RouterLink} from "../../../components/link/RouterLink";
-import {ROUTE_SIGNIN} from "../../../routes";
 import {Typography} from "@material-ui/core";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
+import {ROUTE_SIGNIN} from "../../../routes/routes";
 
 const useStyles = makeStyles(() => {
     return {
