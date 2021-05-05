@@ -6,6 +6,7 @@ import {AddressInfo} from "../../../components/identicon/AddressInfo";
 import {Link} from "../../../components/link/Link";
 import {Radio} from "../../../components/radio/Radio";
 import {Label} from "../../../components/text/Label";
+import {breakpoints} from "../../../theme/theme";
 import {useAuth} from "../../AuthContext";
 
 const useStyles = makeStyles((theme: Theme) => {
@@ -20,10 +21,26 @@ const useStyles = makeStyles((theme: Theme) => {
             alignItems: 'center',
             marginBottom: '50px',
             width: '100%',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                flexDirection: 'column-reverse',
+                alignItems: 'flex-start',
+                marginBottom: '42px',
+            },
         },
-        delete: {
+        addressAndUnlink: {
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+        },
+        unlink: {
             fontWeight: 'bold',
-            color: theme.palette.warning.main
+            color: theme.palette.warning.main,
+            marginRight: '42px',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                marginRight: '0px',
+            },
         },
         primary: {
             display: 'flex',
@@ -48,8 +65,10 @@ const Web3AccountDetails = () => {
         <Label className={classes.title} label={t('account.web3.web3Account')}/>
         {user?.web3Addresses.map((address) => {
             return <div className={classes.web3Element}>
-                <AddressInfo address={address.address}/>
-                <Link className={classes.delete}>{t('account.web3.unlink')}</Link>
+                <div className={classes.addressAndUnlink}>
+                    <AddressInfo address={address.address}/>
+                    <Link className={classes.unlink}>{t('account.web3.unlink')}</Link>
+                </div>
                 <div className={classes.primary}>
                     <Radio className={classes.radio} checked={address.isPrimary}/>
                     <p className={address.isPrimary ? '' : classes.disabledPrimary}>{t('account.web3.primary')}</p>

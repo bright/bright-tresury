@@ -13,12 +13,19 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             display: 'flex',
             flexDirection: 'row',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                flexDirection: 'column',
+            },
             marginTop: '21px',
         },
         avatarContainer: {
             width: '46px',
             marginRight: '36px',
             marginTop: '44px',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginRight: '0px',
+                marginTop: '0px',
+            },
         },
         content: {
             display: 'flex',
