@@ -1,19 +1,59 @@
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React from "react";
-import {ToggleButtonGroup as MaterialToggleButtonGroup} from "@material-ui/lab";
-import {SingleToggleButton, ToggleEntry} from "./SingleToggleButton";
+import {ToggleButton as MaterialToggleButton} from "@material-ui/lab";
+import {NavLink} from "react-router-dom";
 import {Location} from "history";
 
-interface OwnProps {
-    toggleEntries: ToggleEntry[]
-    isActive: (entry: ToggleEntry, location: Location) => boolean
-    className?: string
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        root: {
+            borderRadius: 0,
+            fontWeight: 'bold',
+            textTransform: 'none',
+            padding: `14px 34px`,
+        },
+        inactive: {
+            width: '100%',
+            textDecoration: 'none',
+            '& > *': {
+                width: '100%',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                color: theme.palette.primary.main,
+                background: theme.palette.background.default
+            },
+        },
+        active: {
+            '& > *': {
+                color: `${theme.palette.background.default} !important`,
+                background: `${theme.palette.primary.main} !important`,
+                boxShadow: `0px 0px 5px rgba(0, 0, 0, 0.5)`
+            }
+        }
+    }),
+);
+
+export interface ToggleEntry {
+    label: string
+    path: string
 }
 
-export const ToggleButton: React.FC<OwnProps> = ({toggleEntries, isActive, className}) => {
-    return <MaterialToggleButtonGroup className={className}>
-        {toggleEntries.map((entry: ToggleEntry, index: number) =>
-            <SingleToggleButton key={index} entry={entry} isActive={isActive}/>
-        )}
-    </MaterialToggleButtonGroup>
+interface OwnProps {
+    entry: ToggleEntry
+    isActive: (entry: ToggleEntry, location: Location) => boolean
+}
+
+export const ToggleButton: React.FC<OwnProps> = ({entry, isActive}) => {
+    const classes = useStyles()
+    return <NavLink to={entry.path}
+                    isActive={(match, location: Location) => isActive(entry, location)}
+                    className={classes.inactive}
+                    activeClassName={classes.active}>
+        <MaterialToggleButton
+            classes={classes}
+            value={entry.label}>
+            {entry.label}
+        </MaterialToggleButton>
+    </NavLink>
 };
 

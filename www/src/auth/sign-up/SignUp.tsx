@@ -3,10 +3,10 @@ import React from "react";
 import {useTranslation} from "react-i18next";
 import Container from "../../components/form/Container";
 import EmailSignUp from "./email/EmailSignUp";
-import {ToggleButton} from "../../components/toggle/ToggleButton";
+import {ToggleButtonGroup} from "../../components/toggle/ToggleButtonGroup";
 import {Route, Switch, useRouteMatch} from "react-router-dom";
 import Web3SignUp from "./web3/Web3SignUp";
-import {ToggleEntry} from "../../components/toggle/SingleToggleButton";
+import {ToggleEntry} from "../../components/toggle/ToggleButton";
 import {Location} from "history";
 import {SignUpComponentWrapper} from "./common/SignUpComponentWrapper";
 
@@ -64,7 +64,7 @@ const SignUp: React.FC = () => {
     return <Container title={t('auth.signUp.title')}>
         <div className={classes.toggleContainer}>
             <SignUpComponentWrapper>
-                <ToggleButton
+                <ToggleButtonGroup
                     className={classes.toggle}
                     toggleEntries={toggleEntries}
                     isActive={isActiveToggle}

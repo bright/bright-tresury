@@ -1,20 +1,19 @@
 import {Formik} from "formik";
-import React from "react";
+import React, {useEffect} from "react";
 import {useTranslation} from "react-i18next";
 import * as Yup from "yup";
-import {LoadingState} from "../../../components/loading/LoadingWrapper";
+import {LoadingState, useLoading} from "../../../components/loading/LoadingWrapper";
 import {fullValidatorForSchema} from "../../../util/form.util";
 import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/TermsAgreementCheckbox";
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
-import {AlreadyLoggedIn} from "../common/AlreadyLoggedIn";
+import {AlreadySignedUp} from "../common/AlreadySignedUp";
 import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
 import {SignUpFormWrapper} from "../common/SignUpFormWrapper";
 import {AccountSelect} from "../../../components/select/AccountSelect";
 import {Account} from "../../../substrate-lib/hooks/useAccounts";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
-import {useWeb3SignUp} from "./handleWeb3Signup";
 import {ErrorBox} from "../../../components/form/ErrorBox";
 import {useHistory} from 'react-router-dom';
 import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes/routes";
@@ -31,7 +30,7 @@ const Web3SignUp: React.FC = () => {
 
     const {web3SignUp} = useAuth()
 
-    const {call: signUpCall, loadingState, error} = useWeb3SignUp(web3SignUp)
+    const {call: signUpCall, loadingState, error} = useLoading(web3SignUp)
 
     const onSubmit = async (values: Web3SignUpValues) => {
         await signUpCall(values)
@@ -45,9 +44,11 @@ const Web3SignUp: React.FC = () => {
         return <ExtensionNotDetected/>
     }
 
-    if (loadingState === LoadingState.Resolved) {
-        history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
-    }
+    useEffect(() => {
+        if (loadingState === LoadingState.Resolved) {
+            history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
+        }
+    }, [loadingState])
 
     return <Formik
         enableReinitialize={true}
@@ -66,7 +67,7 @@ const Web3SignUp: React.FC = () => {
           }) =>
             <SignUpFormWrapper handleSubmit={handleSubmit}>
                 {error && <SignUpComponentWrapper>
-                    <ErrorBox error={error}/>
+                    <ErrorBox error={t('auth.signUp.web3SignUp.failureMessage')}/>
                 </SignUpComponentWrapper>}
                 <SignUpComponentWrapper>
                     <AccountSelect account={values.account}/>
@@ -78,7 +79,7 @@ const Web3SignUp: React.FC = () => {
                     <PrivacyNotice/>
                 </SignUpComponentWrapper>
                 <SignUpButton disabled={loadingState === LoadingState.Loading}/>
-                <AlreadyLoggedIn/>
+                <AlreadySignedUp/>
             </SignUpFormWrapper>
         }
     </Formik>

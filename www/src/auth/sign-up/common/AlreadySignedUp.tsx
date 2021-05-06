@@ -14,7 +14,7 @@ const useStyles = makeStyles(() => {
     }
 })
 
-export const AlreadyLoggedIn: React.FC = () => {
+export const AlreadySignedUp: React.FC = () => {
     const classes = useStyles()
 
     return <Typography className={classes.login}>

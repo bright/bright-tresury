@@ -12,7 +12,7 @@ import {useSuperTokensRequest} from "../../supertokens.utils/useSuperTokensReque
 import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/TermsAgreementCheckbox";
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
-import {AlreadyLoggedIn} from "../common/AlreadyLoggedIn";
+import {AlreadySignedUp} from "../common/AlreadySignedUp";
 import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
 import {SignUpFormWrapper} from "../common/SignUpFormWrapper";
 import EmailSignUpSuccess from "./EmailSignUpSucces";
@@ -90,7 +90,7 @@ const EmailSignUp: React.FC = () => {
                     <PrivacyNotice/>
                 </SignUpComponentWrapper>
                 <SignUpButton disabled={loadingState === LoadingState.Loading}/>
-                <AlreadyLoggedIn/>
+                <AlreadySignedUp/>
             </SignUpFormWrapper>
         }
     </Formik>

@@ -2,40 +2,7 @@ import {web3FromAddress} from "@polkadot/extension-dapp";
 import {Account} from '../../../substrate-lib/hooks/useAccounts';
 import {confirmAddressSignUp, startAddressSignUp} from "../../auth-web3.api";
 import config from "../../../config";
-import {LoadingState} from "../../../components/loading/LoadingWrapper";
-import {useCallback, useState} from "react";
 import {stringToHex} from '@polkadot/util';
-import {Web3SignUpValues} from "./Web3SignUp";
-import {useTranslation} from "react-i18next";
-
-interface UseWeb3SignUpResult {
-    call: (values: Web3SignUpValues) => Promise<void>
-    loadingState: LoadingState
-    error?: string
-}
-
-export function useWeb3SignUp(
-    signUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
-): UseWeb3SignUpResult {
-    const {t} = useTranslation()
-    const [loadingState, setLoadingState] = useState<LoadingState>(LoadingState.Initial)
-    const [error, setError] = useState<string | undefined>()
-
-    const call = useCallback(async (
-        values: Web3SignUpValues
-    ) => {
-        setLoadingState(LoadingState.Loading)
-        try {
-            await signUp(values)
-            setLoadingState(LoadingState.Resolved)
-        } catch (e) {
-            setLoadingState(LoadingState.Error)
-            setError(t('auth.signUp.web3SignUp.failureMessage'))
-        }
-    }, [])
-
-    return {call, loadingState, error}
-}
 
 export async function handleWeb3Signup(account: Account) {
     const injected = await web3FromAddress(account.address);
