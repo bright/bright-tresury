@@ -47,7 +47,7 @@ export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseM
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
-                                    handleCloseModal()
+                                    // handleCloseModal()
                                     handleTurnIdeaMilestoneIntoProposal(ideaMilestone)
                                 }}>
                                 {t('idea.details.header.turnIntoProposal')}

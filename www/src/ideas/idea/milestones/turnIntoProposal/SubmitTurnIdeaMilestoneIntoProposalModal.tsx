@@ -10,16 +10,19 @@ import {
     TurnIdeaMilestoneIntoProposalDto,
     IdeaMilestoneDto
 } from "../idea.milestones.api";
+import { ROUTE_PROPOSALS } from '../../../../routes/routes'
+import { useHistory } from 'react-router-dom'
 
 interface Props {
     open: boolean
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    onSuccess: () => void
     onClose: () => void
 }
 
-export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMilestone, onSuccess, onClose }: Props) => {
+export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMilestone, onClose }: Props) => {
+
+    const history = useHistory()
 
     const { t } = useTranslation()
 
@@ -44,6 +47,10 @@ export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMiles
         turn()
     }, [turn])
 
+    const goToProposals = () => {
+        history.push(ROUTE_PROPOSALS)
+    }
+
     return (
         <Modal
             open={open}
@@ -63,7 +70,7 @@ export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMiles
                         }}
                     />
                 }
-                onSuccess={onSuccess}
+                onSuccess={goToProposals}
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'treasury',

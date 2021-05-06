@@ -6,7 +6,8 @@ import {IdeaDto} from "../../../ideas.api";
 import {Grid} from "../../../../components/grid/Grid";
 import {IdeaMilestoneCard} from "./IdeaMilestoneCard";
 import {mobileHeaderListHorizontalMargin} from "../../../../components/header/list/HeaderListContainer";
-import {TurnIdeaMilestoneIntoProposal} from "../turnIntoProposal/TurnIdeaMilestoneIntoProposal";
+import { TurnIdeaMilestoneIntoProposalConfirmModal } from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalConfirmModal'
+import { SubmitTurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/SubmitTurnIdeaMilestoneIntoProposalModal'
 
 interface Props {
     idea: IdeaDto
@@ -21,6 +22,9 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
     const [ideaMilestoneToTurnIntoProposal, setIdeaMilestoneToTurnIntoProposal] = useState<IdeaMilestoneDto | null>(null)
     const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
     const [displayModalOpen, setDisplayModalOpen] = useState<boolean>(false)
+
+    const [turnConfirmModalOpen, setTurnConfirmModalOpen] = useState<boolean>(false)
+    const [submitTurnModalOpen, setSubmitTurnModalOpen] = useState<boolean>(false)
 
     const handleEditModalClose = () => {
         setEditModalOpen(false)
@@ -42,10 +46,13 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
     }
 
     const handleTurnIdeaMilestoneIntoProposal = (ideaMilestone: IdeaMilestoneDto) => {
+
         setIdeaMilestoneToTurnIntoProposal(ideaMilestone)
+        setTurnConfirmModalOpen(true)
+
     }
 
-    const handleTurnIntoProposalCancel = () => setIdeaMilestoneToTurnIntoProposal(null)
+    // const handleTurnIntoProposalCancel = () => setIdeaMilestoneToTurnIntoProposal(null)
 
     const renderIdeaMilestoneCard = (ideaMilestone: IdeaMilestoneDto) => {
         return <IdeaMilestoneCard ideaMilestone={ideaMilestone} onClick={handleIdeaMilestoneClick} />
@@ -79,15 +86,47 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
                   />
                 : null
             }
+
             { ideaMilestoneToTurnIntoProposal
-                ? <TurnIdeaMilestoneIntoProposal
-                    idea={idea}
-                    ideaMilestone={ideaMilestoneToTurnIntoProposal}
-                    onCancel={handleTurnIntoProposalCancel}
-                  />
+                ? (
+                    <TurnIdeaMilestoneIntoProposalConfirmModal
+                        open={turnConfirmModalOpen}
+                        idea={idea}
+                        ideaMilestone={ideaMilestoneToTurnIntoProposal}
+                        onClose={() => setTurnConfirmModalOpen(false)}
+                        onCancel={() => setTurnConfirmModalOpen(false)}
+                        onTurnIntoProposalClick={() => {
+                            setTurnConfirmModalOpen(false)
+                            setEditModalOpen(false)
+                            setSubmitTurnModalOpen(true)
+                        }}
+                    />
+                )
                 : null
             }
-        </>
 
+            { ideaMilestoneToTurnIntoProposal
+                ? (
+                    <SubmitTurnIdeaMilestoneIntoProposalModal
+                        open={submitTurnModalOpen}
+                        idea={idea}
+                        ideaMilestone={ideaMilestoneToTurnIntoProposal}
+                        onClose={() => {
+                            setSubmitTurnModalOpen(false)
+                        }}
+                    />
+                )
+                : null
+            }
+
+            {/*{ ideaMilestoneToTurnIntoProposal*/}
+            {/*    ? <TurnIdeaMilestoneIntoProposal*/}
+            {/*        idea={idea}*/}
+            {/*        ideaMilestone={ideaMilestoneToTurnIntoProposal}*/}
+            {/*        onCancel={handleTurnIntoProposalCancel}*/}
+            {/*      />*/}
+            {/*    : null*/}
+            {/*}*/}
+        </>
     )
 }
