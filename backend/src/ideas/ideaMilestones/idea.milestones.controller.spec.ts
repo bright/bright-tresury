@@ -32,6 +32,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         [{name: 'polkadot', value: 100}],
         null,
         null,
+        null,
         null
     )
 
@@ -70,7 +71,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return idea milestones', async () => {
             await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null),
+                new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null, null),
                 sessionHandler.sessionData,
                 getIdeaMilestonesService()
             )
@@ -87,7 +88,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return milestones only of the given idea', async () => {
             await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null),
+                new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null, null),
                 sessionHandler.sessionData,
                 getIdeaMilestonesService()
             )
@@ -95,7 +96,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const anotherIdea = await createIdea({title: 'anotherIdeaTitle'}, sessionHandler.sessionData, getIdeasService())
             await createIdeaMilestone(
                 anotherIdea.id,
-                new CreateIdeaMilestoneDto('anotherIdeaMilestoneSubject', [], null, null, null),
+                new CreateIdeaMilestoneDto('anotherIdeaMilestoneSubject', [], null, null, null, null),
                 sessionHandler.sessionData,
                 getIdeaMilestonesService()
             )
@@ -115,6 +116,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 new CreateIdeaMilestoneDto(
                     'ideaMilestoneSubject',
                     [{name: 'polkadot', value: 100}],
+                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     new Date(2021, 3, 20),
                     new Date(2021, 3, 21),
                     'ideaMilestoneDescription'
@@ -133,6 +135,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body[0].networks.length).toBe(1)
             expect(body[0].networks[0].name).toBe('polkadot')
             expect(body[0].networks[0].value).toBe(100)
+            expect(body[0].beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body[0].dateFrom).toBe('2021-04-20')
             expect(body[0].dateTo).toBe('2021-04-21')
             expect(body[0].description).toBe('ideaMilestoneDescription')
@@ -295,6 +298,20 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
+        it(`should return ${HttpStatus.BAD_REQUEST} if beneficiary is incorrect`, () => {
+            return sessionHandler.authorizeRequest(request(app())
+                .post(baseUrl(idea.id))
+                .send({
+                    subject: 'ideaMilestoneSubject',
+                    networks: [{name: 'polkadot', value: 'value'}],
+                    beneficiary: '5GrwvaEF5z',
+                    dateFrom: null,
+                    dateTo: null,
+                    description: null
+                }))
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
         it(`should return ${HttpStatus.BAD_REQUEST} if dateFrom is given but has incorrect format`, () => {
             return sessionHandler.authorizeRequest(request(app())
                 .post(baseUrl(idea.id))
@@ -340,6 +357,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 .send({
                     subject: 'ideaMilestoneSubject',
                     networks: [{name: 'polkadot', value: 10}],
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     dateFrom: '2021-04-20',
                     dateTo: '2021-04-21',
                     description: 'ideaDescription'
@@ -353,6 +371,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 .send({
                     subject: 'ideaMilestoneSubject',
                     networks: [{name: 'polkadot', value: 10}],
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     dateFrom: '2021-04-20',
                     dateTo: '2021-04-21',
                     description: 'ideaDescription'
@@ -367,6 +386,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe('polkadot')
             expect(body.networks[0].value).toBe(10)
+            expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.dateFrom).toBe('2021-04-20')
             expect(body.dateTo).toBe('2021-04-21')
             expect(body.description).toBe('ideaDescription')
@@ -419,6 +439,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 new CreateIdeaMilestoneDto(
                     'ideaMilestoneSubject',
                     [{name: 'polkadot', value: 100}],
+                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     new Date(2021, 3, 20),
                     new Date(2021, 3, 21),
                     'ideaMilestoneDescription'
@@ -468,6 +489,19 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.networks).toBeDefined()
             expect(body.networks[0].name).toBe('polkadot')
             expect(body.networks[0].value).toBe(500)
+        })
+
+        it(`should patch beneficiary correctly`, async () => {
+            const response = await sessionHandler.authorizeRequest(request(app())
+                .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
+                .send({
+                    beneficiary: '15Vn4KyqUhE1YtSNsZ8E6pAMSjbYVdz6MR4L2971Zs7ju9ZT'
+                }))
+                .expect(HttpStatus.OK)
+
+            const body = response.body as IdeaMilestoneDto
+
+            expect(body.beneficiary).toBe('15Vn4KyqUhE1YtSNsZ8E6pAMSjbYVdz6MR4L2971Zs7ju9ZT')
         })
 
         it(`should patch dateFrom correctly`, async () => {
@@ -524,6 +558,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe('polkadot')
             expect(body.networks[0].value).toBe(100)
+            expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.dateFrom).toBe('2021-04-20')
             expect(body.dateTo).toBe('2021-04-21')
             expect(body.description).toBe('ideaMilestoneDescription')

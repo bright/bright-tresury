@@ -47,6 +47,7 @@ describe(`/api/v1/ideas`, () => {
       const createIdeaMilestoneDto: CreateIdeaMilestoneDto = {
           subject: 'ideaMilestoneSubject',
           networks: [{name: 'polkadot', value: 100}],
+          beneficiary: null,
           dateFrom: null,
           dateTo: null,
           description: null
@@ -71,6 +72,7 @@ describe(`/api/v1/ideas`, () => {
               [{name: 'polkadot', value: 100}],
               null,
               null,
+              null,
               null
           ),
           sessionData
@@ -80,6 +82,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject2',
               [{name: 'polkadot', value: 100}],
+              null,
               null,
               null,
               null
@@ -100,6 +103,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'draftIdeaMilestoneSubject1',
               [{name: 'polkadot', value: 100}],
+              null,
               null,
               null,
               null
@@ -134,6 +138,7 @@ describe(`/api/v1/ideas`, () => {
       const createIdeaMilestoneDto = new CreateIdeaMilestoneDto(
           'ideaMilestoneSubject',
           [{name: 'polkadot', value: 50}, {name: 'kusama', value: 100}],
+          '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
           new Date(2021, 3, 20),
           new Date(2021, 3, 21),
           'ideaMilestoneDescription'
@@ -152,6 +157,7 @@ describe(`/api/v1/ideas`, () => {
       expect(foundIdeaMilestone.networks.length).toBe(2)
       expect(foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === 'kusama')).toBeDefined()
       expect(foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === 'polkadot')).toBeDefined()
+      expect(foundIdeaMilestone.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
       expect(foundIdeaMilestone.dateFrom).toBe('2021-04-20')
       expect(foundIdeaMilestone.dateTo).toBe('2021-04-21')
       expect(foundIdeaMilestone.description).toBe('ideaMilestoneDescription')
@@ -165,6 +171,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'draftIdeaMilestoneSubject1',
               [{name: 'polkadot', value: 100}],
+              null,
               null,
               null,
               null
@@ -193,6 +200,7 @@ describe(`/api/v1/ideas`, () => {
         [{name: 'polkadot', value: 100}],
         null,
         null,
+        null,
         null
     )
 
@@ -200,6 +208,7 @@ describe(`/api/v1/ideas`, () => {
       await expect(getIdeaMilestonesService().create(idea.id, new CreateIdeaMilestoneDto(
         'ideaMilestoneSubject',
           [{name: 'polkadot', value: 100}],
+          '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
           new Date(2021, 3, 21),
           new Date(2021, 3, 20),
           'ideaMilestoneDescription'
@@ -234,6 +243,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
@@ -246,6 +256,7 @@ describe(`/api/v1/ideas`, () => {
       expect(foundIdeaMilestone.networks).toBeDefined()
       expect(foundIdeaMilestone.networks.length).toBe(1)
       expect(foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === 'polkadot')).toBeDefined()
+      expect(foundIdeaMilestone.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
       expect(foundIdeaMilestone.dateFrom).toBe('2021-04-20')
       expect(foundIdeaMilestone.dateTo).toBe('2021-04-21')
       expect(foundIdeaMilestone.description).toBe('ideaMilestoneDescription')
@@ -257,6 +268,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
@@ -281,6 +293,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
@@ -299,6 +312,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
               new Date(),
               new Date(),
               'ideaMilestoneDescription'
@@ -318,21 +332,23 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
           ), sessionData
       )
 
-      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated description' }, sessionData)
+      await getIdeaMilestonesService().update(ideaMilestone.id, { subject: 'Updated subject' }, sessionData)
 
       const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
-      expect(updatedIdeaMilestone.subject).toBe('Updated description')
+      expect(updatedIdeaMilestone.subject).toBe('Updated subject')
       expect(updatedIdeaMilestone.networks).toBeDefined()
       expect(updatedIdeaMilestone.networks.length).toBe(1)
       expect(updatedIdeaMilestone.networks[0].name).toBe('polkadot')
       expect(updatedIdeaMilestone.networks[0].value).toBe('100.000000000000000')
+      expect(updatedIdeaMilestone.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
       expect(updatedIdeaMilestone.dateFrom).toBe('2021-04-20')
       expect(updatedIdeaMilestone.dateTo).toBe('2021-04-21')
       expect(updatedIdeaMilestone.description).toBe('ideaMilestoneDescription')
@@ -345,6 +361,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              null,
               null,
               null,
               'ideaMilestoneDescription'
@@ -376,6 +393,7 @@ describe(`/api/v1/ideas`, () => {
               [{name: 'polkadot', value: 100}],
               null,
               null,
+              null,
               'ideaMilestoneDescription'
           ), sessionData
       )
@@ -403,6 +421,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              null,
               null,
               null,
               'ideaMilestoneDescription'
@@ -442,6 +461,7 @@ describe(`/api/v1/ideas`, () => {
               [{name: 'polkadot', value: 100}, {name: 'kusama', value: 150}],
               null,
               null,
+              null,
               'ideaMilestoneDescription'
           ), sessionData
       )
@@ -470,6 +490,7 @@ describe(`/api/v1/ideas`, () => {
               [{name: 'polkadot', value: 100}],
               null,
               null,
+              null,
               'ideaMilestoneDescription'
           ), sessionData
       )
@@ -484,12 +505,32 @@ describe(`/api/v1/ideas`, () => {
       expect(updatedIdeaMilestone.networks.length).toBe(0)
     })
 
+    it('should update and save idea milestone with updated beneficiary', async () => {
+      const ideaMilestone = await getIdeaMilestonesService().create(
+          idea.id,
+          new CreateIdeaMilestoneDto(
+              'ideaMilestoneSubject',
+              [{name: 'polkadot', value: 100}],
+              null,
+              null,
+              null,
+              'ideaMilestoneDescription'
+          ), sessionData
+      )
+
+      await getIdeaMilestonesService().update(ideaMilestone.id, { beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' }, sessionData)
+      const updatedIdeaMilestone = await getIdeaMilestonesService().findOne(ideaMilestone.id, sessionData)
+
+      expect(updatedIdeaMilestone.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+    })
+
     it('should update and save idea milestone with updated dateFrom', async () => {
       const ideaMilestone = await getIdeaMilestonesService().create(
           idea.id,
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              null,
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
@@ -509,6 +550,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              null,
               new Date(2021, 3, 20),
               new Date(2021, 3, 21),
               'ideaMilestoneDescription'
@@ -530,6 +572,7 @@ describe(`/api/v1/ideas`, () => {
               [{name: 'polkadot', value: 100}],
               null,
               null,
+              null,
               'ideaMilestoneDescription'
           ), sessionData
       )
@@ -546,6 +589,7 @@ describe(`/api/v1/ideas`, () => {
           new CreateIdeaMilestoneDto(
               'ideaMilestoneSubject',
               [{name: 'polkadot', value: 100}],
+              null,
               null,
               null,
               'ideaMilestoneDescription'

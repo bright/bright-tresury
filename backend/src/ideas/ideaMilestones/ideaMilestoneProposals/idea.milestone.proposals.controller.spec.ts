@@ -41,9 +41,13 @@ const createIdeaMilestoneProposalDto = (ideaMilestoneNetworkId: string) => {
     }
 }
 
-const createIdeaMilestoneDto = (networkValue: number = 100) => new CreateIdeaMilestoneDto(
+const createIdeaMilestoneDto = (
+    networkValue: number = 100,
+    beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+) => new CreateIdeaMilestoneDto(
     'ideaMilestoneSubject',
     [{ name: 'polkadot', value: networkValue }],
+    beneficiary,
     null,
     null,
     'ideaMilestoneDescription',
@@ -164,31 +168,6 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
 
         })
 
-        it(`it should return ${HttpStatus.BAD_REQUEST} for idea with empty beneficiary address`, async () => {
-
-            const ideaWithEmptyBeneficiaryAddress = await createIdea(
-                {
-                    beneficiary: '',
-                },
-                verifiedUserSessionHandler.sessionData,
-                ideasService(),
-            )
-
-            const ideaMilestone = await createIdeaMilestone(
-                ideaWithEmptyBeneficiaryAddress.id,
-                createIdeaMilestoneDto(),
-                verifiedUserSessionHandler.sessionData,
-                ideaMilestonesService(),
-            )
-
-            return verifiedUserSessionHandler.authorizeRequest(
-                request(app())
-                    .post(baseUrl(ideaWithEmptyBeneficiaryAddress.id, ideaMilestone.id))
-                    .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
-            ).expect(HttpStatus.BAD_REQUEST)
-
-        })
-
         it(`should return ${HttpStatus.BAD_REQUEST} for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
 
             const ideaWithTurnedIntoProposalStatus = await createIdea(
@@ -232,6 +211,23 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
 
         })
 
+        it(`it should return ${HttpStatus.BAD_REQUEST} for idea milestone with empty beneficiary address`, async () => {
+
+            const ideaMilestoneWithEmptyBeneficiaryAddress = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(100, ''),
+                verifiedUserSessionHandler.sessionData,
+                ideaMilestonesService(),
+            )
+
+            return verifiedUserSessionHandler.authorizeRequest(
+                request(app())
+                    .post(baseUrl(idea.id, ideaMilestoneWithEmptyBeneficiaryAddress.id))
+                    .send(createIdeaMilestoneProposalDto(ideaMilestoneWithEmptyBeneficiaryAddress.networks[0].id)),
+            ).expect(HttpStatus.BAD_REQUEST)
+
+        })
+
         it(`should return ${HttpStatus.BAD_REQUEST} for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
 
             const ideaMilestone = await createIdeaMilestoneByEntity(
@@ -242,6 +238,7 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                     [
                         new IdeaMilestoneNetwork('polkadot', 100),
                     ],
+                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     null,
                     null,
                     null,

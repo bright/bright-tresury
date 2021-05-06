@@ -5,6 +5,7 @@ import {Idea} from "../../entities/idea.entity";
 import {Nil} from "../../../utils/types";
 import {defaultIdeaMilestoneStatus, IdeaMilestoneStatus} from "../ideaMilestoneStatus";
 import { BadRequestException } from '@nestjs/common'
+import { EmptyBeneficiaryException } from '../../exceptions/emptyBeneficiary.exception'
 
 @Entity('idea_milestones')
 export class IdeaMilestone extends BaseEntity {
@@ -29,6 +30,9 @@ export class IdeaMilestone extends BaseEntity {
 
     @Column({ type: 'text' })
     subject: string
+
+    @Column({ nullable: true, type: "text" })
+    beneficiary: Nil<string>
 
     @Column({ nullable: true, type: 'date' })
     dateFrom: Nil<Date>
@@ -55,6 +59,7 @@ export class IdeaMilestone extends BaseEntity {
         subject: string,
         status: IdeaMilestoneStatus,
         networks: IdeaMilestoneNetwork[],
+        beneficiary: Nil<string>,
         dateFrom: Nil<Date>,
         dateTo: Nil<Date>,
         description: Nil<string>
@@ -64,12 +69,16 @@ export class IdeaMilestone extends BaseEntity {
         this.subject = subject
         this.status = status
         this.networks = networks
+        this.beneficiary = beneficiary
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         this.description = description
     }
 
     canTurnIntoProposalOrThrow = () => {
+        if (!this.beneficiary) {
+            throw new EmptyBeneficiaryException()
+        }
         if (this.status === IdeaMilestoneStatus.TurnedIntoProposal) {
             throw new BadRequestException('Idea milestone with the given id is already turned into proposal')
         }

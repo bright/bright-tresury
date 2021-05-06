@@ -47,7 +47,7 @@ export class IdeaMilestonesService {
 
     async create(
         ideaId: string,
-        { subject, dateFrom, dateTo, description, networks }: CreateIdeaMilestoneDto,
+        { subject, beneficiary, dateFrom, dateTo, description, networks }: CreateIdeaMilestoneDto,
         sessionData: SessionData
     ): Promise<IdeaMilestone> {
 
@@ -65,6 +65,7 @@ export class IdeaMilestonesService {
                 subject,
                 IdeaMilestoneStatus.Active,
                 networks.map(({ name, value }: CreateIdeaMilestoneNetworkDto) => new IdeaMilestoneNetwork(name, value)),
+                beneficiary,
                 dateFrom,
                 dateTo,
                 description

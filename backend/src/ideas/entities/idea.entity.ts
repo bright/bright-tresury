@@ -137,9 +137,6 @@ export class Idea extends BaseEntity {
     }
 
     canTurnMilestoneIntoProposalOrThrow = () => {
-        if (!this.beneficiary) {
-            throw new EmptyBeneficiaryException()
-        }
         if (this.status === IdeaStatus.TurnedIntoProposal) {
             throw new BadRequestException('Idea with the given id is already turned into proposal')
         }

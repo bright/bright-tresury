@@ -3,6 +3,7 @@ import {ArrayMinSize, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNeste
 import {Type} from "class-transformer";
 import {Nil} from "../../../utils/types";
 import { CreateIdeaMilestoneNetworkDto } from './createIdeaMilestoneNetworkDto'
+import { IsValidAddress } from '../../../utils/address/address.validator'
 
 export class CreateIdeaMilestoneDto {
     @ApiProperty({
@@ -11,6 +12,13 @@ export class CreateIdeaMilestoneDto {
     @IsNotEmpty()
     @IsString()
     subject: string
+
+    @ApiPropertyOptional({
+        description: 'Blockchain address of the idea milestone beneficiary'
+    })
+    @IsOptional()
+    @IsValidAddress()
+    beneficiary: Nil<string>
 
     @ApiPropertyOptional({
         description: 'Date of start of the milestone',
@@ -50,12 +58,14 @@ export class CreateIdeaMilestoneDto {
     constructor(
         subject: string,
         networks: CreateIdeaMilestoneNetworkDto[],
+        beneficiary: Nil<string>,
         dateFrom: Nil<Date>,
         dateTo: Nil<Date>,
         description: Nil<string>
     ) {
         this.subject = subject
         this.networks = networks
+        this.beneficiary = beneficiary
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         this.description = description

@@ -1,4 +1,4 @@
-import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
+import { ApiParam, ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {IdeaMilestone} from "../entities/idea.milestone.entity";
 import {
     IdeaMilestoneNetworkDto,
@@ -22,6 +22,11 @@ export class IdeaMilestoneDto {
         description: 'Subject of the milestone'
     })
     subject: string
+
+    @ApiPropertyOptional({
+        description: 'Blockchain address of the idea milestone beneficiary'
+    })
+    beneficiary: Nil<string>
 
     @ApiPropertyOptional({
         description: 'Date of start of the milestone',
@@ -58,6 +63,7 @@ export class IdeaMilestoneDto {
         subject: string,
         status: IdeaMilestoneStatus,
         networks: IdeaMilestoneNetworkDto[],
+        beneficiary: Nil<string>,
         dateFrom: Nil<Date>,
         dateTo: Nil<Date>,
         description: Nil<string>
@@ -67,6 +73,7 @@ export class IdeaMilestoneDto {
         this.subject = subject
         this.status = status
         this.networks = networks
+        this.beneficiary = beneficiary
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         this.description = description
@@ -74,8 +81,8 @@ export class IdeaMilestoneDto {
 }
 
 export const mapIdeaMilestoneEntityToIdeaMilestoneDto = (
-    { id, ordinalNumber, subject, status, networks, dateFrom, dateTo, description }: IdeaMilestone
+    { id, ordinalNumber, subject, status, networks, beneficiary, dateFrom, dateTo, description }: IdeaMilestone
 ): IdeaMilestoneDto => {
     const mappedNetworks = networks.map((network) => mapIdeaMilestoneNetworkEntityToIdeaMilestoneNetworkDto(network))
-    return new IdeaMilestoneDto(id, ordinalNumber, subject, status, mappedNetworks, dateFrom, dateTo, description)
+    return new IdeaMilestoneDto(id, ordinalNumber, subject, status, mappedNetworks, beneficiary, dateFrom, dateTo, description)
 }

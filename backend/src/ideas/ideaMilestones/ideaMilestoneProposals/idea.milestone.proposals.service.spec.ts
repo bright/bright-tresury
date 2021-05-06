@@ -39,12 +39,16 @@ const updateExtrinsicDto: UpdateExtrinsicDto = {
     ],
 } as UpdateExtrinsicDto
 
-const createIdeaMilestoneDto = (ideaMilestoneNetworkValue: number = 100) => new CreateIdeaMilestoneDto(
+const createIdeaMilestoneDto = (
+    ideaMilestoneNetworkValue: number = 100,
+    beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+) => new CreateIdeaMilestoneDto(
     'subject',
     [{ name: 'polkadot', value: ideaMilestoneNetworkValue }],
+    beneficiary,
     null,
     null,
-    null,
+    null
 )
 
 describe('IdeaMilestoneProposalsService', () => {
@@ -135,36 +139,6 @@ describe('IdeaMilestoneProposalsService', () => {
 
         })
 
-        it('should throw empty beneficiary exception for idea with empty beneficiary address', async () => {
-
-            const ideaWithEmptyBeneficiaryAddress = await createIdea(
-                {
-                    beneficiary: '',
-                },
-                sessionData,
-                ideasService(),
-            )
-
-            const ideaMilestone = await createIdeaMilestone(
-                ideaWithEmptyBeneficiaryAddress.id,
-                createIdeaMilestoneDto(),
-                sessionData,
-                ideaMilestonesService(),
-            )
-
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
-            await (expect(
-                ideaMilestoneProposalsService().createProposal(
-                    ideaWithEmptyBeneficiaryAddress.id,
-                    ideaMilestone.id,
-                    createIdeaMilestoneProposalDto,
-                    sessionData
-                ),
-            )).rejects.toThrow(EmptyBeneficiaryException)
-
-        })
-
         it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
 
             const ideaWithTurnedIntoProposalStatus = await createIdea(
@@ -213,6 +187,28 @@ describe('IdeaMilestoneProposalsService', () => {
 
         })
 
+        it('should throw empty beneficiary exception for idea milestone with empty beneficiary address', async () => {
+
+            const ideaMilestoneWithEmptyBeneficiaryAddress = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(100, ''),
+                sessionData,
+                ideaMilestonesService(),
+            )
+
+            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestoneWithEmptyBeneficiaryAddress.networks[0].id
+
+            await (expect(
+                ideaMilestoneProposalsService().createProposal(
+                    idea.id,
+                    ideaMilestoneWithEmptyBeneficiaryAddress.id,
+                    createIdeaMilestoneProposalDto,
+                    sessionData
+                ),
+            )).rejects.toThrow(BadRequestException)
+
+        })
+
         it(`should return bad request exception for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
 
             const ideaMilestone = await createIdeaMilestoneByEntity(
@@ -223,6 +219,7 @@ describe('IdeaMilestoneProposalsService', () => {
                     [
                         new IdeaMilestoneNetwork('polkadot', 100),
                     ],
+                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     null,
                     null,
                     null,
