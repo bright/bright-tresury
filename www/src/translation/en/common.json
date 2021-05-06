@@ -28,6 +28,7 @@
     "signIn": "Sign In",
     "showAccountMenu": "Account menu",
     "account": {
+      "emailVerificationNeeded": "Email verification needed",
       "account": "Account",
       "ideas": "Your Ideas (1)",
       "proposals": "Your Proposals (1)",

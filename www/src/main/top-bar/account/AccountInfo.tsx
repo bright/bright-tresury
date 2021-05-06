@@ -5,8 +5,10 @@ import React from 'react';
 import {useTranslation} from "react-i18next";
 import {useHistory} from "react-router-dom";
 import info from "../../../assets/info.svg";
-import { ROUTE_ACCOUNT } from "../../../routes/routes";
+import {useAuth} from "../../../auth/AuthContext";
+import {ROUTE_ACCOUNT} from "../../../routes/routes";
 import TopBarButton from "../TopBarButton";
+import EmailVerifyErrorMenuItem from "./EmailVerifyErrorMenuItem";
 import LogOutMenuItem from "./LogOutMenuItem";
 import MenuItem from "./MenuItem";
 
@@ -20,8 +22,9 @@ const useStyles = makeStyles(() =>
 
 const AccountInfo: React.FC = () => {
     const {t} = useTranslation()
-    const classes = useStyles();
+    const classes = useStyles()
     const history = useHistory()
+    const {user} = useAuth()
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -47,6 +50,10 @@ const AccountInfo: React.FC = () => {
             open={Boolean(anchorEl)}
             onClose={handleClose}
         >
+            {user && !user.isEmailVerified ? <>
+                <EmailVerifyErrorMenuItem/>
+                <Divider/>
+            </> : null}
             <MenuItem onClick={goToAccount}>{t('topBar.account.account')}</MenuItem>
             <MenuItem disabled={true}>{t('topBar.account.ideas')}</MenuItem>
             <MenuItem disabled={true}>{t('topBar.account.proposals')}</MenuItem>

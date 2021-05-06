@@ -1,13 +1,13 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import errorSvg from "../../../../assets/error.svg";
 import {Button} from "../../../../components/button/Button";
 import {LoadingState} from "../../../../components/loading/LoadingWrapper";
 import {sendVerifyEmail} from "../../../auth.api";
 import {useSuperTokensRequest} from "../../../supertokens.utils/useSuperTokensRequest";
+import VerifyErrorLabel from "./VerifyErrorLabel";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             marginTop: '24px',
@@ -17,19 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
             justifyContent: 'space-between',
         },
-        verifyError: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            fontWeight: 'bold',
-            color: theme.palette.warning.main,
-            marginRight: '14px',
-        },
-        errorIcon: {
-            width: '20px',
-            height: '20px',
-            marginRight: '8px',
-        }
     }),
 );
 
@@ -58,10 +45,7 @@ const EmailNotVerifiedError = () => {
     }
 
     return <div className={classes.root}>
-        <div className={classes.verifyError}>
-            <img className={classes.errorIcon} src={errorSvg} alt={t('account.emailPassword.emailVerificationNeeded')}/>
-            <p>{t('account.emailPassword.emailVerificationNeeded')}</p>
-        </div>
+        <VerifyErrorLabel/>
         {renderButton()}
     </div>
 }
