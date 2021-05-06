@@ -19,7 +19,7 @@ import PrivateRoute from "./routes/PrivateRoute";
 import PublicOnlyRoute from "./routes/PublicOnlyRoute";
 import {
     ROUTE_ACCOUNT,
-    ROUTE_CONVERT_IDEA,
+    ROUTE_TURN_IDEA,
     ROUTE_EDIT_IDEA,
     ROUTE_IDEA,
     ROUTE_IDEAS,
@@ -66,7 +66,7 @@ function AppRoutes() {
                     <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal}/>
                     <Route exact={true} path={ROUTE_IDEAS} component={Ideas}/>
                     <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate}/>
-                    <PrivateRoute exact={true} path={ROUTE_CONVERT_IDEA} component={TurnIdeaIntoProposal}/>
+                    <PrivateRoute exact={true} path={ROUTE_TURN_IDEA} component={TurnIdeaIntoProposal}/>
                     <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea}/>
                     <Route exact={false} path={ROUTE_IDEA} component={Idea}/>
                     <Route exact={false} path={ROUTE_ACCOUNT} component={Account}/>

@@ -18,34 +18,34 @@ interface Props {
 export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMilestones }: Props) => {
 
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
-    const [ideaMilestoneToConvertToProposal, setIdeaMilestoneToConvertToProposal] = useState<IdeaMilestoneDto | null>(null)
-    const [isEditIdeaMilestoneModalOpen, setisEditIdeaMilestoneModalOpen] = useState<boolean>(false)
-    const [isDisplayIdeaMilestoneModalOpen, setisDisplayIdeaMilestoneModalOpen] = useState<boolean>(false)
+    const [ideaMilestoneToTurnIntoProposal, setIdeaMilestoneToTurnIntoProposal] = useState<IdeaMilestoneDto | null>(null)
+    const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
+    const [displayModalOpen, setDisplayModalOpen] = useState<boolean>(false)
 
-    const handleEditIdeaMilestoneModalClose = () => {
-        setisEditIdeaMilestoneModalOpen(false)
+    const handleEditModalClose = () => {
+        setEditModalOpen(false)
         setFocusedIdeaMilestone(null)
     }
 
-    const handleDisplayIdeaMilestoneModalClose = () => {
-        setisDisplayIdeaMilestoneModalOpen(false)
+    const handleDisplayModalClose = () => {
+        setDisplayModalOpen(false)
         setFocusedIdeaMilestone(null)
     }
 
     const handleIdeaMilestoneClick = (ideaMilestone: IdeaMilestoneDto) => {
         if (canEdit) {
-            setisEditIdeaMilestoneModalOpen(true)
+            setEditModalOpen(true)
         } else {
-            setisDisplayIdeaMilestoneModalOpen(true)
+            setDisplayModalOpen(true)
         }
         setFocusedIdeaMilestone(ideaMilestone)
     }
 
-    const handleConvertIdeaMilestoneToProposal = (ideaMilestone: IdeaMilestoneDto) => {
-        setIdeaMilestoneToConvertToProposal(ideaMilestone)
+    const handleTurnIdeaMilestoneIntoProposal = (ideaMilestone: IdeaMilestoneDto) => {
+        setIdeaMilestoneToTurnIntoProposal(ideaMilestone)
     }
 
-    const handleConvertIdeaMilestoneToProposalCancel = () => setIdeaMilestoneToConvertToProposal(null)
+    const handleTurnIntoProposalCancel = () => setIdeaMilestoneToTurnIntoProposal(null)
 
     const renderIdeaMilestoneCard = (ideaMilestone: IdeaMilestoneDto) => {
         return <IdeaMilestoneCard ideaMilestone={ideaMilestone} onClick={handleIdeaMilestoneClick} />
@@ -61,29 +61,29 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
             />
             { focusedIdeaMilestone
                 ? <EditIdeaMilestoneModal
-                    open={isEditIdeaMilestoneModalOpen}
+                    open={editModalOpen}
                     idea={idea}
                     ideaMilestone={focusedIdeaMilestone}
-                    handleCloseModal={handleEditIdeaMilestoneModalClose}
-                    handleConvertIdeaMilestoneToProposal={handleConvertIdeaMilestoneToProposal}
+                    handleCloseModal={handleEditModalClose}
+                    handleTurnIdeaMilestoneIntoProposal={handleTurnIdeaMilestoneIntoProposal}
                     fetchIdeaMilestones={fetchIdeaMilestones}
                   />
                 : null
             }
             { focusedIdeaMilestone
                 ? <DisplayIdeaMilestoneModal
-                    open={isDisplayIdeaMilestoneModalOpen}
+                    open={displayModalOpen}
                     idea={idea}
                     ideaMilestone={focusedIdeaMilestone}
-                    handleCloseModal={handleDisplayIdeaMilestoneModalClose}
+                    handleCloseModal={handleDisplayModalClose}
                   />
                 : null
             }
-            { ideaMilestoneToConvertToProposal
+            { ideaMilestoneToTurnIntoProposal
                 ? <TurnIdeaMilestoneIntoProposal
                     idea={idea}
-                    ideaMilestone={ideaMilestoneToConvertToProposal}
-                    onCancel={handleConvertIdeaMilestoneToProposalCancel}
+                    ideaMilestone={ideaMilestoneToTurnIntoProposal}
+                    onCancel={handleTurnIntoProposalCancel}
                   />
                 : null
             }

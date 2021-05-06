@@ -42,7 +42,9 @@ const SubmitProposalModal: React.FC<Props> = ({open, onClose, onSuccess, idea}) 
             open={open}
             onClose={onClose}
             aria-labelledby='modal-title'
-            aria-describedby='modal-description'>
+            aria-describedby='modal-description'
+            maxWidth={'md'}
+        >
             <SubmittingTransaction
                 title={t('idea.details.submitProposalModal.title')}
                 instruction={<Trans id='modal-description'

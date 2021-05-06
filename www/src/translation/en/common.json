@@ -161,7 +161,7 @@
         "showLess": "Show less information"
       },
       "header": {
-        "convertToProposal": "Convert to Proposal"
+        "turnIntoProposal": "Convert to Proposal"
       },
       "create": "Create",
       "edit": "Edit",
@@ -184,11 +184,11 @@
         "deposit": "Deposit"
       }
     },
-    "convertToProposal": {
+    "turnIntoProposal": {
       "title": "Convert to Proposal",
       "cancel": "Cancel",
       "submit": "Submit",
-      "cannotConvertError": "This idea is already converted into proposal"
+      "cannotTurnError": "This idea is already converted into proposal"
     },
     "list": {
       "card": {
@@ -242,8 +242,8 @@
           "noDescriptionProvided": "No description provided"
         }
       },
-      "convertToProposal": {
-        "convertToProposal": "Convert to Proposal",
+      "turnIntoProposal": {
+        "turnIntoProposal": "Convert to Proposal",
         "submit": {
           "title": "You are about to convert your idea milestone into proposal"
         },

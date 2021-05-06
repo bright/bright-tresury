@@ -13,10 +13,10 @@ interface Props {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
     handleCloseModal: () => void
-    handleConvertSubmit: (ideaMilestone: IdeaMilestoneDto) => void
+    handleTurnSubmit: (ideaMilestone: IdeaMilestoneDto) => void
 }
 
-export const TurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMilestone, handleCloseModal, handleConvertSubmit }: Props) => {
+export const TurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMilestone, handleCloseModal, handleTurnSubmit }: Props) => {
 
     const { t } = useTranslation()
 
@@ -30,7 +30,7 @@ export const TurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMilestone, 
         }
         patchIdeaMilestone(idea.id, ideaMilestone.id, patchIdeaMilestoneDto)
             .then((patchedIdeaMilestone) => {
-                handleConvertSubmit(patchedIdeaMilestone)
+                handleTurnSubmit(patchedIdeaMilestone)
             })
             .catch(() => {
                 // TODO: Use the common components for displaying errors in forms when will be ready to use

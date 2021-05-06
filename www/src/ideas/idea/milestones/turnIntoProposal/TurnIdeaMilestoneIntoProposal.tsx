@@ -48,7 +48,7 @@ export const TurnIdeaMilestoneIntoProposal = ({ idea, ideaMilestone, onCancel }:
                 idea={idea}
                 ideaMilestone={ideaMilestone}
                 handleCloseModal={handleTurnModalClose}
-                handleConvertSubmit={handleTurnSubmit}
+                handleTurnSubmit={handleTurnSubmit}
             />
             { patchedIdeaMilestone
                 ? <SubmitTurnIdeaMilestoneIntoProposalModal

@@ -82,7 +82,7 @@ const TurnIdeaIntoProposal = () => {
             </>
             }
         </Container> :
-        <Container title={t('idea.turnIntoProposal.cannotConvertError')}/>
+        <Container title={t('idea.turnIntoProposal.cannotTurnError')}/>
 }
 
 export default TurnIdeaIntoProposal

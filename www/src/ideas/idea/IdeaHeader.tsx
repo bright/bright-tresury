@@ -14,7 +14,7 @@ import {FlexBreakLine} from "../../components/header/FlexBreakLine";
 import {HeaderTabs} from "../../components/header/HeaderTabs";
 import {NetworkRewardDeposit} from "../../components/network/NetworkRewardDeposit";
 import {OptionalTitle} from "../../components/text/OptionalTitle";
-import {ROUTE_CONVERT_IDEA, ROUTE_IDEAS} from "../../routes/routes";
+import {ROUTE_TURN_IDEA, ROUTE_IDEAS} from "../../routes/routes";
 import {breakpoints} from "../../theme/theme";
 import {IdeaDto, IdeaStatus} from "../ideas.api";
 import IdeaContentTypeTabs from "./IdeaContentTypeTabs";
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 order: 5,
             }
         },
-        convertToProposal: {
+        turnIntoProposal: {
             order: 5,
             [theme.breakpoints.up(breakpoints.mobile)]: {
                 alignSelf: 'flex-end'
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 zIndex: 1
             }
         },
-        convertToProposalButton: {
+        turnIntoProposalButton: {
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 width: '100%'
             }
@@ -90,11 +90,11 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
         history.push(ROUTE_IDEAS)
     }
 
-    const navigateToConvertToProposal = () => {
-        history.push(generatePath(ROUTE_CONVERT_IDEA, {ideaId: idea.id}), {idea})
+    const navigateToTurnIntoProposal = () => {
+        history.push(generatePath(ROUTE_TURN_IDEA, {ideaId: idea.id}), {idea})
     }
 
-    const canConvertToProposal = useMemo(() => !!idea.id && canEdit && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active),
+    const canTurnIntoProposal = useMemo(() => !!idea.id && canEdit && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active),
         [idea, canEdit])
 
     const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
@@ -118,12 +118,12 @@ const IdeaHeader: React.FC<Props> = ({idea, canEdit}) => {
         <HeaderTabs className={classes.contentTypeTabs}>
             <IdeaContentTypeTabs/>
         </HeaderTabs>
-        {canConvertToProposal && <div className={classes.convertToProposal}>
+        {canTurnIntoProposal && <div className={classes.turnIntoProposal}>
             <Button
                 variant="contained"
                 color="primary"
-                className={classes.convertToProposalButton}
-                onClick={navigateToConvertToProposal}>
+                className={classes.turnIntoProposalButton}
+                onClick={navigateToTurnIntoProposal}>
                     {t('idea.details.header.turnIntoProposal')}
                 </Button>
             </div>

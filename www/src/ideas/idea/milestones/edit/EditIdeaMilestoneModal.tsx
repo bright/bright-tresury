@@ -12,11 +12,11 @@ interface Props {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
     handleCloseModal: () => void
-    handleConvertIdeaMilestoneToProposal: (ideaMilestone: IdeaMilestoneDto) => void
+    handleTurnIdeaMilestoneIntoProposal: (ideaMilestone: IdeaMilestoneDto) => void
     fetchIdeaMilestones: () => Promise<void>
 }
 
-export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseModal, handleConvertIdeaMilestoneToProposal, fetchIdeaMilestones }: Props) => {
+export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseModal, handleTurnIdeaMilestoneIntoProposal, fetchIdeaMilestones }: Props) => {
 
     const { t } = useTranslation()
 
@@ -25,7 +25,7 @@ export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseM
         fetchIdeaMilestones()
     }
 
-    const canConvertToProposal = useMemo(() => {
+    const canTurnIntoProposal = useMemo(() => {
         return idea.status !== IdeaStatus.TurnedIntoProposal && ideaMilestone.status !== IdeaMilestoneStatus.TurnedIntoProposal
     }, [idea.status, ideaMilestone.status])
 
@@ -41,14 +41,14 @@ export const EditIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseM
                     <h2 id='modal-title'>
                         {t('idea.milestones.modal.editMilestone')}
                     </h2>
-                    { canConvertToProposal
+                    { canTurnIntoProposal
                         ? (
                             <Button
                                 variant="contained"
                                 color="primary"
                                 onClick={() => {
                                     handleCloseModal()
-                                    handleConvertIdeaMilestoneToProposal(ideaMilestone)
+                                    handleTurnIdeaMilestoneIntoProposal(ideaMilestone)
                                 }}>
                                 {t('idea.details.header.turnIntoProposal')}
                             </Button>
