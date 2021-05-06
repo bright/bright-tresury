@@ -8,6 +8,7 @@ import {BlockchainService} from './blockchain.service'
 const logger = getLogger()
 
 let polkadotApiInstance: null | ApiPromise
+let wsProvider: null | WsProvider
 
 let onConnectedHandler = () => {
     logger.info(`Connected`)
@@ -21,11 +22,15 @@ const onErrorHandler = (error: any) => {
     logger.warn(`Cannot connect to substrate node with error ${error}`)
 }
 
+const onDisconnectedHandler = (error: any) => {
+    logger.warn(`Disconnected from substrate node`)
+}
+
 const polkadotApiFactory = {
     provide: 'PolkadotApi',
     useFactory: async (blockchainConfig: BlockchainConfig) => {
         if (polkadotApiInstance === null || polkadotApiInstance === undefined) {
-            const wsProvider = new WsProvider(blockchainConfig.nodeUrl);
+            wsProvider = new WsProvider(blockchainConfig.nodeUrl);
 
             logger.info(`Connecting to substrate node at ${blockchainConfig.nodeUrl}...`)
             polkadotApiInstance = new ApiPromise({provider: wsProvider, types: blockchainConfig.types});
@@ -40,6 +45,8 @@ const polkadotApiFactory = {
             polkadotApiInstance.on('connected', onConnectedHandler);
             polkadotApiInstance.on('ready', onReadyHandler);
             polkadotApiInstance.on('error', onErrorHandler);
+            polkadotApiInstance.on('disconnected', onDisconnectedHandler);
+
             try {
                 await polkadotApiInstance.isReadyOrError
             } catch (err) {
@@ -63,7 +70,11 @@ export class PolkadotApiModule implements OnModuleDestroy {
         polkadotApiInstance?.off('connected', onConnectedHandler)
         polkadotApiInstance?.off('ready', onReadyHandler)
         polkadotApiInstance?.off('error', onErrorHandler)
+        polkadotApiInstance?.off('disconnected', onDisconnectedHandler)
         await polkadotApiInstance?.disconnect()
+        logger.info("Api disconnected")
+        await wsProvider?.disconnect
+        logger.info("Ws disconnected")
     }
 }
 

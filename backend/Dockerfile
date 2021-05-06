@@ -1,4 +1,4 @@
-FROM node:12.10
+FROM node:14.16.1
 
 RUN useradd --home-dir /srv/ --gid node --shell $(which bash) node-runner && \
     mkdir -p /srv/.config && \

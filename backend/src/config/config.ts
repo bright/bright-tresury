@@ -71,6 +71,7 @@ const configSchema = convict<AppConfig>({
 const logger = getLogger();
 
 const loadConfig = memoize(async () => {
+    // @ts-ignore
     const env: string = configSchema.get('deployEnv');
 
     const defaultConfig = path.join(process.cwd(), 'config', 'default.json');
