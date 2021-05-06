@@ -28,7 +28,7 @@ describe(`Users Service`, () => {
     })
 
     describe('create user', () => {
-        it('should create blockchain address', async () => {
+        it('should return blockchain address', async () => {
             const blockchainAddress = await getService().create(new BlockchainAddress(
                 bobAddress,
                 user,

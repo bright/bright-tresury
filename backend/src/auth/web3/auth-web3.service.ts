@@ -36,7 +36,7 @@ export class AuthWeb3Service {
         const signMessageKey = this.getSignMessageCacheKey(startDto.address)
         await this.cacheManager.set<string>(signMessageKey, signMessage, {ttl: this.SignMessageTtlMs})
 
-        return {signMessage} as StartBlockchainSignUpResponse
+        return new StartBlockchainSignUpResponse(signMessage)
     }
 
     async confirmSignUp(confirmRequest: ConfirmWeb3SignUpRequest, res: Response): Promise<void> {

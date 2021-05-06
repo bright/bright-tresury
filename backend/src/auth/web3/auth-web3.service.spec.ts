@@ -8,7 +8,7 @@ import {CreateBlockchainUserDto} from "../../users/dto/createBlockchainUser.dto"
 import {SuperTokensService} from "../supertokens/supertokens.service";
 import {Response} from "express";
 
-describe(`Auth Controller`, () => {
+describe(`Auth Web3 Service`, () => {
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(AuthWeb3Service)
