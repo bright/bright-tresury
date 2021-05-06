@@ -28,6 +28,7 @@ const useStyles = makeStyles(() =>
 const createInitialIdeaMilestoneFormValuesObject = (network: string): IdeaMilestoneFormValues => {
     return {
         subject: '',
+        beneficiary: null,
         dateFrom: null,
         dateTo: null,
         description: null,
@@ -36,10 +37,11 @@ const createInitialIdeaMilestoneFormValuesObject = (network: string): IdeaMilest
 }
 
 const mapIdeaMilestoneToIdeaMilestoneFormValues = (
-    { subject, dateFrom, dateTo, description, networks }: IdeaMilestoneDto
+    { subject, beneficiary, dateFrom, dateTo, description, networks }: IdeaMilestoneDto
 ): IdeaMilestoneFormValues => {
     return {
         subject,
+        beneficiary,
         dateFrom,
         dateTo,
         description,
@@ -51,6 +53,7 @@ const onSubmitFallback = () => { }
 
 export interface IdeaMilestoneFormValues {
     subject: string,
+    beneficiary: Nil<string>,
     dateFrom: Nil<Date>,
     dateTo: Nil<Date>,
     description: Nil<string>

@@ -11,6 +11,7 @@ export interface IdeaMilestoneDto {
     ordinalNumber: number
     subject: string,
     status: IdeaMilestoneStatus,
+    beneficiary: Nil<string>,
     dateFrom: Nil<Date>,
     dateTo: Nil<Date>,
     description: Nil<string>,

@@ -48,8 +48,15 @@ export const IdeaMilestoneFormFields = ({ values, readonly }: Props) => {
         <div className={classes.root}>
             <Input
                 name="subject"
-                label={t(`${translationKeyPrefix}.milestoneSubject`)}
+                label={t(`${translationKeyPrefix}.subject`)}
                 placeholder={t(`${translationKeyPrefix}.yourMilestone`)}
+                disabled={readonly}
+                textFieldColorScheme={TextFieldColorScheme.Dark}
+            />
+            <Input
+                name="beneficiary"
+                label={t(`${translationKeyPrefix}.beneficiary`)}
+                placeholder={t(`${translationKeyPrefix}.beneficiary`)}
                 disabled={readonly}
                 textFieldColorScheme={TextFieldColorScheme.Dark}
             />

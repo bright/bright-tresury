@@ -19,9 +19,10 @@ export const CreateIdeaMilestone = ({ idea, handleCloseModal, handleSuccessfulFo
 
     const [showApiCallError, setShowApiCallError] = useState<boolean>(false)
 
-    const submit = ({ subject, dateFrom, dateTo, description, networks }: IdeaMilestoneFormValues) => {
+    const submit = ({ subject, beneficiary, dateFrom, dateTo, description, networks }: IdeaMilestoneFormValues) => {
         const createIdeaMilestoneDto: CreateIdeaMilestoneDto = {
             subject,
+            beneficiary,
             dateFrom,
             dateTo,
             description,
