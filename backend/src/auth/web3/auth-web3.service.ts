@@ -70,7 +70,7 @@ export class AuthWeb3Service {
             throw new BadRequestException('Incorrect address')
         }
         const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
-        if (!doesAddressExist) {
+        if (doesAddressExist) {
             throw new ConflictException('User with this address already exists')
         }
     }

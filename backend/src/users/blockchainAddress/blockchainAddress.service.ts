@@ -18,7 +18,7 @@ export class BlockchainAddressService {
 
     async doesAddressExist(address: string): Promise<boolean> {
         const existingAddress = await this.blockchainAddressRepository.findOne({address})
-        return !existingAddress
+        return !!existingAddress
     }
 
 }

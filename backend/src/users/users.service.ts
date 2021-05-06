@@ -144,7 +144,7 @@ export class UsersService {
             if (!validAddress) {
                 return false
             }
-            return await this.blockchainAddressService.doesAddressExist(createBlockchainUserDto.blockchainAddress);
+            return !(await this.blockchainAddressService.doesAddressExist(createBlockchainUserDto.blockchainAddress))
         } catch (e) {
             return false
         }

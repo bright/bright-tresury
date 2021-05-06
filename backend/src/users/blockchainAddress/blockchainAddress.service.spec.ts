@@ -49,20 +49,20 @@ describe(`Users Service`, () => {
         })
     })
 
-    describe('validate address', () => {
-        it('not existing address is valid', async () => {
-            const isValid = await getService().doesAddressExist(bobAddress)
-            expect(isValid).toBe(true)
+    describe('doesAddressExist', () => {
+        it('should return false if address does not exists', async () => {
+            const doesAddressExist = await getService().doesAddressExist(bobAddress)
+            expect(doesAddressExist).toBe(false)
         })
-        it('already existing address is not valid', async () => {
+        it('should return true if address exists', async () => {
             await getService().create(new BlockchainAddress(
                 bobAddress,
                 user,
                 true
             ))
 
-            const isValid = await getService().doesAddressExist(bobAddress)
-            expect(isValid).toBe(false)
+            const doesAddressExist = await getService().doesAddressExist(bobAddress)
+            expect(doesAddressExist).toBe(true)
         })
     })
 
