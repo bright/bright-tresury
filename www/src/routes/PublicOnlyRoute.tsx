@@ -14,7 +14,7 @@ const PublicOnlyRoute = ({component: Component, redirectTo, ...props}: PublicOnl
 
     if (isUserSignedIn) {
         return <Route {...props}>
-            <Redirect to={redirectTo || ROUTE_ROOT}/>
+            <Redirect to={redirectTo ?? ROUTE_ROOT}/>
         </Route>
     } else {
         return <Route {...props} component={Component}/>

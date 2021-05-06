@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import * as Yup from "yup";
 import {LoadingState, useLoading} from "../../../components/loading/LoadingWrapper";
 import {fullValidatorForSchema} from "../../../util/form.util";
-import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/TermsAgreementCheckbox";
+import {GetUserAgreementYupSchema, UserAgreementCheckbox} from "../common/UserAgreementCheckbox";
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
 import {AlreadySignedUp} from "../common/AlreadySignedUp";
@@ -73,7 +73,7 @@ const Web3SignUp: React.FC = () => {
                     <AccountSelect account={values.account}/>
                 </SignUpComponentWrapper>
                 <SignUpComponentWrapper>
-                    <TermsAgreementCheckbox/>
+                    <UserAgreementCheckbox/>
                 </SignUpComponentWrapper>
                 <SignUpComponentWrapper>
                     <PrivacyNotice/>

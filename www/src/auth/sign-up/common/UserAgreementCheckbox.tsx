@@ -9,7 +9,7 @@ export const GetUserAgreementYupSchema = (t: TFunction) => {
     return {userAgreement: Yup.boolean().isTrue(t('auth.signUp.userAgreement.emptyFieldError'))}
 }
 
-export const TermsAgreementCheckbox: React.FC = () => {
+export const UserAgreementCheckbox: React.FC = () => {
     return <CheckboxInput
         name="userAgreement"
         label={<Trans id='privacy-notice'

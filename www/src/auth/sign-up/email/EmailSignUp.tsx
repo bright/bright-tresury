@@ -9,7 +9,7 @@ import {LoadingState} from "../../../components/loading/LoadingWrapper";
 import {fullValidatorForSchema} from "../../../util/form.util";
 import {signUp} from "../../auth.api";
 import {useSuperTokensRequest} from "../../supertokens.utils/useSuperTokensRequest";
-import {GetUserAgreementYupSchema, TermsAgreementCheckbox} from "../common/TermsAgreementCheckbox";
+import {GetUserAgreementYupSchema, UserAgreementCheckbox} from "../common/UserAgreementCheckbox";
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
 import {AlreadySignedUp} from "../common/AlreadySignedUp";
@@ -84,7 +84,7 @@ const EmailSignUp: React.FC = () => {
                     />
                 </SignUpComponentWrapper>
                 <SignUpComponentWrapper>
-                    <TermsAgreementCheckbox/>
+                    <UserAgreementCheckbox/>
                 </SignUpComponentWrapper>
                 <SignUpComponentWrapper>
                     <PrivacyNotice/>
