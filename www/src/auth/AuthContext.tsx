@@ -4,7 +4,7 @@ import {SignInAPIResponse, SignUpAPIResponse} from "supertokens-auth-react/lib/b
 import Session from "supertokens-auth-react/lib/build/recipe/session/session";
 import {signIn as signInApi, SignInData, signOut as signOutApi, SignUpData} from './auth.api'
 
-interface AuthContextState {
+export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
     signIn: (signInData: SignInData) => Promise<SignInAPIResponse>
     signOut: () => Promise<void>
@@ -28,7 +28,7 @@ export interface Web3Address {
     isPrimary: boolean
 }
 
-const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
+export const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
 
 const AuthContextProvider: React.FC = (props) => {
     const [user, setUser] = useState<AuthContextUser | undefined>()

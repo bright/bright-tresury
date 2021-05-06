@@ -6,8 +6,7 @@ import Web3AccountForm from "./Web3AccountForm";
 const Web3Account = () => {
     const {user} = useAuth()
 
-    // return user?.isWeb3 ? <Web3AccountDetails/> : <Web3AccountForm/>
-    return <Web3AccountDetails/>
+    return user?.isWeb3 ? <Web3AccountDetails/> : <Web3AccountForm/>
 }
 
 export default Web3Account
