@@ -1,9 +1,20 @@
-import {BadRequestException, ConflictException, Injectable, NotFoundException} from "@nestjs/common";
+import {
+    BadRequestException,
+    ConflictException,
+    HttpStatus,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException
+} from "@nestjs/common";
 import {Request, Response} from 'express'
 import {getUserById, signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
 import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
 import {TypeFormField, User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
-import {createNewSession, getSession as superTokensGetSession, updateJWTPayload, updateSessionData} from "supertokens-node/lib/build/recipe/session";
+import {
+    createNewSession,
+    getSession as superTokensGetSession,
+    updateSessionData
+} from "supertokens-node/lib/build/recipe/session";
 import SessionError from "supertokens-node/lib/build/recipe/session/error";
 import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
 import {EmailsService} from "../../emails/emails.service";
@@ -87,9 +98,9 @@ export class SuperTokensService {
         try {
             return await superTokensSignUp(email, password)
         } catch (error) {
-            const formattedError = error.type === EmailPasswordSessionError.EMAIL_ALREADY_EXISTS_ERROR ?
-                new ConflictException(error.message) : error
-            throw formattedError
+            throw error.type === EmailPasswordSessionError.EMAIL_ALREADY_EXISTS_ERROR
+                ? new ConflictException(error.message)
+                : new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
         }
     }
 

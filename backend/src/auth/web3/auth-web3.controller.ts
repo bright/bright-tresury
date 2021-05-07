@@ -47,11 +47,7 @@ export class AuthWeb3Controller {
         @Body() confirmRequest: ConfirmWeb3SignUpRequest,
         @Res() res: Response
     ) {
-        try {
-            await this.authWeb3Service.confirmSignUp(confirmRequest, res)
-            res.status(HttpStatus.OK).send()
-        } catch (e) {
-            res.status(e.status ? e.status : HttpStatus.INTERNAL_SERVER_ERROR).send(e)
-        }
+        await this.authWeb3Service.confirmSignUp(confirmRequest, res)
+        res.status(HttpStatus.OK).send()
     }
 }
