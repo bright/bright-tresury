@@ -40,15 +40,15 @@ const Web3SignUp: React.FC = () => {
         ...GetUserAgreementYupSchema(t)
     })
 
-    if (!isWeb3Injected) {
-        return <ExtensionNotDetected/>
-    }
-
     useEffect(() => {
         if (loadingState === LoadingState.Resolved) {
             history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
         }
     }, [loadingState])
+
+    if (!isWeb3Injected) {
+        return <ExtensionNotDetected/>
+    }
 
     return <Formik
         enableReinitialize={true}
