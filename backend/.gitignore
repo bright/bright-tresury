@@ -2,3 +2,5 @@ webpack.config.js
 src/*.js
 test*/*.js
 .DS_Store
+.env
+src/temp_*.ts

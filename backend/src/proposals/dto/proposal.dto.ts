@@ -56,9 +56,11 @@ export class ProposalDto {
     })
     isCreatedFromIdeaMilestone: boolean
 
-    @ApiPropertyOptional({
-        description: 'Id of a corresponding idea',
-    })
+    // TODO: Fill with proper description
+    @ApiProperty({description: 'Voting info'})
+    council: any[]
+
+    @ApiPropertyOptional({description: 'Id of a corresponding idea'})
     ideaId?: string
 
     @ApiPropertyOptional({
@@ -72,6 +74,7 @@ export class ProposalDto {
         beneficiary,
         value,
         bond,
+        council,
         status,
         title,
         isCreatedFromIdea,
@@ -84,6 +87,7 @@ export class ProposalDto {
         this.beneficiary = beneficiary
         this.value = value
         this.bond = bond
+        this.council = council
 
         switch (status) {
             case BlockchainProposalStatus.Proposal:
