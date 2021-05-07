@@ -9,12 +9,12 @@ export function startAddressSignUp(address: string): Promise<StartBlockchainSign
     return apiPost<StartBlockchainSignUpResponse>(`/auth/web3/signup/start`, {address})
 }
 
-export interface ConfirmBlockchainSignUpRequest {
+export interface ConfirmBlockchainSignUpDto {
     network: string
     address: string
     signature: string
 }
 
-export function confirmAddressSignUp(address: ConfirmBlockchainSignUpRequest): Promise<void> {
+export function confirmAddressSignUp(address: ConfirmBlockchainSignUpDto): Promise<void> {
     return apiPost<void>(`/auth/web3/signup/confirm`, address)
 }
