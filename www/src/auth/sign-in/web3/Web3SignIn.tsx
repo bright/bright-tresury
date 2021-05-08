@@ -1,7 +1,6 @@
 import {Formik} from "formik";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import * as Yup from "yup";
 import {ErrorBox} from "../../../components/form/ErrorBox";
 import {LoadingState, useLoading} from "../../../components/loading/LoadingWrapper";
 import {useAuth} from "../../AuthContext";
@@ -11,6 +10,8 @@ import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
 import {SignComponentWrapper} from "../../sign-components/SignComponentWrapper";
 import {AccountSelect} from "../../../components/select/AccountSelect";
 import {Account} from "../../../substrate-lib/hooks/useAccounts";
+import {isWeb3Injected} from "@polkadot/extension-dapp";
+import {ExtensionNotDetected} from "../../sign-up/web3/ExtensionNotDetected";
 
 export interface Web3SignInValues {
     account: Account,
@@ -27,9 +28,9 @@ const Web3SignIn = () => {
         await signInCall(values)
     }
 
-    const validationSchema = Yup.object().shape({
-        email: Yup.string().required(t('auth.signup.form.emptyFieldError')),
-    })
+    if (!isWeb3Injected) {
+        return <ExtensionNotDetected/>
+    }
 
     return <Formik
         enableReinitialize={true}
@@ -39,7 +40,6 @@ const Web3SignIn = () => {
                 address: ''
             } as Account,
         } as Web3SignInValues}
-        validationSchema={validationSchema}
         onSubmit={onSubmit}>
         {({
               values,
