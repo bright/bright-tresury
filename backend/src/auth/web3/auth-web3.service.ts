@@ -43,7 +43,7 @@ export class AuthWeb3Service {
         const signMessageKey = this.getSignInMessageCacheKey(confirmRequest.address)
         const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
         if (!cachedSignMessage) {
-            throw new NotFoundException('Sign message was not found')
+            throw new BadRequestException('Sign message was not found. Please start sign in before confirming.')
         }
 
         const signatureValid = this.validateSignature(cachedSignMessage, confirmRequest)
@@ -72,7 +72,7 @@ export class AuthWeb3Service {
         const signMessageKey = this.getSignUpMessageCacheKey(confirmRequest.address)
         const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
         if (!cachedSignMessage) {
-            throw new NotFoundException('Sign message was not found')
+            throw new BadRequestException('Sign message was not found. Please start sign up before confirming.')
         }
 
         const signatureValid = this.validateSignature(cachedSignMessage, confirmRequest)

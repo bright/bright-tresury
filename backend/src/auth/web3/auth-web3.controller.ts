@@ -33,11 +33,14 @@ export class AuthWeb3Controller {
     @ApiBadRequestResponse({
         description: 'Requested address is invalid'
     })
-    @ApiNotFoundResponse({
-        description: 'Requested address does not belong to any existing user'
+    @ApiBadRequestResponse({
+        description: 'Requested address did not start sign in before'
     })
     @ApiBadRequestResponse({
         description: 'Requested signature is not valid'
+    })
+    @ApiNotFoundResponse({
+        description: 'Requested address does not belong to any existing user'
     })
     async confirmSignIn(
         @Body() confirmRequest: ConfirmWeb3SignRequest,
