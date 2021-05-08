@@ -124,7 +124,11 @@
       "web3SignInLabel": "Web 3 address login",
       "signUpLabel": "Don't have an account? <a>Sign up</a>",
       "submitButton": "Login",
-      "form": {
+      "web3SignIn": {
+        "userDoesNotExist": "User with this address don't exist. Please sign up first.",
+        "failureMessage": "Signing in with blockchain account failed."
+      },
+      "emailSignIn": {
         "emptyFieldError": "This field cannot be empty",
         "login": {
           "label": "Login",

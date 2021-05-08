@@ -29,7 +29,6 @@ export const AccountSelect: React.FC<OwnProps> = ({account}) => {
         name: t('substrate.form.selectAccount'),
         address: ''
     } as Account
-
     return <TypedSelect
         className={classes.root}
         variant={"outlined"}

@@ -5,7 +5,7 @@ import React from "react";
 import {useTranslation} from "react-i18next";
 import * as Yup from "yup";
 import {Button} from "../../../components/button/Button";
-import {ErrorBox} from "../../../components/form/ErrorBox";
+import {InfoBox} from "../../../components/form/InfoBox";
 import {Input} from "../../../components/form/input/Input";
 import {PasswordInput} from "../../../components/form/input/password/PasswordInput";
 import {LoadingState} from "../../../components/loading/LoadingWrapper";
@@ -59,26 +59,26 @@ const EmailSignIn = () => {
           }) =>
             <SignFormWrapper handleSubmit={handleSubmit}>
                 {(loadingState === LoadingState.Error && error) ? <SignComponentWrapper>
-                    <ErrorBox error={error}/>
+                    <InfoBox message={error} level={"error"}/>
                 </SignComponentWrapper> : null}
                 <SignComponentWrapper>
                     <Input
                         name='email'
-                        label={t('auth.signIn.form.login.label')}
-                        placeholder={t('auth.signIn.form.login.placeholder')}/>
+                        label={t('auth.signIn.emailSignIn.login.label')}
+                        placeholder={t('auth.signIn.emailSignIn.login.placeholder')}/>
                 </SignComponentWrapper>
                 <SignComponentWrapper>
                     <PasswordInput
                         name='password'
-                        label={t('auth.signIn.form.password.label')}
-                        placeholder={t('auth.signIn.form.password.placeholder')}/>
+                        label={t('auth.signIn.emailSignIn.password.label')}
+                        placeholder={t('auth.signIn.emailSignIn.password.placeholder')}/>
                 </SignComponentWrapper>
                 <SignInButton disabled={loadingState === LoadingState.Loading}/>
                 <Button className={classes.forgotPasswordButton}
                         variant='text'
                         color='default'
                         type='button'>
-                    {t('auth.signIn.form.forgotPassword')}
+                    {t('auth.signIn.emailSignIn.forgotPassword')}
                 </Button>
                 <SignUpLabel/>
             </SignFormWrapper>

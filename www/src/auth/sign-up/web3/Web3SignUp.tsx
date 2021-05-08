@@ -1,5 +1,5 @@
 import {Formik} from "formik";
-import React, {useEffect} from "react";
+import React, {useEffect, useMemo} from "react";
 import {useTranslation} from "react-i18next";
 import * as Yup from "yup";
 import {LoadingState, useLoading} from "../../../components/loading/LoadingWrapper";
@@ -12,8 +12,8 @@ import {AccountSelect} from "../../../components/select/AccountSelect";
 import {Account} from "../../../substrate-lib/hooks/useAccounts";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
-import {ErrorBox} from "../../../components/form/ErrorBox";
-import {useHistory} from 'react-router-dom';
+import {InfoBox} from "../../../components/form/InfoBox";
+import {useHistory, useLocation} from 'react-router-dom';
 import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes/routes";
 import {useAuth} from "../../AuthContext";
 import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
@@ -24,7 +24,21 @@ export interface Web3SignUpValues {
     userAgreement: boolean
 }
 
+export interface Web3SignUpLocationState {
+    accountSelection: any
+    infoMessage: string
+}
+
 const Web3SignUp: React.FC = () => {
+    const location = useLocation()
+    const locationState = useMemo(() => location.state as Web3SignUpLocationState, [location])
+    useEffect(() => {
+        return () => {
+            location.state = null
+        }
+    }, [])
+    const accountSelection = locationState?.accountSelection
+
     const {t} = useTranslation()
     const history = useHistory()
 
@@ -53,7 +67,7 @@ const Web3SignUp: React.FC = () => {
     return <Formik
         enableReinitialize={true}
         initialValues={{
-            account: {
+            account: accountSelection ?? {
                 name: t('substrate.form.selectAccount'),
                 address: ''
             } as Account,
@@ -66,11 +80,14 @@ const Web3SignUp: React.FC = () => {
               handleSubmit,
           }) =>
             <SignFormWrapper handleSubmit={handleSubmit}>
+                {locationState?.infoMessage && <SignComponentWrapper>
+                    <InfoBox message={locationState.infoMessage} level={"info"}/>
+                </SignComponentWrapper>}
                 {(loadingState === LoadingState.Error && error) ? <SignComponentWrapper>
-                    <ErrorBox error={t('auth.signUp.web3SignUp.failureMessage')}/>
+                    <InfoBox message={t('auth.signUp.web3SignUp.failureMessage')} level={"error"}/>
                 </SignComponentWrapper> : null}
                 <SignComponentWrapper>
-                    <AccountSelect account={values.account}/>
+                    <AccountSelect account={{} as Account}/>
                 </SignComponentWrapper>
                 <SignComponentWrapper>
                     <UserAgreementCheckbox/>
