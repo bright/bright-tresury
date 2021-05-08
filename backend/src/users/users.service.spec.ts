@@ -16,6 +16,7 @@ describe(`Users Service`, () => {
     const getBlockchainAddressRepository = () => app.get().get(getRepositoryToken(BlockchainAddress))
 
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
+    const charlieAddress = '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q'
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -249,7 +250,7 @@ describe(`Users Service`, () => {
     })
 
     describe('find one by blockchainAddress', () => {
-        it('should return user by web3 address', async () => {
+        it('should return user by blockchain address', async () => {
             const blockchainAddress = bobAddress
             await getService().createBlockchainUser({
                 authId: uuid(),
@@ -261,7 +262,24 @@ describe(`Users Service`, () => {
 
             expect(user).toBeDefined()
         })
-        it('should throw not found exception if wrong web3 address', async () => {
+        it('should return user by blockchain address if there are multiple users', async () => {
+            const blockchainAddress = bobAddress
+            await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress
+            })
+            await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Charlie',
+                blockchainAddress: charlieAddress
+            })
+
+            const user = await getService().findOneByBlockchainAddress(blockchainAddress)
+
+            expect(user).toBeDefined()
+        })
+        it('should throw not found exception if wrong blockchain address', async () => {
             await expect(getService().findOneByBlockchainAddress(uuid()))
                 .rejects
                 .toThrow(NotFoundException)

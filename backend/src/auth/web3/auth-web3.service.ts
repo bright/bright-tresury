@@ -27,20 +27,49 @@ export class AuthWeb3Service {
         private readonly cacheManager: CacheManager,
     ) {}
 
+    async startSignIn(startDto: StartWeb3SignRequest): Promise<StartWeb3SignResponse> {
+        await this.validateAddressForSignIn(startDto.address)
+
+        const signMessage = uuid()
+        const signMessageKey = this.getSignInMessageCacheKey(startDto.address)
+        await this.cacheManager.set<string>(signMessageKey, signMessage, {ttl: this.SignMessageTtlMs})
+
+        return new StartWeb3SignResponse(signMessage)
+    }
+
+    async confirmSignIn(confirmRequest: ConfirmWeb3SignRequest, res: Response): Promise<void> {
+        await this.validateAddressForSignIn(confirmRequest.address)
+
+        const signMessageKey = this.getSignInMessageCacheKey(confirmRequest.address)
+        const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
+        if (!cachedSignMessage) {
+            throw new NotFoundException('Sign message was not found')
+        }
+
+        const signatureValid = this.validateSignature(cachedSignMessage, confirmRequest)
+        if (signatureValid) {
+            const user = await this.userService.findOneByBlockchainAddress(confirmRequest.address)
+            await this.superTokensService.createSession(res, user.authId)
+            await this.cacheManager.del(signMessageKey)
+        } else {
+            throw new BadRequestException('The signature is invalid')
+        }
+    }
+
     async startSignUp(startDto: StartWeb3SignUpRequestDto): Promise<StartWeb3SignUpResponseDto> {
         await this.validateAddress(startDto.address)
 
         const signMessage = uuid()
-        const signMessageKey = this.getSignMessageCacheKey(startDto.address)
+        const signMessageKey = this.getSignUpMessageCacheKey(startDto.address)
         await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
 
         return new StartWeb3SignUpResponseDto(signMessage)
     }
 
     async confirmSignUp(confirmRequest: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
-        await this.validateAddress(confirmRequest.address)
+        await this.validateAddressForSignUp(confirmRequest.address)
 
-        const signMessageKey = this.getSignMessageCacheKey(confirmRequest.address)
+        const signMessageKey = this.getSignUpMessageCacheKey(confirmRequest.address)
         const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
         if (!cachedSignMessage) {
             throw new NotFoundException('Sign message was not found')
@@ -49,27 +78,40 @@ export class AuthWeb3Service {
         const signatureValid = this.validateSignature(cachedSignMessage, confirmRequest)
         if (signatureValid) {
             await this.createBlockchainUser(confirmRequest.address, res)
+            await this.cacheManager.del(signMessageKey)
         } else {
             throw new BadRequestException('The signature is invalid')
         }
     }
 
-    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignUpRequestDto): boolean => {
-        const publicAddressKey = decodeAddress(confirmRequest.address)
-        const publicHexAddressKey = u8aToHex(publicAddressKey)
+    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignRequest): boolean => {
+        const publicAddressKey = decodeAddress(confirmRequest.address);
+        const publicHexAddressKey = u8aToHex(publicAddressKey);
 
         const result = signatureVerify(signMessage, confirmRequest.signature, publicHexAddressKey)
         return result.isValid
+    }
+
+    private async validateAddressForSignIn(address: string) {
+        await this.validateAddress(address)
+        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
+        if (!doesAddressExist) {
+            throw new NotFoundException('There is no user associated with this address')
+        }
+    }
+
+    private async validateAddressForSignUp(address: string) {
+        await this.validateAddress(address)
+        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
+        if (doesAddressExist) {
+            throw new ConflictException('User with this address already exists')
+        }
     }
 
     private async validateAddress(address: string) {
         const isValid = isValidAddress(address)
         if (!isValid) {
             throw new BadRequestException('Incorrect address')
-        }
-        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
-        if (doesAddressExist) {
-            throw new ConflictException('User with this address already exists')
         }
     }
 
@@ -87,5 +129,7 @@ export class AuthWeb3Service {
         await this.superTokensService.createSession(res, superTokensUser.id)
     }
 
-    private getSignMessageCacheKey = (address: string) => `SignMessage:${address}`
+    private getSignUpMessageCacheKey = (address: string) => `SignUpMessage:${address}`
+    private getSignInMessageCacheKey = (address: string) => `SignInMessage:${address}`
+
 }

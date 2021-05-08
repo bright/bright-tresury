@@ -59,8 +59,10 @@ export class UsersService {
             .leftJoinAndSelect('user.blockchainAddresses', 'blockchainAddresses')
             .where('blockchainAddresses.address = :blockchainAddress', { blockchainAddress })
             .getMany()
-        if (!users || users.length !== 1) {
+        if (!users || users.length === 0) {
             throw new NotFoundException('User not found')
+        } else if (users.length > 1) {
+            throw new InternalServerErrorException('There are multiple users with the same blockchain address')
         } else {
             return users[0]
         }

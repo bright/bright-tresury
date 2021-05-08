@@ -5,6 +5,7 @@ import {createSessionHandler} from "../supertokens/specHelpers/supertokens.sessi
 import {cleanAuthorizationDatabase, getAuthUser} from "../supertokens/specHelpers/supertokens.database.spec.helper";
 import {AuthWeb3Service} from "./auth-web3.service";
 import {v4 as uuid} from "uuid";
+import {CreateBlockchainUserDto} from "../../users/dto/createBlockchainUser.dto";
 
 describe(`Auth Web3 Controller`, () => {
 
@@ -24,7 +25,7 @@ describe(`Auth Web3 Controller`, () => {
         await cleanAuthorizationDatabase()
     })
 
-    describe('web3 sign up', () => {
+    describe('sign up', () => {
         it('should save user in both databases', async () => {
             await request(app())
                 .post(`/api/v1/auth/web3/signup/start`)
@@ -59,6 +60,33 @@ describe(`Auth Web3 Controller`, () => {
                 })
             const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
             const sessionHandler = createSessionHandler(confirmSignUpResponse, user)
+            const session = await getService().getSession(
+                sessionHandler.getAuthorizedRequest(), {} as any, false
+            )
+
+            expect(session).toBeDefined()
+        })
+    })
+
+    describe('sign in', () => {
+        it('should create session', async () => {
+            await getUsersService().createBlockchainUser(new CreateBlockchainUserDto(
+                uuid(),
+                'Bob',
+                bobAddress
+            ))
+            await request(app())
+                .post(`/api/v1/auth/web3/signin/start`)
+                .send({address: bobAddress})
+
+            const confirmSignInResponse = await request(app())
+                .post(`/api/v1/auth/web3/signin/confirm`)
+                .send({
+                    address: bobAddress,
+                    signature: uuid()
+                })
+            const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
+            const sessionHandler = createSessionHandler(confirmSignInResponse, user)
             const session = await getService().getSession(
                 sessionHandler.getAuthorizedRequest(), {} as any, false
             )

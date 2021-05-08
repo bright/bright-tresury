@@ -21,4 +21,8 @@ export class CacheManager {
     async set<T>(key: string, value: T, config?: CacheConfig): Promise<T> {
         return await this.cacheManager.set(key, value, config)
     }
+
+    async del(key: string): Promise<void> {
+        await this.cacheManager.del(key)
+    }
 }

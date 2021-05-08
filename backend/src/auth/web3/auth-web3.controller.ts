@@ -10,9 +10,46 @@ import { Response } from 'express'
 export class AuthWeb3Controller {
     constructor(private readonly authWeb3Service: AuthWeb3Service) {}
 
+    @Post('/signin/start')
+    @ApiOkResponse({
+        description: 'Sign in successfully started',
+        type: [StartWeb3SignResponse]
+    })
+    @ApiBadRequestResponse({
+        description: 'Requested address is invalid'
+    })
+    @ApiNotFoundResponse({
+        description: 'Requested address does not belong to any existing user'
+    })
+    async startSignIn(@Body() startRequest: StartWeb3SignRequest): Promise<StartWeb3SignResponse> {
+        return this.authWeb3Service.startSignIn(startRequest)
+    }
+
+    @Post('/signin/confirm')
+    @ApiOkResponse({
+        description: 'Sign in successfully confirmed',
+        type: [StartWeb3SignResponse]
+    })
+    @ApiBadRequestResponse({
+        description: 'Requested address is invalid'
+    })
+    @ApiNotFoundResponse({
+        description: 'Requested address does not belong to any existing user'
+    })
+    @ApiBadRequestResponse({
+        description: 'Requested signature is not valid'
+    })
+    async confirmSignIn(
+        @Body() confirmRequest: ConfirmWeb3SignRequest,
+        @Res() res: Response
+    ) {
+        await this.authWeb3Service.confirmSignIn(confirmRequest, res)
+        res.status(HttpStatus.OK).send()
+    }
+
     @Post('/signup/start')
     @ApiOkResponse({
-        description: 'Signup successfully started',
+        description: 'Sign up successfully started',
         type: [StartWeb3SignUpResponseDto],
     })
     @ApiBadRequestResponse({

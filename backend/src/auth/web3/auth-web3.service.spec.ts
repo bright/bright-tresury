@@ -7,6 +7,8 @@ import {BadRequestException, ConflictException, NotFoundException} from "@nestjs
 import {CreateBlockchainUserDto} from "../../users/dto/createBlockchainUser.dto";
 import {SuperTokensService} from "../supertokens/supertokens.service";
 import {Response} from "express";
+import {ConfirmWeb3SignUpRequest} from "./dto/confirm-web3-sign-up.request";
+import {ConfirmWeb3SignRequest} from "./dto/confirm-web3-sign.request";
 
 describe(`Auth Web3 Service`, () => {
 
@@ -18,6 +20,8 @@ describe(`Auth Web3 Service`, () => {
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const bobUsername = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
+    const charlieAddress = '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q'
+    const network = 'localhost'
 
     beforeEach(async () => {
         jest.spyOn(getSuperTokensService(), 'createSession').mockImplementation(() => Promise.resolve({} as any))
@@ -54,7 +58,7 @@ describe(`Auth Web3 Service`, () => {
             await getService().startSignUp({address: bobAddress})
             await getService().confirmSignUp({
                 signature: uuid(),
-                network: 'localhost',
+                network,
                 address: bobAddress
             }, {} as Response)
 
@@ -68,7 +72,7 @@ describe(`Auth Web3 Service`, () => {
             await getService().startSignUp({address: bobAddress})
             await expect(getService().confirmSignUp({
                     signature: uuid(),
-                    network: 'localhost',
+                    network,
                     address: aliceAddress
                 }, {} as Response)
             ).rejects.toThrow(NotFoundException)
@@ -78,10 +82,117 @@ describe(`Auth Web3 Service`, () => {
             await getService().startSignUp({address: bobAddress})
             await expect(getService().confirmSignUp({
                     signature: uuid(),
-                    network: 'localhost',
+                    network,
                     address: bobAddress
                 }, {} as Response)
             ).rejects.toThrow(BadRequestException)
+        })
+    })
+
+    describe('start sign in', () => {
+        it('returns uuid', async () => {
+            await getUsersService().createBlockchainUser({
+                authId: uuid(),
+                username: bobUsername,
+                blockchainAddress: bobAddress
+            } as CreateBlockchainUserDto)
+
+            const signMessageResponse = await getService().startSignIn({address: bobAddress})
+            expect(signMessageResponse.signMessage).toBeDefined()
+        })
+        it('throws bad request if invalid address', async () => {
+            await expect(getService().startSignIn({address: uuid()}))
+                .rejects
+                .toThrow(BadRequestException)
+        })
+        it('throws conflict if user with this address does not exist', async () => {
+            await expect(getService().startSignIn({address: bobAddress}))
+                .rejects
+                .toThrow(NotFoundException)
+        })
+    })
+    describe('confirm sign in', () => {
+        it('in creates session', async () => {
+            const createSessionSpy = jest.spyOn(getSuperTokensService(), 'createSession')
+            const initialCallsCount = createSessionSpy.mock.calls.length
+            jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
+
+            await getUsersService().createBlockchainUser({
+                authId: uuid(),
+                username: bobUsername,
+                blockchainAddress: bobAddress
+            } as CreateBlockchainUserDto)
+            await getService().startSignIn({address: bobAddress})
+            await getService().confirmSignIn({
+                signature: uuid(),
+                address: bobAddress
+            }, {} as Response)
+
+            expect(createSessionSpy.mock.calls.length).toBe(initialCallsCount + 1)
+        })
+        it("throws not found if sign in for requested address haven't started", async () => {
+            jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
+            await getUsersService().createBlockchainUser({
+                authId: uuid(),
+                username: bobUsername,
+                blockchainAddress: bobAddress
+            } as CreateBlockchainUserDto)
+            await getService().startSignIn({address: bobAddress})
+
+            await expect(getService().confirmSignIn({
+                    signature: uuid(),
+                    address: aliceAddress
+                }, {} as Response)
+            ).rejects.toThrow(NotFoundException)
+        })
+        it('throws conflict if user with this address does not exist', async () => {
+            await expect(getService().startSignIn({address: bobAddress}))
+                .rejects
+                .toThrow(NotFoundException)
+        })
+        it("throws bad request when signature is invalid", async () => {
+            await getUsersService().createBlockchainUser({
+                authId: uuid(),
+                username: bobUsername,
+                blockchainAddress: bobAddress
+            } as CreateBlockchainUserDto)
+            jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => false)
+            await getService().startSignIn({address: bobAddress})
+
+            await expect(getService().confirmSignIn({
+                    signature: uuid(),
+                    address: bobAddress
+                }, {} as Response)
+            ).rejects.toThrow(BadRequestException)
+        })
+    })
+    describe('simultaneous sign up and sign in', () => {
+        it('is allowed', async () => {
+            jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
+            const createSessionSpy = jest.spyOn(getSuperTokensService(), 'createSession')
+            const initialCallsCount = createSessionSpy.mock.calls.length
+            await getUsersService().createBlockchainUser({
+                authId: uuid(),
+                username: bobUsername,
+                blockchainAddress: bobAddress
+            } as CreateBlockchainUserDto)
+
+            await getService().startSignIn({address: bobAddress})
+            await getService().startSignUp({address: charlieAddress})
+
+            await getService().confirmSignIn({
+                signature: uuid(),
+                address: bobAddress
+            } as ConfirmWeb3SignRequest, {} as Response)
+            expect(createSessionSpy.mock.calls.length).toBe(initialCallsCount + 1)
+
+            await getService().confirmSignUp({
+                signature: uuid(),
+                network,
+                address: charlieAddress
+            } as ConfirmWeb3SignUpRequest, {} as Response)
+            const charlieUser = await getUsersService().findOneByBlockchainAddress(charlieAddress)
+            expect(charlieUser).toBeDefined()
         })
     })
 })
