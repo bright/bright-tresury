@@ -31,90 +31,90 @@ describe(`Blockchain service`, () => {
         keyring = new Keyring({type: 'sr25519'});
         aliceKeypair = keyring.addFromUri('//Alice', {name: 'Alice default'});
     })
-    //
-    // describe('findExtrinsic', () => {
-    //     it('should start listening and find proposeSpend extrinsic with events', async (done) => {
-    //         let expectedBlockHash = ''
-    //         let expectedProposalId = 0
-    //
-    //         // create and sign extrinsic
-    //         const extrinsic = api.tx.treasury.proposeSpend(10, bobAddress)
-    //         await extrinsic.signAsync(aliceKeypair)
-    //
-    //         // start listening for the extrinsic
-    //         await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
-    //             expect(result).toBeDefined()
-    //             expect(result!.blockHash).toBe(expectedBlockHash)
-    //             expect(result!.events).toContainEqual({
-    //                 section: 'treasury',
-    //                 method: 'Proposed',
-    //                 data: [{
-    //                     name: 'ProposalIndex',
-    //                     value: `${expectedProposalId}`
-    //                 }]
-    //             })
-    //             expect(result!.events).toContainEqual({
-    //                 section: 'balances',
-    //                 method: 'Reserved',
-    //                 data: [
-    //                     {
-    //                         name: 'AccountId',
-    //                         value: aliceAddress
-    //                     },
-    //                     {
-    //                         name: 'Balance',
-    //                         value: '1000000000000'
-    //                     }]
-    //             })
-    //             expect(result!.data).toStrictEqual({
-    //                 value: 10,
-    //                 beneficiary: {
-    //                     Id: bobAddress
-    //                 }
-    //             })
-    //             done()
-    //         })
-    //
-    //         // send the extrinsic
-    //         await extrinsic.send((result: any) => {
-    //             if (result.isFinalized) {
-    //                 // TODO fix types
-    //                 expectedBlockHash = result.status.asFinalized.toString()
-    //                 const event = result.events
-    //                     .find(({event: e}: { event: any }) => e.section === 'treasury' && e.method === 'Proposed')
-    //                 expectedProposalId = Number(event?.event.data[0])
-    //             }
-    //         })
-    //     }, 60000)
-    //
-    //     it('should start listening and find successful extrinsic with exceptions', async (done) => {
-    //         let expectedBlockHash = ''
-    //
-    //         // create and sign extrinsic which will fail as only ApproveOrigin can call this extrinsic
-    //         const extrinsic = api.tx.treasury.rejectProposal(0)
-    //         await extrinsic.signAsync(aliceKeypair)
-    //
-    //         // start listening for the extrinsic
-    //         await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
-    //             expect(result).toBeDefined()
-    //             expect(result!.blockHash).toBe(expectedBlockHash)
-    //             const errorEvent = result!.events.find((e) => e.section === 'system' && e.method === 'ExtrinsicFailed')
-    //             expect(errorEvent).toBeDefined()
-    //             expect(errorEvent!.data).toContainEqual({
-    //                 name: 'DispatchError',
-    //                 value: 'BadOrigin'
-    //             })
-    //             done()
-    //         })
-    //
-    //         // send the extrinsic
-    //         await extrinsic.send((result: SubmittableResult) => {
-    //             if (result.isFinalized) {
-    //                 expectedBlockHash = result.status.asFinalized.toString()
-    //             }
-    //         })
-    //     }, 60000)
-    // })
+
+    describe('findExtrinsic', () => {
+        it('should start listening and find proposeSpend extrinsic with events', async (done) => {
+            let expectedBlockHash = ''
+            let expectedProposalId = 0
+
+            // create and sign extrinsic
+            const extrinsic = api.tx.treasury.proposeSpend(10, bobAddress)
+            await extrinsic.signAsync(aliceKeypair)
+
+            // start listening for the extrinsic
+            await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
+                expect(result).toBeDefined()
+                expect(result!.blockHash).toBe(expectedBlockHash)
+                expect(result!.events).toContainEqual({
+                    section: 'treasury',
+                    method: 'Proposed',
+                    data: [{
+                        name: 'ProposalIndex',
+                        value: `${expectedProposalId}`
+                    }]
+                })
+                expect(result!.events).toContainEqual({
+                    section: 'balances',
+                    method: 'Reserved',
+                    data: [
+                        {
+                            name: 'AccountId',
+                            value: aliceAddress
+                        },
+                        {
+                            name: 'Balance',
+                            value: '1000000000000'
+                        }]
+                })
+                expect(result!.data).toStrictEqual({
+                    value: 10,
+                    beneficiary: {
+                        id: bobAddress
+                    }
+                })
+                done()
+            })
+
+            // send the extrinsic
+            await extrinsic.send((result: any) => {
+                if (result.isFinalized) {
+                    // TODO fix types
+                    expectedBlockHash = result.status.asFinalized.toString()
+                    const event = result.events
+                        .find(({event: e}: { event: any }) => e.section === 'treasury' && e.method === 'Proposed')
+                    expectedProposalId = Number(event?.event.data[0])
+                }
+            })
+        }, 60000)
+
+        it('should start listening and find successful extrinsic with exceptions', async (done) => {
+            let expectedBlockHash = ''
+
+            // create and sign extrinsic which will fail as only ApproveOrigin can call this extrinsic
+            const extrinsic = api.tx.treasury.rejectProposal(0)
+            await extrinsic.signAsync(aliceKeypair)
+
+            // start listening for the extrinsic
+            await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
+                expect(result).toBeDefined()
+                expect(result!.blockHash).toBe(expectedBlockHash)
+                const errorEvent = result!.events.find((e) => e.section === 'system' && e.method === 'ExtrinsicFailed')
+                expect(errorEvent).toBeDefined()
+                expect(errorEvent!.data).toContainEqual({
+                    name: 'DispatchError',
+                    value: 'BadOrigin'
+                })
+                done()
+            })
+
+            // send the extrinsic
+            await extrinsic.send((result: SubmittableResult) => {
+                if (result.isFinalized) {
+                    expectedBlockHash = result.status.asFinalized.toString()
+                }
+            })
+        }, 60000)
+    })
 
     describe('getProposals', () => {
         it('should return existing proposals', async (done) => {

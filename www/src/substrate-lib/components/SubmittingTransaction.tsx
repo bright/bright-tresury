@@ -81,7 +81,6 @@ const SubmittingTransaction: React.FC<Props> = ({onClose, onSuccess, txAttrs, se
     }, [keyring, keyringState])
 
     const txResHandler = (result: SubmittableResult) => {
-        debugger
         const txResult = {status: result.status} as Result
 
         const applyExtrinsicEvent = result.events
