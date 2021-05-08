@@ -120,7 +120,10 @@
     },
     "signIn": {
       "title": "Login",
+      "emailSignInLabel": "E-mail login",
+      "web3SignInLabel": "Web 3 address login",
       "signUpLabel": "Don't have an account? <a>Sign up</a>",
+      "submitButton": "Login",
       "form": {
         "emptyFieldError": "This field cannot be empty",
         "login": {
@@ -131,7 +134,6 @@
           "label": "Password",
           "placeholder": "Enter your password"
         },
-        "submitButton": "Login",
         "forgotPassword": "Forgot Password?"
       },
       "verifyEmail": {

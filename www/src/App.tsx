@@ -66,7 +66,7 @@ function AppRoutes() {
                             component={SignUp}
                             redirectTo={ROUTE_SIGNUP_WEB3_SUCCESS}
                         />
-                        <PublicOnlyRoute exact={true} path={ROUTE_SIGNIN} component={SignIn} />
+                        <PublicOnlyRoute exact={false} path={ROUTE_SIGNIN} component={SignIn} />
                         <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={SignUpSuccess} />
                         <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
                             <VerifyEmail />

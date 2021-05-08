@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useLocation} from "react-router-dom";
-import {Loader} from "../../components/loading/Loader";
-import {verifyEmail} from "../auth.api";
+import {Loader} from "../../../components/loading/Loader";
+import {verifyEmail} from "../../auth.api";
 import VerifyEmailError from "./VerifyEmailError";
 import VerifyEmailSuccess from "./VerifyEmailSuccess";
 

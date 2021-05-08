@@ -16,7 +16,7 @@ interface OwnProps {
     handleSubmit: (e?: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export const SignUpFormWrapper: React.FC<OwnProps> = ({handleSubmit, children}) => {
+export const SignFormWrapper: React.FC<OwnProps> = ({handleSubmit, children}) => {
     const classes = useStyles()
 
     return <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>

@@ -4,6 +4,10 @@ import {confirmAddressSignUp, startAddressSignUp} from "../../auth-web3.api";
 import config from "../../../config";
 import {stringToHex} from '@polkadot/util';
 
+export async function handleWeb3SignIn(account: Account) {
+
+}
+
 export async function handleWeb3Signup(account: Account) {
     const injected = await web3FromAddress(account.address);
     if (!injected) {

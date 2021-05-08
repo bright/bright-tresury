@@ -1,10 +1,10 @@
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import React from "react";
 import {useTranslation} from "react-i18next";
-import errorImg from "../../assets/email_verify_error.svg";
-import Container from "../../components/form/Container";
-import {Header} from "../../components/text/Header";
-import {breakpoints} from "../../theme/theme";
+import errorImg from "../../../assets/email_verify_error.svg";
+import Container from "../../../components/form/Container";
+import {Header} from "../../../components/text/Header";
+import {breakpoints} from "../../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

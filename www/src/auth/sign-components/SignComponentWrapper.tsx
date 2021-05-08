@@ -1,6 +1,6 @@
 import React from "react";
 import {makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../../theme/theme";
+import {breakpoints} from "../../theme/theme";
 
 const useStyles = makeStyles((theme: Theme) => {
     return {
@@ -19,7 +19,7 @@ const useStyles = makeStyles((theme: Theme) => {
     }
 })
 
-export const SignUpComponentWrapper: React.FC = ({children}) => {
+export const SignComponentWrapper: React.FC = ({children}) => {
     const classes = useStyles()
 
     return <div className={classes.inputField}>

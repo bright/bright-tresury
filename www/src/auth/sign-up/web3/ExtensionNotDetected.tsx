@@ -2,9 +2,9 @@ import {useTranslation} from "react-i18next";
 import {Button} from "../../../components/button/Button";
 import React from "react";
 import {makeStyles, Theme} from "@material-ui/core/styles";
-import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
 import {useHistory} from "react-router";
 import {ROUTE_SIGNUP_EMAIL} from "../../../routes/routes";
+import {SignComponentWrapper} from "../../sign-components/SignComponentWrapper";
 
 const useStyles = makeStyles((theme: Theme) => {
     return {
@@ -29,11 +29,11 @@ export const ExtensionNotDetected: React.FC = () => {
     const classes = useStyles()
 
     return <div className={classes.root}>
-        <SignUpComponentWrapper>
+        <SignComponentWrapper>
             <p className={classes.info}>{t('auth.signUp.web3SignUp.extensionNotDetected')}</p>
             <Button variant={'text'} className={classes.button} onClick={() => history.push(ROUTE_SIGNUP_EMAIL)}>
                 {t('auth.signUp.web3SignUp.signUpWithEmail')}
             </Button>
-        </SignUpComponentWrapper>
+        </SignComponentWrapper>
     </div>
 }

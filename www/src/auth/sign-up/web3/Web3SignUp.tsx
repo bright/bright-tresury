@@ -8,8 +8,6 @@ import {GetUserAgreementYupSchema, UserAgreementCheckbox} from "../common/UserAg
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
 import {AlreadySignedUp} from "../common/AlreadySignedUp";
-import {SignUpComponentWrapper} from "../common/SignUpComponentWrapper";
-import {SignUpFormWrapper} from "../common/SignUpFormWrapper";
 import {AccountSelect} from "../../../components/select/AccountSelect";
 import {Account} from "../../../substrate-lib/hooks/useAccounts";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
@@ -18,6 +16,8 @@ import {ErrorBox} from "../../../components/form/ErrorBox";
 import {useHistory} from 'react-router-dom';
 import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes/routes";
 import {useAuth} from "../../AuthContext";
+import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
+import {SignComponentWrapper} from "../../sign-components/SignComponentWrapper";
 
 export interface Web3SignUpValues {
     account: Account,
@@ -65,22 +65,22 @@ const Web3SignUp: React.FC = () => {
               values,
               handleSubmit,
           }) =>
-            <SignUpFormWrapper handleSubmit={handleSubmit}>
-                {error && <SignUpComponentWrapper>
+            <SignFormWrapper handleSubmit={handleSubmit}>
+                {(loadingState === LoadingState.Error && error) ? <SignComponentWrapper>
                     <ErrorBox error={t('auth.signUp.web3SignUp.failureMessage')}/>
-                </SignUpComponentWrapper>}
-                <SignUpComponentWrapper>
+                </SignComponentWrapper> : null}
+                <SignComponentWrapper>
                     <AccountSelect account={values.account}/>
-                </SignUpComponentWrapper>
-                <SignUpComponentWrapper>
+                </SignComponentWrapper>
+                <SignComponentWrapper>
                     <UserAgreementCheckbox/>
-                </SignUpComponentWrapper>
-                <SignUpComponentWrapper>
+                </SignComponentWrapper>
+                <SignComponentWrapper>
                     <PrivacyNotice/>
-                </SignUpComponentWrapper>
+                </SignComponentWrapper>
                 <SignUpButton disabled={loadingState === LoadingState.Loading}/>
                 <AlreadySignedUp/>
-            </SignUpFormWrapper>
+            </SignFormWrapper>
         }
     </Formik>
 }

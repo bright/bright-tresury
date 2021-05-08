@@ -20,7 +20,7 @@ export const TimeSelect: React.FC = () => {
 
     return <Select
         className={classes.root}
-        value={t('components.timeSelect.currentSpendTime')}
-        options={[t('components.timeSelect.currentSpendTime')]}
+        value={t('sign-components.timeSelect.currentSpendTime')}
+        options={[t('sign-components.timeSelect.currentSpendTime')]}
     />
 }
