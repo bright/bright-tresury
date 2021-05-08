@@ -4,7 +4,8 @@ import { SignInAPIResponse, SignUpAPIResponse } from 'supertokens-auth-react/lib
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import { signIn as signInApi, SignInData, signOut as signOutApi, SignUpData } from './auth.api'
 import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
-import { handleWeb3Signup, handleWeb3SignIn } from './sign-up/web3/handleWeb3Signup'
+import { handleWeb3SignUp, handleWeb3SignIn } from './sign-up/web3/handleWeb3Signup'
+import {Web3SignInValues} from "./sign-in/web3/Web3SignIn";
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
@@ -83,7 +84,7 @@ const AuthContextProvider: React.FC = (props) => {
     }
 
     const web3SignUp = (web3SignUpValues: Web3SignUpValues) => {
-        return handleWeb3Signup(web3SignUpValues.account)
+        return handleWeb3SignUp(web3SignUpValues.account)
             .then(() => {
                 setIsUserSignedIn(true)
             })
