@@ -51,7 +51,7 @@ async function handleWeb3Sign(
     const signMessage = startSignUpResponse?.signMessage;
 
     if (!signMessage) {
-        throw new Error('Web3 sign up challenge message not found');
+        throw new Error('Web3 sign challenge message not found');
     }
 
     const {signature} = await signRaw({

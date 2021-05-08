@@ -18,6 +18,7 @@ import {ROUTE_SIGNUP_WEB3_SUCCESS} from "../../../routes/routes";
 import {useAuth} from "../../AuthContext";
 import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
 import {SignComponentWrapper} from "../../sign-components/SignComponentWrapper";
+import {SignOption} from "../../sign-components/SignOption";
 
 export interface Web3SignUpValues {
     account: Account,
@@ -96,7 +97,7 @@ const Web3SignUp: React.FC = () => {
                     <PrivacyNotice/>
                 </SignComponentWrapper>
                 <SignUpButton disabled={loadingState === LoadingState.Loading}/>
-                <AlreadySignedUp/>
+                <AlreadySignedUp signOption={SignOption.Web3}/>
             </SignFormWrapper>
         }
     </Formik>

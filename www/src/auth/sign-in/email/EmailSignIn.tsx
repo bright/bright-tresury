@@ -11,10 +11,11 @@ import {PasswordInput} from "../../../components/form/input/password/PasswordInp
 import {LoadingState} from "../../../components/loading/LoadingWrapper";
 import {useAuth} from "../../AuthContext";
 import {useSuperTokensRequest} from "../../supertokens.utils/useSuperTokensRequest";
-import {SignUpLabel} from "../common/SignUpLabel";
+import {NotSignedUpYet} from "../common/NotSignedUpYet";
 import {SignInButton} from "../common/SignInButton";
 import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
 import {SignComponentWrapper} from "../../sign-components/SignComponentWrapper";
+import {SignOption} from "../../sign-components/SignOption";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -80,7 +81,7 @@ const EmailSignIn = () => {
                         type='button'>
                     {t('auth.signIn.emailSignIn.forgotPassword')}
                 </Button>
-                <SignUpLabel/>
+                <NotSignedUpYet signOption={SignOption.Email}/>
             </SignFormWrapper>
         }
     </Formik>

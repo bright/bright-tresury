@@ -4,7 +4,7 @@ import {useTranslation} from "react-i18next";
 import {InfoBox} from "../../../components/form/InfoBox";
 import {LoadingState, useLoading} from "../../../components/loading/LoadingWrapper";
 import {useAuth} from "../../AuthContext";
-import {SignUpLabel} from "../common/SignUpLabel";
+import {NotSignedUpYet} from "../common/NotSignedUpYet";
 import {SignInButton} from "../common/SignInButton";
 import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
 import {SignComponentWrapper} from "../../sign-components/SignComponentWrapper";
@@ -15,6 +15,7 @@ import {ExtensionNotDetected} from "../../sign-up/web3/ExtensionNotDetected";
 import {useHistory} from "react-router";
 import {ROUTE_SIGNUP_WEB3} from "../../../routes/routes";
 import {Web3SignUpLocationState} from "../../sign-up/web3/Web3SignUp";
+import {SignOption} from "../../sign-components/SignOption";
 
 export interface Web3SignInValues {
     account: Account,
@@ -71,7 +72,7 @@ const Web3SignIn = () => {
                     <AccountSelect account={values.account}/>
                 </SignComponentWrapper>
                 <SignInButton disabled={loadingState === LoadingState.Loading}/>
-                <SignUpLabel/>
+                <NotSignedUpYet signOption={SignOption.Web3}/>
             </SignFormWrapper>
         }
     </Formik>
