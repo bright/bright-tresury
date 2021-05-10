@@ -1,36 +1,13 @@
 import React from "react";
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import {breakpoints} from "../../../../theme/theme";
-import {Input} from "../../../../components/form/input/Input";
-import config from "../../../../config";
-import {DatePickerInput} from "../../../../components/form/input/date/DatePickerInput";
-import {Label} from "../../../../components/text/Label";
+import {Input} from "../../../../../components/form/input/Input";
+import config from "../../../../../config";
+import {DatePickerInput} from "../../../../../components/form/input/date/DatePickerInput";
+import {Label} from "../../../../../components/text/Label";
 import {FormGroup} from "@material-ui/core";
-import {TextFieldColorScheme} from "../../../../components/form/input/textFieldStyles";
+import {TextFieldColorScheme} from "../../../../../components/form/input/textFieldStyles";
 import {useTranslation} from "react-i18next";
-import {IdeaMilestoneFormValues} from "./IdeaMilestoneForm";
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '2em',
-            marginTop: '1em',
-        },
-        narrowField: {
-            width: '50%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '100%',
-            },
-        },
-        dateRangeField: {
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px',
-        }
-    }),
-);
+import {IdeaMilestoneFormValues} from "../IdeaMilestoneForm";
+import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
@@ -41,7 +18,7 @@ interface Props {
 
 export const IdeaMilestoneFormFields = ({ values, readonly }: Props) => {
 
-    const classes = useStyles()
+    const classes = useIdeaMilestoneFormFieldsStyles()
     const { t } = useTranslation()
 
     return (

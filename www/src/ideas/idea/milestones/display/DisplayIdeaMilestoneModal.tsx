@@ -10,30 +10,31 @@ interface Props {
     open: boolean
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    handleCloseModal: () => void
+    onClose: () => void
 }
 
-export const DisplayIdeaMilestoneModal = ({ open, idea, ideaMilestone, handleCloseModal }: Props) => {
+export const DisplayIdeaMilestoneModal = ({ open, idea, ideaMilestone, onClose }: Props) => {
 
     const { t } = useTranslation()
 
     return (
         <Modal
             open={open}
-            onClose={handleCloseModal}
+            onClose={onClose}
             aria-labelledby="modal-title"
+            fullWidth={true}
             maxWidth={'md'}
         >
             <>
                 <IdeaMilestoneModalHeader>
                     <h2 id='modal-title'>
-                        {t('idea.milestones.modal.milestone')} - <b>{ideaMilestone.ordinalNumber}</b>
+                        { t('idea.milestones.modal.milestone') } - <b>{ ideaMilestone.ordinalNumber }</b>
                     </h2>
                 </IdeaMilestoneModalHeader>
                 <DisplayIdeaMilestone
                     idea={idea}
                     ideaMilestone={ideaMilestone}
-                    handleCloseModal={handleCloseModal}
+                    onCancel={onClose}
                 />
             </>
         </Modal>

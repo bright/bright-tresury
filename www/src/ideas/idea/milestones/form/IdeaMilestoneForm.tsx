@@ -1,15 +1,15 @@
-import React, {PropsWithChildren, useMemo} from 'react';
+import React, { PropsWithChildren } from 'react'
 import {createStyles, makeStyles} from '@material-ui/core/styles';
-import {Formik} from "formik";
-import {useTranslation} from "react-i18next";
+import { Formik } from 'formik'
 import {
     IdeaMilestoneDto,
     IdeaMilestoneNetworkDto
 } from "../idea.milestones.api";
-import {IdeaMilestoneFormFields} from "./IdeaMilestoneFormFields";
+import {IdeaMilestoneFormFields} from "./fields/IdeaMilestoneFormFields";
 import {Nil} from "../../../../util/types";
 import {IdeaDto} from "../../../ideas.api";
-import {getExtendedValidationSchema, getValidationSchema} from "./ideaMilestoneFormValidationSchemas";
+import { useIdeaMilestoneForm } from './useIdeaMilestoneForm'
+import { IdeaMilestoneFoldedFormFields } from './fields/IdeaMilestoneFoldedFormFields'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -25,32 +25,6 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const createInitialIdeaMilestoneFormValuesObject = (network: string): IdeaMilestoneFormValues => {
-    return {
-        subject: '',
-        beneficiary: null,
-        dateFrom: null,
-        dateTo: null,
-        description: null,
-        networks: [{ name: network, value: 0 } as IdeaMilestoneNetworkDto]
-    }
-}
-
-const mapIdeaMilestoneToIdeaMilestoneFormValues = (
-    { subject, beneficiary, dateFrom, dateTo, description, networks }: IdeaMilestoneDto
-): IdeaMilestoneFormValues => {
-    return {
-        subject,
-        beneficiary,
-        dateFrom,
-        dateTo,
-        description,
-        networks
-    }
-}
-
-const onSubmitFallback = () => { }
-
 export interface IdeaMilestoneFormValues {
     subject: string,
     beneficiary: Nil<string>,
@@ -64,31 +38,49 @@ interface Props {
     idea: IdeaDto
     ideaMilestone?: IdeaMilestoneDto
     readonly: boolean
+    folded?: boolean
     extendedValidation?: boolean
     onSubmit?: (values: IdeaMilestoneFormValues) => void
 }
 
-export const IdeaMilestoneForm = ({ idea, ideaMilestone, readonly, onSubmit, extendedValidation = false, children }: PropsWithChildren<Props>) => {
+export const IdeaMilestoneForm = (
+    {
+        idea,
+        ideaMilestone,
+        readonly,
+        folded = false,
+        extendedValidation = false,
+        onSubmit,
+        children
+    }: PropsWithChildren<Props>
+) => {
 
     const classes = useStyles()
-    const { t } = useTranslation()
 
-    const validationSchema = useMemo(() => getValidationSchema(t), [t])
-    const extendedValidationSchema = useMemo(() => getExtendedValidationSchema(t), [t])
-
-    const initialValues = ideaMilestone
-        ? mapIdeaMilestoneToIdeaMilestoneFormValues(ideaMilestone)
-        : createInitialIdeaMilestoneFormValuesObject(idea.networks[0].name)
+    const {
+        initialValues,
+        validationSchema,
+        extendedValidationSchema,
+        onSubmitFallback
+    } = useIdeaMilestoneForm({ idea, ideaMilestone })
 
     return (
         <Formik
             enableReinitialize={true}
             initialValues={{...initialValues}}
-            validationSchema={extendedValidation ?  extendedValidationSchema: validationSchema}
-            onSubmit={onSubmit ?? onSubmitFallback}>
+            validationSchema={extendedValidation ? extendedValidationSchema : validationSchema}
+            onSubmit={onSubmit ?? onSubmitFallback}
+        >
             {({ values, handleSubmit }) =>
                 <form className={classes.form} autoComplete='off' onSubmit={handleSubmit}>
-                    <IdeaMilestoneFormFields values={values} readonly={readonly} />
+                    { folded
+                        ? (
+                            <IdeaMilestoneFoldedFormFields values={values} readonly={readonly} />
+                        )
+                        : (
+                            <IdeaMilestoneFormFields values={values} readonly={readonly} />
+                        )
+                    }
                     <div className={classes.buttons}>
                         {children}
                     </div>

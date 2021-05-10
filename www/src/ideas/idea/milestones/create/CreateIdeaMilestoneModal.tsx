@@ -8,36 +8,37 @@ import {IdeaMilestoneModalHeader} from "../components/IdeaMilestoneModalHeader";
 interface Props {
     open: boolean
     idea: IdeaDto
-    handleCloseModal: () => void
+    onClose: () => void
     fetchIdeaMilestones: () => Promise<void>
 }
 
-export const CreateIdeaMilestoneModal = ({ open, idea, handleCloseModal, fetchIdeaMilestones }: Props) => {
+export const CreateIdeaMilestoneModal = ({ open, idea, onClose, fetchIdeaMilestones }: Props) => {
 
     const { t } = useTranslation()
 
-    const handleSuccessfulFormSubmit = () => {
-        handleCloseModal()
+    const handleOnSuccessfulCreate = () => {
+        onClose()
         fetchIdeaMilestones()
     }
 
     return (
         <Modal
             open={open}
-            onClose={handleCloseModal}
+            onClose={onClose}
             aria-labelledby="modal-title"
+            fullWidth={true}
             maxWidth={'md'}
         >
             <>
                 <IdeaMilestoneModalHeader>
                     <h2 id='modal-title'>
-                        {t('idea.milestones.modal.createMilestone')}
+                        { t('idea.milestones.modal.createMilestone') }
                     </h2>
                 </IdeaMilestoneModalHeader>
                 <CreateIdeaMilestone
                     idea={idea}
-                    handleCloseModal={handleCloseModal}
-                    handleSuccessfulFormSubmit={handleSuccessfulFormSubmit}
+                    onCancel={onClose}
+                    onSuccess={handleOnSuccessfulCreate}
                 />
             </>
         </Modal>

@@ -1,0 +1,81 @@
+import * as Yup from 'yup'
+import { useTranslation } from 'react-i18next'
+import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.api'
+import { IdeaMilestoneFormValues } from './IdeaMilestoneForm'
+import { IdeaDto } from '../../../ideas.api'
+
+interface Props {
+    idea: IdeaDto,
+    ideaMilestone?: IdeaMilestoneDto
+}
+
+export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
+
+    const { t } = useTranslation()
+
+    const validationSchema = Yup.object().shape({
+        subject: Yup.string()
+            .required(t('idea.milestones.modal.form.emptyFieldError')),
+        dateFrom: Yup.date()
+            // Date is transformed because in form date is like "yyyy-mm-dd" but we need the full date obj to correctly proceed validation
+            .transform(value => value ? new Date(value) : value)
+            .nullable(),
+        dateTo: Yup.date()
+            // Date is transformed because in form date is like "yyyy-mm-dd" but we need the full date obj to correctly proceed validation
+            .transform(value => value ? new Date(value) : value)
+            .nullable()
+            .min(
+                Yup.ref('dateFrom'),
+                t('idea.milestones.modal.form.endDatePriorToStartDateError')
+            )
+    })
+
+    const extendedValidationSchema = Yup.object().shape({
+        beneficiary: Yup.string()
+            .required(t('idea.milestones.modal.form.emptyFieldError')),
+        networks: Yup.array()
+            .of(Yup.object().shape({
+                value: Yup.number()
+                    .required(t('idea.milestones.modal.form.emptyFieldError'))
+                    .moreThan(0, (t('idea.milestones.modal.form.nonZeroFieldError'))),
+            }))
+    })
+
+    const onSubmitFallback = () => { }
+
+    const createInitialIdeaMilestoneFormValuesObject = (network: string): IdeaMilestoneFormValues => {
+        return {
+            subject: '',
+            beneficiary: '',
+            dateFrom: null,
+            dateTo: null,
+            description: '',
+            networks: [{ name: network, value: 0 } as IdeaMilestoneNetworkDto]
+        }
+    }
+
+    const mapIdeaMilestoneToIdeaMilestoneFormValues = (
+        { subject, beneficiary, dateFrom, dateTo, description, networks }: IdeaMilestoneDto
+    ): IdeaMilestoneFormValues => {
+        return {
+            subject,
+            beneficiary,
+            dateFrom,
+            dateTo,
+            description,
+            networks
+        }
+    }
+
+    const initialValues = ideaMilestone
+        ? mapIdeaMilestoneToIdeaMilestoneFormValues(ideaMilestone)
+        : createInitialIdeaMilestoneFormValuesObject(idea.networks[0].name)
+
+    return {
+        initialValues,
+        validationSchema,
+        extendedValidationSchema,
+        onSubmitFallback
+    }
+
+}

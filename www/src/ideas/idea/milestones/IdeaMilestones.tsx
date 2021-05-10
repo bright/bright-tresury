@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {getIdeaMilestones} from "./idea.milestones.api";
 import {EmptyIdeaMilestonesArrayInfo} from "./components/IdeaEmptyMilestonesArrayInfo";
 import {CreateIdeaMilestoneModal} from "./create/CreateIdeaMilestoneModal";
@@ -7,6 +7,7 @@ import {IdeaMilestonesList} from "./list/IdeaMilestonesList";
 import {LoadingWrapper, useLoading} from "../../../components/loading/LoadingWrapper";
 import {CreateIdeaMilestoneButton} from "./components/CreateIdeaMilestoneButton";
 import {useTranslation} from "react-i18next";
+import { useModal } from '../../../components/modal/useModal'
 
 interface Props {
     idea: IdeaDto,
@@ -17,7 +18,7 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
 
     const { t } = useTranslation()
 
-    const [isCreateIdeaMilestoneModalOpen, setIsCreateIdeaMilestoneModalOpen] = useState<boolean>(false)
+    const createModal = useModal()
 
     const { loadingState, response: ideaMilestones = [], call } = useLoading(getIdeaMilestones)
 
@@ -35,10 +36,12 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
                     : null
                 }
                 { canEdit
-                    ? <CreateIdeaMilestoneButton
-                        text={t('idea.milestones.createMilestone')}
-                        onClick={() => setIsCreateIdeaMilestoneModalOpen(true)}
-                      />
+                    ? (
+                        <CreateIdeaMilestoneButton
+                            text={ t('idea.milestones.createMilestone') }
+                            onClick={() => createModal.open()}
+                        />
+                    )
                     : null
                 }
                 <IdeaMilestonesList
@@ -48,9 +51,9 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
                     fetchIdeaMilestones={fetchIdeaMilestones}
                 />
                 <CreateIdeaMilestoneModal
-                    open={isCreateIdeaMilestoneModalOpen}
+                    open={createModal.visible}
                     idea={idea}
-                    handleCloseModal={() => setIsCreateIdeaMilestoneModalOpen(false)}
+                    onClose={() => createModal.close()}
                     fetchIdeaMilestones={fetchIdeaMilestones}
                 />
             </>

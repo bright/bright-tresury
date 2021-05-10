@@ -6,8 +6,9 @@ import {IdeaDto} from "../../../ideas.api";
 import {Grid} from "../../../../components/grid/Grid";
 import {IdeaMilestoneCard} from "./IdeaMilestoneCard";
 import {mobileHeaderListHorizontalMargin} from "../../../../components/header/list/HeaderListContainer";
-import { TurnIdeaMilestoneIntoProposalConfirmModal } from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalConfirmModal'
+import { TurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalModal'
 import { SubmitTurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/SubmitTurnIdeaMilestoneIntoProposalModal'
+import { useModal } from '../../../../components/modal/useModal'
 
 interface Props {
     idea: IdeaDto
@@ -19,43 +20,53 @@ interface Props {
 export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMilestones }: Props) => {
 
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
-    const [ideaMilestoneToTurnIntoProposal, setIdeaMilestoneToTurnIntoProposal] = useState<IdeaMilestoneDto | null>(null)
-    const [editModalOpen, setEditModalOpen] = useState<boolean>(false)
-    const [displayModalOpen, setDisplayModalOpen] = useState<boolean>(false)
+    const [ideaMilestoneToBeTurnedIntoProposal, setIdeaMilestoneToBeTurnedIntoProposal] = useState<IdeaMilestoneDto | null>(null)
 
-    const [turnConfirmModalOpen, setTurnConfirmModalOpen] = useState<boolean>(false)
-    const [submitTurnModalOpen, setSubmitTurnModalOpen] = useState<boolean>(false)
+    const editModal = useModal()
+    const displayModal = useModal()
+    const turnModal = useModal()
+    const submitTurnModal = useModal()
 
-    const handleEditModalClose = () => {
-        setEditModalOpen(false)
+    const handleOnEditModalClose = () => {
+        editModal.close()
         setFocusedIdeaMilestone(null)
     }
 
-    const handleDisplayModalClose = () => {
-        setDisplayModalOpen(false)
+    const handleOnDisplayModalClose = () => {
+        displayModal.close()
         setFocusedIdeaMilestone(null)
     }
 
-    const handleIdeaMilestoneClick = (ideaMilestone: IdeaMilestoneDto) => {
+    const handleOnSubmitTurnModalClose = () => {
+        submitTurnModal.close()
+        // We fetch idea milestone here because data could be patched before transaction
+        // and without fetch user could see outdated data
+        fetchIdeaMilestones()
+    }
+
+    const handleOnCardClick = (ideaMilestone: IdeaMilestoneDto) => {
         if (canEdit) {
-            setEditModalOpen(true)
+            editModal.open()
         } else {
-            setDisplayModalOpen(true)
+            displayModal.open()
         }
         setFocusedIdeaMilestone(ideaMilestone)
     }
 
-    const handleTurnIdeaMilestoneIntoProposal = (ideaMilestone: IdeaMilestoneDto) => {
-
-        setIdeaMilestoneToTurnIntoProposal(ideaMilestone)
-        setTurnConfirmModalOpen(true)
-
+    const handleOnTurnIntoProposalClick = (ideaMilestone: IdeaMilestoneDto) => {
+        setIdeaMilestoneToBeTurnedIntoProposal(ideaMilestone)
+        turnModal.open()
     }
 
-    // const handleTurnIntoProposalCancel = () => setIdeaMilestoneToTurnIntoProposal(null)
+    const handleOnSuccessfulPatchBeforeTurnIntoProposalSubmit = (patchedIdeaMilestone: IdeaMilestoneDto) => {
+        turnModal.close()
+        editModal.close()
+        setIdeaMilestoneToBeTurnedIntoProposal(patchedIdeaMilestone)
+        submitTurnModal.open()
+    }
 
     const renderIdeaMilestoneCard = (ideaMilestone: IdeaMilestoneDto) => {
-        return <IdeaMilestoneCard ideaMilestone={ideaMilestone} onClick={handleIdeaMilestoneClick} />
+        return <IdeaMilestoneCard ideaMilestone={ideaMilestone} onClick={handleOnCardClick} />
     }
 
     return (
@@ -66,67 +77,57 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
                 horizontalPadding={'0px'}
                 mobileHorizontalPadding={mobileHeaderListHorizontalMargin}
             />
+
             { focusedIdeaMilestone
-                ? <EditIdeaMilestoneModal
-                    open={editModalOpen}
-                    idea={idea}
-                    ideaMilestone={focusedIdeaMilestone}
-                    handleCloseModal={handleEditModalClose}
-                    handleTurnIdeaMilestoneIntoProposal={handleTurnIdeaMilestoneIntoProposal}
-                    fetchIdeaMilestones={fetchIdeaMilestones}
+                ? (
+                    <EditIdeaMilestoneModal
+                        open={editModal.visible}
+                        idea={idea}
+                        ideaMilestone={focusedIdeaMilestone}
+                        onClose={handleOnEditModalClose}
+                        onTurnIntoProposalClick={handleOnTurnIntoProposalClick}
+                        fetchIdeaMilestones={fetchIdeaMilestones}
                   />
-                : null
-            }
-            { focusedIdeaMilestone
-                ? <DisplayIdeaMilestoneModal
-                    open={displayModalOpen}
-                    idea={idea}
-                    ideaMilestone={focusedIdeaMilestone}
-                    handleCloseModal={handleDisplayModalClose}
-                  />
+                )
                 : null
             }
 
-            { ideaMilestoneToTurnIntoProposal
+            { focusedIdeaMilestone
                 ? (
-                    <TurnIdeaMilestoneIntoProposalConfirmModal
-                        open={turnConfirmModalOpen}
+                    <DisplayIdeaMilestoneModal
+                        open={displayModal.visible}
                         idea={idea}
-                        ideaMilestone={ideaMilestoneToTurnIntoProposal}
-                        onClose={() => setTurnConfirmModalOpen(false)}
-                        onCancel={() => setTurnConfirmModalOpen(false)}
-                        onTurnIntoProposalClick={() => {
-                            setTurnConfirmModalOpen(false)
-                            setEditModalOpen(false)
-                            setSubmitTurnModalOpen(true)
-                        }}
+                        ideaMilestone={focusedIdeaMilestone}
+                        onClose={handleOnDisplayModalClose}
                     />
                 )
                 : null
             }
 
-            { ideaMilestoneToTurnIntoProposal
+            { ideaMilestoneToBeTurnedIntoProposal
+                ? (
+                    <TurnIdeaMilestoneIntoProposalModal
+                        open={turnModal.visible}
+                        idea={idea}
+                        ideaMilestone={ideaMilestoneToBeTurnedIntoProposal}
+                        onClose={() => turnModal.close()}
+                        onSuccessfulPatch={handleOnSuccessfulPatchBeforeTurnIntoProposalSubmit}
+                    />
+                )
+                : null
+            }
+
+            { ideaMilestoneToBeTurnedIntoProposal
                 ? (
                     <SubmitTurnIdeaMilestoneIntoProposalModal
-                        open={submitTurnModalOpen}
+                        open={submitTurnModal.visible}
                         idea={idea}
-                        ideaMilestone={ideaMilestoneToTurnIntoProposal}
-                        onClose={() => {
-                            setSubmitTurnModalOpen(false)
-                        }}
+                        ideaMilestone={ideaMilestoneToBeTurnedIntoProposal}
+                        onClose={handleOnSubmitTurnModalClose}
                     />
                 )
                 : null
             }
-
-            {/*{ ideaMilestoneToTurnIntoProposal*/}
-            {/*    ? <TurnIdeaMilestoneIntoProposal*/}
-            {/*        idea={idea}*/}
-            {/*        ideaMilestone={ideaMilestoneToTurnIntoProposal}*/}
-            {/*        onCancel={handleTurnIntoProposalCancel}*/}
-            {/*      />*/}
-            {/*    : null*/}
-            {/*}*/}
         </>
     )
 }

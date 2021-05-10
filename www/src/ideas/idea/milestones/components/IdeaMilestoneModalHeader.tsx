@@ -1,16 +1,8 @@
 import React from "react";
 import styled from '@material-ui/core/styles/styled'
 
-const StyledDiv = styled('div')({
+export const IdeaMilestoneModalHeader = styled('div')(() => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between'
-});
-
-export const IdeaMilestoneModalHeader: React.FC = ({ children }) => {
-    return (
-        <StyledDiv>
-            {children}
-        </StyledDiv>
-    )
-}
+}))

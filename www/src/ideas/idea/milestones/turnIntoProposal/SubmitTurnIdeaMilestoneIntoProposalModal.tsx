@@ -57,7 +57,8 @@ export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMiles
             onClose={onClose}
             aria-labelledby='modal-title'
             aria-describedby='modal-description'
-            maxWidth={'md'}
+            fullWidth={true}
+            maxWidth={'sm'}
         >
             <SubmittingTransaction
                 title={t('idea.milestones.turnIntoProposal.submit.title')}
@@ -85,7 +86,7 @@ export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMiles
                         },
                         {
                             name: 'beneficiary',
-                            value: idea.beneficiary,
+                            value: (ideaMilestone.beneficiary)!,
                         },
                     ],
                 }}

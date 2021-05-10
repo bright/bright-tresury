@@ -8,10 +8,10 @@ import {IdeaDto} from "../../../ideas.api";
 interface Props {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    handleCloseModal: () => void
+    onCancel: () => void
 }
 
-export const DisplayIdeaMilestone = ({ idea, ideaMilestone, handleCloseModal }: Props) => {
+export const DisplayIdeaMilestone = ({ idea, ideaMilestone, onCancel }: Props) => {
 
     const { t } = useTranslation()
 
@@ -21,8 +21,8 @@ export const DisplayIdeaMilestone = ({ idea, ideaMilestone, handleCloseModal }: 
             ideaMilestone={ideaMilestone}
             readonly={true}
         >
-            <Button type='button' color='primary' variant='text' onClick={handleCloseModal}>
-                {t('idea.milestones.modal.form.buttons.cancel')}
+            <Button type='button' color='primary' variant='text' onClick={onCancel}>
+                { t('idea.milestones.modal.form.buttons.cancel') }
             </Button>
         </IdeaMilestoneForm>
     )

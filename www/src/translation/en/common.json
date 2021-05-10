@@ -251,7 +251,9 @@
         "emptyBeneficiaryValidationError": {
           "title": "No beneficiary was found",
           "subtitle": "No beneficiary was found in the idea which the converted milestone belongs to. Please fill in the beneficiary and try again."
-        }
+        },
+        "areYouSureYouWantToTurnIdeaMilestoneIntoProposal": "Are you sure you want to convert {{ideaMilestoneSubject}} into a proposal?",
+        "makeSureYouHaveAllDataCorrectBeforeTurnIntoProposal": "Make sure you have all the data correct before you convert your milestone into a proposal"
       }
     },
     "introduceTitle": "Introduce Idea",

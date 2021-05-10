@@ -1,38 +1,34 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {IdeaMilestoneForm, IdeaMilestoneFormValues} from "../form/IdeaMilestoneForm";
 import {useTranslation} from "react-i18next";
 import {Button} from "../../../../components/button/Button";
 import {IdeaDto} from "../../../ideas.api";
 import {createIdeaMilestone, CreateIdeaMilestoneDto} from "../idea.milestones.api";
-import {Snackbar} from "@material-ui/core";
-import {Alert} from "@material-ui/lab";
 
 interface Props {
     idea: IdeaDto
-    handleCloseModal: () => void
-    handleSuccessfulFormSubmit: () => void
+    onCancel: () => void
+    onSuccess: () => void
 }
 
-export const CreateIdeaMilestone = ({ idea, handleCloseModal, handleSuccessfulFormSubmit }: Props) => {
+export const CreateIdeaMilestone = ({ idea, onCancel, onSuccess }: Props) => {
 
     const { t } = useTranslation()
 
-    const [showApiCallError, setShowApiCallError] = useState<boolean>(false)
+    const submit = (ideaMilestoneFormValues: IdeaMilestoneFormValues) => {
 
-    const submit = ({ subject, beneficiary, dateFrom, dateTo, description, networks }: IdeaMilestoneFormValues) => {
         const createIdeaMilestoneDto: CreateIdeaMilestoneDto = {
-            subject,
-            beneficiary,
-            dateFrom,
-            dateTo,
-            description,
-            networks
+          ...ideaMilestoneFormValues
         }
+
         createIdeaMilestone(idea.id, createIdeaMilestoneDto)
             .then(() => {
-                handleSuccessfulFormSubmit()
+                onSuccess()
             })
-            .catch(() => setShowApiCallError(true))
+            .catch((err) => {
+                // TODO: Use common API calls error handler when it will be ready
+                console.log(err)
+            })
     }
 
     return (
@@ -42,18 +38,13 @@ export const CreateIdeaMilestone = ({ idea, handleCloseModal, handleSuccessfulFo
                 readonly={false}
                 onSubmit={submit}
             >
-                <Button type='button' color='primary' variant='text' onClick={handleCloseModal}>
+                <Button type='button' color='primary' variant='text' onClick={onCancel}>
                     {t('idea.milestones.modal.form.buttons.cancel')}
                 </Button>
                 <Button type='submit' color='primary'>
                     {t('idea.milestones.modal.form.buttons.create')}
                 </Button>
             </IdeaMilestoneForm>
-            <Snackbar open={showApiCallError} autoHideDuration={5000} onClose={() => setShowApiCallError(false)}>
-                 <Alert onClose={() => setShowApiCallError(false)} severity="error">
-                     {t('idea.milestones.modal.form.apiCallErrorMessage')}
-                 </Alert>
-            </Snackbar>
         </>
     )
 }
