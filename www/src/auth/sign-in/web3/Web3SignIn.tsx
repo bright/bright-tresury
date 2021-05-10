@@ -9,7 +9,7 @@ import {SignInButton} from "../common/SignInButton";
 import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
 import {SignComponentWrapper} from "../../sign-components/SignComponentWrapper";
 import {AccountSelect} from "../../../components/select/AccountSelect";
-import {Account} from "../../../substrate-lib/hooks/useAccounts";
+import {Account, useAccounts} from "../../../substrate-lib/hooks/useAccounts";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "../../sign-up/web3/ExtensionNotDetected";
 import {useHistory} from "react-router";
@@ -23,6 +23,7 @@ export interface Web3SignInValues {
 
 const Web3SignIn = () => {
     const {t} = useTranslation()
+    const accounts = useAccounts()
 
     const {web3SignIn} = useAuth()
     const {call: signInCall, loadingState, error} = useLoading(web3SignIn)
@@ -69,7 +70,7 @@ const Web3SignIn = () => {
                     <InfoBox message={t('auth.signIn.web3SignIn.failureMessage')} level={"error"}/>
                 </SignComponentWrapper> : null}
                 <SignComponentWrapper>
-                    <AccountSelect account={values.account}/>
+                    <AccountSelect accounts={accounts}/>
                 </SignComponentWrapper>
                 <SignInButton disabled={loadingState === LoadingState.Loading}/>
                 <NotSignedUpYet signOption={SignOption.Web3}/>

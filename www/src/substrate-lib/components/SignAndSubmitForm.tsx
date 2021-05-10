@@ -5,7 +5,7 @@ import {useTranslation} from 'react-i18next';
 import {Button} from "../../components/button/Button";
 import config from '../../config';
 import {InputParam, TxAttrs} from './SubmittingTransaction';
-import {Account} from '../../substrate-lib/hooks/useAccounts';
+import {Account, useAccounts} from '../../substrate-lib/hooks/useAccounts';
 import {AccountSelect} from "../../components/select/AccountSelect";
 
 const useStyles = makeStyles(() =>
@@ -46,6 +46,7 @@ interface Values {
 const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit}) => {
     const classes = useStyles()
     const {t} = useTranslation()
+    const accounts = useAccounts()
 
     const emptyAccount = {
         name: t('substrate.form.selectAccount'),
@@ -96,7 +97,7 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit}) => {
                         <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
                         <p className={classes.networkTitle}>{config.NETWORK_NAME}</p>
                         <form autoComplete="off" onSubmit={handleSubmit} className={classes.formContainer}>
-                            <AccountSelect account={values.account}/>
+                            <AccountSelect accounts={accounts}/>
                             <div className={classes.buttons}>
                                 <Button variant={"text"} color="primary" type="button" onClick={onCancel}>
                                     {t('substrate.form.cancel')}

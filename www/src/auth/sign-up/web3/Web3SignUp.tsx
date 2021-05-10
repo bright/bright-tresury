@@ -8,8 +8,8 @@ import {GetUserAgreementYupSchema, UserAgreementCheckbox} from "../common/UserAg
 import {PrivacyNotice} from "../common/PrivacyNotice";
 import {SignUpButton} from "../common/SignUpButton";
 import {AlreadySignedUp} from "../common/AlreadySignedUp";
-import {AccountSelect} from "../../../components/select/AccountSelect";
-import {Account} from "../../../substrate-lib/hooks/useAccounts";
+import {AccountSelect, EMPTY_ACCOUNT} from "../../../components/select/AccountSelect";
+import {Account, useAccounts} from "../../../substrate-lib/hooks/useAccounts";
 import {isWeb3Injected} from "@polkadot/extension-dapp";
 import {ExtensionNotDetected} from "./ExtensionNotDetected";
 import {InfoBox} from "../../../components/form/InfoBox";
@@ -38,9 +38,12 @@ const Web3SignUp: React.FC = () => {
             location.state = null
         }
     }, [])
-    const accountSelection = locationState?.accountSelection
-
+    const accountSelectionAddress = locationState?.accountSelection?.address
+    const accounts = useAccounts()
+    let accountSelection = accountSelectionAddress && accounts.find(acc => acc.address == accountSelectionAddress)
     const {t} = useTranslation()
+
+
     const history = useHistory()
 
     const {web3SignUp} = useAuth()
@@ -68,10 +71,7 @@ const Web3SignUp: React.FC = () => {
     return <Formik
         enableReinitialize={true}
         initialValues={{
-            account: accountSelection ?? {
-                name: t('substrate.form.selectAccount'),
-                address: ''
-            } as Account,
+            account: accountSelection ?? EMPTY_ACCOUNT,
             userAgreement: false
         }}
         validate={fullValidatorForSchema(validationSchema)}
@@ -88,7 +88,7 @@ const Web3SignUp: React.FC = () => {
                     <InfoBox message={t('auth.signUp.web3SignUp.failureMessage')} level={"error"}/>
                 </SignComponentWrapper> : null}
                 <SignComponentWrapper>
-                    <AccountSelect account={{} as Account}/>
+                    <AccountSelect accounts={accounts}/>
                 </SignComponentWrapper>
                 <SignComponentWrapper>
                     <UserAgreementCheckbox/>

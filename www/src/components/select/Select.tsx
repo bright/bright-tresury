@@ -28,7 +28,7 @@ const useStyles = makeStyles(() =>
 );
 
 interface SelectProps<T> {
-    value: T
+    value?: T
     options: T[]
     label?: string
     placeholder?: string
