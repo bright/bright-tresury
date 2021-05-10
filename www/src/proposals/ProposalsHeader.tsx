@@ -50,24 +50,34 @@ interface Props {
     filter: ProposalFilter
 }
 
-const ProposalsHeader: React.FC<Props> = ({filter}) => {
-    const classes = useStyles()
-    return <HeaderListContainer>
-        <BasicInfo>
-            <Trans id='modal-description'
-                   i18nKey="proposal.list.introduceIdea"
-                   components={{a: <RouterLink to={ROUTE_NEW_IDEA}/>}}
-            />
-        </BasicInfo>
-        <FlexBreakLine className={classes.flexBreakLine}/>
-        <TimeSelectWrapper className={classes.timeSelectWrapper}>
-            <TimeSelect/>
-        </TimeSelectWrapper>
-        <PaperFilterBackground className={classes.paperBackground}/>
-        <HeaderListTabs className={classes.statusFilters}>
-            <ProposalStatusFilters filter={filter}/>
-        </HeaderListTabs>
-    </HeaderListContainer>
-}
+export const ProposalsHeader = ({ filter }: Props) => {
 
-export default ProposalsHeader
+    const classes = useStyles()
+
+    return (
+        <HeaderListContainer>
+
+            <BasicInfo>
+                <Trans id='modal-description'
+                       i18nKey="proposal.list.introduceIdea"
+                       components={{
+                           a: <RouterLink to={ROUTE_NEW_IDEA} />
+                       }}
+                />
+            </BasicInfo>
+
+            <FlexBreakLine className={classes.flexBreakLine} />
+
+            <TimeSelectWrapper className={classes.timeSelectWrapper}>
+                <TimeSelect />
+            </TimeSelectWrapper>
+
+            <PaperFilterBackground className={classes.paperBackground} />
+
+            <HeaderListTabs className={classes.statusFilters}>
+                <ProposalStatusFilters filter={filter} />
+            </HeaderListTabs>
+
+        </HeaderListContainer>
+    )
+}

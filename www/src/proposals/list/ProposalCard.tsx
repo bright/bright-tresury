@@ -28,38 +28,38 @@ interface Props {
     proposal: ProposalDto
 }
 
-const ProposalCard = ({ proposal }: Props) => {
+export const ProposalCard = (
+    { proposal: { proposalIndex, status, title, value, beneficiary, proposer } }: Props
+) => {
 
     const classes = useStyles()
+
     const { t } = useTranslation()
 
     const redirectTo = `${generatePath(
         ROUTE_PROPOSAL,
-        {proposalIndex: proposal.proposalIndex})}` + `/${ProposalContentType.Info}`
+        {proposalIndex})}` + `/${ProposalContentType.Info}`
 
     return (
         <NetworkCard redirectTo={redirectTo}>
             <CardHeader>
-                <ProposalIndex proposalIndex={proposal.proposalIndex} />
-                <ProposalStatusIndicator proposalStatus={proposal.status} />
+                <ProposalIndex proposalIndex={proposalIndex} />
+                <ProposalStatusIndicator status={status} />
             </CardHeader>
 
             <Divider/>
 
             <CardDetails>
-                <CardTitle title={proposal.title} />
-                <NetworkValue value={proposal.value} />
+                <CardTitle title={title} />
+                <NetworkValue value={value} />
             </CardDetails>
 
             <Divider/>
 
             <div className={classes.accountsWrapper}>
-                <AddressInfoWithLabel label={t('proposal.list.card.beneficiary')} address={proposal.beneficiary} />
-                <AddressInfoWithLabel label={t('proposal.list.card.proposer')} address={proposal.proposer} />
+                <AddressInfoWithLabel label={t('proposal.list.card.beneficiary')} address={beneficiary} />
+                <AddressInfoWithLabel label={t('proposal.list.card.proposer')} address={proposer} />
             </div>
         </NetworkCard>
     )
-
 }
-
-export default ProposalCard

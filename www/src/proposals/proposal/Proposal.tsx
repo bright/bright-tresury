@@ -7,7 +7,7 @@ import {ProposalContentType} from "./ProposalContentTypeTabs";
 import ProposalMilestones from "./milestones/ProposalMilestones";
 import ProposalDiscussion from "./discussion/ProposalDiscussion";
 import ProposalVoting from "./voting/ProposalVoting";
-import ProposalHeader from "./ProposalHeader";
+import { ProposalHeader } from "./ProposalHeader";
 import {useParams} from "react-router";
 import {getProposalByIndex, ProposalDto} from "../proposals.api";
 import config from "../../config";
@@ -31,12 +31,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const Proposal: React.FC = () => {
+export const Proposal = () => {
+
     const classes = useStyles()
 
-    let {proposalIndex} = useParams<{ proposalIndex: string }>()
+    let { proposalIndex } = useParams<{ proposalIndex: string }>()
 
     const [proposal, setProposal] = useState<ProposalDto>()
+
+    let { path } = useRouteMatch();
 
     useEffect(() => {
         if (proposalIndex !== undefined) {
@@ -46,11 +49,15 @@ const Proposal: React.FC = () => {
         }
     }, [proposalIndex])
 
-    let {path} = useRouteMatch();
-
     return (
         <div className={classes.root}>
-            {proposal && <ProposalHeader proposal={proposal}/>}
+
+            { proposal
+                ? (
+                    <ProposalHeader proposal={proposal} />
+                ) : null
+            }
+
             <div className={classes.content}>
                 <Switch>
                     <Route exact={true} path={path}>
@@ -73,5 +80,3 @@ const Proposal: React.FC = () => {
         </div>
     );
 }
-
-export default Proposal

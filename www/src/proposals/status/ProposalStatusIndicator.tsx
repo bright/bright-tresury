@@ -4,14 +4,15 @@ import {ProposalStatus} from "../proposals.api";
 import {Status} from "../../components/status/Status";
 
 interface Props {
-    proposalStatus: ProposalStatus
+    status: ProposalStatus
 }
 
-export const ProposalStatusIndicator: React.FC<Props> = ({proposalStatus}) => {
-    const {t} = useTranslation()
+export const ProposalStatusIndicator = ({ status }: Props) => {
+
+    const { t } = useTranslation()
 
     const getStatusTranslationKey = (): string => {
-        switch (proposalStatus) {
+        switch (status) {
             case ProposalStatus.Submitted:
                 return 'proposal.list.card.statusSubmitted'
             case ProposalStatus.Approved:
@@ -26,7 +27,7 @@ export const ProposalStatusIndicator: React.FC<Props> = ({proposalStatus}) => {
     }
 
     const getStatusColor = (): string => {
-        switch (proposalStatus) {
+        switch (status) {
             case ProposalStatus.Submitted:
                 return '#3091D8'
             case ProposalStatus.Approved:
@@ -40,5 +41,5 @@ export const ProposalStatusIndicator: React.FC<Props> = ({proposalStatus}) => {
         }
     }
 
-    return <Status label={t(getStatusTranslationKey())} color={getStatusColor()}/>
+    return <Status label={t(getStatusTranslationKey())} color={getStatusColor()} />
 }

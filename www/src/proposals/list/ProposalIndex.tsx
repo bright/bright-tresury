@@ -16,12 +16,16 @@ interface Props {
     proposalIndex: number
 }
 
-export const ProposalIndex: React.FC<Props> = ({proposalIndex}) => {
+export const ProposalIndex = ({ proposalIndex }: Props) => {
     const classes = useStyles()
-    return <div className={classes.root}>
-        <Trans i18nKey="proposal.list.card.proposalIndex"
-               values={{proposalIndex: proposalIndex}}
-               components={{strong: <Strong/>}}
-        />
-    </div>
+    return (
+        <div className={classes.root}>
+            <Trans i18nKey="proposal.list.card.proposalIndex"
+                   values={{proposalIndex: proposalIndex}}
+                   components={{
+                       strong: <Strong />
+                   }}
+            />
+        </div>
+    )
 }

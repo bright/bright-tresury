@@ -1,15 +1,15 @@
 import React, {useEffect, useMemo} from 'react';
-import ProposalsHeader from "./ProposalsHeader";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import { ProposalsHeader } from "./ProposalsHeader";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
 import {LoadingWrapper, useLoading} from "../components/loading/LoadingWrapper";
 import {getProposalsByNetwork} from "./proposals.api";
 import config from "../config";
 import {useLocation} from 'react-router-dom'
-import ProposalsList from "./list/ProposalsList";
+import { ProposalsList } from "./list/ProposalsList";
 import {ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName} from "./list/ProposalStatusFilters";
 import {filterProposals} from "./list/filterProposals";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             width: '100%'
@@ -20,16 +20,17 @@ interface Props {
     network: string
 }
 
-const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
+export const Proposals = ({ network = config.NETWORK_NAME }: Props) => {
+
     const classes = useStyles()
+
     const location = useLocation()
 
-    const {loadingState, response: proposals, call} = useLoading(getProposalsByNetwork)
+    const { loadingState, response: proposals, call } = useLoading(getProposalsByNetwork)
 
     useEffect(() => {
         call(network)
     }, [network, call])
-
 
     const filter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)
@@ -40,12 +41,12 @@ const Proposals: React.FC<Props> = ({network = config.NETWORK_NAME}) => {
         return proposals ? filterProposals(proposals, filter) : []
     }, [filter, proposals])
 
-    return <div className={classes.root}>
-        <ProposalsHeader filter={filter}/>
-        <LoadingWrapper loadingState={loadingState}>
-            <ProposalsList proposals={filteredProposals}/>
-        </LoadingWrapper>
-    </div>
+    return (
+        <div className={classes.root}>
+            <ProposalsHeader filter={filter} />
+            <LoadingWrapper loadingState={loadingState}>
+                <ProposalsList proposals={filteredProposals} />
+            </LoadingWrapper>
+        </div>
+    )
 }
-
-export default Proposals

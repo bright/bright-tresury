@@ -52,7 +52,8 @@ interface Props {
     proposal: ProposalDto
 }
 
-const ProposalHeader: React.FC<Props> = ({proposal}) => {
+export const ProposalHeader = ({ proposal }: Props) => {
+
     const classes = useStyles()
     const history = useHistory()
 
@@ -60,31 +61,32 @@ const ProposalHeader: React.FC<Props> = ({proposal}) => {
         history.push(ROUTE_PROPOSALS)
     }
 
-    return <HeaderContainer>
-        <CloseIcon onClose={navigateToList} className={classes.closeIcon}/>
+    return (
+        <HeaderContainer>
 
-        <BasicInfo>
-            <ProposalIndex proposalIndex={proposal.proposalIndex}/>
-            <BasicInfoDivider/>
-            <Status>
-                <ProposalStatusIndicator proposalStatus={proposal.status}/>
-            </Status>
-            <Title>
-                <OptionalTitle title={proposal.title}/>
-            </Title>
-        </BasicInfo>
+            <CloseIcon onClose={navigateToList} className={classes.closeIcon} />
 
-        <NetworkValues className={classes.networkValues}>
-            <NetworkRewardDeposit rewardValue={proposal.value} bondValue={proposal.bond}/>
-        </NetworkValues>
+            <BasicInfo>
+                <ProposalIndex proposalIndex={proposal.proposalIndex} />
+                <BasicInfoDivider />
+                <Status>
+                    <ProposalStatusIndicator status={proposal.status} />
+                </Status>
+                <Title>
+                    <OptionalTitle title={proposal.title} />
+                </Title>
+            </BasicInfo>
 
-        <FlexBreakLine className={classes.flexBreakLine}/>
+            <NetworkValues className={classes.networkValues}>
+                <NetworkRewardDeposit rewardValue={proposal.value} bondValue={proposal.bond} />
+            </NetworkValues>
 
-        <HeaderTabs className={classes.contentTypeTabs}>
-            <ProposalContentTypeTabs/>
-        </HeaderTabs>
+            <FlexBreakLine className={classes.flexBreakLine} />
 
-    </HeaderContainer>
+            <HeaderTabs className={classes.contentTypeTabs}>
+                <ProposalContentTypeTabs />
+            </HeaderTabs>
+
+        </HeaderContainer>
+    )
 }
-
-export default ProposalHeader

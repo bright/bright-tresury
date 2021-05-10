@@ -1,5 +1,5 @@
 import React from "react";
-import ProposalCard from "./ProposalCard";
+import { ProposalCard } from "./ProposalCard";
 import {ProposalDto} from "../proposals.api";
 import {Grid} from "../../components/grid/Grid";
 
@@ -7,9 +7,11 @@ interface Props {
     proposals: ProposalDto[]
 }
 
-const ProposalsList: React.FC<Props> = ({proposals}) => {
-    const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal}/>
-    return <Grid items={proposals} renderItem={renderCard}/>
-}
+export const ProposalsList = ({ proposals }: Props) => {
 
-export default ProposalsList
+    const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal} />
+
+    return (
+        <Grid items={proposals} renderItem={renderCard} />
+    )
+}
