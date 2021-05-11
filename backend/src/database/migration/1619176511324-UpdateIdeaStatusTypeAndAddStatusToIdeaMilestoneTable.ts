@@ -31,6 +31,10 @@ export class UpdateIdeaStatusTypeAndAddStatusToIdeaMilestoneTable1619176511324 i
     public async down(queryRunner: QueryRunner): Promise<any> {
 
         await queryRunner.query(`
+            update ideas set status = 'turned_into_proposal' where status = 'turned_into_proposal_by_milestone'
+        `)
+
+        await queryRunner.query(`
             alter type idea_status rename to idea_status_old;
             
             create type idea_status as enum ('draft', 'active', 'turned_into_proposal', 'closed');
