@@ -1,23 +1,30 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import {useTranslation} from "react-i18next";
 import {useParams} from "react-router";
 import {useHistory, useLocation} from "react-router-dom";
 import {useAuth} from "../../../auth/AuthContext";
 import Container from "../../../components/form/Container";
-import {ROUTE_PROPOSALS} from "../../../routes/routes";
 import IdeaForm from "../../form/IdeaForm";
-import {getIdeaById, IdeaDto, IdeaStatus, updateIdea} from "../../ideas.api";
-import SubmitProposalModal from "../../SubmitProposalModal";
+import { getIdeaById, IdeaDto, IdeaStatus, turnIdeaIntoProposal, updateIdea } from '../../ideas.api'
+import { ExtrinsicDetails, SubmitProposalModal } from '../../SubmitProposalModal'
 import {RightButton, LeftButton} from "../../../components/form/buttons/Buttons";
+import { useModal } from '../../../components/modal/useModal'
 
 const TurnIdeaIntoProposal = () => {
 
-    const {t} = useTranslation()
-    const [modalOpen, setModalOpen] = useState(false)
-    const [idea, setIdea] = useState<IdeaDto | undefined>()
+    const { t } = useTranslation()
+
+    const history = useHistory()
+
     const location = useLocation()
-    let {ideaId} = useParams<{ ideaId: string }>()
-    const {isUserVerified, user} = useAuth()
+
+    const submitProposalModal = useModal()
+
+    const [idea, setIdea] = useState<IdeaDto | undefined>()
+
+    let { ideaId } = useParams<{ ideaId: string }>()
+
+    const { isUserVerified, user } = useAuth()
 
     useEffect(() => {
         const state = location.state as { idea?: IdeaDto }
@@ -39,27 +46,30 @@ const TurnIdeaIntoProposal = () => {
         await updateIdea(editedIdea)
             .then(() => {
                 setIdea(editedIdea)
-                setModalOpen(true)
+                submitProposalModal.open()
             })
             .catch((error) => {
                 console.log('error')
             })
     }
 
-    const history = useHistory()
-
     const goBack = () => {
         history.goBack()
-    }
-
-    const goToProposals = () => {
-        history.push(ROUTE_PROPOSALS)
     }
 
     const canTurnIntoProposal = useMemo(() => idea
         && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active)
         && (isUserVerified && user?.id === idea.ownerId),
         [idea, isUserVerified, user])
+
+
+    const onTurn = useCallback((extrinsicDetails: ExtrinsicDetails) => {
+        if (idea) {
+            turnIdeaIntoProposal(extrinsicDetails, idea, idea.networks[0])
+                .then((res) => console.log(res))
+                .catch((err) => console.log(err))
+        }
+    }, [idea])
 
     return canTurnIntoProposal ? <Container title={t('idea.turnIntoProposal.title')}>
             {idea &&
@@ -75,10 +85,13 @@ const TurnIdeaIntoProposal = () => {
                     </LeftButton>
                 </IdeaForm>
                 <SubmitProposalModal
-                    onSuccess={goToProposals}
-                    open={modalOpen}
-                    onClose={() => setModalOpen(false)}
-                    idea={idea}/>
+                    open={submitProposalModal.visible}
+                    onClose={submitProposalModal.close}
+                    onTurn={onTurn}
+                    title={t('idea.details.submitProposalModal.title')}
+                    value={idea.networks[0].value}
+                    beneficiary={idea.beneficiary}
+                />
             </>
             }
         </Container> :

@@ -1,14 +1,19 @@
-import React, {useState} from 'react'
-import {IdeaMilestoneDto} from "../idea.milestones.api";
+import React, { useCallback, useState } from 'react'
+import {
+    IdeaMilestoneDto,
+    turnIdeaMilestoneIntoProposal,
+    TurnIdeaMilestoneIntoProposalDto,
+} from '../idea.milestones.api'
 import {IdeaMilestoneEditModal} from "../edit/IdeaMilestoneEditModal";
 import {IdeaMilestoneDetailsModal} from "../details/IdeaMilestoneDetailsModal";
-import {IdeaDto} from "../../../ideas.api";
+import { IdeaDto } from '../../../ideas.api'
 import {Grid} from "../../../../components/grid/Grid";
 import {IdeaMilestoneCard} from "./IdeaMilestoneCard";
 import {mobileHeaderListHorizontalMargin} from "../../../../components/header/list/HeaderListContainer";
 import { TurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalModal'
-import { SubmitTurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/SubmitTurnIdeaMilestoneIntoProposalModal'
 import { useModal } from '../../../../components/modal/useModal'
+import { ExtrinsicDetails, SubmitProposalModal } from '../../../SubmitProposalModal'
+import { useTranslation } from 'react-i18next'
 
 interface Props {
     idea: IdeaDto
@@ -19,13 +24,15 @@ interface Props {
 
 export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMilestones }: Props) => {
 
+    const { t } = useTranslation()
+
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
     const [ideaMilestoneToBeTurnedIntoProposal, setIdeaMilestoneToBeTurnedIntoProposal] = useState<IdeaMilestoneDto | null>(null)
 
     const editModal = useModal()
     const detailsModal = useModal()
     const turnModal = useModal()
-    const submitTurnModal = useModal()
+    const submitProposalModal = useModal()
 
     const handleOnEditModalClose = () => {
         editModal.close()
@@ -37,8 +44,8 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
         setFocusedIdeaMilestone(null)
     }
 
-    const handleOnSubmitTurnModalClose = async () => {
-        submitTurnModal.close()
+    const handleOnSubmitProposalModalClose = async () => {
+        submitProposalModal.close()
         // We fetch idea milestone here because data could be patched before transaction
         // and without fetch user could see outdated data
         await fetchIdeaMilestones()
@@ -62,8 +69,23 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
         turnModal.close()
         editModal.close()
         setIdeaMilestoneToBeTurnedIntoProposal(patchedIdeaMilestone)
-        submitTurnModal.open()
+        submitProposalModal.open()
     }
+
+    const onTurn = useCallback((extrinsicDetails: ExtrinsicDetails) => {
+        if (ideaMilestoneToBeTurnedIntoProposal) {
+
+            const turnIdeaMilestoneIntoProposalDto: TurnIdeaMilestoneIntoProposalDto = {
+                ideaMilestoneNetworkId: ideaMilestoneToBeTurnedIntoProposal.networks[0].id,
+                extrinsicHash: extrinsicDetails.extrinsicHash,
+                lastBlockHash: extrinsicDetails.lastBlockHash
+            }
+
+            turnIdeaMilestoneIntoProposal(idea.id, ideaMilestoneToBeTurnedIntoProposal.id, turnIdeaMilestoneIntoProposalDto)
+                .then((result) => console.log(result))
+                .catch((err) => console.log(err))
+        }
+    }, [idea.id, ideaMilestoneToBeTurnedIntoProposal])
 
     const renderIdeaMilestoneCard = (ideaMilestone: IdeaMilestoneDto) => {
         return <IdeaMilestoneCard ideaMilestone={ideaMilestone} onClick={handleOnCardClick} />
@@ -119,11 +141,13 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
 
             { ideaMilestoneToBeTurnedIntoProposal
                 ? (
-                    <SubmitTurnIdeaMilestoneIntoProposalModal
-                        open={submitTurnModal.visible}
-                        idea={idea}
-                        ideaMilestone={ideaMilestoneToBeTurnedIntoProposal}
-                        onClose={handleOnSubmitTurnModalClose}
+                    <SubmitProposalModal
+                        open={submitProposalModal.visible}
+                        onClose={handleOnSubmitProposalModalClose}
+                        onTurn={onTurn}
+                        title={t('idea.milestones.turnIntoProposal.submit.title')}
+                        value={ideaMilestoneToBeTurnedIntoProposal.networks[0].value}
+                        beneficiary={ideaMilestoneToBeTurnedIntoProposal.beneficiary!}
                     />
                 )
                 : null
