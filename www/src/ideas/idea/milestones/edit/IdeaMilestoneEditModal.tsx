@@ -1,6 +1,6 @@
 import React from 'react'
 import {Modal} from "../../../../components/modal/Modal";
-import {EditIdeaMilestone} from "./EditIdeaMilestone";
+import {IdeaMilestoneEdit} from "./IdeaMilestoneEdit";
 import {IdeaMilestoneDto} from "../idea.milestones.api";
 import {IdeaDto} from "../../../ideas.api";
 import {useTranslation} from "react-i18next";
@@ -17,7 +17,7 @@ interface Props {
     fetchIdeaMilestones: () => Promise<void>
 }
 
-export const EditIdeaMilestoneModal = (
+export const IdeaMilestoneEditModal = (
     { open, idea, ideaMilestone, onClose, onTurnIntoProposalClick, fetchIdeaMilestones }: Props
 ) => {
 
@@ -57,7 +57,7 @@ export const EditIdeaMilestoneModal = (
                         : null
                     }
                 </IdeaMilestoneModalHeader>
-                <EditIdeaMilestone
+                <IdeaMilestoneEdit
                     idea={idea}
                     ideaMilestone={ideaMilestone}
                     onCancel={onClose}

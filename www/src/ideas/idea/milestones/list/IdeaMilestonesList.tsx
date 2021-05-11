@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {IdeaMilestoneDto} from "../idea.milestones.api";
-import {EditIdeaMilestoneModal} from "../edit/EditIdeaMilestoneModal";
-import {DisplayIdeaMilestoneModal} from "../display/DisplayIdeaMilestoneModal";
+import {IdeaMilestoneEditModal} from "../edit/IdeaMilestoneEditModal";
+import {IdeaMilestoneDetailsModal} from "../details/IdeaMilestoneDetailsModal";
 import {IdeaDto} from "../../../ideas.api";
 import {Grid} from "../../../../components/grid/Grid";
 import {IdeaMilestoneCard} from "./IdeaMilestoneCard";
@@ -23,7 +23,7 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
     const [ideaMilestoneToBeTurnedIntoProposal, setIdeaMilestoneToBeTurnedIntoProposal] = useState<IdeaMilestoneDto | null>(null)
 
     const editModal = useModal()
-    const displayModal = useModal()
+    const detailsModal = useModal()
     const turnModal = useModal()
     const submitTurnModal = useModal()
 
@@ -32,8 +32,8 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
         setFocusedIdeaMilestone(null)
     }
 
-    const handleOnDisplayModalClose = () => {
-        displayModal.close()
+    const handleOnDetailsModalClose = () => {
+        detailsModal.close()
         setFocusedIdeaMilestone(null)
     }
 
@@ -48,7 +48,7 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
         if (canEdit) {
             editModal.open()
         } else {
-            displayModal.open()
+            detailsModal.open()
         }
         setFocusedIdeaMilestone(ideaMilestone)
     }
@@ -80,7 +80,7 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
 
             { focusedIdeaMilestone
                 ? (
-                    <EditIdeaMilestoneModal
+                    <IdeaMilestoneEditModal
                         open={editModal.visible}
                         idea={idea}
                         ideaMilestone={focusedIdeaMilestone}
@@ -94,11 +94,11 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
 
             { focusedIdeaMilestone
                 ? (
-                    <DisplayIdeaMilestoneModal
-                        open={displayModal.visible}
+                    <IdeaMilestoneDetailsModal
+                        open={detailsModal.visible}
                         idea={idea}
                         ideaMilestone={focusedIdeaMilestone}
-                        onClose={handleOnDisplayModalClose}
+                        onClose={handleOnDetailsModalClose}
                     />
                 )
                 : null

@@ -1,7 +1,6 @@
 import React from 'react'
 import {Modal} from "../../../../components/modal/Modal";
-import {DisplayIdeaMilestone} from "./DisplayIdeaMilestone";
-import {IdeaMilestoneDto} from "../idea.milestones.api";
+import {IdeaMilestoneCreate} from "./IdeaMilestoneCreate";
 import {IdeaDto} from "../../../ideas.api";
 import {useTranslation} from "react-i18next";
 import {IdeaMilestoneModalHeader} from "../components/IdeaMilestoneModalHeader";
@@ -9,13 +8,18 @@ import {IdeaMilestoneModalHeader} from "../components/IdeaMilestoneModalHeader";
 interface Props {
     open: boolean
     idea: IdeaDto
-    ideaMilestone: IdeaMilestoneDto
     onClose: () => void
+    fetchIdeaMilestones: () => Promise<void>
 }
 
-export const DisplayIdeaMilestoneModal = ({ open, idea, ideaMilestone, onClose }: Props) => {
+export const IdeaMilestoneCreateModal = ({ open, idea, onClose, fetchIdeaMilestones }: Props) => {
 
     const { t } = useTranslation()
+
+    const onSuccess = async () => {
+        onClose()
+        await fetchIdeaMilestones()
+    }
 
     return (
         <Modal
@@ -28,13 +32,13 @@ export const DisplayIdeaMilestoneModal = ({ open, idea, ideaMilestone, onClose }
             <>
                 <IdeaMilestoneModalHeader>
                     <h2 id='modal-title'>
-                        { t('idea.milestones.modal.milestone') } - <b>{ ideaMilestone.ordinalNumber }</b>
+                        { t('idea.milestones.modal.createMilestone') }
                     </h2>
                 </IdeaMilestoneModalHeader>
-                <DisplayIdeaMilestone
+                <IdeaMilestoneCreate
                     idea={idea}
-                    ideaMilestone={ideaMilestone}
                     onCancel={onClose}
+                    onSuccess={onSuccess}
                 />
             </>
         </Modal>

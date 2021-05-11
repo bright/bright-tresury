@@ -11,7 +11,7 @@ interface Props {
     onCancel: () => void
 }
 
-export const DisplayIdeaMilestone = ({ idea, ideaMilestone, onCancel }: Props) => {
+export const IdeaMilestoneDetails = ({ idea, ideaMilestone, onCancel }: Props) => {
 
     const { t } = useTranslation()
 

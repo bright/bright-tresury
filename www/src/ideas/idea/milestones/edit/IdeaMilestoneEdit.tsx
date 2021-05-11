@@ -15,7 +15,7 @@ interface Props {
     onSuccess: () => void
 }
 
-export const EditIdeaMilestone = (
+export const IdeaMilestoneEdit = (
     { idea, ideaMilestone, onCancel, onSuccess }: Props
 ) => {
 

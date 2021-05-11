@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {getIdeaMilestones} from "./idea.milestones.api";
 import {EmptyIdeaMilestonesArrayInfo} from "./components/IdeaEmptyMilestonesArrayInfo";
-import {CreateIdeaMilestoneModal} from "./create/CreateIdeaMilestoneModal";
+import {IdeaMilestoneCreateModal} from "./create/IdeaMilestoneCreateModal";
 import {IdeaDto} from "../../ideas.api";
 import {IdeaMilestonesList} from "./list/IdeaMilestonesList";
 import {LoadingWrapper, useLoading} from "../../../components/loading/LoadingWrapper";
@@ -50,7 +50,7 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
                     canEdit={canEdit}
                     fetchIdeaMilestones={fetchIdeaMilestones}
                 />
-                <CreateIdeaMilestoneModal
+                <IdeaMilestoneCreateModal
                     open={createModal.visible}
                     idea={idea}
                     onClose={createModal.close}
