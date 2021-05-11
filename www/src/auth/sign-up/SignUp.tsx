@@ -4,10 +4,9 @@ import {useTranslation} from "react-i18next";
 import Container from "../../components/form/Container";
 import EmailSignUp from "./email/EmailSignUp";
 import {ToggleButtonGroup} from "../../components/toggle/ToggleButtonGroup";
-import {Route, Switch, useRouteMatch} from "react-router-dom";
+import {Redirect, Route, Switch, useRouteMatch} from "react-router-dom";
 import Web3SignUp from "./web3/Web3SignUp";
 import {ToggleEntry} from "../../components/toggle/ToggleButton";
-import {Location} from "history";
 import {SignUpComponentWrapper} from "./common/SignUpComponentWrapper";
 
 const useStyles = makeStyles(() =>
@@ -51,29 +50,18 @@ const SignUp: React.FC = () => {
         } as ToggleEntry
     })
 
-    const isActiveToggle = (entry: ToggleEntry, location: Location) => {
-        const isEntryPath = entry.path === location.pathname
-        if (isEntryPath) {
-            return true
-        } else {
-            const isAnyEntryPath = toggleEntries.find((entry) => entry.path === location.pathname)
-            return isAnyEntryPath ? false : entry.label === getTranslation(DefaultSignUpOption)
-        }
-    }
-
     return <Container title={t('auth.signUp.title')}>
         <div className={classes.toggleContainer}>
             <SignUpComponentWrapper>
                 <ToggleButtonGroup
                     className={classes.toggle}
                     toggleEntries={toggleEntries}
-                    isActive={isActiveToggle}
                 />
             </SignUpComponentWrapper>
         </div>
         <Switch>
             <Route exact={true} path={path}>
-                <EmailSignUp/>
+                <Redirect to={`${path}/${SignUpOption.Email}`}/>
             </Route>
             <Route exact={true} path={`${path}/${SignUpOption.Email}`}>
                 <EmailSignUp/>

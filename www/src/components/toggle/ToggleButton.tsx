@@ -2,7 +2,6 @@ import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import React from "react";
 import {ToggleButton as MaterialToggleButton} from "@material-ui/lab";
 import {NavLink} from "react-router-dom";
-import {Location} from "history";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,13 +39,11 @@ export interface ToggleEntry {
 
 interface OwnProps {
     entry: ToggleEntry
-    isActive: (entry: ToggleEntry, location: Location) => boolean
 }
 
-export const ToggleButton: React.FC<OwnProps> = ({entry, isActive}) => {
+export const ToggleButton: React.FC<OwnProps> = ({entry}) => {
     const classes = useStyles()
     return <NavLink to={entry.path}
-                    isActive={(match, location: Location) => isActive(entry, location)}
                     className={classes.inactive}
                     activeClassName={classes.active}>
         <MaterialToggleButton
