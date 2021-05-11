@@ -9,8 +9,8 @@ export default {
     component: EmailSignUp,
 } as Meta;
 
-const Template: Story = (args) => <MemoryRouter>
-    <EmailSignUp {...args} />
+const Template: Story = () => <MemoryRouter>
+    <EmailSignUp/>
 </MemoryRouter>;
 
 export const Default = Template.bind({});

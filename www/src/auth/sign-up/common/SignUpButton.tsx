@@ -3,13 +3,15 @@ import {ButtonsContainer} from "../../../components/form/buttons/ButtonsContaine
 import React from "react";
 import {useTranslation} from "react-i18next";
 
-export const SignUpButton: React.FC<ButtonProps> = () => {
+export const SignUpButton = (props: ButtonProps) => {
     const {t} = useTranslation()
 
     return <ButtonsContainer>
-        <Button variant="contained"
-                color="primary"
-                type='submit'>
+        <Button
+            {...props}
+            variant="contained"
+            color="primary"
+            type='submit'>
             {t('auth.signUp.submitButton')}
         </Button>
     </ButtonsContainer>

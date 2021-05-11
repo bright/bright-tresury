@@ -35,13 +35,10 @@ export class AuthWeb3Controller {
         type: [StartBlockchainSignUpResponse]
     })
     @ApiBadRequestResponse({
-        description: 'Requested address is invalid'
+        description: 'Requested address or signature is not valid'
     })
     @ApiConflictResponse({
         description: 'Requested address already exists'
-    })
-    @ApiBadRequestResponse({
-        description: 'Requested signature is not valid'
     })
     async confirmSignUp(
         @Body() confirmRequest: ConfirmWeb3SignUpRequest,

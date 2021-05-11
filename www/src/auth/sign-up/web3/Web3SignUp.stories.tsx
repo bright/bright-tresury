@@ -9,8 +9,8 @@ export default {
     component: Web3SignUp,
 } as Meta;
 
-const Template: Story = (args) => <MemoryRouter>
-    <Web3SignUp {...args} />
+const Template: Story = () => <MemoryRouter>
+    <Web3SignUp/>
 </MemoryRouter>;
 
 export const Default = Template.bind({});
