@@ -37,11 +37,11 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
         setFocusedIdeaMilestone(null)
     }
 
-    const handleOnSubmitTurnModalClose = () => {
+    const handleOnSubmitTurnModalClose = async () => {
         submitTurnModal.close()
         // We fetch idea milestone here because data could be patched before transaction
         // and without fetch user could see outdated data
-        fetchIdeaMilestones()
+        await fetchIdeaMilestones()
     }
 
     const handleOnCardClick = (ideaMilestone: IdeaMilestoneDto) => {

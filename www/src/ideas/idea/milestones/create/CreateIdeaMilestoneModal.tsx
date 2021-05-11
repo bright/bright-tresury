@@ -16,9 +16,9 @@ export const CreateIdeaMilestoneModal = ({ open, idea, onClose, fetchIdeaMilesto
 
     const { t } = useTranslation()
 
-    const onSuccess = () => {
+    const onSuccess = async () => {
         onClose()
-        fetchIdeaMilestones()
+        await fetchIdeaMilestones()
     }
 
     return (

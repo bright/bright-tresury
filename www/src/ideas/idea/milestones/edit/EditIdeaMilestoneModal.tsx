@@ -27,9 +27,9 @@ export const EditIdeaMilestoneModal = (
         canTurnIntoProposal
     } = useTurnIdeaMilestoneIntoProposal(idea, ideaMilestone)
 
-    const handleOnSuccessfulEdit = () => {
+    const onSuccess = async () => {
         onClose()
-        fetchIdeaMilestones()
+        await fetchIdeaMilestones()
     }
 
     return (
@@ -61,7 +61,7 @@ export const EditIdeaMilestoneModal = (
                     idea={idea}
                     ideaMilestone={ideaMilestone}
                     onCancel={onClose}
-                    onSuccess={handleOnSuccessfulEdit}
+                    onSuccess={onSuccess}
                 />
             </>
         </Modal>
