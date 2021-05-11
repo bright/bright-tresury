@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.api'
 import { IdeaMilestoneFormValues } from './IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.api'
-import { Idea } from '../../../../../../backend/src/ideas/entities/idea.entity'
 
 interface Props {
     idea: IdeaDto,
@@ -44,7 +43,7 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
 
     const onSubmitFallback = () => { }
 
-    const createInitialIdeaMilestoneFormValuesObject = (idea: IdeaDto): IdeaMilestoneFormValues => {
+    const emptyValues = (idea: IdeaDto): IdeaMilestoneFormValues => {
         return {
             subject: '',
             beneficiary: idea.beneficiary,
@@ -55,7 +54,7 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
         }
     }
 
-    const mapIdeaMilestoneToIdeaMilestoneFormValues = (
+    const valuesFromDto = (
         { subject, beneficiary, dateFrom, dateTo, description, networks }: IdeaMilestoneDto
     ): IdeaMilestoneFormValues => {
         return {
@@ -69,8 +68,8 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
     }
 
     const initialValues = ideaMilestone
-        ? mapIdeaMilestoneToIdeaMilestoneFormValues(ideaMilestone)
-        : createInitialIdeaMilestoneFormValuesObject(idea)
+        ? valuesFromDto(ideaMilestone)
+        : emptyValues(idea)
 
     return {
         initialValues,

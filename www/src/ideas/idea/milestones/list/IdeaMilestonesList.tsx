@@ -110,7 +110,7 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
                         open={turnModal.visible}
                         idea={idea}
                         ideaMilestone={ideaMilestoneToBeTurnedIntoProposal}
-                        onClose={() => turnModal.close()}
+                        onClose={turnModal.close}
                         onSuccessfulPatch={handleOnSuccessfulPatchBeforeTurnIntoProposalSubmit}
                     />
                 )

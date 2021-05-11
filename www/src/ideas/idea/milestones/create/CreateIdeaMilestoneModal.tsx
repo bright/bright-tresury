@@ -16,7 +16,7 @@ export const CreateIdeaMilestoneModal = ({ open, idea, onClose, fetchIdeaMilesto
 
     const { t } = useTranslation()
 
-    const handleOnSuccessfulCreate = () => {
+    const onSuccess = () => {
         onClose()
         fetchIdeaMilestones()
     }
@@ -38,7 +38,7 @@ export const CreateIdeaMilestoneModal = ({ open, idea, onClose, fetchIdeaMilesto
                 <CreateIdeaMilestone
                     idea={idea}
                     onCancel={onClose}
-                    onSuccess={handleOnSuccessfulCreate}
+                    onSuccess={onSuccess}
                 />
             </>
         </Modal>

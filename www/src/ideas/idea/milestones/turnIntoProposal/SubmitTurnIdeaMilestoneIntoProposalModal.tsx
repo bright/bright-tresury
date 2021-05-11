@@ -37,7 +37,7 @@ export const SubmitTurnIdeaMilestoneIntoProposalModal = ({ open, idea, ideaMiles
                 lastBlockHash: extrinsicDetails.lastBlockHash
             }
 
-            turnIdeaMilestoneIntoProposal(idea.id, ideaMilestone.id, ideaMilestone.networks[0].id, turnIdeaMilestoneIntoProposalDto)
+            turnIdeaMilestoneIntoProposal(idea.id, ideaMilestone.id, turnIdeaMilestoneIntoProposalDto)
                 .then((result) => console.log(result))
                 .catch((err) => console.log(err))
         }

@@ -39,7 +39,7 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
                     ? (
                         <CreateIdeaMilestoneButton
                             text={ t('idea.milestones.createMilestone') }
-                            onClick={() => createModal.open()}
+                            onClick={createModal.open}
                         />
                     )
                     : null
@@ -53,7 +53,7 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
                 <CreateIdeaMilestoneModal
                     open={createModal.visible}
                     idea={idea}
-                    onClose={() => createModal.close()}
+                    onClose={createModal.close}
                     fetchIdeaMilestones={fetchIdeaMilestones}
                 />
             </>

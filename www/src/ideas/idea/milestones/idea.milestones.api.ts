@@ -49,7 +49,6 @@ export function patchIdeaMilestone(ideaId: string, ideaMilestoneId: string, data
 export function turnIdeaMilestoneIntoProposal(
     ideaId: string,
     ideaMilestoneId: string,
-    ideaMilestoneNetworkId: string,
     data: TurnIdeaMilestoneIntoProposalDto
 ) {
     return apiPost<IdeaMilestoneNetworkDto>(`/ideas/${ideaId}/milestones/${ideaMilestoneId}/proposals`, data)
