@@ -12,7 +12,7 @@ export class BlockchainAddress extends BaseEntity {
         () => User,
         (user) => user.blockchainAddresses
     )
-    user: User
+    user?: User
 
     @Column({nullable: false, type: "boolean", default: false})
     isPrimary: boolean

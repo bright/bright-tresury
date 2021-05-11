@@ -1,7 +1,7 @@
 import {Body, Controller, HttpStatus, Post, Res} from "@nestjs/common";
 import {ApiBadRequestResponse, ApiConflictResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {AuthWeb3Service} from "./auth-web3.service";
-import {StartBlockchainSignUpResponse, StartWeb3SignUpRequest} from "./dto/start-web3-sign-up.request";
+import {StartBlockchainSignUpResponse, StartWeb3SignUpRequest} from "./dto/start-web3-sign-up.dto";
 import {ConfirmWeb3SignUpRequest} from "./dto/confirm-web3-sign-up.request";
 import {Response} from 'express';
 

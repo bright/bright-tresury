@@ -7,7 +7,7 @@ import {User} from "../user.entity";
 import {UsersService} from "../users.service";
 import {CreateUserDto} from "../dto/createUser.dto";
 
-describe(`Users Service`, () => {
+describe(`Blockchain Address Service`, () => {
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(BlockchainAddressService)
@@ -27,7 +27,7 @@ describe(`Users Service`, () => {
         } as CreateUserDto)
     })
 
-    describe('create user', () => {
+    describe('create', () => {
         it('should return blockchain address', async () => {
             const blockchainAddress = await getService().create(new BlockchainAddress(
                 bobAddress,

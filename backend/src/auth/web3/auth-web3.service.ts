@@ -4,7 +4,7 @@ import {Response} from 'express'
 import {UsersService} from "../../users/users.service";
 import {SuperTokensService} from "../supertokens/supertokens.service";
 import {CreateBlockchainUserDto} from "../../users/dto/createBlockchainUser.dto";
-import {StartBlockchainSignUpResponse, StartWeb3SignUpRequest} from "./dto/start-web3-sign-up.request";
+import {StartBlockchainSignUpResponse, StartWeb3SignUpRequest} from "./dto/start-web3-sign-up.dto";
 import {ConfirmWeb3SignUpRequest} from "./dto/confirm-web3-sign-up.request";
 import {v4 as uuid} from 'uuid';
 import {CacheManager} from "../../cache/cache.manager";
