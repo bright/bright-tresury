@@ -5,10 +5,10 @@ interface Props {
     proposal: ProposalDto
 }
 
-const ProposalInfo: React.FC<Props> = ({proposal}) => {
-    return <div>
-        Info
-    </div>
+export const ProposalInfo = ({ proposal }: Props) => {
+    return (
+        <div>
+            Info
+        </div>
+    )
 }
-
-export default ProposalInfo

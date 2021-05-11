@@ -1,7 +1,7 @@
 import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
 import {InjectRepository} from "@nestjs/typeorm";
 import {isBefore} from 'date-fns'
-import {Repository} from "typeorm";
+import { In, Repository } from 'typeorm'
 import {SessionData} from "../../auth/session/session.decorator";
 import {IdeasService} from "../ideas.service";
 import {CreateIdeaMilestoneDto} from "./dto/createIdeaMilestoneDto";
@@ -10,6 +10,7 @@ import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
 import {IdeaMilestone} from "./entities/idea.milestone.entity";
 import {IdeaMilestoneStatus} from "./ideaMilestoneStatus";
 import { CreateIdeaMilestoneNetworkDto } from './dto/createIdeaMilestoneNetworkDto'
+import { Idea } from '../entities/idea.entity'
 
 @Injectable()
 export class IdeaMilestonesService {
@@ -43,6 +44,27 @@ export class IdeaMilestonesService {
         }
         ideaMilestone.idea.canGetOrThrow(sessionData.user)
         return ideaMilestone
+    }
+
+    async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, IdeaMilestone>> {
+
+        const ideaMilestoneNetworks = await this.ideaMilestoneNetworkRepository.find({
+            relations: ['ideaMilestone'],
+            where: {
+                blockchainProposalId: In(proposalIds),
+                name: networkName
+            }
+        })
+
+        const blockchainProposalIdToIdeaMilestone = new Map<number, IdeaMilestone>()
+
+        ideaMilestoneNetworks.forEach(({ blockchainProposalId, ideaMilestone }: IdeaMilestoneNetwork) => {
+            if (blockchainProposalId !== null && ideaMilestone) {
+                blockchainProposalIdToIdeaMilestone.set(blockchainProposalId, ideaMilestone)
+            }
+        })
+
+        return blockchainProposalIdToIdeaMilestone
     }
 
     async create(

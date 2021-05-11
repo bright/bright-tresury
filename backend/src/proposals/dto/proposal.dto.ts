@@ -10,28 +10,46 @@ export enum ProposalStatus {
 }
 
 export class ProposalDto {
-    @ApiProperty({description: 'Blockchain proposal index'})
+
+    @ApiProperty({
+        description: 'Blockchain proposal index'
+    })
     proposalIndex: number
 
-    @ApiProperty({description: 'Proposer account address'})
+    @ApiProperty({
+        description: 'Proposer account address'
+    })
     proposer: string
 
-    @ApiProperty({description: 'Beneficiary account address'})
+    @ApiProperty({
+        description: 'Beneficiary account address'
+    })
     beneficiary: string
 
-    @ApiProperty({description: 'Value of the proposal'})
+    @ApiProperty({
+        description: 'Value of the proposal'
+    })
     value: number
 
-    @ApiProperty({description: 'Locked deposit'})
+    @ApiProperty({
+        description: 'Locked deposit'
+    })
     bond: number
 
-    @ApiProperty({description: 'Status of a proposal', enum: ProposalStatus})
+    @ApiProperty({
+        description: 'Status of a proposal',
+        enum: ProposalStatus
+    })
     status: ProposalStatus
 
-    @ApiPropertyOptional({description: 'Id of a corresponding idea'})
+    @ApiPropertyOptional({
+        description: 'Id of a corresponding idea'
+    })
     ideaId?: string
 
-    @ApiPropertyOptional({description: 'Title of a corresponding idea or idea milestone'})
+    @ApiPropertyOptional({
+        description: 'Title of a corresponding idea or idea milestone'
+    })
     title?: string
 
     constructor(

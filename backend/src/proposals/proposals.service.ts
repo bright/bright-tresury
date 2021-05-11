@@ -4,6 +4,7 @@ import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
 import {Idea} from '../ideas/entities/idea.entity';
 import {IdeasService} from "../ideas/ideas.service";
 import {getLogger} from "../logging.module";
+import { IdeaMilestonesService } from '../ideas/ideaMilestones/idea.milestones.service'
 
 const logger = getLogger()
 
@@ -11,30 +12,57 @@ const logger = getLogger()
 export class ProposalsService {
     constructor(
         private readonly blockchainService: BlockchainService,
-        private readonly ideasService: IdeasService
+        private readonly ideasService: IdeasService,
+        private readonly ideaMilestoneService: IdeaMilestonesService
     ) {
     }
 
-    async find(networkName: string): Promise<Array<[proposal: BlockchainProposal, idea: Idea | undefined]>> {
+    async find(networkName: string): Promise<[]> {
         try {
+
             const blockchainProposals = await this.blockchainService.getProposals()
 
             if (blockchainProposals.length === 0) {
                 return []
             }
 
-            const blockchainProposalsId = blockchainProposals.map(({proposalIndex}) => proposalIndex)
+            const blockchainProposalsId = blockchainProposals.map(({ proposalIndex }: BlockchainProposal) => proposalIndex)
+
             const ideas = await this.ideasService.findByProposalIds(blockchainProposalsId, networkName)
 
-            return blockchainProposals.map((proposal) =>
-                [proposal, ideas.get(proposal.proposalIndex)]
-            )
+            const ideaMilestones = await this.ideaMilestoneService.findByProposalIds(blockchainProposalsId, networkName)
+
+
+
+            return []
 
         } catch (error) {
             logger.error(error)
             return []
         }
     }
+
+    // async find(networkName: string): Promise<Array<[proposal: BlockchainProposal, idea: Idea | undefined]>> {
+    //     try {
+    //
+    //         const blockchainProposals = await this.blockchainService.getProposals()
+    //
+    //         if (blockchainProposals.length === 0) {
+    //             return []
+    //         }
+    //
+    //         const blockchainProposalsId = blockchainProposals.map(({proposalIndex}) => proposalIndex)
+    //         const ideas = await this.ideasService.findByProposalIds(blockchainProposalsId, networkName)
+    //
+    //         return blockchainProposals.map((proposal) =>
+    //             [proposal, ideas.get(proposal.proposalIndex)]
+    //         )
+    //
+    //     } catch (error) {
+    //         logger.error(error)
+    //         return []
+    //     }
+    // }
 
     async findOne(proposalId: number, networkName: string): Promise<[proposal: BlockchainProposal, idea: Idea | undefined]> {
 
