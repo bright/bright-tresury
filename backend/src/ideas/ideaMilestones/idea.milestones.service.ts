@@ -10,7 +10,6 @@ import {UpdateIdeaMilestoneDto} from "./dto/updateIdeaMilestoneDto";
 import {IdeaMilestone} from "./entities/idea.milestone.entity";
 import {IdeaMilestoneStatus} from "./ideaMilestoneStatus";
 import { CreateIdeaMilestoneNetworkDto } from './dto/createIdeaMilestoneNetworkDto'
-import { Idea } from '../entities/idea.entity'
 
 @Injectable()
 export class IdeaMilestonesService {
@@ -48,6 +47,8 @@ export class IdeaMilestonesService {
 
     async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, IdeaMilestone>> {
 
+        const result = new Map<number, IdeaMilestone>()
+
         const ideaMilestoneNetworks = await this.ideaMilestoneNetworkRepository.find({
             relations: ['ideaMilestone'],
             where: {
@@ -56,15 +57,13 @@ export class IdeaMilestonesService {
             }
         })
 
-        const blockchainProposalIdToIdeaMilestone = new Map<number, IdeaMilestone>()
-
         ideaMilestoneNetworks.forEach(({ blockchainProposalId, ideaMilestone }: IdeaMilestoneNetwork) => {
             if (blockchainProposalId !== null && ideaMilestone) {
-                blockchainProposalIdToIdeaMilestone.set(blockchainProposalId, ideaMilestone)
+                result.set(blockchainProposalId, ideaMilestone)
             }
         })
 
-        return blockchainProposalIdToIdeaMilestone
+        return result
     }
 
     async create(

@@ -1,6 +1,8 @@
 import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {BlockchainProposal, BlockchainProposalStatus} from "../../blockchain/dto/blockchainProposal.dto";
-import {Idea} from "../../ideas/entities/idea.entity";
+import {
+    BlockchainProposalStatus,
+    ExtendedBlockchainProposal,
+} from '../../blockchain/dto/blockchainProposal.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -43,26 +45,39 @@ export class ProposalDto {
     status: ProposalStatus
 
     @ApiPropertyOptional({
+        description: 'Title of a corresponding idea or subject of a corresponding idea milestone'
+    })
+    title?: string
+
+    @ApiPropertyOptional({
         description: 'Id of a corresponding idea'
     })
     ideaId?: string
 
     @ApiPropertyOptional({
-        description: 'Title of a corresponding idea or idea milestone'
+        description: 'Id of a corresponding idea milestone'
     })
-    title?: string
+    ideaMilestoneId?: string
 
     constructor(
-        blockchainProposal: BlockchainProposal,
-        idea?: Idea
+        {
+            proposalIndex,
+            proposer,
+            beneficiary,
+            value,
+            bond,
+            status,
+            idea,
+            ideaMilestone
+        }: ExtendedBlockchainProposal
     ) {
-        this.proposalIndex = blockchainProposal.proposalIndex
-        this.proposer = blockchainProposal.proposer
-        this.beneficiary = blockchainProposal.beneficiary
-        this.value = blockchainProposal.value
-        this.bond = blockchainProposal.bond
+        this.proposalIndex = proposalIndex
+        this.proposer = proposer
+        this.beneficiary = beneficiary
+        this.value = value
+        this.bond = bond
 
-        switch (blockchainProposal.status) {
+        switch (status) {
             case BlockchainProposalStatus.Proposal:
                 this.status = ProposalStatus.Submitted;
                 break;
@@ -71,7 +86,8 @@ export class ProposalDto {
                 break;
         }
 
+        this.title = idea?.title ?? ideaMilestone?.subject
         this.ideaId = idea?.id
-        this.title = idea?.title
+        this.ideaMilestoneId = ideaMilestone?.id
     }
 }

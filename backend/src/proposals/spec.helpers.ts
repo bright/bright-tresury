@@ -3,7 +3,7 @@ import {getLogger} from "../logging.module";
 
 export const mockedBlockchainService = {
     getProposals: async  () => {
-        getLogger().info('Mock implementation of getproposals')
+        getLogger().info('Mock implementation of getProposals')
         return [
             {
                 proposalIndex: 0,

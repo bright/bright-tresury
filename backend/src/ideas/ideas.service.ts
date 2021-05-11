@@ -67,6 +67,9 @@ export class IdeasService {
     }
 
     async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, Idea>> {
+
+        const result = new Map<number, Idea>()
+
         const ideaNetworks = await this.ideaNetworkRepository.find({
             relations: ['idea'],
             where: {
@@ -74,12 +77,13 @@ export class IdeasService {
                 name: networkName
             }
         })
-        const result = new Map<number, Idea>()
-        ideaNetworks.forEach(({blockchainProposalId, idea}) => {
+
+        ideaNetworks.forEach(({ blockchainProposalId, idea }: IdeaNetwork) => {
             if (blockchainProposalId !== null && idea) {
                 result.set(blockchainProposalId, idea)
             }
         })
+
         return result
     }
 

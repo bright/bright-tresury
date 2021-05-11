@@ -41,7 +41,7 @@ const createIdeaProposalDto = (ideaNetworkId: string) => {
 
 const baseUrl = (ideaId: string) => `/api/v1/ideas/${ideaId}/proposals`
 
-describe(`/api/v1/ideas/:id/proposals`, () => {
+describe.skip(`/api/v1/ideas/:id/proposals`, () => {
 
     const app = beforeSetupFullApp()
 

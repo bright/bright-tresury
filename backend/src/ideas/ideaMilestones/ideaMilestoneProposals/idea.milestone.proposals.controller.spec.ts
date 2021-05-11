@@ -55,7 +55,7 @@ const createIdeaMilestoneDto = (
 
 const baseUrl = (ideaId: string, ideaMilestoneId: string) => `/api/v1/ideas/${ideaId}/milestones/${ideaMilestoneId}/proposals`
 
-describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
+describe.skip('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
 
     const app = beforeSetupFullApp()
 

@@ -40,6 +40,9 @@ import { BlockchainModule } from '../blockchain/blockchain.module'
       IdeaMilestonesController,
       IdeaMilestoneProposalsController,
   ],
-  exports: [IdeasService]
+  exports: [
+      IdeasService,
+      IdeaMilestonesService
+  ]
 })
 export class IdeasModule {}

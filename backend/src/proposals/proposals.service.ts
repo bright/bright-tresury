@@ -1,6 +1,6 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
 import {BlockchainService} from "../blockchain/blockchain.service";
-import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
+import { BlockchainProposal, ExtendedBlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
 import {Idea} from '../ideas/entities/idea.entity';
 import {IdeasService} from "../ideas/ideas.service";
 import {getLogger} from "../logging.module";
@@ -17,7 +17,7 @@ export class ProposalsService {
     ) {
     }
 
-    async find(networkName: string): Promise<[]> {
+    async find(networkName: string): Promise<ExtendedBlockchainProposal[]> {
         try {
 
             const blockchainProposals = await this.blockchainService.getProposals()
@@ -32,51 +32,33 @@ export class ProposalsService {
 
             const ideaMilestones = await this.ideaMilestoneService.findByProposalIds(blockchainProposalsId, networkName)
 
+            return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
+                return {
+                    ...blockchainProposal,
+                    idea: ideas.get(blockchainProposal.proposalIndex),
+                    ideaMilestone: ideaMilestones.get(blockchainProposal.proposalIndex)
+                }
+            })
 
-
-            return []
-
-        } catch (error) {
-            logger.error(error)
+        } catch (err) {
+            logger.error(err)
             return []
         }
     }
 
-    // async find(networkName: string): Promise<Array<[proposal: BlockchainProposal, idea: Idea | undefined]>> {
-    //     try {
+    // async findOne(proposalId: number, networkName: string): Promise<[proposal: BlockchainProposal, idea: Idea | undefined]> {
     //
-    //         const blockchainProposals = await this.blockchainService.getProposals()
+    //     // TODO: consider creating a separate function for getting one proposal.
+    //     //  Maybe there will show up a function in polkadotApi.derive.treasury to get a single proposal.
+    //     const blockchainProposals = await this.blockchainService.getProposals()
     //
-    //         if (blockchainProposals.length === 0) {
-    //             return []
-    //         }
-    //
-    //         const blockchainProposalsId = blockchainProposals.map(({proposalIndex}) => proposalIndex)
-    //         const ideas = await this.ideasService.findByProposalIds(blockchainProposalsId, networkName)
-    //
-    //         return blockchainProposals.map((proposal) =>
-    //             [proposal, ideas.get(proposal.proposalIndex)]
-    //         )
-    //
-    //     } catch (error) {
-    //         logger.error(error)
-    //         return []
+    //     const proposal = blockchainProposals.find(({proposalIndex}) => proposalIndex === proposalId)
+    //     if (!proposal) {
+    //         throw new NotFoundException('Proposal not found.')
     //     }
+    //
+    //     const ideas = await this.ideasService.findByProposalIds([proposal.proposalIndex], networkName)
+    //     return [proposal, ideas.get(proposal.proposalIndex)]
     // }
-
-    async findOne(proposalId: number, networkName: string): Promise<[proposal: BlockchainProposal, idea: Idea | undefined]> {
-
-        // TODO: consider creating a separate function for getting one proposal.
-        //  Maybe there will show up a function in polkadotApi.derive.treasury to get a single proposal.
-        const blockchainProposals = await this.blockchainService.getProposals()
-
-        const proposal = blockchainProposals.find(({proposalIndex}) => proposalIndex === proposalId)
-        if (!proposal) {
-            throw new NotFoundException('Proposal not found.')
-        }
-
-        const ideas = await this.ideasService.findByProposalIds([proposal.proposalIndex], networkName)
-        return [proposal, ideas.get(proposal.proposalIndex)]
-    }
 
 }

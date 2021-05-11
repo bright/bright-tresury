@@ -10,5 +10,4 @@ import {ProposalsService} from './proposals.service';
     controllers: [ProposalsController],
     providers: [ProposalsService],
 })
-export class ProposalsModule {
-}
+export class ProposalsModule { }
