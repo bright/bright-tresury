@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class AddExtrinsicAndBlockchainProposalIdToIdeaMilestoneNetwork1619420198648 implements MigrationInterface {
+export class AddExtrinsicAndBlockchainProposalIdToIdeaMilestoneNetwork1619508544874 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`

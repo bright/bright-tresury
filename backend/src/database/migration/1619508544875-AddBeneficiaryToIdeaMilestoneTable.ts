@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm'
 
-export class AddBeneficiaryToIdeaMilestoneTable1620295767725 implements MigrationInterface {
+export class AddBeneficiaryToIdeaMilestoneTable1619508544875 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.addColumn(

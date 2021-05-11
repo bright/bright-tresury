@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class UpdateIdeaStatusTypeAndAddStatusToIdeaMilestoneTable1619176511324 implements MigrationInterface {
+export class UpdateIdeaStatusTypeAndAddStatusToIdeaMilestoneTable1619508544873 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
 
