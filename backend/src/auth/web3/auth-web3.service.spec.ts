@@ -2,7 +2,7 @@ import {beforeSetupFullApp, cleanDatabase} from "../../utils/spec.helpers";
 import {UsersService} from "../../users/users.service";
 import {cleanAuthorizationDatabase, getAuthUser} from "../supertokens/specHelpers/supertokens.database.spec.helper";
 import {AuthWeb3Service} from "./auth-web3.service";
-import {v4 as uuid} from "uuid";
+import {v4 as uuid, validate} from "uuid";
 import {BadRequestException, ConflictException, NotFoundException} from "@nestjs/common";
 import {CreateBlockchainUserDto} from "../../users/dto/createBlockchainUser.dto";
 import {SuperTokensService} from "../supertokens/supertokens.service";
@@ -27,16 +27,17 @@ describe(`Auth Web3 Service`, () => {
     })
 
     describe('web3 start sign up', () => {
-        it('start signup returns uuid', async () => {
+        it('should return uuid', async () => {
             const signMessageResponse = await getService().startSignUp({address: bobAddress})
-            expect(signMessageResponse.signMessage).toBeDefined()
+            const isUuid = validate(signMessageResponse.signMessage)
+            expect(isUuid).toBeTruthy()
         })
-        it('start signup throws bad request if invalid address', async () => {
+        it('should throw bad request if requested address is invalid', async () => {
             await expect(getService().startSignUp({address: uuid()}))
                 .rejects
                 .toThrow(BadRequestException)
         })
-        it('start signup throws conflict if user with this address exists', async () => {
+        it('should throw conflict if user with this address exists', async () => {
             await getUsersService().createBlockchainUser({
                 authId: uuid(),
                 username: bobUsername,
@@ -47,8 +48,8 @@ describe(`Auth Web3 Service`, () => {
                 .toThrow(ConflictException)
         })
     })
-    describe('web3 start sign up', () => {
-        it('confirm signup saves user', async () => {
+    describe('web3 confirm sign up', () => {
+        it('should save users', async () => {
             jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
             await getService().startSignUp({address: bobAddress})
             await getService().confirmSignUp({
@@ -62,7 +63,7 @@ describe(`Auth Web3 Service`, () => {
             expect(user).toBeDefined()
             expect(superTokensUser).toBeDefined()
         })
-        it("confirm signup with address that didn't start sign up throws not found", async () => {
+        it("should throw a not found if address didn't start sign up", async () => {
             jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
             await getService().startSignUp({address: bobAddress})
             await expect(getService().confirmSignUp({
@@ -72,7 +73,7 @@ describe(`Auth Web3 Service`, () => {
                 }, {} as Response)
             ).rejects.toThrow(NotFoundException)
         })
-        it("confirm signup with invalid signature throws bad request", async () => {
+        it("should throw a bad request if requested signature is invalid", async () => {
             jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => false)
             await getService().startSignUp({address: bobAddress})
             await expect(getService().confirmSignUp({

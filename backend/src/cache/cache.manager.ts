@@ -3,7 +3,7 @@ import {Cache} from "cache-manager";
 
 interface CacheConfig {
     /**
-     * Time to live for cached object
+     * Time to live for cached object in seconds
      */
     ttl: number
 }

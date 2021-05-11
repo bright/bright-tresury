@@ -17,9 +17,9 @@ import {isValidAddress} from "../../utils/address/address.validator";
 export class AuthWeb3Service {
 
     /**
-     * Sign up message expiration time
+     * Sign up message expiration time in seconds
      */
-    private SignMessageTtlMs = 5 * 60
+    private readonly SignMessageTtlInSeconds = 5 * 60
 
     constructor(
         private readonly userService: UsersService,
@@ -34,7 +34,7 @@ export class AuthWeb3Service {
 
         const signMessage = uuid()
         const signMessageKey = this.getSignMessageCacheKey(startDto.address)
-        await this.cacheManager.set<string>(signMessageKey, signMessage, {ttl: this.SignMessageTtlMs})
+        await this.cacheManager.set<string>(signMessageKey, signMessage, {ttl: this.SignMessageTtlInSeconds})
 
         return new StartBlockchainSignUpResponse(signMessage)
     }
@@ -76,13 +76,13 @@ export class AuthWeb3Service {
     }
 
     private async createBlockchainUser(address: string, res: Response) {
-        const username = uuid();
+        const userUuid = uuid();
         const password = uuid();
 
-        const superTokensUser: SuperTokensUser = await this.superTokensService.signUp(address, password)
+        const superTokensUser: SuperTokensUser = await this.superTokensService.signUp(userUuid, password)
         const createUserDto = {
             authId: superTokensUser.id,
-            username,
+            username: userUuid,
             blockchainAddress: address,
         } as CreateBlockchainUserDto
         await this.userService.createBlockchainUser(createUserDto)
