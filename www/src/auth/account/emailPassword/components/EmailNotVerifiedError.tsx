@@ -33,8 +33,11 @@ const EmailNotVerifiedError = () => {
     const renderButton = () => {
         switch (loadingState) {
             case LoadingState.Initial:
+                return <Button variant='text' color='primary' onClick={onSendVerifyEmailButtonClick}>
+                    {t('account.emailPassword.resendEmail')}
+                </Button>
             case LoadingState.Loading:
-                return <Button disabled={loadingState === LoadingState.Loading} variant='text' color='primary' onClick={onSendVerifyEmailButtonClick}>
+                return <Button disabled={true} variant='text' color='primary' onClick={onSendVerifyEmailButtonClick}>
                     {t('account.emailPassword.resendEmail')}
                 </Button>
             case LoadingState.Error:

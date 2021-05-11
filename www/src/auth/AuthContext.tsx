@@ -39,11 +39,7 @@ const AuthContextProvider: React.FC = (props) => {
             Session.getJWTPayloadSecurely().then((payload: AuthContextUser) => {
                 // TODO: get isWeb3 from backend
                 setUser({
-                    ...payload, isEmailPassword: true, isEmailVerified: false, isWeb3: true, web3Addresses:
-                        [
-                            {address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', isPrimary: true},
-                            {address: '5GNJqTPyNqANBkUVMN1LPPrxXnFouWXoe2wNSmmEoLctxiZY', isPrimary: false},
-                        ]
+                    ...payload
                 })
             })
         } else {
