@@ -1,11 +1,11 @@
-import {apiGet} from '../api';
+import { apiGet } from '../api'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
     Approved = 'approved',
     Rejected = 'rejected',
     Rewarded = 'rewarded',
-    Closed = 'closed'
+    Closed = 'closed',
 }
 
 export interface ProposalDto {
@@ -15,17 +15,15 @@ export interface ProposalDto {
     value: number
     bond: number
     status: ProposalStatus
-    ideaId?: string
-    ideaNumber?: number
     title?: string
+    ideaId?: string
+    ideaMilestoneId?: string
 }
 
-const ProposalApiPath = `/proposals`
-
-export function getProposalsByNetwork(networkName: string) {
-    return apiGet<ProposalDto[]>(`${ProposalApiPath}/?network=${networkName}`)
+export function getProposals(networkName: string) {
+    return apiGet<ProposalDto[]>(`/proposals/?network=${networkName}`)
 }
 
-export function getProposalByIndex(index: string, networkName: string) {
-    return apiGet<ProposalDto>(`${ProposalApiPath}/${index}?network=${networkName}`)
+export function getProposal(index: string, networkName: string) {
+    return apiGet<ProposalDto>(`/proposals/${index}?network=${networkName}`)
 }

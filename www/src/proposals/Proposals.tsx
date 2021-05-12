@@ -1,40 +1,40 @@
-import React, {useEffect, useMemo} from 'react';
-import { ProposalsHeader } from "./ProposalsHeader";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
-import {LoadingWrapper, useLoading} from "../components/loading/LoadingWrapper";
-import {getProposalsByNetwork} from "./proposals.api";
-import config from "../config";
-import {useLocation} from 'react-router-dom'
-import { ProposalsList } from "./list/ProposalsList";
-import {ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName} from "./list/ProposalStatusFilters";
-import {filterProposals} from "./list/filterProposals";
+import React, { useEffect, useMemo } from 'react'
+import { ProposalsHeader } from './ProposalsHeader'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { LoadingWrapper, useLoading } from '../components/loading/LoadingWrapper'
+import { getProposals } from './proposals.api'
+import config from '../config'
+import { useLocation } from 'react-router-dom'
+import { ProposalsList } from './list/ProposalsList'
+import { ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName } from './list/ProposalStatusFilters'
+import { filterProposals } from './list/filterProposals'
 
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
-            width: '100%'
-        }
-    }))
+            width: '100%',
+        },
+    }),
+)
 
 interface Props {
-    network: string
+    networkName: string
 }
 
-export const Proposals = ({ network = config.NETWORK_NAME }: Props) => {
-
+export const Proposals = ({ networkName = config.NETWORK_NAME }: Props) => {
     const classes = useStyles()
 
     const location = useLocation()
 
-    const { loadingState, response: proposals, call } = useLoading(getProposalsByNetwork)
+    const { loadingState, response: proposals, call } = useLoading(getProposals)
 
     useEffect(() => {
-        call(network)
-    }, [network, call])
+        call(networkName)
+    }, [networkName, call])
 
     const filter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)
-        return filterParam ? filterParam as ProposalFilter : ProposalDefaultFilter
+        return filterParam ? (filterParam as ProposalFilter) : ProposalDefaultFilter
     }, [location.search])
 
     const filteredProposals = useMemo(() => {
