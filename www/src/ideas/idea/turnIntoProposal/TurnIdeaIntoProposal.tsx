@@ -66,11 +66,9 @@ const TurnIdeaIntoProposal = () => {
     )
 
     const onTurn = useCallback(
-        (extrinsicDetails: ExtrinsicDetails) => {
+        async (extrinsicDetails: ExtrinsicDetails) => {
             if (idea) {
-                turnIdeaIntoProposal(extrinsicDetails, idea, idea.networks[0])
-                    .then((res) => console.log(res))
-                    .catch((err) => console.log(err))
+                await turnIdeaIntoProposal(extrinsicDetails, idea, idea.networks[0])
             }
         },
         [idea],
