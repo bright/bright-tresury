@@ -1,35 +1,31 @@
-import {Controller, Get, Param, Query} from '@nestjs/common';
-import {ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags} from "@nestjs/swagger";
-import {IsNotEmpty, IsNumberString} from "class-validator";
-import {ProposalDto} from './dto/proposal.dto';
-import {ProposalsService} from "./proposals.service";
+import { Controller, Get, Param, Query } from '@nestjs/common'
+import { ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger'
+import { IsNotEmpty, IsNumberString } from 'class-validator'
+import { ProposalDto } from './dto/proposal.dto'
+import { ProposalsService } from './proposals.service'
 import { ExtendedBlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
 
 class GetProposalsQuery {
     @ApiProperty({
-        description: 'Network name'
+        description: 'Network name',
     })
     @IsNotEmpty()
     network!: string
 }
 
-// class GetProposalParams {
-//     @ApiProperty({
-//         description: 'Proposal index'
-//     })
-//     @IsNumberString()
-//     @IsNotEmpty()
-//     id!: string;
-// }
+class GetProposalParams {
+    @ApiProperty({
+        description: 'Proposal index',
+    })
+    @IsNumberString()
+    @IsNotEmpty()
+    proposalIndex!: string
+}
 
 @Controller('/v1/proposals')
 @ApiTags('proposals')
 export class ProposalsController {
-
-    constructor(
-        private proposalsService: ProposalsService
-    ) {
-    }
+    constructor(private proposalsService: ProposalsService) {}
 
     @Get()
     @ApiOkResponse({
@@ -41,14 +37,19 @@ export class ProposalsController {
         return proposals.map((proposal: ExtendedBlockchainProposal) => new ProposalDto(proposal))
     }
 
-    // @Get(':id')
-    // @ApiOkResponse({
-    //     description: 'Respond with a proposal for selected id in selected network.',
-    //     type: ProposalDto,
-    // })
-    // @ApiNotFoundResponse({description: 'Proposal not found.'})
-    // async getProposal(@Param() params: GetProposalParams, @Query() query: GetProposalsQuery): Promise<ProposalDto> {
-    //     const [proposal, idea] = await this.proposalsService.findOne(Number(params.id), query.network)
-    //     return new ProposalDto(proposal, idea)
-    // }
+    @Get(':proposalIndex')
+    @ApiOkResponse({
+        description: 'Respond with a proposal for the given id in the given network',
+        type: ProposalDto,
+    })
+    @ApiNotFoundResponse({
+        description: 'Proposal with the given id in the given network not found',
+    })
+    async getProposal(
+        @Param() { proposalIndex }: GetProposalParams,
+        @Query() { network }: GetProposalsQuery,
+    ): Promise<ProposalDto> {
+        const proposal = await this.proposalsService.findOne(Number(proposalIndex), network)
+        return new ProposalDto(proposal)
+    }
 }

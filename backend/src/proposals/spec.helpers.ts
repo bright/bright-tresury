@@ -1,8 +1,8 @@
-import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
-import {getLogger} from "../logging.module";
+import { BlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
+import { getLogger } from '../logging.module'
 
 export const mockedBlockchainService = {
-    getProposals: async  () => {
+    getProposals: async () => {
         getLogger().info('Mock implementation of getProposals')
         return [
             {
@@ -14,13 +14,21 @@ export const mockedBlockchainService = {
                 status: 'proposal',
             },
             {
+                proposalIndex: 1,
+                proposer: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
+                beneficiary: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
+                bond: 40,
+                value: 2000,
+                status: 'proposal',
+            },
+            {
                 proposalIndex: 3,
                 proposer: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
                 beneficiary: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
                 bond: 20,
                 value: 1000,
                 status: 'approval',
-            }
+            },
         ] as BlockchainProposal[]
-    }
+    },
 }

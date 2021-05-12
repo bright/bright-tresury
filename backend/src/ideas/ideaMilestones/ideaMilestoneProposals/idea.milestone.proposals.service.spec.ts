@@ -1,12 +1,7 @@
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
 import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { IdeaMilestoneProposalsService } from './idea.milestone.proposals.service'
-import {
-    createIdea,
-    createIdeaMilestone,
-    createIdeaMilestoneByEntity,
-    createSessionData,
-} from '../../spec.helpers'
+import { createIdea, createIdeaMilestone, createIdeaMilestoneByEntity, createSessionData } from '../../spec.helpers'
 import { IdeasService } from '../../ideas.service'
 import { v4 as uuid } from 'uuid'
 import { CreateIdeaMilestoneDto } from '../dto/createIdeaMilestoneDto'
@@ -17,7 +12,6 @@ import { SessionData } from '../../../auth/session/session.decorator'
 import { IdeaStatus } from '../../ideaStatus'
 import { IdeaMilestoneStatus } from '../ideaMilestoneStatus'
 import { Idea } from '../../entities/idea.entity'
-import { EmptyBeneficiaryException } from '../../exceptions/emptyBeneficiary.exception'
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { Repository } from 'typeorm'
@@ -28,39 +22,46 @@ import { IdeaMilestone } from '../entities/idea.milestone.entity'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
-    events: [{
-        section: 'treasury',
-        method: 'Proposed',
-        data: [{
-            name: 'ProposalIndex',
-            value: "3",
-        }],
-    },
+    events: [
+        {
+            section: 'treasury',
+            method: 'Proposed',
+            data: [
+                {
+                    name: 'ProposalIndex',
+                    value: '3',
+                },
+            ],
+        },
     ],
 } as UpdateExtrinsicDto
 
 const createIdeaMilestoneDto = (
     ideaMilestoneNetworkValue: number = 100,
-    beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-) => new CreateIdeaMilestoneDto(
-    'subject',
-    [{ name: 'polkadot', value: ideaMilestoneNetworkValue }],
-    beneficiary,
-    null,
-    null,
-    null
-)
+    beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+) =>
+    new CreateIdeaMilestoneDto(
+        'subject',
+        [{ name: 'polkadot', value: ideaMilestoneNetworkValue }],
+        beneficiary,
+        null,
+        null,
+        null,
+    )
 
 describe('IdeaMilestoneProposalsService', () => {
-
     const app = beforeSetupFullApp()
 
     const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
     const ideaMilestonesService = beforeAllSetup(() => app().get<IdeaMilestonesService>(IdeaMilestonesService))
-    const ideaMilestoneProposalsService = beforeAllSetup(() => app().get<IdeaMilestoneProposalsService>(IdeaMilestoneProposalsService))
+    const ideaMilestoneProposalsService = beforeAllSetup(() =>
+        app().get<IdeaMilestoneProposalsService>(IdeaMilestoneProposalsService),
+    )
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
 
-    const ideaMilestoneNetworkRepository = beforeAllSetup(() => app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork)))
+    const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
+        app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork)),
+    )
 
     let idea: Idea
     let sessionData: SessionData
@@ -83,11 +84,9 @@ describe('IdeaMilestoneProposalsService', () => {
     })
 
     describe('createProposal', () => {
-
         let createIdeaMilestoneProposalDto: CreateIdeaMilestoneProposalDto
 
         beforeEach(async () => {
-
             jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementationOnce(
                 async (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
                     await cb(updateExtrinsicDto)
@@ -106,7 +105,6 @@ describe('IdeaMilestoneProposalsService', () => {
         })
 
         it('should throw not found exception for not existing idea', async () => {
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -117,13 +115,16 @@ describe('IdeaMilestoneProposalsService', () => {
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
             await expect(
-                ideaMilestoneProposalsService().createProposal(uuid(), ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData),
+                ideaMilestoneProposalsService().createProposal(
+                    uuid(),
+                    ideaMilestone.id,
+                    createIdeaMilestoneProposalDto,
+                    sessionData,
+                ),
             ).rejects.toThrow(NotFoundException)
-
         })
 
         it('should throw forbidden exception for idea created by other user', async () => {
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -134,13 +135,16 @@ describe('IdeaMilestoneProposalsService', () => {
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
             await expect(
-                ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, otherSessionData),
+                ideaMilestoneProposalsService().createProposal(
+                    idea.id,
+                    ideaMilestone.id,
+                    createIdeaMilestoneProposalDto,
+                    otherSessionData,
+                ),
             ).rejects.toThrow(ForbiddenException)
-
         })
 
         it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
-
             const ideaWithTurnedIntoProposalStatus = await createIdea(
                 {
                     beneficiary: uuid(),
@@ -159,19 +163,17 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await (expect(
+            await expect(
                 ideaMilestoneProposalsService().createProposal(
                     ideaWithTurnedIntoProposalStatus.id,
                     ideaMilestone.id,
                     createIdeaMilestoneProposalDto,
-                    sessionData
+                    sessionData,
                 ),
-            )).rejects.toThrow(BadRequestException)
-
+            ).rejects.toThrow(BadRequestException)
         })
 
         it('should throw not found exception for not existing idea milestone', async () => {
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -181,14 +183,17 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await (expect(
-                ideaMilestoneProposalsService().createProposal(idea.id, uuid(), createIdeaMilestoneProposalDto, sessionData),
-            )).rejects.toThrow(NotFoundException)
-
+            await expect(
+                ideaMilestoneProposalsService().createProposal(
+                    idea.id,
+                    uuid(),
+                    createIdeaMilestoneProposalDto,
+                    sessionData,
+                ),
+            ).rejects.toThrow(NotFoundException)
         })
 
         it('should throw empty beneficiary exception for idea milestone with empty beneficiary address', async () => {
-
             const ideaMilestoneWithEmptyBeneficiaryAddress = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(100, ''),
@@ -196,29 +201,26 @@ describe('IdeaMilestoneProposalsService', () => {
                 ideaMilestonesService(),
             )
 
-            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestoneWithEmptyBeneficiaryAddress.networks[0].id
+            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId =
+                ideaMilestoneWithEmptyBeneficiaryAddress.networks[0].id
 
-            await (expect(
+            await expect(
                 ideaMilestoneProposalsService().createProposal(
                     idea.id,
                     ideaMilestoneWithEmptyBeneficiaryAddress.id,
                     createIdeaMilestoneProposalDto,
-                    sessionData
+                    sessionData,
                 ),
-            )).rejects.toThrow(BadRequestException)
-
+            ).rejects.toThrow(BadRequestException)
         })
 
         it(`should return bad request exception for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
-
             const ideaMilestone = await createIdeaMilestoneByEntity(
                 new IdeaMilestone(
                     idea,
                     'subject',
                     IdeaMilestoneStatus.TurnedIntoProposal,
-                    [
-                        new IdeaMilestoneNetwork('polkadot', 100),
-                    ],
+                    [new IdeaMilestoneNetwork('polkadot', 100)],
                     '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     null,
                     null,
@@ -228,14 +230,17 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await (expect(
-                ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData),
-            )).rejects.toThrow(BadRequestException)
-
+            await expect(
+                ideaMilestoneProposalsService().createProposal(
+                    idea.id,
+                    ideaMilestone.id,
+                    createIdeaMilestoneProposalDto,
+                    sessionData,
+                ),
+            ).rejects.toThrow(BadRequestException)
         })
 
         it('should throw not found exception for not existing idea milestone network', async () => {
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -245,14 +250,17 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = uuid()
 
-            await (expect(
-                ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData),
-            )).rejects.toThrow(NotFoundException)
-
+            await expect(
+                ideaMilestoneProposalsService().createProposal(
+                    idea.id,
+                    ideaMilestone.id,
+                    createIdeaMilestoneProposalDto,
+                    sessionData,
+                ),
+            ).rejects.toThrow(NotFoundException)
         })
 
         it('should throw bad request exception for idea milestone network which value in equal 0', async () => {
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(0),
@@ -262,14 +270,17 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await (expect(
-                ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData),
-            )).rejects.toThrow(BadRequestException)
-
+            await expect(
+                ideaMilestoneProposalsService().createProposal(
+                    idea.id,
+                    ideaMilestone.id,
+                    createIdeaMilestoneProposalDto,
+                    sessionData,
+                ),
+            ).rejects.toThrow(BadRequestException)
         })
 
         it('should assign extrinsic to idea milestone network', async () => {
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -279,7 +290,12 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData)
+            await ideaMilestoneProposalsService().createProposal(
+                idea.id,
+                ideaMilestone.id,
+                createIdeaMilestoneProposalDto,
+                sessionData,
+            )
 
             const ideaMilestoneNetwork = await ideaMilestoneNetworkRepository().findOne(
                 createIdeaMilestoneProposalDto.ideaMilestoneNetworkId,
@@ -289,13 +305,13 @@ describe('IdeaMilestoneProposalsService', () => {
             )
 
             expect(ideaMilestoneNetwork!.extrinsic).toBeDefined()
-
         })
 
         it('should call extractBlockchainProposalIndexFromExtrinsicEvents method from BlockchainService', async () => {
-
-            const extractBlockchainProposalIndexFromExtrinsicEventsSpy
-                = jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents')
+            const extractBlockchainProposalIndexFromExtrinsicEventsSpy = jest.spyOn(
+                blockchainService(),
+                'extractBlockchainProposalIndexFromExtrinsicEvents',
+            )
 
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
@@ -306,21 +322,27 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData)
+            await ideaMilestoneProposalsService().createProposal(
+                idea.id,
+                ideaMilestone.id,
+                createIdeaMilestoneProposalDto,
+                sessionData,
+            )
 
             expect(extractBlockchainProposalIndexFromExtrinsicEventsSpy).toHaveBeenCalled()
-
         })
 
         it('should call turnIdeaMilestoneIntoProposal if blockchainProposalIndex was found', async () => {
-
             jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return 3
                 },
             )
 
-            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn(ideaMilestoneProposalsService(), 'turnIdeaMilestoneIntoProposal')
+            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn(
+                ideaMilestoneProposalsService(),
+                'turnIdeaMilestoneIntoProposal',
+            )
 
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
@@ -331,21 +353,27 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData)
+            await ideaMilestoneProposalsService().createProposal(
+                idea.id,
+                ideaMilestone.id,
+                createIdeaMilestoneProposalDto,
+                sessionData,
+            )
 
             expect(turnIdeaMilestoneIntoProposalSpy).toHaveBeenCalled()
-
         })
 
         it('should not call turnIdeaMilestoneIntoProposal if blockchainProposalIndex was not found', async () => {
-
             jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return undefined
                 },
             )
 
-            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn(ideaMilestoneProposalsService(), 'turnIdeaMilestoneIntoProposal')
+            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn(
+                ideaMilestoneProposalsService(),
+                'turnIdeaMilestoneIntoProposal',
+            )
 
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
@@ -356,14 +384,17 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            await ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData)
+            await ideaMilestoneProposalsService().createProposal(
+                idea.id,
+                ideaMilestone.id,
+                createIdeaMilestoneProposalDto,
+                sessionData,
+            )
 
             expect(turnIdeaMilestoneIntoProposalSpy).not.toHaveBeenCalled()
-
         })
 
         it('should return idea milestone network with extrinsic assigned', async () => {
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -373,18 +404,24 @@ describe('IdeaMilestoneProposalsService', () => {
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
-            const result = await ideaMilestoneProposalsService().createProposal(idea.id, ideaMilestone.id, createIdeaMilestoneProposalDto, sessionData)
+            const result = await ideaMilestoneProposalsService().createProposal(
+                idea.id,
+                ideaMilestone.id,
+                createIdeaMilestoneProposalDto,
+                sessionData,
+            )
 
             expect(result.extrinsic).toBeDefined()
-            expect(result.extrinsic!.extrinsicHash).toBe( '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41')
-            expect(result.extrinsic!.lastBlockHash).toBe( '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f')
-
+            expect(result.extrinsic!.extrinsicHash).toBe(
+                '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
+            )
+            expect(result.extrinsic!.lastBlockHash).toBe(
+                '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f',
+            )
         })
-
     })
 
     describe('turnIdeaMilestoneIntoProposal', () => {
-
         let ideaMilestone: IdeaMilestone
         let ideaMilestoneNetwork: IdeaMilestoneNetwork
 
@@ -399,41 +436,42 @@ describe('IdeaMilestoneProposalsService', () => {
         })
 
         it(`should change idea status to ${IdeaStatus.TurnedIntoProposalByMilestone}`, async () => {
-
             await ideaMilestoneProposalsService().turnIdeaMilestoneIntoProposal(
-                idea, ideaMilestone, ideaMilestoneNetwork, 3,
+                idea,
+                ideaMilestone,
+                ideaMilestoneNetwork,
+                3,
             )
 
             const updatedIdea = await ideasService().findOne(idea.id, sessionData)
 
             expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposalByMilestone)
-
         })
 
         it(`should change idea milestone status to ${IdeaMilestoneStatus.TurnedIntoProposal}`, async () => {
-
             await ideaMilestoneProposalsService().turnIdeaMilestoneIntoProposal(
-                idea, ideaMilestone, ideaMilestoneNetwork, 3,
+                idea,
+                ideaMilestone,
+                ideaMilestoneNetwork,
+                3,
             )
 
             const updatedIdeaMilestone = await ideaMilestonesService().findOne(ideaMilestone.id, sessionData)
 
             expect(updatedIdeaMilestone.status).toBe(IdeaMilestoneStatus.TurnedIntoProposal)
-
         })
 
         it(`should assign blockchainProposalIndex to idea milestone network`, async () => {
-
             await ideaMilestoneProposalsService().turnIdeaMilestoneIntoProposal(
-                idea, ideaMilestone, ideaMilestoneNetwork, 3,
+                idea,
+                ideaMilestone,
+                ideaMilestoneNetwork,
+                3,
             )
 
             const updatedIdeaMilestoneNetwork = await ideaMilestoneNetworkRepository().findOne(ideaMilestoneNetwork.id)
 
             expect(updatedIdeaMilestoneNetwork!.blockchainProposalId).toBe(3)
-
         })
-
     })
-
 })
