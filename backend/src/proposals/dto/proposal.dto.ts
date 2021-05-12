@@ -1,76 +1,71 @@
-import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {
-    BlockchainProposalStatus,
-    ExtendedBlockchainProposal,
-} from '../../blockchain/dto/blockchainProposal.dto'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { BlockchainProposalStatus } from '../../blockchain/dto/blockchainProposal.dto'
+import { BlockchainProposalWithOrigin } from '../proposals.service'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
     Approved = 'approved',
     Rejected = 'rejected',
-    Rewarded = 'rewarded'
+    Rewarded = 'rewarded',
 }
 
 export class ProposalDto {
-
     @ApiProperty({
-        description: 'Blockchain proposal index'
+        description: 'Blockchain proposal index',
     })
     proposalIndex: number
 
     @ApiProperty({
-        description: 'Proposer account address'
+        description: 'Proposer account address',
     })
     proposer: string
 
     @ApiProperty({
-        description: 'Beneficiary account address'
+        description: 'Beneficiary account address',
     })
     beneficiary: string
 
     @ApiProperty({
-        description: 'Value of the proposal'
+        description: 'Value of the proposal',
     })
     value: number
 
     @ApiProperty({
-        description: 'Locked deposit'
+        description: 'Locked deposit',
     })
     bond: number
 
     @ApiProperty({
         description: 'Status of a proposal',
-        enum: ProposalStatus
+        enum: ProposalStatus,
     })
     status: ProposalStatus
 
     @ApiPropertyOptional({
-        description: 'Title of a corresponding idea or subject of a corresponding idea milestone'
+        description: 'Title of a corresponding idea or subject of a corresponding idea milestone',
     })
     title?: string
 
     @ApiPropertyOptional({
-        description: 'Id of a corresponding idea'
+        description: 'Id of a corresponding idea',
     })
     ideaId?: string
 
     @ApiPropertyOptional({
-        description: 'Id of a corresponding idea milestone'
+        description: 'Id of a corresponding idea milestone',
     })
     ideaMilestoneId?: string
 
-    constructor(
-        {
-            proposalIndex,
-            proposer,
-            beneficiary,
-            value,
-            bond,
-            status,
-            idea,
-            ideaMilestone
-        }: ExtendedBlockchainProposal
-    ) {
+    constructor({
+        proposalIndex,
+        proposer,
+        beneficiary,
+        value,
+        bond,
+        status,
+        idea,
+        ideaMilestone,
+    }: BlockchainProposalWithOrigin) {
         this.proposalIndex = proposalIndex
         this.proposer = proposer
         this.beneficiary = beneficiary
@@ -79,11 +74,11 @@ export class ProposalDto {
 
         switch (status) {
             case BlockchainProposalStatus.Proposal:
-                this.status = ProposalStatus.Submitted;
-                break;
+                this.status = ProposalStatus.Submitted
+                break
             case BlockchainProposalStatus.Approval:
-                this.status = ProposalStatus.Approved;
-                break;
+                this.status = ProposalStatus.Approved
+                break
         }
 
         this.title = idea?.title ?? ideaMilestone?.subject

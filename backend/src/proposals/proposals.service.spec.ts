@@ -4,14 +4,13 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { IdeaNetwork } from '../ideas/entities/ideaNetwork.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
-import { ProposalsService } from './proposals.service'
+import { BlockchainProposalWithOrigin, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
 import { Idea } from '../ideas/entities/idea.entity'
 import { IdeaMilestone } from '../ideas/ideaMilestones/entities/idea.milestone.entity'
 import { v4 as uuid } from 'uuid'
 import { CreateIdeaMilestoneDto } from '../ideas/ideaMilestones/dto/createIdeaMilestoneDto'
 import { IdeaMilestoneNetwork } from '../ideas/ideaMilestones/entities/idea.milestone.network.entity'
-import { ExtendedBlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
 import { NotFoundException } from '@nestjs/common'
 
 describe('ProposalsService', () => {
@@ -85,7 +84,7 @@ describe('ProposalsService', () => {
 
             expect(proposals.length).toBe(3)
 
-            const proposal1 = proposals.find(({ proposalIndex }: ExtendedBlockchainProposal) => proposalIndex === 0)
+            const proposal1 = proposals.find(({ proposalIndex }: BlockchainProposalWithOrigin) => proposalIndex === 0)
 
             expect(proposal1).toBeDefined()
             expect(proposal1!.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
@@ -97,7 +96,7 @@ describe('ProposalsService', () => {
             expect(proposal1!.idea!.id).toBe(idea.id)
             expect(proposal1!.ideaMilestone).toBeUndefined()
 
-            const proposal2 = proposals.find(({ proposalIndex }: ExtendedBlockchainProposal) => proposalIndex === 1)
+            const proposal2 = proposals.find(({ proposalIndex }: BlockchainProposalWithOrigin) => proposalIndex === 1)
 
             expect(proposal2).toBeDefined()
             expect(proposal2!.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
@@ -109,7 +108,7 @@ describe('ProposalsService', () => {
             expect(proposal2!.ideaMilestone).toBeDefined()
             expect(proposal2!.ideaMilestone!.id).toBe(ideaMilestone.id)
 
-            const proposal3 = proposals.find(({ proposalIndex }: ExtendedBlockchainProposal) => proposalIndex === 3)
+            const proposal3 = proposals.find(({ proposalIndex }: BlockchainProposalWithOrigin) => proposalIndex === 3)
 
             expect(proposal3!.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(proposal3!.beneficiary).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')

@@ -1,11 +1,18 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { BlockchainProposal, ExtendedBlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
+import { BlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
 import { IdeasService } from '../ideas/ideas.service'
 import { getLogger } from '../logging.module'
 import { IdeaMilestonesService } from '../ideas/ideaMilestones/idea.milestones.service'
+import { Idea } from '../ideas/entities/idea.entity'
+import { IdeaMilestone } from '../ideas/ideaMilestones/entities/idea.milestone.entity'
 
 const logger = getLogger()
+
+export type BlockchainProposalWithOrigin = BlockchainProposal & {
+    idea?: Idea
+    ideaMilestone?: IdeaMilestone
+}
 
 @Injectable()
 export class ProposalsService {
@@ -15,7 +22,7 @@ export class ProposalsService {
         private readonly ideaMilestoneService: IdeaMilestonesService,
     ) {}
 
-    async find(networkName: string): Promise<ExtendedBlockchainProposal[]> {
+    async find(networkName: string): Promise<BlockchainProposalWithOrigin[]> {
         try {
             const proposals = await this.blockchainService.getProposals()
 
@@ -42,7 +49,7 @@ export class ProposalsService {
         }
     }
 
-    async findOne(proposalId: number, networkName: string): Promise<ExtendedBlockchainProposal> {
+    async findOne(proposalId: number, networkName: string): Promise<BlockchainProposalWithOrigin> {
         const proposals = await this.blockchainService.getProposals()
 
         const proposal = proposals.find(({ proposalIndex }: BlockchainProposal) => proposalIndex === proposalId)

@@ -2,8 +2,7 @@ import { Controller, Get, Param, Query } from '@nestjs/common'
 import { ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumberString } from 'class-validator'
 import { ProposalDto } from './dto/proposal.dto'
-import { ProposalsService } from './proposals.service'
-import { ExtendedBlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
+import { BlockchainProposalWithOrigin, ProposalsService } from './proposals.service'
 
 class GetProposalsQuery {
     @ApiProperty({
@@ -34,7 +33,7 @@ export class ProposalsController {
     })
     async getProposals(@Query() { network }: GetProposalsQuery): Promise<ProposalDto[]> {
         const proposals = await this.proposalsService.find(network)
-        return proposals.map((proposal: ExtendedBlockchainProposal) => new ProposalDto(proposal))
+        return proposals.map((proposal: BlockchainProposalWithOrigin) => new ProposalDto(proposal))
     }
 
     @Get(':proposalIndex')
