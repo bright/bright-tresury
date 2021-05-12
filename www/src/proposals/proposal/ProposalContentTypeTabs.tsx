@@ -1,24 +1,31 @@
-import React from "react";
-import {TabEntry, Tabs} from "../../components/tabs/Tabs";
-import {useTranslation} from "react-i18next";
-import infoIcon from "../../assets/info.svg";
-import milestonesIcon from "../../assets/milestones.svg";
-import discussionIcon from "../../assets/discussion.svg";
-import votingIcon from "../../assets/voting.svg";
-import {useRouteMatch} from "react-router-dom";
+import React from 'react'
+import { TabEntry, Tabs } from '../../components/tabs/Tabs'
+import { useTranslation } from 'react-i18next'
+import infoIcon from '../../assets/info.svg'
+import milestonesIcon from '../../assets/milestones.svg'
+import discussionIcon from '../../assets/discussion.svg'
+import votingIcon from '../../assets/voting.svg'
+import { useRouteMatch } from 'react-router-dom'
+import { ProposalDto } from '../proposals.api'
 
 export enum ProposalContentType {
-    Info = "info",
-    Milestones = "milestones",
-    Discussion = "discussion",
-    Voting = "voting"
+    Info = 'info',
+    Milestones = 'milestones',
+    Discussion = 'discussion',
+    Voting = 'voting',
 }
 
-const ProposalContentTypeTabs: React.FC = () => {
-    const {t} = useTranslation()
+interface Props {
+    proposal: ProposalDto
+}
 
-    const getTranslation = (proposalContentType: ProposalContentType): string => {
-        switch (proposalContentType) {
+export const ProposalContentTypeTabs = ({ proposal }: Props) => {
+    const { t } = useTranslation()
+
+    let { url } = useRouteMatch()
+
+    const getTranslation = (contentType: ProposalContentType): string => {
+        switch (contentType) {
             case ProposalContentType.Info:
                 return t('proposal.content.infoLabel')
             case ProposalContentType.Milestones:
@@ -30,8 +37,8 @@ const ProposalContentTypeTabs: React.FC = () => {
         }
     }
 
-    const getIcon = (proposalContentType: ProposalContentType): string => {
-        switch (proposalContentType) {
+    const getIcon = (contentType: ProposalContentType): string => {
+        switch (contentType) {
             case ProposalContentType.Info:
                 return infoIcon
             case ProposalContentType.Milestones:
@@ -43,22 +50,22 @@ const ProposalContentTypeTabs: React.FC = () => {
         }
     }
 
-    const contentTypes = Object.values(ProposalContentType)
-
-    let {url} = useRouteMatch();
+    // Milestones content tab should not be visible if proposal was created from idea milestone
+    const contentTypes = Object.values(ProposalContentType).filter((contentType) => {
+        return !(proposal.ideaMilestoneId && contentType === ProposalContentType.Milestones)
+    })
 
     const tabEntries = contentTypes.map((contentType: ProposalContentType) => {
-            return {
-                label: getTranslation(contentType),
-                path: `${url}/${contentType}`,
-                svg: getIcon(contentType)
-            } as TabEntry
-        }
+        return {
+            label: getTranslation(contentType),
+            path: `${url}/${contentType}`,
+            svg: getIcon(contentType),
+        } as TabEntry
+    })
+
+    return (
+        <div>
+            <Tabs values={tabEntries} />
+        </div>
     )
-
-    return <div>
-        <Tabs values={tabEntries}/>
-    </div>
 }
-
-export default ProposalContentTypeTabs
