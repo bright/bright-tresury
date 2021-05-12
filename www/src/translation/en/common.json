@@ -281,7 +281,13 @@
             "infoLabel": "Info",
             "milestonesLabel": "Milestones",
             "discussionLabel": "Discussion",
-            "votingLabel": "Voting"
+            "votingLabel": "Voting",
+            "info": {
+                "proposer": "Proposer",
+                "fieldOfIdea": "Field of idea",
+                "reasonForIdea": "Reason for idea",
+                "description": "Description"
+            }
         },
         "list": {
             "introduceIdea": "To create a proposal, <a>first introduce your idea</a>",
