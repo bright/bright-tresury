@@ -83,7 +83,7 @@ const Resources = {
 
     // load balancer
     ECSALB: 'ECSALB',
-    //ALBHttpsListener: 'ALBHttpsListener',
+    ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
     // substrate
@@ -91,7 +91,7 @@ const Resources = {
     SubstrateWssListener: 'SubstrateWssListener',
     ECSSubstrateHttpListenerRule: 'ECSSubstrateHttpListenerRule',
     ECSSubstrateWssListenerRule: 'ECSSubstrateWssListenerRule',
-    // ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
+    ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSAppTargetGroup: 'ECSAppTargetGroup',
     // It is Substrate target group with a shorter name to match the name requirement of max 32 chars
     ECSSubTargetGroup: 'ECSSubTargetGroup',
@@ -957,22 +957,22 @@ export default cloudform({
             ]
         }).dependsOn(Resources.HttpHttpsServerSecurityGroup),
 
-        // [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
-        //     Certificates: [
-        //         {
-        //             CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
-        //         }
-        //     ],
-        //     DefaultActions: [
-        //         {
-        //             Type: "forward",
-        //             TargetGroupArn: Fn.Ref(Resources.ECSTargetGroup)
-        //         }
-        //     ],
-        //     LoadBalancerArn: Fn.Ref(Resources.ECSALB),
-        //     Port: 443,
-        //     Protocol: "HTTPS"
-        // }).dependsOn(Resources.ECSServiceRole),
+        [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
+            Certificates: [
+                {
+                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
+                }
+            ],
+            DefaultActions: [
+                {
+                    Type: "forward",
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
+                }
+            ],
+            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
+            Port: 443,
+            Protocol: "HTTPS"
+        }).dependsOn(Resources.ECSServiceRole),
 
         [Resources.ALBHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
@@ -1017,29 +1017,29 @@ export default cloudform({
         }).dependsOn(Resources.ECSServiceRole),
         // endregion
 
-        // [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
-        //     Actions: [
-        //         {
-        //             Type: "redirect",
-        //             RedirectConfig: {
-        //                 "Host" : "#{host}",
-        //                 "Path" : "/#{path}",
-        //                 "Port" : "443",
-        //                 "Protocol" : "HTTPS",
-        //                 "Query" : "#{query}",
-        //                 "StatusCode" : "HTTP_302"
-        //             }
-        //         }
-        //     ],
-        //     Conditions: [
-        //         {
-        //             Field: "path-pattern",
-        //             Values: ["/"]
-        //         }
-        //     ],
-        //     ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-        //     Priority: 2
-        // }).dependsOn(Resources.ALBHttpListener),
+        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: "redirect",
+                    RedirectConfig: {
+                        "Host" : "#{host}",
+                        "Path" : "/#{path}",
+                        "Port" : "443",
+                        "Protocol" : "HTTPS",
+                        "Query" : "#{query}",
+                        "StatusCode" : "HTTP_302"
+                    }
+                }
+            ],
+            Conditions: [
+                {
+                    Field: "path-pattern",
+                    Values: ["/"]
+                }
+            ],
+            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
+            Priority: 2
+        }).dependsOn(Resources.ALBHttpListener),
 
         [Resources.ECSALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
