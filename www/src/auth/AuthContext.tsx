@@ -1,10 +1,10 @@
-import * as React from "react";
-import {useEffect, useMemo, useState} from "react";
-import {SignInAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
-import Session from "supertokens-auth-react/lib/build/recipe/session/session";
-import {signIn as signInApi, SignInData, signOut as signOutApi} from './auth.api'
-import {Web3SignUpValues} from "./sign-up/web3/Web3SignUp";
-import {handleWeb3Signup} from "./sign-up/web3/handleWeb3Signup";
+import * as React from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { SignInAPIResponse, SignUpAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
+import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
+import { signIn as signInApi, SignInData, signOut as signOutApi, SignUpData } from './auth.api'
+import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
+import { handleWeb3Signup } from './sign-up/web3/handleWeb3Signup'
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
@@ -42,7 +42,7 @@ const AuthContextProvider: React.FC = (props) => {
             Session.getJWTPayloadSecurely().then((payload: AuthContextUser) => {
                 // TODO: get isWeb3 from backend
                 setUser({
-                    ...payload
+                    ...payload,
                 })
             })
         } else {
@@ -94,18 +94,20 @@ const AuthContextProvider: React.FC = (props) => {
     }
 
     return (
-        <AuthContext.Provider value={{user, isUserSignedIn, isUserVerified, signIn, signOut, web3SignUp}} {...props}/>
+        <AuthContext.Provider
+            value={{ user, isUserSignedIn, isUserVerified, signIn, signOut, web3SignUp }}
+            {...props}
+        />
     )
 }
 
 const useAuth = () => {
     const context = React.useContext(AuthContext)
     if (!context) {
-        throw new Error("useAuth must be used within an AuthContextProvider")
+        throw new Error('useAuth must be used within an AuthContextProvider')
     }
 
     return context
 }
 
-export {AuthContextProvider, useAuth}
-
+export { AuthContextProvider, useAuth }
