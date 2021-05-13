@@ -1,7 +1,7 @@
 import { ProposalDto } from '../../proposals.api'
-import { useEffect, useState, useMemo } from 'react'
-import { getIdeaById, IdeaDto } from '../../../ideas/ideas.api'
-import { getIdeaMilestone, IdeaMilestoneDto } from '../../../ideas/idea/milestones/idea.milestones.api'
+import { useEffect, useState, useMemo, useCallback } from 'react'
+import { getIdea } from '../../../ideas/ideas.api'
+import { getIdeaMilestone } from '../../../ideas/idea/milestones/idea.milestones.api'
 import { Nil } from '../../../util/types'
 
 export interface ProposalInfoValues {
@@ -12,8 +12,6 @@ export interface ProposalInfoValues {
 }
 
 export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalDto) => {
-    const [ideaToLoadId, setIdeaToLoadId] = useState<string | undefined>(ideaId)
-
     const [values, setValues] = useState<ProposalInfoValues>({
         proposer,
         field: '',
@@ -25,35 +23,39 @@ export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalD
         return ideaMilestoneId !== null && ideaMilestoneId !== undefined
     }, [ideaMilestoneId])
 
+    const loadIdea = useCallback((ideaId: string) => {
+        getIdea(ideaId)
+            .then(({ field, content }) => {
+                setValues((prevState) => {
+                    return {
+                        ...prevState,
+                        field,
+                        reason: content,
+                    }
+                })
+            })
+            .catch(() => {
+                // TODO: Handle API call error
+            })
+    }, [])
+
     useEffect(() => {
-        if (ideaToLoadId) {
-            getIdeaById(ideaToLoadId)
-                .then(({ field, content }: IdeaDto) => {
-                    setValues((prevState) => {
-                        return {
-                            ...prevState,
-                            field,
-                            reason: content,
-                        }
-                    })
-                })
-                .catch(() => {
-                    // TODO: Handle API call error
-                })
+        if (ideaId) {
+            loadIdea(ideaId)
         }
-    }, [ideaToLoadId])
+    }, [ideaId])
 
     useEffect(() => {
         if (ideaMilestoneId) {
             getIdeaMilestone(ideaMilestoneId)
-                .then(({ ideaId, description }: IdeaMilestoneDto) => {
+                .then(({ ideaId, description }) => {
                     setValues((prevState) => {
                         return {
                             ...prevState,
                             description,
                         }
                     })
-                    setIdeaToLoadId(ideaId)
+                    loadIdea(ideaId)
                 })
                 .catch(() => {
                     // TODO: Handle API call error

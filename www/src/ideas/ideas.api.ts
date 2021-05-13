@@ -1,5 +1,5 @@
-import {apiGet, apiPost, apiPatch} from '../api'
-import {ExtrinsicDetails} from "./SubmitProposalModal";
+import { apiGet, apiPost, apiPatch } from '../api'
+import { ExtrinsicDetails } from './SubmitProposalModal'
 
 export interface IdeaDto {
     id: string
@@ -41,21 +41,21 @@ export function createEmptyIdea(network: string): IdeaDto {
         beneficiary: '',
         field: '',
         content: '',
-        networks: [{name: network, value: 0} as IdeaNetworkDto],
+        networks: [{ name: network, value: 0 } as IdeaNetworkDto],
         contact: '',
         portfolio: '',
         links: [''],
-        status: IdeaStatus.Draft
+        status: IdeaStatus.Draft,
     } as IdeaDto
 }
 
 const IdeaApiPath = `/ideas`
 
-export function getIdeasByNetwork(networkName: string) {
+export function getIdeas(networkName: string) {
     return apiGet<IdeaDto[]>(`${IdeaApiPath}?network=${networkName}`)
 }
 
-export function getIdeaById(id: string) {
+export function getIdea(id: string) {
     return apiGet<IdeaDto>(`${IdeaApiPath}/${id}`)
 }
 

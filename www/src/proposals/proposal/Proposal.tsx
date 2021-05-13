@@ -38,15 +38,17 @@ export const Proposal = () => {
 
     let { proposalIndex } = useParams<{ proposalIndex: string }>()
 
-    const [proposal, setProposal] = useState<ProposalDto>()
+    const [proposal, setProposal] = useState<ProposalDto | undefined>()
 
     useEffect(() => {
         if (proposalIndex !== undefined) {
             getProposal(proposalIndex, config.NETWORK_NAME)
-                .then((result) => {
-                    setProposal(result)
+                .then((res) => {
+                    setProposal(res)
                 })
-                .catch((err) => console.log(err))
+                .catch(() => {
+                    // TODO: Handle API call error
+                })
         }
     }, [proposalIndex])
 
@@ -63,7 +65,7 @@ export const Proposal = () => {
                         {proposal ? <ProposalInfo proposal={proposal} /> : null}
                     </Route>
                     <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
-                        <ProposalMilestones />
+                        {proposal?.ideaId ? <ProposalMilestones ideaId={proposal.ideaId} /> : null}
                     </Route>
                     <Route exact={true} path={`${path}/${ProposalContentType.Discussion}`}>
                         <ProposalDiscussion />

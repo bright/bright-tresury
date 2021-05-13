@@ -8,6 +8,7 @@ export enum IdeaMilestoneStatus {
 
 export interface IdeaMilestoneDto {
     id: string
+    ideaId: string
     ordinalNumber: number
     subject: string
     status: IdeaMilestoneStatus
@@ -16,7 +17,6 @@ export interface IdeaMilestoneDto {
     dateTo: Nil<Date>
     description: Nil<string>
     networks: IdeaMilestoneNetworkDto[]
-    ideaId?: string
 }
 
 export interface IdeaMilestoneNetworkDto {
@@ -25,7 +25,7 @@ export interface IdeaMilestoneNetworkDto {
     value: number
 }
 
-export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumber' | 'status'>
+export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ideaId' | 'ordinalNumber' | 'status'>
 
 export type PatchIdeaMilestoneDto = Partial<IdeaMilestoneDto>
 

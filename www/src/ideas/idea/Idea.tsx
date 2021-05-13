@@ -1,21 +1,21 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React, {useEffect, useState, useMemo} from 'react';
-import {useParams} from 'react-router';
-import {useAuth} from "../../auth/AuthContext";
-import {createEmptyIdea, getIdeaById, IdeaDto} from '../ideas.api';
-import IdeaHeader from "./IdeaHeader";
-import {IdeaContentType} from "./IdeaContentTypeTabs";
-import {Route, Switch, useRouteMatch} from 'react-router-dom';
-import IdeaInfo from "./info/IdeaInfo";
-import IdeaDiscussion from "./discussion/IdeaDiscussion";
-import {breakpoints} from "../../theme/theme";
-import {IdeaMilestones} from "./milestones/IdeaMilestones";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React, { useEffect, useState, useMemo } from 'react'
+import { useParams } from 'react-router'
+import { useAuth } from '../../auth/AuthContext'
+import { createEmptyIdea, getIdea, IdeaDto } from '../ideas.api'
+import IdeaHeader from './IdeaHeader'
+import { IdeaContentType } from './IdeaContentTypeTabs'
+import { Route, Switch, useRouteMatch } from 'react-router-dom'
+import IdeaInfo from './info/IdeaInfo'
+import IdeaDiscussion from './discussion/IdeaDiscussion'
+import { breakpoints } from '../../theme/theme'
+import { IdeaMilestones } from './milestones/IdeaMilestones'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
-            backgroundColor: theme.palette.background.paper
+            backgroundColor: theme.palette.background.paper,
         },
         content: {
             padding: '2.5em 5em 3em 3em',
@@ -26,9 +26,9 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 padding: '1em 1.5em 4em 1em',
             },
-        }
+        },
     }),
-);
+)
 
 interface Props {
     network: string
@@ -37,13 +37,13 @@ interface Props {
 export const Idea = ({ network }: Props) => {
     const classes = useStyles()
 
-    let { path } = useRouteMatch();
+    let { path } = useRouteMatch()
 
     let { ideaId } = useParams<{ ideaId: string }>()
 
     const [idea, setIdea] = useState<IdeaDto>(createEmptyIdea(network))
 
-    const {isUserVerified, user} = useAuth()
+    const { isUserVerified, user } = useAuth()
 
     const canEdit = useMemo(() => {
         return isUserVerified && idea.ownerId === user?.id
@@ -51,9 +51,11 @@ export const Idea = ({ network }: Props) => {
 
     useEffect(() => {
         if (ideaId !== undefined) {
-            getIdeaById(ideaId).then((result) => {
-                setIdea(result)
-            }).catch()
+            getIdea(ideaId)
+                .then((result) => {
+                    setIdea(result)
+                })
+                .catch()
         }
     }, [ideaId])
 
@@ -77,5 +79,5 @@ export const Idea = ({ network }: Props) => {
                 </Switch>
             </div>
         </div>
-    );
+    )
 }

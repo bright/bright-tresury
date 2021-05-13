@@ -5,7 +5,7 @@ import { useHistory, useLocation } from 'react-router-dom'
 import { useAuth } from '../../../auth/AuthContext'
 import Container from '../../../components/form/Container'
 import IdeaForm from '../../form/IdeaForm'
-import { getIdeaById, IdeaDto, IdeaStatus, turnIdeaIntoProposal, updateIdea } from '../../ideas.api'
+import { getIdea, IdeaDto, IdeaStatus, turnIdeaIntoProposal, updateIdea } from '../../ideas.api'
 import { ExtrinsicDetails, SubmitProposalModal } from '../../SubmitProposalModal'
 import { RightButton, LeftButton } from '../../../components/form/buttons/Buttons'
 import { useModal } from '../../../components/modal/useModal'
@@ -28,7 +28,7 @@ const TurnIdeaIntoProposal = () => {
     useEffect(() => {
         const state = location.state as { idea?: IdeaDto }
         if (!state?.idea) {
-            getIdeaById(ideaId)
+            getIdea(ideaId)
                 .then((result) => {
                     setIdea(result)
                 })
