@@ -9,7 +9,7 @@ const EmailSignUp: React.FC = () => {
 
     return (
         <>
-            <EmailSignUpForm submit={signUp} submitButtonLabel={t('auth.signup.form.submitButton')} />
+            <EmailSignUpForm submit={signUp} submitButtonLabel={t('auth.signUp.submitButton')} />
             <AlreadySignedUp />
         </>
     )

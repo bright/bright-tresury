@@ -1,10 +1,10 @@
-import {createStyles} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import React from "react";
-import {useTranslation} from "react-i18next";
-import crossIcon from "../../../../assets/validation_rules_cross.svg";
-import tickIcon from "../../../../assets/validation_rules_tick.svg";
-import {formikErrorToArray} from "../../../../util/form.util";
+import { createStyles } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import crossIcon from '../../../../assets/validation_rules_cross.svg'
+import tickIcon from '../../../../assets/validation_rules_tick.svg'
+import { formikErrorToArray } from '../../../../util/form.util'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -19,34 +19,38 @@ const useStyles = makeStyles(() =>
         },
         label: {
             fontSize: '12px',
-            margin: 0
+            margin: 0,
         },
         labelActive: {
             fontWeight: 'bold',
         },
         labelInactive: {
             color: '#7B7B7B',
-        }
+        },
     }),
-);
+)
 
 export interface ValidationRuleLabelProps {
     message: string
     error?: string | string[]
 }
 
-export const ValidationRuleLabel: React.FC<ValidationRuleLabelProps> = ({message, error}) => {
+export const ValidationRuleLabel: React.FC<ValidationRuleLabelProps> = ({ message, error }) => {
     const classes = useStyles()
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
     const isError = formikErrorToArray(error)?.includes(message)
 
     const labelClass = isError ? classes.labelInactive : classes.labelActive
     const iconSrc = isError ? crossIcon : tickIcon
-    const iconAlt = isError ? t('auth.signup.form.password.validationError') : t('auth.signup.form.password.validationOk')
+    const iconAlt = isError
+        ? t('auth.signUp.emailSignUp.form.password.validationError')
+        : t('auth.signUp.emailSignUp.form.password.validationOk')
 
-    return <div className={classes.root}>
-        <img src={iconSrc} className={classes.icon} alt={iconAlt}/>
-        <p className={`${classes.label} ${labelClass}`}>{message}</p>
-    </div>
+    return (
+        <div className={classes.root}>
+            <img src={iconSrc} className={classes.icon} alt={iconAlt} />
+            <p className={`${classes.label} ${labelClass}`}>{message}</p>
+        </div>
+    )
 }

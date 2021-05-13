@@ -1,15 +1,15 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
-import {User} from "./user.entity";
-import {CreateUserDto} from "./dto/createUser.dto";
-import {validateOrReject} from "class-validator";
-import {plainToClass} from "class-transformer";
-import {handleFindError} from "../utils/exceptions/databaseExceptions.handler";
-import {CreateBlockchainUserDto} from "./dto/createBlockchainUser.dto";
-import {BlockchainAddress} from "./blockchainAddress/blockchainAddress.entity";
-import {BlockchainAddressService} from "./blockchainAddress/blockchainAddress.service";
-import {isValidAddress} from "../utils/address/address.validator";
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { User } from './user.entity'
+import { CreateUserDto } from './dto/createUser.dto'
+import { validateOrReject } from 'class-validator'
+import { plainToClass } from 'class-transformer'
+import { handleFindError } from '../utils/exceptions/databaseExceptions.handler'
+import { CreateBlockchainUserDto } from './dto/createBlockchainUser.dto'
+import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
+import { BlockchainAddressService } from './blockchainAddress/blockchainAddress.service'
+import { isValidAddress } from '../utils/address/address.validator'
 
 @Injectable()
 export class UsersService {
@@ -17,16 +17,13 @@ export class UsersService {
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
         private readonly blockchainAddressService: BlockchainAddressService,
-    ) {
-    }
+    ) {}
 
     async findOne(id: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail(
-                id, {
-                    relations: ['blockchainAddresses']
-                }
-            )
+            return await this.userRepository.findOneOrFail(id, {
+                relations: ['blockchainAddresses'],
+            })
         } catch (e) {
             throw handleFindError(e, 'There is no user with such id')
         }
@@ -34,7 +31,7 @@ export class UsersService {
 
     async findOneByUsername(username: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail({username})
+            return await this.userRepository.findOneOrFail({ username })
         } catch (e) {
             throw handleFindError(e, 'There is no user with such username')
         }
@@ -42,7 +39,7 @@ export class UsersService {
 
     async findOneByEmail(email: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail({email})
+            return await this.userRepository.findOneOrFail({ email })
         } catch (e) {
             throw handleFindError(e, 'There is no user with such email')
         }
@@ -50,20 +47,18 @@ export class UsersService {
 
     async findOneByAuthId(authId: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail({authId})
+            return await this.userRepository.findOneOrFail({ authId })
         } catch (e) {
             throw handleFindError(e, 'There is no user with such authId')
         }
     }
 
     async findOneByBlockchainAddress(blockchainAddress: string): Promise<User> {
-        const users = await this.userRepository.find({
-            where: {
-                blockchainAddresses: {
-                    address: blockchainAddress
-                }
-            },
-        })
+        const users = await this.userRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.blockchainAddresses', 'blockchainAddresses')
+            .where('blockchainAddresses.address = :blockchainAddress', { blockchainAddress })
+            .getMany()
         if (!users || users.length !== 1) {
             throw new NotFoundException('User not found')
         } else {
@@ -76,11 +71,7 @@ export class UsersService {
         if (!valid) {
             throw new BadRequestException('Invalid user')
         }
-        const user = new User(
-            createUserDto.authId,
-            createUserDto.username,
-            createUserDto.email
-        )
+        const user = new User(createUserDto.authId, createUserDto.username, createUserDto.email)
         const createdUser = await this.userRepository.save(user)
         return (await this.findOne(createdUser.id))!
     }
@@ -90,17 +81,12 @@ export class UsersService {
         if (!valid) {
             throw new BadRequestException('Invalid user')
         }
-        const user = await this.userRepository.save(new User(
-            createBlockchainUserDto.authId,
-            createBlockchainUserDto.username,
-            undefined,
-            [],
-        ))
-        await this.blockchainAddressService.create(new BlockchainAddress(
-            createBlockchainUserDto.blockchainAddress,
-            user,
-            true,
-        ))
+        const user = await this.userRepository.save(
+            new User(createBlockchainUserDto.authId, createBlockchainUserDto.username, undefined, []),
+        )
+        await this.blockchainAddressService.create(
+            new BlockchainAddress(createBlockchainUserDto.blockchainAddress, user, true),
+        )
         return (await this.findOne(user.id))!
     }
 
@@ -110,12 +96,12 @@ export class UsersService {
     }
 
     async validateEmail(email: string): Promise<boolean> {
-        const user = await this.userRepository.findOne({email})
+        const user = await this.userRepository.findOne({ email })
         return !user
     }
 
     async validateUsername(username: string): Promise<boolean> {
-        const user = await this.userRepository.findOne({username})
+        const user = await this.userRepository.findOne({ username })
         return !user
     }
 
@@ -126,8 +112,7 @@ export class UsersService {
             if (!validUsername) {
                 return false
             }
-            return await this.validateEmail(createUserDto.email);
-
+            return await this.validateEmail(createUserDto.email)
         } catch (e) {
             return false
         }

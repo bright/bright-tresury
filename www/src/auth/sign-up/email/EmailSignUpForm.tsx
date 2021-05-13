@@ -39,15 +39,15 @@ const EmailSignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
     }
 
     const validationSchema = Yup.object().shape({
-        username: Yup.string().required(t('auth.signup.form.emptyFieldError')),
+        username: Yup.string().required(t('auth.signUp.emailSignUp.form.emptyFieldError')),
         email: Yup.string()
-            .email(t('auth.signup.form.login.emailError'))
-            .required(t('auth.signup.form.emptyFieldError')),
+            .email(t('auth.signUp.emailSignUp.form.login.emailError'))
+            .required(t('auth.signUp.emailSignUp.form.emptyFieldError')),
         password: Yup.string()
-            .min(8, t('auth.signup.form.password.tooShort'))
-            .matches(/[a-z]+/, t('auth.signup.form.password.useLowerCaseLetter'))
-            .matches(/[0-9]+/, t('auth.signup.form.password.useNumber')),
-        userAgreement: Yup.boolean().isTrue(t('auth.signup.form.userAgreement.emptyFieldError')),
+            .min(8, t('auth.signUp.emailSignUp.form.password.tooShort'))
+            .matches(/[a-z]+/, t('auth.signUp.emailSignUp.form.password.useLowerCaseLetter'))
+            .matches(/[0-9]+/, t('auth.signUp.emailSignUp.form.password.useNumber')),
+        userAgreement: Yup.boolean().isTrue(t('auth.signUp.emailSignUp.form.userAgreement.emptyFieldError')),
     })
     const passwordValidationRules = validationSchema.fields.password.tests.map(
         ({ OPTIONS }) => OPTIONS.message?.toString() || '',
@@ -74,22 +74,22 @@ const EmailSignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
                     <SignUpComponentWrapper>
                         <Input
                             name="username"
-                            placeholder={t('auth.signup.form.username.placeholder')}
-                            label={t('auth.signup.form.username.label')}
+                            placeholder={t('auth.signUp.emailSignUp.form.username.placeholder')}
+                            label={t('auth.signUp.emailSignUp.form.username.label')}
                         />
                     </SignUpComponentWrapper>
                     <SignUpComponentWrapper>
                         <Input
                             name="email"
-                            placeholder={t('auth.signup.form.login.placeholder')}
-                            label={t('auth.signup.form.login.label')}
+                            placeholder={t('auth.signUp.emailSignUp.form.login.placeholder')}
+                            label={t('auth.signUp.emailSignUp.form.login.label')}
                         />
                     </SignUpComponentWrapper>
                     <SignUpComponentWrapper>
                         <PasswordInput
                             name="password"
-                            placeholder={t('auth.signup.form.password.placeholder')}
-                            label={t('auth.signup.form.password.label')}
+                            placeholder={t('auth.signUp.emailSignUp.form.password.placeholder')}
+                            label={t('auth.signUp.emailSignUp.form.password.label')}
                             validationRules={passwordValidationRules}
                         />
                     </SignUpComponentWrapper>
