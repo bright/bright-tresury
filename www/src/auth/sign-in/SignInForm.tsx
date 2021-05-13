@@ -6,7 +6,6 @@ import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import { Button } from '../../components/button/Button'
-import { ErrorBox } from '../../components/form/ErrorBox'
 import { Input } from '../../components/form/input/Input'
 import { PasswordInput } from '../../components/form/input/password/PasswordInput'
 import { RouterLink } from '../../components/link/RouterLink'
@@ -15,6 +14,7 @@ import { ROUTE_SIGNUP } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import { useAuth } from '../AuthContext'
 import { useSuperTokensRequest } from '../supertokens.utils/useSuperTokensRequest'
+import { InfoBox } from '../../components/form/InfoBox'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -88,7 +88,7 @@ const SignInForm = () => {
             {({ values, handleSubmit }) => (
                 <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                     {loadingState === LoadingState.Error && error ? (
-                        <ErrorBox className={classes.inputField} error={error} />
+                        <InfoBox className={classes.inputField} message={error} level={'error'} />
                     ) : null}
                     <div className={classes.inputField}>
                         <Input

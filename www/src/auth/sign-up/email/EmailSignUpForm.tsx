@@ -8,12 +8,12 @@ import { PasswordInput } from '../../../components/form/input/password/PasswordI
 import { LoadingState } from '../../../components/loading/LoadingWrapper'
 import { fullValidatorForSchema } from '../../../util/form.util'
 import { SuperTokensAPIResponse, useSuperTokensRequest } from '../../supertokens.utils/useSuperTokensRequest'
-import { SignUpComponentWrapper } from '../common/SignUpComponentWrapper'
-import { SignUpFormWrapper } from '../common/SignUpFormWrapper'
 import { UserAgreementCheckbox } from '../common/UserAgreementCheckbox'
 import { PrivacyNotice } from '../common/PrivacyNotice'
 import { SignUpButton } from '../common/SignUpButton'
 import EmailSignUpSuccess from './EmailSignUpSucces'
+import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
+import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 
 interface SignUpValues {
     username: string
@@ -70,37 +70,37 @@ const EmailSignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
             onSubmit={onSubmit}
         >
             {({ values, handleSubmit }) => (
-                <SignUpFormWrapper handleSubmit={handleSubmit}>
-                    <SignUpComponentWrapper>
+                <SignFormWrapper handleSubmit={handleSubmit}>
+                    <SignComponentWrapper>
                         <Input
                             name="username"
                             placeholder={t('auth.signUp.emailSignUp.form.username.placeholder')}
                             label={t('auth.signUp.emailSignUp.form.username.label')}
                         />
-                    </SignUpComponentWrapper>
-                    <SignUpComponentWrapper>
+                    </SignComponentWrapper>
+                    <SignComponentWrapper>
                         <Input
                             name="email"
                             placeholder={t('auth.signUp.emailSignUp.form.login.placeholder')}
                             label={t('auth.signUp.emailSignUp.form.login.label')}
                         />
-                    </SignUpComponentWrapper>
-                    <SignUpComponentWrapper>
+                    </SignComponentWrapper>
+                    <SignComponentWrapper>
                         <PasswordInput
                             name="password"
                             placeholder={t('auth.signUp.emailSignUp.form.password.placeholder')}
                             label={t('auth.signUp.emailSignUp.form.password.label')}
                             validationRules={passwordValidationRules}
                         />
-                    </SignUpComponentWrapper>
-                    <SignUpComponentWrapper>
+                    </SignComponentWrapper>
+                    <SignComponentWrapper>
                         <UserAgreementCheckbox />
-                    </SignUpComponentWrapper>
-                    <SignUpComponentWrapper>
+                    </SignComponentWrapper>
+                    <SignComponentWrapper>
                         <PrivacyNotice />
-                    </SignUpComponentWrapper>
+                    </SignComponentWrapper>
                     <SignUpButton disabled={loadingState === LoadingState.Loading} label={submitButtonLabel} />
-                </SignUpFormWrapper>
+                </SignFormWrapper>
             )}
         </Formik>
     )

@@ -6,7 +6,6 @@ import './App.css'
 import Account from './auth/account/Account'
 import { AuthContextProvider } from './auth/AuthContext'
 import SignIn from './auth/sign-in/SignIn'
-import VerifyEmail from './auth/sign-in/VerifyEmail'
 import SignUp from './auth/sign-up/SignUp'
 import IdeaCreate from './ideas/create/IdeaCreate'
 import TurnIdeaIntoProposal from './ideas/idea/turnIntoProposal/TurnIdeaIntoProposal'
@@ -39,6 +38,7 @@ import { initializeSupertokens } from './supertokens'
 import { ThemeWrapper } from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
 import { SignUpSuccess } from './auth/sign-up/common/SignUpSuccess'
+import VerifyEmail from './auth/sign-in/email/VerifyEmail'
 
 const useStyles = makeStyles(() =>
     createStyles({
