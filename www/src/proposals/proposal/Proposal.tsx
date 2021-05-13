@@ -59,11 +59,9 @@ export const Proposal = () => {
                     <Route exact={true} path={path}>
                         {proposal ? <ProposalInfo proposal={proposal} /> : null}
                     </Route>
-
                     <Route exact={true} path={`${path}/${ProposalContentType.Info}`}>
                         {proposal ? <ProposalInfo proposal={proposal} /> : null}
                     </Route>
-
                     <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
                         <ProposalMilestones />
                     </Route>

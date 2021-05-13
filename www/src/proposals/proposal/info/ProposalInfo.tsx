@@ -8,6 +8,7 @@ import { breakpoints } from '../../../theme/theme'
 import { Theme } from '@material-ui/core'
 import { ellipseTextInTheMiddle } from '../../../util/stringUtil'
 import { Placeholder } from '../../../components/text/Placeholder'
+import { useProposalInfo } from './useProposalInfo'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,6 +20,23 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 fontSize: '16px',
+            },
+        },
+        longText: {
+            padding: '20px',
+            backgroundColor: theme.palette.background.default,
+            borderRadius: '8px',
+            fontSize: '16px',
+            fontWeight: 400,
+            width: '70%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '100%',
+                padding: '16px',
+                fontSize: '18px',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                padding: '10px',
+                fontSize: '14px',
             },
         },
         spacing: {
@@ -39,33 +57,45 @@ interface Props {
 }
 
 export const ProposalInfo = ({ proposal }: Props) => {
+    const classes = useStyles()
+
     const { t } = useTranslation()
 
-    const classes = useStyles()
+    const {
+        isDescriptionVisible,
+        values: { proposer, field, reason, description },
+    } = useProposalInfo(proposal)
 
     return (
         <div>
             <Label label={t('proposal.content.info.proposer')} />
             <div className={classes.proposer}>
                 <>
-                    <Identicon address={proposal.proposer} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>
-                        {ellipseTextInTheMiddle(proposal.proposer)}
-                    </div>
+                    <Identicon address={proposer} />
+                    <div className={`${classes.accountValue} ${classes.text}`}>{ellipseTextInTheMiddle(proposer)}</div>
                 </>
             </div>
 
             <div className={classes.spacing}>
                 <Label label={t('proposal.content.info.fieldOfIdea')} />
+                <div className={classes.text}>
+                    {field || <Placeholder value={t('proposal.content.info.fieldOfIdea')} />}
+                </div>
             </div>
 
             <div className={classes.spacing}>
                 <Label label={t('proposal.content.info.reasonForIdea')} />
+                <div className={classes.longText}>
+                    {reason || <Placeholder value={t('proposal.content.info.reasonForIdea')} />}
+                </div>
             </div>
 
-            {proposal.ideaMilestoneId ? (
+            {isDescriptionVisible ? (
                 <div className={classes.spacing}>
                     <Label label={t('proposal.content.info.description')} />
+                    <div className={classes.longText}>
+                        {description || <Placeholder value={t('proposal.content.info.description')} />}
+                    </div>
                 </div>
             ) : null}
         </div>
