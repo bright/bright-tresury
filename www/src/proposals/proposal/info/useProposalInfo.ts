@@ -43,7 +43,7 @@ export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalD
         if (ideaId) {
             loadIdea(ideaId)
         }
-    }, [ideaId])
+    }, [ideaId, loadIdea])
 
     useEffect(() => {
         if (ideaMilestoneId) {
@@ -61,7 +61,7 @@ export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalD
                     // TODO: Handle API call error
                 })
         }
-    }, [ideaMilestoneId])
+    }, [ideaMilestoneId, loadIdea])
 
     return {
         values,
