@@ -1,21 +1,20 @@
-import {BadRequestException, ConflictException, Injectable, NotFoundException} from "@nestjs/common";
-import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
-import {Response} from 'express'
-import {UsersService} from "../../users/users.service";
-import {SuperTokensService} from "../supertokens/supertokens.service";
-import {CreateBlockchainUserDto} from "../../users/dto/createBlockchainUser.dto";
-import {StartBlockchainSignUpResponse, StartWeb3SignUpRequest} from "./dto/start-web3-sign-up.dto";
-import {ConfirmWeb3SignUpRequest} from "./dto/confirm-web3-sign-up.request";
-import {v4 as uuid} from 'uuid';
-import {CacheManager} from "../../cache/cache.manager";
-import {decodeAddress, signatureVerify} from '@polkadot/util-crypto';
-import {u8aToHex} from '@polkadot/util';
-import {BlockchainAddressService} from "../../users/blockchainAddress/blockchainAddress.service";
-import {isValidAddress} from "../../utils/address/address.validator";
+import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common'
+import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import { Response } from 'express'
+import { UsersService } from '../../users/users.service'
+import { SuperTokensService } from '../supertokens/supertokens.service'
+import { CreateBlockchainUserDto } from '../../users/dto/createBlockchainUser.dto'
+import { StartWeb3SignUpRequestDto, StartWeb3SignUpResponseDto } from './dto/start-web3-sign-up.dto'
+import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
+import { v4 as uuid } from 'uuid'
+import { CacheManager } from '../../cache/cache.manager'
+import { decodeAddress, signatureVerify } from '@polkadot/util-crypto'
+import { u8aToHex } from '@polkadot/util'
+import { BlockchainAddressService } from '../../users/blockchainAddress/blockchainAddress.service'
+import { isValidAddress } from '../../utils/address/address.validator'
 
 @Injectable()
 export class AuthWeb3Service {
-
     /**
      * Sign up message expiration time in seconds
      */
@@ -25,21 +24,20 @@ export class AuthWeb3Service {
         private readonly userService: UsersService,
         private readonly blockchainAddressService: BlockchainAddressService,
         private readonly superTokensService: SuperTokensService,
-        private readonly cacheManager: CacheManager
-    ) {
-    }
+        private readonly cacheManager: CacheManager,
+    ) {}
 
-    async startSignUp(startDto: StartWeb3SignUpRequest): Promise<StartBlockchainSignUpResponse> {
+    async startSignUp(startDto: StartWeb3SignUpRequestDto): Promise<StartWeb3SignUpResponseDto> {
         await this.validateAddress(startDto.address)
 
         const signMessage = uuid()
         const signMessageKey = this.getSignMessageCacheKey(startDto.address)
-        await this.cacheManager.set<string>(signMessageKey, signMessage, {ttl: this.SignMessageTtlInSeconds})
+        await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
 
-        return new StartBlockchainSignUpResponse(signMessage)
+        return new StartWeb3SignUpResponseDto(signMessage)
     }
 
-    async confirmSignUp(confirmRequest: ConfirmWeb3SignUpRequest, res: Response): Promise<void> {
+    async confirmSignUp(confirmRequest: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
         await this.validateAddress(confirmRequest.address)
 
         const signMessageKey = this.getSignMessageCacheKey(confirmRequest.address)
@@ -56,9 +54,9 @@ export class AuthWeb3Service {
         }
     }
 
-    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignUpRequest): boolean => {
-        const publicAddressKey = decodeAddress(confirmRequest.address);
-        const publicHexAddressKey = u8aToHex(publicAddressKey);
+    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignUpRequestDto): boolean => {
+        const publicAddressKey = decodeAddress(confirmRequest.address)
+        const publicHexAddressKey = u8aToHex(publicAddressKey)
 
         const result = signatureVerify(signMessage, confirmRequest.signature, publicHexAddressKey)
         return result.isValid
@@ -76,8 +74,8 @@ export class AuthWeb3Service {
     }
 
     private async createBlockchainUser(address: string, res: Response) {
-        const userUuid = uuid();
-        const password = uuid();
+        const userUuid = uuid()
+        const password = uuid()
 
         const superTokensUser: SuperTokensUser = await this.superTokensService.signUp(userUuid, password)
         const createUserDto = {
@@ -90,5 +88,4 @@ export class AuthWeb3Service {
     }
 
     private getSignMessageCacheKey = (address: string) => `SignMessage:${address}`
-
 }
