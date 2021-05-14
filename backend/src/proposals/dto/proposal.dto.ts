@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { BlockchainProposalStatus } from '../../blockchain/dto/blockchainProposal.dto'
-import { BlockchainProposalWithOrigin } from '../proposals.service'
+import { BlockchainProposalWithDomainDetails } from '../proposals.service'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -46,6 +46,16 @@ export class ProposalDto {
     })
     title?: string
 
+    @ApiProperty({
+        description: '',
+    })
+    isCreatedFromIdea: boolean
+
+    @ApiProperty({
+        description: '',
+    })
+    isCreatedFromIdeaMilestone: boolean
+
     @ApiPropertyOptional({
         description: 'Id of a corresponding idea',
     })
@@ -63,9 +73,12 @@ export class ProposalDto {
         value,
         bond,
         status,
-        idea,
-        ideaMilestone,
-    }: BlockchainProposalWithOrigin) {
+        title,
+        isCreatedFromIdea,
+        isCreatedFromIdeaMilestone,
+        ideaId,
+        ideaMilestoneId,
+    }: BlockchainProposalWithDomainDetails) {
         this.proposalIndex = proposalIndex
         this.proposer = proposer
         this.beneficiary = beneficiary
@@ -81,8 +94,10 @@ export class ProposalDto {
                 break
         }
 
-        this.title = idea?.title ?? ideaMilestone?.subject
-        this.ideaId = idea?.id
-        this.ideaMilestoneId = ideaMilestone?.id
+        this.title = title
+        this.isCreatedFromIdea = isCreatedFromIdea
+        this.isCreatedFromIdeaMilestone = isCreatedFromIdeaMilestone
+        this.ideaId = ideaId
+        this.ideaMilestoneId = ideaMilestoneId
     }
 }

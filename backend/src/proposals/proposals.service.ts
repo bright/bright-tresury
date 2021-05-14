@@ -4,14 +4,15 @@ import { BlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
 import { IdeasService } from '../ideas/ideas.service'
 import { getLogger } from '../logging.module'
 import { IdeaMilestonesService } from '../ideas/ideaMilestones/idea.milestones.service'
-import { Idea } from '../ideas/entities/idea.entity'
-import { IdeaMilestone } from '../ideas/ideaMilestones/entities/idea.milestone.entity'
 
 const logger = getLogger()
 
-export type BlockchainProposalWithOrigin = BlockchainProposal & {
-    idea?: Idea
-    ideaMilestone?: IdeaMilestone
+export type BlockchainProposalWithDomainDetails = BlockchainProposal & {
+    title?: string
+    isCreatedFromIdea: boolean
+    isCreatedFromIdeaMilestone: boolean
+    ideaId?: string
+    ideaMilestoneId?: string
 }
 
 @Injectable()
@@ -22,7 +23,7 @@ export class ProposalsService {
         private readonly ideaMilestoneService: IdeaMilestonesService,
     ) {}
 
-    async find(networkName: string): Promise<BlockchainProposalWithOrigin[]> {
+    async find(networkName: string): Promise<BlockchainProposalWithDomainDetails[]> {
         try {
             const proposals = await this.blockchainService.getProposals()
 
@@ -33,14 +34,19 @@ export class ProposalsService {
             const indexes = proposals.map(({ proposalIndex }: BlockchainProposal) => proposalIndex)
 
             const ideas = await this.ideasService.findByProposalIds(indexes, networkName)
-
             const ideaMilestones = await this.ideaMilestoneService.findByProposalIds(indexes, networkName)
 
             return proposals.map((proposal: BlockchainProposal) => {
+                const idea = ideas.get(proposal.proposalIndex)
+                const ideaMilestone = ideaMilestones.get(proposal.proposalIndex)
+
                 return {
                     ...proposal,
-                    idea: ideas.get(proposal.proposalIndex),
-                    ideaMilestone: ideaMilestones.get(proposal.proposalIndex),
+                    isCreatedFromIdea: idea !== undefined,
+                    isCreatedFromIdeaMilestone: ideaMilestone !== undefined,
+                    ideaId: idea?.id ?? ideaMilestone?.idea.id,
+                    ideaMilestoneId: ideaMilestone?.id,
+                    title: idea?.title ?? ideaMilestone?.subject,
                 }
             })
         } catch (err) {
@@ -49,7 +55,7 @@ export class ProposalsService {
         }
     }
 
-    async findOne(proposalId: number, networkName: string): Promise<BlockchainProposalWithOrigin> {
+    async findOne(proposalId: number, networkName: string): Promise<BlockchainProposalWithDomainDetails> {
         const proposals = await this.blockchainService.getProposals()
 
         const proposal = proposals.find(({ proposalIndex }: BlockchainProposal) => proposalIndex === proposalId)
@@ -59,13 +65,18 @@ export class ProposalsService {
         }
 
         const ideas = await this.ideasService.findByProposalIds([proposal.proposalIndex], networkName)
-
         const ideaMilestones = await this.ideaMilestoneService.findByProposalIds([proposal.proposalIndex], networkName)
+
+        const idea = ideas.get(proposal.proposalIndex)
+        const ideaMilestone = ideaMilestones.get(proposal.proposalIndex)
 
         return {
             ...proposal,
-            idea: ideas.get(proposal.proposalIndex),
-            ideaMilestone: ideaMilestones.get(proposal.proposalIndex),
+            isCreatedFromIdea: idea !== undefined,
+            isCreatedFromIdeaMilestone: ideaMilestone !== undefined,
+            ideaId: idea?.id ?? ideaMilestone?.idea.id,
+            ideaMilestoneId: ideaMilestone?.id,
+            title: idea?.title ?? ideaMilestone?.subject,
         }
     }
 }

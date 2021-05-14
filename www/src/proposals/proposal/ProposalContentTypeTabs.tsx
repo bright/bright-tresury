@@ -50,9 +50,12 @@ export const ProposalContentTypeTabs = ({ proposal }: Props) => {
         }
     }
 
-    // Milestones content tab should not be visible if proposal was created from idea milestone
+    // Milestones content tab should be visible only if proposal was created from idea
     const contentTypes = Object.values(ProposalContentType).filter((contentType) => {
-        return !(proposal.ideaMilestoneId && contentType === ProposalContentType.Milestones)
+        if (contentType === ProposalContentType.Milestones) {
+            return proposal.isCreatedFromIdea
+        }
+        return true
     })
 
     const tabEntries = contentTypes.map((contentType: ProposalContentType) => {

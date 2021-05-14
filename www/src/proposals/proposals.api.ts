@@ -16,6 +16,8 @@ export interface ProposalDto {
     bond: number
     status: ProposalStatus
     title?: string
+    isCreatedFromIdea: boolean
+    isCreatedFromIdeaMilestone: boolean
     ideaId?: string
     ideaMilestoneId?: string
 }

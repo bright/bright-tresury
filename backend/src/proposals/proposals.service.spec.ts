@@ -4,7 +4,7 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { IdeaNetwork } from '../ideas/entities/ideaNetwork.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
-import { BlockchainProposalWithOrigin, ProposalsService } from './proposals.service'
+import { BlockchainProposalWithDomainDetails, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
 import { Idea } from '../ideas/entities/idea.entity'
 import { IdeaMilestone } from '../ideas/ideaMilestones/entities/idea.milestone.entity'
@@ -27,6 +27,7 @@ describe('ProposalsService', () => {
     )
 
     let idea: Idea
+    let otherIdea: Idea
     let ideaMilestone: IdeaMilestone
 
     beforeAll(() => {
@@ -42,7 +43,7 @@ describe('ProposalsService', () => {
 
         idea = await createIdea(
             {
-                title: 'title',
+                title: 'ideaTitle',
                 beneficiary: uuid(),
                 networks: [{ name: 'localhost', value: 10 }],
             },
@@ -52,9 +53,9 @@ describe('ProposalsService', () => {
         idea.networks[0].blockchainProposalId = 0
         await ideaNetworkRepository().save(idea.networks[0])
 
-        const otherIdea = await createIdea(
+        otherIdea = await createIdea(
             {
-                title: 'title',
+                title: 'otherIdeaTitle',
                 beneficiary: uuid(),
                 networks: [{ name: 'localhost', value: 10 }],
             },
@@ -64,7 +65,7 @@ describe('ProposalsService', () => {
         ideaMilestone = await createIdeaMilestone(
             otherIdea.id,
             new CreateIdeaMilestoneDto(
-                'subject',
+                'ideaMilestoneSubject',
                 [{ name: 'localhost', value: 100 }],
                 uuid(),
                 null,
@@ -84,7 +85,9 @@ describe('ProposalsService', () => {
 
             expect(proposals.length).toBe(3)
 
-            const proposal1 = proposals.find(({ proposalIndex }: BlockchainProposalWithOrigin) => proposalIndex === 0)
+            const proposal1 = proposals.find(
+                ({ proposalIndex }: BlockchainProposalWithDomainDetails) => proposalIndex === 0,
+            )
 
             expect(proposal1).toBeDefined()
             expect(proposal1!.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
@@ -92,11 +95,15 @@ describe('ProposalsService', () => {
             expect(proposal1!.bond).toBe(0.001)
             expect(proposal1!.value).toBe(0.00000000000001)
             expect(proposal1!.status).toBe('proposal')
-            expect(proposal1!.idea).toBeDefined()
-            expect(proposal1!.idea!.id).toBe(idea.id)
-            expect(proposal1!.ideaMilestone).toBeUndefined()
+            expect(proposal1!.title).toBe('ideaTitle')
+            expect(proposal1!.isCreatedFromIdea).toBe(true)
+            expect(proposal1!.isCreatedFromIdeaMilestone).toBe(false)
+            expect(proposal1!.ideaId).toBe(idea.id)
+            expect(proposal1!.ideaMilestoneId).toBeUndefined()
 
-            const proposal2 = proposals.find(({ proposalIndex }: BlockchainProposalWithOrigin) => proposalIndex === 1)
+            const proposal2 = proposals.find(
+                ({ proposalIndex }: BlockchainProposalWithDomainDetails) => proposalIndex === 1,
+            )
 
             expect(proposal2).toBeDefined()
             expect(proposal2!.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
@@ -104,19 +111,26 @@ describe('ProposalsService', () => {
             expect(proposal2!.bond).toBe(40)
             expect(proposal2!.value).toBe(2000)
             expect(proposal2!.status).toBe('proposal')
-            expect(proposal2!.idea).toBeUndefined()
-            expect(proposal2!.ideaMilestone).toBeDefined()
-            expect(proposal2!.ideaMilestone!.id).toBe(ideaMilestone.id)
+            expect(proposal2!.title).toBe('ideaMilestoneSubject')
+            expect(proposal2!.isCreatedFromIdea).toBe(false)
+            expect(proposal2!.isCreatedFromIdeaMilestone).toBe(true)
+            expect(proposal2!.ideaId).toBe(otherIdea.id)
+            expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
 
-            const proposal3 = proposals.find(({ proposalIndex }: BlockchainProposalWithOrigin) => proposalIndex === 3)
+            const proposal3 = proposals.find(
+                ({ proposalIndex }: BlockchainProposalWithDomainDetails) => proposalIndex === 3,
+            )
 
             expect(proposal3!.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(proposal3!.beneficiary).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
             expect(proposal3!.bond).toBe(20)
             expect(proposal3!.value).toBe(1000)
             expect(proposal3!.status).toBe('approval')
-            expect(proposal3!.idea).toBeUndefined()
-            expect(proposal3!.ideaMilestone).toBeUndefined()
+            expect(proposal3!.title).toBeUndefined()
+            expect(proposal3!.isCreatedFromIdea).toBe(false)
+            expect(proposal3!.isCreatedFromIdeaMilestone).toBe(false)
+            expect(proposal3!.ideaId).toBeUndefined()
+            expect(proposal3!.ideaMilestoneId).toBeUndefined()
         })
     })
 
@@ -136,34 +150,45 @@ describe('ProposalsService', () => {
         it('should return idea details for proposal created from idea', async () => {
             const proposal = await proposalsService().findOne(0, 'localhost')
 
-            expect(proposal.idea).toBeDefined()
-            expect(proposal.idea!.id).toBe(idea.id)
+            expect(proposal.title).toBe('ideaTitle')
+            expect(proposal.isCreatedFromIdea).toBe(true)
+            expect(proposal.ideaId).toBe(idea.id)
         })
 
         it('should not return idea details for proposal created from idea and wrong network name', async () => {
             const proposal = await proposalsService().findOne(0, 'otherNetwork')
 
-            expect(proposal.idea).toBeUndefined()
+            expect(proposal.title).toBeUndefined()
+            expect(proposal.isCreatedFromIdea).toBe(false)
+            expect(proposal.ideaId).toBeUndefined()
         })
 
         it('should return idea milestone details for proposal created from idea milestone', async () => {
             const proposal = await proposalsService().findOne(1, 'localhost')
 
-            expect(proposal.ideaMilestone).toBeDefined()
-            expect(proposal.ideaMilestone!.id).toBe(ideaMilestone.id)
+            expect(proposal.title).toBe('ideaMilestoneSubject')
+            expect(proposal.isCreatedFromIdeaMilestone).toBe(true)
+            expect(proposal.ideaId).toBe(otherIdea.id)
+            expect(proposal.ideaMilestoneId).toBe(ideaMilestone.id)
         })
 
         it('should not return idea milestone details for proposal created from idea milestone and wrong network name', async () => {
             const proposal = await proposalsService().findOne(1, 'otherNetwork')
 
-            expect(proposal.ideaMilestone).toBeUndefined()
+            expect(proposal.title).toBeUndefined()
+            expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
+            expect(proposal.ideaId).toBeUndefined()
+            expect(proposal.ideaMilestoneId).toBeUndefined()
         })
 
         it('should not return idea nor idea milestone details for proposal created externally', async () => {
             const proposal = await proposalsService().findOne(3, 'localhost')
 
-            expect(proposal.idea).toBeUndefined()
-            expect(proposal.ideaMilestone).toBeUndefined()
+            expect(proposal.title).toBeUndefined()
+            expect(proposal.isCreatedFromIdea).toBe(false)
+            expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
+            expect(proposal.ideaId).toBeUndefined()
+            expect(proposal.ideaMilestoneId).toBeUndefined()
         })
 
         it('should throw not found exception for not existing proposal', async () => {

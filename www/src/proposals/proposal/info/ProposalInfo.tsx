@@ -62,7 +62,6 @@ export const ProposalInfo = ({ proposal }: Props) => {
     const { t } = useTranslation()
 
     const {
-        isDescriptionVisible,
         values: { proposer, field, reason, description },
     } = useProposalInfo(proposal)
 
@@ -90,7 +89,7 @@ export const ProposalInfo = ({ proposal }: Props) => {
                 </div>
             </div>
 
-            {isDescriptionVisible ? (
+            {proposal.isCreatedFromIdeaMilestone ? (
                 <div className={classes.spacing}>
                     <Label label={t('proposal.content.info.description')} />
                     <div className={classes.longText}>

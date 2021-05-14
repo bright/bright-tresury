@@ -10,7 +10,6 @@ import { CreateIdeaMilestoneDto } from './dto/createIdeaMilestoneDto'
 import { IdeaMilestoneNetwork } from './entities/idea.milestone.network.entity'
 import { IdeaMilestonesService } from './idea.milestones.service'
 import { Repository } from 'typeorm'
-import { IdeaNetwork } from '../entities/ideaNetwork.entity'
 import { getRepositoryToken } from '@nestjs/typeorm'
 
 describe(`/api/v1/ideas`, () => {
@@ -19,8 +18,8 @@ describe(`/api/v1/ideas`, () => {
     const getIdeasService = () => app.get().get(IdeasService)
     const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
-    const ideaNetworkRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)),
+    const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
+        app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork)),
     )
 
     let idea: Idea
@@ -217,29 +216,69 @@ describe(`/api/v1/ideas`, () => {
 
     describe('findByProposalIds', () => {
         it('should return idea milestones for given proposal ids and network name', async () => {
-            idea.networks[0].blockchainProposalId = 0
-            await ideaNetworkRepository().save(idea.networks[0])
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                new CreateIdeaMilestoneDto(
+                    'draftIdeaMilestoneSubject1',
+                    [{ name: 'polkadot', value: 100 }],
+                    null,
+                    null,
+                    null,
+                    null,
+                ),
+                sessionData,
+            )
 
-            const result = await getIdeasService().findByProposalIds([0], 'polkadot')
+            ideaMilestone.networks[0].blockchainProposalId = 0
+            await ideaMilestoneNetworkRepository().save(ideaMilestone.networks[0])
+
+            const result = await getIdeaMilestonesService().findByProposalIds([0], 'polkadot')
 
             expect(result.size).toBe(1)
-            expect(result.get(0)?.id).toBe(idea.id)
+            expect(result.get(0)?.id).toBe(ideaMilestone.id)
+            expect(result.get(0)?.idea.id).toBe(idea.id)
         })
 
         it('should not return idea milestones for other network name', async () => {
-            idea.networks[0].blockchainProposalId = 0
-            await ideaNetworkRepository().save(idea.networks[0])
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                new CreateIdeaMilestoneDto(
+                    'draftIdeaMilestoneSubject1',
+                    [{ name: 'polkadot', value: 100 }],
+                    null,
+                    null,
+                    null,
+                    null,
+                ),
+                sessionData,
+            )
 
-            const result = await getIdeasService().findByProposalIds([0], 'kusama')
+            ideaMilestone.networks[0].blockchainProposalId = 0
+            await ideaMilestoneNetworkRepository().save(ideaMilestone.networks[0])
+
+            const result = await getIdeaMilestonesService().findByProposalIds([0], 'kusama')
 
             expect(result.size).toBe(0)
         })
 
         it('should not return idea milestones for other proposal ids', async () => {
-            idea.networks[0].blockchainProposalId = 0
-            await ideaNetworkRepository().save(idea.networks[0])
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                new CreateIdeaMilestoneDto(
+                    'draftIdeaMilestoneSubject1',
+                    [{ name: 'polkadot', value: 100 }],
+                    null,
+                    null,
+                    null,
+                    null,
+                ),
+                sessionData,
+            )
 
-            const result = await getIdeasService().findByProposalIds([1, 2], 'polkadot')
+            ideaMilestone.networks[0].blockchainProposalId = 0
+            await ideaMilestoneNetworkRepository().save(ideaMilestone.networks[0])
+
+            const result = await getIdeaMilestonesService().findByProposalIds([1, 2], 'polkadot')
 
             expect(result.size).toBe(0)
         })

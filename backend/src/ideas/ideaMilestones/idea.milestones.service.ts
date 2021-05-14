@@ -54,11 +54,11 @@ export class IdeaMilestonesService {
             },
         })
 
-        ideaMilestoneNetworks.forEach(({ blockchainProposalId, ideaMilestone }: IdeaMilestoneNetwork) => {
+        for (const { blockchainProposalId, ideaMilestone } of ideaMilestoneNetworks) {
             if (blockchainProposalId !== null && ideaMilestone) {
-                result.set(blockchainProposalId, ideaMilestone)
+                result.set(blockchainProposalId, await this.findOne(ideaMilestone.id))
             }
-        })
+        }
 
         return result
     }

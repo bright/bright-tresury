@@ -12,6 +12,7 @@ import { CreateIdeaMilestoneDto } from '../ideas/ideaMilestones/dto/createIdeaMi
 import { IdeaMilestoneNetwork } from '../ideas/ideaMilestones/entities/idea.milestone.network.entity'
 import { IdeaMilestone } from '../ideas/ideaMilestones/entities/idea.milestone.entity'
 import { Repository } from 'typeorm'
+import exp from 'constants'
 
 const baseUrl = '/api/v1/proposals'
 
@@ -19,6 +20,7 @@ describe(`/api/v1/proposals`, () => {
     const app = beforeSetupFullApp()
 
     let idea: Idea
+    let otherIdea: Idea
     let ideaMilestone: IdeaMilestone
 
     const ideaNetworkRepository = beforeAllSetup(() =>
@@ -42,7 +44,7 @@ describe(`/api/v1/proposals`, () => {
 
         idea = await createIdea(
             {
-                title: 'title',
+                title: 'ideaTitle',
                 beneficiary: uuid(),
                 networks: [{ name: 'localhost', value: 10 }],
             },
@@ -52,9 +54,9 @@ describe(`/api/v1/proposals`, () => {
         idea.networks[0].blockchainProposalId = 0
         await ideaNetworkRepository().save(idea.networks[0])
 
-        const otherIdea = await createIdea(
+        otherIdea = await createIdea(
             {
-                title: 'title',
+                title: 'otherIdeaTitle',
                 beneficiary: uuid(),
                 networks: [{ name: 'localhost', value: 10 }],
             },
@@ -64,7 +66,7 @@ describe(`/api/v1/proposals`, () => {
         ideaMilestone = await createIdeaMilestone(
             otherIdea.id,
             new CreateIdeaMilestoneDto(
-                'subject',
+                'ideaMilestoneSubject',
                 [{ name: 'localhost', value: 100 }],
                 uuid(),
                 null,
@@ -102,7 +104,9 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal1!.bond).toBe(0.001)
             expect(proposal1!.value).toBe(0.00000000000001)
             expect(proposal1!.status).toBe('submitted')
-            expect(proposal1!.title).toBe('title')
+            expect(proposal1!.title).toBe('ideaTitle')
+            expect(proposal1!.isCreatedFromIdea).toBe(true)
+            expect(proposal1!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal1!.ideaId).toBe(idea.id)
             expect(proposal1!.ideaMilestoneId).toBeUndefined()
 
@@ -114,8 +118,10 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal2!.bond).toBe(40)
             expect(proposal2!.value).toBe(2000)
             expect(proposal2!.status).toBe('submitted')
-            expect(proposal2!.title).toBe('subject')
-            expect(proposal2!.ideaId).toBeUndefined()
+            expect(proposal2!.title).toBe('ideaMilestoneSubject')
+            expect(proposal2!.isCreatedFromIdea).toBe(false)
+            expect(proposal2!.isCreatedFromIdeaMilestone).toBe(true)
+            expect(proposal2!.ideaId).toBe(otherIdea.id)
             expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
 
             const proposal3 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 3)
@@ -126,6 +132,8 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal3!.value).toBe(1000)
             expect(proposal3!.status).toBe('approved')
             expect(proposal3!.title).toBeUndefined()
+            expect(proposal3!.isCreatedFromIdea).toBe(false)
+            expect(proposal3!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal3!.ideaId).toBeUndefined()
             expect(proposal3!.ideaMilestoneId).toBeUndefined()
         })
@@ -158,7 +166,8 @@ describe(`/api/v1/proposals`, () => {
             expect(body.bond).toBe(0.001)
             expect(body.value).toBe(0.00000000000001)
             expect(body.status).toBe('submitted')
-            expect(body.title).toBe('title')
+            expect(body.title).toBe('ideaTitle')
+            expect(body.isCreatedFromIdea).toBe(true)
             expect(body.ideaId).toBe(idea.id)
         })
 
@@ -172,7 +181,9 @@ describe(`/api/v1/proposals`, () => {
             expect(body.bond).toBe(40)
             expect(body.value).toBe(2000)
             expect(body.status).toBe('submitted')
-            expect(body.title).toBe('subject')
+            expect(body.title).toBe('ideaMilestoneSubject')
+            expect(body.isCreatedFromIdeaMilestone).toBe(true)
+            expect(body.ideaId).toBe(otherIdea.id)
             expect(body.ideaMilestoneId).toBe(ideaMilestone.id)
         })
 
@@ -187,6 +198,8 @@ describe(`/api/v1/proposals`, () => {
             expect(body.value).toBe(1000)
             expect(body.status).toBe('approved')
             expect(body.title).toBeUndefined()
+            expect(body.isCreatedFromIdea).toBe(false)
+            expect(body.isCreatedFromIdeaMilestone).toBe(false)
             expect(body.ideaId).toBeUndefined()
             expect(body.ideaMilestoneId).toBeUndefined()
         })

@@ -1,5 +1,5 @@
 import { ProposalDto } from '../../proposals.api'
-import { useEffect, useState, useMemo, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { getIdea } from '../../../ideas/ideas.api'
 import { getIdeaMilestone } from '../../../ideas/idea/milestones/idea.milestones.api'
 import { Nil } from '../../../util/types'
@@ -19,52 +19,42 @@ export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalD
         description: '',
     })
 
-    const isDescriptionVisible = useMemo(() => {
-        return ideaMilestoneId !== null && ideaMilestoneId !== undefined
-    }, [ideaMilestoneId])
-
-    const loadIdea = useCallback((ideaId: string) => {
-        getIdea(ideaId)
-            .then(({ field, content }) => {
-                setValues((prevState) => {
-                    return {
-                        ...prevState,
-                        field,
-                        reason: content,
-                    }
-                })
-            })
-            .catch(() => {
-                // TODO: Handle API call error
-            })
-    }, [])
-
     useEffect(() => {
         if (ideaId) {
-            loadIdea(ideaId)
+            getIdea(ideaId)
+                .then(({ field, content }) => {
+                    setValues((prevState) => {
+                        return {
+                            ...prevState,
+                            field,
+                            reason: content,
+                        }
+                    })
+                })
+                .catch(() => {
+                    // TODO: Handle API call error
+                })
         }
-    }, [ideaId, loadIdea])
+    }, [ideaId])
 
     useEffect(() => {
-        if (ideaMilestoneId) {
-            getIdeaMilestone(ideaMilestoneId)
-                .then(({ ideaId, description }) => {
+        if (ideaId && ideaMilestoneId) {
+            getIdeaMilestone(ideaId, ideaMilestoneId)
+                .then(({ description }) => {
                     setValues((prevState) => {
                         return {
                             ...prevState,
                             description,
                         }
                     })
-                    loadIdea(ideaId)
                 })
                 .catch(() => {
                     // TODO: Handle API call error
                 })
         }
-    }, [ideaMilestoneId, loadIdea])
+    }, [ideaId, ideaMilestoneId])
 
     return {
         values,
-        isDescriptionVisible,
     }
 }
