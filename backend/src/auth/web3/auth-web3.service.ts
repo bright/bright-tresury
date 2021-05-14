@@ -4,14 +4,15 @@ import { Response } from 'express'
 import { UsersService } from '../../users/users.service'
 import { SuperTokensService } from '../supertokens/supertokens.service'
 import { CreateBlockchainUserDto } from '../../users/dto/createBlockchainUser.dto'
-import { StartWeb3SignUpRequestDto, StartWeb3SignUpResponseDto } from './dto/start-web3-sign-up.dto'
-import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 import { v4 as uuid } from 'uuid'
 import { CacheManager } from '../../cache/cache.manager'
 import { decodeAddress, signatureVerify } from '@polkadot/util-crypto'
 import { u8aToHex } from '@polkadot/util'
 import { BlockchainAddressService } from '../../users/blockchainAddress/blockchainAddress.service'
 import { isValidAddress } from '../../utils/address/address.validator'
+import { StartWeb3SignRequestDto, StartWeb3SignResponseDto } from './dto/start-web3-sign.dto'
+import { ConfirmWeb3SignRequestDto } from './dto/confirm-web3-sign-request.dto'
+import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 
 @Injectable()
 export class AuthWeb3Service {
@@ -27,17 +28,17 @@ export class AuthWeb3Service {
         private readonly cacheManager: CacheManager,
     ) {}
 
-    async startSignIn(startDto: StartWeb3SignRequest): Promise<StartWeb3SignResponse> {
+    async startSignIn(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
         await this.validateAddressForSignIn(startDto.address)
 
         const signMessage = uuid()
         const signMessageKey = this.getSignInMessageCacheKey(startDto.address)
-        await this.cacheManager.set<string>(signMessageKey, signMessage, {ttl: this.SignMessageTtlMs})
+        await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
 
-        return new StartWeb3SignResponse(signMessage)
+        return new StartWeb3SignResponseDto(signMessage)
     }
 
-    async confirmSignIn(confirmRequest: ConfirmWeb3SignRequest, res: Response): Promise<void> {
+    async confirmSignIn(confirmRequest: ConfirmWeb3SignRequestDto, res: Response): Promise<void> {
         await this.validateAddressForSignIn(confirmRequest.address)
 
         const signMessageKey = this.getSignInMessageCacheKey(confirmRequest.address)
@@ -56,14 +57,14 @@ export class AuthWeb3Service {
         }
     }
 
-    async startSignUp(startDto: StartWeb3SignUpRequestDto): Promise<StartWeb3SignUpResponseDto> {
+    async startSignUp(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
         await this.validateAddress(startDto.address)
 
         const signMessage = uuid()
         const signMessageKey = this.getSignUpMessageCacheKey(startDto.address)
         await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
 
-        return new StartWeb3SignUpResponseDto(signMessage)
+        return new StartWeb3SignResponseDto(signMessage)
     }
 
     async confirmSignUp(confirmRequest: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
@@ -84,9 +85,9 @@ export class AuthWeb3Service {
         }
     }
 
-    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignRequest): boolean => {
-        const publicAddressKey = decodeAddress(confirmRequest.address);
-        const publicHexAddressKey = u8aToHex(publicAddressKey);
+    validateSignature = (signMessage: string, confirmRequest: ConfirmWeb3SignRequestDto): boolean => {
+        const publicAddressKey = decodeAddress(confirmRequest.address)
+        const publicHexAddressKey = u8aToHex(publicAddressKey)
 
         const result = signatureVerify(signMessage, confirmRequest.signature, publicHexAddressKey)
         return result.isValid
@@ -131,5 +132,4 @@ export class AuthWeb3Service {
 
     private getSignUpMessageCacheKey = (address: string) => `SignUpMessage:${address}`
     private getSignInMessageCacheKey = (address: string) => `SignInMessage:${address}`
-
 }

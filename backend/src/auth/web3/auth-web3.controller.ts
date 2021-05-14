@@ -1,9 +1,16 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common'
-import { ApiBadRequestResponse, ApiConflictResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import {
+    ApiBadRequestResponse,
+    ApiConflictResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiTags,
+} from '@nestjs/swagger'
 import { AuthWeb3Service } from './auth-web3.service'
-import { StartWeb3SignUpRequestDto, StartWeb3SignUpResponseDto } from './dto/start-web3-sign-up.dto'
+import { StartWeb3SignRequestDto, StartWeb3SignResponseDto } from './dto/start-web3-sign.dto'
 import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 import { Response } from 'express'
+import { ConfirmWeb3SignRequestDto } from './dto/confirm-web3-sign-request.dto'
 
 @Controller('/v1/auth/web3')
 @ApiTags('auth.web3')
@@ -13,39 +20,36 @@ export class AuthWeb3Controller {
     @Post('/signin/start')
     @ApiOkResponse({
         description: 'Sign in successfully started',
-        type: [StartWeb3SignResponse]
+        type: [StartWeb3SignResponseDto],
     })
     @ApiBadRequestResponse({
-        description: 'Requested address is invalid'
+        description: 'Requested address is invalid',
     })
     @ApiNotFoundResponse({
-        description: 'Requested address does not belong to any existing user'
+        description: 'Requested address does not belong to any existing user',
     })
-    async startSignIn(@Body() startRequest: StartWeb3SignRequest): Promise<StartWeb3SignResponse> {
+    async startSignIn(@Body() startRequest: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
         return this.authWeb3Service.startSignIn(startRequest)
     }
 
     @Post('/signin/confirm')
     @ApiOkResponse({
         description: 'Sign in successfully confirmed',
-        type: [StartWeb3SignResponse]
+        type: [StartWeb3SignResponseDto],
     })
     @ApiBadRequestResponse({
-        description: 'Requested address is invalid'
+        description: 'Requested address is invalid',
     })
     @ApiBadRequestResponse({
-        description: 'Requested address did not start sign in before'
+        description: 'Requested address did not start sign in before',
     })
     @ApiBadRequestResponse({
-        description: 'Requested signature is not valid'
+        description: 'Requested signature is not valid',
     })
     @ApiNotFoundResponse({
-        description: 'Requested address does not belong to any existing user'
+        description: 'Requested address does not belong to any existing user',
     })
-    async confirmSignIn(
-        @Body() confirmRequest: ConfirmWeb3SignRequest,
-        @Res() res: Response
-    ) {
+    async confirmSignIn(@Body() confirmRequest: ConfirmWeb3SignRequestDto, @Res() res: Response) {
         await this.authWeb3Service.confirmSignIn(confirmRequest, res)
         res.status(HttpStatus.OK).send()
     }
@@ -53,7 +57,7 @@ export class AuthWeb3Controller {
     @Post('/signup/start')
     @ApiOkResponse({
         description: 'Sign up successfully started',
-        type: [StartWeb3SignUpResponseDto],
+        type: [StartWeb3SignResponseDto],
     })
     @ApiBadRequestResponse({
         description: 'Requested address is invalid',
@@ -61,14 +65,14 @@ export class AuthWeb3Controller {
     @ApiConflictResponse({
         description: 'Requested address already exists',
     })
-    async startSignUp(@Body() startRequest: StartWeb3SignUpRequestDto): Promise<StartWeb3SignUpResponseDto> {
+    async startSignUp(@Body() startRequest: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
         return this.authWeb3Service.startSignUp(startRequest)
     }
 
     @Post('/signup/confirm')
     @ApiOkResponse({
         description: 'Signup successfully confirmed',
-        type: [StartWeb3SignUpResponseDto],
+        type: [StartWeb3SignResponseDto],
     })
     @ApiBadRequestResponse({
         description: 'Requested address or signature is not valid',
