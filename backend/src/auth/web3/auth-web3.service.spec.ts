@@ -114,7 +114,7 @@ describe(`Auth Web3 Service`, () => {
         })
     })
     describe('confirm sign in', () => {
-        it('in creates session', async () => {
+        it('creates session', async () => {
             const createSessionSpy = jest.spyOn(getSuperTokensService(), 'createSession')
             const initialCallsCount = createSessionSpy.mock.calls.length
             jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)

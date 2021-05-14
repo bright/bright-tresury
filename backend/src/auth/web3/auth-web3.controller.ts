@@ -38,13 +38,7 @@ export class AuthWeb3Controller {
         type: [StartWeb3SignResponseDto],
     })
     @ApiBadRequestResponse({
-        description: 'Requested address is invalid',
-    })
-    @ApiBadRequestResponse({
-        description: 'Requested address did not start sign in before',
-    })
-    @ApiBadRequestResponse({
-        description: 'Requested signature is not valid',
+        description: 'Requested address or signature is invalid or requested address did not start sign in before',
     })
     @ApiNotFoundResponse({
         description: 'Requested address does not belong to any existing user',
