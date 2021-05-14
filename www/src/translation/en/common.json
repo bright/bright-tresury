@@ -1,359 +1,359 @@
 {
-  "common": {
-    "dateTime": {
-      "day": "day",
-      "days": "days"
-    }
-  },
-  "components": {
-    "timeSelect": {
-      "currentSpendTime": "Current Spend Time"
-    },
-    "network": {
-      "rewardDeposit": {
-        "reward": "Reward",
-        "deposit": "Deposit"
-      }
-    }
-  },
-  "form": {
-    "inputs": {
-      "checkbox": {
-        "checked": "Checked",
-        "notChecked": "Not checked"
-      }
-    }
-  },
-  "topBar": {
-    "signIn": "Sign In",
-    "showAccountMenu": "Account menu",
-    "account": {
-      "emailVerificationNeeded": "Email verification needed",
-      "account": "Account",
-      "ideas": "Your Ideas (1)",
-      "proposals": "Your Proposals (1)",
-      "bounties": "Your Bounties (1)",
-      "signOut": "Log out"
-    }
-  },
-  "menu": {
-    "stats": "Stats",
-    "ideas": "Ideas",
-    "proposals": "Proposals",
-    "tips": "Tips",
-    "bounties": "Bounties",
-    "whatForLabel": "What is Treasury app for?",
-    "learnMoreLabel": "Learn more"
-  },
-  "account": {
-    "title": "Account",
-    "emailPassword": {
-      "username": "Username",
-      "login": "Login",
-      "resetPassword": "ResetPassword",
-      "addEmailCredentials": "Add Email Credentials",
-      "emailVerificationNeeded": "Email verification needed",
-      "resendEmail": "Resend verification email",
-      "emailResent": "Verification email resent",
-      "emailSendingError": "An error occured when sending email, please try again later"
-    },
-    "web3": {
-      "web3Account": "Web3 Account",
-      "unlink": "Unlink account",
-      "primary": "Primary account",
-      "add": "+ Add blockchain account"
-    }
-  },
-  "auth": {
-    "passwordShow": "Show password button",
-    "passwordHide": "Hide password button",
-    "errors": {
-      "generalError": "Something went wrong. Please try again later.",
-      "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct.",
-      "emailAlreadyVerifiedError": "Email is already verified."
-    },
-    "signUp": {
-      "title": "Sign up",
-      "emailSignUpLabel": "E-mail sign up",
-      "web3SignUpLabel": "Web 3 address sign up",
-      "logInLabel": "Already have an account? <a>Log in</a>",
-      "submitButton": "Sign up",
-      "userAgreement": {
-        "label": "I have read and agree to the terms of the <a>BrightTreasury user agreement</a>.",
-        "emptyFieldError": "You need to agree to the terms of the user agreement"
-      },
-      "emptyFieldError": "This field cannot be empty",
-      "privacyNotice": "To see how we use your personal data please see our <a>privacy notice</a>.",
-      "emailSignUp": {
-        "form": {
-          "username": {
-            "label": "Username",
-            "placeholder": "Enter your username"
-          },
-          "login": {
-            "label": "Login",
-            "placeholder": "Enter your email",
-            "emailError": "Please see if your email address is correct"
-          },
-          "password": {
-            "label": "Password",
-            "placeholder": "Enter at least 8 characters",
-            "tooShort": "Use 8 or more characters",
-            "useNumber": "Use a number (e.g. 1234)",
-            "useLowerCaseLetter": "Use a lower case letter (e.g. abc)",
-            "validationOk": "Validation OK",
-            "validationError": "Validation Error"
-          },
-          "successSubtitle": "Please check your email to confirm the registration"
+    "common": {
+        "dateTime": {
+            "day": "day",
+            "days": "days"
         }
-      },
-      "web3SignUp": {
-        "failureMessage": "Signing up with blockchain account failed.",
-        "extensionNotDetected": "Polkadot-js extension not detected.\nNo web 3 account integration could be found. To be able to vote on-chain, visit\nthis page on a computer with polkadot-js extension.",
-        "signUpWithEmail": "Sign up with your email",
-        "successSubtitle": "Start your experience with Bright Treasury"
-      },
-      "success": {
-        "title": "Congrats! You have successfully registered!",
-        "mailboxImage": "Image of a mailbox"
-      }
     },
-    "signIn": {
-      "title": "Login",
-      "emailSignInLabel": "E-mail login",
-      "web3SignInLabel": "Web 3 address login",
-      "signUpLabel": "Don't have an account? <a>Sign up</a>",
-      "submitButton": "Login",
-      "web3SignIn": {
-        "userDoesNotExist": "User with this address don't exist. Please sign up first.",
-        "failureMessage": "Signing in with blockchain account failed."
-      },
-      "emailSignIn": {
-        "emptyFieldError": "This field cannot be empty",
-        "login": {
-          "label": "Login",
-          "placeholder": "Enter your email"
+    "components": {
+        "timeSelect": {
+            "currentSpendTime": "Current Spend Time"
         },
-        "password": {
-          "label": "Password",
-          "placeholder": "Enter your password"
+        "network": {
+            "rewardDeposit": {
+                "reward": "Reward",
+                "deposit": "Deposit"
+            }
+        }
+    },
+    "form": {
+        "inputs": {
+            "checkbox": {
+                "checked": "Checked",
+                "notChecked": "Not checked"
+            }
+        }
+    },
+    "topBar": {
+        "signIn": "Sign In",
+        "showAccountMenu": "Account menu",
+        "account": {
+            "emailVerificationNeeded": "Email verification needed",
+            "account": "Account",
+            "ideas": "Your Ideas (1)",
+            "proposals": "Your Proposals (1)",
+            "bounties": "Your Bounties (1)",
+            "signOut": "Log out"
+        }
+    },
+    "menu": {
+        "stats": "Stats",
+        "ideas": "Ideas",
+        "proposals": "Proposals",
+        "tips": "Tips",
+        "bounties": "Bounties",
+        "whatForLabel": "What is Treasury app for?",
+        "learnMoreLabel": "Learn more"
+    },
+    "account": {
+        "title": "Account",
+        "emailPassword": {
+            "username": "Username",
+            "login": "Login",
+            "resetPassword": "ResetPassword",
+            "addEmailCredentials": "Add Email Credentials",
+            "emailVerificationNeeded": "Email verification needed",
+            "resendEmail": "Resend verification email",
+            "emailResent": "Verification email resent",
+            "emailSendingError": "An error occured when sending email, please try again later"
         },
-        "forgotPassword": "Forgot Password?"
-      },
-      "verifyEmail": {
-        "success": {
-          "title": "Sign up success",
-          "subtitle": "Welcome to the family!",
-          "information": "You have successfully registered. <a>Log in</a> and experience Bright Treasury app’s potential to the fullest!"
+        "web3": {
+            "web3Account": "Web3 Account",
+            "unlink": "Unlink account",
+            "primary": "Primary account",
+            "add": "+ Add blockchain account"
+        }
+    },
+    "auth": {
+        "passwordShow": "Show password button",
+        "passwordHide": "Hide password button",
+        "errors": {
+            "generalError": "Something went wrong. Please try again later.",
+            "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct.",
+            "emailAlreadyVerifiedError": "Email is already verified."
+        },
+        "signUp": {
+            "title": "Sign up",
+            "emailSignUpLabel": "E-mail sign up",
+            "web3SignUpLabel": "Web 3 address sign up",
+            "logInLabel": "Already have an account? <a>Log in</a>",
+            "submitButton": "Sign up",
+            "userAgreement": {
+                "label": "I have read and agree to the terms of the <a>BrightTreasury user agreement</a>.",
+                "emptyFieldError": "You need to agree to the terms of the user agreement"
+            },
+            "emptyFieldError": "This field cannot be empty",
+            "privacyNotice": "To see how we use your personal data please see our <a>privacy notice</a>.",
+            "emailSignUp": {
+                "form": {
+                    "username": {
+                        "label": "Username",
+                        "placeholder": "Enter your username"
+                    },
+                    "login": {
+                        "label": "Login",
+                        "placeholder": "Enter your email",
+                        "emailError": "Please see if your email address is correct"
+                    },
+                    "password": {
+                        "label": "Password",
+                        "placeholder": "Enter at least 8 characters",
+                        "tooShort": "Use 8 or more characters",
+                        "useNumber": "Use a number (e.g. 1234)",
+                        "useLowerCaseLetter": "Use a lower case letter (e.g. abc)",
+                        "validationOk": "Validation OK",
+                        "validationError": "Validation Error"
+                    },
+                    "successSubtitle": "Please check your email to confirm the registration"
+                }
+            },
+            "web3SignUp": {
+                "failureMessage": "Signing up with blockchain account failed.",
+                "extensionNotDetected": "Polkadot-js extension not detected.\nNo web 3 account integration could be found. To be able to vote on-chain, visit\nthis page on a computer with polkadot-js extension.",
+                "signUpWithEmail": "Sign up with your email",
+                "successSubtitle": "Start your experience with Bright Treasury"
+            },
+            "success": {
+                "title": "Congrats! You have successfully registered!",
+                "mailboxImage": "Image of a mailbox"
+            }
+        },
+        "signIn": {
+            "title": "Login",
+            "emailSignInLabel": "E-mail login",
+            "web3SignInLabel": "Web 3 address login",
+            "signUpLabel": "Don't have an account? <a>Sign up</a>",
+            "submitButton": "Login",
+            "web3SignIn": {
+                "userDoesNotExist": "User with this address doesn't exist. Please sign up first.",
+                "failureMessage": "Signing in with blockchain account failed."
+            },
+            "emailSignIn": {
+                "emptyFieldError": "This field cannot be empty",
+                "login": {
+                    "label": "Login",
+                    "placeholder": "Enter your email"
+                },
+                "password": {
+                    "label": "Password",
+                    "placeholder": "Enter your password"
+                },
+                "forgotPassword": "Forgot Password?"
+            },
+            "verifyEmail": {
+                "success": {
+                    "title": "Sign up success",
+                    "subtitle": "Welcome to the family!",
+                    "information": "You have successfully registered. <a>Log in</a> and experience Bright Treasury app’s potential to the fullest!"
+                },
+                "error": {
+                    "title": "Sign up error",
+                    "subtitle": "Oops.. Seems like something went wrong",
+                    "information": "Either your email has already been confirmed or the token has expired",
+                    "resendEmail": "Resend email",
+                    "emailResent": "Please check your email to confirm the registration"
+                }
+            }
+        }
+    },
+    "idea": {
+        "ordinalNumberPrefix": "Idea - ",
+        "details": {
+            "title": "Title",
+            "beneficiary": "Beneficiary",
+            "field": "Field of Idea",
+            "content": "Reason of Proposal",
+            "contact": "Proposer's information",
+            "portfolio": "Portfolio",
+            "reward": "Reward",
+            "links": "Links",
+            "form": {
+                "linkPlaceholder": "Add external link to your proposal here",
+                "addLink": "+ Add Link",
+                "emptyFieldError": "This field cannot be empty",
+                "nonZeroFieldError": "The value must be greater than zero",
+                "wrongBeneficiaryError": "Wrong beneficiary address",
+                "showAll": "Show all information",
+                "showLess": "Show less information"
+            },
+            "header": {
+                "turnIntoProposal": "Convert to Proposal"
+            },
+            "create": "Create",
+            "edit": "Edit",
+            "editAndActivate": "Edit and activate",
+            "saveDraft": "Save as Draft",
+            "submitProposal": "Submit Proposal",
+            "signAndSubmit": "Sign and submit",
+            "submitProposalModal": {
+                "title": "You are about to convert your idea into proposal",
+                "warningMessage": "In order to submit your proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your proposal will be <strong>rejected you will lose the bond</strong>. If your proposal is approved you will get the deposit money back.",
+                "eventDescription": "event propose spend finished"
+            }
+        },
+        "content": {
+            "infoLabel": "Info",
+            "milestonesLabel": "Milestones",
+            "discussionLabel": "Discussion",
+            "info": {
+                "reward": "Reward",
+                "deposit": "Deposit"
+            }
+        },
+        "turnIntoProposal": {
+            "title": "Convert to Proposal",
+            "cancel": "Cancel",
+            "submit": "Submit",
+            "cannotTurnError": "This idea is already converted into proposal"
+        },
+        "list": {
+            "card": {
+                "statusDraft": "Draft",
+                "statusActive": "Active",
+                "statusTurnedIntoProposal": "Turned into Proposal",
+                "statusTurnedIntoProposalByMilestone": "Turned into Proposal by Milestone",
+                "statusClosed": "Closed",
+                "beneficiary": "(Beneficiary)"
+            },
+            "filters": {
+                "all": "All",
+                "mine": "Mine",
+                "draft": "Draft",
+                "active": "Active",
+                "turnedIntoProposal": "Turned into Proposal",
+                "closed": "Closed"
+            }
+        },
+        "milestones": {
+            "createMilestone": "+ Create Milestone",
+            "ordinalNumberPrefix": "Milestone - ",
+            "emptyMilestonesArrayInfo": "Please add milestones for this idea, milestones will allow our community appereciate the idea more and understand it better",
+            "modal": {
+                "milestone": "Milestone",
+                "createMilestone": "Create Milestone",
+                "editMilestone": "Edit Milestone",
+                "form": {
+                    "emptyFieldError": "This field cannot be empty",
+                    "nonZeroFieldError": "The value must be greater than zero",
+                    "endDatePriorToStartDateError": "End date can't be prior to the start date",
+                    "yourMilestone": "Your Milestone",
+                    "subject": "Subject",
+                    "beneficiary": "Beneficiary",
+                    "date": "Date",
+                    "selectFrom": "Select From",
+                    "selectTo": "Select To",
+                    "budget": "Budget",
+                    "description": "Description",
+                    "describeMilestone": "Describe the Milestone",
+                    "apiCallErrorMessage": "Something went wrong. Try again.",
+                    "buttons": {
+                        "cancel": "Cancel",
+                        "create": "Create",
+                        "save": "Save",
+                        "submit": "Submit"
+                    }
+                }
+            },
+            "list": {
+                "card": {
+                    "noDescriptionProvided": "No description provided"
+                }
+            },
+            "turnIntoProposal": {
+                "turnIntoProposal": "Convert to Proposal",
+                "submit": {
+                    "title": "You are about to convert your idea milestone into proposal"
+                },
+                "emptyBeneficiaryValidationError": {
+                    "title": "No beneficiary was found",
+                    "subtitle": "No beneficiary was found in the idea which the converted milestone belongs to. Please fill in the beneficiary and try again."
+                },
+                "areYouSureYouWantToTurnIdeaMilestoneIntoProposal": "Are you sure you want to convert {{ideaMilestoneSubject}} into a proposal?",
+                "makeSureYouHaveAllDataCorrectBeforeTurnIntoProposal": "Make sure you have all the data correct before you convert your milestone into a proposal"
+            }
+        },
+        "introduceTitle": "Introduce Idea",
+        "editTitle": "Edit Idea",
+        "introduce": "+ Introduce Idea"
+    },
+    "proposal": {
+        "content": {
+            "infoLabel": "Info",
+            "milestonesLabel": "Milestones",
+            "discussionLabel": "Discussion",
+            "votingLabel": "Voting"
+        },
+        "list": {
+            "introduceIdea": "To create a proposal, <a>first introduce your idea</a>",
+            "card": {
+                "beneficiary": "(Beneficiary)",
+                "proposer": "(Proposer)",
+                "statusSubmitted": "Submitted",
+                "statusApproved": "Approved",
+                "statusClosed": "Closed",
+                "statusRejected": "Rejected",
+                "statusRewarded": "Rewarded",
+                "proposalIndex": "# <strong>{{proposalIndex}}</strong>",
+                "titlePlaceholder": "No title provided"
+            },
+            "filters": {
+                "all": "All",
+                "submitted": "Submitted",
+                "approved": "Approved",
+                "rejected": "Rejected",
+                "rewarded": "Rewarded"
+            }
+        }
+    },
+    "substrate": {
+        "form": {
+            "networkHeader": "Please, select your account in:",
+            "selectAccount": "Select your account",
+            "signAndSubmit": "Sign and submit",
+            "cancel": "Cancel",
+            "accountSelectTitle": "Please, select your account in:"
+        },
+        "loading": {
+            "title": "Almost there",
+            "cancel": "Cancel"
+        },
+        "inProgress": {
+            "title": "Submitting transaction",
+            "steps": {
+                "ready": "transaction ready",
+                "inBlock": "transaction in block",
+                "extrinsicSuccess": "extrinsic success",
+                "finalized": "transaction finalized"
+            },
+            "ok": "Ok"
         },
         "error": {
-          "title": "Sign up error",
-          "subtitle": "Oops.. Seems like something went wrong",
-          "information": "Either your email has already been confirmed or the token has expired",
-          "resendEmail": "Resend email",
-          "emailResent": "Please check your email to confirm the registration"
-        }
-      }
-    }
-  },
-  "idea": {
-    "ordinalNumberPrefix": "Idea - ",
-    "details": {
-      "title": "Title",
-      "beneficiary": "Beneficiary",
-      "field": "Field of Idea",
-      "content": "Reason of Proposal",
-      "contact": "Proposer's information",
-      "portfolio": "Portfolio",
-      "reward": "Reward",
-      "links": "Links",
-      "form": {
-        "linkPlaceholder": "Add external link to your proposal here",
-        "addLink": "+ Add Link",
-        "emptyFieldError": "This field cannot be empty",
-        "nonZeroFieldError": "The value must be greater than zero",
-        "wrongBeneficiaryError": "Wrong beneficiary address",
-        "showAll": "Show all information",
-        "showLess": "Show less information"
-      },
-      "header": {
-        "turnIntoProposal": "Convert to Proposal"
-      },
-      "create": "Create",
-      "edit": "Edit",
-      "editAndActivate": "Edit and activate",
-      "saveDraft": "Save as Draft",
-      "submitProposal": "Submit Proposal",
-      "signAndSubmit": "Sign and submit",
-      "submitProposalModal": {
-        "title": "You are about to convert your idea into proposal",
-        "warningMessage": "In order to submit your proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your proposal will be <strong>rejected you will lose the bond</strong>. If your proposal is approved you will get the deposit money back.",
-        "eventDescription": "event propose spend finished"
-      }
-    },
-    "content": {
-      "infoLabel": "Info",
-      "milestonesLabel": "Milestones",
-      "discussionLabel": "Discussion",
-      "info": {
-        "reward": "Reward",
-        "deposit": "Deposit"
-      }
-    },
-    "turnIntoProposal": {
-      "title": "Convert to Proposal",
-      "cancel": "Cancel",
-      "submit": "Submit",
-      "cannotTurnError": "This idea is already converted into proposal"
-    },
-    "list": {
-      "card": {
-        "statusDraft": "Draft",
-        "statusActive": "Active",
-        "statusTurnedIntoProposal": "Turned into Proposal",
-        "statusTurnedIntoProposalByMilestone": "Turned into Proposal by Milestone",
-        "statusClosed": "Closed",
-        "beneficiary": "(Beneficiary)"
-      },
-      "filters": {
-        "all": "All",
-        "mine": "Mine",
-        "draft": "Draft",
-        "active": "Active",
-        "turnedIntoProposal": "Turned into Proposal",
-        "closed": "Closed"
-      }
-    },
-    "milestones": {
-      "createMilestone": "+ Create Milestone",
-      "ordinalNumberPrefix": "Milestone - ",
-      "emptyMilestonesArrayInfo": "Please add milestones for this idea, milestones will allow our community appereciate the idea more and understand it better",
-      "modal": {
-        "milestone": "Milestone",
-        "createMilestone": "Create Milestone",
-        "editMilestone": "Edit Milestone",
-        "form": {
-          "emptyFieldError": "This field cannot be empty",
-          "nonZeroFieldError": "The value must be greater than zero",
-          "endDatePriorToStartDateError": "End date can't be prior to the start date",
-          "yourMilestone": "Your Milestone",
-          "subject": "Subject",
-          "beneficiary": "Beneficiary",
-          "date": "Date",
-          "selectFrom": "Select From",
-          "selectTo": "Select To",
-          "budget": "Budget",
-          "description": "Description",
-          "describeMilestone": "Describe the Milestone",
-          "apiCallErrorMessage": "Something went wrong. Try again.",
-          "buttons": {
-            "cancel": "Cancel",
-            "create": "Create",
-            "save": "Save",
-            "submit": "Submit"
-          }
-        }
-      },
-      "list": {
-        "card": {
-          "noDescriptionProvided": "No description provided"
-        }
-      },
-      "turnIntoProposal": {
-        "turnIntoProposal": "Convert to Proposal",
-        "submit": {
-          "title": "You are about to convert your idea milestone into proposal"
+            "transaction": {
+                "title": "Transaction failed",
+                "subtitle": {
+                    "unspecific": "Something went wrong, you may try again later",
+                    "1010": "Please check if you have enough funds to conduct the transaction"
+                }
+            },
+            "api": {
+                "title": "Connection error",
+                "subtitle": "Cannot connect to the network {{networkName}}"
+            },
+            "accounts": {
+                "title": "No injected accounts",
+                "subtitle": "There are no injected accounts found so you cannot sign any transaction. You may want to use <a>Polkadot{.js} extension</a>. If you already have the extension installed, make sure you have authorized the app to use it or try refreshing the page."
+            },
+            "ok": "Ok"
         },
-        "emptyBeneficiaryValidationError": {
-          "title": "No beneficiary was found",
-          "subtitle": "No beneficiary was found in the idea which the converted milestone belongs to. Please fill in the beneficiary and try again."
-        },
-        "areYouSureYouWantToTurnIdeaMilestoneIntoProposal": "Are you sure you want to convert {{ideaMilestoneSubject}} into a proposal?",
-        "makeSureYouHaveAllDataCorrectBeforeTurnIntoProposal": "Make sure you have all the data correct before you convert your milestone into a proposal"
-      }
-    },
-    "introduceTitle": "Introduce Idea",
-    "editTitle": "Edit Idea",
-    "introduce": "+ Introduce Idea"
-  },
-  "proposal": {
-    "content": {
-      "infoLabel": "Info",
-      "milestonesLabel": "Milestones",
-      "discussionLabel": "Discussion",
-      "votingLabel": "Voting"
-    },
-    "list": {
-      "introduceIdea": "To create a proposal, <a>first introduce your idea</a>",
-      "card": {
-        "beneficiary": "(Beneficiary)",
-        "proposer": "(Proposer)",
-        "statusSubmitted": "Submitted",
-        "statusApproved": "Approved",
-        "statusClosed": "Closed",
-        "statusRejected": "Rejected",
-        "statusRewarded": "Rewarded",
-        "proposalIndex": "# <strong>{{proposalIndex}}</strong>",
-        "titlePlaceholder": "No title provided"
-      },
-      "filters": {
-        "all": "All",
-        "submitted": "Submitted",
-        "approved": "Approved",
-        "rejected": "Rejected",
-        "rewarded": "Rewarded"
-      }
-    }
-  },
-  "substrate": {
-    "form": {
-      "networkHeader": "Please, select your account in:",
-      "selectAccount": "Select your account",
-      "signAndSubmit": "Sign and submit",
-      "cancel": "Cancel",
-      "accountSelectTitle": "Please, select your account in:"
-    },
-    "loading": {
-      "title": "Almost there",
-      "cancel": "Cancel"
-    },
-    "inProgress": {
-      "title": "Submitting transaction",
-      "steps": {
-        "ready": "transaction ready",
-        "inBlock": "transaction in block",
-        "extrinsicSuccess": "extrinsic success",
-        "finalized": "transaction finalized"
-      },
-      "ok": "Ok"
-    },
-    "error": {
-      "transaction": {
-        "title": "Transaction failed",
-        "subtitle": {
-          "unspecific": "Something went wrong, you may try again later",
-          "1010": "Please check if you have enough funds to conduct the transaction"
+        "extrinsicError": {
+            "title": "Extrinsic failed",
+            "subtitle": {
+                "unspecific": "Something went wrong, you may try again later",
+                "treasury": {
+                    "InsufficientProposersBalance": "Proposer's balance is too low."
+                }
+            },
+            "ok": "Ok"
         }
-      },
-      "api": {
-        "title": "Connection error",
-        "subtitle": "Cannot connect to the network {{networkName}}"
-      },
-      "accounts": {
-        "title": "No injected accounts",
-        "subtitle": "There are no injected accounts found so you cannot sign any transaction. You may want to use <a>Polkadot{.js} extension</a>. If you already have the extension installed, make sure you have authorized the app to use it or try refreshing the page."
-      },
-      "ok": "Ok"
-    },
-    "extrinsicError": {
-      "title": "Extrinsic failed",
-      "subtitle": {
-        "unspecific": "Something went wrong, you may try again later",
-        "treasury": {
-          "InsufficientProposersBalance": "Proposer's balance is too low."
-        }
-      },
-      "ok": "Ok"
     }
-  }
 }
