@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common'
+import { Body, HttpStatus, Post, Res } from '@nestjs/common'
 import {
     ApiBadRequestResponse,
     ApiConflictResponse,
@@ -6,13 +6,14 @@ import {
     ApiOkResponse,
     ApiTags,
 } from '@nestjs/swagger'
+import {ControllerApiVersion} from "../../utils/ControllerApiVersion";
 import { AuthWeb3Service } from './auth-web3.service'
 import { StartWeb3SignRequestDto, StartWeb3SignResponseDto } from './dto/start-web3-sign.dto'
 import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 import { Response } from 'express'
 import { ConfirmWeb3SignRequestDto } from './dto/confirm-web3-sign-request.dto'
 
-@Controller('/v1/auth/web3')
+@ControllerApiVersion('/auth/web3', ['v1'])
 @ApiTags('auth.web3')
 export class AuthWeb3Controller {
     constructor(private readonly authWeb3Service: AuthWeb3Service) {}

@@ -1,10 +1,11 @@
-import {Controller, Get} from '@nestjs/common'
+import {Get} from '@nestjs/common'
 import {getLogger} from "./logging.module";
 import {HealthCheckResponse} from './app.dto'
+import {ControllerApiVersion} from "./utils/ControllerApiVersion";
 
 const logger = getLogger()
 
-@Controller("/health")
+@ControllerApiVersion('/health')
 export class AppController {
   @Get()
   healthCheck(): HealthCheckResponse {

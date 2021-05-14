@@ -86,12 +86,12 @@ const Resources = {
     ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
     ECSALBListenerRule: 'ECSALBListenerRule',
+    ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     // substrate
     SubstrateHttpListener: 'SubstrateHttpListener',
     SubstrateWssListener: 'SubstrateWssListener',
     ECSSubstrateHttpListenerRule: 'ECSSubstrateHttpListenerRule',
     ECSSubstrateWssListenerRule: 'ECSSubstrateWssListenerRule',
-    ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     ECSAppTargetGroup: 'ECSAppTargetGroup',
     // It is Substrate target group with a shorter name to match the name requirement of max 32 chars
     ECSSubTargetGroup: 'ECSSubTargetGroup',

@@ -1,6 +1,7 @@
-import { Controller, Get, Param, Query } from '@nestjs/common'
+import { Get, Param, Query } from '@nestjs/common'
 import { ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumberString } from 'class-validator'
+import {ControllerApiVersion} from "../utils/ControllerApiVersion";
 import { ProposalDto } from './dto/proposal.dto'
 import { ProposalsService } from './proposals.service'
 
@@ -21,8 +22,8 @@ class GetProposalParams {
     proposalIndex!: string
 }
 
-@Controller('/v1/proposals')
 @ApiTags('proposals')
+@ControllerApiVersion('/proposals', ['v1'])
 export class ProposalsController {
     constructor(private proposalsService: ProposalsService) {}
 

@@ -1,12 +1,13 @@
-import { Body, Controller, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common'
-import { ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags } from '@nestjs/swagger'
-import { IdeaMilestoneProposalsService } from './idea.milestone.proposals.service'
-import { CreateIdeaMilestoneProposalDto } from './dto/CreateIdeaMilestoneProposalDto'
-import { IdeaMilestoneNetworkDto } from '../dto/ideaMilestoneNetworkDto'
-import { SessionGuard } from '../../../auth/session/guard/session.guard'
-import { ReqSession, SessionData } from '../../../auth/session/session.decorator'
+import {Body, HttpCode, HttpStatus, Param, Post, UseGuards} from '@nestjs/common'
+import {ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags} from '@nestjs/swagger'
+import {SessionGuard} from '../../../auth/session/guard/session.guard'
+import {ReqSession, SessionData} from '../../../auth/session/session.decorator'
+import {ControllerApiVersion} from "../../../utils/ControllerApiVersion";
+import {IdeaMilestoneNetworkDto} from '../dto/ideaMilestoneNetworkDto'
+import {CreateIdeaMilestoneProposalDto} from './dto/CreateIdeaMilestoneProposalDto'
+import {IdeaMilestoneProposalsService} from './idea.milestone.proposals.service'
 
-@Controller('/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals')
+@ControllerApiVersion('/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', ['v1'])
 @ApiTags('idea.milestone.proposals')
 export class IdeaMilestoneProposalsController {
     constructor(private readonly ideaMilestoneProposalsService: IdeaMilestoneProposalsService) {}

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
@@ -7,6 +7,7 @@ import {
     ApiParam,
     ApiTags,
 } from '@nestjs/swagger'
+import {ControllerApiVersion} from "../../utils/ControllerApiVersion"
 import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { CreateIdeaMilestoneDto } from './dto/createIdeaMilestoneDto'
@@ -14,7 +15,7 @@ import { IdeaMilestoneDto } from './dto/ideaMilestoneDto'
 import { UpdateIdeaMilestoneDto } from './dto/updateIdeaMilestoneDto'
 import { IdeaMilestonesService } from './idea.milestones.service'
 
-@Controller('/v1/ideas/:ideaId/milestones')
+@ControllerApiVersion('/ideas/:ideaId/milestones', ['v1'])
 @ApiTags('ideas.milestones')
 export class IdeaMilestonesController {
     constructor(private readonly ideaMilestonesService: IdeaMilestonesService) {}

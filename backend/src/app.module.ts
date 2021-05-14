@@ -16,7 +16,7 @@ import {SuperTokensExceptionFilter} from "./auth/supertokens/supertokens.excepti
 import {baseApiPath} from "./main";
 import {initializeSupertokens} from "./auth/supertokens/supertokens.config";
 import {SuperTokensService} from "./auth/supertokens/supertokens.service";
-import { EmailsModule } from './emails/emails.module';
+import {EmailsModule} from './emails/emails.module';
 import {CachingModule} from "./cache/cache.module";
 
 @Module({
@@ -25,9 +25,7 @@ import {CachingModule} from "./cache/cache.module";
         ConfigModule,
         DatabaseModule,
         IdeasModule,
-        // BlockchainModule,
         ProposalsModule,
-        // ExtrinsicsModule,
         SuperTokensModule,
         UsersModule,
         AuthModule,
@@ -39,14 +37,14 @@ import {CachingModule} from "./cache/cache.module";
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
-        consumer.apply(FrontendMiddleware).forRoutes('*')
+        consumer.apply(FrontendMiddleware)
+            .exclude('api/(.*)')
+            .forRoutes('/**')
     }
 }
 
 export function configureGlobalServices(app: INestApplication) {
     const config = app.get('AppConfig')
-
-    app.setGlobalPrefix(baseApiPath);
 
     initializeSupertokens(config, app.get(SuperTokensService))
 
