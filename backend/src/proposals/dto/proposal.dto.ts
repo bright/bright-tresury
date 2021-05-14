@@ -47,12 +47,12 @@ export class ProposalDto {
     title?: string
 
     @ApiProperty({
-        description: '',
+        description: 'Flag that indicates that proposal was created from idea',
     })
     isCreatedFromIdea: boolean
 
     @ApiProperty({
-        description: '',
+        description: 'Flag that indicates that proposal was created from idea milestone',
     })
     isCreatedFromIdeaMilestone: boolean
 
