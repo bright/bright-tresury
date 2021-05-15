@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 
-export class ConfirmWeb3SignRequestDto {
-    @ApiProperty({ description: 'Blockchain address used for sign up' })
+export class ConfirmSignMessageRequestDto {
+    @ApiProperty({ description: 'Blockchain address used for signing' })
     @IsNotEmpty()
     address!: string
 

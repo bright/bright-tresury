@@ -11,7 +11,7 @@ import { AuthWeb3Service } from './auth-web3.service'
 import { StartWeb3SignRequestDto, StartWeb3SignResponseDto } from './dto/start-web3-sign.dto'
 import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 import { Response } from 'express'
-import { ConfirmWeb3SignRequestDto } from './dto/confirm-web3-sign-request.dto'
+import { ConfirmSignMessageRequestDto } from './signingMessage/confirm-sign-message-request.dto'
 
 @ControllerApiVersion('/auth/web3', ['v1'])
 @ApiTags('auth.web3')
@@ -44,7 +44,7 @@ export class AuthWeb3Controller {
     @ApiNotFoundResponse({
         description: 'Requested address does not belong to any existing user',
     })
-    async confirmSignIn(@Body() confirmRequest: ConfirmWeb3SignRequestDto, @Res() res: Response) {
+    async confirmSignIn(@Body() confirmRequest: ConfirmSignMessageRequestDto, @Res() res: Response) {
         await this.authWeb3Service.confirmSignIn(confirmRequest, res)
         res.status(HttpStatus.OK).send()
     }
