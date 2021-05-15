@@ -47,6 +47,7 @@ describe(`Auth Web3 Service`, () => {
             await expect(getService().startSignUp({ address: bobAddress })).rejects.toThrow(ConflictException)
         })
     })
+
     describe('web3 confirm sign up', () => {
         it('should save users', async () => {
             jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
@@ -65,7 +66,7 @@ describe(`Auth Web3 Service`, () => {
             expect(user).toBeDefined()
             expect(superTokensUser).toBeDefined()
         })
-        it("should throw a not found if address didn't start sign up", async () => {
+        it("should throw a bad request if address didn't start sign up", async () => {
             jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
             await getService().startSignUp({ address: bobAddress })
             await expect(
@@ -77,7 +78,7 @@ describe(`Auth Web3 Service`, () => {
                     },
                     {} as Response,
                 ),
-            ).rejects.toThrow(NotFoundException)
+            ).rejects.toThrow(BadRequestException)
         })
         it('should throw a bad request if requested signature is invalid', async () => {
             jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => false)
@@ -106,11 +107,13 @@ describe(`Auth Web3 Service`, () => {
             const signMessageResponse = await getService().startSignIn({ address: bobAddress })
             expect(signMessageResponse.signMessage).toBeDefined()
         })
-        it('throws bad request if invalid address', async () => {
-            await expect(getService().startSignIn({ address: uuid() })).rejects.toThrow(BadRequestException)
+        it('is allowed with invalid address', async () => {
+            const response = getService().startSignIn({ address: uuid() })
+            expect(response).toBeDefined()
         })
-        it('throws conflict if user with this address does not exist', async () => {
-            await expect(getService().startSignIn({ address: bobAddress })).rejects.toThrow(NotFoundException)
+        it('is allowed even if user with this address does not exist', async () => {
+            const response = getService().startSignIn({ address: bobAddress })
+            expect(response).toBeDefined()
         })
     })
     describe('confirm sign in', () => {
@@ -152,10 +155,20 @@ describe(`Auth Web3 Service`, () => {
                     },
                     {} as Response,
                 ),
-            ).rejects.toThrow(NotFoundException)
+            ).rejects.toThrow(BadRequestException)
         })
-        it('throws conflict if user with this address does not exist', async () => {
-            await expect(getService().startSignIn({ address: bobAddress })).rejects.toThrow(NotFoundException)
+        it('throws conflict if signature was valid, but user with this address does not exist', async () => {
+            jest.spyOn(getService(), 'validateSignature').mockImplementation((): boolean => true)
+            await getService().startSignIn({ address: bobAddress })
+            await expect(
+                getService().confirmSignIn(
+                    {
+                        signature: uuid(),
+                        address: bobAddress,
+                    },
+                    {} as Response,
+                ),
+            ).rejects.toThrow(NotFoundException)
         })
         it('throws bad request when signature is invalid', async () => {
             await getUsersService().createBlockchainUser({

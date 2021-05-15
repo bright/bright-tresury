@@ -29,8 +29,6 @@ export class AuthWeb3Service {
     ) {}
 
     async startSignIn(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
-        await this.validateAddressForSignIn(startDto.address)
-
         const signMessage = uuid()
         const signMessageKey = this.getSignInMessageCacheKey(startDto.address)
         await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
@@ -39,8 +37,6 @@ export class AuthWeb3Service {
     }
 
     async confirmSignIn(confirmRequest: ConfirmWeb3SignRequestDto, res: Response): Promise<void> {
-        await this.validateAddressForSignIn(confirmRequest.address)
-
         const signMessageKey = this.getSignInMessageCacheKey(confirmRequest.address)
         const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
         if (!cachedSignMessage) {
@@ -49,6 +45,12 @@ export class AuthWeb3Service {
 
         const signatureValid = this.validateSignature(cachedSignMessage, confirmRequest)
         if (signatureValid) {
+            /**
+             * Validation can return response to the user that can inform if there is any user associated
+             * with the requested address. We validate it only if user signs the message successfully, because
+             * then we are sure that this user owns the address and can obtain information regarding associated account.
+             */
+            await this.validateAddressForSignIn(confirmRequest.address)
             const user = await this.userService.findOneByBlockchainAddress(confirmRequest.address)
             await this.superTokensService.createSession(res, user.authId)
             await this.cacheManager.del(signMessageKey)
@@ -58,8 +60,7 @@ export class AuthWeb3Service {
     }
 
     async startSignUp(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
-        await this.validateAddress(startDto.address)
-
+        await this.validateAddressForSignUp(startDto.address)
         const signMessage = uuid()
         const signMessageKey = this.getSignUpMessageCacheKey(startDto.address)
         await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
