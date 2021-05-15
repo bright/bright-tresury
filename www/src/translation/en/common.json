@@ -64,9 +64,15 @@
         },
         "web3": {
             "web3Account": "Web3 Account",
+            "associateWeb3Account": "Associate Web3 Account",
+            "link": "Link account",
+            "linkFailure": "Linking account failed",
             "unlink": "Unlink account",
+            "unlinkFailure": "Unlink failed",
+            "makePrimaryFailure": "Changing primary account failed",
             "primary": "Primary account",
-            "add": "+ Add blockchain account"
+            "add": "+ Add blockchain account",
+            "isPrimary": "Primary account"
         }
     },
     "auth": {

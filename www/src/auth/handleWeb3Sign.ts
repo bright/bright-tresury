@@ -10,6 +10,7 @@ import {
 } from './auth-web3.api'
 import config from '../config/index'
 import { stringToHex } from '@polkadot/util'
+import { confirmWeb3Association, startWeb3Association } from './account/account.api'
 
 export async function handleWeb3SignUp(account: Account) {
     await handleWeb3Sign(account, startWeb3SignUp, async (confirmDto: ConfirmBlockchainSignDto) => {
@@ -22,6 +23,10 @@ export async function handleWeb3SignUp(account: Account) {
 
 export async function handleWeb3SignIn(account: Account) {
     await handleWeb3Sign(account, startWeb3SignIn, confirmWeb3SignIn)
+}
+
+export async function handleAssociateWeb3Account(account: Account) {
+    await handleWeb3Sign(account, startWeb3Association, confirmWeb3Association)
 }
 
 async function handleWeb3Sign(

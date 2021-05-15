@@ -1,83 +1,70 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React from "react";
-import {useTranslation} from "react-i18next";
-import {Button} from "../../../components/button/Button";
-import {AddressInfo} from "../../../components/identicon/AddressInfo";
-import {Link} from "../../../components/link/Link";
-import {Radio} from "../../../components/radio/Radio";
-import {Label} from "../../../components/text/Label";
-import {breakpoints} from "../../../theme/theme";
-import {useAuth} from "../../AuthContext";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { AddressInfo } from '../../../components/identicon/AddressInfo'
+import { Label } from '../../../components/text/Label'
+import { useAuth, Web3Address } from '../../AuthContext'
+import { Web3AddressRow } from './Web3AddressRow'
+import { LoadingState, useLoading } from '../../../components/loading/LoadingWrapper'
+import { makePrimary, unlinkAddress } from '../account.api'
+import { InfoBox } from '../../../components/form/InfoBox'
+import { Web3LinkingButton } from './Web3LinkingButton'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
         title: {
-            marginBottom: '32px',
-        },
-        web3Element: {
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            marginBottom: '50px',
-            width: '100%',
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                flexDirection: 'column-reverse',
-                alignItems: 'flex-start',
-                marginBottom: '42px',
-            },
-        },
-        addressAndUnlink: {
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            marginBottom: '16px',
         },
         unlink: {
-            fontWeight: 'bold',
             color: theme.palette.warning.main,
-            marginRight: '42px',
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                marginRight: '0px',
-            },
         },
-        primary: {
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-        },
-        radio: {
-            marginRight: '8px',
-        },
-        disabledPrimary: {
-            color: theme.palette.text.disabled
-        }
     })
-});
+})
 
 const Web3AccountDetails = () => {
-    const {t} = useTranslation()
-    const {user} = useAuth()
+    const { t } = useTranslation()
+    const { user } = useAuth()
     const classes = useStyles()
+    const { call: unlinkCall, loadingState: unlinkAddressLoadingState, error: unlinkAddressError } = useLoading(
+        unlinkAddress,
+    )
+    const { call: makePrimaryCall, loadingState: makePrimaryLoadingState, error: makePrimaryError } = useLoading(
+        makePrimary,
+    )
 
-    return <div>
-        <Label className={classes.title} label={t('account.web3.web3Account')}/>
-        {user?.web3Addresses.map((address) => {
-            return <div className={classes.web3Element}>
-                <div className={classes.addressAndUnlink}>
-                    <AddressInfo address={address.address}/>
-                    <Link className={classes.unlink}>{t('account.web3.unlink')}</Link>
-                </div>
-                <div className={classes.primary}>
-                    <Radio className={classes.radio} checked={address.isPrimary}/>
-                    <p className={address.isPrimary ? '' : classes.disabledPrimary}>{t('account.web3.primary')}</p>
-                </div>
-            </div>
-        })}
-        {/* TODO: add button behaviour*/}
-        <Button variant='text' color='primary'>{t('account.web3.add')}</Button>
-    </div>
+    const onPrimaryChange = (checked: boolean, address: Web3Address) => {
+        if (!address.isPrimary && checked) {
+            makePrimaryCall(address.address).then()
+        }
+    }
+
+    return (
+        <div>
+            <Label className={classes.title} label={t('account.web3.web3Account')} />
+            {unlinkAddressError && <InfoBox message={t('account.web3.unlinkFailure')} level={'error'} />}
+            {makePrimaryError && <InfoBox message={t('account.web3.makePrimaryFailure')} level={'error'} />}
+            {user?.web3Addresses?.map((address) => {
+                return (
+                    <Web3AddressRow
+                        onPrimaryChange={(checked) => onPrimaryChange(checked, address)}
+                        isPrimary={address.isPrimary}
+                        addressComponent={<AddressInfo address={address.address} />}
+                        linkComponent={
+                            <Web3LinkingButton
+                                onClick={() => unlinkCall(address.address)}
+                                label={t('account.web3.unlink')}
+                                disabled={
+                                    unlinkAddressLoadingState === LoadingState.Loading ||
+                                    makePrimaryLoadingState === LoadingState.Loading
+                                }
+                                className={classes.unlink}
+                            />
+                        }
+                    />
+                )
+            })}
+        </div>
+    )
 }
 
 export default Web3AccountDetails

@@ -23,10 +23,11 @@ export const EMPTY_ACCOUNT = {
 } as Account
 
 interface OwnProps {
+    showLabel?: boolean
     accounts: Account[]
 }
 
-export const AccountSelect: React.FC<OwnProps> = ({ accounts }) => {
+export const AccountSelect: React.FC<OwnProps> = ({ accounts, showLabel = true }) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -35,7 +36,7 @@ export const AccountSelect: React.FC<OwnProps> = ({ accounts }) => {
             className={classes.root}
             variant={'outlined'}
             name="account"
-            label={t('substrate.form.selectAccount')}
+            label={showLabel === true ? t('substrate.form.selectAccount') : undefined}
             options={[EMPTY_ACCOUNT, ...accounts]}
             renderOption={(value: Account) => {
                 return value.name ?? value.address
