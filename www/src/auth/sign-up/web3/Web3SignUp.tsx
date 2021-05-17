@@ -62,7 +62,7 @@ const Web3SignUp: React.FC = () => {
         if (loadingState === LoadingState.Resolved) {
             history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
         }
-    }, [loadingState])
+    }, [loadingState, history])
 
     if (!isWeb3Injected) {
         return <ExtensionNotDetected/>

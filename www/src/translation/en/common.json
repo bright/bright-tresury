@@ -14,6 +14,10 @@
                 "reward": "Reward",
                 "deposit": "Deposit"
             }
+        },
+        "radioBox": {
+            "empty": "Empty radio box icon",
+            "checked": "Checked radio box icon"
         }
     },
     "form": {
@@ -43,7 +47,8 @@
         "tips": "Tips",
         "bounties": "Bounties",
         "whatForLabel": "What is Treasury app for?",
-        "learnMoreLabel": "Learn more"
+        "learnMoreLabel": "Learn more",
+        "logo": "Bright Treasury logo image"
     },
     "account": {
         "title": "Account",

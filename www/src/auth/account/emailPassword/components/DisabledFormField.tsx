@@ -1,4 +1,4 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
 import React from "react";
 import {ClassNameProps} from "../../../../components/props/className.props";
 import {Label} from "../../../../components/text/Label";

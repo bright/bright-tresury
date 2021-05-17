@@ -29,7 +29,7 @@ const VerifyEmail = () => {
                 setSuccess(false)
                 console.log(err)
             })
-    }, [])
+    }, [location.search])
 
     if (success === undefined) {
         return <Loader/>

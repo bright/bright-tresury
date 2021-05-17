@@ -37,7 +37,7 @@ const MenuAppInfo: React.FC<{}> = () => {
     const {t} = useTranslation()
 
     return <div className={classes.root}>
-        <img className={classes.drawing} src={menuDrawing}/>
+        <img className={classes.drawing} src={menuDrawing} alt={''}/>
         <div className={classes.whatForLabel}>
             {t('menu.whatForLabel')}
         </div>
@@ -47,7 +47,7 @@ const MenuAppInfo: React.FC<{}> = () => {
                 color="secondary">
             {t('menu.learnMoreLabel')}
         </Button>
-        <img className={classes.logo} src={treasuryLabeledLogo}/>
+        <img className={classes.logo} src={treasuryLabeledLogo} alt={t('menu.logo')}/>
     </div>
 }
 

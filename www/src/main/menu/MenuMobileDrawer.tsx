@@ -68,7 +68,7 @@ const MenuMobileDrawer: React.FC<{}> = () => {
 
     return <>
         <ButtonBase className={classes.menuButton} onClick={handleOpen}>
-            <img className={classes.menuButtonIcon} src={currentMenuItem.svg}/>
+            <img className={classes.menuButtonIcon} src={currentMenuItem.svg} alt={t(currentMenuItem.translationKey)}/>
             <div className={classes.menuButtonText}>{t(currentMenuItem.translationKey)}</div>
             <div className={classes.menuButtonArrow}/>
         </ButtonBase>

@@ -36,9 +36,7 @@ export const ProposalCard = (
 
     const { t } = useTranslation()
 
-    const redirectTo = `${generatePath(
-        ROUTE_PROPOSAL,
-        {proposalIndex})}` + `/${ProposalContentType.Info}`
+    const redirectTo = generatePath(ROUTE_PROPOSAL, {proposalIndex}) + `/${ProposalContentType.Info}`
 
     return (
         <NetworkCard redirectTo={redirectTo}>

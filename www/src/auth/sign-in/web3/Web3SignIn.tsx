@@ -42,7 +42,7 @@ const Web3SignIn = () => {
                 infoMessage: t('auth.signIn.web3SignIn.userDoesNotExist'),
             } as Web3SignUpLocationState)
         }
-    }, [loadingState, error])
+    }, [loadingState, error, t, history])
 
     if (!isWeb3Injected) {
         return <ExtensionNotDetected />

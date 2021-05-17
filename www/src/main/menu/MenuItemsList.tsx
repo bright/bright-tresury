@@ -100,8 +100,8 @@ const MenuItemsList: React.FC<Props> = ({onSelected}) => {
                 <NavLink className={classes.navLinkItem} to={menuItem.path}
                          activeClassName={classes.activeItem}
                          key={index}>
-                    <img className={`${classes.icon} iconInactive`} src={menuItem.svg}/>
-                    <img className={`${classes.icon} iconActive`} src={menuItem.svgHighlighted}/>
+                    <img className={`${classes.icon} iconInactive`} src={menuItem.svg} alt={t(menuItem.translationKey)}/>
+                    <img className={`${classes.icon} iconActive`} src={menuItem.svgHighlighted} alt={t(menuItem.translationKey)}/>
                     <div className={classes.text}>{t(menuItem.translationKey)}</div>
                 </NavLink>
             </ListItem>

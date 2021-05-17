@@ -1,4 +1,4 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
 import React from "react";
 import {useTranslation} from "react-i18next";
 import {Button} from "../../../components/button/Button";

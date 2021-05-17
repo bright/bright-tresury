@@ -1,8 +1,7 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
 import React from "react";
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             order: 1,

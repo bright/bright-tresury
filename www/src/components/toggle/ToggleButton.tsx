@@ -1,16 +1,10 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
 import React from 'react'
-import { ToggleButton as MaterialToggleButton } from '@material-ui/lab'
-import { NavLink } from 'react-router-dom'
+import {ToggleButton as MaterialToggleButton} from '@material-ui/lab'
+import {NavLink} from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        root: {
-            borderRadius: 0,
-            fontWeight: 'bold',
-            textTransform: 'none',
-            padding: `11px 34px`,
-        },
         inactive: {
             width: '100%',
             textDecoration: 'none',
@@ -32,6 +26,17 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
+const useToggleButtonClasses = makeStyles(() =>
+    createStyles({
+        root: {
+            borderRadius: 0,
+            fontWeight: 'bold',
+            textTransform: 'none',
+            padding: `11px 34px`,
+        },
+    }),
+);
+
 export interface ToggleEntry {
     label: string
     path: string
@@ -41,13 +46,15 @@ interface OwnProps {
     entry: ToggleEntry
 }
 
-export const ToggleButton: React.FC<OwnProps> = ({ entry }) => {
+export const ToggleButton: React.FC<OwnProps> = ({entry}) => {
     const classes = useStyles()
+    const toggleButtonClasses = useToggleButtonClasses()
+
     return (
         <NavLink to={entry.path} className={classes.inactive} activeClassName={classes.active}>
-            <MaterialToggleButton classes={classes} value={entry.label}>
+            <MaterialToggleButton classes={toggleButtonClasses} value={entry.label}>
                 {entry.label}
             </MaterialToggleButton>
         </NavLink>
     )
-}
+};
