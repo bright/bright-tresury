@@ -1,5 +1,4 @@
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 export enum TextFieldColorScheme {
     Light = 'light',
@@ -10,18 +9,17 @@ interface StylesProps {
     colorScheme: TextFieldColorScheme
 }
 
-export const useTextFieldStyles = makeStyles<Theme, StylesProps>(theme =>
+export const useTextFieldStyles = (props: StylesProps) => makeStyles<Theme>(theme =>
     createStyles({
         root: {
-            backgroundColor: props =>
-                props.colorScheme === TextFieldColorScheme.Light ? theme.palette.background.default : theme.palette.background.paper,
+            backgroundColor: props.colorScheme === TextFieldColorScheme.Light ? theme.palette.background.default : theme.palette.background.paper,
             padding: '0'
         },
         input: {
-            backgroundColor: props =>
-                props.colorScheme === TextFieldColorScheme.Light ? theme.palette.background.default : theme.palette.background.paper,
-            border: props =>
-                `solid 1px ${props.colorScheme === TextFieldColorScheme.Light ? theme.palette.background.default : theme.palette.background.paper}`,
+            backgroundColor: props.colorScheme === TextFieldColorScheme.Light ? theme.palette.background.default : theme.palette.background.paper,
+            borderColor: props.colorScheme === TextFieldColorScheme.Light ? theme.palette.background.default : theme.palette.background.paper,
+            borderStyle: 'solid',
+            borderWidth: '1px',
             fontSize: '14px',
             padding: '1em',
             fontWeight: 500

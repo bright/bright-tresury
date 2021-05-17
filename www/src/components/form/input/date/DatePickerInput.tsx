@@ -17,7 +17,7 @@ interface Props {
 
 export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldColorScheme.Light, ...props }: Props) => {
 
-    const classes = useTextFieldStyles({ colorScheme: textFieldColorScheme })
+    const classes = useTextFieldStyles({ colorScheme: textFieldColorScheme })()
 
     const [field, meta, helpers] = useField(name)
 

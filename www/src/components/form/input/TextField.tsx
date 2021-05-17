@@ -1,7 +1,6 @@
-import React from "react";
-import {useTextFieldStyles} from "./textFieldStyles";
 import {InputAdornment, TextField as MaterialTextField, TextFieldProps as MaterialTextFieldProps} from "@material-ui/core";
-import {TextFieldColorScheme} from "./textFieldStyles";
+import React from "react";
+import {TextFieldColorScheme, useTextFieldStyles} from "./textFieldStyles";
 
 interface OwnProps {
     endAdornment?: string
@@ -12,7 +11,7 @@ export type TextFieldProps = OwnProps & MaterialTextFieldProps
 
 export const TextField: React.FC<TextFieldProps> = ({endAdornment, colorScheme = TextFieldColorScheme.Light, ...props}) => {
 
-    const classes = useTextFieldStyles({ colorScheme })
+    const classes = useTextFieldStyles({colorScheme})()
 
     return <MaterialTextField
         {...props}

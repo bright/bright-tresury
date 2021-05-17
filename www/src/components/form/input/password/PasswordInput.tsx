@@ -21,7 +21,7 @@ export const PasswordInput: React.FC<PasswordInputProps> = ({label, validationRu
     const [show, setShow] = useState(false)
     const [field, meta] = useField(name);
 
-    const hasError = meta.touched && !!meta.error
+    const hasError = meta.touched && meta.error ? true : undefined
     const showValidationRules = (field.value !== meta.initialValue) || meta.touched
 
     const icon = useMemo(() => show ? showPasswordIcon : hidePasswordIcon, [show])
