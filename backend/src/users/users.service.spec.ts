@@ -127,6 +127,7 @@ describe(`Users Service`, () => {
             expect(savedUser).toBeDefined()
             const savedAddress = await getBlockchainAddressRepository().findOne(user.blockchainAddresses![0].id)
             expect(savedAddress.address).toBe(bobAddress)
+            expect(savedAddress.isPrimary).toBeTruthy()
         })
         it('should throw conflict exception when address exists', async () => {
             const user: CreateBlockchainUserDto = {
@@ -335,6 +336,7 @@ describe(`Users Service`, () => {
 
             const userAfterAssociation = await getService().associateBlockchainAddress(user, charlieAddress)
             expect(userAfterAssociation.blockchainAddresses![0].address).toBe(charlieAddress)
+            expect(userAfterAssociation.blockchainAddresses![0].isPrimary).toBe(true)
         })
         it('associates second address for blockchain user ', async () => {
             const user = await getService().createBlockchainUser({
@@ -349,6 +351,15 @@ describe(`Users Service`, () => {
             )
             expect(addresses).toContain(charlieAddress)
             expect(addresses).toContain(bobAddress)
+
+            const primaryAddress = userAfterAssociation.blockchainAddresses!.find(
+                (bAddress) => bAddress.address === charlieAddress,
+            )
+            const associatedAddress = userAfterAssociation.blockchainAddresses!.find(
+                (bAddress) => bAddress.address === bobAddress,
+            )
+            expect(primaryAddress!.isPrimary).toBeTruthy()
+            expect(associatedAddress!.isPrimary).toBeFalsy()
         })
         it('throws conflict exception if address already associated with another user', async () => {
             await getService().createBlockchainUser({
@@ -374,6 +385,47 @@ describe(`Users Service`, () => {
             })
 
             await expect(getService().associateBlockchainAddress(bobUser, uuid())).rejects.toThrow(BadRequestException)
+        })
+    })
+
+    describe('unlink address', () => {
+        it('removes secondary address', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Charlie',
+                blockchainAddress: charlieAddress,
+            } as CreateBlockchainUserDto)
+
+            const userAfterAssociating = await getService().associateBlockchainAddress(user, bobAddress)
+            expect(userAfterAssociating.blockchainAddresses!.length).toBe(2)
+
+            await getService().unlinkAddress(userAfterAssociating, bobAddress)
+            const userAfterUnlinking = await getService().findOne(user.id)
+            expect(userAfterUnlinking.blockchainAddresses!.length).toBe(1)
+            expect(userAfterUnlinking.blockchainAddresses![0].address).toBe(charlieAddress)
+        })
+        it('does not allow to remove primary address', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Charlie',
+                blockchainAddress: charlieAddress,
+            } as CreateBlockchainUserDto)
+
+            await expect(getService().unlinkAddress(user, charlieAddress)).rejects.toThrow(BadRequestException)
+        })
+        it('does not allow to remove address belonging to another user', async () => {
+            const charlieUser = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Charlie',
+                blockchainAddress: charlieAddress,
+            } as CreateBlockchainUserDto)
+            await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress,
+            } as CreateBlockchainUserDto)
+
+            await expect(getService().unlinkAddress(charlieUser, bobAddress)).rejects.toThrow(BadRequestException)
         })
     })
 })

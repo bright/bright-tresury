@@ -16,6 +16,7 @@ import { CreateBlockchainUserDto } from './dto/createBlockchainUser.dto'
 import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
 import { BlockchainAddressService } from './blockchainAddress/blockchainAddress.service'
 import { isValidAddress } from '../utils/address/address.validator'
+import { FindConditions } from 'typeorm/find-options/FindConditions'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
 
 @Injectable()
@@ -109,15 +110,22 @@ export class UsersService {
         if (alreadyHasAddress) {
             throw new BadRequestException('Address already associated')
         }
-        await this.blockchainAddressService.create(
-            new BlockchainAddress(address, user, currentUserAddresses.length === 0),
-        )
+        const isPrimary = !(await this.blockchainAddressService.hasAnyAddresses(user.id))
+        await this.blockchainAddressService.create(new BlockchainAddress(address, user, isPrimary))
         return (await this.findOne(user.id))!
     }
 
     async delete(id: string) {
         const currentUser = await this.findOne(id)
         await this.userRepository.remove(currentUser)
+    }
+
+    async unlinkAddress(user: User, address: string) {
+        const blockchainAddress = user.blockchainAddresses?.find((bAddress) => bAddress.address === address)
+        if (!blockchainAddress) {
+            throw new BadRequestException('Address does not belong to the user')
+        }
+        await this.blockchainAddressService.deleteAddress(blockchainAddress)
     }
 
     async validateEmail(email: string) {
