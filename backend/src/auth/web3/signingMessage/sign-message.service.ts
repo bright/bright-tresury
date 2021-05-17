@@ -7,9 +7,9 @@ import { ConfirmSignMessageRequestDto } from './confirm-sign-message-request.dto
 import { StartSignMessageRequestDto } from './start-sign-message-request.dto'
 import { SignatureValidator } from './signature.validator'
 
-export abstract class SignMessageService {
+export abstract class SignMessageService<T extends ConfirmSignMessageRequestDto = ConfirmSignMessageRequestDto> {
     abstract getCacheKey: (address: string) => string
-    abstract onMessageConfirmed: (confirmRequest: ConfirmSignMessageRequestDto, res: Response) => Promise<void>
+    abstract onMessageConfirmed: (confirmRequest: T, res: Response) => Promise<void>
 
     /**
      * Sign up message expiration time in seconds
@@ -29,7 +29,7 @@ export abstract class SignMessageService {
         return new StartSignMessageResponseDto(signMessage)
     }
 
-    async confirmSigningMessage(confirmRequest: ConfirmSignMessageRequestDto, res: Response): Promise<void> {
+    async confirmSigningMessage(confirmRequest: T, res: Response): Promise<void> {
         const signMessageKey = this.getCacheKey(confirmRequest.address)
         const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
         if (!cachedSignMessage) {

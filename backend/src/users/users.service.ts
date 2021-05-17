@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common'
+import {
+    BadRequestException,
+    ConflictException,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+} from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { User } from './user.entity'
@@ -79,10 +85,7 @@ export class UsersService {
     }
 
     async createBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<User> {
-        const valid = await this.validateBlockchainUser(createBlockchainUserDto)
-        if (!valid) {
-            throw new BadRequestException('Invalid user')
-        }
+        await this.validateBlockchainUser(createBlockchainUserDto)
         const user = await this.userRepository.save(
             new User(createBlockchainUserDto.authId, createBlockchainUserDto.username, undefined, []),
         )
@@ -90,6 +93,30 @@ export class UsersService {
             new BlockchainAddress(createBlockchainUserDto.blockchainAddress, user, true),
         )
         return (await this.findOne(user.id))!
+    }
+
+    async associateBlockchainAddress(user: User, address: string): Promise<User> {
+        await this.validateAssociateAddress(address)
+        const currentUserAddresses = await this.blockchainAddressService.findByUserId(user.id)
+        const alreadyHasAddress = currentUserAddresses
+            .map((blockchainAddress: BlockchainAddress) => blockchainAddress.address)
+            .includes(address)
+        if (alreadyHasAddress) {
+            throw new BadRequestException('Address already associated')
+        }
+        await this.blockchainAddressService.create(new BlockchainAddress(address, user, false))
+        return (await this.findOne(user.id))!
+    }
+
+    private async validateAssociateAddress(address: string) {
+        const isValid = isValidAddress(address)
+        if (!isValid) {
+            throw new BadRequestException('Incorrect address')
+        }
+        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
+        if (doesAddressExist) {
+            throw new ConflictException('Address already associated')
+        }
     }
 
     async delete(id: string) {
@@ -110,30 +137,35 @@ export class UsersService {
     private async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
         try {
             await validateOrReject(plainToClass(CreateUserDto, createUserDto))
-            const validUsername = await this.validateUsername(createUserDto.username)
-            if (!validUsername) {
-                return false
-            }
-            return await this.validateEmail(createUserDto.email)
         } catch (e) {
-            return false
+            throw new BadRequestException(e.message)
         }
+        const validUsername = await this.validateUsername(createUserDto.username)
+        if (!validUsername) {
+            throw new BadRequestException('Username already taken')
+        }
+        return await this.validateEmail(createUserDto.email)
     }
 
-    private async validateBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<boolean> {
+    private async validateBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<void> {
         try {
             await validateOrReject(plainToClass(CreateBlockchainUserDto, createBlockchainUserDto))
-            const validUsername = await this.validateUsername(createBlockchainUserDto.username)
-            if (!validUsername) {
-                return false
-            }
-            const validAddress = isValidAddress(createBlockchainUserDto.blockchainAddress)
-            if (!validAddress) {
-                return false
-            }
-            return !(await this.blockchainAddressService.doesAddressExist(createBlockchainUserDto.blockchainAddress))
         } catch (e) {
-            return false
+            throw new BadRequestException(e.message)
+        }
+        const validUsername = await this.validateUsername(createBlockchainUserDto.username)
+        if (!validUsername) {
+            throw new BadRequestException('Username already taken')
+        }
+        const validAddress = isValidAddress(createBlockchainUserDto.blockchainAddress)
+        if (!validAddress) {
+            throw new BadRequestException('Address is invalid')
+        }
+        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(
+            createBlockchainUserDto.blockchainAddress,
+        )
+        if (doesAddressExist) {
+            throw new ConflictException('User with this address already exists')
         }
     }
 }

@@ -24,7 +24,9 @@ describe(`Auth Controller`, () => {
 
     let sessionUser: SessionData
 
-    beforeAll(async () => {
+    beforeEach(async () => {
+        await cleanDatabase()
+        await cleanAuthorizationDatabase()
         const user = await getUsersService().create({
             username: bobUsername,
             email: bobEmail,
@@ -33,11 +35,6 @@ describe(`Auth Controller`, () => {
         sessionUser = {
             user,
         }
-    })
-
-    beforeEach(async () => {
-        await cleanDatabase()
-        await cleanAuthorizationDatabase()
     })
 
     describe('auth guard', () => {
