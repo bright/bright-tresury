@@ -78,8 +78,8 @@ describe(`Auth Web3 Controller`, () => {
         })
     })
 
-    describe('sign in', () => {
-        it('should create session', async () => {
+    describe('associate in', () => {
+        it('should associate address', async () => {
             await getUsersService().createBlockchainUser(new CreateBlockchainUserDto(uuid(), 'Bob', bobAddress))
             await request(app()).post(`/api/v1/auth/web3/signin/start`).send({ address: bobAddress })
 
