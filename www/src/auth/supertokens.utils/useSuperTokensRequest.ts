@@ -1,9 +1,14 @@
-import {FormikErrors} from "formik/dist/types";
-import {useCallback, useEffect, useRef, useState} from "react";
-import {useTranslation} from "react-i18next";
-import {FormBaseAPIResponse, FormFieldError, SignInAPIResponse, SignUpAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailpassword/types";
-import {SendVerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
-import {LoadingState} from "../../components/loading/LoadingWrapper";
+import { FormikErrors } from 'formik/dist/types'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
+    FormBaseAPIResponse,
+    FormFieldError,
+    SignInAPIResponse,
+    SignUpAPIResponse,
+} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
+import { SendVerifyEmailAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailverification/types'
+import { LoadingState } from '../../components/loading/useLoading'
 
 interface UseSuperTokensRequestResult<Values> {
     call: (params: Values, setErrors?: (errors: FormikErrors<Values>) => void) => Promise<void | SuperTokensAPIResponse>
@@ -11,14 +16,20 @@ interface UseSuperTokensRequestResult<Values> {
     error?: string
 }
 
-enum SuperTokensLoadingState { FieldError }
+enum SuperTokensLoadingState {
+    FieldError,
+}
 
-export type SuperTokensAPIResponse = FormBaseAPIResponse | SignInAPIResponse | SignUpAPIResponse | SendVerifyEmailAPIResponse
+export type SuperTokensAPIResponse =
+    | FormBaseAPIResponse
+    | SignInAPIResponse
+    | SignUpAPIResponse
+    | SendVerifyEmailAPIResponse
 
 export function useSuperTokensRequest<Values>(
-    apiCall: (params: Values) => Promise<SuperTokensAPIResponse>
+    apiCall: (params: Values) => Promise<SuperTokensAPIResponse>,
 ): UseSuperTokensRequestResult<Values> {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     const ref = useRef(true)
 
     const [error, setError] = useState<string | undefined>()
@@ -33,10 +44,13 @@ export function useSuperTokensRequest<Values>(
         setLoadingState(LoadingState.Resolved)
     }
 
-    const handleFieldError = async (formFields: FormFieldError[], setErrors?: (errors: FormikErrors<Values>) => void) => {
+    const handleFieldError = async (
+        formFields: FormFieldError[],
+        setErrors?: (errors: FormikErrors<Values>) => void,
+    ) => {
         if (setErrors) {
             const errors: any = {}
-            formFields.forEach(({id, error}) => {
+            formFields.forEach(({ id, error }) => {
                 errors[id] = error
             })
             await setErrors(errors)
@@ -44,42 +58,50 @@ export function useSuperTokensRequest<Values>(
         setLoadingState(SuperTokensLoadingState.FieldError)
     }
 
-    const handleGeneralError = useCallback((error?: string) => {
-        console.error(error)
-        if (typeof error === 'string') {
-            setError(error)
-        } else {
-            setError(t('auth.errors.generalError'))
-        }
-        setLoadingState(LoadingState.Error)
-    }, [t])
-
-    const call = useCallback(async (values: Values, setErrors?: (errors: FormikErrors<Values>) => void) => {
-        startLoading()
-        apiCall(values).then(async (response: SuperTokensAPIResponse) => {
-            switch (response.status) {
-                case "OK":
-                    handleSuccess()
-                    break
-                case "FIELD_ERROR":
-                    await handleFieldError(response.formFields, setErrors)
-                    break
-                case "WRONG_CREDENTIALS_ERROR":
-                    await handleGeneralError(t('auth.errors.wrongCredentialsError'))
-                    break
-                case 'EMAIL_ALREADY_VERIFIED_ERROR':
-                    handleGeneralError(t('auth.errors.emailAlreadyVerifiedError'))
-                    break
-                case "GENERAL_ERROR":
-                    handleGeneralError(response.message)
-                    break
-                default:
-                    handleGeneralError()
+    const handleGeneralError = useCallback(
+        (error?: string) => {
+            console.error(error)
+            if (typeof error === 'string') {
+                setError(error)
+            } else {
+                setError(t('auth.errors.generalError'))
             }
-        }).catch((error) => {
-            handleGeneralError(error)
-        })
-    }, [apiCall, t, handleGeneralError])
+            setLoadingState(LoadingState.Error)
+        },
+        [t],
+    )
+
+    const call = useCallback(
+        async (values: Values, setErrors?: (errors: FormikErrors<Values>) => void) => {
+            startLoading()
+            apiCall(values)
+                .then(async (response: SuperTokensAPIResponse) => {
+                    switch (response.status) {
+                        case 'OK':
+                            handleSuccess()
+                            break
+                        case 'FIELD_ERROR':
+                            await handleFieldError(response.formFields, setErrors)
+                            break
+                        case 'WRONG_CREDENTIALS_ERROR':
+                            await handleGeneralError(t('auth.errors.wrongCredentialsError'))
+                            break
+                        case 'EMAIL_ALREADY_VERIFIED_ERROR':
+                            handleGeneralError(t('auth.errors.emailAlreadyVerifiedError'))
+                            break
+                        case 'GENERAL_ERROR':
+                            handleGeneralError(response.message)
+                            break
+                        default:
+                            handleGeneralError()
+                    }
+                })
+                .catch((error) => {
+                    handleGeneralError(error)
+                })
+        },
+        [apiCall, t, handleGeneralError],
+    )
 
     useEffect(() => {
         return () => {
@@ -87,5 +109,5 @@ export function useSuperTokensRequest<Values>(
         }
     }, [])
 
-    return {loadingState, call, error} as UseSuperTokensRequestResult<Values>
+    return { loadingState, call, error } as UseSuperTokensRequestResult<Values>
 }

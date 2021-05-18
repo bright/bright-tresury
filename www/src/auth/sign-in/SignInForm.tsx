@@ -9,12 +9,12 @@ import { Button } from '../../components/button/Button'
 import { Input } from '../../components/form/input/Input'
 import { PasswordInput } from '../../components/form/input/password/PasswordInput'
 import { RouterLink } from '../../components/link/RouterLink'
-import { LoadingState } from '../../components/loading/LoadingWrapper'
 import { ROUTE_SIGNUP } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import { useAuth } from '../AuthContext'
 import { useSuperTokensRequest } from '../supertokens.utils/useSuperTokensRequest'
 import { InfoBox } from '../../components/form/InfoBox'
+import { LoadingState } from '../../components/loading/useLoading'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

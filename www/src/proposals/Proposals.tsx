@@ -1,13 +1,15 @@
 import React, { useEffect, useMemo } from 'react'
 import { ProposalsHeader } from './ProposalsHeader'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { LoadingWrapper, useLoading } from '../components/loading/LoadingWrapper'
+import { LoadingWrapper } from '../components/loading/LoadingWrapper'
 import { getProposals } from './proposals.api'
 import config from '../config'
 import { useLocation } from 'react-router-dom'
 import { ProposalsList } from './list/ProposalsList'
 import { ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName } from './list/ProposalStatusFilters'
 import { filterProposals } from './list/filterProposals'
+import { useLoading } from '../components/loading/useLoading'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -23,6 +25,8 @@ interface Props {
 
 export const Proposals = ({ networkName = config.NETWORK_NAME }: Props) => {
     const classes = useStyles()
+
+    const { t } = useTranslation()
 
     const location = useLocation()
 
@@ -44,7 +48,7 @@ export const Proposals = ({ networkName = config.NETWORK_NAME }: Props) => {
     return (
         <div className={classes.root}>
             <ProposalsHeader filter={filter} />
-            <LoadingWrapper loadingState={loadingState}>
+            <LoadingWrapper loadingState={loadingState} errorMessage={t('errors.errorOccurredWhileLoadingProposals')}>
                 <ProposalsList proposals={filteredProposals} />
             </LoadingWrapper>
         </div>

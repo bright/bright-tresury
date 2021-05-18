@@ -143,6 +143,7 @@
                     "label": "Password",
                     "placeholder": "Enter your password"
                 },
+                "submitButton": "Login",
                 "forgotPassword": "Forgot Password?"
             },
             "verifyEmail": {
@@ -366,5 +367,11 @@
             },
             "ok": "Ok"
         }
+    },
+    "errors": {
+        "errorOccurredWhileLoadingIdeas": "An error occurred while loading ideas.",
+        "errorOccurredWhileLoadingProposals": "An error occurred while loading proposals.",
+        "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
+        "somethingWentWrong": "Ooops... Something went wrong."
     }
 }

@@ -1,13 +1,10 @@
 import React, { PropsWithChildren } from 'react'
-import {createStyles, makeStyles} from '@material-ui/core/styles';
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
-import {
-    IdeaMilestoneDto,
-    IdeaMilestoneNetworkDto
-} from "../idea.milestones.api";
-import {IdeaMilestoneFormFields} from "./fields/IdeaMilestoneFormFields";
-import {Nil} from "../../../../util/types";
-import {IdeaDto} from "../../../ideas.api";
+import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.api'
+import { IdeaMilestoneFormFields } from './fields/IdeaMilestoneFormFields'
+import { Nil } from '../../../../util/types'
+import { IdeaDto } from '../../../ideas.api'
 import { useIdeaMilestoneForm } from './useIdeaMilestoneForm'
 import { IdeaMilestoneFoldedFormFields } from './fields/IdeaMilestoneFoldedFormFields'
 
@@ -17,19 +14,14 @@ const useStyles = makeStyles(() =>
             display: 'flex',
             flexDirection: 'column',
         },
-        buttons: {
-            display: 'flex',
-            paddingTop: 40,
-            justifyContent: 'space-between'
-        },
     }),
-);
+)
 
 export interface IdeaMilestoneFormValues {
-    subject: string,
-    beneficiary: Nil<string>,
-    dateFrom: Nil<Date>,
-    dateTo: Nil<Date>,
+    subject: string
+    beneficiary: Nil<string>
+    dateFrom: Nil<Date>
+    dateTo: Nil<Date>
     description: Nil<string>
     networks: IdeaMilestoneNetworkDto[]
 }
@@ -43,49 +35,39 @@ interface Props {
     onSubmit?: (values: IdeaMilestoneFormValues) => void
 }
 
-export const IdeaMilestoneForm = (
-    {
-        idea,
-        ideaMilestone,
-        readonly,
-        folded = false,
-        extendedValidation = false,
-        onSubmit,
-        children
-    }: PropsWithChildren<Props>
-) => {
-
+export const IdeaMilestoneForm = ({
+    idea,
+    ideaMilestone,
+    readonly,
+    folded = false,
+    extendedValidation = false,
+    onSubmit,
+    children,
+}: PropsWithChildren<Props>) => {
     const classes = useStyles()
 
-    const {
-        initialValues,
-        validationSchema,
-        extendedValidationSchema,
-        onSubmitFallback
-    } = useIdeaMilestoneForm({ idea, ideaMilestone })
+    const { initialValues, validationSchema, extendedValidationSchema, onSubmitFallback } = useIdeaMilestoneForm({
+        idea,
+        ideaMilestone,
+    })
 
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={{...initialValues}}
+            initialValues={{ ...initialValues }}
             validationSchema={extendedValidation ? extendedValidationSchema : validationSchema}
             onSubmit={onSubmit ?? onSubmitFallback}
         >
-            {({ values, handleSubmit }) =>
-                <form className={classes.form} autoComplete='off' onSubmit={handleSubmit}>
-                    { folded
-                        ? (
-                            <IdeaMilestoneFoldedFormFields values={values} readonly={readonly} />
-                        )
-                        : (
-                            <IdeaMilestoneFormFields values={values} readonly={readonly} />
-                        )
-                    }
-                    <div className={classes.buttons}>
-                        {children}
-                    </div>
+            {({ values, handleSubmit }) => (
+                <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
+                    {folded ? (
+                        <IdeaMilestoneFoldedFormFields values={values} readonly={readonly} />
+                    ) : (
+                        <IdeaMilestoneFormFields values={values} readonly={readonly} />
+                    )}
+                    <>{children}</>
                 </form>
-            }
+            )}
         </Formik>
     )
 }
