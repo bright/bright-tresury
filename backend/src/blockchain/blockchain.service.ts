@@ -1,12 +1,15 @@
 import {Inject, Injectable, OnModuleDestroy} from '@nestjs/common'
 import {ApiPromise} from '@polkadot/api'
-import {DeriveTreasuryProposals} from "@polkadot/api-derive/types";
 import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
 import {EventRecord, Header} from '@polkadot/types/interfaces';
+import {extractTime} from '@polkadot/util';
 import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
 import {ExtrinsicEvent} from "../extrinsics/extrinsicEvent";
 import {getLogger} from "../logging.module";
 import {BlockchainProposal, BlockchainProposalStatus, toBlockchainProposal} from "./dto/blockchainProposal.dto";
+import {DeriveAccountRegistration} from "@polkadot/api-derive/accounts/types";
+import type { BlockNumber } from '@polkadot/types/interfaces/runtime';
+import {getProposers, getBeneficiaries, getVoters} from './utils'
 
 const logger = getLogger()
 
@@ -84,25 +87,56 @@ export class BlockchainService implements OnModuleDestroy {
         })
     }
 
+    async getIdentities(addresses: string[]): Promise<Map<string, DeriveAccountRegistration>> {
+        logger.info('Getting identities from blockchain')
+        const identities = new Map<string, DeriveAccountRegistration>()
+        for (const address of addresses) {
+            identities.set(address, await this.polkadotApi.derive.accounts.identity(address))
+        }
+        return identities;
+    }
+
+    getRemainingTime(currentBlockNumber: BlockNumber , futureBlockNumber: BlockNumber | undefined) {
+        if (!futureBlockNumber) {
+            return {}
+        }
+        const DEFAULT_TIME = 6000
+        const {babe, difficulty, timestamp} = this.polkadotApi.consts;
+        const blockTime = babe?.expectedBlockTime || difficulty?.targetBlockTime || timestamp?.minimumPeriod.muln(2) || DEFAULT_TIME
+        const remainingBlocks = futureBlockNumber.sub(currentBlockNumber);
+        const remainingMilliseconds = blockTime.mul(remainingBlocks).toNumber();
+        const timeLeft = extractTime(Math.abs(remainingMilliseconds));
+        return { endBlock: futureBlockNumber.toNumber(), remainingBlocks: remainingBlocks.toNumber(), timeLeft }
+    }
+
     async getProposals(): Promise<BlockchainProposal[]> {
         logger.info('Getting proposals from blockchain...')
-        const proposals: DeriveTreasuryProposals = await this.polkadotApi.derive.treasury.proposals()
+        const {proposals, proposalCount, approvals} = await this.polkadotApi.derive.treasury.proposals()
 
-        const proposalCount = proposals.proposalCount.toNumber()
-        logger.info(`ProposalCount is ${proposalCount}.`)
-
-        if (proposalCount === 0) {
+        const proposalCountNumber = proposalCount.toNumber()
+        logger.info(`ProposalCount is ${proposalCountNumber}.`)
+        if (proposalCountNumber === 0) {
             return []
         }
 
-        // TODO: It's also possible to extract voting results from DeriveTreasuryProposals object
-        const result: BlockchainProposal[] = proposals.proposals.map((derivedProposal) => {
-            return toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Proposal)
-        })
+        logger.info('Getting voters');
 
-        return result.concat(proposals.approvals.map((derivedProposal) => {
-            return toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Approval)
-        }))
+        // get unique (set) accountIds as strings (toHuman) from ongoing proposals and approvals
+        const addresses = new Set([
+            ...getProposers(proposals), ...getProposers(approvals),
+            ...getBeneficiaries(proposals), ...getBeneficiaries(approvals),
+            ...getVoters(proposals), ...getVoters(approvals)
+        ].map((accountId) => accountId.toHuman()));
+        const identities = await this.getIdentities(Array.from(addresses));
+
+        // make a function that will compute remaining voting time
+        const currentBlockNumber = await this.polkadotApi.derive.chain.bestNumber();
+        const calcRemainingTime = (endBlock: BlockNumber | undefined) => this.getRemainingTime(currentBlockNumber, endBlock);
+
+        return [
+            ...proposals.map((derivedProposal) => toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Proposal, identities, calcRemainingTime)),
+            ...approvals.map((derivedProposal) => toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Approval, identities, calcRemainingTime))
+        ]
     }
 
     extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents: ExtrinsicEvent[]): number | undefined {

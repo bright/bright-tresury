@@ -54,8 +54,9 @@ export const ProposalCard = ({ proposal: { proposalIndex, status, title, value, 
             <Divider />
 
             <div className={classes.accountsWrapper}>
-                <AddressInfoWithLabel label={t('proposal.list.card.beneficiary')} address={beneficiary} />
-                <AddressInfoWithLabel label={t('proposal.list.card.proposer')} address={proposer} />
+                <AddressInfoWithLabel label={t('proposal.list.card.beneficiary')} address={beneficiary.address} />
+                <AddressInfoWithLabel label={t('proposal.list.card.proposer')} address={proposer.address} />
+
             </div>
         </NetworkCard>
     )

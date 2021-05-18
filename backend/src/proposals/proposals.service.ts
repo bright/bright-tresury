@@ -59,7 +59,6 @@ export class ProposalsService {
         const proposals = await this.blockchainService.getProposals()
 
         const proposal = proposals.find(({ proposalIndex }: BlockchainProposal) => proposalIndex === proposalId)
-
         if (!proposal) {
             throw new NotFoundException('Proposal with the given id in the given network not found')
         }

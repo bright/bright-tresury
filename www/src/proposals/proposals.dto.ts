@@ -1,3 +1,5 @@
+
+
 export enum ProposalStatus {
     Submitted = 'submitted',
     Approved = 'approved',
@@ -8,8 +10,8 @@ export enum ProposalStatus {
 
 export interface ProposalDto {
     proposalIndex: number
-    proposer: string
-    beneficiary: string
+    proposer: any
+    beneficiary: any
     value: number
     bond: number
     status: ProposalStatus
@@ -18,4 +20,14 @@ export interface ProposalDto {
     isCreatedFromIdeaMilestone: boolean
     ideaId?: string
     ideaMilestoneId?: string
+    council: ProposalVote[]
+}
+export interface ProposalVote {
+    hash: string,
+    method: string,
+    ayes: any[],
+    nays: any[],
+    motionIndex: number,
+    threshold: number,
+    end: any // block number when voting is over
 }

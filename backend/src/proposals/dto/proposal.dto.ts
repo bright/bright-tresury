@@ -1,6 +1,8 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { BlockchainProposalStatus } from '../../blockchain/dto/blockchainProposal.dto'
-import { BlockchainProposalWithDomainDetails } from '../proposals.service'
+import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
+import {BlockchainProposalVote, BlockchainProposalStatus} from "../../blockchain/dto/blockchainProposal.dto";
+import {BlockchainAccountInfo} from "../../blockchain/dto/blockchainAccountInfo.dto";
+import {BlockchainProposalWithDomainDetails} from "../proposals.service";
+
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -15,15 +17,11 @@ export class ProposalDto {
     })
     proposalIndex: number
 
-    @ApiProperty({
-        description: 'Proposer account address',
-    })
-    proposer: string
+    @ApiProperty({description: 'Proposer account info'})
+    proposer: BlockchainAccountInfo
 
-    @ApiProperty({
-        description: 'Beneficiary account address',
-    })
-    beneficiary: string
+    @ApiProperty({description: 'Beneficiary account info'})
+    beneficiary: BlockchainAccountInfo
 
     @ApiProperty({
         description: 'Value of the proposal',
@@ -58,7 +56,7 @@ export class ProposalDto {
 
     // TODO: Fill with proper description
     @ApiProperty({description: 'Voting info'})
-    council: any[]
+    council: BlockchainProposalVote[]
 
     @ApiPropertyOptional({description: 'Id of a corresponding idea'})
     ideaId?: string

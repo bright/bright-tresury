@@ -348,6 +348,11 @@
                 "rejected": "Rejected",
                 "rewarded": "Rewarded"
             }
+        },
+        "voting": {
+          "motion": "Motion",
+          "votingEnd": "Voting end - ",
+          "noMotion": "No motion made"
         }
     },
     "substrate": {
