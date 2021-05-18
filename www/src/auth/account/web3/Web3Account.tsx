@@ -13,8 +13,9 @@ const Web3Account = () => {
     return (
         <>
             {user?.isWeb3 || <Web3AccountDetails />}
-            {addAccount && <Web3AccountForm />}
-            {addAccount || (
+            {addAccount ? (
+                <Web3AccountForm />
+            ) : (
                 <Button variant="text" color="primary" onClick={() => setAddAccount(true)}>
                     {t('account.web3.add')}
                 </Button>

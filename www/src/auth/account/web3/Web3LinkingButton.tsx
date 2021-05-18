@@ -23,11 +23,11 @@ interface OwnProps {
 
 type Props = OwnProps & ButtonProps
 
-export const Web3LinkingButton = ({ label, className, ...props }: Props) => {
+export const Web3LinkingButton = ({ label, ...props }: Props) => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
-            <Button {...props} type="submit" variant={'text'} className={className}>
+            <Button {...props} type="submit" variant={'text'}>
                 {label}
             </Button>
         </div>
