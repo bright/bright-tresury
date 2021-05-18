@@ -95,7 +95,7 @@ export class AuthWeb3Controller {
         description: 'Requested address already exists',
     })
     async startAssociatingAddress(@Body() startRequest: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
-        return this.authWeb3Service.startAssociatingAddress(startRequest)
+        return this.authWeb3Service.startAssociateAddress(startRequest)
     }
 
     @Post('/associate/confirm')
@@ -118,7 +118,7 @@ export class AuthWeb3Controller {
         @Res() res: Response,
         @ReqSession() session: SessionData,
     ) {
-        await this.authWeb3Service.confirmAssociatingAddress(confirmRequest, res, session)
+        await this.authWeb3Service.confirmAssociateAddress(confirmRequest, res, session)
         res.status(HttpStatus.OK).send()
     }
 }

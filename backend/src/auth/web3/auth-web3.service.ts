@@ -17,31 +17,31 @@ export class AuthWeb3Service {
     ) {}
 
     async startSignIn(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
-        return this.signInService.startSigningMessage(startDto)
+        return this.signInService.startSignMessage(startDto)
     }
 
     async confirmSignIn(confirmRequest: ConfirmSignMessageRequestDto, res: Response): Promise<void> {
-        await this.signInService.confirmSigningMessage(confirmRequest, res)
+        await this.signInService.confirmSignMessage(confirmRequest, res)
     }
 
     async startSignUp(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
-        return this.signUpService.startSigningMessage(startDto)
+        return this.signUpService.startSignMessage(startDto)
     }
 
     async confirmSignUp(confirmRequest: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
-        return this.signUpService.confirmSigningMessage(confirmRequest, res)
+        return this.signUpService.confirmSignMessage(confirmRequest, res)
     }
 
-    async startAssociatingAddress(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
-        return this.associateService.startSigningMessage(startDto)
+    async startAssociateAddress(startDto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
+        return this.associateService.startSignMessage(startDto)
     }
 
-    async confirmAssociatingAddress(
+    async confirmAssociateAddress(
         confirmRequest: ConfirmWeb3SignUpRequestDto,
         res: Response,
         session: SessionData,
     ): Promise<void> {
-        return this.associateService.confirmSigningMessage(
+        return this.associateService.confirmSignMessage(
             {
                 ...confirmRequest,
                 session,

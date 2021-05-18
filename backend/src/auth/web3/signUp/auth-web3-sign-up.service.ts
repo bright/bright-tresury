@@ -26,14 +26,14 @@ export class AuthWeb3SignUpService extends SignMessageService {
         super(cacheManager, signatureValidator)
     }
 
-    async startSigningMessage(startRequest: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
+    async startSignMessage(startRequest: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
         await this.validateAddress(startRequest.address)
-        return super.startSigningMessage(startRequest)
+        return super.startSignMessage(startRequest)
     }
 
-    async confirmSigningMessage(confirmRequest: ConfirmSignMessageRequestDto, res: Response): Promise<void> {
+    async confirmSignMessage(confirmRequest: ConfirmSignMessageRequestDto, res: Response): Promise<void> {
         await this.validateAddress(confirmRequest.address)
-        return super.confirmSigningMessage(confirmRequest, res)
+        return super.confirmSignMessage(confirmRequest, res)
     }
 
     getCacheKey = (address: string) => `SignUpMessage:${address}`

@@ -21,7 +21,7 @@ export abstract class SignMessageService<T extends ConfirmSignMessageRequestDto 
         private readonly signatureValidator: SignatureValidator,
     ) {}
 
-    async startSigningMessage(startRequest: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
+    async startSignMessage(startRequest: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
         const signMessage = uuid()
         const signMessageKey = this.getCacheKey(startRequest.address)
         await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
@@ -29,7 +29,7 @@ export abstract class SignMessageService<T extends ConfirmSignMessageRequestDto 
         return new StartSignMessageResponseDto(signMessage)
     }
 
-    async confirmSigningMessage(confirmRequest: T, res: Response): Promise<void> {
+    async confirmSignMessage(confirmRequest: T, res: Response): Promise<void> {
         const signMessageKey = this.getCacheKey(confirmRequest.address)
         const cachedSignMessage = await this.cacheManager.get<string>(signMessageKey)
         if (!cachedSignMessage) {

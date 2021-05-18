@@ -25,8 +25,4 @@ export class AuthWeb3AssociateService extends SignMessageService<ConfirmWeb3Asso
     onMessageConfirmed = async (confirmRequest: ConfirmWeb3AssociateRequestDto, res: Response) => {
         await this.userService.associateBlockchainAddress(confirmRequest.session.user, confirmRequest.address)
     }
-
-    async confirmSigningMessage(confirmRequest: ConfirmWeb3AssociateRequestDto, res: Response): Promise<void> {
-        return super.confirmSigningMessage(confirmRequest, res)
-    }
 }
