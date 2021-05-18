@@ -8,64 +8,54 @@ const useStyles = makeStyles((theme: Theme) =>
         rootBase: {
             paddingTop: '40px',
             display: 'grid',
-            gridTemplateAreas: `'a b c'`,
+            gridTemplateAreas: `'leftButton errorMessage rightButton'`,
             '&>:nth-child(1)': {
-                gridArea: 'a',
+                gridArea: 'leftButton',
             },
             '&>:nth-child(2)': {
-                gridArea: 'b',
+                gridArea: 'errorMessage',
             },
             '&>:nth-child(3)': {
-                gridArea: 'c',
+                gridArea: 'rightButton',
             },
         },
-        rootHorizontalToVertical: {
+        rootHorizontalToVerticalLayout: {
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                gridTemplateColumns: '1fr 1fr',
                 gridGap: '2em',
                 gridTemplateAreas: `
-                                     'b b'
-                                     'a c'
+                                     'errorMessage errorMessage'
+                                     'leftButton rightButton'
                                    `,
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                gridGap: '0',
                 gridTemplateAreas: `
-                                     'b b'
-                                     'a a'
-                                     'c c'
+                                     'errorMessage errorMessage'
+                                     'rightButton rightButton'
+                                     'leftButton leftButton'
                                    `,
             },
         },
-        rootFixedVertical: {
+        rootFixedVerticalLayout: {
             gridTemplateColumns: '1fr 1fr',
-            // gridGap: '15px',
+            gridGap: '2em',
             gridTemplateAreas: `
-                                     'b b'
-                                     'a c'
+                                     'errorMessage errorMessage'
+                                     'leftButton rightButton'
                                    `,
-        },
-        leftButtonWrapper: {
-            // display: 'flex',
-            // justifyContent: 'flex-start',
-        },
-        rightButtonWrapper: {
-            // display: 'flex',
-            // justifyContent: 'flex-end',
         },
     }),
 )
 
 interface Props {
-    fixedVertical?: boolean
+    fixedVerticalLayout?: boolean
 }
 
-export const FormFooter = ({ fixedVertical = false, children }: PropsWithChildren<Props>) => {
+export const Footer = ({ fixedVerticalLayout = false, children }: PropsWithChildren<Props>) => {
     const classes = useStyles()
     return (
         <div
             className={`${classes.rootBase} ${
-                fixedVertical ? classes.rootFixedVertical : classes.rootHorizontalToVertical
+                fixedVerticalLayout ? classes.rootFixedVerticalLayout : classes.rootHorizontalToVerticalLayout
             }`}
         >
             {children}

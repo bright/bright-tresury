@@ -16,33 +16,27 @@ const useStyles = makeStyles((theme: Theme) =>
         button: {
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 width: '100%',
-                marginTop: '2em',
             },
         },
-        // leftButton: {
-        //     [theme.breakpoints.down(breakpoints.mobile)]: {
-        //         marginTop: '2em',
-        //     },
-        // },
     }),
 )
-
-export const RightButton = ({ children, ...props }: ButtonProps) => {
-    const classes = useStyles()
-    return (
-        <div className={classes.rightButtonWrapper}>
-            <Button className={classes.button} variant={'contained'} color="primary" type="submit" {...props}>
-                {children}
-            </Button>
-        </div>
-    )
-}
 
 export const LeftButton = ({ children, ...props }: ButtonProps) => {
     const classes = useStyles()
     return (
         <div className={classes.leftButtonWrapper}>
             <Button className={classes.button} variant={'outlined'} color="primary" type="submit" {...props}>
+                {children}
+            </Button>
+        </div>
+    )
+}
+
+export const RightButton = ({ children, ...props }: ButtonProps) => {
+    const classes = useStyles()
+    return (
+        <div className={classes.rightButtonWrapper}>
+            <Button className={classes.button} variant={'contained'} color="primary" type="submit" {...props}>
                 {children}
             </Button>
         </div>

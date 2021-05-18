@@ -1,7 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { Loader } from './Loader'
 import { LoadingState } from './useLoading'
-import { ErrorMessage } from '../error/ErrorMessage'
+import { ErrorText } from '../error/ErrorText'
 
 interface Props {
     loadingState: LoadingState
@@ -17,7 +17,7 @@ export const LoadingWrapper = ({ loadingState, errorMessage, children }: PropsWi
         case LoadingState.Resolved:
             return <>{children}</>
         case LoadingState.Error:
-            return <ErrorMessage message={errorMessage} />
+            return <ErrorText error={errorMessage} />
         default:
             return null
     }

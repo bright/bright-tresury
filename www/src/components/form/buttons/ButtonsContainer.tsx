@@ -1,6 +1,6 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React from "react";
-import {breakpoints} from "../../../theme/theme";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
+import { breakpoints } from '../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,12 +18,10 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
     }),
-);
+)
 
-export const ButtonsContainer: React.FC = ({children}) => {
+export const ButtonsContainer: React.FC = ({ children }) => {
     const classes = useStyles()
 
-    return <div className={classes.buttonsContainer}>
-        {children}
-    </div>
+    return <div className={classes.buttonsContainer}>{children}</div>
 }

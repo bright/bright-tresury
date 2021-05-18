@@ -1,12 +1,12 @@
 import React from 'react'
 import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../../components/button/Button'
 import { IdeaMilestoneDto, patchIdeaMilestone, PatchIdeaMilestoneDto } from '../idea.milestones.api'
 import { IdeaDto } from '../../../ideas.api'
 import { ErrorType, useError } from '../../../../components/error/useError'
-import { ErrorMessageModalBox } from '../../../../components/error/ErrorMessageModalBox'
-import { useIdeaMilestoneFormFooterStyles } from '../form/footer/useIdeaMilestoneFormFooterStyles'
+import { Footer } from '../../../../components/form/footer/Footer'
+import { LeftButton, RightButton } from '../../../../components/form/buttons/Buttons'
+import { ErrorBox } from '../../../../components/form/ErrorBox'
 
 interface Props {
     idea: IdeaDto
@@ -17,8 +17,6 @@ interface Props {
 
 export const IdeaMilestoneEdit = ({ idea, ideaMilestone, onCancel, onSuccess }: Props) => {
     const { t } = useTranslation()
-
-    const formFooterClasses = useIdeaMilestoneFormFooterStyles()
 
     const { error, setError } = useError()
 
@@ -40,21 +38,13 @@ export const IdeaMilestoneEdit = ({ idea, ideaMilestone, onCancel, onSuccess }: 
 
     return (
         <IdeaMilestoneForm idea={idea} ideaMilestone={ideaMilestone} readonly={false} onSubmit={submit}>
-            <div className={`${formFooterClasses.rootBase} ${formFooterClasses.rootHorizontalToVertical}`}>
-                <div className={formFooterClasses.leftButtonWrapper}>
-                    <Button type="button" color="primary" variant="text" onClick={onCancel}>
-                        {t('idea.milestones.modal.form.buttons.cancel')}
-                    </Button>
-                </div>
-
-                <div>{error ? <ErrorMessageModalBox message={t('errors.somethingWentWrong')} /> : null}</div>
-
-                <div className={formFooterClasses.rightButtonWrapper}>
-                    <Button type="submit" color="primary">
-                        {t('idea.milestones.modal.form.buttons.save')}
-                    </Button>
-                </div>
-            </div>
+            <Footer>
+                <LeftButton type="button" variant="text" onClick={onCancel}>
+                    {t('idea.milestones.modal.form.buttons.cancel')}
+                </LeftButton>
+                <div>{error ? <ErrorBox error={t('errors.somethingWentWrong')} /> : null}</div>
+                <RightButton>{t('idea.milestones.modal.form.buttons.save')}</RightButton>
+            </Footer>
         </IdeaMilestoneForm>
     )
 }

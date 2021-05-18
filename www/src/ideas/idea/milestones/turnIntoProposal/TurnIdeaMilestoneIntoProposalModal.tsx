@@ -1,14 +1,14 @@
 import React from 'react'
 import { IdeaMilestoneDto, patchIdeaMilestone, PatchIdeaMilestoneDto } from '../idea.milestones.api'
-import { Button } from '../../../../components/button/Button'
 import { Modal } from '../../../../components/modal/Modal'
 import { Trans, useTranslation } from 'react-i18next'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.api'
 import { ErrorType, useError } from '../../../../components/error/useError'
-import { ErrorMessageModalBox } from '../../../../components/error/ErrorMessageModalBox'
-import { useIdeaMilestoneFormFooterStyles } from '../form/footer/useIdeaMilestoneFormFooterStyles'
+import { Footer } from '../../../../components/form/footer/Footer'
+import { LeftButton, RightButton } from '../../../../components/form/buttons/Buttons'
+import { ErrorBox } from '../../../../components/form/ErrorBox'
 
 const useStyles = makeStyles(
     createStyles({
@@ -39,8 +39,6 @@ export const TurnIdeaMilestoneIntoProposalModal = ({
     onSuccessfulPatch,
 }: Props) => {
     const classes = useStyles()
-
-    const formFooterClasses = useIdeaMilestoneFormFooterStyles()
 
     const { t } = useTranslation()
 
@@ -94,21 +92,15 @@ export const TurnIdeaMilestoneIntoProposalModal = ({
                     extendedValidation={true}
                     onSubmit={submit}
                 >
-                    <div className={`${formFooterClasses.rootBase} ${formFooterClasses.rootFixedVertical}`}>
-                        <div className={formFooterClasses.leftButtonWrapper}>
-                            <Button type="button" color="primary" variant="text" onClick={onClose}>
-                                {t('idea.milestones.modal.form.buttons.cancel')}
-                            </Button>
-                        </div>
+                    <Footer fixedVerticalLayout={true}>
+                        <LeftButton type="button" variant="text" onClick={onClose}>
+                            {t('idea.milestones.modal.form.buttons.cancel')}
+                        </LeftButton>
 
-                        <div>{error ? <ErrorMessageModalBox message={t('errors.somethingWentWrong')} /> : null}</div>
+                        <div>{error ? <ErrorBox error={t('errors.somethingWentWrong')} /> : null}</div>
 
-                        <div className={formFooterClasses.rightButtonWrapper}>
-                            <Button type="submit" color="primary">
-                                {t('idea.details.header.turnIntoProposal')}
-                            </Button>
-                        </div>
-                    </div>
+                        <RightButton>{t('idea.details.header.turnIntoProposal')}</RightButton>
+                    </Footer>
                 </IdeaMilestoneForm>
             </>
         </Modal>

@@ -8,8 +8,8 @@ import { ROUTE_IDEAS } from '../../routes/routes'
 import IdeaForm from '../form/IdeaForm'
 import { createEmptyIdea, createIdea, IdeaDto, IdeaStatus } from '../ideas.api'
 import { ErrorType, useError } from '../../components/error/useError'
-import { ErrorMessageModalBox } from '../../components/error/ErrorMessageModalBox'
-import { FormFooter } from '../../components/form/footer/FormFooter'
+import { Footer } from '../../components/form/footer/Footer'
+import { ErrorBox } from '../../components/form/ErrorBox'
 
 interface Props {
     network: string
@@ -41,11 +41,11 @@ const IdeaCreate = ({ network = config.NETWORK_NAME }: Props) => {
     return (
         <Container title={t('idea.introduceTitle')}>
             <IdeaForm idea={idea} onSubmit={submit}>
-                <FormFooter>
+                <Footer>
                     <LeftButton onClick={dontActivate}>{t('idea.details.saveDraft')}</LeftButton>
-                    {<ErrorMessageModalBox message={t('errors.somethingWentWrong')} />}
+                    <ErrorBox error={t('errors.somethingWentWrong')} />
                     <RightButton onClick={doActivate}>{t('idea.details.create')}</RightButton>
-                </FormFooter>
+                </Footer>
             </IdeaForm>
         </Container>
     )
