@@ -4,32 +4,17 @@ import { getIdea } from '../../../ideas/ideas.api'
 import { getIdeaMilestone } from '../../../ideas/idea/milestones/idea.milestones.api'
 import { Nil } from '../../../util/types'
 
-export interface ProposalInfoValues {
-    proposer: string
-    field?: string
-    reason?: string
-    description?: Nil<string>
-}
-
-export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalDto) => {
-    const [values, setValues] = useState<ProposalInfoValues>({
-        proposer,
-        field: '',
-        reason: '',
-        description: '',
-    })
+export const useProposalInfo = ({ ideaId, ideaMilestoneId }: ProposalDto) => {
+    const [field, setField] = useState<string | undefined>('')
+    const [reason, setReason] = useState<string | undefined>('')
+    const [description, setDescription] = useState<Nil<string>>('')
 
     useEffect(() => {
         if (ideaId) {
             getIdea(ideaId)
                 .then(({ field, content }) => {
-                    setValues((prevState) => {
-                        return {
-                            ...prevState,
-                            field,
-                            reason: content,
-                        }
-                    })
+                    setField(field)
+                    setReason(content)
                 })
                 .catch(() => {
                     // TODO: Handle API call error
@@ -41,12 +26,7 @@ export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalD
         if (ideaId && ideaMilestoneId) {
             getIdeaMilestone(ideaId, ideaMilestoneId)
                 .then(({ description }) => {
-                    setValues((prevState) => {
-                        return {
-                            ...prevState,
-                            description,
-                        }
-                    })
+                    setDescription(description)
                 })
                 .catch(() => {
                     // TODO: Handle API call error
@@ -55,6 +35,8 @@ export const useProposalInfo = ({ ideaId, ideaMilestoneId, proposer }: ProposalD
     }, [ideaId, ideaMilestoneId])
 
     return {
-        values,
+        field,
+        reason,
+        description,
     }
 }

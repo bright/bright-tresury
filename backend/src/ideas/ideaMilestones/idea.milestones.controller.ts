@@ -10,7 +10,7 @@ import {
 import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { CreateIdeaMilestoneDto } from './dto/createIdeaMilestoneDto'
-import { IdeaMilestoneDto, mapIdeaMilestoneEntityToIdeaMilestoneDto } from './dto/ideaMilestoneDto'
+import { IdeaMilestoneDto } from './dto/ideaMilestoneDto'
 import { UpdateIdeaMilestoneDto } from './dto/updateIdeaMilestoneDto'
 import { IdeaMilestonesService } from './idea.milestones.service'
 
@@ -33,7 +33,7 @@ export class IdeaMilestonesController {
     })
     async getAll(@Param('ideaId') ideaId: string, @ReqSession() session: SessionData): Promise<IdeaMilestoneDto[]> {
         const ideaMilestones = await this.ideaMilestonesService.find(ideaId, session)
-        return ideaMilestones.map((ideaMilestone) => mapIdeaMilestoneEntityToIdeaMilestoneDto(ideaMilestone))
+        return ideaMilestones.map((ideaMilestone) => new IdeaMilestoneDto(ideaMilestone))
     }
 
     @Get(':ideaMilestoneId')
@@ -58,7 +58,7 @@ export class IdeaMilestonesController {
         @ReqSession() session: SessionData,
     ): Promise<IdeaMilestoneDto> {
         const ideaMilestone = await this.ideaMilestonesService.findOne(ideaMilestoneId, session)
-        return mapIdeaMilestoneEntityToIdeaMilestoneDto(ideaMilestone)
+        return new IdeaMilestoneDto(ideaMilestone)
     }
 
     @Post()
@@ -83,7 +83,7 @@ export class IdeaMilestonesController {
         @ReqSession() session: SessionData,
     ): Promise<IdeaMilestoneDto> {
         const ideaMilestone = await this.ideaMilestonesService.create(ideaId, createIdeaMilestoneDto, session)
-        return mapIdeaMilestoneEntityToIdeaMilestoneDto(ideaMilestone)
+        return new IdeaMilestoneDto(ideaMilestone)
     }
 
     @Patch(':ideaMilestoneId')
@@ -116,6 +116,6 @@ export class IdeaMilestonesController {
             updateIdeaMilestoneDto,
             session,
         )
-        return mapIdeaMilestoneEntityToIdeaMilestoneDto(updatedIdeaMilestone)
+        return new IdeaMilestoneDto(updatedIdeaMilestone)
     }
 }

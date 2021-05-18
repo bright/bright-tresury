@@ -61,17 +61,17 @@ export const ProposalInfo = ({ proposal }: Props) => {
 
     const { t } = useTranslation()
 
-    const {
-        values: { proposer, field, reason, description },
-    } = useProposalInfo(proposal)
+    const { field, reason, description } = useProposalInfo(proposal)
 
     return (
         <div>
             <Label label={t('proposal.content.info.proposer')} />
             <div className={classes.proposer}>
                 <>
-                    <Identicon address={proposer} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>{ellipseTextInTheMiddle(proposer)}</div>
+                    <Identicon address={proposal.proposer} />
+                    <div className={`${classes.accountValue} ${classes.text}`}>
+                        {ellipseTextInTheMiddle(proposal.proposer)}
+                    </div>
                 </>
             </div>
 
