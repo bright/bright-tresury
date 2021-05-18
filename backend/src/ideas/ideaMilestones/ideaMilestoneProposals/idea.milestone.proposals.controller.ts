@@ -2,7 +2,7 @@ import { Body, Controller, HttpCode, HttpStatus, Param, Post, UseGuards } from '
 import { ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { IdeaMilestoneProposalsService } from './idea.milestone.proposals.service'
 import { CreateIdeaMilestoneProposalDto } from './dto/CreateIdeaMilestoneProposalDto'
-import { IdeaMilestoneNetworkDto, mapToIdeaMilestoneNetworkDto } from '../dto/ideaMilestoneNetworkDto'
+import { IdeaMilestoneNetworkDto } from '../dto/ideaMilestoneNetworkDto'
 import { SessionGuard } from '../../../auth/session/guard/session.guard'
 import { ReqSession, SessionData } from '../../../auth/session/session.decorator'
 
@@ -48,6 +48,6 @@ export class IdeaMilestoneProposalsController {
             createIdeaMilestoneProposalDto,
             sessionData,
         )
-        return mapToIdeaMilestoneNetworkDto(ideaMilestoneNetwork)
+        return new IdeaMilestoneNetworkDto(ideaMilestoneNetwork)
     }
 }

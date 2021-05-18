@@ -1,117 +1,83 @@
-import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {IdeaNetworkDto, toIdeaNetworkDto} from "./ideaNetwork.dto";
-import {Idea, ideaRestrictions} from "../entities/idea.entity";
-import {IdeaNetwork} from "../entities/ideaNetwork.entity";
-import {IdeaStatus} from "../ideaStatus";
-import {IdeaMilestoneDto} from "../ideaMilestones/dto/ideaMilestoneDto";
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IdeaNetworkDto } from './ideaNetwork.dto'
+import { Idea, ideaRestrictions } from '../entities/idea.entity'
+import { IdeaStatus } from '../ideaStatus'
+import { IdeaMilestoneDto } from '../ideaMilestones/dto/ideaMilestoneDto'
 
 export class IdeaDto {
     @ApiProperty({
-        description: 'Id of the idea'
+        description: 'Id of the idea',
     })
     id!: string
 
     @ApiProperty({
-        description: 'Description of the idea'
+        description: 'Description of the idea',
     })
     title!: string
 
     @ApiPropertyOptional({
-        description: 'Reason of the idea'
+        description: 'Reason of the idea',
     })
     content?: string
 
     @ApiPropertyOptional({
-        description: 'Blockchain address of the idea beneficiary'
+        description: 'Blockchain address of the idea beneficiary',
     })
     beneficiary?: string
 
     @ApiPropertyOptional({
         description: 'Field of the idea',
-        maxLength: ideaRestrictions.field.maxLength
+        maxLength: ideaRestrictions.field.maxLength,
     })
     field?: string
 
     @ApiProperty({
         description: 'Networks of the idea',
-        type: [IdeaNetworkDto]
+        type: [IdeaNetworkDto],
     })
     networks!: IdeaNetworkDto[]
 
     @ApiPropertyOptional({
-        description: 'Contact to the idea proposer'
+        description: 'Contact to the idea proposer',
     })
     contact?: string
 
     @ApiPropertyOptional({
-        description: 'Portfolio of the idea proposer'
+        description: 'Portfolio of the idea proposer',
     })
     portfolio?: string
 
     @ApiPropertyOptional({
         description: 'External links connected with the idea',
-        type: [String]
+        type: [String],
     })
     links?: string[]
 
     @ApiProperty({
-        description: 'Ordinal number of the idea'
+        description: 'Ordinal number of the idea',
     })
     ordinalNumber: number
 
     @ApiProperty({
         description: 'Status of the idea',
-        enum: IdeaStatus
+        enum: IdeaStatus,
     })
     status: IdeaStatus
 
     @ApiProperty({
         description: 'Milestones of the idea',
-        type: [IdeaMilestoneDto]
+        type: [IdeaMilestoneDto],
     })
     milestones!: IdeaMilestoneDto[]
 
     @ApiProperty()
     ownerId: string
 
-    constructor(
-        id: string,
-        title: string,
-        status: IdeaStatus,
-        networks: IdeaNetworkDto[],
-        ordinalNumber: number,
-        ownerId: string,
-        beneficiary?: string,
-        content?: string,
-        field?: string,
-        contact?: string,
-        portfolio?: string,
-        links?: string[]
-    ) {
-        this.id = id
-        this.title = title
-        this.networks = networks
-        this.ordinalNumber = ordinalNumber
-        this.beneficiary = beneficiary
-        this.content = content
-        this.field = field
-        this.contact = contact
-        this.portfolio = portfolio
-        this.links = links
-        this.status = status
-        this.ownerId = ownerId
-    }
-
-}
-
-export function toIdeaDto({id, title, status, networks, ordinalNumber, ownerId, beneficiary, content, field, contact, portfolio, links, milestones }: Idea): IdeaDto {
-    return new IdeaDto(
+    constructor({
         id,
         title,
         status,
-        networks ? networks.map((ideaNetwork: IdeaNetwork) =>
-            toIdeaNetworkDto(ideaNetwork)
-        ) : [],
+        networks,
         ordinalNumber,
         ownerId,
         beneficiary,
@@ -119,6 +85,19 @@ export function toIdeaDto({id, title, status, networks, ordinalNumber, ownerId, 
         field,
         contact,
         portfolio,
-        links ? JSON.parse(links) as string[] : undefined,
-    )
+        links,
+    }: Idea) {
+        this.id = id
+        this.title = title
+        this.status = status
+        this.networks = networks ? networks.map((ideaNetwork) => new IdeaNetworkDto(ideaNetwork)) : []
+        this.ordinalNumber = ordinalNumber
+        this.ownerId = ownerId
+        this.beneficiary = beneficiary
+        this.content = content
+        this.field = field
+        this.contact = contact
+        this.portfolio = portfolio
+        this.links = links ? (JSON.parse(links) as string[]) : undefined
+    }
 }

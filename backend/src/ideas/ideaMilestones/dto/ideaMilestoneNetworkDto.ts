@@ -28,19 +28,10 @@ export class IdeaMilestoneNetworkDto {
     @IsOptional()
     extrinsic: ExtrinsicDto | null
 
-    constructor(name: string, value: number, extrinsic: ExtrinsicDto | null, id?: string) {
+    constructor({ id, name, value, extrinsic }: IdeaMilestoneNetwork) {
         this.id = id
         this.name = name
         this.value = Number(value)
-        this.extrinsic = extrinsic
+        this.extrinsic = extrinsic ? toExtrinsicDto(extrinsic) : null
     }
-}
-
-export const mapToIdeaMilestoneNetworkDto = ({
-    id,
-    name,
-    value,
-    extrinsic,
-}: IdeaMilestoneNetwork): IdeaMilestoneNetworkDto => {
-    return new IdeaMilestoneNetworkDto(name, value, extrinsic ? toExtrinsicDto(extrinsic) : null, id)
 }

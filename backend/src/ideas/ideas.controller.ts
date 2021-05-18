@@ -1,14 +1,33 @@
-import {BadRequestException, Body, Controller, Delete, Get, HttpStatus, NotFoundException, Param, Patch, Post, Query, UseGuards} from '@nestjs/common';
-import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiPropertyOptional, ApiTags} from '@nestjs/swagger';
-import {validate as uuidValidate} from 'uuid';
-import {SessionGuard} from "../auth/session/guard/session.guard";
-import {ReqSession, SessionData} from "../auth/session/session.decorator";
-import {Idea} from './entities/idea.entity';
-import {IdeasService} from './ideas.service';
-import {IdeaDto, toIdeaDto} from "./dto/idea.dto";
-import {CreateIdeaDto} from "./dto/createIdea.dto";
-import {UpdateIdeaDto} from "./dto/updateIdea.dto";
-import {IsOptional} from "class-validator";
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpStatus,
+    NotFoundException,
+    Param,
+    Patch,
+    Post,
+    Query,
+    UseGuards,
+} from '@nestjs/common'
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiPropertyOptional,
+    ApiTags,
+} from '@nestjs/swagger'
+import { validate as uuidValidate } from 'uuid'
+import { SessionGuard } from '../auth/session/guard/session.guard'
+import { ReqSession, SessionData } from '../auth/session/session.decorator'
+import { IdeasService } from './ideas.service'
+import { IdeaDto } from './dto/idea.dto'
+import { CreateIdeaDto } from './dto/createIdea.dto'
+import { UpdateIdeaDto } from './dto/updateIdea.dto'
+import { IsOptional } from 'class-validator'
 
 class GetIdeasQuery {
     @ApiPropertyOptional()
@@ -19,9 +38,7 @@ class GetIdeasQuery {
 @Controller('/v1/ideas')
 @ApiTags('ideas')
 export class IdeasController {
-
-    constructor(private ideasService: IdeasService) {
-    }
+    constructor(private ideasService: IdeasService) {}
 
     @Get()
     @ApiOkResponse({
@@ -30,7 +47,7 @@ export class IdeasController {
     })
     async getIdeas(@ReqSession() session: SessionData, @Query() query?: GetIdeasQuery): Promise<IdeaDto[]> {
         const ideas = await this.ideasService.find(query?.network, session)
-        return ideas.map((idea: Idea) => toIdeaDto(idea))
+        return ideas.map((idea) => new IdeaDto(idea))
     }
 
     @Get(':id')
@@ -52,7 +69,7 @@ export class IdeasController {
         if (!idea) {
             throw new NotFoundException('Idea not found.')
         }
-        return toIdeaDto(idea)
+        return new IdeaDto(idea)
     }
 
     @ApiCreatedResponse({
@@ -66,7 +83,7 @@ export class IdeasController {
     @UseGuards(SessionGuard)
     async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionData): Promise<IdeaDto> {
         const idea = await this.ideasService.create(createIdeaDto, session)
-        return toIdeaDto(idea)
+        return new IdeaDto(idea)
     }
 
     @ApiOkResponse({
@@ -81,9 +98,13 @@ export class IdeasController {
     })
     @Patch(':id')
     @UseGuards(SessionGuard)
-    async updateIdea(@Body() updateIdeaDto: UpdateIdeaDto, @Param('id') id: string, @ReqSession() session: SessionData): Promise<IdeaDto> {
+    async updateIdea(
+        @Body() updateIdeaDto: UpdateIdeaDto,
+        @Param('id') id: string,
+        @ReqSession() session: SessionData,
+    ): Promise<IdeaDto> {
         const idea = await this.ideasService.update(updateIdeaDto, id, session)
-        return toIdeaDto(idea)
+        return new IdeaDto(idea)
     }
 
     @ApiOkResponse({

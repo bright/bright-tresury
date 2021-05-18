@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IdeaMilestone } from '../entities/idea.milestone.entity'
-import { IdeaMilestoneNetworkDto, mapToIdeaMilestoneNetworkDto } from './ideaMilestoneNetworkDto'
+import { IdeaMilestoneNetworkDto } from './ideaMilestoneNetworkDto'
 import { Nil } from '../../../utils/types'
 import { IdeaMilestoneStatus } from '../ideaMilestoneStatus'
 
@@ -69,7 +69,7 @@ export class IdeaMilestoneDto {
         this.ordinalNumber = ordinalNumber
         this.subject = subject
         this.status = status
-        this.networks = networks.map((network) => mapToIdeaMilestoneNetworkDto(network))
+        this.networks = networks.map((network) => new IdeaMilestoneNetworkDto(network))
         this.beneficiary = beneficiary
         this.dateFrom = dateFrom
         this.dateTo = dateTo
