@@ -4,12 +4,14 @@ import { BlockchainAddressService } from '../../../users/blockchainAddress/block
 import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { CacheManager } from '../../../cache/cache.manager'
-import { SignMessageService } from '../signingMessage/sign-message.service'
-import { SignatureValidator } from '../signingMessage/signature.validator'
-import { ConfirmWeb3AssociateRequestDto } from './confirm-web3-associate-request.dto'
+import { SignMessageService } from '../signMessage/sign-message.service'
+import { SignatureValidator } from '../signMessage/signature.validator'
+import { ConfirmWeb3AssociateRequestDto } from './dto/confirm-web3-associate-request.dto'
+import { SessionData } from '../../session/session.decorator'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 
 @Injectable()
-export class AuthWeb3AssociateService extends SignMessageService<ConfirmWeb3AssociateRequestDto> {
+export class Web3AssociateService extends SignMessageService<ConfirmWeb3AssociateRequestDto> {
     constructor(
         private readonly userService: UsersService,
         private readonly blockchainAddressService: BlockchainAddressService,
@@ -24,5 +26,19 @@ export class AuthWeb3AssociateService extends SignMessageService<ConfirmWeb3Asso
 
     onMessageConfirmed = async (confirmRequest: ConfirmWeb3AssociateRequestDto, res: Response) => {
         await this.userService.associateBlockchainAddress(confirmRequest.session.user, confirmRequest.address)
+    }
+
+    async confirmAssociateAddress(
+        confirmRequest: ConfirmSignMessageRequestDto,
+        res: Response,
+        session: SessionData,
+    ): Promise<void> {
+        return this.confirmSignMessage(
+            {
+                ...confirmRequest,
+                session,
+            },
+            res,
+        )
     }
 }

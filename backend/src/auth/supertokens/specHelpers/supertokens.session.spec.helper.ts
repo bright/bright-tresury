@@ -11,7 +11,7 @@ import { request } from '../../../utils/spec.helpers'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../../session/session.decorator'
 import { UsersService } from '../../../users/users.service'
-import { SignatureValidator } from '../../web3/signingMessage/signature.validator'
+import { SignatureValidator } from '../../web3/signMessage/signature.validator'
 
 export class SessionHandler {
     readonly sessionData: SessionData

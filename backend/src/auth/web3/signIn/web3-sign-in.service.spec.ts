@@ -1,17 +1,17 @@
-import { AuthWeb3SignInService } from './auth-web3-sign-in.service'
 import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
-import { cleanAuthorizationDatabase } from '../../supertokens/specHelpers/supertokens.database.spec.helper'
-import { beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
+import { beforeSetupFullApp } from '../../../utils/spec.helpers'
 import { v4 as uuid } from 'uuid'
 import { CreateBlockchainUserDto } from '../../../users/dto/createBlockchainUser.dto'
 import { Response } from 'express'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
-import { SignatureValidator } from '../signingMessage/signature.validator'
+import { SignatureValidator } from '../signMessage/signature.validator'
+import { Web3SignInService } from './web3-sign-in.service'
+import { cleanDatabases } from '../web3.spec.helper'
 
-describe(`Auth Web3 Service`, () => {
+describe(`Web3 Sign In Service`, () => {
     const app = beforeSetupFullApp()
-    const getService = () => app.get().get(AuthWeb3SignInService)
+    const getService = () => app.get().get(Web3SignInService)
     const getSignatureValidator = () => app.get().get(SignatureValidator)
     const getUsersService = () => app.get().get(UsersService)
     const getSuperTokensService = () => app.get().get(SuperTokensService)
@@ -23,8 +23,7 @@ describe(`Auth Web3 Service`, () => {
     beforeEach(async () => {
         jest.spyOn(getSuperTokensService(), 'createSession').mockImplementation(() => Promise.resolve({} as any))
 
-        await cleanDatabase()
-        await cleanAuthorizationDatabase()
+        await cleanDatabases()
     })
 
     describe('start sign in', () => {

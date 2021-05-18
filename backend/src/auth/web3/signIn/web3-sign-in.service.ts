@@ -1,16 +1,16 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { Response } from 'express'
-import { ConfirmSignMessageRequestDto } from '../signingMessage/confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { BlockchainAddressService } from '../../../users/blockchainAddress/blockchainAddress.service'
 import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { CacheManager } from '../../../cache/cache.manager'
 import { isValidAddress } from '../../../utils/address/address.validator'
-import { SignMessageService } from '../signingMessage/sign-message.service'
-import { SignatureValidator } from '../signingMessage/signature.validator'
+import { SignMessageService } from '../signMessage/sign-message.service'
+import { SignatureValidator } from '../signMessage/signature.validator'
 
 @Injectable()
-export class AuthWeb3SignInService extends SignMessageService {
+export class Web3SignInService extends SignMessageService {
     constructor(
         private readonly userService: UsersService,
         private readonly blockchainAddressService: BlockchainAddressService,

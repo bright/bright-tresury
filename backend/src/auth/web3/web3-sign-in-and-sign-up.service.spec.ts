@@ -1,17 +1,19 @@
 import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
 import { UsersService } from '../../users/users.service'
 import { cleanAuthorizationDatabase } from '../supertokens/specHelpers/supertokens.database.spec.helper'
-import { AuthWeb3Service } from './auth-web3.service'
 import { v4 as uuid } from 'uuid'
 import { CreateBlockchainUserDto } from '../../users/dto/createBlockchainUser.dto'
 import { SuperTokensService } from '../supertokens/supertokens.service'
 import { Response } from 'express'
-import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
-import { SignatureValidator } from './signingMessage/signature.validator'
+import { ConfirmWeb3SignUpRequestDto } from './signUp/dto/confirm-web3-sign-up-request.dto'
+import { SignatureValidator } from './signMessage/signature.validator'
+import { Web3SignUpService } from './signUp/web3-sign-up.service'
+import { Web3SignInService } from './signIn/web3-sign-in.service'
 
 describe(`Auth Web3 Service`, () => {
     const app = beforeSetupFullApp()
-    const getService = () => app.get().get(AuthWeb3Service)
+    const getSignUpService = () => app.get().get(Web3SignUpService)
+    const getSignInService = () => app.get().get(Web3SignInService)
     const getSignatureValidator = () => app.get().get(SignatureValidator)
     const getUsersService = () => app.get().get(UsersService)
     const getSuperTokensService = () => app.get().get(SuperTokensService)
@@ -43,10 +45,10 @@ describe(`Auth Web3 Service`, () => {
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
 
-            await getService().startSignIn({ address: bobAddress })
-            await getService().startSignUp({ address: charlieAddress })
+            await getSignInService().startSignMessage({ address: bobAddress })
+            await getSignUpService().startSignMessage({ address: charlieAddress })
 
-            await getService().confirmSignIn(
+            await getSignInService().confirmSignMessage(
                 {
                     signature: uuid(),
                     address: bobAddress,
@@ -55,7 +57,7 @@ describe(`Auth Web3 Service`, () => {
             )
             expect(createSessionSpy.mock.calls.length).toBe(initialCallsCount + 1)
 
-            await getService().confirmSignUp(
+            await getSignUpService().confirmSignMessage(
                 {
                     signature: uuid(),
                     network,

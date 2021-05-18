@@ -2,20 +2,21 @@ import { BadRequestException, ConflictException, Injectable } from '@nestjs/comm
 import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import { Response } from 'express'
 import { v4 as uuid } from 'uuid'
-import { SignMessageService } from '../signingMessage/sign-message.service'
-import { StartSignMessageResponseDto } from '../signingMessage/start-sign-message-response.dto'
-import { ConfirmSignMessageRequestDto } from '../signingMessage/confirm-sign-message-request.dto'
+import { SignMessageService } from '../signMessage/sign-message.service'
+import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { UsersService } from '../../../users/users.service'
 import { BlockchainAddressService } from '../../../users/blockchainAddress/blockchainAddress.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { CacheManager } from '../../../cache/cache.manager'
 import { isValidAddress } from '../../../utils/address/address.validator'
 import { CreateBlockchainUserDto } from '../../../users/dto/createBlockchainUser.dto'
-import { StartSignMessageRequestDto } from '../signingMessage/start-sign-message-request.dto'
-import { SignatureValidator } from '../signingMessage/signature.validator'
+import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
+import { SignatureValidator } from '../signMessage/signature.validator'
+import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 
 @Injectable()
-export class AuthWeb3SignUpService extends SignMessageService {
+export class Web3SignUpService extends SignMessageService<ConfirmWeb3SignUpRequestDto> {
     constructor(
         private readonly userService: UsersService,
         private readonly blockchainAddressService: BlockchainAddressService,
@@ -31,7 +32,7 @@ export class AuthWeb3SignUpService extends SignMessageService {
         return super.startSignMessage(startRequest)
     }
 
-    async confirmSignMessage(confirmRequest: ConfirmSignMessageRequestDto, res: Response): Promise<void> {
+    async confirmSignMessage(confirmRequest: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
         await this.validateAddress(confirmRequest.address)
         return super.confirmSignMessage(confirmRequest, res)
     }
