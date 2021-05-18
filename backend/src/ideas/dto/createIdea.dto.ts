@@ -1,11 +1,10 @@
-import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested} from "class-validator";
-import {IdeaNetworkDto} from "./ideaNetwork.dto";
-import {ideaRestrictions} from "../entities/idea.entity";
-import {IdeaStatus} from "../ideaStatus";
-import {Type} from "class-transformer";
-import {CreateIdeaNetworkDto} from "./createIdeaNetwork.dto";
-import {IsValidAddress} from "../../utils/address/address.validator";
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested } from 'class-validator'
+import { ideaRestrictions } from '../entities/idea.entity'
+import { IdeaStatus } from '../ideaStatus'
+import { Type } from 'class-transformer'
+import { CreateIdeaNetworkDto } from './createIdeaNetwork.dto'
+import { IsValidAddress } from '../../utils/address/address.validator'
 
 const AllowedIdeaStatuses = [IdeaStatus.Draft, IdeaStatus.Active]
 
@@ -15,13 +14,13 @@ export class CreateIdeaDto {
     title!: string
 
     @ApiPropertyOptional({
-        description: 'Reason of the idea'
+        description: 'Reason of the idea',
     })
     @IsOptional()
     content?: string
 
     @ApiProperty({
-        description: 'Blockchain address of the idea beneficiary'
+        description: 'Blockchain address of the idea beneficiary',
     })
     @IsOptional()
     @IsValidAddress()
@@ -29,7 +28,7 @@ export class CreateIdeaDto {
 
     @ApiPropertyOptional({
         description: 'Field of the idea',
-        maxLength: ideaRestrictions.field.maxLength
+        maxLength: ideaRestrictions.field.maxLength,
     })
     @MaxLength(ideaRestrictions.field.maxLength)
     @IsOptional()
@@ -37,29 +36,29 @@ export class CreateIdeaDto {
 
     @ApiProperty({
         description: 'Networks of the idea',
-        type: [IdeaNetworkDto]
+        type: [CreateIdeaNetworkDto],
     })
     @IsNotEmpty()
-    @ValidateNested({each: true})
-    @Type(() => IdeaNetworkDto)
+    @ValidateNested({ each: true })
+    @Type(() => CreateIdeaNetworkDto)
     @ArrayMinSize(1)
     networks!: CreateIdeaNetworkDto[]
 
     @ApiPropertyOptional({
-        description: 'Contact to the idea proposer'
+        description: 'Contact to the idea proposer',
     })
     @IsOptional()
     contact?: string
 
     @ApiPropertyOptional({
-        description: 'Portfolio of the idea proposer'
+        description: 'Portfolio of the idea proposer',
     })
     @IsOptional()
     portfolio?: string
 
     @ApiPropertyOptional({
         description: 'External links connected with the idea',
-        type: [String]
+        type: [String],
     })
     @IsArray()
     @IsOptional()
@@ -69,12 +68,11 @@ export class CreateIdeaDto {
         description: 'Status of the idea',
         enum: IdeaStatus,
         oneOf: AllowedIdeaStatuses.map((status: IdeaStatus) => {
-            return {type: status}
-        })
+            return { type: status }
+        }),
     })
     @IsOptional()
     @IsEnum(IdeaStatus)
     @IsIn(AllowedIdeaStatuses)
     status?: IdeaStatus
-
 }
