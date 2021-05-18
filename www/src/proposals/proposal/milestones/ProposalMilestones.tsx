@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { IdeaMilestones } from '../../../ideas/idea/milestones/IdeaMilestones'
-import { useLoading } from '../../../components/loading/LoadingWrapper'
 import { getIdea } from '../../../ideas/ideas.api'
+import { useLoading } from '../../../components/loading/useLoading'
 
 interface Props {
     ideaId: string

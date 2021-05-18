@@ -10,7 +10,7 @@ import SignUp from './auth/sign-up/SignUp'
 import IdeaCreate from './ideas/create/IdeaCreate'
 import TurnIdeaIntoProposal from './ideas/idea/turnIntoProposal/TurnIdeaIntoProposal'
 import { Idea } from './ideas/idea/Idea'
-import Ideas from './ideas/Ideas'
+import { Ideas } from './ideas/Ideas'
 import Main from './main/Main'
 import { Proposal } from './proposals/proposal/Proposal'
 import { Proposals } from './proposals/Proposals'
@@ -39,6 +39,7 @@ import { ThemeWrapper } from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
 import { SignUpSuccess } from './auth/sign-up/common/SignUpSuccess'
 import VerifyEmail from './auth/sign-in/email/VerifyEmail'
+import { QueryClientProvider, QueryClient } from 'react-query'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -48,6 +49,8 @@ const useStyles = makeStyles(() =>
         },
     }),
 )
+
+const queryClient = new QueryClient()
 
 function AppRoutes() {
     const classes = useStyles()
@@ -93,13 +96,15 @@ initializeSupertokens()
 function App() {
     console.log('front-end hello')
     return (
-        <AuthContextProvider>
-            <SubstrateContextProvider>
-                <ThemeWrapper>
-                    <AppRoutes />
-                </ThemeWrapper>
-            </SubstrateContextProvider>
-        </AuthContextProvider>
+        <QueryClientProvider client={queryClient}>
+            <AuthContextProvider>
+                <SubstrateContextProvider>
+                    <ThemeWrapper>
+                        <AppRoutes />
+                    </ThemeWrapper>
+                </SubstrateContextProvider>
+            </AuthContextProvider>
+        </QueryClientProvider>
     )
 }
 

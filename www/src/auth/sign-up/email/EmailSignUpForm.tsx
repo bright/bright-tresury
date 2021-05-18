@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import { Input } from '../../../components/form/input/Input'
 import { PasswordInput } from '../../../components/form/input/password/PasswordInput'
-import { LoadingState } from '../../../components/loading/LoadingWrapper'
 import { fullValidatorForSchema } from '../../../util/form.util'
 import { SuperTokensAPIResponse, useSuperTokensRequest } from '../../supertokens.utils/useSuperTokensRequest'
 import { UserAgreementCheckbox } from '../common/UserAgreementCheckbox'
@@ -14,6 +13,7 @@ import { SignUpButton } from '../common/SignUpButton'
 import EmailSignUpSuccess from './EmailSignUpSucces'
 import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
+import { LoadingState } from '../../../components/loading/useLoading'
 
 interface SignUpValues {
     username: string

@@ -1,14 +1,14 @@
-import React, { useCallback, useEffect } from 'react'
+import React from 'react'
 import { getIdeaMilestones } from './idea.milestones.api'
 import { EmptyIdeaMilestonesArrayInfo } from './components/IdeaEmptyMilestonesArrayInfo'
 import { IdeaMilestoneCreateModal } from './create/IdeaMilestoneCreateModal'
 import { IdeaDto } from '../../ideas.api'
 import { IdeaMilestonesList } from './list/IdeaMilestonesList'
-import { LoadingWrapper } from '../../../components/loading/LoadingWrapper'
+import { UseQueryWrapper } from '../../../components/loading/UseQueryWrapper'
 import { CreateIdeaMilestoneButton } from './components/CreateIdeaMilestoneButton'
 import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
-import { useLoading } from '../../../components/loading/useLoading'
+import { useQuery } from 'react-query'
 
 interface Props {
     idea: IdeaDto
@@ -20,34 +20,20 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
 
     const createModal = useModal()
 
-    const { loadingState, response: ideaMilestones = [], call } = useLoading(getIdeaMilestones)
-
-    const fetchIdeaMilestones = useCallback(() => call(idea.id), [idea.id, call])
-
-    useEffect(() => {
-        fetchIdeaMilestones()
-    }, [idea.id])
+    const { status, data: ideaMilestones } = useQuery(['ideaMilestones', idea.id], () => getIdeaMilestones(idea.id), {
+        initialData: [],
+    })
 
     return (
-        <LoadingWrapper loadingState={loadingState} errorMessage={t('errors.errorOccurredWhileLoadingIdeaMilestones')}>
-            <>
-                {ideaMilestones.length === 0 ? <EmptyIdeaMilestonesArrayInfo /> : null}
-                {canEdit ? (
-                    <CreateIdeaMilestoneButton text={t('idea.milestones.createMilestone')} onClick={createModal.open} />
-                ) : null}
-                <IdeaMilestonesList
-                    idea={idea}
-                    ideaMilestones={ideaMilestones}
-                    canEdit={canEdit}
-                    fetchIdeaMilestones={fetchIdeaMilestones}
-                />
-                <IdeaMilestoneCreateModal
-                    open={createModal.visible}
-                    idea={idea}
-                    onClose={createModal.close}
-                    fetchIdeaMilestones={fetchIdeaMilestones}
-                />
-            </>
-        </LoadingWrapper>
+        <UseQueryWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdeaMilestones')}>
+            <>{ideaMilestones?.length === 0 ? <EmptyIdeaMilestonesArrayInfo /> : null}</>
+            {canEdit ? (
+                <CreateIdeaMilestoneButton text={t('idea.milestones.createMilestone')} onClick={createModal.open} />
+            ) : null}
+            {ideaMilestones ? (
+                <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} canEdit={canEdit} />
+            ) : null}
+            <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />
+        </UseQueryWrapper>
     )
 }

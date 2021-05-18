@@ -4,7 +4,6 @@ import {
     turnIdeaMilestoneIntoProposal,
     TurnIdeaMilestoneIntoProposalDto,
 } from '../idea.milestones.api'
-import { IdeaMilestoneEditModal } from '../edit/IdeaMilestoneEditModal'
 import { IdeaMilestoneDetailsModal } from '../details/IdeaMilestoneDetailsModal'
 import { IdeaDto } from '../../../ideas.api'
 import { Grid } from '../../../../components/grid/Grid'
@@ -14,18 +13,22 @@ import { TurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/TurnIdea
 import { useModal } from '../../../../components/modal/useModal'
 import { ExtrinsicDetails, SubmitProposalModal } from '../../../SubmitProposalModal'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from 'react-query'
+import { IdeaMilestoneEditModal } from '../edit/IdeaMilestoneEditModal'
 
 interface Props {
     idea: IdeaDto
     ideaMilestones: IdeaMilestoneDto[]
     canEdit: boolean
-    fetchIdeaMilestones: () => Promise<void>
 }
 
-export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMilestones }: Props) => {
+export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => {
     const { t } = useTranslation()
 
+    const queryClient = useQueryClient()
+
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
+
     const [
         ideaMilestoneToBeTurnedIntoProposal,
         setIdeaMilestoneToBeTurnedIntoProposal,
@@ -48,9 +51,9 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
 
     const handleOnSubmitProposalModalClose = async () => {
         submitProposalModal.close()
-        // We fetch idea milestone here because data could be patched before transaction
+        // We fetch idea milestones here because data could be patched before transaction
         // and without fetch user could see outdated data
-        await fetchIdeaMilestones()
+        await queryClient.refetchQueries(['ideaMilestones', idea.id])
     }
 
     const handleOnCardClick = (ideaMilestone: IdeaMilestoneDto) => {
@@ -113,7 +116,6 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit, fetchIdeaMil
                     ideaMilestone={focusedIdeaMilestone}
                     onClose={handleOnEditModalClose}
                     onTurnIntoProposalClick={handleOnTurnIntoProposalClick}
-                    fetchIdeaMilestones={fetchIdeaMilestones}
                 />
             ) : null}
 

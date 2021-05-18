@@ -2,7 +2,6 @@ import { Formik } from 'formik'
 import React, { useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { InfoBox } from '../../../components/form/InfoBox'
-import { LoadingState, useLoading } from '../../../components/loading/LoadingWrapper'
 import { useAuth } from '../../AuthContext'
 import { NotSignedUpYet } from '../common/NotSignedUpYet'
 import { SignInButton } from '../common/SignInButton'
@@ -16,6 +15,7 @@ import { useHistory } from 'react-router'
 import { ROUTE_SIGNUP_WEB3 } from '../../../routes/routes'
 import { Web3SignUpLocationState } from '../../sign-up/web3/Web3SignUp'
 import { SignOption } from '../../sign-components/SignOption'
+import { LoadingState, useLoading } from '../../../components/loading/useLoading'
 
 export interface Web3SignInValues {
     account: Account
