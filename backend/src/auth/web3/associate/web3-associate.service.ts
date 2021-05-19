@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Response } from 'express'
-import { BlockchainAddressService } from '../../../users/blockchainAddress/blockchainAddress.service'
 import { UsersService } from '../../../users/users.service'
-import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { CacheManager } from '../../../cache/cache.manager'
 import { SignMessageService } from '../signMessage/sign-message.service'
 import { SignatureValidator } from '../signMessage/signature.validator'
@@ -14,8 +12,6 @@ import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-messag
 export class Web3AssociateService extends SignMessageService<ConfirmWeb3AssociateRequestDto> {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressService,
-        private readonly superTokensService: SuperTokensService,
         cacheManager: CacheManager,
         signatureValidator: SignatureValidator,
     ) {
