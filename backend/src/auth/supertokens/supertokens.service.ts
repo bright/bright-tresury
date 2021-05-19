@@ -4,27 +4,27 @@ import {
     HttpStatus,
     Injectable,
     InternalServerErrorException,
-    NotFoundException
-} from "@nestjs/common";
-import {Request, Response} from 'express'
-import {getUserById, signUp as superTokensSignUp} from "supertokens-node/lib/build/recipe/emailpassword";
-import EmailPasswordSessionError from "supertokens-node/lib/build/recipe/emailpassword/error";
-import {TypeFormField, User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
+    NotFoundException,
+} from '@nestjs/common'
+import { Request, Response } from 'express'
+import { getUserById, signUp as superTokensSignUp } from 'supertokens-node/lib/build/recipe/emailpassword'
+import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
+import { TypeFormField, User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import {
     createNewSession,
     getSession as superTokensGetSession,
-    updateSessionData
-} from "supertokens-node/lib/build/recipe/session";
-import SessionError from "supertokens-node/lib/build/recipe/session/error";
-import Session from "supertokens-node/lib/build/recipe/session/sessionClass";
-import {EmailsService} from "../../emails/emails.service";
-import {getLogger} from "../../logging.module";
-import {CreateUserDto} from "../../users/dto/createUser.dto";
-import {User} from "../../users/user.entity";
-import {UsersService} from "../../users/users.service";
-import {SessionData} from "../session/session.decorator";
-import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from "./supertokens.recipeList";
-import {isEmailVerified as superTokensIsEmailVerified} from "supertokens-node/lib/build/recipe/emailverification";
+    updateSessionData,
+} from 'supertokens-node/lib/build/recipe/session'
+import SessionError from 'supertokens-node/lib/build/recipe/session/error'
+import Session from 'supertokens-node/lib/build/recipe/session/sessionClass'
+import { EmailsService } from '../../emails/emails.service'
+import { getLogger } from '../../logging.module'
+import { CreateUserDto } from '../../users/dto/createUser.dto'
+import { User } from '../../users/user.entity'
+import { UsersService } from '../../users/users.service'
+import { SessionData } from '../session/session.decorator'
+import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
+import { isEmailVerified as superTokensIsEmailVerified } from 'supertokens-node/lib/build/recipe/emailverification'
 
 const logger = getLogger()
 
@@ -37,40 +37,41 @@ export interface JWTPayload {
 
 @Injectable()
 export class SuperTokensService {
-    constructor(
-        private readonly usersService: UsersService,
-        private readonly emailsService: EmailsService,
-    ) {
-    }
+    constructor(private readonly usersService: UsersService, private readonly emailsService: EmailsService) {}
 
     /** Returns undefined if valid and error message otherwise */
     getUsernameValidationError = async (value: string): Promise<string | undefined> => {
-        const valid = await this.usersService.validateUsername(value)
-        return valid ? undefined : "Username already taken"
+        try {
+            await this.usersService.validateUsername(value)
+            return undefined
+        } catch {
+            return 'Username already taken'
+        }
     }
 
-    handleCustomFormFieldsPostSignUp = async (user: SuperTokensUser, formFields: Array<{
-        id: string;
-        value: any;
-    }>): Promise<void> => {
-        const {id, email} = user
-        const usernameFormField = formFields.find(({id: formFieldKey}) =>
-            formFieldKey === SuperTokensUsernameKey
-        )
+    handleCustomFormFieldsPostSignUp = async (
+        user: SuperTokensUser,
+        formFields: Array<{
+            id: string
+            value: any
+        }>,
+    ): Promise<void> => {
+        const { id, email } = user
+        const usernameFormField = formFields.find(({ id: formFieldKey }) => formFieldKey === SuperTokensUsernameKey)
         if (!usernameFormField) {
             throw new BadRequestException('Username was not found.')
         }
         const createUserDto = {
             authId: id,
             email,
-            username: usernameFormField.value
+            username: usernameFormField.value,
         } as CreateUserDto
         await this.usersService.create(createUserDto)
     }
 
     handleResponseIfRefreshTokenError(res: Response, error: any) {
         if (error.type === SessionError.TRY_REFRESH_TOKEN) {
-            res.status(SessionExpiredHttpStatus).send("Please refresh token.")
+            res.status(SessionExpiredHttpStatus).send('Please refresh token.')
         }
     }
 
@@ -108,13 +109,10 @@ export class SuperTokensService {
         const session = await this.getSession(req, res, false)
         if (session) {
             const currentSessionData = await session.getSessionData()
-            await updateSessionData(
-                session.getHandle(),
-                {
-                    ...currentSessionData,
-                    ...data
-                }
-            )
+            await updateSessionData(session.getHandle(), {
+                ...currentSessionData,
+                ...data,
+            })
         }
     }
 
@@ -135,12 +133,16 @@ export class SuperTokensService {
         return user.email
     }
 
-    setJwtPayload = async (superTokensUser: SuperTokensUser, formFields: TypeFormField[], action: "signin" | "signup"): Promise<JWTPayload> => {
+    setJwtPayload = async (
+        superTokensUser: SuperTokensUser,
+        formFields: TypeFormField[],
+        action: 'signin' | 'signup',
+    ): Promise<JWTPayload> => {
         const payload = {
             email: superTokensUser.email,
             id: '',
             username: '',
-            isEmailVerified: false
+            isEmailVerified: false,
         }
         try {
             const user = await this.usersService.findOneByEmail(superTokensUser.email)

@@ -16,6 +16,7 @@ import { CreateBlockchainUserDto } from './dto/createBlockchainUser.dto'
 import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
 import { BlockchainAddressService } from './blockchainAddress/blockchainAddress.service'
 import { isValidAddress } from '../utils/address/address.validator'
+import { ClassConstructor } from 'class-transformer/types/interfaces'
 
 @Injectable()
 export class UsersService {
@@ -75,10 +76,7 @@ export class UsersService {
     }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
-        const valid = await this.validateUser(createUserDto)
-        if (!valid) {
-            throw new BadRequestException('Invalid user')
-        }
+        await this.validateUser(createUserDto)
         const user = new User(createUserDto.authId, createUserDto.username, createUserDto.email)
         const createdUser = await this.userRepository.save(user)
         return (await this.findOne(createdUser.id))!
@@ -108,62 +106,54 @@ export class UsersService {
         return (await this.findOne(user.id))!
     }
 
-    private async validateAssociateAddress(address: string) {
-        const isValid = isValidAddress(address)
-        if (!isValid) {
-            throw new BadRequestException('Incorrect address')
-        }
-        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
-        if (doesAddressExist) {
-            throw new ConflictException('Address already associated')
-        }
-    }
-
     async delete(id: string) {
         const currentUser = await this.findOne(id)
         await this.userRepository.remove(currentUser)
     }
 
-    async validateEmail(email: string): Promise<boolean> {
+    async validateEmail(email: string) {
         const user = await this.userRepository.findOne({ email })
-        return !user
+        if (user) {
+            throw new ConflictException('User with this email already exists')
+        }
     }
 
-    async validateUsername(username: string): Promise<boolean> {
+    async validateUsername(username: string) {
         const user = await this.userRepository.findOne({ username })
-        return !user
+        if (user) {
+            throw new ConflictException('User with this username already exists')
+        }
     }
 
-    private async validateUser(createUserDto: CreateUserDto): Promise<boolean> {
-        try {
-            await validateOrReject(plainToClass(CreateUserDto, createUserDto))
-        } catch (e) {
-            throw new BadRequestException(e.message)
-        }
-        const validUsername = await this.validateUsername(createUserDto.username)
-        if (!validUsername) {
-            throw new BadRequestException('Username already taken')
-        }
-        return await this.validateEmail(createUserDto.email)
+    private async validateUser(createUserDto: CreateUserDto) {
+        await this.validateClassAndUsername(CreateUserDto, createUserDto)
+        await this.validateEmail(createUserDto.email)
     }
 
     private async validateBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<void> {
+        await this.validateClassAndUsername(CreateBlockchainUserDto, createBlockchainUserDto)
+        await this.validateBlockchainAddress(createBlockchainUserDto.blockchainAddress)
+    }
+
+    private async validateAssociateAddress(address: string) {
+        await this.validateBlockchainAddress(address)
+    }
+
+    private async validateClassAndUsername<T extends { username: string }>(constructor: ClassConstructor<T>, dto: T) {
         try {
-            await validateOrReject(plainToClass(CreateBlockchainUserDto, createBlockchainUserDto))
+            await validateOrReject(plainToClass(constructor, dto))
         } catch (e) {
             throw new BadRequestException(e.message)
         }
-        const validUsername = await this.validateUsername(createBlockchainUserDto.username)
-        if (!validUsername) {
-            throw new BadRequestException('Username already taken')
-        }
-        const validAddress = isValidAddress(createBlockchainUserDto.blockchainAddress)
+        await this.validateUsername(dto.username)
+    }
+
+    private async validateBlockchainAddress(address: string): Promise<void> {
+        const validAddress = isValidAddress(address)
         if (!validAddress) {
             throw new BadRequestException('Address is invalid')
         }
-        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(
-            createBlockchainUserDto.blockchainAddress,
-        )
+        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
         if (doesAddressExist) {
             throw new ConflictException('User with this address already exists')
         }

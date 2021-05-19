@@ -53,7 +53,7 @@ describe(`Users Service`, () => {
                     username: 'Bart',
                     email: user.email,
                 }),
-            ).rejects.toThrow(BadRequestException)
+            ).rejects.toThrow(ConflictException)
         })
         it('should throw bad request exception when username exists', async () => {
             const user: CreateUserDto = {
@@ -69,7 +69,7 @@ describe(`Users Service`, () => {
                     username: user.username,
                     email: 'bart@email.com',
                 }),
-            ).rejects.toThrow(BadRequestException)
+            ).rejects.toThrow(ConflictException)
         })
         it('should throw bad request exception when auth id is empty', async () => {
             await expect(
@@ -158,7 +158,7 @@ describe(`Users Service`, () => {
                     username: user.username,
                     blockchainAddress: bobAddress,
                 }),
-            ).rejects.toThrow(BadRequestException)
+            ).rejects.toThrow(ConflictException)
         })
         it('should throw bad request exception when auth id is empty', async () => {
             await expect(
