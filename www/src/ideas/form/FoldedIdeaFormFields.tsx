@@ -1,15 +1,15 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React from 'react';
-import {useTranslation} from "react-i18next";
-import {Input} from "../../components/form/input/Input";
-import config from "../../config";
-import {breakpoints} from "../../theme/theme";
-import {IdeaDto, IdeaNetworkDto} from "../ideas.api";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Input } from '../../components/form/input/Input'
+import config from '../../config'
+import { breakpoints } from '../../theme/theme'
+import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         inputField: {
-            marginTop: '2em'
+            marginTop: '2em',
         },
         smallField: {
             width: '50%',
@@ -19,25 +19,22 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         fieldSelect: {
             backgroundColor: theme.palette.background.default,
-            fontWeight: 500
+            fontWeight: 500,
         },
     }),
-);
+)
 
 interface Props {
     values: IdeaDto
 }
 
-const FoldedIdeaFormFields: React.FC<Props> = ({values}) => {
+const FoldedIdeaFormFields: React.FC<Props> = ({ values }) => {
     const classes = useStyles()
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     return (
         <>
             <div className={classes.inputField}>
-                <Input
-                    name="title"
-                    placeholder={t('idea.details.title')}
-                    label={t('idea.details.title')}/>
+                <Input name="title" placeholder={t('idea.details.title')} label={t('idea.details.title')} />
             </div>
             <div className={`${classes.inputField} ${classes.smallField}`}>
                 <Input
@@ -47,20 +44,20 @@ const FoldedIdeaFormFields: React.FC<Props> = ({values}) => {
                 />
             </div>
             {values.networks.map((network: IdeaNetworkDto, index: number) => {
-                    return (<div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
-                            <Input
-                                name={`networks[${index}].value`}
-                                type={`number`}
-                                label={t('idea.details.reward')}
-                                placeholder={t('idea.details.reward')}
-                                endAdornment={config.NETWORK_CURRENCY}
-                            />
-                        </div>
-                    )
-                }
-            )}
+                return (
+                    <div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
+                        <Input
+                            name={`networks[${index}].value`}
+                            type={`number`}
+                            label={t('idea.details.reward')}
+                            placeholder={t('idea.details.reward')}
+                            endAdornment={config.NETWORK_CURRENCY}
+                        />
+                    </div>
+                )
+            })}
         </>
-    );
+    )
 }
 
 export default FoldedIdeaFormFields

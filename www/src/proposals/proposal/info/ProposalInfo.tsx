@@ -1,5 +1,5 @@
 import React from 'react'
-import { ProposalDto } from '../../proposals.api'
+import { ProposalDto } from '../../proposals.dto'
 import { Label } from '../../../components/text/Label'
 import { Identicon } from '../../../components/identicon/Identicon'
 import { useTranslation } from 'react-i18next'

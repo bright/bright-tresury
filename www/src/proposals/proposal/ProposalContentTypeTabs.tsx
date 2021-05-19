@@ -6,7 +6,7 @@ import milestonesIcon from '../../assets/milestones.svg'
 import discussionIcon from '../../assets/discussion.svg'
 import votingIcon from '../../assets/voting.svg'
 import { useRouteMatch } from 'react-router-dom'
-import { ProposalDto } from '../proposals.api'
+import { ProposalDto } from '../proposals.dto'
 
 export enum ProposalContentType {
     Info = 'info',

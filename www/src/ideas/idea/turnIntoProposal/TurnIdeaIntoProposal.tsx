@@ -1,60 +1,35 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useAuth } from '../../../auth/AuthContext'
 import Container from '../../../components/form/Container'
 import IdeaForm from '../../form/IdeaForm'
-import { getIdea, IdeaDto, IdeaStatus, turnIdeaIntoProposal, updateIdea } from '../../ideas.api'
+import { TurnIdeaIntoProposalDto, useGetIdea, usePatchIdea, useTurnIdeaIntoProposal } from '../../ideas.api'
 import { ExtrinsicDetails, SubmitProposalModal } from '../../SubmitProposalModal'
-import { RightButton, LeftButton } from '../../../components/form/buttons/Buttons'
+import { RightButton, LeftButton } from '../../../components/form/footer/buttons/Buttons'
 import { useModal } from '../../../components/modal/useModal'
+import { IdeaDto, IdeaStatus } from '../../ideas.dto'
+import { useQueryClient } from 'react-query'
 
-const TurnIdeaIntoProposal = () => {
+export const TurnIdeaIntoProposal = () => {
     const { t } = useTranslation()
 
     const history = useHistory()
 
-    const location = useLocation()
-
     const submitProposalModal = useModal()
-
-    const [idea, setIdea] = useState<IdeaDto | undefined>()
-
-    let { ideaId } = useParams<{ ideaId: string }>()
 
     const { isUserVerified, user } = useAuth()
 
-    useEffect(() => {
-        const state = location.state as { idea?: IdeaDto }
-        if (!state?.idea) {
-            getIdea(ideaId)
-                .then((result) => {
-                    setIdea(result)
-                })
-                .catch((err) => {
-                    setIdea(undefined)
-                })
-        } else {
-            setIdea(state.idea)
-        }
-    }, [location, ideaId])
+    let { ideaId } = useParams<{ ideaId: string }>()
 
-    const submit = async (formIdea: IdeaDto) => {
-        const editedIdea = { ...idea, ...formIdea }
-        await updateIdea(editedIdea)
-            .then(() => {
-                setIdea(editedIdea)
-                submitProposalModal.open()
-            })
-            .catch((error) => {
-                console.log('error')
-            })
-    }
+    const queryClient = useQueryClient()
 
-    const goBack = () => {
-        history.goBack()
-    }
+    const { data: idea } = useGetIdea(ideaId)
+
+    const { mutateAsync: patchMutateAsync } = usePatchIdea()
+
+    const { mutateAsync: turnMutateAsync } = useTurnIdeaIntoProposal()
 
     const canTurnIntoProposal = useMemo(
         () =>
@@ -65,10 +40,26 @@ const TurnIdeaIntoProposal = () => {
         [idea, isUserVerified, user],
     )
 
+    const submit = async (formIdea: IdeaDto) => {
+        const editedIdea = { ...idea, ...formIdea }
+
+        await patchMutateAsync(editedIdea, {
+            onSuccess: (patchedIdea) => {
+                queryClient.setQueryData(['idea', idea!.id], patchedIdea)
+                submitProposalModal.open()
+            },
+        })
+    }
+
     const onTurn = useCallback(
         async (extrinsicDetails: ExtrinsicDetails) => {
             if (idea) {
-                await turnIdeaIntoProposal(extrinsicDetails, idea, idea.networks[0])
+                const turnIdeaIntoProposalDto: TurnIdeaIntoProposalDto = {
+                    ideaNetworkId: idea.networks[0].id!,
+                    extrinsicHash: extrinsicDetails.lastBlockHash,
+                    lastBlockHash: extrinsicDetails.lastBlockHash,
+                }
+                await turnMutateAsync({ ideaId: idea.id!, data: turnIdeaIntoProposalDto })
             }
         },
         [idea],
@@ -80,7 +71,7 @@ const TurnIdeaIntoProposal = () => {
                 <>
                     <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
                         <RightButton>{t('idea.turnIntoProposal.submit')}</RightButton>
-                        <LeftButton type={'button'} onClick={goBack}>
+                        <LeftButton type={'button'} onClick={history.goBack}>
                             {t('idea.turnIntoProposal.cancel')}
                         </LeftButton>
                     </IdeaForm>
@@ -99,5 +90,3 @@ const TurnIdeaIntoProposal = () => {
         <Container title={t('idea.turnIntoProposal.cannotTurnError')} />
     )
 }
-
-export default TurnIdeaIntoProposal

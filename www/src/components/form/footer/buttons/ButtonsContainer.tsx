@@ -1,18 +1,19 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
-import { breakpoints } from '../../../theme/theme'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         buttonsContainer: {
-            margin: '3em 0',
             display: 'flex',
             justifyContent: 'space-between',
             position: 'relative',
-            flexDirection: 'row-reverse',
+            flexDirection: 'row',
             flexGrow: 1,
             alignItems: 'flex-end',
+            width: '100%',
             [theme.breakpoints.down(breakpoints.mobile)]: {
+                gap: '1em',
                 justifyContent: 'inherit',
                 flexDirection: 'column-reverse',
             },

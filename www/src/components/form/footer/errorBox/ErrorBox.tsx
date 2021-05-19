@@ -1,7 +1,7 @@
 import { createStyles, Theme, Typography, TypographyProps } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
-import { breakpoints } from '../../theme/theme'
+import { breakpoints } from '../../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: '8px',
             padding: '.5em 2em',
             [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '100%',
                 padding: '.35em 2em',
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {

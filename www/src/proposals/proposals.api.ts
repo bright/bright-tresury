@@ -1,31 +1,23 @@
 import { apiGet } from '../api'
+import { ProposalDto } from './proposals.dto'
+import { useQuery } from 'react-query'
 
-export enum ProposalStatus {
-    Submitted = 'submitted',
-    Approved = 'approved',
-    Rejected = 'rejected',
-    Rewarded = 'rewarded',
-    Closed = 'closed',
+// GET ALL
+
+export function getProposals(network: string) {
+    return apiGet<ProposalDto[]>(`/proposals/?network=${network}`)
 }
 
-export interface ProposalDto {
-    proposalIndex: number
-    proposer: string
-    beneficiary: string
-    value: number
-    bond: number
-    status: ProposalStatus
-    title?: string
-    isCreatedFromIdea: boolean
-    isCreatedFromIdeaMilestone: boolean
-    ideaId?: string
-    ideaMilestoneId?: string
+export const useGetProposals = (network: string) => {
+    return useQuery(['proposals', network], () => getProposals(network))
 }
 
-export function getProposals(networkName: string) {
-    return apiGet<ProposalDto[]>(`/proposals/?network=${networkName}`)
+// GET ONE
+
+export function getProposal(index: string, network: string) {
+    return apiGet<ProposalDto>(`/proposals/${index}?network=${network}`)
 }
 
-export function getProposal(index: string, networkName: string) {
-    return apiGet<ProposalDto>(`/proposals/${index}?network=${networkName}`)
+export const useGetProposal = (index: string, network: string) => {
+    return useQuery(['proposals', index, network], () => getProposal(index, network))
 }

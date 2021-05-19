@@ -1,8 +1,8 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Trans, useTranslation} from "react-i18next";
-import {Strong} from '../components/info/Info';
-import {Modal} from '../components/modal/Modal';
-import SubmittingTransaction from "../substrate-lib/components/SubmittingTransaction";
+import React, { useCallback, useEffect, useState } from 'react'
+import { Trans, useTranslation } from 'react-i18next'
+import { Strong } from '../components/info/Info'
+import { Modal } from '../components/modal/Modal'
+import SubmittingTransaction from '../substrate-lib/components/SubmittingTransaction'
 import { ROUTE_PROPOSALS } from '../routes/routes'
 import { useHistory } from 'react-router-dom'
 
@@ -12,8 +12,8 @@ export interface ExtrinsicDetails {
 }
 
 interface Props {
-    open: boolean,
-    onClose: () => void,
+    open: boolean
+    onClose: () => void
     onTurn: (extrinsicDetails: ExtrinsicDetails) => void
     title: string
     value: number
@@ -21,7 +21,6 @@ interface Props {
 }
 
 export const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary }: Props) => {
-
     const { t } = useTranslation()
 
     const history = useHistory()
@@ -46,8 +45,8 @@ export const SubmitProposalModal = ({ open, onClose, onTurn, title, value, benef
         <Modal
             open={open}
             onClose={onClose}
-            aria-labelledby='modal-title'
-            aria-describedby='modal-description'
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
             fullWidth={true}
             maxWidth={'sm'}
         >
@@ -55,10 +54,10 @@ export const SubmitProposalModal = ({ open, onClose, onTurn, title, value, benef
                 title={title}
                 instruction={
                     <Trans
-                        id='modal-description'
+                        id="modal-description"
                         i18nKey="idea.details.submitProposalModal.warningMessage"
                         components={{
-                            strong: <Strong color={'primary'} />
+                            strong: <Strong color={'primary'} />,
                         }}
                     />
                 }
@@ -73,7 +72,7 @@ export const SubmitProposalModal = ({ open, onClose, onTurn, title, value, benef
                         {
                             name: 'value',
                             value: value.toString(),
-                            type: 'Compact<Balance>'
+                            type: 'Compact<Balance>',
                         },
                         {
                             name: 'beneficiary',
@@ -84,5 +83,5 @@ export const SubmitProposalModal = ({ open, onClose, onTurn, title, value, benef
                 setExtrinsicDetails={setExtrinsicDetails}
             />
         </Modal>
-    );
+    )
 }

@@ -1,13 +1,12 @@
 import React from 'react'
 import { Modal } from '../../../../components/modal/Modal'
 import { IdeaMilestoneEdit } from './IdeaMilestoneEdit'
-import { IdeaMilestoneDto } from '../idea.milestones.api'
-import { IdeaDto } from '../../../ideas.api'
+import { IdeaMilestoneDto } from '../idea.milestones.dto'
+import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneModalHeader } from '../components/IdeaMilestoneModalHeader'
 import { useTurnIdeaMilestoneIntoProposal } from '../turnIntoProposal/useTurnIdeaMilestoneIntoProposal'
 import { Button } from '../../../../components/button/Button'
-import { useQueryClient } from 'react-query'
 
 interface Props {
     open: boolean
@@ -20,14 +19,7 @@ interface Props {
 export const IdeaMilestoneEditModal = ({ open, idea, ideaMilestone, onClose, onTurnIntoProposalClick }: Props) => {
     const { t } = useTranslation()
 
-    const queryClient = useQueryClient()
-
     const { canTurnIntoProposal } = useTurnIdeaMilestoneIntoProposal(idea, ideaMilestone)
-
-    const onSuccess = async () => {
-        onClose()
-        await queryClient.refetchQueries(['ideaMilestones', idea.id])
-    }
 
     return (
         <Modal open={open} onClose={onClose} aria-labelledby="modal-title" fullWidth={true} maxWidth={'md'}>
@@ -40,7 +32,7 @@ export const IdeaMilestoneEditModal = ({ open, idea, ideaMilestone, onClose, onT
                         </Button>
                     ) : null}
                 </IdeaMilestoneModalHeader>
-                <IdeaMilestoneEdit idea={idea} ideaMilestone={ideaMilestone} onCancel={onClose} onSuccess={onSuccess} />
+                <IdeaMilestoneEdit idea={idea} ideaMilestone={ideaMilestone} onCancel={onClose} onSuccess={onClose} />
             </>
         </Modal>
     )

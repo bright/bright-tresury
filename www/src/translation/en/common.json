@@ -373,6 +373,7 @@
         "errorOccurredWhileLoadingProposals": "An error occurred while loading proposals.",
         "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
         "errorOccurredWhileLoadingIdea": "An error occurred while loading idea.",
+        "errorOccurredWhileLoadingProposal": "An error occurred while loading proposal.",
         "somethingWentWrong": "Ooops... Something went wrong."
     }
 }

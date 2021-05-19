@@ -1,14 +1,15 @@
 import React from 'react'
-import { IdeaMilestoneDto, patchIdeaMilestone, PatchIdeaMilestoneDto } from '../idea.milestones.api'
+import { usePatchIdeaMilestone } from '../idea.milestones.api'
+import { IdeaMilestoneDto, PatchIdeaMilestoneDto } from '../idea.milestones.dto'
 import { Modal } from '../../../../components/modal/Modal'
 import { Trans, useTranslation } from 'react-i18next'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
-import { IdeaDto } from '../../../ideas.api'
-import { ErrorType, useError } from '../../../../components/error/useError'
+import { IdeaDto } from '../../../ideas.dto'
 import { Footer } from '../../../../components/form/footer/Footer'
-import { LeftButton, RightButton } from '../../../../components/form/buttons/Buttons'
-import { ErrorBox } from '../../../../components/form/ErrorBox'
+import { LeftButton, RightButton } from '../../../../components/form/footer/buttons/Buttons'
+import { ErrorBox } from '../../../../components/form/footer/errorBox/ErrorBox'
+import { useQueryClient } from 'react-query'
 
 const useStyles = makeStyles(
     createStyles({
@@ -42,23 +43,26 @@ export const TurnIdeaMilestoneIntoProposalModal = ({
 
     const { t } = useTranslation()
 
-    const { error, setError } = useError()
+    const queryClient = useQueryClient()
 
-    const submit = ({ beneficiary, networks }: IdeaMilestoneFormValues) => {
+    const { mutateAsync, isError } = usePatchIdeaMilestone()
+
+    const submit = async ({ beneficiary, networks }: IdeaMilestoneFormValues) => {
         const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = {
             ...ideaMilestone,
             beneficiary,
             networks,
         }
 
-        patchIdeaMilestone(idea.id, ideaMilestone.id, patchIdeaMilestoneDto)
-            .then((result) => {
-                onSuccessfulPatch(result)
-            })
-            .catch((err: ErrorType) => {
-                setError(err)
-                throw err
-            })
+        await mutateAsync(
+            { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: patchIdeaMilestoneDto },
+            {
+                onSuccess: async (patchedIdeaMilestone) => {
+                    await queryClient.refetchQueries(['ideaMilestones', idea.id])
+                    onSuccessfulPatch(patchedIdeaMilestone)
+                },
+            },
+        )
     }
 
     return (
@@ -92,12 +96,12 @@ export const TurnIdeaMilestoneIntoProposalModal = ({
                     extendedValidation={true}
                     onSubmit={submit}
                 >
-                    <Footer fixedVerticalLayout={true}>
+                    <Footer>
                         <LeftButton type="button" variant="text" onClick={onClose}>
                             {t('idea.milestones.modal.form.buttons.cancel')}
                         </LeftButton>
 
-                        <div>{error ? <ErrorBox error={t('errors.somethingWentWrong')} /> : null}</div>
+                        <div>{isError ? <ErrorBox error={t('errors.somethingWentWrong')} /> : null}</div>
 
                         <RightButton>{t('idea.details.header.turnIntoProposal')}</RightButton>
                     </Footer>

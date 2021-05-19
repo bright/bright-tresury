@@ -1,22 +1,13 @@
-import React from "react";
-import {IdeaDto} from "../../ideas.api";
-import IdeaDetails from "./IdeaDetails";
-import IdeaEdit from "./IdeaEdit";
+import React from 'react'
+import IdeaDetails from './IdeaDetails'
+import { IdeaEdit } from './IdeaEdit'
+import { IdeaDto } from '../../ideas.dto'
 
 interface Props {
     idea: IdeaDto
     canEdit: boolean
 }
 
-const IdeaInfo = ({ idea, canEdit }: Props) => {
-    return (
-        <>
-            { canEdit
-                ? <IdeaEdit idea={idea}/>
-                : <IdeaDetails idea={idea}/>
-            }
-        </>
-    )
+export const IdeaInfo = ({ idea, canEdit }: Props) => {
+    return <>{canEdit ? <IdeaEdit idea={idea} /> : <IdeaDetails idea={idea} />}</>
 }
-
-export default IdeaInfo

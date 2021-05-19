@@ -1,10 +1,10 @@
 import React from 'react'
 import { IdeaMilestoneForm } from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
-import { IdeaMilestoneDto } from '../idea.milestones.api'
-import { IdeaDto } from '../../../ideas.api'
+import { IdeaMilestoneDto } from '../idea.milestones.dto'
+import { IdeaDto } from '../../../ideas.dto'
 import { Footer } from '../../../../components/form/footer/Footer'
-import { LeftButton } from '../../../../components/form/buttons/Buttons'
+import { LeftButton } from '../../../../components/form/footer/buttons/Buttons'
 
 interface Props {
     idea: IdeaDto

@@ -1,33 +1,42 @@
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
-import { RightButton, LeftButton } from '../../../components/form/buttons/Buttons'
-import { ROUTE_IDEAS } from '../../../routes/routes'
+import { RightButton, LeftButton } from '../../../components/form/footer/buttons/Buttons'
 import IdeaForm from '../../form/IdeaForm'
-import { IdeaDto, IdeaStatus, updateIdea } from '../../ideas.api'
+import { usePatchIdea } from '../../ideas.api'
+import { useHistory } from 'react-router'
+import { ROUTE_IDEAS } from '../../../routes/routes'
+import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 
 interface Props {
     idea: IdeaDto
 }
 
-const IdeaEdit: React.FC<Props> = ({ idea }) => {
+export const IdeaEdit = ({ idea }: Props) => {
     const { t } = useTranslation()
-    const history = useHistory()
+
     const [activate, setActivate] = useState(false)
+
+    const history = useHistory()
+
+    const { mutateAsync } = usePatchIdea()
 
     const isDraft = useMemo(() => !idea.status || idea.status === IdeaStatus.Draft, [idea.status])
 
-    const save = async (formIdea: IdeaDto) => {
+    const submit = async (formIdea: IdeaDto) => {
         const editedIdea = { ...idea, ...formIdea, status: activate ? IdeaStatus.Active : idea.status }
-        await updateIdea(editedIdea)
-        history.push(ROUTE_IDEAS)
+
+        await mutateAsync(editedIdea, {
+            onSuccess: () => {
+                history.push(ROUTE_IDEAS)
+            },
+        })
     }
 
     const doActivate = () => setActivate(true)
     const dontActivate = () => setActivate(false)
 
     return (
-        <IdeaForm idea={idea} onSubmit={save}>
+        <IdeaForm idea={idea} onSubmit={submit}>
             <RightButton onClick={doActivate}>
                 {isDraft ? t('idea.details.editAndActivate') : t('idea.details.edit')}
             </RightButton>
@@ -35,5 +44,3 @@ const IdeaEdit: React.FC<Props> = ({ idea }) => {
         </IdeaForm>
     )
 }
-
-export default IdeaEdit

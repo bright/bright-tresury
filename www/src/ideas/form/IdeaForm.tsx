@@ -4,11 +4,11 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import { Button } from '../../components/button/Button'
-import { ButtonsContainer } from '../../components/form/buttons/ButtonsContainer'
-import { IdeaDto } from '../ideas.api'
+import { ButtonsContainer } from '../../components/form/footer/buttons/ButtonsContainer'
 import IdeaFormFields from './IdeaFormFields'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
+import { IdeaDto } from '../ideas.dto'
 
 const useStyles = makeStyles(() =>
     createStyles({

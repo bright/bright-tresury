@@ -1,5 +1,5 @@
 import React from 'react'
-import { IdeaDto } from '../ideas.api'
+import { IdeaDto } from '../ideas.dto'
 import { generatePath } from 'react-router-dom'
 import { ROUTE_IDEA } from '../../routes/routes'
 import { Divider } from '../../components/divider/Divider'

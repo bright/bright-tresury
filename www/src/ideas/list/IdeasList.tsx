@@ -1,6 +1,6 @@
 import React from 'react'
 import { IdeaCard } from './IdeaCard'
-import { IdeaDto } from '../ideas.api'
+import { IdeaDto } from '../ideas.dto'
 import { Grid } from '../../components/grid/Grid'
 
 interface Props {

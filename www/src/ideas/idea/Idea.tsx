@@ -2,15 +2,14 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { useParams } from 'react-router'
 import { useAuth } from '../../auth/AuthContext'
-import { getIdea } from '../ideas.api'
+import { useGetIdea } from '../ideas.api'
 import IdeaHeader from './IdeaHeader'
 import { IdeaContentType } from './IdeaContentTypeTabs'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
-import IdeaInfo from './info/IdeaInfo'
+import { IdeaInfo } from './info/IdeaInfo'
 import IdeaDiscussion from './discussion/IdeaDiscussion'
 import { breakpoints } from '../../theme/theme'
 import { IdeaMilestones } from './milestones/IdeaMilestones'
-import { useQuery } from 'react-query'
 import { UseQueryWrapper } from '../../components/loading/UseQueryWrapper'
 import { useTranslation } from 'react-i18next'
 
@@ -44,7 +43,7 @@ export const Idea = () => {
 
     const { isUserVerified, user } = useAuth()
 
-    const { status, data: idea } = useQuery(['idea', ideaId], () => getIdea(ideaId))
+    const { status, data: idea } = useGetIdea(ideaId)
 
     const canEdit = useMemo(() => {
         return isUserVerified && idea?.ownerId === user?.id

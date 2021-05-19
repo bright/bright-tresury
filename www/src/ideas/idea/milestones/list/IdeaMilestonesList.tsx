@@ -1,11 +1,6 @@
 import React, { useCallback, useState } from 'react'
-import {
-    IdeaMilestoneDto,
-    turnIdeaMilestoneIntoProposal,
-    TurnIdeaMilestoneIntoProposalDto,
-} from '../idea.milestones.api'
+import { TurnIdeaMilestoneIntoProposalDto, useTurnIdeaMilestoneIntoProposal } from '../idea.milestones.api'
 import { IdeaMilestoneDetailsModal } from '../details/IdeaMilestoneDetailsModal'
-import { IdeaDto } from '../../../ideas.api'
 import { Grid } from '../../../../components/grid/Grid'
 import { IdeaMilestoneCard } from './IdeaMilestoneCard'
 import { mobileHeaderListHorizontalMargin } from '../../../../components/header/list/HeaderListContainer'
@@ -13,8 +8,9 @@ import { TurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/TurnIdea
 import { useModal } from '../../../../components/modal/useModal'
 import { ExtrinsicDetails, SubmitProposalModal } from '../../../SubmitProposalModal'
 import { useTranslation } from 'react-i18next'
-import { useQueryClient } from 'react-query'
 import { IdeaMilestoneEditModal } from '../edit/IdeaMilestoneEditModal'
+import { IdeaDto } from '../../../ideas.dto'
+import { IdeaMilestoneDto } from '../idea.milestones.dto'
 
 interface Props {
     idea: IdeaDto
@@ -25,9 +21,9 @@ interface Props {
 export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => {
     const { t } = useTranslation()
 
-    const queryClient = useQueryClient()
-
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
+
+    const { mutateAsync } = useTurnIdeaMilestoneIntoProposal()
 
     const [
         ideaMilestoneToBeTurnedIntoProposal,
@@ -47,13 +43,6 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => 
     const handleOnDetailsModalClose = () => {
         detailsModal.close()
         setFocusedIdeaMilestone(null)
-    }
-
-    const handleOnSubmitProposalModalClose = async () => {
-        submitProposalModal.close()
-        // We fetch idea milestones here because data could be patched before transaction
-        // and without fetch user could see outdated data
-        await queryClient.refetchQueries(['ideaMilestones', idea.id])
     }
 
     const handleOnCardClick = (ideaMilestone: IdeaMilestoneDto) => {
@@ -86,11 +75,11 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => 
                     lastBlockHash: extrinsicDetails.lastBlockHash,
                 }
 
-                await turnIdeaMilestoneIntoProposal(
-                    idea.id,
-                    ideaMilestoneToBeTurnedIntoProposal.id,
-                    turnIdeaMilestoneIntoProposalDto,
-                )
+                await mutateAsync({
+                    ideaId: idea.id,
+                    ideaMilestoneId: ideaMilestoneToBeTurnedIntoProposal.id,
+                    data: turnIdeaMilestoneIntoProposalDto,
+                })
             }
         },
         [idea.id, ideaMilestoneToBeTurnedIntoProposal],
@@ -141,7 +130,7 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => 
             {ideaMilestoneToBeTurnedIntoProposal ? (
                 <SubmitProposalModal
                     open={submitProposalModal.visible}
-                    onClose={handleOnSubmitProposalModalClose}
+                    onClose={submitProposalModal.close}
                     onTurn={onTurn}
                     title={t('idea.milestones.turnIntoProposal.submit.title')}
                     value={ideaMilestoneToBeTurnedIntoProposal.networks[0].value}

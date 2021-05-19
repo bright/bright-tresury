@@ -1,15 +1,14 @@
-import React from "react";
-import {IdeaStatus} from "../../ideas.api";
-import {useTranslation} from "react-i18next";
-import {Status} from "../../../components/status/Status";
-import {theme} from "../../../theme/theme";
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Status } from '../../../components/status/Status'
+import { theme } from '../../../theme/theme'
+import { IdeaStatus } from '../../ideas.dto'
 
 interface Props {
     status: IdeaStatus
 }
 
 export const IdeaStatusIndicator = ({ status }: Props) => {
-
     const { t } = useTranslation()
 
     const getStatusTranslationKey = (): string => {

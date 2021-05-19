@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '../../../components/button/Button'
-import { ButtonsContainer } from '../../../components/form/buttons/ButtonsContainer'
+import { ButtonsContainer } from '../../../components/form/footer/buttons/ButtonsContainer'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 

@@ -1,7 +1,7 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React from "react";
-import {FormHeader} from "./FormHeader";
-import {breakpoints} from "../../theme/theme";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
+import { FormHeader } from './header/FormHeader'
+import { breakpoints } from '../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,19 +19,21 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
     }),
-);
+)
 
 export interface ContainerProps {
     title?: string
 }
 
-const Container: React.FC<ContainerProps> = ({title, children}) => {
+const Container: React.FC<ContainerProps> = ({ title, children }) => {
     const classes = useStyles()
 
-    return <div className={classes.root}>
-        {title && <FormHeader title={title}/>}
-        {children}
-    </div>
+    return (
+        <div className={classes.root}>
+            {title && <FormHeader title={title} />}
+            {children}
+        </div>
+    )
 }
 
 export default Container

@@ -1,77 +1,64 @@
 import { apiGet, apiPost, apiPatch } from '../api'
-import { ExtrinsicDetails } from './SubmitProposalModal'
+import { useMutation, useQuery } from 'react-query'
+import { IdeaDto } from './ideas.dto'
 
-export interface IdeaDto {
-    id: string
-    ordinalNumber: number
-    title: string
-    beneficiary: string
-    field?: string
-    content: string
-    networks: IdeaNetworkDto[]
-    contact?: string
-    portfolio?: string
-    links?: string[]
-    status: IdeaStatus
-    ownerId: string
+// GET ALL
+
+export function getIdeas(network: string) {
+    return apiGet<IdeaDto[]>(`/ideas?network=${network}`)
 }
 
-export interface IdeaNetworkDto {
-    id?: string
-    name: string
-    value: number
+export const useGetIdeas = (network: string) => {
+    return useQuery(['ideas', network], () => getIdeas(network))
 }
 
-export enum IdeaStatus {
-    Draft = 'draft',
-    Active = 'active',
-    TurnedIntoProposal = 'turned_into_proposal',
-    TurnedIntoProposalByMilestone = 'turned_into_proposal_by_milestone',
-    Closed = 'closed',
+// GET ONE
+
+export function getIdea(ideaId: string) {
+    return apiGet<IdeaDto>(`/ideas/${ideaId}`)
 }
 
-export function doesIdeaBelongToUser(idea: IdeaDto) {
-    /** TODO: adjust when authorization will be possible */
-    return true
+export const useGetIdea = (ideaId: string) => {
+    return useQuery(['idea', ideaId], () => getIdea(ideaId))
 }
 
-export function createEmptyIdea(network: string): IdeaDto {
-    return {
-        title: '',
-        beneficiary: '',
-        field: '',
-        content: '',
-        networks: [{ name: network, value: 0 } as IdeaNetworkDto],
-        contact: '',
-        portfolio: '',
-        links: [''],
-        status: IdeaStatus.Draft,
-    } as IdeaDto
-}
-
-const IdeaApiPath = `/ideas`
-
-export function getIdeas(networkName: string) {
-    return apiGet<IdeaDto[]>(`${IdeaApiPath}?network=${networkName}`)
-}
-
-export function getIdea(id: string) {
-    return apiGet<IdeaDto>(`${IdeaApiPath}/${id}`)
-}
+// CREATE
 
 export function createIdea(idea: IdeaDto) {
-    return apiPost<IdeaDto>(`${IdeaApiPath}`, idea)
+    return apiPost<IdeaDto>(`/ideasssss`, idea)
 }
 
-export function updateIdea(idea: IdeaDto) {
-    return apiPatch<IdeaDto>(`${IdeaApiPath}/${idea.id}`, idea)
+export const useCreateIdea = () => {
+    return useMutation(createIdea)
 }
 
-export function turnIdeaIntoProposal(exDetails: ExtrinsicDetails, idea: IdeaDto, ideaNetwork: IdeaNetworkDto) {
-    const data = {
-        ideaNetworkId: ideaNetwork.id,
-        extrinsicHash: exDetails.extrinsicHash,
-        lastBlockHash: exDetails.lastBlockHash,
-    }
-    return apiPost<IdeaDto>(`${IdeaApiPath}/${idea.id}/proposals`, data)
+// PATCH
+
+export function patchIdea(idea: IdeaDto) {
+    return apiPatch<IdeaDto>(`/ideas/${idea.id}`, idea)
+}
+
+export const usePatchIdea = () => {
+    return useMutation(patchIdea)
+}
+
+// TURN INTO PROPOSAL
+
+export interface TurnIdeaIntoProposalDto {
+    ideaNetworkId: string
+    extrinsicHash: string
+    lastBlockHash: string
+}
+
+export interface TurnIdeaIntoProposalParams {
+    ideaId: string
+    data: TurnIdeaIntoProposalDto
+}
+
+export function turnIdeaIntoProposal({ ideaId, data }: TurnIdeaIntoProposalParams) {
+    return apiPost<IdeaDto>(`/ideas/${ideaId}/proposals`, data)
+}
+
+export const useTurnIdeaIntoProposal = () => {
+    return useMutation(turnIdeaIntoProposal)
 }

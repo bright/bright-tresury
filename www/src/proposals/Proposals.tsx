@@ -2,14 +2,13 @@ import React, { useMemo } from 'react'
 import { ProposalsHeader } from './ProposalsHeader'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { UseQueryWrapper } from '../components/loading/UseQueryWrapper'
-import { getProposals } from './proposals.api'
+import { useGetProposals } from './proposals.api'
 import config from '../config'
 import { useLocation } from 'react-router-dom'
 import { ProposalsList } from './list/ProposalsList'
 import { ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName } from './list/ProposalStatusFilters'
 import { filterProposals } from './list/filterProposals'
 import { useTranslation } from 'react-i18next'
-import { useQuery } from 'react-query'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -30,7 +29,7 @@ export const Proposals = ({ network = config.NETWORK_NAME }: Props) => {
 
     const location = useLocation()
 
-    const { status, data: proposals } = useQuery(['proposals', network], () => getProposals(network))
+    const { status, data: proposals } = useGetProposals(network)
 
     const filter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)

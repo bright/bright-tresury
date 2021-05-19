@@ -1,18 +1,18 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import {FieldArray} from "formik";
-import React from 'react';
-import {useTranslation} from "react-i18next";
-import {Button} from "../../components/button/Button";
-import {Input} from "../../components/form/input/Input";
-import {FormSelect} from "../../components/select/FormSelect";
-import config from "../../config";
-import {breakpoints} from "../../theme/theme";
-import {IdeaDto, IdeaNetworkDto} from "../ideas.api";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { FieldArray } from 'formik'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Button } from '../../components/button/Button'
+import { Input } from '../../components/form/input/Input'
+import { FormSelect } from '../../components/select/FormSelect'
+import config from '../../config'
+import { breakpoints } from '../../theme/theme'
+import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         inputField: {
-            marginTop: '2em'
+            marginTop: '2em',
         },
         smallField: {
             width: '50%',
@@ -22,24 +22,22 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         fieldSelect: {
             backgroundColor: theme.palette.background.default,
-            fontWeight: 500
+            fontWeight: 500,
         },
     }),
-);
+)
 
 interface Props {
     values: IdeaDto
 }
 
-const IdeaFormFields: React.FC<Props> = ({values}) => {
+const IdeaFormFields: React.FC<Props> = ({ values }) => {
     const classes = useStyles()
-    const {t} = useTranslation()
-    return <>
+    const { t } = useTranslation()
+    return (
+        <>
             <div className={classes.inputField}>
-                <Input
-                    name="title"
-                    placeholder={t('idea.details.title')}
-                    label={t('idea.details.title')}/>
+                <Input name="title" placeholder={t('idea.details.title')} label={t('idea.details.title')} />
             </div>
             <div className={`${classes.inputField} ${classes.smallField}`}>
                 <Input
@@ -68,18 +66,18 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                 />
             </div>
             {values.networks.map((network: IdeaNetworkDto, index) => {
-                    return (<div className={`${classes.inputField} ${classes.smallField}`} key={index}>
-                            <Input
-                                name={`networks[${index}].value`}
-                                type={`number`}
-                                label={t('idea.details.reward')}
-                                placeholder={t('idea.details.reward')}
-                                endAdornment={config.NETWORK_CURRENCY}
-                            />
-                        </div>
-                    )
-                }
-            )}
+                return (
+                    <div className={`${classes.inputField} ${classes.smallField}`} key={index}>
+                        <Input
+                            name={`networks[${index}].value`}
+                            type={`number`}
+                            label={t('idea.details.reward')}
+                            placeholder={t('idea.details.reward')}
+                            endAdornment={config.NETWORK_CURRENCY}
+                        />
+                    </div>
+                )
+            })}
             <div className={classes.inputField}>
                 <Input
                     name="contact"
@@ -99,26 +97,36 @@ const IdeaFormFields: React.FC<Props> = ({values}) => {
                 />
             </div>
             <div className={classes.inputField}>
-                <FieldArray name={'links'} render={arrayHelpers => (
-                    <div>
-                        {values.links ? values.links.map((link: string, index: number) =>
-                            <div className={classes.inputField} key={index}>
-                                <Input
-                                    name={`links[${index}]`}
-                                    label={index === 0 ? t('idea.details.links') : ''}
-                                    placeholder={t('idea.details.form.linkPlaceholder')}
-                                />
-                            </div>
-                        ) : null}
-                        <Button className={classes.inputField} variant={"text"} color="primary"
+                <FieldArray
+                    name={'links'}
+                    render={(arrayHelpers) => (
+                        <div>
+                            {values.links
+                                ? values.links.map((link: string, index: number) => (
+                                      <div className={classes.inputField} key={index}>
+                                          <Input
+                                              name={`links[${index}]`}
+                                              label={index === 0 ? t('idea.details.links') : ''}
+                                              placeholder={t('idea.details.form.linkPlaceholder')}
+                                          />
+                                      </div>
+                                  ))
+                                : null}
+                            <Button
+                                className={classes.inputField}
+                                variant={'text'}
+                                color="primary"
                                 type="button"
-                                onClick={() => arrayHelpers.push('')}>
-                            {t('idea.details.form.addLink')}
-                        </Button>
-                    </div>
-                )}/>
+                                onClick={() => arrayHelpers.push('')}
+                            >
+                                {t('idea.details.form.addLink')}
+                            </Button>
+                        </div>
+                    )}
+                />
             </div>
         </>
+    )
 }
 
 export default IdeaFormFields
