@@ -4,11 +4,11 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import { Button } from '../../components/button/Button'
-import { ButtonsContainer } from '../../components/form/footer/buttons/ButtonsContainer'
 import IdeaFormFields from './IdeaFormFields'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
 import { IdeaDto } from '../ideas.dto'
+import { FormFooter } from '../../components/form/footer/FormFooter'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -77,8 +77,7 @@ const IdeaForm: React.FC<Props> = ({ idea, onSubmit, extendedValidation, foldabl
                             {folded ? t('idea.details.form.showAll') : t('idea.details.form.showLess')}
                         </Button>
                     )}
-                    {children}
-                    {/*<ButtonsContainer>{children}</ButtonsContainer>*/}
+                    <FormFooter>{children}</FormFooter>
                 </form>
             )}
         </Formik>

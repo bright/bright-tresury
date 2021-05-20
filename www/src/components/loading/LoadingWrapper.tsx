@@ -8,7 +8,7 @@ interface Props {
     error: string
 }
 
-export const UseQueryWrapper = ({ status, error, children }: PropsWithChildren<Props>) => {
+export const LoadingWrapper = ({ status, error, children }: PropsWithChildren<Props>) => {
     switch (status) {
         case 'idle':
             return null

@@ -1,5 +1,5 @@
 import { apiGet, apiPost, apiPatch } from '../api'
-import { useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { IdeaDto } from './ideas.dto'
 
 // GET ALL
@@ -8,8 +8,8 @@ export function getIdeas(network: string) {
     return apiGet<IdeaDto[]>(`/ideas?network=${network}`)
 }
 
-export const useGetIdeas = (network: string) => {
-    return useQuery(['ideas', network], () => getIdeas(network))
+export const useGetIdeas = (network: string, options?: UseQueryOptions<IdeaDto[]>) => {
+    return useQuery(['ideas', network], () => getIdeas(network), options)
 }
 
 // GET ONE
@@ -18,14 +18,14 @@ export function getIdea(ideaId: string) {
     return apiGet<IdeaDto>(`/ideas/${ideaId}`)
 }
 
-export const useGetIdea = (ideaId: string) => {
-    return useQuery(['idea', ideaId], () => getIdea(ideaId))
+export const useGetIdea = (ideaId: string, options?: UseQueryOptions<IdeaDto>) => {
+    return useQuery(['idea', ideaId], () => getIdea(ideaId), options)
 }
 
 // CREATE
 
 export function createIdea(idea: IdeaDto) {
-    return apiPost<IdeaDto>(`/ideasssss`, idea)
+    return apiPost<IdeaDto>(`/ideas`, idea)
 }
 
 export const useCreateIdea = () => {

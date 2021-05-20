@@ -6,10 +6,10 @@ import { Trans, useTranslation } from 'react-i18next'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
-import { Footer } from '../../../../components/form/footer/Footer'
-import { LeftButton, RightButton } from '../../../../components/form/footer/buttons/Buttons'
-import { ErrorBox } from '../../../../components/form/footer/errorBox/ErrorBox'
+import { FormFooterButton } from '../../../../components/form/footer/FormFooterButton'
+import { FormFooterErrorBox } from '../../../../components/form/footer/FormFooterErrorBox'
 import { useQueryClient } from 'react-query'
+import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
 
 const useStyles = makeStyles(
     createStyles({
@@ -96,15 +96,17 @@ export const TurnIdeaMilestoneIntoProposalModal = ({
                     extendedValidation={true}
                     onSubmit={submit}
                 >
-                    <Footer>
-                        <LeftButton type="button" variant="text" onClick={onClose}>
+                    {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
+
+                    <FormFooterButtonsContainer>
+                        <FormFooterButton type={'submit'} variant={'contained'}>
+                            {t('idea.details.header.turnIntoProposal')}
+                        </FormFooterButton>
+
+                        <FormFooterButton type={'button'} variant={'text'} onClick={onClose}>
                             {t('idea.milestones.modal.form.buttons.cancel')}
-                        </LeftButton>
-
-                        <div>{isError ? <ErrorBox error={t('errors.somethingWentWrong')} /> : null}</div>
-
-                        <RightButton>{t('idea.details.header.turnIntoProposal')}</RightButton>
-                    </Footer>
+                        </FormFooterButton>
+                    </FormFooterButtonsContainer>
                 </IdeaMilestoneForm>
             </>
         </Modal>

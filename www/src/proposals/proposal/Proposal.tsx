@@ -11,7 +11,7 @@ import { ProposalHeader } from './ProposalHeader'
 import { useParams } from 'react-router'
 import config from '../../config'
 import { useGetProposal } from '../proposals.api'
-import { UseQueryWrapper } from '../../components/loading/UseQueryWrapper'
+import { LoadingWrapper } from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -45,7 +45,7 @@ export const Proposal = () => {
     const { status, data: proposal } = useGetProposal(proposalIndex, config.NETWORK_NAME)
 
     return (
-        <UseQueryWrapper status={status} error={t('errors.errorOccurredWhileLoadingProposal')}>
+        <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingProposal')}>
             {proposal ? (
                 <div className={classes.root}>
                     <ProposalHeader proposal={proposal} />
@@ -72,6 +72,6 @@ export const Proposal = () => {
                     </div>
                 </div>
             ) : null}
-        </UseQueryWrapper>
+        </LoadingWrapper>
     )
 }

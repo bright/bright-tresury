@@ -5,7 +5,7 @@ import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import { Button } from '../../components/button/Button'
-import { ButtonsContainer } from '../../components/form/footer/buttons/ButtonsContainer'
+import { FormFooterButtonsContainer } from '../../components/form/footer/FormFooterButtonsContainer'
 import { CheckboxInput } from '../../components/form/input/CheckboxInput'
 import { Input } from '../../components/form/input/Input'
 import { PasswordInput } from '../../components/form/input/password/PasswordInput'
@@ -141,7 +141,7 @@ const SignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
                             }
                         />
                     </div>
-                    <ButtonsContainer>
+                    <FormFooterButtonsContainer>
                         <Button
                             disabled={loadingState === LoadingState.Loading}
                             variant="contained"
@@ -150,7 +150,7 @@ const SignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
                         >
                             {submitButtonLabel}
                         </Button>
-                    </ButtonsContainer>
+                    </FormFooterButtonsContainer>
                 </form>
             )}
         </Formik>

@@ -1,5 +1,5 @@
 import { Button, ButtonProps } from '../../../components/button/Button'
-import { ButtonsContainer } from '../../../components/form/footer/buttons/ButtonsContainer'
+import { FormFooterButtonsContainer } from '../../../components/form/footer/FormFooterButtonsContainer'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
@@ -13,10 +13,10 @@ export const SignUpButton = ({ label, ...props }: Props) => {
     const { t } = useTranslation()
 
     return (
-        <ButtonsContainer>
+        <FormFooterButtonsContainer>
             <Button {...props} variant="contained" color="primary" type="submit">
                 {label || t('auth.signUp.submitButton')}
             </Button>
-        </ButtonsContainer>
+        </FormFooterButtonsContainer>
     )
 }

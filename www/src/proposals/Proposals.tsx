@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { ProposalsHeader } from './ProposalsHeader'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { UseQueryWrapper } from '../components/loading/UseQueryWrapper'
+import { LoadingWrapper } from '../components/loading/LoadingWrapper'
 import { useGetProposals } from './proposals.api'
 import config from '../config'
 import { useLocation } from 'react-router-dom'
@@ -43,9 +43,9 @@ export const Proposals = ({ network = config.NETWORK_NAME }: Props) => {
     return (
         <div className={classes.root}>
             <ProposalsHeader filter={filter} />
-            <UseQueryWrapper status={status} error={t('errors.errorOccurredWhileLoadingProposals')}>
+            <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingProposals')}>
                 <ProposalsList proposals={filteredProposals} />
-            </UseQueryWrapper>
+            </LoadingWrapper>
         </div>
     )
 }

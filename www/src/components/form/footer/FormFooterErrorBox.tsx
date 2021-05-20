@@ -1,7 +1,7 @@
 import { createStyles, Theme, Typography, TypographyProps } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
-import { breakpoints } from '../../../../theme/theme'
+import { breakpoints } from '../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,9 +28,9 @@ interface OwnProps {
     error: string
 }
 
-export type ErrorBoxProps = OwnProps & TypographyProps
+export type FooterErrorBoxProps = OwnProps & TypographyProps
 
-export const ErrorBox: React.FC<ErrorBoxProps> = ({ error, className, ...props }) => {
+export const FormFooterErrorBox: React.FC<FooterErrorBoxProps> = ({ error, className, ...props }) => {
     const classes = useStyles()
 
     return (

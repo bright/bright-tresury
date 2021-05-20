@@ -1,16 +1,15 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FormButton } from '../../components/form/footer/buttons/Buttons'
+import { FormFooterButton } from '../../components/form/footer/FormFooterButton'
 import Container from '../../components/form/Container'
 import config from '../../config'
 import IdeaForm from '../form/IdeaForm'
 import { useCreateIdea } from '../ideas.api'
-import { Footer } from '../../components/form/footer/Footer'
-import { ErrorBox } from '../../components/form/footer/errorBox/ErrorBox'
+import { FormFooterErrorBox } from '../../components/form/footer/FormFooterErrorBox'
 import { useHistory } from 'react-router'
 import { ROUTE_IDEAS } from '../../routes/routes'
 import { createEmptyIdea, IdeaDto, IdeaStatus } from '../ideas.dto'
-import { ButtonsContainer } from '../../components/form/footer/buttons/ButtonsContainer'
+import { FormFooterButtonsContainer } from '../../components/form/footer/FormFooterButtonsContainer'
 
 interface Props {
     network: string
@@ -41,23 +40,17 @@ export const IdeaCreate = ({ network = config.NETWORK_NAME }: Props) => {
     return (
         <Container title={t('idea.introduceTitle')}>
             <IdeaForm idea={idea} onSubmit={submit}>
-                <Footer>
-                    {isError ? <ErrorBox error={t('errors.somethingWentWrong')} /> : null}
-                    <ButtonsContainer>
-                        <FormButton onClick={dontActivate} variant={'outlined'} type={'submit'}>
-                            {t('idea.details.saveDraft')}
-                        </FormButton>
+                {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
 
-                        <FormButton onClick={doActivate} variant={'contained'} type={'submit'}>
-                            {t('idea.details.create')}
-                        </FormButton>
-                    </ButtonsContainer>
+                <FormFooterButtonsContainer>
+                    <FormFooterButton type={'submit'} variant={'contained'} onClick={doActivate}>
+                        {t('idea.details.create')}
+                    </FormFooterButton>
 
-                    {/*<ButtonsContainer>*/}
-                    {/*    <RightButton onClick={doActivate}>{t('idea.details.create')}</RightButton>*/}
-                    {/*    <LeftButton onClick={dontActivate}>{t('idea.details.saveDraft')}</LeftButton>*/}
-                    {/*</ButtonsContainer>*/}
-                </Footer>
+                    <FormFooterButton type={'submit'} variant={'outlined'} onClick={dontActivate}>
+                        {t('idea.details.saveDraft')}
+                    </FormFooterButton>
+                </FormFooterButtonsContainer>
             </IdeaForm>
         </Container>
     )

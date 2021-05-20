@@ -1,11 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { RightButton, LeftButton } from '../../../components/form/footer/buttons/Buttons'
+import { FormFooterButton } from '../../../components/form/footer/FormFooterButton'
 import IdeaForm from '../../form/IdeaForm'
 import { usePatchIdea } from '../../ideas.api'
 import { useHistory } from 'react-router'
 import { ROUTE_IDEAS } from '../../../routes/routes'
 import { IdeaDto, IdeaStatus } from '../../ideas.dto'
+import { FormFooterErrorBox } from '../../../components/form/footer/FormFooterErrorBox'
+import { FormFooterButtonsContainer } from '../../../components/form/footer/FormFooterButtonsContainer'
 
 interface Props {
     idea: IdeaDto
@@ -18,7 +20,7 @@ export const IdeaEdit = ({ idea }: Props) => {
 
     const history = useHistory()
 
-    const { mutateAsync } = usePatchIdea()
+    const { mutateAsync, isError } = usePatchIdea()
 
     const isDraft = useMemo(() => !idea.status || idea.status === IdeaStatus.Draft, [idea.status])
 
@@ -37,10 +39,19 @@ export const IdeaEdit = ({ idea }: Props) => {
 
     return (
         <IdeaForm idea={idea} onSubmit={submit}>
-            <RightButton onClick={doActivate}>
-                {isDraft ? t('idea.details.editAndActivate') : t('idea.details.edit')}
-            </RightButton>
-            {isDraft && <LeftButton onClick={dontActivate}>{t('idea.details.saveDraft')}</LeftButton>}
+            {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
+
+            <FormFooterButtonsContainer>
+                <FormFooterButton type={'submit'} variant={'contained'} onClick={doActivate}>
+                    {isDraft ? t('idea.details.editAndActivate') : t('idea.details.edit')}
+                </FormFooterButton>
+
+                {isDraft ? (
+                    <FormFooterButton type={'submit'} variant={'outlined'} onClick={dontActivate}>
+                        {t('idea.details.saveDraft')}
+                    </FormFooterButton>
+                ) : null}
+            </FormFooterButtonsContainer>
         </IdeaForm>
     )
 }

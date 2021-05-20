@@ -7,10 +7,12 @@ import Container from '../../../components/form/Container'
 import IdeaForm from '../../form/IdeaForm'
 import { TurnIdeaIntoProposalDto, useGetIdea, usePatchIdea, useTurnIdeaIntoProposal } from '../../ideas.api'
 import { ExtrinsicDetails, SubmitProposalModal } from '../../SubmitProposalModal'
-import { RightButton, LeftButton } from '../../../components/form/footer/buttons/Buttons'
+import { FormFooterButton } from '../../../components/form/footer/FormFooterButton'
 import { useModal } from '../../../components/modal/useModal'
 import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 import { useQueryClient } from 'react-query'
+import { FormFooterErrorBox } from '../../../components/form/footer/FormFooterErrorBox'
+import { FormFooterButtonsContainer } from '../../../components/form/footer/FormFooterButtonsContainer'
 
 export const TurnIdeaIntoProposal = () => {
     const { t } = useTranslation()
@@ -27,7 +29,7 @@ export const TurnIdeaIntoProposal = () => {
 
     const { data: idea } = useGetIdea(ideaId)
 
-    const { mutateAsync: patchMutateAsync } = usePatchIdea()
+    const { mutateAsync: patchMutateAsync, isError } = usePatchIdea()
 
     const { mutateAsync: turnMutateAsync } = useTurnIdeaIntoProposal()
 
@@ -70,10 +72,17 @@ export const TurnIdeaIntoProposal = () => {
             {idea && (
                 <>
                     <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
-                        <RightButton>{t('idea.turnIntoProposal.submit')}</RightButton>
-                        <LeftButton type={'button'} onClick={history.goBack}>
-                            {t('idea.turnIntoProposal.cancel')}
-                        </LeftButton>
+                        {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
+
+                        <FormFooterButtonsContainer>
+                            <FormFooterButton type={'submit'} variant={'contained'}>
+                                {t('idea.turnIntoProposal.submit')}
+                            </FormFooterButton>
+
+                            <FormFooterButton type={'button'} variant={'outlined'} onClick={history.goBack}>
+                                {t('idea.turnIntoProposal.cancel')}
+                            </FormFooterButton>
+                        </FormFooterButtonsContainer>
                     </IdeaForm>
                     <SubmitProposalModal
                         open={submitProposalModal.visible}

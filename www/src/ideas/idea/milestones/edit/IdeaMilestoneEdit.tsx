@@ -3,11 +3,11 @@ import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMileston
 import { useTranslation } from 'react-i18next'
 import { usePatchIdeaMilestone } from '../idea.milestones.api'
 import { IdeaDto } from '../../../ideas.dto'
-import { Footer } from '../../../../components/form/footer/Footer'
-import { LeftButton, RightButton } from '../../../../components/form/footer/buttons/Buttons'
-import { ErrorBox } from '../../../../components/form/footer/errorBox/ErrorBox'
+import { FormFooterButton } from '../../../../components/form/footer/FormFooterButton'
+import { FormFooterErrorBox } from '../../../../components/form/footer/FormFooterErrorBox'
 import { IdeaMilestoneDto, PatchIdeaMilestoneDto } from '../idea.milestones.dto'
 import { useQueryClient } from 'react-query'
+import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
 
 interface Props {
     idea: IdeaDto
@@ -30,7 +30,7 @@ export const IdeaMilestoneEdit = ({ idea, ideaMilestone, onCancel, onSuccess }: 
         }
 
         await mutateAsync(
-            { ideaId: idea.id, ideaMilestoneId: idea.id, data: patchIdeaMilestoneDto },
+            { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: patchIdeaMilestoneDto },
             {
                 onSuccess: async () => {
                     await queryClient.refetchQueries(['ideaMilestones', idea.id])
@@ -42,13 +42,17 @@ export const IdeaMilestoneEdit = ({ idea, ideaMilestone, onCancel, onSuccess }: 
 
     return (
         <IdeaMilestoneForm idea={idea} ideaMilestone={ideaMilestone} readonly={false} onSubmit={submit}>
-            <Footer>
-                <LeftButton type="button" variant="text" onClick={onCancel}>
+            {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
+
+            <FormFooterButtonsContainer>
+                <FormFooterButton type={'submit'} variant={'contained'}>
+                    {t('idea.milestones.modal.form.buttons.save')}
+                </FormFooterButton>
+
+                <FormFooterButton type={'button'} variant={'text'} onClick={onCancel}>
                     {t('idea.milestones.modal.form.buttons.cancel')}
-                </LeftButton>
-                <div>{isError ? <ErrorBox error={t('errors.somethingWentWrong')} /> : null}</div>
-                <RightButton>{t('idea.milestones.modal.form.buttons.save')}</RightButton>
-            </Footer>
+                </FormFooterButton>
+            </FormFooterButtonsContainer>
         </IdeaMilestoneForm>
     )
 }

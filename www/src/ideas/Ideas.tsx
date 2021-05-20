@@ -6,7 +6,7 @@ import config from '../config'
 import { filterIdeas } from './list/filterIdeas'
 import IdeasHeader from './IdeasHeader'
 import { IdeasList } from './list/IdeasList'
-import { UseQueryWrapper } from '../components/loading/UseQueryWrapper'
+import { LoadingWrapper } from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 
 interface Props {
@@ -32,9 +32,9 @@ export const Ideas = ({ network = config.NETWORK_NAME }: Props) => {
     return (
         <div>
             <IdeasHeader filter={filter} />
-            <UseQueryWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdeas')}>
+            <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdeas')}>
                 <IdeasList ideas={filteredIdeas} />
-            </UseQueryWrapper>
+            </LoadingWrapper>
         </div>
     )
 }

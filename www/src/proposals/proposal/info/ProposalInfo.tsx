@@ -8,7 +8,8 @@ import { breakpoints } from '../../../theme/theme'
 import { Theme } from '@material-ui/core'
 import { ellipseTextInTheMiddle } from '../../../util/stringUtil'
 import { Placeholder } from '../../../components/text/Placeholder'
-import { useProposalInfo } from './useProposalInfo'
+import { useGetIdea } from '../../../ideas/ideas.api'
+import { useGetIdeaMilestone } from '../../../ideas/idea/milestones/idea.milestones.api'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,44 +57,54 @@ interface Props {
     proposal: ProposalDto
 }
 
-export const ProposalInfo = ({ proposal }: Props) => {
+export const ProposalInfo = ({
+    proposal: { proposer, isCreatedFromIdeaMilestone, ideaId, ideaMilestoneId },
+}: Props) => {
     const classes = useStyles()
 
     const { t } = useTranslation()
 
-    const { field, reason, description } = useProposalInfo(proposal)
+    const { data: idea } = useGetIdea(ideaId!, {
+        enabled: ideaId !== undefined,
+    })
+
+    const { data: ideaMilestone } = useGetIdeaMilestone(ideaId!, ideaMilestoneId!, {
+        enabled: ideaId !== undefined && ideaMilestoneId !== undefined,
+    })
 
     return (
         <div>
             <Label label={t('proposal.content.info.proposer')} />
             <div className={classes.proposer}>
                 <>
-                    <Identicon address={proposal.proposer} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>
-                        {ellipseTextInTheMiddle(proposal.proposer)}
-                    </div>
+                    <Identicon address={proposer} />
+                    <div className={`${classes.accountValue} ${classes.text}`}>{ellipseTextInTheMiddle(proposer)}</div>
                 </>
             </div>
 
             <div className={classes.spacing}>
                 <Label label={t('proposal.content.info.fieldOfIdea')} />
                 <div className={classes.text}>
-                    {field || <Placeholder value={t('proposal.content.info.fieldOfIdea')} />}
+                    {idea ? idea.field : <Placeholder value={t('proposal.content.info.fieldOfIdea')} />}
                 </div>
             </div>
 
             <div className={classes.spacing}>
                 <Label label={t('proposal.content.info.reasonForIdea')} />
                 <div className={classes.longText}>
-                    {reason || <Placeholder value={t('proposal.content.info.reasonForIdea')} />}
+                    {idea ? idea.content : <Placeholder value={t('proposal.content.info.reasonForIdea')} />}
                 </div>
             </div>
 
-            {proposal.isCreatedFromIdeaMilestone ? (
+            {isCreatedFromIdeaMilestone ? (
                 <div className={classes.spacing}>
                     <Label label={t('proposal.content.info.description')} />
                     <div className={classes.longText}>
-                        {description || <Placeholder value={t('proposal.content.info.description')} />}
+                        {ideaMilestone ? (
+                            ideaMilestone.description
+                        ) : (
+                            <Placeholder value={t('proposal.content.info.description')} />
+                        )}
                     </div>
                 </div>
             ) : null}

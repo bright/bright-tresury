@@ -3,8 +3,8 @@ import { IdeaMilestoneForm } from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'
-import { Footer } from '../../../../components/form/footer/Footer'
-import { LeftButton } from '../../../../components/form/footer/buttons/Buttons'
+import { FormFooterButton } from '../../../../components/form/footer/FormFooterButton'
+import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
 
 interface Props {
     idea: IdeaDto
@@ -17,11 +17,11 @@ export const IdeaMilestoneDetails = ({ idea, ideaMilestone, onCancel }: Props) =
 
     return (
         <IdeaMilestoneForm idea={idea} ideaMilestone={ideaMilestone} readonly={true}>
-            <Footer>
-                <LeftButton type="button" variant="text" onClick={onCancel}>
+            <FormFooterButtonsContainer>
+                <FormFooterButton type={'button'} variant={'text'} onClick={onCancel}>
                     {t('idea.milestones.modal.form.buttons.cancel')}
-                </LeftButton>
-            </Footer>
+                </FormFooterButton>
+            </FormFooterButtonsContainer>
         </IdeaMilestoneForm>
     )
 }

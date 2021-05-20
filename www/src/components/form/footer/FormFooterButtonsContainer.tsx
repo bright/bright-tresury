@@ -1,28 +1,28 @@
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { breakpoints } from '../../../../theme/theme'
+import { breakpoints } from '../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        buttonsContainer: {
+        root: {
             display: 'flex',
             justifyContent: 'space-between',
             position: 'relative',
-            flexDirection: 'row',
+            flexDirection: 'row-reverse',
             flexGrow: 1,
             alignItems: 'flex-end',
             width: '100%',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 gap: '1em',
                 justifyContent: 'inherit',
-                flexDirection: 'column-reverse',
+                flexDirection: 'column',
             },
         },
     }),
 )
 
-export const ButtonsContainer: React.FC = ({ children }) => {
+export const FormFooterButtonsContainer: React.FC = ({ children }) => {
     const classes = useStyles()
 
-    return <div className={classes.buttonsContainer}>{children}</div>
+    return <div className={classes.root}>{children}</div>
 }

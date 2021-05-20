@@ -4,7 +4,7 @@ import { EmptyIdeaMilestonesArrayInfo } from './components/IdeaEmptyMilestonesAr
 import { IdeaMilestoneCreateModal } from './create/IdeaMilestoneCreateModal'
 import { IdeaDto } from '../../ideas.dto'
 import { IdeaMilestonesList } from './list/IdeaMilestonesList'
-import { UseQueryWrapper } from '../../../components/loading/UseQueryWrapper'
+import { LoadingWrapper } from '../../../components/loading/LoadingWrapper'
 import { CreateIdeaMilestoneButton } from './components/CreateIdeaMilestoneButton'
 import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
@@ -22,15 +22,20 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
     const { status, data: ideaMilestones } = useGetIdeaMilestones(idea.id)
 
     return (
-        <UseQueryWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdeaMilestones')}>
-            <>{ideaMilestones?.length === 0 ? <EmptyIdeaMilestonesArrayInfo /> : null}</>
-            {canEdit ? (
-                <CreateIdeaMilestoneButton text={t('idea.milestones.createMilestone')} onClick={createModal.open} />
-            ) : null}
+        <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdeaMilestones')}>
             {ideaMilestones ? (
-                <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} canEdit={canEdit} />
+                <>
+                    {ideaMilestones.length === 0 ? <EmptyIdeaMilestonesArrayInfo /> : null}
+                    {canEdit ? (
+                        <CreateIdeaMilestoneButton
+                            text={t('idea.milestones.createMilestone')}
+                            onClick={createModal.open}
+                        />
+                    ) : null}
+                    <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} canEdit={canEdit} />
+                    <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />
+                </>
             ) : null}
-            <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />
-        </UseQueryWrapper>
+        </LoadingWrapper>
     )
 }

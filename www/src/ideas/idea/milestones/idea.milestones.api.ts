@@ -1,5 +1,5 @@
 import { apiGet, apiPatch, apiPost } from '../../../api'
-import { QueryClient, useMutation, useQuery } from 'react-query'
+import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import {
     CreateIdeaMilestoneDto,
     IdeaMilestoneDto,
@@ -7,16 +7,14 @@ import {
     PatchIdeaMilestoneDto,
 } from './idea.milestones.dto'
 
-const queryClient = new QueryClient()
-
 // GET ALL
 
 export function getIdeaMilestones(ideaId: string) {
     return apiGet<IdeaMilestoneDto[]>(`/ideas/${ideaId}/milestones`)
 }
 
-export const useGetIdeaMilestones = (ideaId: string) => {
-    return useQuery(['ideaMilestones', ideaId], () => getIdeaMilestones(ideaId))
+export const useGetIdeaMilestones = (ideaId: string, options?: UseQueryOptions<IdeaMilestoneDto[]>) => {
+    return useQuery(['ideaMilestones', ideaId], () => getIdeaMilestones(ideaId), options)
 }
 
 // GET ONE
@@ -25,8 +23,16 @@ export function getIdeaMilestone(ideaId: string, ideaMilestoneId: string) {
     return apiGet<IdeaMilestoneDto>(`/ideas/${ideaId}/milestones/${ideaMilestoneId}`)
 }
 
-export const useGetIdeaMilestone = (ideaId: string, ideaMilestoneId: string) => {
-    return useQuery(['ideaMilestone', ideaId, ideaMilestoneId], () => getIdeaMilestone(ideaId, ideaMilestoneId))
+export const useGetIdeaMilestone = (
+    ideaId: string,
+    ideaMilestoneId: string,
+    options?: UseQueryOptions<IdeaMilestoneDto>,
+) => {
+    return useQuery(
+        ['ideaMilestone', ideaId, ideaMilestoneId],
+        () => getIdeaMilestone(ideaId, ideaMilestoneId),
+        options,
+    )
 }
 
 // CREATE

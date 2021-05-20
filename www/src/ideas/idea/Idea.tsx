@@ -10,7 +10,7 @@ import { IdeaInfo } from './info/IdeaInfo'
 import IdeaDiscussion from './discussion/IdeaDiscussion'
 import { breakpoints } from '../../theme/theme'
 import { IdeaMilestones } from './milestones/IdeaMilestones'
-import { UseQueryWrapper } from '../../components/loading/UseQueryWrapper'
+import { LoadingWrapper } from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,7 +50,7 @@ export const Idea = () => {
     }, [idea, isUserVerified, user])
 
     return (
-        <UseQueryWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdea')}>
+        <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdea')}>
             {idea ? (
                 <div className={classes.root}>
                     <IdeaHeader idea={idea} canEdit={canEdit} />
@@ -72,6 +72,6 @@ export const Idea = () => {
                     </div>
                 </div>
             ) : null}
-        </UseQueryWrapper>
+        </LoadingWrapper>
     )
 }

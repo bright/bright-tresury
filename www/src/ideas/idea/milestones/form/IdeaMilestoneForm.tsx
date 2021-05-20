@@ -7,6 +7,7 @@ import { Nil } from '../../../../util/types'
 import { IdeaDto } from '../../../ideas.dto'
 import { useIdeaMilestoneForm } from './useIdeaMilestoneForm'
 import { IdeaMilestoneFoldedFormFields } from './fields/IdeaMilestoneFoldedFormFields'
+import { FormFooter } from '../../../../components/form/footer/FormFooter'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -65,7 +66,7 @@ export const IdeaMilestoneForm = ({
                     ) : (
                         <IdeaMilestoneFormFields values={values} readonly={readonly} />
                     )}
-                    <>{children}</>
+                    <FormFooter>{children}</FormFooter>
                 </form>
             )}
         </Formik>
