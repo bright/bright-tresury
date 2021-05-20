@@ -21,17 +21,17 @@ export function addEmailPassword(data: SignUpData) {
 }
 
 export function startWeb3Association(address: string): Promise<Web3SignStartResponse> {
-    return apiPost<Web3SignStartResponse>(`/v1/auth/web3/associate/start`, { address })
+    return apiPost<Web3SignStartResponse>(`/auth/web3/associate/start`, { address })
 }
 
 export function confirmWeb3Association(address: ConfirmBlockchainSignDto): Promise<void> {
-    return apiPost<void>('/v1/auth/web3/associate/confirm', address)
+    return apiPost<void>('/auth/web3/associate/confirm', address)
 }
 
 export function unlinkAddress(address: string) {
-    return apiPost('/v1/auth/web3/unlink', { address })
+    return apiPost('/v1/auth/web3/address/unlink', { address })
 }
 
 export function makePrimary(address: string) {
-    return apiPost('/v1/auth/web3/make-primary', { address })
+    return apiPost('/v1/auth/web3/address/make-primary', { address })
 }

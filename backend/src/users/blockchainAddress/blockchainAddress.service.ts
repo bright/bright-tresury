@@ -50,4 +50,15 @@ export class BlockchainAddressService {
         }
         await this.blockchainAddressRepository.remove(blockchainAddress)
     }
+
+    async makePrimary(userId: string, address: string) {
+        const addresses = await this.findByUserId(userId)
+        const adjustedAddresses = addresses.map((blockchainAddress: BlockchainAddress) => {
+            return {
+                ...blockchainAddress,
+                isPrimary: blockchainAddress.address === address,
+            }
+        })
+        await this.blockchainAddressRepository.save(adjustedAddresses)
+    }
 }

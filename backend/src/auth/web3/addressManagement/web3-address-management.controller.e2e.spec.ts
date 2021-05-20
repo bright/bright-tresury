@@ -34,4 +34,31 @@ describe(`Web3 Address Management Controller`, () => {
                 .expect(HttpStatus.FORBIDDEN)
         })
     })
+
+    describe('make primary', () => {
+        it('should make address primary', async () => {
+            const sessionHandler = await signInAndGetSessionHandler(app, bobAddress)
+            await getUsersService().associateBlockchainAddress(sessionHandler.sessionData.user, charlieAddress)
+
+            await sessionHandler.authorizeRequest(
+                request(app()).post(`/api/v1/auth/web3/address/make-primary`).send({ address: charlieAddress }),
+            )
+
+            const userAfterUnlinking = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+            const charlieBlockchainAddress = userAfterUnlinking.blockchainAddresses!.find(
+                (bAddress) => bAddress.address === charlieAddress,
+            )
+            expect(charlieBlockchainAddress!.isPrimary).toBeTruthy()
+            const bobBlockchainAddress = userAfterUnlinking.blockchainAddresses!.find(
+                (bAddress) => bAddress.address === bobAddress,
+            )
+            expect(bobBlockchainAddress!.isPrimary).toBeFalsy()
+        })
+        it('should throw forbidden exception if not signed in', () => {
+            return request(app())
+                .post(`/api/v1/auth/web3/address/make-primary`)
+                .send({ address: charlieAddress })
+                .expect(HttpStatus.FORBIDDEN)
+        })
+    })
 })

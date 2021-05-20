@@ -3,7 +3,7 @@ import { ApiBadRequestResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags } f
 import { SessionGuard } from '../../session/guard/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
 import { UsersService } from '../../../users/users.service'
-import { UnlinkAddressRequestDto } from './dto/unlink-address.dto'
+import { ManageAddressRequestDto } from './dto/manage-address.dto'
 
 @Controller('/v1/auth/web3/address')
 @ApiTags('auth.web3.addressManagement')
@@ -21,7 +21,22 @@ export class Web3AddressManagementController {
     @ApiForbiddenResponse({
         description: "Can't unlink address when not signed in",
     })
-    async unlinkAddress(@Body() unlinkDto: UnlinkAddressRequestDto, @ReqSession() session: SessionData) {
-        await this.usersService.unlinkAddress(session.user, unlinkDto.address)
+    async unlinkAddress(@Body() addressDto: ManageAddressRequestDto, @ReqSession() session: SessionData) {
+        await this.usersService.unlinkAddress(session.user, addressDto.address)
+    }
+
+    @Post('/make-primary')
+    @UseGuards(SessionGuard)
+    @ApiOkResponse({
+        description: 'Address successfully made primary',
+    })
+    @ApiBadRequestResponse({
+        description: 'Could not make address primary',
+    })
+    @ApiForbiddenResponse({
+        description: "Can't make address primary when not signed in",
+    })
+    async makeAddressPrimary(@Body() addressDto: ManageAddressRequestDto, @ReqSession() session: SessionData) {
+        await this.usersService.makeAddressPrimary(session.user, addressDto.address)
     }
 }

@@ -159,4 +159,25 @@ describe(`Blockchain Address Service`, () => {
             expect(hasAnyAddresses).toBeFalsy()
         })
     })
+
+    describe('make primary', () => {
+        it('makes address primary', async () => {
+            await getService().create(new BlockchainAddress(bobAddress, user, true))
+            await getService().create(new BlockchainAddress(aliceAddress, user, false))
+            await getService().makePrimary(user.id, aliceAddress)
+
+            const blockchainAddresses = await getService().findByUserId(user.id)
+            const aliceBlockchainAddress = blockchainAddresses.find((bAddress) => bAddress.address === aliceAddress)
+            expect(aliceBlockchainAddress!.isPrimary).toBeTruthy()
+        })
+        it('make other addresses non primary', async () => {
+            await getService().create(new BlockchainAddress(aliceAddress, user, true))
+            await getService().create(new BlockchainAddress(bobAddress, user, false))
+            await getService().makePrimary(user.id, bobAddress)
+
+            const blockchainAddresses = await getService().findByUserId(user.id)
+            const aliceBlockchainAddress = blockchainAddresses.find((bAddress) => bAddress.address === aliceAddress)
+            expect(aliceBlockchainAddress!.isPrimary).toBeFalsy()
+        })
+    })
 })

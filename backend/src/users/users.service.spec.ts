@@ -428,4 +428,42 @@ describe(`Users Service`, () => {
             await expect(getService().unlinkAddress(charlieUser, bobAddress)).rejects.toThrow(BadRequestException)
         })
     })
+
+    describe('make address as primary', () => {
+        it('successfully makes address and set other addresses as non-primary', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Charlie',
+                blockchainAddress: charlieAddress,
+            } as CreateBlockchainUserDto)
+
+            const userWithTwoAddresses = await getService().associateBlockchainAddress(user, bobAddress)
+
+            await getService().makeAddressPrimary(userWithTwoAddresses, bobAddress)
+            const userWIthChangedPrimaryAddress = await getService().findOne(user.id)
+
+            const bobBlockchainAddress = userWIthChangedPrimaryAddress.blockchainAddresses!.find(
+                (bAddress) => bAddress.address === bobAddress,
+            )
+            expect(bobBlockchainAddress!.isPrimary).toBeTruthy()
+            const charlieBlockchainAddress = userWIthChangedPrimaryAddress.blockchainAddresses!.find(
+                (bAddress) => bAddress.address === charlieAddress,
+            )
+            expect(charlieBlockchainAddress!.isPrimary).toBeFalsy()
+        })
+        it('does not allow to make primary address belonging to another user', async () => {
+            const charlieUser = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Charlie',
+                blockchainAddress: charlieAddress,
+            } as CreateBlockchainUserDto)
+            await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress,
+            } as CreateBlockchainUserDto)
+
+            await expect(getService().makeAddressPrimary(charlieUser, bobAddress)).rejects.toThrow(BadRequestException)
+        })
+    })
 })

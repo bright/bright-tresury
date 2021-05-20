@@ -121,11 +121,21 @@ export class UsersService {
     }
 
     async unlinkAddress(user: User, address: string) {
+        const blockchainAddress = await this.checkIfAddressBelongsToTheUser(user, address)
+        await this.blockchainAddressService.deleteAddress(blockchainAddress)
+    }
+
+    async makeAddressPrimary(user: User, address: string) {
+        await this.checkIfAddressBelongsToTheUser(user, address)
+        await this.blockchainAddressService.makePrimary(user.id, address)
+    }
+
+    private async checkIfAddressBelongsToTheUser(user: User, address: string): Promise<BlockchainAddress> {
         const blockchainAddress = user.blockchainAddresses?.find((bAddress) => bAddress.address === address)
         if (!blockchainAddress) {
             throw new BadRequestException('Address does not belong to the user')
         }
-        await this.blockchainAddressService.deleteAddress(blockchainAddress)
+        return blockchainAddress
     }
 
     async validateEmail(email: string) {
