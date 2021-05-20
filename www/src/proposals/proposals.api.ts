@@ -2,10 +2,12 @@ import { apiGet } from '../api'
 import { ProposalDto } from './proposals.dto'
 import { useQuery, UseQueryOptions } from 'react-query'
 
+const PROPOSALS_API_PATH = '/proposals'
+
 // GET ALL
 
-export function getProposals(network: string) {
-    return apiGet<ProposalDto[]>(`/proposals/?network=${network}`)
+function getProposals(network: string) {
+    return apiGet<ProposalDto[]>(`${PROPOSALS_API_PATH}/?network=${network}`)
 }
 
 export const useGetProposals = (network: string, options?: UseQueryOptions<ProposalDto[]>) => {
@@ -14,8 +16,8 @@ export const useGetProposals = (network: string, options?: UseQueryOptions<Propo
 
 // GET ONE
 
-export function getProposal(index: string, network: string) {
-    return apiGet<ProposalDto>(`/proposals/${index}?network=${network}`)
+function getProposal(index: string, network: string) {
+    return apiGet<ProposalDto>(`${PROPOSALS_API_PATH}/${index}?network=${network}`)
 }
 
 export const useGetProposal = (index: string, network: string, options?: UseQueryOptions<ProposalDto>) => {

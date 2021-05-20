@@ -2,10 +2,12 @@ import { apiGet, apiPost, apiPatch } from '../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { IdeaDto } from './ideas.dto'
 
+export const IDEAS_API_PATH = '/ideas'
+
 // GET ALL
 
-export function getIdeas(network: string) {
-    return apiGet<IdeaDto[]>(`/ideas?network=${network}`)
+function getIdeas(network: string) {
+    return apiGet<IdeaDto[]>(`${IDEAS_API_PATH}?network=${network}`)
 }
 
 export const useGetIdeas = (network: string, options?: UseQueryOptions<IdeaDto[]>) => {
@@ -14,8 +16,8 @@ export const useGetIdeas = (network: string, options?: UseQueryOptions<IdeaDto[]
 
 // GET ONE
 
-export function getIdea(ideaId: string) {
-    return apiGet<IdeaDto>(`/ideas/${ideaId}`)
+function getIdea(ideaId: string) {
+    return apiGet<IdeaDto>(`${IDEAS_API_PATH}/${ideaId}`)
 }
 
 export const useGetIdea = (ideaId: string, options?: UseQueryOptions<IdeaDto>) => {
@@ -24,8 +26,8 @@ export const useGetIdea = (ideaId: string, options?: UseQueryOptions<IdeaDto>) =
 
 // CREATE
 
-export function createIdea(idea: IdeaDto) {
-    return apiPost<IdeaDto>(`/ideas`, idea)
+function createIdea(idea: IdeaDto) {
+    return apiPost<IdeaDto>(`${IDEAS_API_PATH}`, idea)
 }
 
 export const useCreateIdea = () => {
@@ -34,8 +36,8 @@ export const useCreateIdea = () => {
 
 // PATCH
 
-export function patchIdea(idea: IdeaDto) {
-    return apiPatch<IdeaDto>(`/ideas/${idea.id}`, idea)
+function patchIdea(idea: IdeaDto) {
+    return apiPatch<IdeaDto>(`${IDEAS_API_PATH}/${idea.id}`, idea)
 }
 
 export const usePatchIdea = () => {
@@ -55,8 +57,8 @@ export interface TurnIdeaIntoProposalParams {
     data: TurnIdeaIntoProposalDto
 }
 
-export function turnIdeaIntoProposal({ ideaId, data }: TurnIdeaIntoProposalParams) {
-    return apiPost<IdeaDto>(`/ideas/${ideaId}/proposals`, data)
+function turnIdeaIntoProposal({ ideaId, data }: TurnIdeaIntoProposalParams) {
+    return apiPost<IdeaDto>(`${IDEAS_API_PATH}/${ideaId}/proposals`, data)
 }
 
 export const useTurnIdeaIntoProposal = () => {
