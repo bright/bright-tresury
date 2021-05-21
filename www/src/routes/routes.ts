@@ -28,6 +28,7 @@ export const ROUTE_SIGNUP_WEB3_SUCCESS = '/signup/success'
 export const ROUTE_SIGNIN_EMAIL = '/auth/signin/email'
 export const ROUTE_SIGNIN_WEB3 = '/auth/signin/web3'
 export const ROUTE_VERIFY_EMAIL = '/auth/verify-email'
+export const ROUTE_EMAIL_NOT_VERIFIED = '/auth/email-not-verified'
 // endregion
 // region Account
 export const ROUTE_ACCOUNT = '/account'

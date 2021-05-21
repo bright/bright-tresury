@@ -52,7 +52,10 @@ const AuthContextProvider: React.FC = (props) => {
         }
     }, [isUserSignedIn])
 
-    const isUserVerified = useMemo(() => isUserSignedIn && !!user?.isEmailVerified, [isUserSignedIn, user])
+    const isUserVerified = useMemo(
+        () => user !== undefined && (user.isWeb3 || (user.isEmailPassword && user.isEmailVerified)),
+        [user],
+    )
 
     const signOut = () => {
         return signOutApi()

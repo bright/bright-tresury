@@ -1,21 +1,28 @@
-import React from 'react';
-import {Redirect, Route, RouteProps} from "react-router-dom";
-import {useAuth} from "../auth/AuthContext";
-import {ROUTE_SIGNIN} from "./routes";
+import React from 'react'
+import { Redirect, Route, RouteProps } from 'react-router-dom'
+import { useAuth } from '../auth/AuthContext'
+import { ROUTE_EMAIL_NOT_VERIFIED, ROUTE_SIGNIN } from './routes'
 
 export type PrivateRouteProps = RouteProps
 
-const PrivateRoute = ({component: Component, ...props}: PrivateRouteProps) => {
-    const {isUserVerified} = useAuth()
+export const PrivateRoute = ({ component: Component, ...props }: PrivateRouteProps) => {
+    const { isUserSignedIn, isUserVerified } = useAuth()
 
-    // TODO redirect *somewhere* when user logged in but not verified (waiting for designs)
-    if (isUserVerified) {
-        return <Route {...props} component={Component}/>
-    } else {
-        return <Route {...props}>
-            <Redirect to={ROUTE_SIGNIN}/>
-        </Route>
+    if (isUserSignedIn && isUserVerified) {
+        return <Route {...props} component={Component} />
     }
-}
 
-export default PrivateRoute
+    if (isUserSignedIn && !isUserVerified) {
+        return (
+            <Route {...props}>
+                <Redirect to={ROUTE_EMAIL_NOT_VERIFIED} />
+            </Route>
+        )
+    }
+
+    return (
+        <Route {...props}>
+            <Redirect to={ROUTE_SIGNIN} />
+        </Route>
+    )
+}

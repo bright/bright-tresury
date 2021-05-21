@@ -21,11 +21,11 @@ export const TurnIdeaIntoProposal = () => {
 
     const submitProposalModal = useModal()
 
-    const { isUserVerified, user } = useAuth()
-
     let { ideaId } = useParams<{ ideaId: string }>()
 
     const queryClient = useQueryClient()
+
+    const { user } = useAuth()
 
     const { data: idea } = useGetIdea(ideaId)
 
@@ -33,14 +33,13 @@ export const TurnIdeaIntoProposal = () => {
 
     const { mutateAsync: turnMutateAsync } = useTurnIdeaIntoProposal()
 
-    const canTurnIntoProposal = useMemo(
-        () =>
-            idea &&
-            (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active) &&
-            isUserVerified &&
-            user?.id === idea.ownerId,
-        [idea, isUserVerified, user],
-    )
+    const ideaAlreadyTurnedIntoProposal = useMemo(() => {
+        return idea && [IdeaStatus.TurnedIntoProposal, IdeaStatus.TurnedIntoProposalByMilestone].includes(idea.status)
+    }, [idea])
+
+    const ideaBelongsToAnotherUser = useMemo(() => {
+        return idea?.ownerId !== user?.id
+    }, [idea, user])
 
     const submit = async (formIdea: IdeaDto) => {
         const editedIdea = { ...idea, ...formIdea }
@@ -67,9 +66,17 @@ export const TurnIdeaIntoProposal = () => {
         [idea],
     )
 
-    return canTurnIntoProposal ? (
+    if (ideaAlreadyTurnedIntoProposal) {
+        return <Container title={t('idea.turnIntoProposal.ideaIsAlreadyConvertedIntoProposal')} />
+    }
+
+    if (ideaBelongsToAnotherUser) {
+        return <Container title={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />
+    }
+
+    return (
         <Container title={t('idea.turnIntoProposal.title')}>
-            {idea && (
+            {idea ? (
                 <>
                     <IdeaForm idea={idea} onSubmit={submit} extendedValidation={true} foldable={true}>
                         {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
@@ -93,9 +100,7 @@ export const TurnIdeaIntoProposal = () => {
                         beneficiary={idea.beneficiary}
                     />
                 </>
-            )}
+            ) : null}
         </Container>
-    ) : (
-        <Container title={t('idea.turnIntoProposal.cannotTurnError')} />
     )
 }

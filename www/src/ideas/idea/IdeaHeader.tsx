@@ -96,7 +96,10 @@ const IdeaHeader: React.FC<Props> = ({ idea, canEdit }) => {
     }
 
     const canTurnIntoProposal = useMemo(
-        () => !!idea.id && canEdit && (idea.status === IdeaStatus.Draft || idea.status === IdeaStatus.Active),
+        () =>
+            !!idea.id &&
+            canEdit &&
+            ![IdeaStatus.TurnedIntoProposal, IdeaStatus.TurnedIntoProposalByMilestone].includes(idea.status),
         [idea, canEdit],
     )
 
