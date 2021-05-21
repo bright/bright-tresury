@@ -1,12 +1,13 @@
-import {createStyles, makeStyles} from '@material-ui/core/styles';
-import {Formik} from "formik";
-import React, {createRef} from 'react';
-import {useTranslation} from 'react-i18next';
-import {Button} from "../../components/button/Button";
-import config from '../../config';
-import {InputParam, TxAttrs} from './SubmittingTransaction';
-import {Account, useAccounts} from '../../substrate-lib/hooks/useAccounts';
-import {AccountSelect} from "../../components/select/AccountSelect";
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { Formik } from 'formik'
+import React, { createRef } from 'react'
+import { useTranslation } from 'react-i18next'
+import { Button } from '../../components/button/Button'
+import config from '../../config'
+import { InputParam, TxAttrs } from './SubmittingTransaction'
+import { Account } from '../accounts/AccountsContext'
+import { useAccounts } from '../accounts/useAccounts'
+import { AccountSelect } from '../../components/select/AccountSelect'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -21,17 +22,17 @@ const useStyles = makeStyles(() =>
             width: '100%',
         },
         networkTitle: {
-            textAlign: 'center'
+            textAlign: 'center',
         },
         buttons: {
             paddingTop: 42,
             marginTop: 'auto',
             display: 'flex',
             width: '100%',
-            justifyContent: 'space-between'
-        }
+            justifyContent: 'space-between',
+        },
     }),
-);
+)
 
 export interface Props {
     txAttrs: TxAttrs
@@ -43,18 +44,19 @@ interface Values {
     account: Account
 }
 
-const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit}) => {
+const SignAndSubmitForm: React.FC<Props> = ({ txAttrs, onCancel, onSubmit }) => {
     const classes = useStyles()
-    const {t} = useTranslation()
-    const accounts = useAccounts()
+    const { t } = useTranslation()
+    const { accounts } = useAccounts()
 
     const emptyAccount = {
         name: t('substrate.form.selectAccount'),
-        address: ''
+        address: '',
     } as Account
 
     const allParamsFilled = () => {
-        const {palletRpc, callable, inputParams} = txAttrs;
+        const { palletRpc, callable, inputParams } = txAttrs
+
         if (!palletRpc || !callable) {
             return false
         }
@@ -65,56 +67,57 @@ const SignAndSubmitForm: React.FC<Props> = ({txAttrs, onCancel, onSubmit}) => {
 
         return inputParams.every((param: InputParam) => {
             if (param.optional) {
-                return true;
+                return true
             }
             if (param.value === null || param.value === undefined) {
-                return false;
+                return false
             }
 
-            const value = typeof param === 'object' ? param.value : param;
-            return value !== null && value !== '' && value !== undefined;
-        });
-    };
+            const value = typeof param === 'object' ? param.value : param
+            return value !== null && value !== '' && value !== undefined
+        })
+    }
 
     const onSubmitForm = (values: Values) => {
         onSubmit(values.account.address)
     }
 
-    const contextRef = createRef<HTMLDivElement>();
+    const contextRef = createRef<HTMLDivElement>()
 
     return (
         <div ref={contextRef} className={classes.root}>
             <Formik
-                initialValues={{
-                    account: emptyAccount,
-                } as Values}
-                onSubmit={onSubmitForm}>
-                {({
-                      values,
-                      handleSubmit
-                  }) =>
+                initialValues={
+                    {
+                        account: emptyAccount,
+                    } as Values
+                }
+                onSubmit={onSubmitForm}
+            >
+                {({ values, handleSubmit }) => (
                     <div className={classes.formContainer}>
                         <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
                         <p className={classes.networkTitle}>{config.NETWORK_NAME}</p>
                         <form autoComplete="off" onSubmit={handleSubmit} className={classes.formContainer}>
-                            <AccountSelect accounts={accounts}/>
+                            <AccountSelect accounts={accounts} />
                             <div className={classes.buttons}>
-                                <Button variant={"text"} color="primary" type="button" onClick={onCancel}>
+                                <Button variant={'text'} color="primary" type="button" onClick={onCancel}>
                                     {t('substrate.form.cancel')}
                                 </Button>
                                 <Button
-                                    color='primary'
-                                    type='submit'
+                                    color="primary"
+                                    type="submit"
                                     disabled={!allParamsFilled() || !values.account.address}
                                 >
                                     {t('substrate.form.signAndSubmit')}
                                 </Button>
                             </div>
                         </form>
-                    </div>}
+                    </div>
+                )}
             </Formik>
         </div>
-    );
+    )
 }
 
 export default SignAndSubmitForm

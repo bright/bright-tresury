@@ -8,7 +8,8 @@ import { SignInButton } from '../common/SignInButton'
 import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 import { AccountSelect } from '../../../components/select/AccountSelect'
-import { Account, useAccounts } from '../../../substrate-lib/hooks/useAccounts'
+import { Account } from '../../../substrate-lib/accounts/AccountsContext'
+import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
 import { isWeb3Injected } from '@polkadot/extension-dapp'
 import { ExtensionNotDetected } from '../../sign-up/web3/ExtensionNotDetected'
 import { useHistory } from 'react-router'
@@ -23,7 +24,8 @@ export interface Web3SignInValues {
 
 const Web3SignIn = () => {
     const { t } = useTranslation()
-    const accounts = useAccounts()
+
+    const { accounts } = useAccounts()
 
     const { web3SignIn } = useAuth()
     const { call: signInCall, loadingState, error } = useLoading(web3SignIn)

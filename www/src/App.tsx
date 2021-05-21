@@ -34,7 +34,6 @@ import {
     ROUTE_EMAIL_NOT_VERIFIED,
 } from './routes/routes'
 import Stats from './stats/Stats'
-import { SubstrateContextProvider } from './substrate-lib'
 import { initializeSupertokens } from './supertokens'
 import { ThemeWrapper } from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
@@ -42,6 +41,8 @@ import { SignUpSuccess } from './auth/sign-up/common/SignUpSuccess'
 import VerifyEmail from './auth/sign-in/email/VerifyEmail'
 import { QueryClientProvider, QueryClient } from 'react-query'
 import { EmailNotVerified } from './auth/email-not-verified/EmailNotVerified'
+import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContext'
+import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -104,9 +105,11 @@ function App() {
         <QueryClientProvider client={queryClient}>
             <AuthContextProvider>
                 <SubstrateContextProvider>
-                    <ThemeWrapper>
-                        <AppRoutes />
-                    </ThemeWrapper>
+                    <AccountsContextProvider>
+                        <ThemeWrapper>
+                            <AppRoutes />
+                        </ThemeWrapper>
+                    </AccountsContextProvider>
                 </SubstrateContextProvider>
             </AuthContextProvider>
         </QueryClientProvider>
