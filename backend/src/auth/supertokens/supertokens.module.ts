@@ -2,9 +2,10 @@ import {Module} from "@nestjs/common";
 import {EmailsModule} from "../../emails/emails.module";
 import {SuperTokensService} from "./supertokens.service";
 import {UsersModule} from "../../users/users.module";
+import { TypeOrmAuthorizationModule } from "../../database/authorization/authorization.database.module";
 
 @Module({
-    imports: [UsersModule, EmailsModule],
+    imports: [UsersModule, EmailsModule, TypeOrmAuthorizationModule],
     providers: [SuperTokensService],
     exports: [SuperTokensService]
 })

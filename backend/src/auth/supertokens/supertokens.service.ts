@@ -7,10 +7,11 @@ import {
     InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common'
-import { Request, Response } from 'express'
-import { getUserById, signIn, signUp as superTokensSignUp } from 'supertokens-node/lib/build/recipe/emailpassword'
+import {isEmail} from "class-validator";
+import {Request, Response} from 'express'
+import {getUserByEmail, getUserById, signIn, signUp as superTokensSignUp} from 'supertokens-node/lib/build/recipe/emailpassword'
 import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
-import { TypeFormField, User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import {TypeFormField, User as SuperTokensUser} from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import {
     createNewSession,
     getSession as superTokensGetSession,
@@ -18,16 +19,16 @@ import {
 } from 'supertokens-node/lib/build/recipe/session'
 import SessionError from 'supertokens-node/lib/build/recipe/session/error'
 import Session from 'supertokens-node/lib/build/recipe/session/sessionClass'
-import { EmailsService } from '../../emails/emails.service'
-import { getLogger } from '../../logging.module'
-import { CreateUserDto } from '../../users/dto/createUser.dto'
-import { User } from '../../users/user.entity'
-import { UsersService } from '../../users/users.service'
-import { SessionData } from '../session/session.decorator'
-import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
-import {
-    createEmailVerificationToken,
-    isEmailVerified as superTokensIsEmailVerified,
+import {getConnection} from "typeorm";
+import {AuthorizationDatabaseName} from "../../database/authorization/authorization.database.module";
+import {EmailsService} from '../../emails/emails.service'
+import {getLogger} from '../../logging.module'
+import {CreateUserDto} from '../../users/dto/createUser.dto'
+import {User} from '../../users/user.entity'
+import {UsersService} from '../../users/users.service'
+import {SessionData} from '../session/session.decorator'
+import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from './supertokens.recipeList'
+import {createEmailVerificationToken,isEmailVerified as superTokensIsEmailVerified,
     verifyEmailUsingToken,
 } from 'supertokens-node/lib/build/recipe/emailverification'
 
@@ -48,7 +49,8 @@ interface Web3Address {
 
 @Injectable()
 export class SuperTokensService {
-    constructor(private readonly usersService: UsersService, private readonly emailsService: EmailsService) {}
+    constructor(private readonly usersService: UsersService, private readonly emailsService: EmailsService) {
+    }
 
     /** Returns undefined if valid and error message otherwise */
     getUsernameValidationError = async (value: string): Promise<string | undefined> => {
@@ -67,8 +69,8 @@ export class SuperTokensService {
             value: any
         }>,
     ): Promise<void> => {
-        const { id, email } = user
-        const usernameFormField = formFields.find(({ id: formFieldKey }) => formFieldKey === SuperTokensUsernameKey)
+        const {id, email} = user
+        const usernameFormField = formFields.find(({id: formFieldKey}) => formFieldKey === SuperTokensUsernameKey)
         if (!usernameFormField) {
             throw new BadRequestException('Username was not found.')
         }
@@ -103,7 +105,7 @@ export class SuperTokensService {
         try {
             return superTokensIsEmailVerified(user.authId, user.email)
         } catch (err) {
-            logger.info(err)
+            logger.error(err)
         }
         return false
     }
@@ -116,6 +118,31 @@ export class SuperTokensService {
                 ? new ConflictException(error.message)
                 : new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
         }
+    }
+
+    /*
+    This method updates the email address in authorization database with raw sql query
+    Supertokens lib does not provide a method to update the email address
+    TODO: Implement the Web3 sign in and up with thirdpartyemailaddress recipe
+     */
+    async updateEmail(userId: string, email: string): Promise<void> {
+        const user = await getUserById(userId)
+        if (!user) {
+            logger.error(`Cannot found user with id ${userId}. Email NOT chaned to ${email}`)
+            throw new NotFoundException()
+        }
+
+        const userWithEmail = await getUserByEmail(email)
+        if (userWithEmail) {
+            logger.error(`User with email ${email} already exists. User ${userId} NOT updated`)
+            throw new ConflictException()
+        }
+
+        // if (!isEmail(email)) {
+        //     throw new BadRequestException('Email is not valid')
+        // }
+        const connection = getConnection(AuthorizationDatabaseName)
+        await connection.query(`UPDATE emailpassword_users SET email = '${email}' WHERE user_id = '${userId}'`)
     }
 
     async refreshSessionData(session: Session) {

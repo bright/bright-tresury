@@ -1,5 +1,6 @@
 import {INestApplication, MiddlewareConsumer, Module, NestModule, ValidationPipe} from '@nestjs/common';
 import {NestFactory} from "@nestjs/core";
+import {timeout} from "rxjs/operators";
 import {ConfigModule} from "./config/config";
 import {DatabaseModule} from "./database/database.module";
 import {LoggingModule, NestLoggerAdapter} from "./logging.module";
@@ -69,7 +70,6 @@ export async function createApp() {
     const app = await NestFactory.create<NestExpressApplication>(AppModule, {
         logger: new NestLoggerAdapter(),
     })
-    // app.use(timeout('30s'))
 
     configureGlobalServices(app)
 

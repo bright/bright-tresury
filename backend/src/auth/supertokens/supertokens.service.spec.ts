@@ -1,8 +1,11 @@
+import {ConflictException, NotFoundException} from "@nestjs/common";
+import {getUserById} from "supertokens-node/lib/build/recipe/emailpassword";
 import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
 import {v4 as uuid} from 'uuid';
 import {EmailsService} from "../../emails/emails.service";
 import {UsersService} from "../../users/users.service";
 import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
+import {cleanAuthorizationDatabase} from "./specHelpers/supertokens.database.spec.helper";
 import {SuperTokensUsernameKey} from "./supertokens.recipeList";
 import {SuperTokensService} from "./supertokens.service";
 
@@ -14,6 +17,7 @@ describe(`SuperTokens Service`, () => {
 
     beforeEach(async () => {
         await cleanDatabase()
+        await cleanAuthorizationDatabase()
     })
 
     describe('validate', () => {
@@ -88,6 +92,39 @@ describe(`SuperTokens Service`, () => {
             const verifyUrlWithToken = 'http://example.com?token=aaa'
             await getService().sendVerifyEmail(user, verifyUrlWithToken)
             expect(spy).toHaveBeenCalledWith(user.email, verifyUrlWithToken)
+        })
+    })
+
+    describe('update email', () => {
+        it('should update valid email', async () => {
+            const user = await getService().signUp('chuck@example.com', uuid())
+            await getService().updateEmail(user.id, 'other-email@example.com')
+
+            const actualUser = await getUserById(user.id)
+            expect(actualUser?.email).toBe('other-email@example.com')
+        })
+
+        it('should throw not found for not existing user id', async () => {
+            await expect(getService().updateEmail(uuid(), 'other-email@example.com'))
+                .rejects
+                .toThrow(NotFoundException)
+        })
+
+        it('should throw conflict exception for already existing email id', async () => {
+            const user = await getService().signUp('chuck@example.com', uuid())
+            await getService().signUp('other-email@example.com', uuid())
+
+            await expect(getService().updateEmail(user.id, 'other-email@example.com'))
+                .rejects
+                .toThrow(ConflictException)
+        })
+
+        it('should throw conflict exception when trying to overwrite email with the same value', async () => {
+            const user = await getService().signUp('chuck@example.com', uuid())
+
+            await expect(getService().updateEmail(user.id, 'chuck@example.com'))
+                .rejects
+                .toThrow(ConflictException)
         })
     })
 })

@@ -6,6 +6,7 @@ import {
     createEmailVerificationToken,
     verifyEmailUsingToken,
 } from 'supertokens-node/lib/build/recipe/emailverification'
+import {getAllSessionHandlesForUser, revokeSession} from "supertokens-node/lib/build/recipe/session";
 import { User } from '../../../users/user.entity'
 import { request } from '../../../utils/spec.helpers'
 import { v4 as uuid } from 'uuid'
@@ -34,6 +35,12 @@ export class SessionHandler {
     authorizeRequest(req: supertest.Test): supertest.Test {
         return this.cookies ? req.set('cookie', this.cookies) : req
     }
+
+    async revoke() {
+        const sessionHandle = await getAllSessionHandlesForUser(this.sessionData.user.authId)
+        expect(sessionHandle.length).toBe(1)
+        await revokeSession(sessionHandle[0])
+    }
 }
 
 export const createBlockchainSessionHandler = async (
@@ -42,7 +49,7 @@ export const createBlockchainSessionHandler = async (
 ): Promise<SessionHandler> => {
     const signatureValidator = app.get(SignatureValidator)
     /**
-     * Mock signature validation so that we don't use real blockchain for signing.
+     * Mock signature validation so that we don't use real blockchain for signin.
      */
     jest.spyOn(signatureValidator, 'validateSignature').mockImplementation((): boolean => true)
 
