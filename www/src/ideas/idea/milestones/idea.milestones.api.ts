@@ -5,24 +5,33 @@ import {
     IdeaMilestoneDto,
     IdeaMilestoneNetworkDto,
     PatchIdeaMilestoneDto,
+    TurnIdeaMilestoneIntoProposalDto,
 } from './idea.milestones.dto'
 import { IDEAS_API_PATH } from '../../ideas.api'
+
+const getIdeaMilestonesApiBasePath = (ideaId: string) => {
+    return `${IDEAS_API_PATH}/${ideaId}/milestones`
+}
 
 // GET ALL
 
 function getIdeaMilestones(ideaId: string) {
-    return apiGet<IdeaMilestoneDto[]>(`${IDEAS_API_PATH}/${ideaId}/milestones`)
+    return apiGet<IdeaMilestoneDto[]>(getIdeaMilestonesApiBasePath(ideaId))
 }
 
+export const IDEA_MILESTONES_QUERY_KEY_BASE = 'ideaMilestones'
+
 export const useGetIdeaMilestones = (ideaId: string, options?: UseQueryOptions<IdeaMilestoneDto[]>) => {
-    return useQuery(['ideaMilestones', ideaId], () => getIdeaMilestones(ideaId), options)
+    return useQuery([IDEA_MILESTONES_QUERY_KEY_BASE, ideaId], () => getIdeaMilestones(ideaId), options)
 }
 
 // GET ONE
 
 function getIdeaMilestone(ideaId: string, ideaMilestoneId: string) {
-    return apiGet<IdeaMilestoneDto>(`${IDEAS_API_PATH}/${ideaId}/milestones/${ideaMilestoneId}`)
+    return apiGet<IdeaMilestoneDto>(`${getIdeaMilestonesApiBasePath(ideaId)}/${ideaMilestoneId}`)
 }
+
+export const IDEA_MILESTONE_QUERY_KEY_BASE = 'ideaMilestone'
 
 export const useGetIdeaMilestone = (
     ideaId: string,
@@ -30,7 +39,7 @@ export const useGetIdeaMilestone = (
     options?: UseQueryOptions<IdeaMilestoneDto>,
 ) => {
     return useQuery(
-        ['ideaMilestone', ideaId, ideaMilestoneId],
+        [IDEA_MILESTONE_QUERY_KEY_BASE, ideaId, ideaMilestoneId],
         () => getIdeaMilestone(ideaId, ideaMilestoneId),
         options,
     )
@@ -44,7 +53,7 @@ export interface CreateIdeaMilestoneParams {
 }
 
 function createIdeaMilestone({ ideaId, data }: CreateIdeaMilestoneParams) {
-    return apiPost<IdeaMilestoneDto>(`${IDEAS_API_PATH}/${ideaId}/milestones`, data)
+    return apiPost<IdeaMilestoneDto>(`${getIdeaMilestonesApiBasePath(ideaId)}`, data)
 }
 
 export const useCreateIdeaMilestone = () => {
@@ -60,7 +69,7 @@ export interface PatchIdeaMilestoneParams {
 }
 
 function patchIdeaMilestone({ ideaId, ideaMilestoneId, data }: PatchIdeaMilestoneParams) {
-    return apiPatch<IdeaMilestoneDto>(`${IDEAS_API_PATH}/${ideaId}/milestones/${ideaMilestoneId}`, data)
+    return apiPatch<IdeaMilestoneDto>(`${getIdeaMilestonesApiBasePath(ideaId)}/${ideaMilestoneId}`, data)
 }
 
 export const usePatchIdeaMilestone = () => {
@@ -69,12 +78,6 @@ export const usePatchIdeaMilestone = () => {
 
 // TURN INTO PROPOSAL
 
-export interface TurnIdeaMilestoneIntoProposalDto {
-    ideaMilestoneNetworkId: string
-    extrinsicHash: string
-    lastBlockHash: string
-}
-
 export interface TurnIdeaMilestoneIntoProposalParams {
     ideaId: string
     ideaMilestoneId: string
@@ -82,7 +85,10 @@ export interface TurnIdeaMilestoneIntoProposalParams {
 }
 
 function turnIdeaMilestoneIntoProposal({ ideaId, ideaMilestoneId, data }: TurnIdeaMilestoneIntoProposalParams) {
-    return apiPost<IdeaMilestoneNetworkDto>(`${IDEAS_API_PATH}/${ideaId}/milestones/${ideaMilestoneId}/proposals`, data)
+    return apiPost<IdeaMilestoneNetworkDto>(
+        `${getIdeaMilestonesApiBasePath(ideaId)}/${ideaMilestoneId}/proposals`,
+        data,
+    )
 }
 
 export const useTurnIdeaMilestoneIntoProposal = () => {

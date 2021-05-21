@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { FormFooterButton } from '../../../../components/form/footer/FormFooterButton'
 import { FormFooterErrorBox } from '../../../../components/form/footer/FormFooterErrorBox'
 import { IdeaDto } from '../../../ideas.dto'
-import { useCreateIdeaMilestone } from '../idea.milestones.api'
+import { IDEA_MILESTONES_QUERY_KEY_BASE, useCreateIdeaMilestone } from '../idea.milestones.api'
 import { CreateIdeaMilestoneDto } from '../idea.milestones.dto'
 import { useQueryClient } from 'react-query'
 import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
@@ -31,7 +31,7 @@ export const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: Props) => {
             { ideaId: idea.id, data: createIdeaMilestoneDto },
             {
                 onSuccess: async () => {
-                    await queryClient.refetchQueries(['ideaMilestones', idea.id])
+                    await queryClient.refetchQueries([IDEA_MILESTONES_QUERY_KEY_BASE, idea.id])
                     onSuccess()
                 },
             },

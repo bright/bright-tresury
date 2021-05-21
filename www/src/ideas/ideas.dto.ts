@@ -27,6 +27,12 @@ export enum IdeaStatus {
     Closed = 'closed',
 }
 
+export interface TurnIdeaIntoProposalDto {
+    ideaNetworkId: string
+    extrinsicHash: string
+    lastBlockHash: string
+}
+
 export function doesIdeaBelongToUser(idea: IdeaDto) {
     /** TODO: adjust when authorization will be possible */
     return true

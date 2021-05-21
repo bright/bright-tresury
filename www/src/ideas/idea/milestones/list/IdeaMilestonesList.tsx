@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react'
-import { TurnIdeaMilestoneIntoProposalDto, useTurnIdeaMilestoneIntoProposal } from '../idea.milestones.api'
+import { useTurnIdeaMilestoneIntoProposal } from '../idea.milestones.api'
 import { IdeaMilestoneDetailsModal } from '../details/IdeaMilestoneDetailsModal'
 import { Grid } from '../../../../components/grid/Grid'
 import { IdeaMilestoneCard } from './IdeaMilestoneCard'
@@ -10,7 +10,7 @@ import { ExtrinsicDetails, SubmitProposalModal } from '../../../SubmitProposalMo
 import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneEditModal } from '../edit/IdeaMilestoneEditModal'
 import { IdeaDto } from '../../../ideas.dto'
-import { IdeaMilestoneDto } from '../idea.milestones.dto'
+import { IdeaMilestoneDto, TurnIdeaMilestoneIntoProposalDto } from '../idea.milestones.dto'
 
 interface Props {
     idea: IdeaDto

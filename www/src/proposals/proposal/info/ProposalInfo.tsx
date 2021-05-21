@@ -85,7 +85,7 @@ export const ProposalInfo = ({
             <div className={classes.spacing}>
                 <Label label={t('proposal.content.info.fieldOfIdea')} />
                 <div className={classes.text}>
-                    {idea ? idea.field : <Placeholder value={t('proposal.content.info.fieldOfIdea')} />}
+                    {idea?.field ? idea.field : <Placeholder value={t('proposal.content.info.fieldOfIdea')} />}
                 </div>
             </div>
 

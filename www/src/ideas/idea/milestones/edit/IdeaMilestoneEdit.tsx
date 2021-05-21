@@ -1,7 +1,7 @@
 import React from 'react'
 import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
-import { usePatchIdeaMilestone } from '../idea.milestones.api'
+import { IDEA_MILESTONES_QUERY_KEY_BASE, usePatchIdeaMilestone } from '../idea.milestones.api'
 import { IdeaDto } from '../../../ideas.dto'
 import { FormFooterButton } from '../../../../components/form/footer/FormFooterButton'
 import { FormFooterErrorBox } from '../../../../components/form/footer/FormFooterErrorBox'
@@ -33,7 +33,7 @@ export const IdeaMilestoneEdit = ({ idea, ideaMilestone, onCancel, onSuccess }: 
             { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: patchIdeaMilestoneDto },
             {
                 onSuccess: async () => {
-                    await queryClient.refetchQueries(['ideaMilestones', idea.id])
+                    await queryClient.refetchQueries([IDEA_MILESTONES_QUERY_KEY_BASE, idea.id])
                     onSuccess()
                 },
             },

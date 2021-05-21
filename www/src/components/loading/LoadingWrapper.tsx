@@ -3,12 +3,12 @@ import { Loader } from './Loader'
 import { ErrorText } from '../error/ErrorText'
 import { QueryStatus } from 'react-query'
 
-interface Props {
+export interface LoadingWrapperProps {
     status: QueryStatus
     error: string
 }
 
-export const LoadingWrapper = ({ status, error, children }: PropsWithChildren<Props>) => {
+export const LoadingWrapper = ({ status, error, children }: PropsWithChildren<LoadingWrapperProps>) => {
     switch (status) {
         case 'idle':
             return null

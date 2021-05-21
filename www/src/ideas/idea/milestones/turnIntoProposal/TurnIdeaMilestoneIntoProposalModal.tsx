@@ -1,5 +1,5 @@
 import React from 'react'
-import { usePatchIdeaMilestone } from '../idea.milestones.api'
+import { IDEA_MILESTONES_QUERY_KEY_BASE, usePatchIdeaMilestone } from '../idea.milestones.api'
 import { IdeaMilestoneDto, PatchIdeaMilestoneDto } from '../idea.milestones.dto'
 import { Modal } from '../../../../components/modal/Modal'
 import { Trans, useTranslation } from 'react-i18next'
@@ -58,7 +58,7 @@ export const TurnIdeaMilestoneIntoProposalModal = ({
             { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: patchIdeaMilestoneDto },
             {
                 onSuccess: async (patchedIdeaMilestone) => {
-                    await queryClient.refetchQueries(['ideaMilestones', idea.id])
+                    await queryClient.refetchQueries([IDEA_MILESTONES_QUERY_KEY_BASE, idea.id])
                     onSuccessfulPatch(patchedIdeaMilestone)
                 },
             },

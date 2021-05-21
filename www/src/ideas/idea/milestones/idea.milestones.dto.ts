@@ -26,3 +26,9 @@ export interface IdeaMilestoneNetworkDto {
 export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumber' | 'status'>
 
 export type PatchIdeaMilestoneDto = Partial<IdeaMilestoneDto>
+
+export interface TurnIdeaMilestoneIntoProposalDto {
+    ideaMilestoneNetworkId: string
+    extrinsicHash: string
+    lastBlockHash: string
+}
