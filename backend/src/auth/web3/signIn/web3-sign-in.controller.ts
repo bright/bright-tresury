@@ -23,7 +23,7 @@ export class Web3SignInController {
         description: 'Requested address does not belong to any existing user',
     })
     async startSignIn(@Body() startRequest: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
-        return this.web3SignInService.startSignMessage(startRequest)
+        return this.web3SignInService.start(startRequest)
     }
 
     @Post('/confirm')
@@ -37,7 +37,7 @@ export class Web3SignInController {
         description: 'Requested address does not belong to any existing user',
     })
     async confirmSignIn(@Body() confirmRequest: ConfirmSignMessageRequestDto, @Res() res: Response) {
-        await this.web3SignInService.confirmSignMessage(confirmRequest, res)
+        await this.web3SignInService.confirm(confirmRequest, res)
         res.status(HttpStatus.OK).send()
     }
 }

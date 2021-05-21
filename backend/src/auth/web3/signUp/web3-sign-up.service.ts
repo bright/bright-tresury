@@ -16,31 +16,25 @@ import { SignatureValidator } from '../signMessage/signature.validator'
 import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 
 @Injectable()
-export class Web3SignUpService extends SignMessageService<ConfirmWeb3SignUpRequestDto> {
+export class Web3SignUpService {
     constructor(
         private readonly userService: UsersService,
         private readonly blockchainAddressService: BlockchainAddressService,
         private readonly superTokensService: SuperTokensService,
-        cacheManager: CacheManager,
-        signatureValidator: SignatureValidator,
-    ) {
-        super(cacheManager, signatureValidator)
+        private readonly signMessageService: SignMessageService,
+    ) {}
+
+    private readonly cacheKey = 'SignUpMessage'
+
+    async start(dto: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
+        await this.validateAddress(dto.address)
+        return this.signMessageService.start(dto, this.cacheKey)
     }
 
-    async startSignMessage(startRequest: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
-        await this.validateAddress(startRequest.address)
-        return super.startSignMessage(startRequest)
-    }
-
-    async confirmSign(confirmRequest: ConfirmWeb3SignUpRequestDto, req: Request, res: Response): Promise<void> {
-        await this.validateAddress(confirmRequest.address)
-        await super.confirmSignMessage(confirmRequest, res)
-    }
-
-    getCacheKey = (address: string) => `SignUpMessage:${address}`
-
-    onMessageConfirmed = async (confirmRequest: ConfirmSignMessageRequestDto, res: Response) => {
-        await this.createBlockchainUser(confirmRequest.address, res)
+    async confirm(dto: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
+        await this.validateAddress(dto.address)
+        await this.signMessageService.confirm(dto, this.cacheKey)
+        await this.createBlockchainUser(dto.address, res)
     }
 
     private async validateAddress(address: string) {
@@ -54,7 +48,7 @@ export class Web3SignUpService extends SignMessageService<ConfirmWeb3SignUpReque
         }
     }
 
-    private async createBlockchainUser(address: string, res: Response) {
+    private async createBlockchainUser(address: string, res?: Response) {
         const userUuid = uuid()
         const password = uuid()
 

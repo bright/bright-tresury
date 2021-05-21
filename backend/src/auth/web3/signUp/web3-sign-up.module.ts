@@ -4,7 +4,6 @@ import { UsersModule } from '../../../users/users.module'
 import { BlockchainAddressModule } from '../../../users/blockchainAddress/blockchainAddress.module'
 import { SessionModule } from '../../session/session.module'
 import { SuperTokensModule } from '../../supertokens/supertokens.module'
-import { CachingModule } from '../../../cache/cache.module'
 import { Web3SignUpController } from './web3-sign-up.controller'
 import { Web3SignUpService } from './web3-sign-up.service'
 
@@ -14,7 +13,6 @@ import { Web3SignUpService } from './web3-sign-up.service'
         BlockchainAddressModule,
         SessionModule,
         SuperTokensModule,
-        CachingModule,
         Web3SignMessageModule,
     ],
     controllers: [Web3SignUpController],

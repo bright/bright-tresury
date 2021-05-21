@@ -23,7 +23,7 @@ export class Web3SignUpController {
         description: 'Requested address already exists',
     })
     async startSignUp(@Body() startRequest: StartSignMessageRequestDto): Promise<StartSignMessageResponseDto> {
-        return this.web3SignUpService.startSignMessage(startRequest)
+        return this.web3SignUpService.start(startRequest)
     }
 
     @Post('/confirm')
@@ -37,7 +37,7 @@ export class Web3SignUpController {
         description: 'Requested address already exists',
     })
     async confirmSignUp(@Body() confirmRequest: ConfirmWeb3SignUpRequestDto, @Res() res: Response) {
-        await this.web3SignUpService.confirmSignMessage(confirmRequest, res)
+        await this.web3SignUpService.confirm(confirmRequest, res)
         res.status(HttpStatus.OK).send()
     }
 }

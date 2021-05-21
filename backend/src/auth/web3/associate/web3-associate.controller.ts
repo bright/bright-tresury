@@ -24,7 +24,6 @@ export class Web3AssociateController {
     ) {}
 
     @Post('/start')
-    @UseGuards(SessionGuard)
     @ApiOkResponse({
         description: 'Association successfully started',
         type: [StartSignMessageResponseDto],
@@ -39,7 +38,7 @@ export class Web3AssociateController {
         @Body() startRequest: StartWeb3AssociateRequestDto,
         @ReqSession() session: SessionData,
     ): Promise<StartSignMessageResponseDto> {
-        return this.web3AssociateService.startAssociateAddress(startRequest, session.user)
+        return this.web3AssociateService.start(startRequest, session.user)
     }
 
     @Post('/confirm')
@@ -62,7 +61,7 @@ export class Web3AssociateController {
         @Req() req: Request,
         @ReqSession() session: SessionData,
     ) {
-        await this.web3AssociateService.confirmAssociateAddress(confirmRequest, res, session)
+        await this.web3AssociateService.confirm(confirmRequest, session)
         await this.superTokensService.refreshJwtPayload(req, res)
         res.status(HttpStatus.OK).send()
     }

@@ -31,12 +31,12 @@ describe(`Web3 Sign Up Service`, () => {
 
     describe('start sign up', () => {
         it('should return uuid', async () => {
-            const signMessageResponse = await getService().startSignMessage({ address: bobAddress })
+            const signMessageResponse = await getService().start({ address: bobAddress })
             const isUuid = validate(signMessageResponse.signMessage)
             expect(isUuid).toBeTruthy()
         })
         it('should throw bad request if requested address is invalid', async () => {
-            await expect(getService().startSignMessage({ address: uuid() })).rejects.toThrow(BadRequestException)
+            await expect(getService().start({ address: uuid() })).rejects.toThrow(BadRequestException)
         })
         it('should throw conflict if user with this address exists', async () => {
             await getUsersService().createBlockchainUser({
@@ -44,15 +44,15 @@ describe(`Web3 Sign Up Service`, () => {
                 username: bobUsername,
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
-            await expect(getService().startSignMessage({ address: bobAddress })).rejects.toThrow(ConflictException)
+            await expect(getService().start({ address: bobAddress })).rejects.toThrow(ConflictException)
         })
     })
 
     describe('confirm sign up', () => {
         it('should save users', async () => {
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => true)
-            await getService().startSignMessage({ address: bobAddress })
-            await getService().confirmSignMessage(
+            await getService().start({ address: bobAddress })
+            await getService().confirm(
                 {
                     signature: uuid(),
                     network,
@@ -68,9 +68,9 @@ describe(`Web3 Sign Up Service`, () => {
         })
         it("should throw a bad request if address didn't start sign up", async () => {
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => true)
-            await getService().startSignMessage({ address: bobAddress })
+            await getService().start({ address: bobAddress })
             await expect(
-                getService().confirmSignMessage(
+                getService().confirm(
                     {
                         signature: uuid(),
                         network,
@@ -82,9 +82,9 @@ describe(`Web3 Sign Up Service`, () => {
         })
         it('should throw a bad request if requested signature is invalid', async () => {
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => false)
-            await getService().startSignMessage({ address: bobAddress })
+            await getService().start({ address: bobAddress })
             await expect(
-                getService().confirmSignMessage(
+                getService().confirm(
                     {
                         signature: uuid(),
                         network,

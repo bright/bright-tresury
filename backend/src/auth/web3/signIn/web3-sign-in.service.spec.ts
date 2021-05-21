@@ -34,15 +34,15 @@ describe(`Web3 Sign In Service`, () => {
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
 
-            const signMessageResponse = await getService().startSignMessage({ address: bobAddress })
+            const signMessageResponse = await getService().start({ address: bobAddress })
             expect(signMessageResponse.signMessage).toBeDefined()
         })
         it('is allowed with invalid address', async () => {
-            const response = getService().startSignMessage({ address: uuid() })
+            const response = getService().start({ address: uuid() })
             expect(response).toBeDefined()
         })
         it('is allowed even if user with this address does not exist', async () => {
-            const response = getService().startSignMessage({ address: bobAddress })
+            const response = getService().start({ address: bobAddress })
             expect(response).toBeDefined()
         })
     })
@@ -57,8 +57,8 @@ describe(`Web3 Sign In Service`, () => {
                 username: bobUsername,
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
-            await getService().startSignMessage({ address: bobAddress })
-            await getService().confirmSignMessage(
+            await getService().start({ address: bobAddress })
+            await getService().confirm(
                 {
                     signature: uuid(),
                     address: bobAddress,
@@ -75,10 +75,10 @@ describe(`Web3 Sign In Service`, () => {
                 username: bobUsername,
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
-            await getService().startSignMessage({ address: bobAddress })
+            await getService().start({ address: bobAddress })
 
             await expect(
-                getService().confirmSignMessage(
+                getService().confirm(
                     {
                         signature: uuid(),
                         address: aliceAddress,
@@ -89,9 +89,9 @@ describe(`Web3 Sign In Service`, () => {
         })
         it('throws conflict if signature was valid, but user with this address does not exist', async () => {
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => true)
-            await getService().startSignMessage({ address: bobAddress })
+            await getService().start({ address: bobAddress })
             await expect(
-                getService().confirmSignMessage(
+                getService().confirm(
                     {
                         signature: uuid(),
                         address: bobAddress,
@@ -107,10 +107,10 @@ describe(`Web3 Sign In Service`, () => {
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => false)
-            await getService().startSignMessage({ address: bobAddress })
+            await getService().start({ address: bobAddress })
 
             await expect(
-                getService().confirmSignMessage(
+                getService().confirm(
                     {
                         signature: uuid(),
                         address: bobAddress,

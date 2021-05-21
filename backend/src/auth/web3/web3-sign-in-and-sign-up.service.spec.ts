@@ -45,10 +45,10 @@ describe(`Auth Web3 Service`, () => {
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
 
-            await getSignInService().startSignMessage({ address: bobAddress })
-            await getSignUpService().startSignMessage({ address: charlieAddress })
+            await getSignInService().start({ address: bobAddress })
+            await getSignUpService().start({ address: charlieAddress })
 
-            await getSignInService().confirmSignMessage(
+            await getSignInService().confirm(
                 {
                     signature: uuid(),
                     address: bobAddress,
@@ -57,7 +57,7 @@ describe(`Auth Web3 Service`, () => {
             )
             expect(createSessionSpy.mock.calls.length).toBe(initialCallsCount + 1)
 
-            await getSignUpService().confirmSignMessage(
+            await getSignUpService().confirm(
                 {
                     signature: uuid(),
                     network,
