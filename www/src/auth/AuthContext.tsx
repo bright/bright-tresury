@@ -126,8 +126,8 @@ const AuthContextProvider: React.FC = (props) => {
             })
     }
 
-    const web3Associate = (web3SignInValues: Web3SignInValues) => {
-        return handleAssociateWeb3Account(web3SignInValues.account)
+    const web3Associate = (web3AssociateValues: Web3AssociateValues) => {
+        return handleAssociateWeb3Account(web3AssociateValues)
             .then(() => {
                 refreshJwt()
             })

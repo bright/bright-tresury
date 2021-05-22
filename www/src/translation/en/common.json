@@ -73,6 +73,15 @@
             "primary": "Primary account",
             "add": "+ Add blockchain account",
             "isPrimary": "Primary account"
+        },
+        "passwordModal": {
+            "title": "Please confirm adding an account with password",
+            "subtitle": "In order to add an account, please confirm it with your password",
+            "confirm": "Confirm",
+            "cancel": "Cancel",
+            "passwordPlaceholder": "Enter password",
+            "passwordLabel": "Password",
+            "passwordRequired": "Password required"
         }
     },
     "auth": {

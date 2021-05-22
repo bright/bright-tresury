@@ -20,8 +20,13 @@ export function addEmailPassword(data: SignUpData) {
     })
 }
 
-export function startWeb3Association(address: string): Promise<Web3SignStartResponse> {
-    return apiPost<Web3SignStartResponse>(`/auth/web3/associate/start`, { address })
+export interface StartWeb3RequestDto {
+    address: string
+    password?: string
+}
+
+export function startWeb3Association(requestDto: StartWeb3RequestDto): Promise<Web3SignStartResponse> {
+    return apiPost<Web3SignStartResponse>(`/auth/web3/associate/start`, requestDto)
 }
 
 export function confirmWeb3Association(address: ConfirmBlockchainSignDto): Promise<void> {
