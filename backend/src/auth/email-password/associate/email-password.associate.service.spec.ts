@@ -1,13 +1,10 @@
 import {ConflictException, INestApplication} from '@nestjs/common'
 import {getUserById} from "supertokens-node/lib/build/recipe/emailpassword";
 import {v4 as uuid, validate} from 'uuid'
-import {CreateBlockchainUserDto} from '../../../users/dto/createBlockchainUser.dto'
-import {User} from "../../../users/user.entity";
-import {UsersService} from '../../../users/users.service'
+import {UsersService} from "../../../users/users.service";
 import {beforeSetupFullApp, cleanDatabase} from '../../../utils/spec.helpers'
 import {cleanAuthorizationDatabase} from '../../supertokens/specHelpers/supertokens.database.spec.helper'
 import {createBlockchainSessionHandler, createUserSessionHandler, SessionHandler} from "../../supertokens/specHelpers/supertokens.session.spec.helper";
-import {SuperTokensService} from '../../supertokens/supertokens.service'
 import {SignatureValidator} from '../../web3/signMessage/signature.validator';
 import {EmailPasswordAssociateService} from "./email-password.associate.service";
 
@@ -16,6 +13,7 @@ const createAliceSessionHandler = (app: INestApplication) => createUserSessionHa
 describe(`Auth Web3 Service`, () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(EmailPasswordAssociateService)
+    const getUsersService = () => app.get().get(UsersService)
     const getSignatureValidator = () => app.get().get(SignatureValidator)
 
     let sessionHandler: SessionHandler
@@ -82,21 +80,21 @@ describe(`Auth Web3 Service`, () => {
             await getService().start({address: bobAddress, details})
         })
 
-        // it('should update account details in users table', async () => {
-        //     await getService().confirm(
-        //         {
-        //             signature: uuid(),
-        //             address: bobAddress,
-        //             details
-        //         },
-        //         sessionHandler.sessionData
-        //     )
-        //
-        //     const updatedUser = await getUsersService().findOne(sessionHandler.sessionData.user.id)
-        //     expect(updatedUser).toBeDefined()
-        //     expect(updatedUser.username).toBe('bob')
-        //     expect(updatedUser.email).toBe('bob@example.com')
-        // })
+        it('should update account details in users table', async () => {
+            await getService().confirm(
+                {
+                    signature: uuid(),
+                    address: bobAddress,
+                    details
+                },
+                sessionHandler.sessionData
+            )
+
+            const updatedUser = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+            expect(updatedUser).toBeDefined()
+            expect(updatedUser.username).toBe('bob')
+            expect(updatedUser.email).toBe('bob@example.com')
+        })
 
         it.only('should update account details in auth database', async () => {
             await getService().confirm({

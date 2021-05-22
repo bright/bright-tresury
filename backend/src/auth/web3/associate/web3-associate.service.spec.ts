@@ -1,6 +1,6 @@
 import {BadRequestException} from '@nestjs/common'
 import {v4 as uuid} from 'uuid'
-import {CreateBlockchainUserDto} from '../../../users/dto/createBlockchainUser.dto'
+import {CreateBlockchainUserDto} from '../../../users/dto/create-blockchain-user.dto'
 import {UsersService} from '../../../users/users.service'
 import {beforeSetupFullApp} from '../../../utils/spec.helpers'
 import {createUserSessionHandler} from '../../supertokens/specHelpers/supertokens.session.spec.helper'

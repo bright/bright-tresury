@@ -5,7 +5,7 @@ import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
 import { BlockchainAddress } from './blockchainAddress.entity'
 import { User } from '../user.entity'
 import { UsersService } from '../users.service'
-import { CreateUserDto } from '../dto/createUser.dto'
+import { CreateUserDto } from '../dto/create-user.dto'
 import { BadRequestException, ConflictException } from '@nestjs/common'
 
 describe(`Blockchain Address Service`, () => {

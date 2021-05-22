@@ -8,15 +8,16 @@ import {
 import { InjectRepository } from '@nestjs/typeorm'
 import { FindConditions, Repository } from 'typeorm'
 import { User } from './user.entity'
-import { CreateUserDto } from './dto/createUser.dto'
+import { CreateUserDto } from './dto/create-user.dto'
 import { validateOrReject } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 import { handleFindError } from '../utils/exceptions/databaseExceptions.handler'
-import { CreateBlockchainUserDto } from './dto/createBlockchainUser.dto'
+import { CreateBlockchainUserDto } from './dto/create-blockchain-user.dto'
 import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
 import { BlockchainAddressService } from './blockchainAddress/blockchainAddress.service'
 import { isValidAddress } from '../utils/address/address.validator'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
+import { UpdateUserDto } from './dto/update-user.dto'
 
 @Injectable()
 export class UsersService {
@@ -82,6 +83,19 @@ export class UsersService {
         const user = new User(createUserDto.authId, createUserDto.username, createUserDto.email)
         const createdUser = await this.userRepository.save(user)
         return (await this.findOne(createdUser.id))!
+    }
+
+    async update(id: string, dto: UpdateUserDto): Promise<User> {
+        if (dto.email) {
+            await this.validateEmail(dto.email)
+        }
+        if (dto.username) {
+            await this.validateUsername(dto.username)
+        }
+        const user = await this.findOne(id)
+        const userToSave = {...user, ...dto}
+        await this.userRepository.save(userToSave)
+        return (await this.findOne(id))!
     }
 
     async createBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<User> {

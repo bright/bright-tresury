@@ -3,7 +3,7 @@ import { beforeSetupFullApp, request } from '../../../utils/spec.helpers'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { UsersService } from '../../../users/users.service'
 import { createSessionHandler } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
-import { CreateBlockchainUserDto } from '../../../users/dto/createBlockchainUser.dto'
+import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
 import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
 
 describe(`Web3 Sign In Controller`, () => {

@@ -4,8 +4,8 @@ import { v4 as uuid } from 'uuid'
 import { beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
 import { UsersService } from './users.service'
 import { User } from './user.entity'
-import { CreateUserDto } from './dto/createUser.dto'
-import { CreateBlockchainUserDto } from './dto/createBlockchainUser.dto'
+import { CreateUserDto } from './dto/create-user.dto'
+import { CreateBlockchainUserDto } from './dto/create-blockchain-user.dto'
 import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
 
 describe(`Users Service`, () => {
@@ -22,7 +22,7 @@ describe(`Users Service`, () => {
     })
 
     describe('create user', () => {
-        it('should create user', async () => {
+        it('should return user', async () => {
             const user = await getService().create({
                 authId: uuid(),
                 username: 'Chuck',
@@ -99,6 +99,70 @@ describe(`Users Service`, () => {
             ).rejects.toThrow(BadRequestException)
         })
     })
+
+    describe.only('update user', () => {
+        let user: User
+        beforeEach(async () => {
+            user = await getService().create({
+                authId: uuid(),
+                username: 'Chuck',
+                email: 'chuck@email.com',
+            })
+        })
+
+        it('should return user', async () => {
+            const updatedUser = await getService().update(user.id, {
+                username: 'Bob',
+                email: 'bob@email.com',
+            })
+            expect(updatedUser).toBeDefined()
+            expect(updatedUser.username).toBe('Bob')
+            expect(updatedUser.email).toBe('bob@email.com')
+            expect(updatedUser.authId).toBe(user.authId)
+        })
+
+        it('should save email and username', async () => {
+            await getService().update(user.id, {
+                username: 'Bob',
+                email: 'bob@email.com',
+            })
+
+            const updatedUser = await getRepository().findOne(user.id)
+
+            expect(updatedUser).toBeDefined()
+            expect(updatedUser.username).toBe('Bob')
+            expect(updatedUser.email).toBe('bob@email.com')
+            expect(updatedUser.authId).toBe(user.authId)
+        })
+
+        it('should throw not found for not existing user', async () => {
+            await expect(getService().update(uuid(), {
+                username: 'Bob',
+                email: 'bob@email.com',
+            }))
+                .rejects
+                .toThrow(NotFoundException)
+        })
+
+        it('should throw conflict exception for already existing email', async () => {
+            await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
+            await expect(getService().update(user.id, {
+                email: 'alice@email.com',
+            }))
+                .rejects
+                .toThrow(ConflictException)
+        })
+
+        it('should throw conflict exception for already existing username', async () => {
+            await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
+            await expect(getService().update(user.id, {
+                username: 'Alice',
+            }))
+                .rejects
+                .toThrow(ConflictException)
+        })
+    })
+
     describe('create web3 user', () => {
         it('should create user', async () => {
             const user = await getService().createBlockchainUser({

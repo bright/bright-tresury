@@ -7,7 +7,6 @@ import {
     InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common'
-import {isEmail} from "class-validator";
 import {Request, Response} from 'express'
 import {getUserByEmail, getUserById, signIn, signUp as superTokensSignUp} from 'supertokens-node/lib/build/recipe/emailpassword'
 import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
@@ -23,7 +22,7 @@ import {getConnection} from "typeorm";
 import {AuthorizationDatabaseName} from "../../database/authorization/authorization.database.module";
 import {EmailsService} from '../../emails/emails.service'
 import {getLogger} from '../../logging.module'
-import {CreateUserDto} from '../../users/dto/createUser.dto'
+import {CreateUserDto} from '../../users/dto/create-user.dto'
 import {User} from '../../users/user.entity'
 import {UsersService} from '../../users/users.service'
 import {SessionData} from '../session/session.decorator'
@@ -138,9 +137,6 @@ export class SuperTokensService {
             throw new ConflictException()
         }
 
-        // if (!isEmail(email)) {
-        //     throw new BadRequestException('Email is not valid')
-        // }
         const connection = getConnection(AuthorizationDatabaseName)
         await connection.query(`UPDATE emailpassword_users SET email = '${email}' WHERE user_id = '${userId}'`)
     }

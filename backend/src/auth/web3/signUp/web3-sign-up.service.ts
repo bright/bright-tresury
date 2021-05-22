@@ -10,7 +10,7 @@ import { BlockchainAddressService } from '../../../users/blockchainAddress/block
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { CacheManager } from '../../../cache/cache.manager'
 import { isValidAddress } from '../../../utils/address/address.validator'
-import { CreateBlockchainUserDto } from '../../../users/dto/createBlockchainUser.dto'
+import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
 import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
 import { SignatureValidator } from '../signMessage/signature.validator'
 import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'

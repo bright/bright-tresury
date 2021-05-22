@@ -5,7 +5,7 @@ import { HttpStatus } from '@nestjs/common'
 import { SessionData } from './session/session.decorator'
 import { MockSessionResolver } from './session/session.spec.resolver'
 import { UsersService } from '../users/users.service'
-import { CreateUserDto } from '../users/dto/createUser.dto'
+import { CreateUserDto } from '../users/dto/create-user.dto'
 import { cleanAuthorizationDatabase } from './supertokens/specHelpers/supertokens.database.spec.helper'
 import {
     replaceSessionGuard,
