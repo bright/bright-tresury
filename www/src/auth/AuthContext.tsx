@@ -7,6 +7,8 @@ import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
 import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
 import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
 import { Web3AssociateValues } from './account/web3/Web3AccountForm'
+import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
+import { Web3AssociateValues } from './account/web3/Web3AccountForm'
 import { makePrimary, unlinkAddress } from './account/account.api'
 
 export interface AuthContextState {
