@@ -29,9 +29,9 @@ export function confirmWeb3Association(address: ConfirmBlockchainSignDto): Promi
 }
 
 export function unlinkAddress(address: string) {
-    return apiPost('/v1/auth/web3/address/unlink', { address })
+    return apiPost('/auth/web3/address/unlink', { address })
 }
 
 export function makePrimary(address: string) {
-    return apiPost('/v1/auth/web3/address/make-primary', { address })
+    return apiPost('/auth/web3/address/make-primary', { address })
 }

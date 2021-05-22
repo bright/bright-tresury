@@ -54,9 +54,7 @@ export const createBlockchainSessionHandler = async (
         signature: uuid(),
     })
     const user = await app.get(UsersService).findOneByBlockchainAddress(address)
-    const sessionHandler = createSessionHandler(confirmSignUpRes, user)
-    await verifyEmail(app, sessionHandler)
-    return sessionHandler
+    return createSessionHandler(confirmSignUpRes, user)
 }
 
 export const createUserSessionHandlerWithVerifiedEmail = async (

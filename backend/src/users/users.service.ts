@@ -16,7 +16,6 @@ import { CreateBlockchainUserDto } from './dto/createBlockchainUser.dto'
 import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
 import { BlockchainAddressService } from './blockchainAddress/blockchainAddress.service'
 import { isValidAddress } from '../utils/address/address.validator'
-import { FindConditions } from 'typeorm/find-options/FindConditions'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
 
 @Injectable()
@@ -70,7 +69,7 @@ export class UsersService {
         } else if (users.length > 1) {
             throw new InternalServerErrorException('There are multiple users with the same blockchain address')
         } else {
-            return users[0]
+            return this.findOne(users[0].id)
         }
     }
 

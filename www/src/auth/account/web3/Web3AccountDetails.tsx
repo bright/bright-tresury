@@ -6,7 +6,6 @@ import { Label } from '../../../components/text/Label'
 import { useAuth, Web3Address } from '../../AuthContext'
 import { Web3AddressRow } from './Web3AddressRow'
 import { LoadingState, useLoading } from '../../../components/loading/LoadingWrapper'
-import { makePrimary, unlinkAddress } from '../account.api'
 import { InfoBox } from '../../../components/form/InfoBox'
 import { Web3LinkingButton } from './Web3LinkingButton'
 
@@ -23,13 +22,13 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const Web3AccountDetails = () => {
     const { t } = useTranslation()
-    const { user } = useAuth()
+    const { user, web3Unlink, web3MakePrimary } = useAuth()
     const classes = useStyles()
     const { call: unlinkCall, loadingState: unlinkAddressLoadingState, error: unlinkAddressError } = useLoading(
-        unlinkAddress,
+        web3Unlink,
     )
     const { call: makePrimaryCall, loadingState: makePrimaryLoadingState, error: makePrimaryError } = useLoading(
-        makePrimary,
+        web3MakePrimary,
     )
 
     const onPrimaryChange = (checked: boolean, address: Web3Address) => {

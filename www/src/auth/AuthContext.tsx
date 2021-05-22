@@ -7,6 +7,7 @@ import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
 import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
 import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
 import { Web3AssociateValues } from './account/web3/Web3AccountForm'
+import { makePrimary, unlinkAddress } from './account/account.api'
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
@@ -15,6 +16,8 @@ export interface AuthContextState {
     web3SignIn: (web3SignUpValues: Web3SignInValues) => Promise<void>
     web3SignUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
     web3Associate: (web3AssociateValues: Web3AssociateValues) => Promise<void>
+    web3Unlink: (address: string) => Promise<void>
+    web3MakePrimary: (address: string) => Promise<void>
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
@@ -132,18 +135,41 @@ const AuthContextProvider: React.FC = (props) => {
             })
     }
 
+    const web3Unlink = (address: string) => {
+        return unlinkAddress(address)
+            .then(() => {
+                refreshJwt()
+            })
+            .catch((error) => {
+                console.error(error)
+                throw error
+            })
+    }
+
+    const web3MakePrimary = (address: string) => {
+        return makePrimary(address)
+            .then(() => {
+                refreshJwt()
+            })
+            .catch((error) => {
+                console.error(error)
+                throw error
+            })
+    }
+
     return (
         <AuthContext.Provider
             value={{
                 user,
                 isUserSignedIn,
                 isUserVerified,
-                isUserSignedInAndVerified,
-                signIn,
+               isUserSignedInAndVerified, signIn,
                 signOut,
                 web3SignIn,
                 web3SignUp,
-                web3Associate
+                web3Associate,
+                web3Unlink,
+                web3MakePrimary,
             }}
             {...props}
         />

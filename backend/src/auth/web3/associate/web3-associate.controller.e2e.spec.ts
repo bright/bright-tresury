@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid'
 import { UsersService } from '../../../users/users.service'
 import { beforeSetupFullApp, request } from '../../../utils/spec.helpers'
-import { createSessionHandler } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
+import { createBlockchainSessionHandler } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
 import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
 
@@ -18,15 +18,7 @@ describe(`Web3 Associate Controller`, () => {
 
     describe('associate', () => {
         it('should associate address', async () => {
-            await request(app()).post(`/api/v1/auth/web3/signup/start`).send({ address: bobAddress })
-
-            const confirmSignUpResponse = await request(app()).post(`/api/v1/auth/web3/signup/confirm`).send({
-                address: bobAddress,
-                network: 'localhost',
-                signature: uuid(),
-            })
-            const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
-            const sessionHandler = createSessionHandler(confirmSignUpResponse, user)
+            const sessionHandler = await createBlockchainSessionHandler(app.get(), bobAddress)
             await sessionHandler.authorizeRequest(
                 request(app()).post('/api/v1/auth/web3/associate/start').send({ address: charlieAddress }),
             )
@@ -36,7 +28,7 @@ describe(`Web3 Associate Controller`, () => {
                     .send({ address: charlieAddress, signature: uuid() } as ConfirmSignMessageRequestDto),
             )
 
-            const userWithAssociatedAddress = await getUsersService().findOne(user.id)
+            const userWithAssociatedAddress = await getUsersService().findOneByBlockchainAddress(bobAddress)
 
             const addresses = userWithAssociatedAddress.blockchainAddresses!.map(
                 (blockchainAddress) => blockchainAddress.address,

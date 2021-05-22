@@ -1,9 +1,9 @@
-import {Injectable, UnauthorizedException} from "@nestjs/common";
-import {UsersService} from "../../users/users.service";
-import {Response} from "express";
-import {SessionRequest} from "./session.middleware";
-import {SuperTokensService} from "../supertokens/supertokens.service";
-import {SessionData} from "./session.decorator";
+import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { UsersService } from '../../users/users.service'
+import { Response } from 'express'
+import { SessionRequest } from './session.middleware'
+import { SuperTokensService } from '../supertokens/supertokens.service'
+import { SessionData } from './session.decorator'
 
 export const SessionResolverProvider = 'SessionResolverProvider'
 
@@ -17,11 +17,7 @@ export interface ISessionResolver {
 
 @Injectable()
 export class SessionResolver implements ISessionResolver {
-    constructor(
-        private readonly userService: UsersService,
-        private readonly superTokensService: SuperTokensService,
-    ) {
-    }
+    constructor(private readonly userService: UsersService, private readonly superTokensService: SuperTokensService) {}
 
     async validateSession(req: SessionRequest, res: Response): Promise<boolean> {
         try {
@@ -40,18 +36,12 @@ export class SessionResolver implements ISessionResolver {
 
         const sessionData = await session.getSessionData()
 
-        let sessionUser: SessionData | undefined;
+        let sessionUser: SessionData | undefined
         if (sessionData.user) {
             sessionUser = sessionData as SessionData
         } else {
-            const userId = await session.getUserId();
-            const user = await this.userService.findOneByAuthId(userId);
-            if (!user) {
-                await session.revokeSession()
-            } else {
-                await this.superTokensService.addSessionData(req, res, {user})
-                sessionUser = await session.getSessionData()
-            }
+            await this.superTokensService.refreshSessionData(session)
+            sessionUser = await session.getSessionData()
         }
         if (sessionUser) {
             const isEmailVerified = await this.superTokensService.isEmailVerified(sessionUser.user)
@@ -66,5 +56,4 @@ export class SessionResolver implements ISessionResolver {
     handleResponseIfRefreshTokenError(res: Response, error: any) {
         this.superTokensService.handleResponseIfRefreshTokenError(res, error)
     }
-
 }

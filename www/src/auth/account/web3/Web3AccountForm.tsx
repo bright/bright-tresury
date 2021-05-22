@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AccountSelect, EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
 import { Formik } from 'formik'
 import { LoadingState, useLoading } from '../../../components/loading/LoadingWrapper'
@@ -26,7 +26,11 @@ export interface Web3AssociateValues {
     account: Account
 }
 
-const Web3AccountForm = () => {
+interface OwnProps {
+    onSuccess: () => void
+}
+
+const Web3AccountForm = ({ onSuccess }: OwnProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const accounts = useAccounts()
@@ -37,6 +41,12 @@ const Web3AccountForm = () => {
     const onSubmit = async (values: { account: Account }) => {
         await associateCall({ account: values.account } as Web3AssociateValues)
     }
+
+    useEffect(() => {
+        if (loadingState === LoadingState.Resolved) {
+            onSuccess()
+        }
+    }, [loadingState])
 
     const isFirstAddress = !user?.web3Addresses || user?.web3Addresses.length > 1
 

@@ -117,8 +117,17 @@ export class SuperTokensService {
         }
     }
 
-    async addSessionData(req: Request, res: Response, data: Partial<SessionData>) {
-        const session = await this.getSession(req, res, false)
+    async refreshSessionData(session: Session) {
+        const userId = await session.getUserId()
+        const user = await this.usersService.findOneByAuthId(userId)
+        if (!user) {
+            await session.revokeSession()
+        } else {
+            await this.updateSessionData({ user }, session)
+        }
+    }
+
+    async updateSessionData(data: Partial<SessionData>, session?: Session) {
         if (session) {
             const currentSessionData = await session.getSessionData()
             await updateSessionData(session.getHandle(), {
@@ -132,6 +141,7 @@ export class SuperTokensService {
         const session = await this.getSession(req, res, false)
         if (session) {
             await this.refreshJwtPayloadBySession(session)
+            await this.refreshSessionData(session)
         }
     }
 

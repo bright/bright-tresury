@@ -11,17 +11,24 @@ const useStyles = makeStyles(() =>
             width: '17px',
             height: '17px',
         },
-    }))
+        disabled: {
+            display: 'none',
+            color: 'tomato !important',
+        },
+    }),
+)
 
 export type RadioProps = MaterialRadioProps
 
-export const Radio = ({...props}: RadioProps) => {
+export const Radio = ({ ...props }: RadioProps) => {
     const {t} = useTranslation()
     const classes = useStyles()
-    return <MaterialRadio
-        classes={classes}
-        {...props}
-        icon={<img src={emptyIcon} alt={t('components.radioBox.empty')}/>}
-        checkedIcon={<img src={checkedIcon} alt={t('components.radioBox.checked')}/>}
-    />
+    return (
+        <MaterialRadio
+            classes={classes}
+            {...props}
+            icon={<img src={emptyIcon} alt={t('components.radioBox.empty')}/>}
+            checkedIcon={<img src={checkedIcon} alt={t('components.radioBox.checked')}/>}
+        />
+    )
 }

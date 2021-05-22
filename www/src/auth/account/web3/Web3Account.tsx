@@ -10,11 +10,15 @@ const Web3Account = () => {
     const { t } = useTranslation()
     const [addAccount, setAddAccount] = useState(false)
 
+    const onAssociateWeb3Success = () => {
+        setAddAccount(false)
+    }
+
     return (
         <>
             {user?.isWeb3 && <Web3AccountDetails />}
             {addAccount ? (
-                <Web3AccountForm />
+                <Web3AccountForm onSuccess={onAssociateWeb3Success} />
             ) : (
                 <Button variant="text" color="primary" onClick={() => setAddAccount(true)}>
                     {t('account.web3.add')}
