@@ -18,7 +18,7 @@ describe(`Web3 Sign Up Controller`, () => {
     })
 
     describe('sign up', () => {
-        it('should save user in both databases', async () => {
+        it('should save user in both databases with verified email', async () => {
             await request(app()).post(`/api/v1/auth/web3/signup/start`).send({ address: bobAddress })
 
             await request(app()).post(`/api/v1/auth/web3/signup/confirm`).send({
@@ -29,10 +29,11 @@ describe(`Web3 Sign Up Controller`, () => {
 
             const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
             const superTokensUser = await getAuthUser(user.authId)
-
+            const isEmailVerified = await getService().isEmailVerified(user)
             expect(user).toBeDefined()
             expect(superTokensUser).toBeDefined()
             expect(superTokensUser!.id).toBe(user.authId)
+            expect(isEmailVerified).toBeTruthy()
         })
         it('should create session', async () => {
             await request(app()).post(`/api/v1/auth/web3/signup/start`).send({ address: bobAddress })

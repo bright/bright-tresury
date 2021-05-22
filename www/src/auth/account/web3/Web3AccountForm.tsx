@@ -2,7 +2,6 @@ import React from 'react'
 import { AccountSelect, EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
 import { Formik } from 'formik'
 import { LoadingState, useLoading } from '../../../components/loading/LoadingWrapper'
-import { handleAssociateWeb3Account } from '../../handleWeb3Sign'
 import { Account, useAccounts } from '../../../substrate-lib/hooks/useAccounts'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Web3AddressRow } from './Web3AddressRow'
@@ -23,16 +22,20 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 })
 
+export interface Web3AssociateValues {
+    account: Account
+}
+
 const Web3AccountForm = () => {
     const classes = useStyles()
     const { t } = useTranslation()
     const accounts = useAccounts()
-    const { user } = useAuth()
+    const { user, web3Associate } = useAuth()
 
-    const { call: associateCall, loadingState, error } = useLoading(handleAssociateWeb3Account)
+    const { call: associateCall, loadingState, error } = useLoading(web3Associate)
 
     const onSubmit = async (values: { account: Account }) => {
-        await associateCall(values.account)
+        await associateCall({ account: values.account } as Web3AssociateValues)
     }
 
     const isFirstAddress = !user?.web3Addresses || user?.web3Addresses.length > 1

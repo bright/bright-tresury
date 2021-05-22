@@ -3,7 +3,6 @@ import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helper
 import { SuperTokensService } from './supertokens/supertokens.service'
 import { UsersService } from '../users/users.service'
 import {
-    createBlockchainSessionHandler,
     createSessionHandler,
     createUserSessionHandler,
 } from './supertokens/specHelpers/supertokens.session.spec.helper'
@@ -38,24 +37,6 @@ describe(`Auth Controller`, () => {
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
-    })
-
-    describe('web3 sign up', () => {
-        it('should save user in both databases', async () => {
-            await createBlockchainSessionHandler(app(), bobAddress)
-            const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
-            const superTokensUser = await getAuthUser(user.authId)
-
-            expect(user).toBeDefined()
-            expect(superTokensUser).toBeDefined()
-            expect(superTokensUser!.id).toBe(user.authId)
-        })
-        it('should create session', async () => {
-            const sessionHandler = await createBlockchainSessionHandler(app(), bobAddress)
-            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, false)
-
-            expect(session).toBeDefined()
-        })
     })
 
     describe('sign up', () => {

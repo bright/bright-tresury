@@ -5,7 +5,8 @@ import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import { signIn as signInApi, SignInData, signOut as signOutApi, SignUpData } from './auth.api'
 import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
 import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
-import { handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
+import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
+import { Web3AssociateValues } from './account/web3/Web3AccountForm'
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
@@ -13,6 +14,7 @@ export interface AuthContextState {
     signOut: () => Promise<void>
     web3SignIn: (web3SignUpValues: Web3SignInValues) => Promise<void>
     web3SignUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
+    web3Associate: (web3AssociateValues: Web3AssociateValues) => Promise<void>
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
@@ -38,19 +40,23 @@ export const AuthContext = React.createContext<AuthContextState | undefined>(und
 
 const AuthContextProvider: React.FC = (props) => {
     const [user, setUser] = useState<AuthContextUser | undefined>()
-    const [isUserSignedIn, setIsUserSignedIn] = useState(Session.doesSessionExist())
+    const [isUserSignedIn, setIsUserSignedIn] = useState(Session.doesSessionExist)
 
-    useEffect(() => {
+    const refreshJwt = () => {
         if (isUserSignedIn) {
             Session.getJWTPayloadSecurely().then((payload: AuthContextUser) => {
-                // TODO: get isWeb3 from backend
                 setUser({
                     ...payload,
+                    isWeb3: payload.web3Addresses && payload.web3Addresses.length > 0,
                 })
             })
         } else {
             setUser(undefined)
         }
+    }
+
+    useEffect(() => {
+        refreshJwt()
     }, [isUserSignedIn])
 
     const isUserVerified = useMemo(
@@ -115,6 +121,17 @@ const AuthContextProvider: React.FC = (props) => {
             })
     }
 
+    const web3Associate = (web3SignInValues: Web3SignInValues) => {
+        return handleAssociateWeb3Account(web3SignInValues.account)
+            .then(() => {
+                refreshJwt()
+            })
+            .catch((error) => {
+                console.error(error)
+                throw error
+            })
+    }
+
     return (
         <AuthContext.Provider
             value={{
@@ -126,6 +143,7 @@ const AuthContextProvider: React.FC = (props) => {
                 signOut,
                 web3SignIn,
                 web3SignUp,
+                web3Associate
             }}
             {...props}
         />

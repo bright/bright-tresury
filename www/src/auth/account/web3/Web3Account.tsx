@@ -12,7 +12,7 @@ const Web3Account = () => {
 
     return (
         <>
-            {user?.isWeb3 || <Web3AccountDetails />}
+            {user?.isWeb3 && <Web3AccountDetails />}
             {addAccount ? (
                 <Web3AccountForm />
             ) : (

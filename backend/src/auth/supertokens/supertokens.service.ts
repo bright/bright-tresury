@@ -24,7 +24,11 @@ import { User } from '../../users/user.entity'
 import { UsersService } from '../../users/users.service'
 import { SessionData } from '../session/session.decorator'
 import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
-import { isEmailVerified as superTokensIsEmailVerified } from 'supertokens-node/lib/build/recipe/emailverification'
+import {
+    createEmailVerificationToken,
+    isEmailVerified as superTokensIsEmailVerified,
+    verifyEmailUsingToken,
+} from 'supertokens-node/lib/build/recipe/emailverification'
 
 const logger = getLogger()
 
@@ -33,6 +37,12 @@ export interface JWTPayload {
     username: string
     email: string
     isEmailVerified: boolean
+    web3Addresses: Web3Address[]
+}
+
+interface Web3Address {
+    address: string
+    isPrimary: boolean
 }
 
 @Injectable()
@@ -75,8 +85,10 @@ export class SuperTokensService {
         }
     }
 
-    async createSession(res: Response, userId: string): Promise<Session> {
-        return await createNewSession(res, userId)
+    async createSession(res: Response, authId: string): Promise<Session> {
+        const session = await createNewSession(res, authId)
+        await this.refreshJwtPayloadBySession(session)
+        return session
     }
 
     async getSession(req: Request, res: Response, doAntiCsrfCheck?: boolean): Promise<Session | undefined> {
@@ -116,6 +128,18 @@ export class SuperTokensService {
         }
     }
 
+    async refreshJwtPayload(req: Request, res: Response) {
+        const session = await this.getSession(req, res, false)
+        if (session) {
+            await this.refreshJwtPayloadBySession(session)
+        }
+    }
+
+    async refreshJwtPayloadBySession(session: Session) {
+        const jwtPayload = await this.getJwtPayload(session.getUserId())
+        await session?.updateJWTPayload({ ...jwtPayload })
+    }
+
     sendVerifyEmail = async (user: SuperTokensUser, emailVerificationURLWithToken: string): Promise<void> => {
         await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
     }
@@ -137,21 +161,36 @@ export class SuperTokensService {
         superTokensUser: SuperTokensUser,
         formFields: TypeFormField[],
         action: 'signin' | 'signup',
-    ): Promise<JWTPayload> => {
+    ): Promise<JWTPayload> => this.getJwtPayload(superTokensUser.id)
+
+    private async getJwtPayload(authId: string): Promise<JWTPayload> {
         const payload = {
-            email: superTokensUser.email,
-            id: '',
+            email: '',
+            id: authId,
             username: '',
             isEmailVerified: false,
-        }
+        } as JWTPayload
         try {
-            const user = await this.usersService.findOneByEmail(superTokensUser.email)
+            const user = await this.usersService.findOneByAuthId(authId)
             payload.id = user.id
             payload.username = user.username
             payload.isEmailVerified = await this.isEmailVerified(user)
+            payload.web3Addresses = user.blockchainAddresses
+                ? user.blockchainAddresses.map((bAddress) => {
+                      return {
+                          address: bAddress.address,
+                          isPrimary: bAddress.isPrimary,
+                      } as Web3Address
+                  })
+                : []
         } catch (err) {
             logger.error(err)
         }
         return payload
+    }
+
+    async verifyEmail(authId: string, email: string) {
+        const token = await createEmailVerificationToken(authId, email)
+        await verifyEmailUsingToken(token)
     }
 }

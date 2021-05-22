@@ -5,9 +5,10 @@ import { SessionModule } from '../../session/session.module'
 import { CachingModule } from '../../../cache/cache.module'
 import { Web3AssociateController } from './web3-associate.controller'
 import { Web3AssociateService } from './web3-associate.service'
+import { SuperTokensModule } from '../../supertokens/supertokens.module'
 
 @Module({
-    imports: [UsersModule, SessionModule, CachingModule, Web3SignMessageModule],
+    imports: [UsersModule, SessionModule, CachingModule, Web3SignMessageModule, SuperTokensModule],
     controllers: [Web3AssociateController],
     providers: [Web3AssociateService],
     exports: [Web3AssociateService],

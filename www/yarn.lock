@@ -16182,7 +16182,7 @@ stylis@^4.0.3, stylis@^4.0.6:
 
 supertokens-auth-react@^0.8.0:
   version "0.8.0"
-  resolved "https://registry.npmjs.org/supertokens-auth-react/-/supertokens-auth-react-0.8.0.tgz"
+  resolved "https://registry.yarnpkg.com/supertokens-auth-react/-/supertokens-auth-react-0.8.0.tgz#fac698f87df1bfc0b41e70705982a19d525ef461"
   integrity sha512-ylKllvEAsmA6+g695nfA2zG5GmfdxXn2POXTkFTQc9IMVwx8EZhz/YxpS98dsfoMyRBCdFg6CpkP4/4Bc+ecEA==
   dependencies:
     "@emotion/babel-plugin" "11.1.2"

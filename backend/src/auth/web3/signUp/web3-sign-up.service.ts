@@ -32,9 +32,9 @@ export class Web3SignUpService extends SignMessageService<ConfirmWeb3SignUpReque
         return super.startSignMessage(startRequest)
     }
 
-    async confirmSignMessage(confirmRequest: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
+    async confirmSign(confirmRequest: ConfirmWeb3SignUpRequestDto, req: Request, res: Response): Promise<void> {
         await this.validateAddress(confirmRequest.address)
-        return super.confirmSignMessage(confirmRequest, res)
+        await super.confirmSignMessage(confirmRequest, res)
     }
 
     getCacheKey = (address: string) => `SignUpMessage:${address}`
@@ -64,7 +64,8 @@ export class Web3SignUpService extends SignMessageService<ConfirmWeb3SignUpReque
             username: userUuid,
             blockchainAddress: address,
         } as CreateBlockchainUserDto
-        await this.userService.createBlockchainUser(createUserDto)
+        const user = await this.userService.createBlockchainUser(createUserDto)
+        await this.superTokensService.verifyEmail(user.authId, superTokensUser.email)
         await this.superTokensService.createSession(res, superTokensUser.id)
     }
 }

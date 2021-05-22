@@ -6,7 +6,7 @@ import {
     NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { FindConditions, Repository } from 'typeorm'
 import { User } from './user.entity'
 import { CreateUserDto } from './dto/createUser.dto'
 import { validateOrReject } from 'class-validator'
@@ -28,9 +28,7 @@ export class UsersService {
 
     async findOne(id: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail(id, {
-                relations: ['blockchainAddresses'],
-            })
+            return await this.findOneOrFail({ id })
         } catch (e) {
             throw handleFindError(e, 'There is no user with such id')
         }
@@ -38,7 +36,7 @@ export class UsersService {
 
     async findOneByUsername(username: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail({ username })
+            return await this.findOneOrFail({ username })
         } catch (e) {
             throw handleFindError(e, 'There is no user with such username')
         }
@@ -46,7 +44,7 @@ export class UsersService {
 
     async findOneByEmail(email: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail({ email })
+            return await this.findOneOrFail({ email })
         } catch (e) {
             throw handleFindError(e, 'There is no user with such email')
         }
@@ -54,9 +52,9 @@ export class UsersService {
 
     async findOneByAuthId(authId: string): Promise<User> {
         try {
-            return await this.userRepository.findOneOrFail({ authId })
+            return await this.findOneOrFail({ authId })
         } catch (e) {
-            throw handleFindError(e, 'There is no user with such authId')
+            throw handleFindError(e, `There is no user with authId ${authId}`)
         }
     }
 
@@ -75,6 +73,10 @@ export class UsersService {
         }
     }
 
+    private async findOneOrFail(conditions: FindConditions<User>): Promise<User> {
+        return await this.userRepository.findOneOrFail(conditions, { relations: ['blockchainAddresses'] })
+    }
+
     async create(createUserDto: CreateUserDto): Promise<User> {
         await this.validateUser(createUserDto)
         const user = new User(createUserDto.authId, createUserDto.username, createUserDto.email)
@@ -85,7 +87,12 @@ export class UsersService {
     async createBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<User> {
         await this.validateBlockchainUser(createBlockchainUserDto)
         const user = await this.userRepository.save(
-            new User(createBlockchainUserDto.authId, createBlockchainUserDto.username, undefined, []),
+            new User(
+                createBlockchainUserDto.authId,
+                createBlockchainUserDto.username,
+                createBlockchainUserDto.username,
+                [],
+            ),
         )
         await this.blockchainAddressService.create(
             new BlockchainAddress(createBlockchainUserDto.blockchainAddress, user, true),
@@ -102,7 +109,9 @@ export class UsersService {
         if (alreadyHasAddress) {
             throw new BadRequestException('Address already associated')
         }
-        await this.blockchainAddressService.create(new BlockchainAddress(address, user, false))
+        await this.blockchainAddressService.create(
+            new BlockchainAddress(address, user, currentUserAddresses.length === 0),
+        )
         return (await this.findOne(user.id))!
     }
 
