@@ -73,7 +73,7 @@ describe(`Auth Web3 Service`, () => {
         })
     })
 
-    describe.only('confirm associate', () => {
+    describe('confirm associate', () => {
 
         beforeEach(async () => {
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => true)
@@ -108,10 +108,6 @@ describe(`Auth Web3 Service`, () => {
             expect(actualUser).toBeDefined()
             expect(actualUser!.email).toBe('bob@example.com')
         })
-
-        // it('should send verify email', async () => {
-        //
-        // })
 
         it('should return conflict exception if email already exists', async () => {
             await createAliceSessionHandler(app())

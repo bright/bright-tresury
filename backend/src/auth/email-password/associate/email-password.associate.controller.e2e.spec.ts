@@ -11,7 +11,6 @@ describe('EmailPasswordController', () => {
     const getSignatureValidator = () => app.get().get(SignatureValidator)
 
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
-    const charlieAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
     beforeEach(async () => {
         /**
@@ -29,27 +28,37 @@ describe('EmailPasswordController', () => {
 
             await sessionHandler.authorizeRequest(
                 request(app()).post('/api/v1/auth/email-password/associate/start').send({
-                    address: charlieAddress,
-                    email: 'charlie@example.com',
-                    username: 'charlie',
-                    password,
+                    address: bobAddress,
+                    details: {
+                        email: 'bob@example.com',
+                        username: 'bob',
+                        password,
+                    },
                 }),
-            ).expect(HttpStatus.OK)
+            )
             await sessionHandler.authorizeRequest(
                 request(app())
                     .post('/api/v1/auth/email-password/associate/confirm')
-                    .send({address: charlieAddress, signature: uuid()} as ConfirmSignMessageRequestDto),
-            ).expect(HttpStatus.OK)
+                    .send({
+                        address: bobAddress,
+                        signature: uuid(),
+                        details: {
+                            email: 'bob@example.com',
+                            username: 'bob',
+                            password,
+                        },
+                    }),
+            )
 
             await sessionHandler.revoke()
 
             const response = await request(app())
-                .post('/api/v1/auth/signin')
+                .post('/api/v1/signin')
                 .send({
                     formFields: [
                         {
                             id: 'email',
-                            value: 'charlie@example.com',
+                            value: 'bob@example.com',
                         },
                         {
                             id: 'password',
@@ -57,7 +66,10 @@ describe('EmailPasswordController', () => {
                         },
                     ],
                 })
-            expect(response.status).toBe('OK')
+            console.log(response)
+            expect(response.status).toBe(200)
+            expect(response.body.status).toBe('OK')
+            expect(response.body.email).toBe('bob@example.com')
         })
     })
 });

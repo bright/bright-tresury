@@ -3,7 +3,7 @@ import {Connection, getConnection} from "typeorm";
 import {AuthorizationDatabaseName} from "../../../database/authorization/authorization.database.module";
 import {User} from "supertokens-node/lib/build/recipe/emailpassword/types";
 
-const getAuthConnection = async (): Promise<Connection> => getConnection(AuthorizationDatabaseName)
+export const getAuthConnection = async (): Promise<Connection> => getConnection(AuthorizationDatabaseName)
 
 const authorizationTablesToRemove = memoize(
     async (): Promise<Array<{ table_name: string }>> => {

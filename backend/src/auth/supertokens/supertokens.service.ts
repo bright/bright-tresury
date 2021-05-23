@@ -1,21 +1,9 @@
-import {
-    BadRequestException,
-    ConflictException,
-    ForbiddenException,
-    HttpStatus,
-    Injectable,
-    InternalServerErrorException,
-    NotFoundException,
-} from '@nestjs/common'
+import {BadRequestException, ConflictException,ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException,} from '@nestjs/common'
 import {Request, Response} from 'express'
 import {getUserByEmail, getUserById, signIn, signUp as superTokensSignUp} from 'supertokens-node/lib/build/recipe/emailpassword'
 import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
 import {TypeFormField, User as SuperTokensUser} from 'supertokens-node/lib/build/recipe/emailpassword/types'
-import {
-    createNewSession,
-    getSession as superTokensGetSession,
-    updateSessionData,
-} from 'supertokens-node/lib/build/recipe/session'
+import {createNewSession, getSession as superTokensGetSession, updateSessionData,} from 'supertokens-node/lib/build/recipe/session'
 import SessionError from 'supertokens-node/lib/build/recipe/session/error'
 import Session from 'supertokens-node/lib/build/recipe/session/sessionClass'
 import {getConnection} from "typeorm";
