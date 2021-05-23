@@ -11,9 +11,9 @@ import { Web3AssociateService } from './web3-associate.service'
 import { SessionGuard } from '../../session/guard/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
 import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
-import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
 import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
+import { StartWeb3AssociateRequestDto } from './dto/start-web3-associate-request.dto'
 
 @Controller('/v1/auth/web3/associate')
 @ApiTags('auth.web3.associate')
@@ -24,6 +24,7 @@ export class Web3AssociateController {
     ) {}
 
     @Post('/start')
+    @UseGuards(SessionGuard)
     @ApiOkResponse({
         description: 'Association successfully started',
         type: [StartSignMessageResponseDto],
@@ -35,9 +36,10 @@ export class Web3AssociateController {
         description: 'Requested address already exists',
     })
     async startAssociatingAddress(
-        @Body() startRequest: StartSignMessageRequestDto,
+        @Body() startRequest: StartWeb3AssociateRequestDto,
+        @ReqSession() session: SessionData,
     ): Promise<StartSignMessageResponseDto> {
-        return this.web3AssociateService.startSignMessage(startRequest)
+        return this.web3AssociateService.startAssociateAddress(startRequest, session.user)
     }
 
     @Post('/confirm')

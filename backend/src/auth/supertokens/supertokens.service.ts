@@ -1,13 +1,14 @@
 import {
     BadRequestException,
     ConflictException,
+    ForbiddenException,
     HttpStatus,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
-import { getUserById, signUp as superTokensSignUp } from 'supertokens-node/lib/build/recipe/emailpassword'
+import { getUserById, signIn, signUp as superTokensSignUp } from 'supertokens-node/lib/build/recipe/emailpassword'
 import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
 import { TypeFormField, User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import {
@@ -148,6 +149,14 @@ export class SuperTokensService {
     async refreshJwtPayloadBySession(session: Session) {
         const jwtPayload = await this.getJwtPayload(session.getUserId())
         await session?.updateJWTPayload({ ...jwtPayload })
+    }
+
+    async verifyPassword(email: string, password: string) {
+        try {
+            await signIn(email, password)
+        } catch (e) {
+            throw new ForbiddenException('Incorrect password')
+        }
     }
 
     sendVerifyEmail = async (user: SuperTokensUser, emailVerificationURLWithToken: string): Promise<void> => {

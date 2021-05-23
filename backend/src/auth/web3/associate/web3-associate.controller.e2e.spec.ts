@@ -1,9 +1,13 @@
 import { v4 as uuid } from 'uuid'
 import { UsersService } from '../../../users/users.service'
 import { beforeSetupFullApp, request } from '../../../utils/spec.helpers'
-import { createBlockchainSessionHandler } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
+import {
+    createBlockchainSessionHandler,
+    createUserSessionHandlerWithVerifiedEmail,
+} from '../../supertokens/specHelpers/supertokens.session.spec.helper'
 import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
+import { HttpStatus } from '@nestjs/common'
 
 describe(`Web3 Associate Controller`, () => {
     const app = beforeSetupFullApp()
@@ -36,6 +40,60 @@ describe(`Web3 Associate Controller`, () => {
 
             expect(addresses).toContain(bobAddress)
             expect(addresses).toContain(charlieAddress)
+        })
+        it('should associate address for email only account', async () => {
+            const password = uuid()
+            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(
+                app.get(),
+                'charlie@email.com',
+                'charlie',
+                password,
+            )
+            await sessionHandler.authorizeRequest(
+                request(app()).post('/api/v1/auth/web3/associate/start').send({
+                    address: charlieAddress,
+                    password,
+                }),
+            )
+            await sessionHandler.authorizeRequest(
+                request(app())
+                    .post('/api/v1/auth/web3/associate/confirm')
+                    .send({ address: charlieAddress, signature: uuid() } as ConfirmSignMessageRequestDto),
+            )
+            const userWithAssociatedAddress = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+
+            const addresses = userWithAssociatedAddress.blockchainAddresses!.map(
+                (blockchainAddress) => blockchainAddress.address,
+            )
+
+            expect(addresses.length).toBe(1)
+            expect(addresses).toContain(charlieAddress)
+        })
+        it('should throw forbidden exception on start when sent wrong password', async () => {
+            const password = uuid()
+            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(
+                app.get(),
+                'charlie@email.com',
+                'charlie',
+                password,
+            )
+            await sessionHandler
+                .authorizeRequest(
+                    request(app()).post('/api/v1/auth/web3/associate/start').send({
+                        address: charlieAddress,
+                        password: 'abcdefgh',
+                    }),
+                )
+                .expect(HttpStatus.FORBIDDEN)
+        })
+        it('should throw forbidden exception on start when not signed in', async () => {
+            request(app())
+                .post('/api/v1/auth/web3/associate/start')
+                .send({
+                    address: charlieAddress,
+                    password: uuid(),
+                })
+                .expect(HttpStatus.FORBIDDEN)
         })
     })
 })

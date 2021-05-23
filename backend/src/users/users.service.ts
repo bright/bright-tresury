@@ -151,6 +151,10 @@ export class UsersService {
         }
     }
 
+    async validateAssociateAddress(address: string) {
+        await this.validateBlockchainAddress(address)
+    }
+
     private async validateUser(createUserDto: CreateUserDto) {
         await this.validateClassAndUsername(CreateUserDto, createUserDto)
         await this.validateEmail(createUserDto.email)
@@ -159,10 +163,6 @@ export class UsersService {
     private async validateBlockchainUser(createBlockchainUserDto: CreateBlockchainUserDto): Promise<void> {
         await this.validateClassAndUsername(CreateBlockchainUserDto, createBlockchainUserDto)
         await this.validateBlockchainAddress(createBlockchainUserDto.blockchainAddress)
-    }
-
-    private async validateAssociateAddress(address: string) {
-        await this.validateBlockchainAddress(address)
     }
 
     private async validateClassAndUsername<T extends { username: string }>(constructor: ClassConstructor<T>, dto: T) {
