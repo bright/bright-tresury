@@ -18,7 +18,7 @@ export class Web3AssociateService extends SignMessageService<ConfirmWeb3Associat
         super(cacheManager, signatureValidator)
     }
 
-    getCacheKey = (address: string) => `SignInMessage:${address}`
+    getCacheKey = (address: string) => `Web3AssociateMessage:${address}`
 
     onMessageConfirmed = async (confirmRequest: ConfirmWeb3AssociateRequestDto, res: Response) => {
         await this.userService.associateBlockchainAddress(confirmRequest.session.user, confirmRequest.address)
