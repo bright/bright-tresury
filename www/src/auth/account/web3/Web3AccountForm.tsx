@@ -51,8 +51,11 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
     const { call: associateCall, loadingState, error } = useLoading(web3Associate)
 
     const onConfirmPassword = async (password: string) => {
-        await associateCall({ account: selectedAccount, password } as Web3AssociateValues)
-        hidePasswordModal()
+        try {
+            await associateCall({ account: selectedAccount, password } as Web3AssociateValues)
+        } finally {
+            hidePasswordModal()
+        }
     }
 
     const onSubmit = async (values: { account: Account }) => {

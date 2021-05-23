@@ -4,12 +4,10 @@ import { SignInAPIResponse, SignUpAPIResponse } from 'supertokens-auth-react/lib
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import { signIn as signInApi, SignInData, signOut as signOutApi, SignUpData } from './auth.api'
 import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
-import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
-import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
 import { Web3AssociateValues } from './account/web3/Web3AccountForm'
 import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
-import { Web3AssociateValues } from './account/web3/Web3AccountForm'
 import { makePrimary, unlinkAddress } from './account/account.api'
+import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
