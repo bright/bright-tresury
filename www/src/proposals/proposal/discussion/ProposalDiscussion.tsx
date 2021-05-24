@@ -1,9 +1,9 @@
-import React from "react";
+import React from 'react'
+import { useProposalStyles } from '../Proposal'
 
-const ProposalDiscussion: React.FC = () => {
-    return <div>
-        Discussion
-    </div>
+const ProposalDiscussion = () => {
+    const classes = useProposalStyles()
+    return <div className={classes.content}>Discussion</div>
 }
 
 export default ProposalDiscussion

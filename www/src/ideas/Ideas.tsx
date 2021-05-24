@@ -32,7 +32,11 @@ export const Ideas = ({ network = config.NETWORK_NAME }: Props) => {
     return (
         <div>
             <IdeasHeader filter={filter} />
-            <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdeas')}>
+            <LoadingWrapper
+                status={status}
+                errorText={t('errors.errorOccurredWhileLoadingIdeas')}
+                loadingText={t('loading.ideas')}
+            >
                 <IdeasList ideas={filteredIdeas} />
             </LoadingWrapper>
         </div>

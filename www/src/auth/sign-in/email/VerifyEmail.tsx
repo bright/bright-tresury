@@ -1,13 +1,15 @@
-import React, {useEffect, useState} from "react";
-import {useLocation} from "react-router-dom";
-import {Loader} from "../../../components/loading/Loader";
-import {verifyEmail} from "../../auth.api";
-import VerifyEmailError from "./VerifyEmailError";
-import VerifyEmailSuccess from "./VerifyEmailSuccess";
+import React, { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { Loader } from '../../../components/loading/Loader'
+import { verifyEmail } from '../../auth.api'
+import VerifyEmailError from './VerifyEmailError'
+import VerifyEmailSuccess from './VerifyEmailSuccess'
+import { useTranslation } from 'react-i18next'
 
 const TOKEN_PARAM_NAME = 'token'
 
 const VerifyEmail = () => {
+    const { t } = useTranslation()
     const location = useLocation()
     const [success, setSuccess] = useState<boolean | undefined>()
 
@@ -32,10 +34,10 @@ const VerifyEmail = () => {
     }, [location.search])
 
     if (success === undefined) {
-        return <Loader/>
+        return <Loader text={t('loading.verifyEmail')} />
     }
 
-    return success ? <VerifyEmailSuccess/> : <VerifyEmailError/>
+    return success ? <VerifyEmailSuccess /> : <VerifyEmailError />
 }
 
 export default VerifyEmail

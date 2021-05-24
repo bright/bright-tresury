@@ -8,6 +8,7 @@ import { LoadingWrapper } from '../../../components/loading/LoadingWrapper'
 import { CreateIdeaMilestoneButton } from './components/CreateIdeaMilestoneButton'
 import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
+import { useIdeaStyles } from '../Idea'
 
 interface Props {
     idea: IdeaDto
@@ -17,14 +18,20 @@ interface Props {
 export const IdeaMilestones = ({ idea, canEdit }: Props) => {
     const { t } = useTranslation()
 
+    const classes = useIdeaStyles()
+
     const createModal = useModal()
 
     const { status, data: ideaMilestones } = useGetIdeaMilestones(idea.id)
 
     return (
-        <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdeaMilestones')}>
+        <LoadingWrapper
+            status={status}
+            errorText={t('errors.errorOccurredWhileLoadingIdeaMilestones')}
+            loadingText={t('loading.ideaMilestones')}
+        >
             {ideaMilestones ? (
-                <>
+                <div className={classes.content}>
                     {ideaMilestones.length === 0 ? <EmptyIdeaMilestonesArrayInfo /> : null}
                     {canEdit ? (
                         <CreateIdeaMilestoneButton
@@ -34,7 +41,7 @@ export const IdeaMilestones = ({ idea, canEdit }: Props) => {
                     ) : null}
                     <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} canEdit={canEdit} />
                     <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />
-                </>
+                </div>
             ) : null}
         </LoadingWrapper>
     )

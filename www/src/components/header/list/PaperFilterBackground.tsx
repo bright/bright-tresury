@@ -1,8 +1,8 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../../theme/theme";
-import React from "react";
-import {ClassNameProps} from "../../props/className.props";
-import clsx from "clsx";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../../theme/theme'
+import React from 'react'
+import { ClassNameProps } from '../../props/className.props'
+import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,16 +12,15 @@ const useStyles = makeStyles((theme: Theme) =>
                 display: 'initial',
                 flexGrow: 1,
                 background: 'tomato',
-                height: '32px',
+                height: '46px',
                 position: 'relative',
-                backgroundColor: theme.palette.background.paper
-            }
+                backgroundColor: theme.palette.background.paper,
+            },
         },
-    }))
+    }),
+)
 
-export const PaperFilterBackground: React.FC<ClassNameProps> = ({className, children}) => {
+export const PaperFilterBackground: React.FC<ClassNameProps> = ({ className, children }) => {
     const classes = useStyles()
-    return <div className={clsx(classes.root, className)}>
-        {children}
-    </div>
+    return <div className={clsx(classes.root, className)}>{children}</div>
 }

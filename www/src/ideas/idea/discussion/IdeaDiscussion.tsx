@@ -1,9 +1,8 @@
-import React from "react";
+import React from 'react'
+import { useIdeaStyles } from '../Idea'
 
-const IdeaDiscussion: React.FC = () => {
-    return <div>
-        Discussion
-    </div>
+export const IdeaDiscussion = () => {
+    const classes = useIdeaStyles()
+
+    return <div className={classes.content}>Discussion</div>
 }
-
-export default IdeaDiscussion

@@ -6,17 +6,18 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             marginLeft: '1em',
+            fontSize: '16px',
             color: theme.palette.error.main,
         },
     }),
 )
 
-interface Props {
-    error: string
+export interface ErrorProps {
+    text: string
 }
 
-export const ErrorText = ({ error }: Props) => {
+export const Error = ({ text }: ErrorProps) => {
     const classes = useStyles()
 
-    return <p className={classes.root}>{error}</p>
+    return <p className={classes.root}>{text}</p>
 }

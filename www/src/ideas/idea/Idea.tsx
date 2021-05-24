@@ -7,13 +7,13 @@ import IdeaHeader from './IdeaHeader'
 import { IdeaContentType } from './IdeaContentTypeTabs'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import { IdeaInfo } from './info/IdeaInfo'
-import IdeaDiscussion from './discussion/IdeaDiscussion'
+import { IdeaDiscussion } from './discussion/IdeaDiscussion'
 import { breakpoints } from '../../theme/theme'
 import { IdeaMilestones } from './milestones/IdeaMilestones'
 import { LoadingWrapper } from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useIdeaStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const Idea = () => {
-    const classes = useStyles()
+    const classes = useIdeaStyles()
 
     const { t } = useTranslation()
 
@@ -50,26 +50,28 @@ export const Idea = () => {
     }, [idea, isUserVerified, user])
 
     return (
-        <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingIdea')}>
+        <LoadingWrapper
+            status={status}
+            errorText={t('errors.errorOccurredWhileLoadingIdea')}
+            loadingText={t('loading.idea')}
+        >
             {idea ? (
                 <div className={classes.root}>
                     <IdeaHeader idea={idea} canEdit={canEdit} />
-                    <div className={classes.content}>
-                        <Switch>
-                            <Route exact={true} path={path}>
-                                <IdeaInfo idea={idea} canEdit={canEdit} />
-                            </Route>
-                            <Route exact={true} path={`${path}/${IdeaContentType.Info}`}>
-                                <IdeaInfo idea={idea} canEdit={canEdit} />
-                            </Route>
-                            <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
-                                <IdeaMilestones idea={idea} canEdit={canEdit} />
-                            </Route>
-                            <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
-                                <IdeaDiscussion />
-                            </Route>
-                        </Switch>
-                    </div>
+                    <Switch>
+                        <Route exact={true} path={path}>
+                            <IdeaInfo idea={idea} canEdit={canEdit} />
+                        </Route>
+                        <Route exact={true} path={`${path}/${IdeaContentType.Info}`}>
+                            <IdeaInfo idea={idea} canEdit={canEdit} />
+                        </Route>
+                        <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
+                            <IdeaMilestones idea={idea} canEdit={canEdit} />
+                        </Route>
+                        <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
+                            <IdeaDiscussion />
+                        </Route>
+                    </Switch>
                 </div>
             ) : null}
         </LoadingWrapper>

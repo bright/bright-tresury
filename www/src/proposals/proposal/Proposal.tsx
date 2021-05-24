@@ -14,7 +14,7 @@ import { useGetProposal } from '../proposals.api'
 import { LoadingWrapper } from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 
-const useStyles = makeStyles((theme: Theme) =>
+export const useProposalStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export const Proposal = () => {
-    const classes = useStyles()
+    const classes = useProposalStyles()
 
     const { t } = useTranslation()
 
@@ -45,31 +45,33 @@ export const Proposal = () => {
     const { status, data: proposal } = useGetProposal(proposalIndex, config.NETWORK_NAME)
 
     return (
-        <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingProposal')}>
+        <LoadingWrapper
+            status={status}
+            errorText={t('errors.errorOccurredWhileLoadingProposal')}
+            loadingText={t('loading.proposal')}
+        >
             {proposal ? (
                 <div className={classes.root}>
                     <ProposalHeader proposal={proposal} />
-                    <div className={classes.content}>
-                        <Switch>
-                            <Route exact={true} path={path}>
-                                <ProposalInfo proposal={proposal} />
+                    <Switch>
+                        <Route exact={true} path={path}>
+                            <ProposalInfo proposal={proposal} />
+                        </Route>
+                        <Route exact={true} path={`${path}/${ProposalContentType.Info}`}>
+                            <ProposalInfo proposal={proposal} />
+                        </Route>
+                        {proposal.isCreatedFromIdea && proposal.ideaId ? (
+                            <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
+                                <ProposalMilestones ideaId={proposal.ideaId} />
                             </Route>
-                            <Route exact={true} path={`${path}/${ProposalContentType.Info}`}>
-                                <ProposalInfo proposal={proposal} />
-                            </Route>
-                            {proposal.isCreatedFromIdea && proposal.ideaId ? (
-                                <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
-                                    <ProposalMilestones ideaId={proposal.ideaId} />
-                                </Route>
-                            ) : null}
-                            <Route exact={true} path={`${path}/${ProposalContentType.Discussion}`}>
-                                <ProposalDiscussion />
-                            </Route>
-                            <Route exact={true} path={`${path}/${ProposalContentType.Voting}`}>
-                                <ProposalVoting />
-                            </Route>
-                        </Switch>
-                    </div>
+                        ) : null}
+                        <Route exact={true} path={`${path}/${ProposalContentType.Discussion}`}>
+                            <ProposalDiscussion />
+                        </Route>
+                        <Route exact={true} path={`${path}/${ProposalContentType.Voting}`}>
+                            <ProposalVoting />
+                        </Route>
+                    </Switch>
                 </div>
             ) : null}
         </LoadingWrapper>

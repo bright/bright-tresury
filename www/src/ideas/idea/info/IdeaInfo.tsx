@@ -2,6 +2,7 @@ import React from 'react'
 import IdeaDetails from './IdeaDetails'
 import { IdeaEdit } from './IdeaEdit'
 import { IdeaDto } from '../../ideas.dto'
+import { useIdeaStyles } from '../Idea'
 
 interface Props {
     idea: IdeaDto
@@ -9,5 +10,7 @@ interface Props {
 }
 
 export const IdeaInfo = ({ idea, canEdit }: Props) => {
-    return <>{canEdit ? <IdeaEdit idea={idea} /> : <IdeaDetails idea={idea} />}</>
+    const classes = useIdeaStyles()
+
+    return <div className={classes.content}>{canEdit ? <IdeaEdit idea={idea} /> : <IdeaDetails idea={idea} />}</div>
 }

@@ -43,7 +43,11 @@ export const Proposals = ({ network = config.NETWORK_NAME }: Props) => {
     return (
         <div className={classes.root}>
             <ProposalsHeader filter={filter} />
-            <LoadingWrapper status={status} error={t('errors.errorOccurredWhileLoadingProposals')}>
+            <LoadingWrapper
+                status={status}
+                errorText={t('errors.errorOccurredWhileLoadingProposals')}
+                loadingText={t('loading.proposals')}
+            >
                 <ProposalsList proposals={filteredProposals} />
             </LoadingWrapper>
         </div>
