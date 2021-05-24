@@ -11,7 +11,7 @@ import { UserAgreementCheckbox } from '../common/UserAgreementCheckbox'
 import { PrivacyNotice } from '../common/PrivacyNotice'
 import { SignUpButton } from '../common/SignUpButton'
 import EmailSignUpSuccess from './EmailSignUpSucces'
-import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
+import {SignFormWrapper, SignFormWrapperStylesProps} from '../../sign-components/SignFormWrapper'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 import { LoadingState } from '../../../components/loading/useLoading'
 
@@ -27,9 +27,9 @@ interface OwnProps {
     submitButtonLabel: string
 }
 
-export type SignupFormProps = OwnProps
+export type SignupFormProps = OwnProps & SignFormWrapperStylesProps
 
-const EmailSignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
+const EmailSignUpForm = ({ submit, submitButtonLabel, ...signFormWrapperProps }: SignupFormProps) => {
     const { t } = useTranslation()
 
     const { call, loadingState } = useSuperTokensRequest(submit)
@@ -39,15 +39,15 @@ const EmailSignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
     }
 
     const validationSchema = Yup.object().shape({
-        username: Yup.string().required(t('auth.signUp.emailSignUp.form.emptyFieldError')),
+        username: Yup.string().required(t('auth.signUp.emptyFieldError')),
         email: Yup.string()
             .email(t('auth.signUp.emailSignUp.form.login.emailError'))
-            .required(t('auth.signUp.emailSignUp.form.emptyFieldError')),
+            .required(t('auth.signUp.emptyFieldError')),
         password: Yup.string()
             .min(8, t('auth.signUp.emailSignUp.form.password.tooShort'))
             .matches(/[a-z]+/, t('auth.signUp.emailSignUp.form.password.useLowerCaseLetter'))
             .matches(/[0-9]+/, t('auth.signUp.emailSignUp.form.password.useNumber')),
-        userAgreement: Yup.boolean().isTrue(t('auth.signUp.emailSignUp.form.userAgreement.emptyFieldError')),
+        userAgreement: Yup.boolean().isTrue(t('auth.signUp.userAgreement.emptyFieldError')),
     })
     const passwordValidationRules = validationSchema.fields.password.tests.map(
         ({ OPTIONS }) => OPTIONS.message?.toString() || '',
@@ -70,7 +70,7 @@ const EmailSignUpForm = ({ submit, submitButtonLabel }: SignupFormProps) => {
             onSubmit={onSubmit}
         >
             {({ values, handleSubmit }) => (
-                <SignFormWrapper handleSubmit={handleSubmit}>
+                <SignFormWrapper handleSubmit={handleSubmit} {...signFormWrapperProps}>
                     <SignComponentWrapper>
                         <Input
                             name="username"

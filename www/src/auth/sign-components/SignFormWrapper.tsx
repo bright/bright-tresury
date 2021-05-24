@@ -1,13 +1,14 @@
-import React from "react";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
+import React, {PropsWithChildren} from "react";
+import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {TextFieldColorScheme} from "../../components/form/input/textFieldStyles";
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles<Theme, SignFormWrapperStylesProps>(() =>
     createStyles({
         form: {
             flexGrow: 1,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center'
+            alignItems: ({variant}) => variant === 'center' ? 'center' : 'flex-start'
         },
     }),
 );
@@ -16,8 +17,15 @@ interface OwnProps {
     handleSubmit: (e?: React.FormEvent<HTMLFormElement>) => void;
 }
 
-export const SignFormWrapper: React.FC<OwnProps> = ({handleSubmit, children}) => {
-    const classes = useStyles()
+
+export interface SignFormWrapperStylesProps {
+    variant?: 'left' | 'center'
+}
+
+export type SignFormWrapperProps = PropsWithChildren<OwnProps & SignFormWrapperStylesProps>
+
+export const SignFormWrapper = ({handleSubmit, variant = 'center', children}: SignFormWrapperProps) => {
+    const classes = useStyles({variant})
 
     return <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
         {children}
