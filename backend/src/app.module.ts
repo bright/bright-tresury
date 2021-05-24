@@ -13,7 +13,6 @@ import {SuperTokensModule} from "./auth/supertokens/supertokens.module";
 import {AuthModule} from "./auth/auth.module";
 import supertokens from "supertokens-node";
 import {SuperTokensExceptionFilter} from "./auth/supertokens/supertokens.exceptionFilter";
-import {baseApiPath} from "./main";
 import {initializeSupertokens} from "./auth/supertokens/supertokens.config";
 import {SuperTokensService} from "./auth/supertokens/supertokens.service";
 import {EmailsModule} from './emails/emails.module';

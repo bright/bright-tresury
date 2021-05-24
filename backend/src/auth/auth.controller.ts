@@ -1,8 +1,8 @@
-import {Body, Controller, Get, HttpStatus, Post, Req, Res, UseGuards} from "@nestjs/common";
+import {Get, UseGuards} from "@nestjs/common";
 import {ApiTags} from "@nestjs/swagger";
 import {ControllerApiVersion} from "../utils/ControllerApiVersion";
-import {ReqSession, SessionData} from "./session/session.decorator";
 import {SessionGuard} from "./session/guard/session.guard";
+import {ReqSession, SessionData} from "./session/session.decorator";
 
 /**
  * There are no sign in and sign up requests, because they are automatically

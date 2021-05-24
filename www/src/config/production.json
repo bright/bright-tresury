@@ -1,8 +1,8 @@
 {
   "APP_NAME": "treasury-stage",
-  "API_URL": "http://treasury-app-stage-147576773.eu-central-1.elb.amazonaws.com",
-  "WEBSITE_URL": "http://treasury-app-stage-147576773.eu-central-1.elb.amazonaws.com",
-  "PROVIDER_SOCKET": "wss://treasury-app-stage-147576773.eu-central-1.elb.amazonaws.com:9944",
+  "API_URL": "https://treasury.brightinventions.pl",
+  "WEBSITE_URL": "https://treasury.brightinventions.pl",
+  "PROVIDER_SOCKET": "wss://treasury.brightinventions.pl:9944",
   "NETWORK_NAME": "localhost",
   "NETWORK_CURRENCY": "LOC",
   "NETWORK_COLOR": "#E6007A",
