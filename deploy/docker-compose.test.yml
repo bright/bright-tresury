@@ -1,51 +1,53 @@
 version: '3'
 services:
-  backend-test-ci:
-    build:
-      context: ../
-      dockerfile: backend/Dockerfile
-    ports:
-      - "3001:3001"
-    environment:
-      DEPLOY_ENV: test
-      TEAMCITY_VERSION: ${TEAMCITY_VERSION}
-    command: bash -c "while !</dev/tcp/database/5432; do sleep 1; done; npm run database:migrate:ci && npm run test:ci"
-    networks:
-      default:
-        aliases:
-          - backend.test
-    depends_on:
-      - database
-      - substrate
-      - authorization
-  database:
-    build:
-      context: ./database
-    volumes:
-      - ${PROJECT_DIR:-../}/deploy/pg-data:/var/lib/postgresql/data
-    healthcheck:
-      test: pg_isready -U postgres; do sleep 1; done
-    restart: unless-stopped
-  substrate:
-    image: parity/polkadot:v0.8.30
-    ports:
-      - "9944:9944"
-    command: --rpc-external --ws-external --dev
-    restart: unless-stopped
-  authorization:
-    ports:
-      - '3567:3567'
-    image: supertokens/supertokens-postgresql:3.3
-    networks:
-      default:
-        aliases:
-          - authorization.test
-    depends_on:
-      - database
-    environment:
-      - POSTGRESQL_USER=authorization_manager
-      - POSTGRESQL_PASSWORD=password
-      - POSTGRESQL_HOST=database
-      - POSTGRESQL_PORT=5432
-      - POSTGRESQL_DATABASE_NAME=treasury_authorization_test
-    restart: unless-stopped
+    backend-test-ci:
+        build:
+            context: ../
+            dockerfile: backend/Dockerfile
+            args:
+                REACT_APP_DEPLOY_ENV: test
+        ports:
+            - '3001:3001'
+        environment:
+            DEPLOY_ENV: test
+            TEAMCITY_VERSION: ${TEAMCITY_VERSION}
+        command: bash -c "while !</dev/tcp/database/5432; do sleep 1; done; npm run database:migrate:ci && npm run test:ci"
+        networks:
+            default:
+                aliases:
+                    - backend.test
+        depends_on:
+            - database
+            - substrate
+            - authorization
+    database:
+        build:
+            context: ./database
+        volumes:
+            - ${PROJECT_DIR:-../}/deploy/pg-data:/var/lib/postgresql/data
+        healthcheck:
+            test: pg_isready -U postgres; do sleep 1; done
+        restart: unless-stopped
+    substrate:
+        image: parity/polkadot:v0.8.30
+        ports:
+            - '9944:9944'
+        command: --rpc-external --ws-external --dev
+        restart: unless-stopped
+    authorization:
+        ports:
+            - '3567:3567'
+        image: supertokens/supertokens-postgresql:3.3
+        networks:
+            default:
+                aliases:
+                    - authorization.test
+        depends_on:
+            - database
+        environment:
+            - POSTGRESQL_USER=authorization_manager
+            - POSTGRESQL_PASSWORD=password
+            - POSTGRESQL_HOST=database
+            - POSTGRESQL_PORT=5432
+            - POSTGRESQL_DATABASE_NAME=treasury_authorization_test
+        restart: unless-stopped

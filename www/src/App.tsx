@@ -43,6 +43,7 @@ import { QueryClientProvider, QueryClient } from 'react-query'
 import { EmailNotVerified } from './auth/email-not-verified/EmailNotVerified'
 import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContext'
 import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
+import config from './config'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -101,6 +102,15 @@ initializeSupertokens()
 
 function App() {
     console.log('front-end hello')
+
+    console.log('NODE_ENV VARIABLE => ' + process.env.NODE_ENV)
+
+    console.log('REACT_APP_DEPLOY_ENV => ' + process.env.REACT_APP_DEPLOY_ENV)
+
+    console.log('CONFIG VALUES')
+
+    console.log(config)
+
     return (
         <QueryClientProvider client={queryClient}>
             <AuthContextProvider>

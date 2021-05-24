@@ -15,7 +15,7 @@ import cloudform, {
     ResourceTag,
     S3,
     SSM,
-    StringParameter
+    StringParameter,
 } from 'cloudform'
 
 const ProjectName = 'treasury'
@@ -106,210 +106,243 @@ const Resources = {
     AutoscalingRole: 'AutoscalingRole',
     EC2InstanceProfile: 'EC2InstanceProfile',
     ParametersKmsKey: 'ParametersKmsKey',
-    AppApiParametersAccessPolicy: "AppApiParametersAccessPolicy",
+    AppApiParametersAccessPolicy: 'AppApiParametersAccessPolicy',
 
-    RootAwsAccountId: "339594496974",
+    RootAwsAccountId: '339594496974',
 
-    AppTaskRole: "AppTaskRole",
-    AppTaskExecutionRole: "AppTaskExecutionRole",
-    AppAuthorizationAccessPolicy: "AppAuthorizationAccessPolicy",
-    BackendDBInstanceHostParameter: "BackendDBInstanceHostParameter",
-    AuthCoreDBInstanceHostParameter: "AuthCoreDBInstanceHostParameter",
+    AppTaskRole: 'AppTaskRole',
+    AppTaskExecutionRole: 'AppTaskExecutionRole',
+    AppAuthorizationAccessPolicy: 'AppAuthorizationAccessPolicy',
+    BackendDBInstanceHostParameter: 'BackendDBInstanceHostParameter',
+    AuthCoreDBInstanceHostParameter: 'AuthCoreDBInstanceHostParameter',
 }
 
 const DeployEnv = Fn.Ref('DeployEnv')
 
 const InboundAccessSecurity = [
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 80,
         ToPort: 80,
-        CidrIp: "0.0.0.0/0"
+        CidrIp: '0.0.0.0/0',
     },
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 443,
         ToPort: 443,
-        CidrIp: "0.0.0.0/0"
+        CidrIp: '0.0.0.0/0',
     },
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 9933,
         ToPort: 9933,
-        CidrIp: "0.0.0.0/0"
+        CidrIp: '0.0.0.0/0',
     },
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 9944,
         ToPort: 9944,
-        CidrIp: "0.0.0.0/0"
+        CidrIp: '0.0.0.0/0',
     },
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 3567,
         ToPort: 3567,
-        CidrIp: "0.0.0.0/0"
-    }
+        CidrIp: '0.0.0.0/0',
+    },
 ]
 
 const OutboundAccessSecurity = [
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 80,
         ToPort: 80,
-        CidrIp: "0.0.0.0/0"
+        CidrIp: '0.0.0.0/0',
     },
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 443,
         ToPort: 443,
-        CidrIp: "0.0.0.0/0"
+        CidrIp: '0.0.0.0/0',
     },
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 9933,
         ToPort: 9933,
-        CidrIp: "0.0.0.0/0"
+        CidrIp: '0.0.0.0/0',
     },
     {
-        IpProtocol: "tcp",
+        IpProtocol: 'tcp',
         FromPort: 9944,
         ToPort: 9944,
-        CidrIp: "0.0.0.0/0"
-    }
+        CidrIp: '0.0.0.0/0',
+    },
 ]
 
 export default cloudform({
     Parameters: {
         DeployEnv: new StringParameter({
-            Description: "Deploy environment name",
-            AllowedValues: ["stage", "prod"]
+            Description: 'Deploy environment name',
+            AllowedValues: ['production', 'qa', 'stage'],
         }),
         AppImage: new StringParameter({
-            Description: "Repository, image and tag of the app to deploy"
+            Description: 'Repository, image and tag of the app to deploy',
         }),
         // EtherumNodeUrl: new StringParameter({
         //     Description: 'Etherum node url',
         //     NoEcho: true,
         // }),
         SSHFrom: new StringParameter({
-            Description: "Lockdown SSH access to the bastion host (default can be accessed from anywhere)",
+            Description: 'Lockdown SSH access to the bastion host (default can be accessed from anywhere)',
             MinLength: 9,
             MaxLength: 18,
-            Default: "0.0.0.0/0",
-            AllowedPattern: "(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})",
-            ConstraintDescription: "must be a valid CIDR range of the form x.x.x.x/x."
-        })
+            Default: '0.0.0.0/0',
+            AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})',
+            ConstraintDescription: 'must be a valid CIDR range of the form x.x.x.x/x.',
+        }),
     },
     Mappings: {
         SubnetConfig: {
             VPC: {
-                CIDR: "10.0.0.0/16"
+                CIDR: '10.0.0.0/16',
             },
             PrivateA: {
-                CIDR: "10.0.0.0/24"
+                CIDR: '10.0.0.0/24',
             },
             PrivateB: {
-                CIDR: "10.0.1.0/24"
+                CIDR: '10.0.1.0/24',
             },
             PublicA: {
-                CIDR: "10.0.100.0/24"
+                CIDR: '10.0.100.0/24',
             },
             PublicB: {
-                CIDR: "10.0.101.0/24"
-            }
+                CIDR: '10.0.101.0/24',
+            },
         },
         DatabaseMapping: {
-            prod: {
-                BackendDBInstanceIdentifier: `${ProjectName}-prod`,
-                BackendInstanceType: "db.t2.micro",
-                BackendStorageType: "gp2",
+            production: {
+                BackendDBInstanceIdentifier: `${ProjectName}-production`,
+                BackendInstanceType: 'db.t2.micro',
+                BackendStorageType: 'gp2',
                 BackendAllocatedStorage: 10,
                 DbName: ProjectName,
                 DbUserName: ProjectName,
-                MultiAZ: "true"
+                MultiAZ: 'true',
+            },
+            qa: {
+                BackendDBInstanceIdentifier: `${ProjectName}-qa`,
+                BackendInstanceType: 'db.t2.micro',
+                BackendStorageType: 'gp2',
+                BackendAllocatedStorage: 10,
+                DbName: ProjectName,
+                DbUserName: ProjectName,
+                MultiAZ: 'false',
             },
             stage: {
                 BackendDBInstanceIdentifier: `${ProjectName}-stage`,
-                BackendInstanceType: "db.t2.micro",
-                BackendStorageType: "gp2",
+                BackendInstanceType: 'db.t2.micro',
+                BackendStorageType: 'gp2',
                 BackendAllocatedStorage: 10,
                 DbName: ProjectName,
                 DbUserName: ProjectName,
-                MultiAZ: "false",
-            }
+                MultiAZ: 'false',
+            },
         },
         AuthCoreDatabaseMapping: {
-            prod: {
-                AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-prod`,
-                AuthCoreInstanceType: "db.t2.micro",
-                AuthCoreStorageType: "gp2",
+            production: {
+                AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-production`,
+                AuthCoreInstanceType: 'db.t2.micro',
+                AuthCoreStorageType: 'gp2',
                 AuthCoreAllocatedStorage: 10,
                 DbName: `${ProjectName}_${Resources.AuthCoreDbSuffix}`,
                 DbUserName: ProjectName,
-                MultiAZ: "true"
+                MultiAZ: 'true',
+            },
+            qa: {
+                AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-qa`,
+                AuthCoreInstanceType: 'db.t2.micro',
+                AuthCoreStorageType: 'gp2',
+                AuthCoreAllocatedStorage: 10,
+                DbName: `${ProjectName}_${Resources.AuthCoreDbSuffix}`,
+                DbUserName: ProjectName,
+                MultiAZ: 'false',
             },
             stage: {
                 AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-stage`,
-                AuthCoreInstanceType: "db.t2.micro",
-                AuthCoreStorageType: "gp2",
+                AuthCoreInstanceType: 'db.t2.micro',
+                AuthCoreStorageType: 'gp2',
                 AuthCoreAllocatedStorage: 10,
                 DbName: `${ProjectName}_${Resources.AuthCoreDbSuffix}`,
                 DbUserName: ProjectName,
-                MultiAZ: "false",
-            }
+                MultiAZ: 'false',
+            },
         },
         ECS: {
-            stage: {
-                InstanceType: "t2.small",
-                ContainerName: `${ProjectName}-app-stage`,
-                ContainerPort: "3000",
-                Memory: "600",
-                SubstrateContainerName: `${ProjectName}-substrate-stage`,
-                SubstrateHttpContainerPort: "9933",
-                SubstrateWsContainerPort: "9944",
-                AuthCoreContainerName: `${ProjectName}-auth-stage`,
-                AuthCoreHttpContainerPort: "3567",
-                DesiredTasksCount: 1
+            production: {
+                InstanceType: 't2.small',
+                ContainerName: `${ProjectName}-app-production`,
+                ContainerPort: '3000',
+                Memory: '900',
+                DesiredTasksCount: 1,
             },
-            prod: {
-                InstanceType: "t2.small",
-                ContainerName: `${ProjectName}-app-prod`,
-                ContainerPort: "3000",
-                Memory: "900",
-                DesiredTasksCount: 1
-            }
+            qa: {
+                InstanceType: 't2.small',
+                ContainerName: `${ProjectName}-app-qa`,
+                ContainerPort: '3000',
+                Memory: '600',
+                SubstrateContainerName: `${ProjectName}-substrate-qa`,
+                SubstrateHttpContainerPort: '9933',
+                SubstrateWsContainerPort: '9944',
+                AuthCoreContainerName: `${ProjectName}-auth-qa`,
+                AuthCoreHttpContainerPort: '3567',
+                DesiredTasksCount: 1,
+            },
+            stage: {
+                InstanceType: 't2.medium',
+                ContainerName: `${ProjectName}-app-stage`,
+                ContainerPort: '3000',
+                Memory: '1000',
+                SubstrateContainerName: `${ProjectName}-substrate-stage`,
+                SubstrateHttpContainerPort: '9933',
+                SubstrateWsContainerPort: '9944',
+                AuthCoreContainerName: `${ProjectName}-auth-stage`,
+                AuthCoreHttpContainerPort: '3567',
+                DesiredTasksCount: 1,
+            },
         },
         Certificates: {
-            stage: {
-                ARN: "arn:aws:acm:eu-central-1:339594496974:certificate/5b31829b-fec3-4324-87e9-6660a57008cc"
+            production: {
+                ARN: '',
             },
-            prod: {
-                ARN: ""
-            }
-        }
+            qa: {
+                ARN: '',
+            },
+            stage: {
+                ARN: 'arn:aws:acm:eu-central-1:339594496974:certificate/5b31829b-fec3-4324-87e9-6660a57008cc',
+            },
+        },
     },
     Resources: {
         [Resources.HttpHttpsServerSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Enables inbound HTTP and HTTPS access via port 80, 443, 9933, 9944, 3567",
+            GroupDescription: 'Enables inbound HTTP and HTTPS access via port 80, 443, 9933, 9944, 3567',
             VpcId: Fn.Ref(Resources.VPC),
-            SecurityGroupIngress: InboundAccessSecurity
+            SecurityGroupIngress: InboundAccessSecurity,
         }),
 
         [Resources.AccessInternetSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Enables outbound Internet access via ports 80,443, 9933, 9944, 3567",
+            GroupDescription: 'Enables outbound Internet access via ports 80,443, 9933, 9944, 3567',
             VpcId: Fn.Ref(Resources.VPC),
-            SecurityGroupEgress: OutboundAccessSecurity
+            SecurityGroupEgress: OutboundAccessSecurity,
         }),
 
         [Resources.VPC]: new EC2.VPC({
             CidrBlock: Fn.FindInMap('SubnetConfig', Resources.VPC, 'CIDR'),
             EnableDnsHostnames: true,
             Tags: [
-                new ResourceTag("Application", Refs.StackName),
-                new ResourceTag("Network", "Public"),
-                new ResourceTag("Name", Fn.Join('-', [Refs.StackName, Resources.VPC]))
-            ]
+                new ResourceTag('Application', Refs.StackName),
+                new ResourceTag('Network', 'Public'),
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.VPC])),
+            ],
         }),
 
         [Resources.PublicASubnet]: new EC2.Subnet({
@@ -317,10 +350,10 @@ export default cloudform({
             AvailabilityZone: Fn.Select(0, Fn.GetAZs()),
             CidrBlock: Fn.FindInMap('SubnetConfig', 'PublicA', 'CIDR'),
             Tags: [
-                new ResourceTag("Application", Refs.StackName),
-                new ResourceTag("Network", "Public"),
-                new ResourceTag("Name", Fn.Join('-', [Refs.StackName, Resources.PublicASubnet]))
-            ]
+                new ResourceTag('Application', Refs.StackName),
+                new ResourceTag('Network', 'Public'),
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PublicASubnet])),
+            ],
         }).dependsOn(Resources.VPC),
 
         [Resources.PublicBSubnet]: new EC2.Subnet({
@@ -328,18 +361,18 @@ export default cloudform({
             AvailabilityZone: Fn.Select(1, Fn.GetAZs()),
             CidrBlock: Fn.FindInMap('SubnetConfig', 'PublicB', 'CIDR'),
             Tags: [
-                new ResourceTag("Application", Refs.StackName),
-                new ResourceTag("Network", "Public"),
-                new ResourceTag("Name", Fn.Join('-', [Refs.StackName, Resources.PublicBSubnet]))
-            ]
+                new ResourceTag('Application', Refs.StackName),
+                new ResourceTag('Network', 'Public'),
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PublicBSubnet])),
+            ],
         }).dependsOn(Resources.VPC),
 
         [Resources.InternetGateway]: new EC2.InternetGateway({
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
                 new ResourceTag('Network', 'Public'),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.InternetGateway]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.InternetGateway])),
+            ],
         }),
 
         [Resources.PublicRouteTable]: new EC2.RouteTable({
@@ -347,50 +380,38 @@ export default cloudform({
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
                 new ResourceTag('Network', 'Public'),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PublicRouteTable]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PublicRouteTable])),
+            ],
         }).dependsOn(Resources.VPC),
 
         [Resources.PublicRoute]: new EC2.Route({
             RouteTableId: Fn.Ref(Resources.PublicRouteTable),
-            DestinationCidrBlock: "0.0.0.0/0",
-            GatewayId: Fn.Ref(Resources.InternetGateway)
-        }).dependsOn([
-            Resources.PublicRouteTable,
-            Resources.InternetGateway
-        ]),
+            DestinationCidrBlock: '0.0.0.0/0',
+            GatewayId: Fn.Ref(Resources.InternetGateway),
+        }).dependsOn([Resources.PublicRouteTable, Resources.InternetGateway]),
 
         [Resources.PublicASubnetRouteTableAssociation]: new EC2.SubnetRouteTableAssociation({
             SubnetId: Fn.Ref(Resources.PublicASubnet),
-            RouteTableId: Fn.Ref(Resources.PublicRouteTable)
-        }).dependsOn([
-            Resources.PublicASubnet,
-            Resources.PublicRouteTable
-        ]),
+            RouteTableId: Fn.Ref(Resources.PublicRouteTable),
+        }).dependsOn([Resources.PublicASubnet, Resources.PublicRouteTable]),
 
         [Resources.PublicBSubnetRouteTableAssociation]: new EC2.SubnetRouteTableAssociation({
             SubnetId: Fn.Ref(Resources.PublicBSubnet),
-            RouteTableId: Fn.Ref(Resources.PublicRouteTable)
-        }).dependsOn([
-            Resources.PublicBSubnet,
-            Resources.PublicRouteTable
-        ]),
+            RouteTableId: Fn.Ref(Resources.PublicRouteTable),
+        }).dependsOn([Resources.PublicBSubnet, Resources.PublicRouteTable]),
 
         [Resources.VPCGatewayToInternetAttachment]: new EC2.VPCGatewayAttachment({
             VpcId: Fn.Ref(Resources.VPC),
-            InternetGatewayId: Fn.Ref(Resources.InternetGateway)
-        }).dependsOn([
-            Resources.VPC,
-            Resources.InternetGateway
-        ]),
+            InternetGatewayId: Fn.Ref(Resources.InternetGateway),
+        }).dependsOn([Resources.VPC, Resources.InternetGateway]),
 
         [Resources.PrivateARouteTable]: new EC2.RouteTable({
             VpcId: Fn.Ref(Resources.VPC),
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
                 new ResourceTag('Network', 'Private'),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateARouteTable]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateARouteTable])),
+            ],
         }),
 
         [Resources.PrivateBRouteTable]: new EC2.RouteTable({
@@ -398,25 +419,19 @@ export default cloudform({
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
                 new ResourceTag('Network', 'Private'),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateBRouteTable]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateBRouteTable])),
+            ],
         }),
 
         [Resources.PrivateASubnetRouteTableAssociation]: new EC2.SubnetRouteTableAssociation({
             SubnetId: Fn.Ref(Resources.PrivateASubnet),
-            RouteTableId: Fn.Ref(Resources.PrivateARouteTable)
-        }).dependsOn([
-            Resources.PrivateASubnet,
-            Resources.PrivateARouteTable
-        ]),
+            RouteTableId: Fn.Ref(Resources.PrivateARouteTable),
+        }).dependsOn([Resources.PrivateASubnet, Resources.PrivateARouteTable]),
 
         [Resources.PrivateBSubnetRouteTableAssociation]: new EC2.SubnetRouteTableAssociation({
             SubnetId: Fn.Ref(Resources.PrivateBSubnet),
-            RouteTableId: Fn.Ref(Resources.PrivateBRouteTable)
-        }).dependsOn([
-            Resources.PrivateBSubnet,
-            Resources.PrivateBRouteTable
-        ]),
+            RouteTableId: Fn.Ref(Resources.PrivateBRouteTable),
+        }).dependsOn([Resources.PrivateBSubnet, Resources.PrivateBRouteTable]),
 
         [Resources.PrivateASubnet]: new EC2.Subnet({
             VpcId: Fn.Ref(Resources.VPC),
@@ -425,8 +440,8 @@ export default cloudform({
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
                 new ResourceTag('Network', 'Private'),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateASubnet]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateASubnet])),
+            ],
         }).dependsOn(Resources.VPC),
 
         [Resources.PrivateBSubnet]: new EC2.Subnet({
@@ -436,53 +451,50 @@ export default cloudform({
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
                 new ResourceTag('Network', 'Private'),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateBSubnet]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.PrivateBSubnet])),
+            ],
         }).dependsOn(Resources.VPC),
 
         [Resources.NatGatewayEIP]: new EC2.EIP({
-            Domain: "vpc"
+            Domain: 'vpc',
         }).dependsOn(Resources.VPCGatewayToInternetAttachment),
 
         [Resources.NatGateway]: new EC2.NatGateway({
             AllocationId: Fn.GetAtt(Resources.NatGatewayEIP, 'AllocationId'),
-            SubnetId: Fn.Ref(Resources.PublicASubnet)
+            SubnetId: Fn.Ref(Resources.PublicASubnet),
         }),
 
         [Resources.PrivateARouteNat]: new EC2.Route({
             RouteTableId: Fn.Ref(Resources.PrivateARouteTable),
-            DestinationCidrBlock: "0.0.0.0/0",
-            NatGatewayId: Fn.Ref(Resources.NatGateway)
+            DestinationCidrBlock: '0.0.0.0/0',
+            NatGatewayId: Fn.Ref(Resources.NatGateway),
         }),
 
         [Resources.PrivateBRouteNat]: new EC2.Route({
             RouteTableId: Fn.Ref(Resources.PrivateBRouteTable),
-            DestinationCidrBlock: "0.0.0.0/0",
-            NatGatewayId: Fn.Ref(Resources.NatGateway)
+            DestinationCidrBlock: '0.0.0.0/0',
+            NatGatewayId: Fn.Ref(Resources.NatGateway),
         }),
 
         [Resources.BackendDBSubnetGroup]: new RDS.DBSubnetGroup({
-            DBSubnetGroupDescription: "Backend db subnet group that allows for multi-az",
-            SubnetIds: [
-                Fn.Ref(Resources.PrivateASubnet),
-                Fn.Ref(Resources.PrivateBSubnet)
-            ]
+            DBSubnetGroupDescription: 'Backend db subnet group that allows for multi-az',
+            SubnetIds: [Fn.Ref(Resources.PrivateASubnet), Fn.Ref(Resources.PrivateBSubnet)],
         }),
 
         [Resources.BackendDBInstanceParameters]: new RDS.DBParameterGroup({
-            Description: "Backend DB Instance Parameter Group",
-            Family: "postgres11",
+            Description: 'Backend DB Instance Parameter Group',
+            Family: 'postgres11',
             Parameters: {
-                "track_activity_query_size": "2048",
-                "shared_preload_libraries": "pg_stat_statements"
+                track_activity_query_size: '2048',
+                shared_preload_libraries: 'pg_stat_statements',
             },
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
                 new ResourceTag(
                     'Name',
-                    Fn.Join('-', [Refs.StackName, Resources.BackendDBInstance, Resources.AuthCoreDBInstance])
-                )
-            ]
+                    Fn.Join('-', [Refs.StackName, Resources.BackendDBInstance, Resources.AuthCoreDBInstance]),
+                ),
+            ],
         }),
 
         [Resources.BackendDBInstance]: new RDS.DBInstance({
@@ -491,22 +503,26 @@ export default cloudform({
             DBInstanceIdentifier: Fn.FindInMap('DatabaseMapping', DeployEnv, 'BackendDBInstanceIdentifier'),
             DBParameterGroupName: Fn.Ref(Resources.BackendDBInstanceParameters),
             DBSubnetGroupName: Fn.Ref(Resources.BackendDBSubnetGroup),
-            MasterUserPassword: Fn.Join("", ["{{resolve:ssm-secure:/", ProjectName, "-", DeployEnv, "/database/password:1}}"]),
+            MasterUserPassword: Fn.Join('', [
+                '{{resolve:ssm-secure:/',
+                ProjectName,
+                '-',
+                DeployEnv,
+                '/database/password:1}}',
+            ]),
             EnablePerformanceInsights: true,
-            Engine: "postgres",
-            EngineVersion: "11.2",
+            Engine: 'postgres',
+            EngineVersion: '11.2',
             AllowMajorVersionUpgrade: true,
             DBInstanceClass: Fn.FindInMap('DatabaseMapping', DeployEnv, 'BackendInstanceType'),
-            VPCSecurityGroups: [
-                Fn.GetAtt(Resources.BackendDBEC2SecurityGroup, 'GroupId')
-            ],
+            VPCSecurityGroups: [Fn.GetAtt(Resources.BackendDBEC2SecurityGroup, 'GroupId')],
             AllocatedStorage: Fn.FindInMap('DatabaseMapping', DeployEnv, 'BackendAllocatedStorage'),
             StorageType: Fn.FindInMap('DatabaseMapping', DeployEnv, 'BackendStorageType'),
             MultiAZ: Fn.FindInMap('DatabaseMapping', DeployEnv, 'MultiAZ'),
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.BackendDBInstance]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.BackendDBInstance])),
+            ],
         }).deletionPolicy(DeletionPolicy.Snapshot),
 
         [Resources.AuthCoreDBInstance]: new RDS.DBInstance({
@@ -515,311 +531,294 @@ export default cloudform({
             DBInstanceIdentifier: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreDBInstanceIdentifier'),
             DBParameterGroupName: Fn.Ref(Resources.BackendDBInstanceParameters),
             DBSubnetGroupName: Fn.Ref(Resources.BackendDBSubnetGroup),
-            MasterUserPassword: Fn.Join("", ["{{resolve:ssm-secure:/", ProjectName, "-", DeployEnv, "/authorizationDatabase/password:1}}"]),
+            MasterUserPassword: Fn.Join('', [
+                '{{resolve:ssm-secure:/',
+                ProjectName,
+                '-',
+                DeployEnv,
+                '/authorizationDatabase/password:1}}',
+            ]),
             EnablePerformanceInsights: true,
-            Engine: "postgres",
-            EngineVersion: "11.2",
+            Engine: 'postgres',
+            EngineVersion: '11.2',
             AllowMajorVersionUpgrade: true,
             DBInstanceClass: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreInstanceType'),
-            VPCSecurityGroups: [
-                Fn.GetAtt(Resources.BackendDBEC2SecurityGroup, 'GroupId')
-            ],
+            VPCSecurityGroups: [Fn.GetAtt(Resources.BackendDBEC2SecurityGroup, 'GroupId')],
             AllocatedStorage: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreAllocatedStorage'),
             StorageType: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'AuthCoreStorageType'),
             MultiAZ: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'MultiAZ'),
             Tags: [
                 new ResourceTag('Application', Refs.StackName),
-                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.AuthCoreDBInstance]))
-            ]
+                new ResourceTag('Name', Fn.Join('-', [Refs.StackName, Resources.AuthCoreDBInstance])),
+            ],
         }).deletionPolicy(DeletionPolicy.Snapshot),
 
         [Resources.BackendDBInstanceHostParameter]: new SSM.Parameter({
-            Name: Fn.Join("", ["/", ProjectName, "-", DeployEnv, "/database/host"]),
-            Type: "String",
-            Value: Fn.GetAtt("BackendDBInstance", "Endpoint.Address"),
-            Description: "Backend db instance host address"
+            Name: Fn.Join('', ['/', ProjectName, '-', DeployEnv, '/database/host']),
+            Type: 'String',
+            Value: Fn.GetAtt('BackendDBInstance', 'Endpoint.Address'),
+            Description: 'Backend db instance host address',
         }),
 
         [Resources.AuthCoreDBInstanceHostParameter]: new SSM.Parameter({
-            Name: Fn.Join("", ["/", ProjectName, "-", DeployEnv, "/authorizationDatabase/host"]),
-            Type: "String",
-            Value: Fn.GetAtt("AuthCoreDBInstance", "Endpoint.Address"),
-            Description: "Auth core db instance host address"
+            Name: Fn.Join('', ['/', ProjectName, '-', DeployEnv, '/authorizationDatabase/host']),
+            Type: 'String',
+            Value: Fn.GetAtt('AuthCoreDBInstance', 'Endpoint.Address'),
+            Description: 'Auth core db instance host address',
         }),
 
         [Resources.BackendDBEC2SecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Open database for access",
+            GroupDescription: 'Open database for access',
             VpcId: Fn.Ref(Resources.VPC),
             SecurityGroupIngress: [
                 {
-                    IpProtocol: "tcp",
+                    IpProtocol: 'tcp',
                     FromPort: 5432,
                     ToPort: 5432,
-                    CidrIp: Fn.FindInMap('SubnetConfig', 'PublicA', 'CIDR')
+                    CidrIp: Fn.FindInMap('SubnetConfig', 'PublicA', 'CIDR'),
                 },
                 {
-                    IpProtocol: "tcp",
+                    IpProtocol: 'tcp',
                     FromPort: 5432,
                     ToPort: 5432,
-                    CidrIp: Fn.FindInMap('SubnetConfig', 'PublicB', 'CIDR')
+                    CidrIp: Fn.FindInMap('SubnetConfig', 'PublicB', 'CIDR'),
                 },
                 {
-                    IpProtocol: "tcp",
+                    IpProtocol: 'tcp',
                     FromPort: 5432,
                     ToPort: 5432,
-                    CidrIp: Fn.FindInMap('SubnetConfig', 'PrivateA', 'CIDR')
+                    CidrIp: Fn.FindInMap('SubnetConfig', 'PrivateA', 'CIDR'),
                 },
                 {
-                    IpProtocol: "tcp",
+                    IpProtocol: 'tcp',
                     FromPort: 5432,
                     ToPort: 5432,
-                    CidrIp: Fn.FindInMap('SubnetConfig', 'PrivateB', 'CIDR')
-                }
-            ]
+                    CidrIp: Fn.FindInMap('SubnetConfig', 'PrivateB', 'CIDR'),
+                },
+            ],
         }),
 
         [Resources.BastionIPAddress]: new EC2.EIP({
-            Domain: "vpc",
-            InstanceId: Fn.Ref(Resources.BastionHost)
+            Domain: 'vpc',
+            InstanceId: Fn.Ref(Resources.BastionHost),
         }),
 
         [Resources.BastionHost]: new EC2.Instance({
-            InstanceType: "t2.nano",
+            InstanceType: 't2.nano',
             KeyName: 'treasury-ssh-key',
-            ImageId: "ami-1b316af0",
+            ImageId: 'ami-1b316af0',
             NetworkInterfaces: [
                 {
                     AssociatePublicIpAddress: true,
-                    DeviceIndex: "0",
+                    DeviceIndex: '0',
                     SubnetId: Fn.Ref(Resources.PublicASubnet),
                     DeleteOnTermination: true,
-                    GroupSet: [
-                        Fn.Ref(Resources.BastionSecurityGroup)
-                    ]
-                }
+                    GroupSet: [Fn.Ref(Resources.BastionSecurityGroup)],
+                },
             ],
-            Tags: [
-                new ResourceTag('Application', Refs.StackName),
-                new ResourceTag('Name', Resources.BastionHost)
-            ]
-        }).dependsOn([
-            Resources.PublicASubnet,
-            Resources.BastionSecurityGroup
-        ]),
+            Tags: [new ResourceTag('Application', Refs.StackName), new ResourceTag('Name', Resources.BastionHost)],
+        }).dependsOn([Resources.PublicASubnet, Resources.BastionSecurityGroup]),
 
         [Resources.BastionSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "Enable access to the Bastion host",
+            GroupDescription: 'Enable access to the Bastion host',
             VpcId: Fn.Ref(Resources.VPC),
             SecurityGroupIngress: [
                 {
-                    IpProtocol: "tcp",
+                    IpProtocol: 'tcp',
                     FromPort: 22,
                     ToPort: 22,
-                    CidrIp: Fn.Ref('SSHFrom')
-                }
-            ]
+                    CidrIp: Fn.Ref('SSHFrom'),
+                },
+            ],
         }).dependsOn(Resources.VPC),
 
         [Resources.UploadsBucket]: new S3.Bucket({
-            BucketName: Fn.Join('-', [ProjectName, 'uploads', DeployEnv])
+            BucketName: Fn.Join('-', [ProjectName, 'uploads', DeployEnv]),
         }),
 
         [Resources.AppApiS3AccessPolicy]: new IAM.ManagedPolicy({
             PolicyDocument: {
-                Version: "2012-10-17",
+                Version: '2012-10-17',
                 Statement: [
                     {
-                        Effect: "Allow",
-                        Action: "s3:ListAllMyBuckets",
-                        Resource: "arn:aws:s3:::*"
+                        Effect: 'Allow',
+                        Action: 's3:ListAllMyBuckets',
+                        Resource: 'arn:aws:s3:::*',
                     },
                     {
-                        Effect: "Allow",
-                        Action: "s3:*",
+                        Effect: 'Allow',
+                        Action: 's3:*',
                         Resource: [
-                            Fn.Join('', ["arn:aws:s3:::", ProjectName, "-uploads-", DeployEnv]),
-                            Fn.Join('', ["arn:aws:s3:::", ProjectName, "-uploads-", DeployEnv, '/*'])
-                        ]
-                    }
-                ]
-            }
+                            Fn.Join('', ['arn:aws:s3:::', ProjectName, '-uploads-', DeployEnv]),
+                            Fn.Join('', ['arn:aws:s3:::', ProjectName, '-uploads-', DeployEnv, '/*']),
+                        ],
+                    },
+                ],
+            },
         }),
 
         [Resources.AppApiSESAccessPolicy]: new IAM.ManagedPolicy({
             PolicyDocument: {
-                Version: "2012-10-17",
+                Version: '2012-10-17',
                 Statement: [
                     {
-                        Effect: "Allow",
-                        Action: [
-                            "ses:SendEmail",
-                            "ses:SendRawEmail"
-                        ],
-                        Resource: Fn.Join('', ['arn:aws:ses:eu-central-1:', Refs.AccountId, ':*'])
-                    }
-                ]
-            }
+                        Effect: 'Allow',
+                        Action: ['ses:SendEmail', 'ses:SendRawEmail'],
+                        Resource: Fn.Join('', ['arn:aws:ses:eu-central-1:', Refs.AccountId, ':*']),
+                    },
+                ],
+            },
         }),
 
         [Resources.AppApiParametersAccessPolicy]: new IAM.ManagedPolicy({
             PolicyDocument: {
-                Version: "2012-10-17",
+                Version: '2012-10-17',
                 Statement: [
                     {
-                        "Effect": "Allow",
-                        "Action": [
-                            "ssm:DescribeParameters"
-                        ],
-                        "Resource": "*"
+                        Effect: 'Allow',
+                        Action: ['ssm:DescribeParameters'],
+                        Resource: '*',
                     },
                     {
-                        "Effect": "Allow",
-                        "Action": [
-                            "ssm:GetParameter",
-                            "ssm:GetParameters",
-                            "ssm:GetParametersByPath"
+                        Effect: 'Allow',
+                        Action: ['ssm:GetParameter', 'ssm:GetParameters', 'ssm:GetParametersByPath'],
+                        Resource: [
+                            Fn.Join('', [
+                                `arn:aws:ssm:*:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
+                                DeployEnv,
+                                '/*',
+                            ]),
                         ],
-                        "Resource": [
-                            Fn.Join("", [`arn:aws:ssm:*:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/*"])
-                        ]
                     },
                     {
-                        "Effect": "Allow",
-                        "Action": [
-                            "kms:Decrypt"
-                        ],
-                        "Resource": [Fn.GetAtt(Resources.ParametersKmsKey, "Arn")]
-                    }
-                ]
-            }
+                        Effect: 'Allow',
+                        Action: ['kms:Decrypt'],
+                        Resource: [Fn.GetAtt(Resources.ParametersKmsKey, 'Arn')],
+                    },
+                ],
+            },
         }).dependsOn([Resources.ParametersKmsKey]),
 
         [Resources.ParametersKmsKey]: new KMS.Key({
-            Description: Fn.Join(" ", [DeployEnv, "encryption key for secure parameters"]),
+            Description: Fn.Join(' ', [DeployEnv, 'encryption key for secure parameters']),
             KeyPolicy: {
-                Version: "2012-10-17",
-                Statement: [{
-                    Sid: "Enable full access to users",
-                    Effect: "Allow",
-                    Principal: {
-                        AWS: [
-                            Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'root']),
-                            Fn.Join(":", ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/treasury'])
-                        ]
+                Version: '2012-10-17',
+                Statement: [
+                    {
+                        Sid: 'Enable full access to users',
+                        Effect: 'Allow',
+                        Principal: {
+                            AWS: [
+                                Fn.Join(':', ['arn:aws:iam:', Resources.RootAwsAccountId, 'root']),
+                                Fn.Join(':', ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/treasury']),
+                            ],
+                        },
+                        Action: 'kms:*',
+                        Resource: '*',
                     },
-                    Action: "kms:*",
-                    Resource: "*"
-                }]
-            }
+                ],
+            },
         }),
 
         [Resources.AppApiAccessUser]: new IAM.User({
             ManagedPolicyArns: [
                 Fn.Ref(Resources.AppApiS3AccessPolicy),
                 Fn.Ref(Resources.AppApiSESAccessPolicy),
-                Fn.Ref(Resources.AppApiParametersAccessPolicy)
-            ]
+                Fn.Ref(Resources.AppApiParametersAccessPolicy),
+            ],
         }),
 
         [Resources.AppTaskRole]: new IAM.Role({
             AssumeRolePolicyDocument: {
-                "Statement": [
+                Statement: [
                     {
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": [
-                                "ecs-tasks.amazonaws.com"
-                            ]
+                        Effect: 'Allow',
+                        Principal: {
+                            Service: ['ecs-tasks.amazonaws.com'],
                         },
-                        "Action": [
-                            "sts:AssumeRole"
-                        ]
-                    }
-                ]
+                        Action: ['sts:AssumeRole'],
+                    },
+                ],
             },
-            Path: "/",
-            ManagedPolicyArns: [
-                Fn.Ref(Resources.AppApiS3AccessPolicy),
-                Fn.Ref(Resources.AppApiSESAccessPolicy),
-                Fn.Ref(Resources.AppApiParametersAccessPolicy)
-            ]
-        }),
-
-        [Resources.AppTaskExecutionRole]: new IAM.Role({
-            AssumeRolePolicyDocument: {
-                "Statement": [
-                    {
-                        "Effect": "Allow",
-                        "Principal": {
-                            "Service": [
-                                "ecs-tasks.amazonaws.com"
-                            ]
-                        },
-                        "Action": [
-                            "sts:AssumeRole"
-                        ]
-                    }
-                ]
-            },
-            Path: "/",
+            Path: '/',
             ManagedPolicyArns: [
                 Fn.Ref(Resources.AppApiS3AccessPolicy),
                 Fn.Ref(Resources.AppApiSESAccessPolicy),
                 Fn.Ref(Resources.AppApiParametersAccessPolicy),
-                Fn.Ref(Resources.AppAuthorizationAccessPolicy)
-            ]
+            ],
+        }),
+
+        [Resources.AppTaskExecutionRole]: new IAM.Role({
+            AssumeRolePolicyDocument: {
+                Statement: [
+                    {
+                        Effect: 'Allow',
+                        Principal: {
+                            Service: ['ecs-tasks.amazonaws.com'],
+                        },
+                        Action: ['sts:AssumeRole'],
+                    },
+                ],
+            },
+            Path: '/',
+            ManagedPolicyArns: [
+                Fn.Ref(Resources.AppApiS3AccessPolicy),
+                Fn.Ref(Resources.AppApiSESAccessPolicy),
+                Fn.Ref(Resources.AppApiParametersAccessPolicy),
+                Fn.Ref(Resources.AppAuthorizationAccessPolicy),
+            ],
         }),
 
         [Resources.AppAuthorizationAccessPolicy]: new IAM.ManagedPolicy({
             PolicyDocument: {
-                "Version": "2012-10-17",
-                "Statement": [
+                Version: '2012-10-17',
+                Statement: [
                     {
-                        "Effect": "Allow",
-                        "Action": [
-                            "ecr:GetAuthorizationToken",
-                            "ecr:BatchCheckLayerAvailability",
-                            "ecr:GetDownloadUrlForLayer",
-                            "ecr:BatchGetImage",
-                            "logs:CreateLogStream",
-                            "logs:PutLogEvents"
+                        Effect: 'Allow',
+                        Action: [
+                            'ecr:GetAuthorizationToken',
+                            'ecr:BatchCheckLayerAvailability',
+                            'ecr:GetDownloadUrlForLayer',
+                            'ecr:BatchGetImage',
+                            'logs:CreateLogStream',
+                            'logs:PutLogEvents',
                         ],
-                        "Resource": "*"
-                    }
-                ]
-            }
+                        Resource: '*',
+                    },
+                ],
+            },
         }),
 
         [Resources.AppApiAccessCredentials]: new IAM.AccessKey({
-            UserName: Fn.Ref(Resources.AppApiAccessUser)
+            UserName: Fn.Ref(Resources.AppApiAccessUser),
         }),
 
         [Resources.ECSCluster]: new ECS.Cluster(),
 
         [Resources.ECSSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: "ECS Security Group",
-            VpcId: Fn.Ref(Resources.VPC)
+            GroupDescription: 'ECS Security Group',
+            VpcId: Fn.Ref(Resources.VPC),
         }),
 
         [Resources.ECSSecurityGroupALBports]: new EC2.SecurityGroupIngress({
             GroupId: Fn.Ref('ECSSecurityGroup'),
-            IpProtocol: "tcp",
+            IpProtocol: 'tcp',
             FromPort: 0,
             ToPort: 61000,
-            CidrIp: Fn.FindInMap('SubnetConfig', Resources.VPC, 'CIDR')
+            CidrIp: Fn.FindInMap('SubnetConfig', Resources.VPC, 'CIDR'),
         }),
 
         [Resources.CloudwatchLogsGroup]: new Logs.LogGroup({
             LogGroupName: Fn.Join('-', ['ECSLogGroup', Refs.StackName]),
-            RetentionInDays: 14
+            RetentionInDays: 14,
         }),
         [Resources.SubstrateCloudwatchLogsGroup]: new Logs.LogGroup({
             LogGroupName: Fn.Join('-', ['SubstrateECSLogGroup', Refs.StackName]),
-            RetentionInDays: 14
+            RetentionInDays: 14,
         }),
         [Resources.AuthCoreCloudwatchLogsGroup]: new Logs.LogGroup({
             LogGroupName: Fn.Join('-', ['AuthCoreECSLogGroup', Refs.StackName]),
-            RetentionInDays: 14
+            RetentionInDays: 14,
         }),
 
         [Resources.TaskDefinition]: new ECS.TaskDefinition({
@@ -829,12 +828,12 @@ export default cloudform({
                     Name: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
                     Environment: [
                         {
-                            Name: "DEPLOY_ENV",
-                            Value: DeployEnv
+                            Name: 'DEPLOY_ENV',
+                            Value: DeployEnv,
                         },
                         {
-                            Name: "NODE_OPTIONS",
-                            Value: "--max-old-space-size=600"
+                            Name: 'NODE_OPTIONS',
+                            Value: '--max-old-space-size=800',
                         },
                     ],
                     Cpu: 100,
@@ -843,39 +842,41 @@ export default cloudform({
                     Command: ['npm', 'run', 'database-migrate-and-main'],
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {
-                        LogDriver: "awslogs",
+                        LogDriver: 'awslogs',
                         Options: {
-                            "awslogs-group": Fn.Ref('CloudwatchLogsGroup'),
-                            "awslogs-region": Refs.Region,
-                            "awslogs-stream-prefix": Fn.Select(1, Fn.Split(':', Fn.Ref('AppImage'))),
-                            "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
-                        }
+                            'awslogs-group': Fn.Ref('CloudwatchLogsGroup'),
+                            'awslogs-region': Refs.Region,
+                            'awslogs-stream-prefix': Fn.Select(1, Fn.Split(':', Fn.Ref('AppImage'))),
+                            'awslogs-multiline-pattern':
+                                '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
+                        },
                     },
                     PortMappings: [
                         {
-                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort')
-                        }
+                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
+                        },
                     ],
                     Links: [
                         Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
-                        Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName')
+                        Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
                     ],
                 },
                 {
                     Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
                     Cpu: 100,
                     Essential: true,
-                    Image: "parity/polkadot:v0.8.30",
+                    Image: 'parity/polkadot:v0.8.30',
                     Command: ['--rpc-external', '--ws-external', '--dev'],
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {
-                        LogDriver: "awslogs",
+                        LogDriver: 'awslogs',
                         Options: {
-                            "awslogs-group": Fn.Ref('SubstrateCloudwatchLogsGroup'),
-                            "awslogs-region": Refs.Region,
-                            "awslogs-stream-prefix": "substrate",
-                            "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
-                        }
+                            'awslogs-group': Fn.Ref('SubstrateCloudwatchLogsGroup'),
+                            'awslogs-region': Refs.Region,
+                            'awslogs-stream-prefix': 'substrate',
+                            'awslogs-multiline-pattern':
+                                '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
+                        },
                     },
                     PortMappings: [
                         {
@@ -892,319 +893,329 @@ export default cloudform({
                     Name: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
                     Environment: [
                         {
-                            Name: "POSTGRESQL_PORT",
-                            Value: "5432"
+                            Name: 'POSTGRESQL_PORT',
+                            Value: '5432',
                         },
                         {
-                            Name: "POSTGRESQL_DATABASE_NAME",
-                            Value: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbName')
+                            Name: 'POSTGRESQL_DATABASE_NAME',
+                            Value: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbName'),
                         },
                     ],
                     Secrets: [
                         {
-                            Name: "POSTGRESQL_HOST",
-                            ValueFrom: Fn.Join('', ['arn:aws:ssm:', Refs.Region, `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/authorizationDatabase/host"])
+                            Name: 'POSTGRESQL_HOST',
+                            ValueFrom: Fn.Join('', [
+                                'arn:aws:ssm:',
+                                Refs.Region,
+                                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
+                                DeployEnv,
+                                '/authorizationDatabase/host',
+                            ]),
                         },
                         {
-                            Name: "POSTGRESQL_USER",
-                            ValueFrom: Fn.Join('', ['arn:aws:ssm:', Refs.Region, `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/authorizationDatabase/username"])
+                            Name: 'POSTGRESQL_USER',
+                            ValueFrom: Fn.Join('', [
+                                'arn:aws:ssm:',
+                                Refs.Region,
+                                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
+                                DeployEnv,
+                                '/authorizationDatabase/username',
+                            ]),
                         },
                         {
-                            Name: "POSTGRESQL_PASSWORD",
-                            ValueFrom: Fn.Join('', ['arn:aws:ssm:', Refs.Region, `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`, DeployEnv, "/authorizationDatabase/password"])
-                        }
+                            Name: 'POSTGRESQL_PASSWORD',
+                            ValueFrom: Fn.Join('', [
+                                'arn:aws:ssm:',
+                                Refs.Region,
+                                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
+                                DeployEnv,
+                                '/authorizationDatabase/password',
+                            ]),
+                        },
                     ],
                     Cpu: 100,
                     Essential: true,
-                    Image: "supertokens/supertokens-postgresql:3.3",
+                    Image: 'supertokens/supertokens-postgresql:3.3',
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {
-                        LogDriver: "awslogs",
+                        LogDriver: 'awslogs',
                         Options: {
-                            "awslogs-group": Fn.Ref('AuthCoreCloudwatchLogsGroup'),
-                            "awslogs-region": Refs.Region,
-                            "awslogs-stream-prefix": "auth",
-                            "awslogs-multiline-pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z"
-                        }
+                            'awslogs-group': Fn.Ref('AuthCoreCloudwatchLogsGroup'),
+                            'awslogs-region': Refs.Region,
+                            'awslogs-stream-prefix': 'auth',
+                            'awslogs-multiline-pattern':
+                                '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
+                        },
                     },
                     PortMappings: [
                         {
                             ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
                             HostPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
                         },
-                    ]
-                }
+                    ],
+                },
             ],
-            ExecutionRoleArn: Fn.GetAtt(Resources.AppTaskExecutionRole, "Arn"),
-            TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, "Arn")
+            ExecutionRoleArn: Fn.GetAtt(Resources.AppTaskExecutionRole, 'Arn'),
+            TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, 'Arn'),
         }),
 
         [Resources.ECSALB]: new ElasticLoadBalancingV2.LoadBalancer({
             Name: Refs.StackName, // to long name
-            Scheme: "internet-facing",
+            Scheme: 'internet-facing',
             LoadBalancerAttributes: [
                 {
-                    Key: "idle_timeout.timeout_seconds",
-                    Value: "30"
-                }
+                    Key: 'idle_timeout.timeout_seconds',
+                    Value: '30',
+                },
             ],
-            Subnets: [
-                Fn.Ref(Resources.PublicASubnet),
-                Fn.Ref(Resources.PublicBSubnet)
-            ],
-            SecurityGroups: [
-                Fn.Ref(Resources.HttpHttpsServerSecurityGroup)
-            ]
+            Subnets: [Fn.Ref(Resources.PublicASubnet), Fn.Ref(Resources.PublicBSubnet)],
+            SecurityGroups: [Fn.Ref(Resources.HttpHttpsServerSecurityGroup)],
         }).dependsOn(Resources.HttpHttpsServerSecurityGroup),
 
         [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
             Certificates: [
                 {
-                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
-                }
+                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN'),
+                },
             ],
             DefaultActions: [
                 {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
-                }
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
+                },
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 443,
-            Protocol: "HTTPS"
+            Protocol: 'HTTPS',
         }).dependsOn(Resources.ECSServiceRole),
 
         [Resources.ALBHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
                 {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
-                }
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
+                },
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 80,
-            Protocol: "HTTP"
+            Protocol: 'HTTP',
         }).dependsOn(Resources.ECSServiceRole),
 
         // region substrate
         [Resources.SubstrateHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
                 {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
-                }
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
+                },
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 9933,
-            Protocol: "HTTP"
+            Protocol: 'HTTP',
         }).dependsOn(Resources.ECSServiceRole),
 
         [Resources.SubstrateWssListener]: new ElasticLoadBalancingV2.Listener({
             Certificates: [
                 {
-                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN')
-                }
+                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN'),
+                },
             ],
             DefaultActions: [
                 {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
-                }
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
+                },
             ],
             LoadBalancerArn: Fn.Ref(Resources.ECSALB),
             Port: 9944,
-            Protocol: "HTTPS"
+            Protocol: 'HTTPS',
         }).dependsOn(Resources.ECSServiceRole),
         // endregion
 
         [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
-                    Type: "redirect",
+                    Type: 'redirect',
                     RedirectConfig: {
-                        "Host" : "#{host}",
-                        "Path" : "/#{path}",
-                        "Port" : "443",
-                        "Protocol" : "HTTPS",
-                        "Query" : "#{query}",
-                        "StatusCode" : "HTTP_302"
-                    }
-                }
+                        Host: '#{host}',
+                        Path: '/#{path}',
+                        Port: '443',
+                        Protocol: 'HTTPS',
+                        Query: '#{query}',
+                        StatusCode: 'HTTP_302',
+                    },
+                },
             ],
             Conditions: [
                 {
-                    Field: "path-pattern",
-                    Values: ["/"]
-                }
+                    Field: 'path-pattern',
+                    Values: ['/'],
+                },
             ],
             ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-            Priority: 2
+            Priority: 2,
         }).dependsOn(Resources.ALBHttpListener),
 
         [Resources.ECSALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
-                }
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
+                },
             ],
             Conditions: [
                 {
-                    Field: "path-pattern",
-                    Values: ["/"]
-                }
+                    Field: 'path-pattern',
+                    Values: ['/'],
+                },
             ],
             ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-            Priority: 1
+            Priority: 1,
         }).dependsOn(Resources.ALBHttpListener),
 
         // region substrate
         [Resources.ECSSubstrateHttpListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
-                }
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
+                },
             ],
             Conditions: [
                 {
-                    Field: "path-pattern",
-                    Values: ["/"]
-                }
+                    Field: 'path-pattern',
+                    Values: ['/'],
+                },
             ],
             ListenerArn: Fn.Ref(Resources.SubstrateHttpListener),
-            Priority: 1
+            Priority: 1,
         }).dependsOn(Resources.SubstrateHttpListener),
 
         [Resources.ECSSubstrateWssListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
-                    Type: "forward",
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
-                }
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
+                },
             ],
             Conditions: [
                 {
-                    Field: "path-pattern",
-                    Values: ["/"]
-                }
+                    Field: 'path-pattern',
+                    Values: ['/'],
+                },
             ],
             ListenerArn: Fn.Ref(Resources.SubstrateWssListener),
-            Priority: 1
+            Priority: 1,
         }).dependsOn(Resources.SubstrateWssListener),
         // endregion
 
         [Resources.ECSAppTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
-            HealthCheckPath: "/api/health",
-            HealthCheckProtocol: "HTTP",
+            HealthCheckPath: '/api/health',
+            HealthCheckProtocol: 'HTTP',
             HealthCheckTimeoutSeconds: 10,
             HealthyThresholdCount: 2,
             Matcher: {
-                HttpCode: "200",
+                HttpCode: '200',
             },
             Name: Fn.Join('-', [Resources.ECSAppTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
-            Protocol: "HTTP",
+            Protocol: 'HTTP',
             TargetGroupAttributes: [
                 {
-                    Key: "deregistration_delay.timeout_seconds",
-                    Value: "30"
+                    Key: 'deregistration_delay.timeout_seconds',
+                    Value: '30',
                 },
                 {
-                    Key: "stickiness.enabled",
-                    Value: "true"
+                    Key: 'stickiness.enabled',
+                    Value: 'true',
                 },
                 {
-                    Key: "stickiness.type",
-                    Value: "lb_cookie"
+                    Key: 'stickiness.type',
+                    Value: 'lb_cookie',
                 },
                 {
-                    Value: "86400",
-                    Key: "stickiness.lb_cookie.duration_seconds"
-                }
+                    Value: '86400',
+                    Key: 'stickiness.lb_cookie.duration_seconds',
+                },
             ],
             UnhealthyThresholdCount: 5,
-            VpcId: Fn.Ref(Resources.VPC)
+            VpcId: Fn.Ref(Resources.VPC),
         }).dependsOn(Resources.ECSALB),
 
         [Resources.ECSSubTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
-            HealthCheckPath: "/health",
-            HealthCheckProtocol: "HTTP",
+            HealthCheckPath: '/health',
+            HealthCheckProtocol: 'HTTP',
             HealthCheckPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
             HealthCheckTimeoutSeconds: 10,
             HealthyThresholdCount: 2,
             Name: Fn.Join('-', [Resources.ECSSubTargetGroup, 'treasury', DeployEnv]), // added refs.stackname
             Port: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
-            Protocol: "HTTP",
+            Protocol: 'HTTP',
             TargetGroupAttributes: [
                 {
-                    Key: "deregistration_delay.timeout_seconds",
-                    Value: "30"
+                    Key: 'deregistration_delay.timeout_seconds',
+                    Value: '30',
                 },
                 {
-                    Key: "stickiness.enabled",
-                    Value: "true"
+                    Key: 'stickiness.enabled',
+                    Value: 'true',
                 },
                 {
-                    Key: "stickiness.type",
-                    Value: "lb_cookie"
+                    Key: 'stickiness.type',
+                    Value: 'lb_cookie',
                 },
                 {
-                    Value: "86400",
-                    Key: "stickiness.lb_cookie.duration_seconds"
-                }
+                    Value: '86400',
+                    Key: 'stickiness.lb_cookie.duration_seconds',
+                },
             ],
             UnhealthyThresholdCount: 5,
-            VpcId: Fn.Ref(Resources.VPC)
+            VpcId: Fn.Ref(Resources.VPC),
         }).dependsOn(Resources.ECSALB),
 
         [Resources.ECSAutoScalingGroup]: new AutoScaling.AutoScalingGroup({
-            VPCZoneIdentifier: [
-                Fn.Ref(Resources.PrivateASubnet),
-                Fn.Ref(Resources.PrivateBSubnet)
-            ],
+            VPCZoneIdentifier: [Fn.Ref(Resources.PrivateASubnet), Fn.Ref(Resources.PrivateBSubnet)],
             LaunchConfigurationName: Fn.Ref(Resources.ContainerInstances),
-            MinSize: "2",
-            MaxSize: "6",
-            DesiredCapacity: "2"
-        }).creationPolicy({
-            ResourceSignal: {
-                Timeout: "PT5M"
-            }
-        }).updatePolicy({
-            AutoScalingReplacingUpdate: {
-                WillReplace: true
-            }
-        }),
+            MinSize: '2',
+            MaxSize: '6',
+            DesiredCapacity: '2',
+        })
+            .creationPolicy({
+                ResourceSignal: {
+                    Timeout: 'PT5M',
+                },
+            })
+            .updatePolicy({
+                AutoScalingReplacingUpdate: {
+                    WillReplace: true,
+                },
+            }),
 
         [Resources.ContainerInstances]: new AutoScaling.LaunchConfiguration({
-            ImageId: "ami-9fc39c74",
-            SecurityGroups: [
-                Fn.Ref(Resources.ECSSecurityGroup)
-            ],
+            ImageId: 'ami-9fc39c74',
+            SecurityGroups: [Fn.Ref(Resources.ECSSecurityGroup)],
             InstanceType: Fn.FindInMap('ECS', DeployEnv, 'InstanceType'),
             IamInstanceProfile: Fn.Ref(Resources.EC2InstanceProfile),
             KeyName: 'treasury-ssh-key',
-            UserData: Fn.Base64(Fn.Join('', [
-                "#!/bin/bash -xe\n",
-                "echo ECS_CLUSTER=",
-                Fn.Ref(Resources.ECSCluster),
-                " >> /etc/ecs/ecs.config\n",
-                "yum install -y aws-cfn-bootstrap\n",
-                "/opt/aws/bin/cfn-signal -e $? ",
-                "         --stack ",
-                Refs.StackName,
-                "         --resource ECSAutoScalingGroup ",
-                "         --region ",
-                Refs.Region,
-                "\n"
-            ]))
-        }).dependsOn([
-            Resources.ECSSecurityGroup,
-            Resources.PublicRoute
-        ]),
+            UserData: Fn.Base64(
+                Fn.Join('', [
+                    '#!/bin/bash -xe\n',
+                    'echo ECS_CLUSTER=',
+                    Fn.Ref(Resources.ECSCluster),
+                    ' >> /etc/ecs/ecs.config\n',
+                    'yum install -y aws-cfn-bootstrap\n',
+                    '/opt/aws/bin/cfn-signal -e $? ',
+                    '         --stack ',
+                    Refs.StackName,
+                    '         --resource ECSAutoScalingGroup ',
+                    '         --region ',
+                    Refs.Region,
+                    '\n',
+                ]),
+            ),
+        }).dependsOn([Resources.ECSSecurityGroup, Resources.PublicRoute]),
 
         [Resources.ECSService]: new ECS.Service({
             Cluster: Fn.Ref(Resources.ECSCluster),
@@ -1213,188 +1224,188 @@ export default cloudform({
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
                     ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup)
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
                 },
                 {
                     ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
                     ContainerPort: 9944,
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup)
-                }
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
+                },
             ],
             DeploymentConfiguration: {
-                MinimumHealthyPercent: 50
+                MinimumHealthyPercent: 50,
             },
             // Role: Fn.Ref(Resources.ECSServiceRole),
-            TaskDefinition: Fn.Ref(Resources.TaskDefinition)
+            TaskDefinition: Fn.Ref(Resources.TaskDefinition),
         }).dependsOn(Resources.ALBHttpListener),
 
         [Resources.ECSServiceRole]: new IAM.Role({
             AssumeRolePolicyDocument: {
                 Statement: [
                     {
-                        Effect: "Allow",
+                        Effect: 'Allow',
                         Principal: {
-                            Service: ["ecs.amazonaws.com"]
+                            Service: ['ecs.amazonaws.com'],
                         },
-                        Action: ["sts:AssumeRole"]
-                    }
-                ]
+                        Action: ['sts:AssumeRole'],
+                    },
+                ],
             },
-            Path: "/",
+            Path: '/',
             Policies: [
                 {
-                    PolicyName: "ecs-service",
+                    PolicyName: 'ecs-service',
                     PolicyDocument: {
                         Statement: [
                             {
-                                Effect: "Allow",
+                                Effect: 'Allow',
                                 Action: [
-                                    "elasticloadbalancing:DeregisterInstancesFromLoadBalancer",
-                                    "elasticloadbalancing:DeregisterTargets",
-                                    "elasticloadbalancing:Describe*",
-                                    "elasticloadbalancing:RegisterInstancesWithLoadBalancer",
-                                    "elasticloadbalancing:RegisterTargets",
-                                    "ec2:Describe*",
-                                    "ec2:AuthorizeSecurityGroupIngress"
+                                    'elasticloadbalancing:DeregisterInstancesFromLoadBalancer',
+                                    'elasticloadbalancing:DeregisterTargets',
+                                    'elasticloadbalancing:Describe*',
+                                    'elasticloadbalancing:RegisterInstancesWithLoadBalancer',
+                                    'elasticloadbalancing:RegisterTargets',
+                                    'ec2:Describe*',
+                                    'ec2:AuthorizeSecurityGroupIngress',
                                 ],
-                                Resource: "*"
-                            }
-                        ]
-                    }
-                }
-            ]
+                                Resource: '*',
+                            },
+                        ],
+                    },
+                },
+            ],
         }),
 
         [Resources.ServiceScalingTarget]: new ApplicationAutoScaling.ScalableTarget({
             MaxCapacity: 2,
             MinCapacity: 1,
             ResourceId: Fn.Join('', [
-                "service/",
+                'service/',
                 Fn.Ref(Resources.ECSCluster),
-                "/",
-                Fn.GetAtt(Resources.ECSService, 'Name')
+                '/',
+                Fn.GetAtt(Resources.ECSService, 'Name'),
             ]),
             RoleARN: Fn.GetAtt(Resources.AutoscalingRole, 'Arn'),
-            ScalableDimension: "ecs:service:DesiredCount",
-            ServiceNamespace: "ecs"
+            ScalableDimension: 'ecs:service:DesiredCount',
+            ServiceNamespace: 'ecs',
         }).dependsOn(Resources.ECSService),
 
         [Resources.ServiceScalingPolicy]: new ApplicationAutoScaling.ScalingPolicy({
-            PolicyName: "AStepPolicy",
-            PolicyType: "StepScaling",
+            PolicyName: 'AStepPolicy',
+            PolicyType: 'StepScaling',
             ScalingTargetId: Fn.Ref(Resources.ServiceScalingTarget),
             StepScalingPolicyConfiguration: {
-                AdjustmentType: "PercentChangeInCapacity",
+                AdjustmentType: 'PercentChangeInCapacity',
                 Cooldown: 60,
-                MetricAggregationType: "Average",
+                MetricAggregationType: 'Average',
                 StepAdjustments: [
                     {
                         MetricIntervalLowerBound: 0,
-                        ScalingAdjustment: 200
-                    }
-                ]
-            }
+                        ScalingAdjustment: 200,
+                    },
+                ],
+            },
         }),
 
         [Resources.CPUUsageAlarmScaleUp]: new CloudWatch.Alarm({
-            AlarmDescription: "Alarm if instance CPU usage is >75%.",
+            AlarmDescription: 'Alarm if instance CPU usage is >75%.',
             AlarmActions: [Fn.Ref(Resources.ServiceScalingPolicy)],
-            MetricName: "CPUUtilization",
-            Namespace: "AWS/EC2",
-            Statistic: "Average",
+            MetricName: 'CPUUtilization',
+            Namespace: 'AWS/EC2',
+            Statistic: 'Average',
             Period: 60,
             EvaluationPeriods: 3,
             Threshold: 75,
-            ComparisonOperator: "GreaterThanThreshold",
+            ComparisonOperator: 'GreaterThanThreshold',
             Dimensions: [
                 {
-                    Name: "AutoScalingGroupName",
-                    Value: Fn.Ref(Resources.ECSAutoScalingGroup)
-                }
-            ]
+                    Name: 'AutoScalingGroupName',
+                    Value: Fn.Ref(Resources.ECSAutoScalingGroup),
+                },
+            ],
         }),
 
         [Resources.EC2Role]: new IAM.Role({
             AssumeRolePolicyDocument: {
                 Statement: [
                     {
-                        Effect: "Allow",
+                        Effect: 'Allow',
                         Principal: {
-                            Service: ["ec2.amazonaws.com"]
+                            Service: ['ec2.amazonaws.com'],
                         },
-                        Action: ["sts:AssumeRole"]
-                    }
-                ]
+                        Action: ['sts:AssumeRole'],
+                    },
+                ],
             },
-            Path: "/",
+            Path: '/',
             Policies: [
                 {
-                    PolicyName: "ecs-service",
+                    PolicyName: 'ecs-service',
                     PolicyDocument: {
                         Statement: [
                             {
-                                Effect: "Allow",
+                                Effect: 'Allow',
                                 Action: [
-                                    "ecs:CreateCluster",
-                                    "ecs:DeregisterContainerInstance",
-                                    "ecs:DiscoverPollEndpoint",
-                                    "ecs:Poll",
-                                    "ecs:RegisterContainerInstance",
-                                    "ecs:StartTelemetrySession",
-                                    "ecs:Submit*",
-                                    "ecr:GetAuthorizationToken",
-                                    "ecr:BatchCheckLayerAvailability",
-                                    "ecr:GetDownloadUrlForLayer",
-                                    "ecr:BatchGetImage",
-                                    "logs:CreateLogStream",
-                                    "logs:PutLogEvents"
+                                    'ecs:CreateCluster',
+                                    'ecs:DeregisterContainerInstance',
+                                    'ecs:DiscoverPollEndpoint',
+                                    'ecs:Poll',
+                                    'ecs:RegisterContainerInstance',
+                                    'ecs:StartTelemetrySession',
+                                    'ecs:Submit*',
+                                    'ecr:GetAuthorizationToken',
+                                    'ecr:BatchCheckLayerAvailability',
+                                    'ecr:GetDownloadUrlForLayer',
+                                    'ecr:BatchGetImage',
+                                    'logs:CreateLogStream',
+                                    'logs:PutLogEvents',
                                 ],
-                                Resource: "*"
-                            }
-                        ]
-                    }
-                }
-            ]
+                                Resource: '*',
+                            },
+                        ],
+                    },
+                },
+            ],
         }),
 
         [Resources.AutoscalingRole]: new IAM.Role({
             AssumeRolePolicyDocument: {
                 Statement: [
                     {
-                        Effect: "Allow",
+                        Effect: 'Allow',
                         Principal: {
-                            Service: ["application-autoscaling.amazonaws.com"]
+                            Service: ['application-autoscaling.amazonaws.com'],
                         },
-                        Action: ["sts:AssumeRole"]
-                    }
-                ]
+                        Action: ['sts:AssumeRole'],
+                    },
+                ],
             },
-            Path: "/",
+            Path: '/',
             Policies: [
                 {
-                    PolicyName: "service-autoscaling",
+                    PolicyName: 'service-autoscaling',
                     PolicyDocument: {
                         Statement: [
                             {
-                                Effect: "Allow",
+                                Effect: 'Allow',
                                 Action: [
-                                    "application-autoscaling:*",
-                                    "cloudwatch:DescribeAlarms",
-                                    "cloudwatch:PutMetricAlarm",
-                                    "ecs:DescribeServices",
-                                    "ecs:UpdateService"
+                                    'application-autoscaling:*',
+                                    'cloudwatch:DescribeAlarms',
+                                    'cloudwatch:PutMetricAlarm',
+                                    'ecs:DescribeServices',
+                                    'ecs:UpdateService',
                                 ],
-                                Resource: "*"
-                            }
-                        ]
-                    }
-                }
-            ]
+                                Resource: '*',
+                            },
+                        ],
+                    },
+                },
+            ],
         }),
 
         [Resources.EC2InstanceProfile]: new IAM.InstanceProfile({
-            Path: "/",
-            Roles: [Fn.Ref(Resources.EC2Role)]
-        })
-    }
+            Path: '/',
+            Roles: [Fn.Ref(Resources.EC2Role)],
+        }),
+    },
 })

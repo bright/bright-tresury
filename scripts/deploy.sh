@@ -24,6 +24,7 @@ deploy_params="\
 ParameterKey=DeployEnv,ParameterValue=${DEPLOY_ENV} \
 ParameterKey=AppImage,ParameterValue=${DOCKER_REGISTRY}treasury:${VCS_VERSION}"
 
+
 if [[ ${stack_exists} =~ "[]" ]]; then
     echo "Create new app stack: ${stack_name}"
     set +e

@@ -10,6 +10,7 @@ docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.yml \
     build --no-cache
 
+
 if [[ ! -z "${DOCKER_REGISTRY}" ]]; then
     echo "Push containers to registry"
     aws ecr get-login --registry-ids "${DOCKER_REGISTRY%%.*}" --region eu-central-1 --no-include-email | bash

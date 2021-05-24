@@ -1,8 +1,17 @@
 {
-  "PROVIDER_SOCKET": "wss://dev-node.substrate.dev:9944",
-  "NETWORK_CURRENCY": "LOC",
-  "BOND_VALUE": {
-    "MIN_VALUE": 1000,
-    "PERCENT": 5
-  }
+    "APP_NAME": "Bright Treasury",
+    "API_URL": "http://localhost:3001",
+    "WEBSITE_URL": "http://localhost:3000",
+    "PROVIDER_SOCKET": "ws://localhost:9944",
+    "NETWORK_NAME": "localhost",
+    "NETWORK_CURRENCY": "LOC",
+    "NETWORK_COLOR": "#E6007A",
+    "BOND_VALUE": {
+        "MIN_VALUE": 1000,
+        "PERCENT": 5
+    },
+    "CUSTOM_TYPES": {
+        "Address": "MultiAddress",
+        "LookupSource": "MultiAddress"
+    }
 }

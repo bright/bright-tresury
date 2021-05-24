@@ -3,10 +3,10 @@
     "websiteUrl": "https://treasury.brightinventions.pl",
     "port": 3000,
     "blockchain": {
-        "nodeUrl": "ws://treasury-substrate-stage:9944"
+        "nodeUrl": "ws://treasury-substrate-production:9944"
     },
     "auth": {
-        "coreUrl": "http://treasury-auth-stage:3567",
+        "coreUrl": "http://treasury-auth-production:3567",
         "cookieSecure": false
     }
 }

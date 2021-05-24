@@ -1,5 +1,5 @@
 {
-    "APP_NAME": "treasury-production",
+    "APP_NAME": "treasury-stage",
     "API_URL": "https://treasury.brightinventions.pl",
     "WEBSITE_URL": "https://treasury.brightinventions.pl",
     "PROVIDER_SOCKET": "wss://treasury.brightinventions.pl:9944",
