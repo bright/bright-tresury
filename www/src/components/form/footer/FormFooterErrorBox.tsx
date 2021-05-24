@@ -28,9 +28,9 @@ interface OwnProps {
     error: string
 }
 
-export type FooterErrorBoxProps = OwnProps & TypographyProps
+export type FormFooterErrorBoxProps = OwnProps & TypographyProps
 
-export const FormFooterErrorBox: React.FC<FooterErrorBoxProps> = ({ error, className, ...props }) => {
+export const FormFooterErrorBox: React.FC<FormFooterErrorBoxProps> = ({ error, className, ...props }) => {
     const classes = useStyles()
 
     return (
