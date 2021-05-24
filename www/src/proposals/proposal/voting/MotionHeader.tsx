@@ -5,6 +5,7 @@ import nayIcon from "../../../assets/nay.svg";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Time} from "@polkadot/util/types";
 import {useTranslation} from "react-i18next";
+import {ProposalMotionEnd} from "../../proposals.api";
 
 const useStyles = makeStyles( (theme: Theme) => createStyles({
     root: {
@@ -40,30 +41,28 @@ const useStyles = makeStyles( (theme: Theme) => createStyles({
 
 interface MotionHeaderProps {
     method: string,
-    end: {
-        endBlock: number,
-        remainingBlocks: number,
-        timeLeft: Time
-    },
+    end: ProposalMotionEnd,
     ayesCount: number,
     naysCount: number
 }
+const singularPluralOrNull = (count: number, singular: string, plural: string): string | null =>
+    count ? count > 1 ? `${count}${plural}` : `1${singular}` : null;
+const makeTimeStr = ({ days, hours, minutes, seconds }: Time) =>
+    [
+        singularPluralOrNull(days, 'day', 'days'), singularPluralOrNull(hours, 'hr', 'hrs'),
+        singularPluralOrNull(minutes, 'min', 'mins'), singularPluralOrNull(seconds, 's', 's')
+    ]
+    .filter((value): value is string => !!value)
+    .slice(0, 2)
+    .join(' ');
 
 const MotionHeader: React.FC<MotionHeaderProps> = ({method, ayesCount, naysCount, end}) => {
     const styles = useStyles();
     const {t} = useTranslation()
     const isApprovalMotion = method === 'approveProposal';
     const {endBlock, timeLeft} = end;
-    const { days, hours, minutes, seconds } = timeLeft;
-    const singularPluralOrNull = (count: number, singular: string, plural: string): string | null =>
-        count ? count > 1 ? `${count}${plural}` : `1${singular}` : null;
-    const timeStr = [
-        singularPluralOrNull(days, 'day', 'days'), singularPluralOrNull(hours, 'hr', 'hrs'),
-        singularPluralOrNull(minutes, 'min', 'mins'), singularPluralOrNull(seconds, 's', 's')
-        ]
-        .filter((value): value is string => !!value)
-        .slice(0, 2)
-        .join(' ');
+    const endBlockStr = endBlock ? `#${endBlock.toLocaleString('en-US')}` : 'N/A';
+    const timeStr = timeLeft ? `(${makeTimeStr(timeLeft)})` : '';
 
     return (
             <CardHeader>
@@ -77,7 +76,7 @@ const MotionHeader: React.FC<MotionHeaderProps> = ({method, ayesCount, naysCount
                         </div>
                     </div>
                     <div className={styles.lowerRow}>
-                        {t('proposal.voting.votingEnd')}<strong className={styles.remainingTime}> {timeStr} (#{endBlock.toLocaleString('en-US')})</strong>
+                        {t('proposal.voting.votingEnd')}<strong className={styles.remainingTime}> {timeStr} ({endBlockStr})</strong>
                     </div>
                 </div>
             </CardHeader>

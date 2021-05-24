@@ -7,9 +7,9 @@ const useStyles = makeStyles(() =>
         header: {
             fontSize: '18px',
             fontWeight: 'bold',
-            color: '#1B1D1C',
+            color: '#1B1D1C'
         }
-    }),
+    })
 );
 
 export const Header: React.FC = ({children}) => {

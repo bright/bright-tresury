@@ -1,14 +1,14 @@
 import React from "react";
 import {Card} from "../../../components/card/Card";
 import {Divider} from "../../../components/divider/Divider";
-import {ProposalVote} from "../../proposals.api";
+import {ProposalMotion} from "../../proposals.api";
 import MotionHeader from "./MotionHeader";
 import MotionDetails from "./MotionDetails";
 import {Paper, Theme} from "@material-ui/core";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
 
 interface MotionProps {
-    motion: ProposalVote
+    motion: ProposalMotion
 }
 const useStyles = makeStyles((theme: Theme) => createStyles({
     root: {

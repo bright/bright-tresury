@@ -3,7 +3,8 @@ import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/use
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import MotionCard from './MotionCard';
 import {useTranslation} from "react-i18next";
-import {ProposalDto} from "../../proposals.dto";
+import {ProposalDto, ProposalMotion} from "../../proposals.dto";
+import NoMotion from "./NoMotion";
 /*
 ProposalVoting:
     MotionCard:
@@ -26,23 +27,30 @@ const useStyles = makeStyles( (theme: Theme) => createStyles({
     }
 }));
 
-interface ProposalVotingProps {
-    proposal: ProposalDto
+interface MotionsProp {
+    motions: ProposalMotion[]
 }
-
-const ProposalVoting: React.FC<ProposalVotingProps> = ({proposal}) => {
+const Motions: React.FC<MotionsProp> = ({motions}) => {
     const styles = useStyles();
+
     const classes = useSuccessfullyLoadedItemStyles()
-    // return <div className={classes.content}>Voting</div>
     const {t} = useTranslation();
     return (
         <div className={styles.root}>
-            { proposal.council?.length ?
-                proposal.council.map(motion => <MotionCard key={motion.hash} motion={motion}/>) :
-                <p>{t('proposal.voting.noMotion')}</p>
+            {
+                motions.map(motion => <MotionCard key={motion.hash} motion={motion}/>)
             }
         </div>
     )
+}
+
+interface ProposalVotingProps {
+    proposal: ProposalDto
+}
+const ProposalVoting: React.FC<ProposalVotingProps> = ({proposal}) => {
+    return (
+        proposal.council?.length ? <Motions motions={proposal.council}/> : <NoMotion proposalIndex={proposal.proposalIndex} />
+    );
 }
 
 export default ProposalVoting;

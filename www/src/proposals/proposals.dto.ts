@@ -1,4 +1,4 @@
-
+import {Time} from "@polkadot/util/types";
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -10,8 +10,8 @@ export enum ProposalStatus {
 
 export interface ProposalDto {
     proposalIndex: number
-    proposer: any
-    beneficiary: any
+    proposer: AccountInfo
+    beneficiary: AccountInfo
     value: number
     bond: number
     status: ProposalStatus
@@ -20,14 +20,31 @@ export interface ProposalDto {
     isCreatedFromIdeaMilestone: boolean
     ideaId?: string
     ideaMilestoneId?: string
-    council: ProposalVote[]
+    council: ProposalMotion[]
 }
-export interface ProposalVote {
+
+export interface ProposalMotionEnd {
+    endBlock?: number,
+    remainingBlocks?: number,
+    timeLeft?: Time
+}
+
+export interface ProposalMotion {
     hash: string,
     method: string,
-    ayes: any[],
-    nays: any[],
+    ayes: AccountInfo[],
+    nays: AccountInfo[],
     motionIndex: number,
     threshold: number,
-    end: any // block number when voting is over
+    end: ProposalMotionEnd // block number when voting is over
 }
+export interface AccountInfo {
+    address: string,
+    display?: string;
+    email?: string;
+    legal?: string;
+    riot?: string;
+    twitter?: string;
+    web?: string;
+}
+

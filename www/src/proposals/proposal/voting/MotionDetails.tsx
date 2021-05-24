@@ -3,8 +3,11 @@ import React from "react";
 import {AddressInfo} from "../../../components/identicon/AddressInfo";
 import {createStyles, makeStyles} from "@material-ui/core/styles";
 import {Theme} from "@material-ui/core";
+import {AddressInfoWithLabel} from "../../../components/identicon/AddressInfoWithLabel";
+import {AccountInfo} from "../../proposals.api";
 interface MotionDetailsProps {
-    ayes: any, nays: any
+    ayes: AccountInfo[]
+    nays: AccountInfo[]
 }
 
 const useStyles = makeStyles((theme: Theme) => createStyles({
@@ -23,9 +26,9 @@ const useStyles = makeStyles((theme: Theme) => createStyles({
 
 const MotionDetails: React.FC<MotionDetailsProps> = ({ayes, nays}) => {
     const styles = useStyles();
-    const Vote = (vote:any, isAye:boolean) => (
+    const Vote = (vote: AccountInfo, isAye: boolean) => (
         <div className={styles.vote} key={`${isAye ? 'aye' : 'nay'}_${vote.address}`}>
-            <AddressInfo address={vote.address} label={vote.display || ''}></AddressInfo>
+            <AddressInfoWithLabel address={vote.address} label={vote.display || ''}></AddressInfoWithLabel>
             <span style={{}}>{isAye ? 'Aye' : 'Nay'}</span>
         </div>
     )
@@ -34,8 +37,8 @@ const MotionDetails: React.FC<MotionDetailsProps> = ({ayes, nays}) => {
             {
 
                 [
-                    ...ayes.map((aye: any) => Vote(aye, true)),
-                    ...nays.map((nay: any) => Vote(nay, false))
+                    ...ayes.map((aye: AccountInfo) => Vote(aye, true)),
+                    ...nays.map((nay: AccountInfo) => Vote(nay, false))
                 ]
             }
         </div>

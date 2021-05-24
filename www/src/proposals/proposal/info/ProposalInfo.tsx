@@ -79,8 +79,8 @@ export const ProposalInfo = ({
             <Label label={t('proposal.content.info.proposer')} />
             <div className={classes.proposer}>
                 <>
-                    <Identicon address={proposer} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>{ellipseTextInTheMiddle(proposer)}</div>
+                    <Identicon address={proposer.address} />
+                    <div className={`${classes.accountValue} ${classes.text}`}>{ellipseTextInTheMiddle(proposer.address)}</div>
                 </>
             </div>
 

@@ -352,7 +352,12 @@
         "voting": {
           "motion": "Motion",
           "votingEnd": "Voting end - ",
-          "noMotion": "No motion made"
+          "noMotion": {
+              "title": "No one has voted on the proposal yet",
+              "body1": "While waiting for motions from Councils, you can go to the discussion tab",
+              "body2": "to make sure that no aspect of the topic has slipped away from you or the community",
+              "visitDiscussions": "Visit discussions"
+          }
         }
     },
     "substrate": {

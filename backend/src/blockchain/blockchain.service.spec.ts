@@ -8,6 +8,8 @@ import {BlockchainModule} from "./blockchain.module";
 import BN from 'bn.js';
 import {BlockchainService} from "./blockchain.service";
 import {BN_TEN} from "./utils";
+import {ApiTypes} from '@polkadot/api/types'
+import {SubmittableExtrinsic} from "@polkadot/api/submittable/types";
 
 describe(`Blockchain service`, () => {
     // TODO fix types!
@@ -27,7 +29,7 @@ describe(`Blockchain service`, () => {
     const service = beforeAllSetup(() => module().get<BlockchainService>(BlockchainService))
 
     beforeEach(async () => {
-        api = await service().getApi()
+        api = await service().getApi();
         keyring = new Keyring({type: 'sr25519'});
         aliceKeypair = keyring.addFromUri('//Alice', {name: 'Alice default'});
     })
@@ -116,24 +118,55 @@ describe(`Blockchain service`, () => {
         }, 60000)
     })
 
+    const signAndSend = (extrinsic: SubmittableExtrinsic<ApiTypes>, keyringPair: KeyringPair): Promise<SubmittableResult> =>
+        new Promise((resolve) => {
+            extrinsic.signAndSend(keyringPair, (result: SubmittableResult) => {
+                if (result.isFinalized) {
+                    resolve(result)
+                }
+            })
+    })
+
+    const randomString = (): string => Math.random().toString(36).substring(7);
+
+    describe('getIdentities', () => {
+        it ('should return Alice identity', async () => {
+            const displayRaw = randomString();
+            const extrinsic = api.tx.identity.setIdentity({display: {Raw: displayRaw}})
+            await signAndSend(extrinsic, aliceKeypair);
+            const identities = await service().getIdentities([aliceAddress]);
+            expect(identities.get(aliceAddress)?.display).toBe(displayRaw);
+        }, 60000)
+    })
+    describe('getRemainingTime', () => {
+        it(' ', async (done) => {
+            const currentBlockNumber = await api.derive.chain.bestNumber();
+            const futureBlockNumber = currentBlockNumber.add(new BN(1));
+            const {endBlock, remainingBlocks, timeLeft} = service().getRemainingTime(currentBlockNumber,futureBlockNumber);
+            expect(endBlock).toBe(futureBlockNumber.toNumber());
+            expect(remainingBlocks).toBe(1);
+            expect(timeLeft?.seconds).toBe(6); // assuming that time for one block is 6 seconds
+            done();
+        }, 60000)
+    })
     describe('getProposals', () => {
         it('should return existing proposals', async (done) => {
             // create a proposal
+            const setIdentityExtrinsic = api.tx.identity.setIdentity({display: {Raw: 'Alice'}})
+            await signAndSend(setIdentityExtrinsic, aliceKeypair);
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
             const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), bobAddress)
-            await extrinsic.signAndSend(aliceKeypair, async (result: SubmittableResult) => {
-                if (result.isFinalized) {
-                    const proposals = await service().getProposals()
-                    expect(proposals.length).toBeGreaterThan(0)
-                    const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
-                    expect(lastProposal.proposalIndex).toBe(nextProposalIndex)
-                    expect(lastProposal.proposer).toBe(aliceAddress)
-                    expect(lastProposal.beneficiary).toBe(bobAddress)
-                    expect(lastProposal.bond).toBe(50)
-                    expect(lastProposal.value).toBe(1000)
-                    done()
-                }
-            })
+            await signAndSend(extrinsic, aliceKeypair);
+            const proposals = await service().getProposals()
+            expect(proposals.length).toBeGreaterThan(0)
+            const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
+            expect(lastProposal.proposalIndex).toBe(nextProposalIndex)
+            expect(lastProposal.proposer.address).toBe(aliceAddress)
+            expect(lastProposal.proposer.display).toBe('Alice')
+            expect(lastProposal.beneficiary.address).toBe(bobAddress)
+            expect(lastProposal.bond).toBe(50)
+            expect(lastProposal.value).toBe(1000)
+            done()
         }, 60000)
     })
 });

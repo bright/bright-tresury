@@ -11,7 +11,7 @@ export enum BlockchainProposalStatus {
     Approval = 'approval',
 }
 
-export interface BlockchainProposalVote {
+export interface BlockchainProposalMotion {
     hash: string;
     method: string;
     ayes: BlockchainAccountInfo[];
@@ -27,7 +27,7 @@ export interface BlockchainProposal {
     beneficiary: BlockchainAccountInfo;
     value: number;
     bond: number;
-    council: BlockchainProposalVote[];
+    council: BlockchainProposalMotion[];
     status: BlockchainProposalStatus;
 }
 
@@ -36,9 +36,9 @@ export interface BlockchainMotionEnd {
     remainingBlocks?: number,
     timeLeft?: Time
 }
-function toBlockchainProposalVote (council: DeriveCollectiveProposal,
+function toBlockchainProposalMotion (council: DeriveCollectiveProposal,
                                    identities: Map<string, DeriveAccountRegistration>,
-                                   calcRemainingTime: (endBlock: BlockNumber | undefined) => BlockchainMotionEnd): BlockchainProposalVote {
+                                   calcRemainingTime: (endBlock: BlockNumber | undefined) => BlockchainMotionEnd): BlockchainProposalMotion {
     const toStringVotesArray = (votesVector: Vec<AccountId> | undefined): string[] => votesVector?.toArray()?.map((accountId) => accountId.toHuman()) || []
     const {hash, proposal, votes} = council
     return {
@@ -49,7 +49,7 @@ function toBlockchainProposalVote (council: DeriveCollectiveProposal,
         motionIndex: votes?.index.toNumber(),
         threshold: votes?.threshold.toNumber(),
         end: calcRemainingTime(votes?.end)
-    } as BlockchainProposalVote
+    } as BlockchainProposalMotion
 }
 
 export function toBlockchainProposal (derivedProposal: DeriveTreasuryProposal,
@@ -65,7 +65,7 @@ export function toBlockchainProposal (derivedProposal: DeriveTreasuryProposal,
         beneficiary: toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress)),
         value: transformBalance(proposal.value, 15),
         bond: transformBalance(proposal.bond, 15),
-        council: council.map((motion) => toBlockchainProposalVote(motion, identities, calcRemainingTime)),
+        council: council.map((motion) => toBlockchainProposalMotion(motion, identities, calcRemainingTime)),
         status
     } as BlockchainProposal
 }

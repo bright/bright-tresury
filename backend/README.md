@@ -11,7 +11,7 @@ Please make sure that `web` role has required privileges for `treasury` and `tre
 Run:
 * `nvm use`
 * `npm install`
-* `npm run compile`
+* `npm run compile` 
 * `DEPLOY_ENV=development-local DATABASE_USERNAME=deployer  npm run database:migrate`
 * `DEPLOY_ENV=development-local npm run auth:core:dev`
 * `DEPLOY_ENV=development-local npm run main`
