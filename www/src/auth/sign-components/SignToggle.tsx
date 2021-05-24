@@ -13,6 +13,7 @@ const useStyles = makeStyles(() =>
             justifyContent: 'center',
         },
         toggle: {
+            height: '46px',
             width: '100%',
         },
     }),

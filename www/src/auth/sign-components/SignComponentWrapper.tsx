@@ -1,12 +1,12 @@
-import React from "react";
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
+import React from 'react'
+import { makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) => {
     return {
         inputField: {
             marginTop: '2em',
-            width: '50%',
+            width: '424px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 width: '75%',
             },
@@ -19,10 +19,8 @@ const useStyles = makeStyles((theme: Theme) => {
     }
 })
 
-export const SignComponentWrapper: React.FC = ({children}) => {
+export const SignComponentWrapper: React.FC = ({ children }) => {
     const classes = useStyles()
 
-    return <div className={classes.inputField}>
-        {children}
-    </div>
+    return <div className={classes.inputField}>{children}</div>
 }

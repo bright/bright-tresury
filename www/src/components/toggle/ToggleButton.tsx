@@ -1,7 +1,7 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
-import React from "react";
-import {ToggleButton as MaterialToggleButton} from "@material-ui/lab";
-import {NavLink} from "react-router-dom";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
+import { ToggleButton as MaterialToggleButton } from '@material-ui/lab'
+import { NavLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: 0,
             fontWeight: 'bold',
             textTransform: 'none',
-            padding: `14px 34px`,
+            padding: `11px 34px`,
         },
         inactive: {
             width: '100%',
@@ -19,18 +19,18 @@ const useStyles = makeStyles((theme: Theme) =>
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
                 color: theme.palette.primary.main,
-                background: theme.palette.background.default
+                background: theme.palette.background.default,
             },
         },
         active: {
             '& > *': {
                 color: `${theme.palette.background.default} !important`,
                 background: `${theme.palette.primary.main} !important`,
-                boxShadow: `0px 0px 5px rgba(0, 0, 0, 0.5)`
-            }
-        }
+                boxShadow: `0px 0px 5px rgba(0, 0, 0, 0.5)`,
+            },
+        },
     }),
-);
+)
 
 export interface ToggleEntry {
     label: string
@@ -41,16 +41,13 @@ interface OwnProps {
     entry: ToggleEntry
 }
 
-export const ToggleButton: React.FC<OwnProps> = ({entry}) => {
+export const ToggleButton: React.FC<OwnProps> = ({ entry }) => {
     const classes = useStyles()
-    return <NavLink to={entry.path}
-                    className={classes.inactive}
-                    activeClassName={classes.active}>
-        <MaterialToggleButton
-            classes={classes}
-            value={entry.label}>
-            {entry.label}
-        </MaterialToggleButton>
-    </NavLink>
-};
-
+    return (
+        <NavLink to={entry.path} className={classes.inactive} activeClassName={classes.active}>
+            <MaterialToggleButton classes={classes} value={entry.label}>
+                {entry.label}
+            </MaterialToggleButton>
+        </NavLink>
+    )
+}
