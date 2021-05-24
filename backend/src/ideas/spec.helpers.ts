@@ -53,7 +53,8 @@ export async function createSessionData(
     const defaultUser = new User(
         user.id ?? uuid(),
         user.username ?? 'chuck',
-        user.email ?? 'chuck@test.test')
+        user.email ?? 'chuck@test.test',
+        true)
 
     const repository: Repository<User> = usersRepository ?? beforeSetupFullApp().get().get(getRepositoryToken(User))
     const userEntity = await repository.save({...defaultUser, ...user})

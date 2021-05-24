@@ -80,7 +80,7 @@ export class UsersService {
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         await this.validateUser(createUserDto)
-        const user = new User(createUserDto.authId, createUserDto.username, createUserDto.email)
+        const user = new User(createUserDto.authId, createUserDto.username, createUserDto.email, true)
         const createdUser = await this.userRepository.save(user)
         return (await this.findOne(createdUser.id))!
     }
@@ -93,7 +93,7 @@ export class UsersService {
             await this.validateUsername(dto.username)
         }
         const user = await this.findOne(id)
-        const userToSave = {...user, ...dto}
+        const userToSave = {...user, ...dto, isEmailPasswordEnabled: true}
         await this.userRepository.save(userToSave)
         return (await this.findOne(id))!
     }
@@ -105,6 +105,7 @@ export class UsersService {
                 createBlockchainUserDto.authId,
                 createBlockchainUserDto.username,
                 createBlockchainUserDto.username,
+                false,
                 [],
             ),
         )

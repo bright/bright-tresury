@@ -1,13 +1,13 @@
 import * as React from 'react'
-import { useEffect, useMemo, useState } from 'react'
-import { SignInAPIResponse, SignUpAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
+import {useEffect, useMemo, useState} from 'react'
+import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
-import { signIn as signInApi, SignInData, signOut as signOutApi, SignUpData } from './auth.api'
-import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
-import { Web3AssociateValues } from './account/web3/Web3AccountForm'
-import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
-import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
-import { makePrimary, unlinkAddress } from './account/web3/web3.api'
+import {makePrimary, unlinkAddress} from './account/web3/web3.api'
+import {Web3AssociateValues} from './account/web3/Web3AccountForm'
+import {signIn as signInApi, SignInData, signOut as signOutApi, SignUpData} from './auth.api'
+import {handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp} from './handleWeb3Sign'
+import {Web3SignInValues} from './sign-in/web3/Web3SignIn'
+import {Web3SignUpValues} from './sign-up/web3/Web3SignUp'
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
@@ -18,6 +18,7 @@ export interface AuthContextState {
     web3Associate: (web3AssociateValues: Web3AssociateValues) => Promise<void>
     web3Unlink: (address: string) => Promise<void>
     web3MakePrimary: (address: string) => Promise<void>
+    // emailPasswordAssociate: (account: Account, details: EmailPasswordAssociateDetailsDto) => Promise<void>
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
@@ -51,12 +52,35 @@ const AuthContextProvider: React.FC = (props) => {
                 setUser({
                     ...payload,
                     isWeb3: payload.web3Addresses && payload.web3Addresses.length > 0,
-                    isEmailPassword: false//!!payload.email
+                    isEmailPassword: !!payload.email
                 })
             })
         } else {
             setUser(undefined)
         }
+    }
+
+    const callWithRefreshToken = (call: Promise<any>) => {
+        return call
+            .then(() => {
+                refreshJwt()
+            })
+            .catch((error) => {
+                console.error(error)
+                throw error
+            })
+    }
+
+    const callWithSetSignedIn = (call: Promise<any>) => {
+        return call
+            .then((result: any) => {
+                setIsUserSignedIn(true)
+            })
+            .catch((error) => {
+                console.error(error)
+                setIsUserSignedIn(false)
+                throw error
+            })
     }
 
     useEffect(() => {
@@ -101,62 +125,17 @@ const AuthContextProvider: React.FC = (props) => {
             })
     }
 
-    const web3SignUp = (web3SignUpValues: Web3SignUpValues) => {
-        return handleWeb3SignUp(web3SignUpValues.account)
-            .then(() => {
-                setIsUserSignedIn(true)
-            })
-            .catch((error) => {
-                console.error(error)
-                setIsUserSignedIn(false)
-                throw error
-            })
-    }
+    const web3SignUp = (web3SignUpValues: Web3SignUpValues) => callWithSetSignedIn(handleWeb3SignUp(web3SignUpValues.account))
 
-    const web3SignIn = (web3SignInValues: Web3SignInValues) => {
-        return handleWeb3SignIn(web3SignInValues.account)
-            .then(() => {
-                setIsUserSignedIn(true)
-            })
-            .catch((error) => {
-                console.error(error)
-                setIsUserSignedIn(false)
-                throw error
-            })
-    }
+    const web3SignIn = (web3SignInValues: Web3SignInValues) => callWithSetSignedIn(handleWeb3SignIn(web3SignInValues.account))
 
-    const web3Associate = (web3AssociateValues: Web3AssociateValues) => {
-        return handleAssociateWeb3Account(web3AssociateValues)
-            .then(() => {
-                refreshJwt()
-            })
-            .catch((error) => {
-                console.error(error)
-                throw error
-            })
-    }
+    const web3Associate = (web3AssociateValues: Web3AssociateValues) => callWithRefreshToken(handleAssociateWeb3Account(web3AssociateValues))
 
-    const web3Unlink = (address: string) => {
-        return unlinkAddress(address)
-            .then(() => {
-                refreshJwt()
-            })
-            .catch((error) => {
-                console.error(error)
-                throw error
-            })
-    }
+    const web3Unlink = (address: string) => callWithRefreshToken(unlinkAddress(address))
 
-    const web3MakePrimary = (address: string) => {
-        return makePrimary(address)
-            .then(() => {
-                refreshJwt()
-            })
-            .catch((error) => {
-                console.error(error)
-                throw error
-            })
-    }
+    const web3MakePrimary = (address: string) => callWithRefreshToken(makePrimary(address))
+
+    // const emailPasswordAssociate = (account: Account, details: EmailPasswordAssociateDetailsDto) => callWithRefreshToken(associateEmailPassword(account, details))
 
     return (
         <AuthContext.Provider
@@ -171,6 +150,7 @@ const AuthContextProvider: React.FC = (props) => {
                 web3Associate,
                 web3Unlink,
                 web3MakePrimary,
+                // emailPasswordAssociate,
             }}
             {...props}
         />
@@ -186,4 +166,4 @@ const useAuth = () => {
     return context
 }
 
-export { AuthContextProvider, useAuth }
+export {AuthContextProvider, useAuth}

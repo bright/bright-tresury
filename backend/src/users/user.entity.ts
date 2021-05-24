@@ -12,8 +12,11 @@ export class User extends BaseEntity {
     @Column({nullable: false, type: "text", unique: true})
     username: string
 
-    @Column({nullable: true, type: "text", unique: true})
-    email?: string
+    @Column({nullable: false, type: "text", unique: true})
+    email: string
+
+    @Column({nullable: false, type: "boolean"})
+    isEmailPasswordEnabled: boolean
 
     @OneToMany(
         () => BlockchainAddress,
@@ -29,7 +32,8 @@ export class User extends BaseEntity {
     constructor(
         authId: string,
         username: string,
-        email?: string,
+        email: string,
+        isEmailPasswordEnabled: boolean,
         blockchainAddresses?: BlockchainAddress[],
         id?: string
     ) {
@@ -37,6 +41,7 @@ export class User extends BaseEntity {
         this.authId = authId
         this.username = username
         this.email = email
+        this.isEmailPasswordEnabled = isEmailPasswordEnabled
         this.blockchainAddresses = blockchainAddresses
         this.id = id ?? uuid()
     }

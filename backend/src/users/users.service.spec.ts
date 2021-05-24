@@ -29,6 +29,9 @@ describe(`Users Service`, () => {
                 email: 'chuck@email.com',
             })
             expect(user).toBeDefined()
+            expect(user.email).toBe('chuck@email.com')
+            expect(user.username).toBe('Chuck')
+            expect(user.isEmailPasswordEnabled).toBe(true)
         })
         it('should save user', async () => {
             const user = await getService().create({
@@ -100,7 +103,7 @@ describe(`Users Service`, () => {
         })
     })
 
-    describe.only('update user', () => {
+    describe('update user', () => {
         let user: User
         beforeEach(async () => {
             user = await getService().create({
@@ -118,6 +121,7 @@ describe(`Users Service`, () => {
             expect(updatedUser).toBeDefined()
             expect(updatedUser.username).toBe('Bob')
             expect(updatedUser.email).toBe('bob@email.com')
+            expect(updatedUser.isEmailPasswordEnabled).toBe(true)
             expect(updatedUser.authId).toBe(user.authId)
         })
 
@@ -133,6 +137,17 @@ describe(`Users Service`, () => {
             expect(updatedUser.username).toBe('Bob')
             expect(updatedUser.email).toBe('bob@email.com')
             expect(updatedUser.authId).toBe(user.authId)
+        })
+
+        it('should set isEmailPasswordEnabled to true', async () => {
+            await getService().update(user.id, {
+                username: 'Bob',
+                email: 'bob@email.com',
+            })
+
+            const updatedUser = await getRepository().findOne(user.id)
+
+            expect(updatedUser.isEmailPasswordEnabled).toBe(true)
         })
 
         it('should throw not found for not existing user', async () => {
@@ -180,6 +195,17 @@ describe(`Users Service`, () => {
             })
             const savedUser = await getRepository().findOne(user.id)
             expect(savedUser).toBeDefined()
+            expect(savedUser.isEmailPasswordEnabled).toBe(false)
+        })
+        it('should set isEmailPasswordEnabled to false', async () => {
+            const user = await getService().createBlockchainUser({
+                authId: uuid(),
+                username: 'Bob',
+                blockchainAddress: bobAddress,
+            })
+            const savedUser = await getRepository().findOne(user.id)
+            expect(savedUser).toBeDefined()
+            expect(savedUser.isEmailPasswordEnabled).toBe(false)
         })
         it('should save user and address', async () => {
             const user = await getService().createBlockchainUser({

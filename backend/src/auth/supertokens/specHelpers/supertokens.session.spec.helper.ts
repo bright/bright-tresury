@@ -57,7 +57,9 @@ export const createBlockchainSessionHandler = async (
 
     const confirmSignUpRes: any = await request(app).post(`/api/v1/auth/web3/signup/confirm`).send({
         address,
-        network: 'localhost',
+        details: {
+            network: 'localhost',
+        },
         signature: uuid(),
     })
     const user = await app.get(UsersService).findOneByBlockchainAddress(address)

@@ -203,7 +203,7 @@ export class SuperTokensService {
         try {
             const user = await this.usersService.findOneByAuthId(authId)
             payload.id = user.id
-            if (user.email) {
+            if (user.isEmailPasswordEnabled) {
                 payload.username = user.username
                 payload.email = user.email
             }

@@ -10,7 +10,7 @@ import {EmailPasswordAssociateService} from "./email-password.associate.service"
 
 const createAliceSessionHandler = (app: INestApplication) => createUserSessionHandler(app, 'alice@example.com', 'alice', uuid())
 
-describe(`Auth Web3 Service`, () => {
+describe(`Auth Email Password Associate Service`, () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(EmailPasswordAssociateService)
     const getUsersService = () => app.get().get(UsersService)
