@@ -203,7 +203,10 @@ export class SuperTokensService {
         try {
             const user = await this.usersService.findOneByAuthId(authId)
             payload.id = user.id
-            payload.username = user.username
+            if (user.email) {
+                payload.username = user.username
+                payload.email = user.email
+            }
             payload.isEmailVerified = await this.isEmailVerified(user)
             payload.web3Addresses = user.blockchainAddresses
                 ? user.blockchainAddresses.map((bAddress) => {

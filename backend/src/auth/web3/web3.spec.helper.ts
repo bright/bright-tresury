@@ -10,9 +10,9 @@ import {
 } from '../supertokens/specHelpers/supertokens.session.spec.helper'
 import { v4 as uuid } from 'uuid'
 import { UsersService } from '../../users/users.service'
-import { CreateUserDto } from '../../users/dto/createUser.dto'
 import { BlockchainAddressService } from '../../users/blockchainAddress/blockchainAddress.service'
 import { BlockchainAddress } from '../../users/blockchainAddress/blockchainAddress.entity'
+import { CreateUserDto } from '../../users/dto/create-user.dto'
 
 export async function beforeEachWeb3E2eTest(accessor: Accessor<INestApplication>): Promise<void> {
     /**

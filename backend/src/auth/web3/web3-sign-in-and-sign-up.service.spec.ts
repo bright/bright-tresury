@@ -1,14 +1,14 @@
-import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
-import { UsersService } from '../../users/users.service'
-import { cleanAuthorizationDatabase } from '../supertokens/specHelpers/supertokens.database.spec.helper'
-import { v4 as uuid } from 'uuid'
-import { CreateBlockchainUserDto } from '../../users/dto/create-blockchain-user.dto'
-import { SuperTokensService } from '../supertokens/supertokens.service'
-import { Response } from 'express'
-import { ConfirmWeb3SignUpRequestDto } from './signUp/dto/confirm-web3-sign-up-request.dto'
-import { SignatureValidator } from './signMessage/signature.validator'
-import { Web3SignUpService } from './signUp/web3-sign-up.service'
-import { Web3SignInService } from './signIn/web3-sign-in.service'
+import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers'
+import {UsersService} from '../../users/users.service'
+import {cleanAuthorizationDatabase} from '../supertokens/specHelpers/supertokens.database.spec.helper'
+import {v4 as uuid} from 'uuid'
+import {CreateBlockchainUserDto} from '../../users/dto/create-blockchain-user.dto'
+import {SuperTokensService} from '../supertokens/supertokens.service'
+import {Response} from 'express'
+import {ConfirmWeb3SignUpRequestDto} from './signUp/dto/confirm-web3-sign-up-request.dto'
+import {SignatureValidator} from './signMessage/signature.validator'
+import {Web3SignUpService} from './signUp/web3-sign-up.service'
+import {Web3SignInService} from './signIn/web3-sign-in.service'
 
 describe(`Auth Web3 Service`, () => {
     const app = beforeSetupFullApp()
@@ -45,8 +45,8 @@ describe(`Auth Web3 Service`, () => {
                 blockchainAddress: bobAddress,
             } as CreateBlockchainUserDto)
 
-            await getSignInService().start({ address: bobAddress })
-            await getSignUpService().start({ address: charlieAddress })
+            await getSignInService().start({address: bobAddress})
+            await getSignUpService().start({address: charlieAddress})
 
             await getSignInService().confirm(
                 {
@@ -60,7 +60,7 @@ describe(`Auth Web3 Service`, () => {
             await getSignUpService().confirm(
                 {
                     signature: uuid(),
-                    network,
+                    details: {network},
                     address: charlieAddress,
                 } as ConfirmWeb3SignUpRequestDto,
                 {} as Response,

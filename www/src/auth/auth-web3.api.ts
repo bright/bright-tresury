@@ -1,30 +1,19 @@
 import {apiPost} from "../api";
+import {ConfirmWeb3SignRequestDto, StartWeb3SignRequestDto, StartWeb3SignResponseDto} from "./handleWeb3Sign";
 
-export interface Web3SignStartResponse {
-    signMessage: string
+
+export function startWeb3SignUp(dto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
+    return apiPost<StartWeb3SignResponseDto>(`/auth/web3/signup/start`, dto)
 }
 
-export interface ConfirmBlockchainSignDto {
-    address: string
-    signature: string
+export function confirmWeb3SignUp(dto: ConfirmWeb3SignRequestDto): Promise<void> {
+    return apiPost<void>(`/auth/web3/signup/confirm`, dto)
 }
 
-export interface ConfirmBlockchainSignUpDto extends ConfirmBlockchainSignDto {
-    network: string
+export function startWeb3SignIn(dto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> {
+    return apiPost<StartWeb3SignResponseDto>(`/auth/web3/signin/start`, dto)
 }
 
-export function startWeb3SignUp(address: string): Promise<Web3SignStartResponse> {
-    return apiPost<Web3SignStartResponse>(`/auth/web3/signup/start`, {address})
-}
-
-export function confirmWeb3SignUp(address: ConfirmBlockchainSignUpDto): Promise<void> {
-    return apiPost<void>(`/auth/web3/signup/confirm`, address)
-}
-
-export function startWeb3SignIn(address: string): Promise<Web3SignStartResponse> {
-    return apiPost<Web3SignStartResponse>(`/auth/web3/signin/start`, {address})
-}
-
-export function confirmWeb3SignIn(address: ConfirmBlockchainSignDto): Promise<void> {
-    return apiPost<void>(`/auth/web3/signin/confirm`, address)
+export function confirmWeb3SignIn(dto: ConfirmWeb3SignRequestDto): Promise<void> {
+    return apiPost<void>(`/auth/web3/signin/confirm`, dto)
 }

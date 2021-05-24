@@ -15,7 +15,7 @@ import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 import { LoadingState } from '../../../components/loading/useLoading'
 
-interface SignUpValues {
+export interface SignUpValues {
     username: string
     email: string
     password: string

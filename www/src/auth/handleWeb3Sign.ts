@@ -1,23 +1,27 @@
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import { Account } from '../substrate-lib/accounts/AccountsContext'
+import {StartEmailPasswordAssociateDto} from "./account/emailPassword/email-password.api";
 import {
-    ConfirmBlockchainSignDto,
     confirmWeb3SignIn,
     confirmWeb3SignUp,
     startWeb3SignIn,
     startWeb3SignUp,
-    Web3SignStartResponse,
 } from './auth-web3.api'
 import config from '../config/index'
 import { stringToHex } from '@polkadot/util'
-import { confirmWeb3Association, startWeb3Association, StartWeb3RequestDto } from './account/account.api'
+import { Nil } from '../util/types'
 import { Web3AssociateValues } from './account/web3/Web3AccountForm'
+import {confirmWeb3Association, startWeb3Association} from './account/web3/web3.api'
 
+
+//// TODO move
 export async function handleWeb3SignUp(account: Account) {
-    await handleWeb3Sign(account, startWeb3SignUp, async (confirmDto: ConfirmBlockchainSignDto) => {
+    await handleWeb3Sign(account, startWeb3SignUp, async (confirmDto: ConfirmWeb3SignRequestDto) => {
         await confirmWeb3SignUp({
             ...confirmDto,
-            network: config.NETWORK_NAME,
+            details: {
+                network: config.NETWORK_NAME,
+            }
         })
     })
 }
@@ -27,16 +31,36 @@ export async function handleWeb3SignIn(account: Account) {
 }
 
 export async function handleAssociateWeb3Account(values: Web3AssociateValues) {
-    const startCall = (address: string): Promise<Web3SignStartResponse> => {
-        return startWeb3Association({ address, password: values.password } as StartWeb3RequestDto)
+    const startCall = (dto: StartEmailPasswordAssociateDto): Promise<StartWeb3SignResponseDto> => {
+        return startWeb3Association({ address: dto.address, password: values.password} )
     }
     await handleWeb3Sign(values.account, startCall, confirmWeb3Association)
 }
 
-async function handleWeb3Sign(
+////
+
+
+
+export interface StartWeb3SignRequestDto {
+    address: string
+    details: Nil<any>
+}
+
+export interface StartWeb3SignResponseDto {
+    signMessage: string
+}
+
+export interface ConfirmWeb3SignRequestDto {
+    address: string
+    signature: string
+    details: Nil<any>
+}
+
+export async function handleWeb3Sign(
     account: Account,
-    startCall: (address: string) => Promise<Web3SignStartResponse>,
-    confirmCall: (confirmDto: ConfirmBlockchainSignDto) => Promise<void>,
+    startCall: (dto: StartWeb3SignRequestDto) => Promise<StartWeb3SignResponseDto>,
+    confirmCall: (confirmDto: ConfirmWeb3SignRequestDto) => Promise<void | any>,
+    details?: any
 ) {
     const injected = await web3FromAddress(account.address)
     if (!injected) {
@@ -47,7 +71,7 @@ async function handleWeb3Sign(
         throw new Error('Signer was not available')
     }
 
-    const startSignUpResponse = await startCall(account.address)
+    const startSignUpResponse = await startCall({address: account.address, details})
 
     const signMessage = startSignUpResponse?.signMessage
 
@@ -61,8 +85,9 @@ async function handleWeb3Sign(
         type: 'bytes',
     })
 
-    await confirmCall({
+    return await confirmCall({
         address: account.address,
         signature,
+        details
     })
 }

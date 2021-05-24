@@ -6,8 +6,8 @@ import { signIn as signInApi, SignInData, signOut as signOutApi, SignUpData } fr
 import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
 import { Web3AssociateValues } from './account/web3/Web3AccountForm'
 import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
-import { makePrimary, unlinkAddress } from './account/account.api'
 import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
+import { makePrimary, unlinkAddress } from './account/web3/web3.api'
 
 export interface AuthContextState {
     signUp?: (signUpData: SignUpData) => Promise<SignUpAPIResponse>
@@ -51,6 +51,7 @@ const AuthContextProvider: React.FC = (props) => {
                 setUser({
                     ...payload,
                     isWeb3: payload.web3Addresses && payload.web3Addresses.length > 0,
+                    isEmailPassword: false//!!payload.email
                 })
             })
         } else {

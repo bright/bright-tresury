@@ -1,19 +1,16 @@
-import { BadRequestException, ConflictException, Injectable } from '@nestjs/common'
-import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
-import { Response } from 'express'
-import { v4 as uuid } from 'uuid'
-import { SignMessageService } from '../signMessage/sign-message.service'
-import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
-import { UsersService } from '../../../users/users.service'
-import { BlockchainAddressService } from '../../../users/blockchainAddress/blockchainAddress.service'
-import { SuperTokensService } from '../../supertokens/supertokens.service'
-import { CacheManager } from '../../../cache/cache.manager'
-import { isValidAddress } from '../../../utils/address/address.validator'
-import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
-import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
-import { SignatureValidator } from '../signMessage/signature.validator'
-import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
+import {BadRequestException, ConflictException, Injectable} from '@nestjs/common'
+import {Response} from 'express'
+import {User as SuperTokensUser} from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import {v4 as uuid} from 'uuid'
+import {BlockchainAddressService} from '../../../users/blockchainAddress/blockchainAddress.service'
+import {CreateBlockchainUserDto} from '../../../users/dto/create-blockchain-user.dto'
+import {UsersService} from '../../../users/users.service'
+import {isValidAddress} from '../../../utils/address/address.validator'
+import {SuperTokensService} from '../../supertokens/supertokens.service'
+import {SignMessageService} from '../signMessage/sign-message.service'
+import {StartSignMessageRequestDto} from '../signMessage/start-sign-message-request.dto'
+import {StartSignMessageResponseDto} from '../signMessage/start-sign-message-response.dto'
+import {ConfirmWeb3SignUpRequestDto} from './dto/confirm-web3-sign-up-request.dto'
 
 @Injectable()
 export class Web3SignUpService {
@@ -48,7 +45,7 @@ export class Web3SignUpService {
         }
     }
 
-    private async createBlockchainUser(address: string, res?: Response) {
+    private async createBlockchainUser(address: string, res: Response) {
         const userUuid = uuid()
         const password = uuid()
 

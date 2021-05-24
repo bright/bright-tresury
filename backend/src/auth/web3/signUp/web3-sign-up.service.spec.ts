@@ -55,7 +55,7 @@ describe(`Web3 Sign Up Service`, () => {
             await getService().confirm(
                 {
                     signature: uuid(),
-                    network,
+                    details: {network},
                     address: bobAddress,
                 } as ConfirmWeb3SignUpRequestDto,
                 {} as Response,
@@ -73,7 +73,7 @@ describe(`Web3 Sign Up Service`, () => {
                 getService().confirm(
                     {
                         signature: uuid(),
-                        network,
+                        details: {network},
                         address: aliceAddress,
                     } as ConfirmWeb3SignUpRequestDto,
                     {} as Response,
@@ -87,7 +87,7 @@ describe(`Web3 Sign Up Service`, () => {
                 getService().confirm(
                     {
                         signature: uuid(),
-                        network,
+                        details: {network},
                         address: bobAddress,
                     } as ConfirmWeb3SignUpRequestDto,
                     {} as Response,
