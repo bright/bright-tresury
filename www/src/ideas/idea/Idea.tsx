@@ -21,13 +21,13 @@ export const Idea = () => {
 
     let { ideaId } = useParams<{ ideaId: string }>()
 
-    const { isUserSignedIn, isUserVerified, user } = useAuth()
+    const { isUserSignedInAndVerified, user } = useAuth()
 
     const { status, data: idea } = useGetIdea(ideaId)
 
     const canEdit = useMemo(() => {
-        return isUserSignedIn && isUserVerified && idea?.ownerId === user?.id
-    }, [isUserSignedIn, isUserVerified, idea, user])
+        return isUserSignedInAndVerified && idea?.ownerId === user?.id
+    }, [isUserSignedInAndVerified, idea, user])
 
     return (
         <LoadingWrapper

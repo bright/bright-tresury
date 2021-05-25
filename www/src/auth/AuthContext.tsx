@@ -16,6 +16,7 @@ export interface AuthContextState {
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
+    isUserSignedInAndVerified: boolean
 }
 
 export interface AuthContextUser {
@@ -56,6 +57,10 @@ const AuthContextProvider: React.FC = (props) => {
         () => user !== undefined && (user.isWeb3 || (user.isEmailPassword && user.isEmailVerified)),
         [user],
     )
+
+    const isUserSignedInAndVerified = useMemo(() => {
+        return isUserSignedIn && isUserVerified
+    }, [isUserSignedIn, isUserVerified])
 
     const signOut = () => {
         return signOutApi()
@@ -112,7 +117,16 @@ const AuthContextProvider: React.FC = (props) => {
 
     return (
         <AuthContext.Provider
-            value={{ user, isUserSignedIn, isUserVerified, signIn, signOut, web3SignIn, web3SignUp }}
+            value={{
+                user,
+                isUserSignedIn,
+                isUserVerified,
+                isUserSignedInAndVerified,
+                signIn,
+                signOut,
+                web3SignIn,
+                web3SignUp,
+            }}
             {...props}
         />
     )
