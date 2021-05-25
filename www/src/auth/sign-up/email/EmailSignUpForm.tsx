@@ -1,19 +1,21 @@
+import {AxiosError} from "axios";
 import { Formik } from 'formik'
 import { FormikHelpers } from 'formik/dist/types'
-import React from 'react'
+import React, {useMemo} from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
+import {InfoBox} from "../../../components/form/InfoBox";
 import { Input } from '../../../components/form/input/Input'
 import { PasswordInput } from '../../../components/form/input/password/PasswordInput'
 import { fullValidatorForSchema } from '../../../util/form.util'
-import { SuperTokensAPIResponse, useSuperTokensRequest } from '../../supertokens.utils/useSuperTokensRequest'
 import { UserAgreementCheckbox } from '../common/UserAgreementCheckbox'
 import { PrivacyNotice } from '../common/PrivacyNotice'
 import { SignUpButton } from '../common/SignUpButton'
 import EmailSignUpSuccess from './EmailSignUpSucces'
 import {SignFormWrapper, SignFormWrapperStylesProps} from '../../sign-components/SignFormWrapper'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
-import { LoadingState } from '../../../components/loading/useLoading'
+import { LoadingState, useLoading } from '../../../components/loading/useLoading'
+import {FieldError} from "./sign-up-email.api";
 
 export interface SignUpValues {
     username: string
@@ -23,7 +25,7 @@ export interface SignUpValues {
 }
 
 interface OwnProps {
-    submit: (values: SignUpValues) => Promise<SuperTokensAPIResponse>
+    submit: (values: SignUpValues) => Promise<any>
     submitButtonLabel: string
 }
 
@@ -32,11 +34,36 @@ export type SignupFormProps = OwnProps & SignFormWrapperStylesProps
 const EmailSignUpForm = ({ submit, submitButtonLabel, ...signFormWrapperProps }: SignupFormProps) => {
     const { t } = useTranslation()
 
-    const { call, loadingState } = useSuperTokensRequest(submit)
+    const { call, loadingState, error } = useLoading(submit)
 
     const onSubmit = async (values: SignUpValues, { setErrors }: FormikHelpers<SignUpValues>) => {
-        await call(values, setErrors)
+        // TODO move to `useLoading` hook or use `react-query`
+        await call(values)
+        const typedError: FieldError = error as FieldError
+        if (typedError) {
+            const errors: any = {}
+            typedError.formFieldErrors.forEach(({id, error}) => {
+                errors[id] = error
+            })
+            await setErrors(errors)
+            return
+        }
+
     }
+
+    const errorMessage = useMemo(() => {
+        // TODO move to `useLoading` hook or use `react-query`
+        const errorWithMessage = error as AxiosError
+        if (errorWithMessage) {
+            return errorWithMessage.response?.data?.message ?? errorWithMessage.message
+        }
+        const generalError = error as Error
+        if (generalError) {
+            return generalError.message
+        }
+        return null
+    }, [error])
+
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required(t('auth.signUp.emptyFieldError')),
@@ -99,6 +126,8 @@ const EmailSignUpForm = ({ submit, submitButtonLabel, ...signFormWrapperProps }:
                     <SignComponentWrapper>
                         <PrivacyNotice />
                     </SignComponentWrapper>
+
+                    {errorMessage ? <SignComponentWrapper><InfoBox message={errorMessage} level={'error'}/></SignComponentWrapper> : null}
                     <SignUpButton disabled={loadingState === LoadingState.Loading} label={submitButtonLabel} />
                 </SignFormWrapper>
             )}

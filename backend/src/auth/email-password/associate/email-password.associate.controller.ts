@@ -1,7 +1,9 @@
-import {Body, Controller, HttpCode, Post, UseGuards} from '@nestjs/common';
+import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {Request, Response} from "express";
 import {SessionGuard} from "../../session/guard/session.guard";
 import {ReqSession, SessionData} from "../../session/session.decorator";
+import {SuperTokensService} from "../../supertokens/supertokens.service";
 import {StartSignMessageResponseDto} from "../../web3/signMessage/start-sign-message-response.dto";
 import {ConfirmEmailPasswordAssociateRequestDto} from "./dto/confirm.request.dto";
 import {StartEmailPasswordAssociateRequestDto} from "./dto/start.request.dto";
@@ -10,7 +12,8 @@ import {EmailPasswordAssociateService} from "./email-password.associate.service"
 @Controller('/v1/auth/email-password/associate')
 @ApiTags('auth.web3')
 export class EmailPasswordAssociateController {
-    constructor(private readonly emailPasswordAssociateService: EmailPasswordAssociateService) {}
+    constructor(private readonly emailPasswordAssociateService: EmailPasswordAssociateService,
+                private readonly superTokensService: SuperTokensService,) {}
 
     @Post('/start')
     @ApiOkResponse({
@@ -32,8 +35,12 @@ export class EmailPasswordAssociateController {
     @HttpCode(200)
     async confirmAssociatingAddress(
         @Body() dto: ConfirmEmailPasswordAssociateRequestDto,
+        @Res() res: Response,
+        @Req() req: Request,
         @ReqSession() session: SessionData,
     ): Promise<void> {
-        return this.emailPasswordAssociateService.confirm(dto, session)
+        await this.emailPasswordAssociateService.confirm(dto, session)
+        await this.superTokensService.refreshJwtPayload(req, res)
+        res.status(HttpStatus.OK).send()
     }
 }

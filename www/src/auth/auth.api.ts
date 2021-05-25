@@ -1,29 +1,11 @@
-import {SignInAPIResponse, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
+import {SignInAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
 import {SendVerifyEmailAPIResponse, VerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
-import {apiPost, apiGet} from "../api";
-import {transformSignInRequestData, transformSignUpRequestData} from "./supertokens.utils/transformRequestData.utils";
-
-export interface SignUpData {
-    email: string
-    password: string
-    username: string
-}
+import {apiGet, apiPost} from "../api";
+import {transformSignInRequestData} from "./supertokens.utils/transformRequestData.utils";
 
 export interface SignInData {
     email: string
     password: string
-}
-
-export function signUp(data: SignUpData) {
-    const requestData = transformSignUpRequestData(data)
-
-    return apiPost<SignUpAPIResponse | SendVerifyEmailAPIResponse>( `/signup`, requestData).then((result) => {
-        if (result.status === "OK") {
-            return sendVerifyEmail()
-        } else {
-            return result
-        }
-    })
 }
 
 export function sendVerifyEmail() {

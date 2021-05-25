@@ -130,12 +130,15 @@ export class SuperTokensService {
     }
 
     async refreshSessionData(session: Session) {
+        logger.info('Refreshing session data...')
         const userId = await session.getUserId()
         const user = await this.usersService.findOneByAuthId(userId)
+        logger.info('Refreshing session data, new user:', user)
         if (!user) {
             await session.revokeSession()
         } else {
             await this.updateSessionData({ user }, session)
+            logger.info('Session data refreshed.')
         }
     }
 
@@ -150,16 +153,22 @@ export class SuperTokensService {
     }
 
     async refreshJwtPayload(req: Request, res: Response) {
+        logger.info('Refreshing JWT payload and session data...')
         const session = await this.getSession(req, res, false)
+        logger.info('Refreshing JWT payload and session data, current session: ', session)
         if (session) {
             await this.refreshJwtPayloadBySession(session)
             await this.refreshSessionData(session)
         }
+        logger.info('JWT payload and session data refreshed')
     }
 
     async refreshJwtPayloadBySession(session: Session) {
+        logger.info('Refreshing JWT payload by session data...')
         const jwtPayload = await this.getJwtPayload(session.getUserId())
+        logger.info('Refreshing JWT payload by session data, new jwt payload:', jwtPayload)
         await session?.updateJWTPayload({ ...jwtPayload })
+        logger.info('JWT payload refreshed.')
     }
 
     async verifyPassword(email: string, password: string) {

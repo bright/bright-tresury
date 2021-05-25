@@ -11,7 +11,6 @@ const useStyles = makeStyles(() =>
         spacing: {
             marginTop: '32px',
         },
-
     }),
 );
 

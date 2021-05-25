@@ -60,7 +60,9 @@
             "emailVerificationNeeded": "Email verification needed",
             "resendEmail": "Resend verification email",
             "emailResent": "Verification email resent",
-            "emailSendingError": "An error occured when sending email, please try again later"
+            "emailSendingError": "An error occurred when sending email, please try again later",
+            "addressNotFound": "Web3 address not found",
+            "accountNotFound": "Web3 account not found"
         },
         "web3": {
             "web3Account": "Web3 Account",

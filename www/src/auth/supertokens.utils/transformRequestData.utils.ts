@@ -1,5 +1,6 @@
 import {APIFormField} from "supertokens-auth-react/lib/build/types";
-import {SignInData, SignUpData} from "../auth.api";
+import {SignInData} from "../auth.api";
+import { SignUpData } from "../sign-up/email/sign-up-email.api";
 
 const EMAIL_FIELD_NAME = 'email'
 const PASSWORD_FIELD_NAME = 'password'
