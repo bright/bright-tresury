@@ -1,12 +1,10 @@
-import {HttpStatus} from "@nestjs/common";
 import {v4 as uuid} from 'uuid'
 import {beforeSetupFullApp, cleanDatabase, request} from "../../../utils/spec.helpers";
 import {cleanAuthorizationDatabase} from "../../supertokens/specHelpers/supertokens.database.spec.helper";
 import {createBlockchainSessionHandler} from "../../supertokens/specHelpers/supertokens.session.spec.helper";
-import {ConfirmSignMessageRequestDto} from "../../web3/signMessage/confirm-sign-message-request.dto";
 import {SignatureValidator} from "../../web3/signMessage/signature.validator";
 
-describe('EmailPasswordController', () => {
+describe('EmailPasswordAssociateController', () => {
     const app = beforeSetupFullApp()
     const getSignatureValidator = () => app.get().get(SignatureValidator)
 
@@ -68,7 +66,7 @@ describe('EmailPasswordController', () => {
                 })
             expect(response.status).toBe(200)
             expect(response.body.status).toBe('OK')
-            expect(response.body.email).toBe('bob@example.com')
+            expect(response.body.user.email).toBe('bob@example.com')
         })
     })
 });

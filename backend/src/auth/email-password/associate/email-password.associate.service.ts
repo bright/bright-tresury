@@ -30,6 +30,7 @@ export class EmailPasswordAssociateService {
         await this.validate(dto.details)
         await this.signMessageService.confirm(dto, this.cacheKey)
         await this.superTokensService.updateEmail(sessionData.user.authId, dto.details.email)
+        await this.superTokensService.updatePassword(sessionData.user.authId, dto.details.password)
         await this.userService.associateEmailAccount(sessionData.user.id, {...dto.details})
     }
 

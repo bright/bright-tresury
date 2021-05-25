@@ -1,6 +1,13 @@
 import {BadRequestException, ConflictException,ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException,} from '@nestjs/common'
 import {Request, Response} from 'express'
-import {getUserByEmail, getUserById, signIn, signUp as superTokensSignUp} from 'supertokens-node/lib/build/recipe/emailpassword'
+import {
+    createResetPasswordToken,
+    getUserByEmail,
+    getUserById,
+    resetPasswordUsingToken,
+    signIn,
+    signUp as superTokensSignUp
+} from 'supertokens-node/lib/build/recipe/emailpassword'
 import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
 import {TypeFormField, User as SuperTokensUser} from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import {createNewSession, getSession as superTokensGetSession, updateSessionData,} from 'supertokens-node/lib/build/recipe/session'
@@ -127,6 +134,17 @@ export class SuperTokensService {
 
         const connection = getConnection(AuthorizationDatabaseName)
         await connection.query(`UPDATE emailpassword_users SET email = '${email}' WHERE user_id = '${userId}'`)
+    }
+
+    async updatePassword(userId: string, password: string): Promise<void> {
+        const user = await getUserById(userId)
+        if (!user) {
+            logger.error(`Cannot found user with id ${userId}. Password NOT updated`)
+            throw new NotFoundException()
+        }
+
+        const token = await createResetPasswordToken(userId)
+        await resetPasswordUsingToken(token, password)
     }
 
     async refreshSessionData(session: Session) {
