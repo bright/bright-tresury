@@ -66,7 +66,6 @@ describe('EmailPasswordController', () => {
                         },
                     ],
                 })
-            console.log(response)
             expect(response.status).toBe(200)
             expect(response.body.status).toBe('OK')
             expect(response.body.email).toBe('bob@example.com')

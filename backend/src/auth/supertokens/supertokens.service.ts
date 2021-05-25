@@ -115,7 +115,7 @@ export class SuperTokensService {
     async updateEmail(userId: string, email: string): Promise<void> {
         const user = await getUserById(userId)
         if (!user) {
-            logger.error(`Cannot found user with id ${userId}. Email NOT chaned to ${email}`)
+            logger.error(`Cannot found user with id ${userId}. Email NOT changed to ${email}`)
             throw new NotFoundException()
         }
 

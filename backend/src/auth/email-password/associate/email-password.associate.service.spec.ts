@@ -45,28 +45,28 @@ describe(`Auth Email Password Associate Service`, () => {
         })
 
         it('should return conflict exception if email already exists', async () => {
-            await createAliceSessionHandler(app())
+            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
 
             await expect(getService().start(
                 {
                     address: bobAddress,
                     details: {
                         ...details,
-                        email: 'alice@example.com',
+                        email: aliceUser.email,
                     }
                 }
             )).rejects.toThrow(ConflictException)
         })
 
         it('should return conflict exception if username already exists', async () => {
-            await createAliceSessionHandler(app())
+            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
 
             await expect(getService().start(
                 {
                     address: bobAddress,
                     details: {
                         ...details,
-                        username: 'alice',
+                        username: aliceUser.username,
                     }
                 }
             )).rejects.toThrow(ConflictException)
@@ -110,14 +110,14 @@ describe(`Auth Email Password Associate Service`, () => {
         })
 
         it('should return conflict exception if email already exists', async () => {
-            await createAliceSessionHandler(app())
+            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
 
             await expect(getService().confirm({
                     signature: uuid(),
                     address: bobAddress,
                     details: {
                         username: 'bob',
-                        email: 'alice@example.com',
+                        email: aliceUser.email,
                         password
                     }
                 }
@@ -125,13 +125,13 @@ describe(`Auth Email Password Associate Service`, () => {
         })
 
         it('should return conflict exception if username already exists', async () => {
-            await createAliceSessionHandler(app())
+            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
 
             await expect(getService().confirm({
                     signature: uuid(),
                     address: bobAddress,
                     details: {
-                        username: 'alice',
+                        username: aliceUser.username,
                         email: 'bob@example.com',
                         password
                     }

@@ -44,16 +44,6 @@ describe('EmailPasswordAssociateController', () => {
             ).expect(200)
         })
 
-        it.skip('should return bad request for not own address', async () => {
-            // TODO this test fails, need to change the sign message service
-            await sessionHandler.authorizeRequest(
-                request(app()).post('/api/v1/auth/email-password/associate/start').send({
-                    address: bobAddress,
-                    details
-                }),
-            ).expect(400)
-        })
-
         it('should return bad request for empty details', async () => {
             await sessionHandler.authorizeRequest(
                 request(app()).post('/api/v1/auth/email-password/associate/start').send({

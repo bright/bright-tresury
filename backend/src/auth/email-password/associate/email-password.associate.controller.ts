@@ -1,5 +1,5 @@
 import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
-import {ApiOkResponse, ApiTags} from "@nestjs/swagger";
+import {ApiBadRequestResponse, ApiConflictResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Request, Response} from "express";
 import {SessionGuard} from "../../session/guard/session.guard";
 import {ReqSession, SessionData} from "../../session/session.decorator";
@@ -13,15 +13,25 @@ import {EmailPasswordAssociateService} from "./email-password.associate.service"
 @ApiTags('auth.web3')
 export class EmailPasswordAssociateController {
     constructor(private readonly emailPasswordAssociateService: EmailPasswordAssociateService,
-                private readonly superTokensService: SuperTokensService,) {}
+                private readonly superTokensService: SuperTokensService,) {
+    }
 
     @Post('/start')
     @ApiOkResponse({
         description: 'Association successfully started',
         type: [StartSignMessageResponseDto],
     })
+    @ApiBadRequestResponse({
+        description: 'Requested address, email, username or password is not valid',
+    })
+    @ApiConflictResponse({
+        description: 'Email or username already exists',
+    })
+    @ApiForbiddenResponse({
+        description: "Can't associate account when not signed in",
+    })
     @UseGuards(SessionGuard)
-    @HttpCode(200)
+    @HttpCode(HttpStatus.OK)
     async startAssociate(@ReqSession() session: SessionData, @Body() dto: StartEmailPasswordAssociateRequestDto): Promise<StartSignMessageResponseDto> {
         return this.emailPasswordAssociateService.start(dto)
     }
@@ -32,7 +42,16 @@ export class EmailPasswordAssociateController {
         description: 'Association successfully confirmed',
         type: [StartSignMessageResponseDto],
     })
-    @HttpCode(200)
+    @ApiBadRequestResponse({
+        description: 'Requested address, signature, email, username or password is not valid',
+    })
+    @ApiConflictResponse({
+        description: 'Email or username already exists',
+    })
+    @ApiForbiddenResponse({
+        description: "Can't associate account when not signed in",
+    })
+    @HttpCode(HttpStatus.OK)
     async confirmAssociatingAddress(
         @Body() dto: ConfirmEmailPasswordAssociateRequestDto,
         @Res() res: Response,
@@ -41,6 +60,6 @@ export class EmailPasswordAssociateController {
     ): Promise<void> {
         await this.emailPasswordAssociateService.confirm(dto, session)
         await this.superTokensService.refreshJwtPayload(req, res)
-        res.status(HttpStatus.OK).send()
+        res.send()
     }
 }
