@@ -1,4 +1,3 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { useParams } from 'react-router'
 import { useAuth } from '../../auth/AuthContext'
@@ -8,32 +7,13 @@ import { IdeaContentType } from './IdeaContentTypeTabs'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import { IdeaInfo } from './info/IdeaInfo'
 import { IdeaDiscussion } from './discussion/IdeaDiscussion'
-import { breakpoints } from '../../theme/theme'
 import { IdeaMilestones } from './milestones/IdeaMilestones'
 import { LoadingWrapper } from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
-
-export const useIdeaStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            width: '100%',
-            backgroundColor: theme.palette.background.paper,
-        },
-        content: {
-            padding: '2.5em 5em 3em 3em',
-            background: theme.palette.background.paper,
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                padding: '2em 1.5em 3em 1.5em',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: '1em 1.5em 4em 1em',
-            },
-        },
-    }),
-)
+import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 
 export const Idea = () => {
-    const classes = useIdeaStyles()
+    const classes = useSuccessfullyLoadedItemStyles()
 
     const { t } = useTranslation()
 

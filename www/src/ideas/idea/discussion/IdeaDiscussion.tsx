@@ -1,8 +1,8 @@
 import React from 'react'
-import { useIdeaStyles } from '../Idea'
+import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
 export const IdeaDiscussion = () => {
-    const classes = useIdeaStyles()
+    const classes = useSuccessfullyLoadedItemStyles()
 
     return <div className={classes.content}>Discussion</div>
 }

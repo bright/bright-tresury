@@ -10,7 +10,7 @@ import { ellipseTextInTheMiddle } from '../../../util/stringUtil'
 import { Placeholder } from '../../../components/text/Placeholder'
 import { useGetIdea } from '../../../ideas/ideas.api'
 import { useGetIdeaMilestone } from '../../../ideas/idea/milestones/idea.milestones.api'
-import { useProposalStyles } from '../Proposal'
+import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -61,7 +61,7 @@ interface Props {
 export const ProposalInfo = ({
     proposal: { proposer, isCreatedFromIdeaMilestone, ideaId, ideaMilestoneId },
 }: Props) => {
-    const proposalClasses = useProposalStyles()
+    const successfullyLoadedItemClasses = useSuccessfullyLoadedItemStyles()
     const classes = useStyles()
 
     const { t } = useTranslation()
@@ -75,7 +75,7 @@ export const ProposalInfo = ({
     })
 
     return (
-        <div className={proposalClasses.content}>
+        <div className={successfullyLoadedItemClasses.content}>
             <Label label={t('proposal.content.info.proposer')} />
             <div className={classes.proposer}>
                 <>

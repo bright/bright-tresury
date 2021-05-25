@@ -1,8 +1,8 @@
 import React from 'react'
-import { useProposalStyles } from '../Proposal'
+import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
 const ProposalDiscussion = () => {
-    const classes = useProposalStyles()
+    const classes = useSuccessfullyLoadedItemStyles()
     return <div className={classes.content}>Discussion</div>
 }
 

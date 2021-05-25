@@ -8,7 +8,7 @@ import { LoadingWrapper } from '../../../components/loading/LoadingWrapper'
 import { CreateIdeaMilestoneButton } from './components/CreateIdeaMilestoneButton'
 import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
-import { useIdeaStyles } from '../Idea'
+import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
 interface Props {
     idea: IdeaDto
@@ -18,7 +18,7 @@ interface Props {
 export const IdeaMilestones = ({ idea, canEdit }: Props) => {
     const { t } = useTranslation()
 
-    const classes = useIdeaStyles()
+    const classes = useSuccessfullyLoadedItemStyles()
 
     const createModal = useModal()
 
