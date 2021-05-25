@@ -67,7 +67,7 @@ const AuthContextProvider: React.FC = (props) => {
     const callWithRefreshToken = (call: Promise<any>) => {
         return call
             .then(() => {
-                refreshJwt()
+                return refreshJwt()
             })
             .catch((error) => {
                 console.error(error)

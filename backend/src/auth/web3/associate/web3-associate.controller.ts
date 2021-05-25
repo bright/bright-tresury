@@ -34,6 +34,7 @@ export class Web3AssociateController {
     @ApiConflictResponse({
         description: 'Requested address already exists',
     })
+    @UseGuards(SessionGuard)
     async startAssociatingAddress(
         @Body() startRequest: StartWeb3AssociateRequestDto,
         @ReqSession() session: SessionData,

@@ -31,7 +31,7 @@ export async function handleWeb3SignIn(account: Account) {
 }
 
 export async function handleAssociateWeb3Account(values: Web3AssociateValues) {
-    const startCall = (dto: StartEmailPasswordAssociateDto): Promise<StartWeb3SignResponseDto> => {
+    const startCall = (dto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> => {
         return startWeb3Association({ address: dto.address, password: values.password} )
     }
     await handleWeb3Sign(values.account, startCall, confirmWeb3Association)

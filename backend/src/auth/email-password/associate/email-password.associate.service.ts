@@ -16,7 +16,8 @@ export class EmailPasswordAssociateService {
         private readonly blockchainAddressService: BlockchainAddressService,
         private readonly superTokensService: SuperTokensService,
         private readonly signMessageService: SignMessageService,
-    ) {}
+    ) {
+    }
 
     private readonly cacheKey = 'AssociateEmailPasswordMessage'
 
@@ -29,7 +30,7 @@ export class EmailPasswordAssociateService {
         await this.validate(dto.details)
         await this.signMessageService.confirm(dto, this.cacheKey)
         await this.superTokensService.updateEmail(sessionData.user.authId, dto.details.email)
-        await this.userService
+        await this.userService.update(sessionData.user.id, {...dto.details})
     }
 
     private async validate(details: EmailPasswordAssociateRequestDetails) {
