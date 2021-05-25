@@ -103,7 +103,7 @@ describe(`Users Service`, () => {
         })
     })
 
-    describe('update user', () => {
+    describe('associateEmailAccount', () => {
         let user: User
         beforeEach(async () => {
             user = await getService().create({
@@ -114,7 +114,7 @@ describe(`Users Service`, () => {
         })
 
         it('should return user', async () => {
-            const updatedUser = await getService().update(user.id, {
+            const updatedUser = await getService().associateEmailAccount(user.id, {
                 username: 'Bob',
                 email: 'bob@email.com',
             })
@@ -126,7 +126,7 @@ describe(`Users Service`, () => {
         })
 
         it('should save email and username', async () => {
-            await getService().update(user.id, {
+            await getService().associateEmailAccount(user.id, {
                 username: 'Bob',
                 email: 'bob@email.com',
             })
@@ -140,7 +140,7 @@ describe(`Users Service`, () => {
         })
 
         it('should set isEmailPasswordEnabled to true', async () => {
-            await getService().update(user.id, {
+            await getService().associateEmailAccount(user.id, {
                 username: 'Bob',
                 email: 'bob@email.com',
             })
@@ -151,7 +151,7 @@ describe(`Users Service`, () => {
         })
 
         it('should throw not found for not existing user', async () => {
-            await expect(getService().update(uuid(), {
+            await expect(getService().associateEmailAccount(uuid(), {
                 username: 'Bob',
                 email: 'bob@email.com',
             }))
@@ -160,18 +160,20 @@ describe(`Users Service`, () => {
         })
 
         it('should throw conflict exception for already existing email', async () => {
-            await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
-            await expect(getService().update(user.id, {
-                email: 'alice@email.com',
+            const aliceUser = await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
+            await expect(getService().associateEmailAccount(user.id, {
+                email: aliceUser.email,
+                username: 'Bob',
             }))
                 .rejects
                 .toThrow(ConflictException)
         })
 
         it('should throw conflict exception for already existing username', async () => {
-            await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
-            await expect(getService().update(user.id, {
-                username: 'Alice',
+            const aliceUser =  await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
+            await expect(getService().associateEmailAccount(user.id, {
+                username: aliceUser.username,
+                email: 'bob@examplecom',
             }))
                 .rejects
                 .toThrow(ConflictException)

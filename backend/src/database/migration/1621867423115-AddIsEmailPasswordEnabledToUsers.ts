@@ -11,6 +11,10 @@ export class AddIsEmailPasswordEnabledToUsers1621867423115 implements MigrationI
                 isNullable: false,
                 default: 'false'
             }))
+        /*
+         For users with disabled email-password account we have a random uuid in `email` column
+         For users with enable email-password account we have a valid email in `email` column
+         */
         await queryRunner.query(`update users set "isEmailPasswordEnabled" = true where email like '%@%;'`)
     }
 

@@ -17,7 +17,7 @@ import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
 import { BlockchainAddressService } from './blockchainAddress/blockchainAddress.service'
 import { isValidAddress } from '../utils/address/address.validator'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
-import { UpdateUserDto } from './dto/update-user.dto'
+import { AssociateEmailAccountDto } from './dto/associate-email-account.dto'
 
 @Injectable()
 export class UsersService {
@@ -85,7 +85,7 @@ export class UsersService {
         return (await this.findOne(createdUser.id))!
     }
 
-    async update(id: string, dto: UpdateUserDto): Promise<User> {
+    async associateEmailAccount(id: string, dto: AssociateEmailAccountDto): Promise<User> {
         if (dto.email) {
             await this.validateEmail(dto.email)
         }
