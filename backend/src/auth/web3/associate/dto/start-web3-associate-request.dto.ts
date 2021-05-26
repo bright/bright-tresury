@@ -7,5 +7,5 @@ export class StartWeb3AssociateRequestDto extends StartSignMessageRequestDto {
         description: 'Optional password, that is required only when associating address for email account',
     })
     @IsOptional()
-    password!: string
+    password?: string
 }

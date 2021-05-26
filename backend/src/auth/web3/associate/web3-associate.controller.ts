@@ -39,7 +39,7 @@ export class Web3AssociateController {
         @Body() startRequest: StartWeb3AssociateRequestDto,
         @ReqSession() session: SessionData,
     ): Promise<StartSignMessageResponseDto> {
-        return this.web3AssociateService.start(startRequest, session.user)
+        return this.web3AssociateService.start(startRequest, session)
     }
 
     @Post('/confirm')

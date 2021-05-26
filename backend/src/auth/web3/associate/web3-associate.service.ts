@@ -1,6 +1,5 @@
 import {BadRequestException, Injectable} from '@nestjs/common'
 import {BlockchainAddressService} from '../../../users/blockchainAddress/blockchainAddress.service'
-import {User} from '../../../users/user.entity'
 import {UsersService} from '../../../users/users.service'
 import {SessionData} from '../../session/session.decorator'
 import {SuperTokensService} from '../../supertokens/supertokens.service'
@@ -22,24 +21,27 @@ export class Web3AssociateService {
 
     async start(
         dto: StartWeb3AssociateRequestDto,
-        user: User,
+        {user}: SessionData,
     ): Promise<StartSignMessageResponseDto> {
-        await this.userService.validateAssociateAddress(dto.address)
-
-        const hasAnyWeb3Address = await this.blockchainAddressService.hasAnyAddresses(user.id)
-        if (!hasAnyWeb3Address) {
-            if (!user.email) {
-                throw new BadRequestException('No email address associated with this user')
+        if (user.isEmailPasswordEnabled) {
+            if (!dto.password) {
+                throw new BadRequestException('Please provide password for this user')
             }
             await this.superTokensService.verifyPassword(user.email, dto.password)
         }
-
+        const hasAnyWeb3Address = await this.blockchainAddressService.hasAnyAddresses(user.id)
+        if (!hasAnyWeb3Address) {
+            if (!user.email) {
+                throw new BadRequestException('No email or Web3 address associated with this user')
+            }
+        }
 
         return this.signMessageService.start(dto, this.cacheKey)
     }
 
-    async confirm(dto: ConfirmSignMessageRequestDto, sessionData: SessionData): Promise<void> {
+    async confirm(dto: ConfirmSignMessageRequestDto, {user}: SessionData): Promise<void> {
+        await this.userService.validateAssociateAddress(dto.address)
         await this.signMessageService.confirm(dto, this.cacheKey)
-        await this.userService.associateBlockchainAddress(sessionData.user, dto.address)
+        await this.userService.associateBlockchainAddress(user, dto.address)
     }
 }
