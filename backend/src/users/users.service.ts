@@ -117,7 +117,7 @@ export class UsersService {
     }
 
     async associateBlockchainAddress(user: User, address: string): Promise<User> {
-        await this.validateAssociateAddress(address)
+        await this.validateBlockchainAddress(address)
         const currentUserAddresses = await this.blockchainAddressService.findByUserId(user.id)
         const alreadyHasAddress = currentUserAddresses
             .map((blockchainAddress: BlockchainAddress) => blockchainAddress.address)
@@ -166,10 +166,6 @@ export class UsersService {
         }
     }
 
-    async validateAssociateAddress(address: string) {
-        await this.validateBlockchainAddress(address)
-    }
-
     private async validateUser(createUserDto: CreateUserDto) {
         await this.validateClassAndUsername(CreateUserDto, createUserDto)
         await this.validateEmail(createUserDto.email)
@@ -189,7 +185,7 @@ export class UsersService {
         await this.validateUsername(dto.username)
     }
 
-    private async validateBlockchainAddress(address: string): Promise<void> {
+    async validateBlockchainAddress(address: string): Promise<void> {
         const validAddress = isValidAddress(address)
         if (!validAddress) {
             throw new BadRequestException('Address is invalid')

@@ -37,7 +37,7 @@ export class Web3AssociateService {
     }
 
     async confirm(dto: ConfirmSignMessageRequestDto, { user }: SessionData): Promise<void> {
-        await this.userService.validateAssociateAddress(dto.address)
+        await this.userService.validateBlockchainAddress(dto.address)
         await this.signMessageService.confirm(dto, this.cacheKey)
         await this.userService.associateBlockchainAddress(user, dto.address)
     }
