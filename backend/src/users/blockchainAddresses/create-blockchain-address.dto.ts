@@ -1,6 +1,6 @@
 import { User } from '../user.entity'
 
-export class CreateBlockchainAddress {
+export class CreateBlockchainAddressDto {
     address: string
     user: User
 

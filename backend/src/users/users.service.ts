@@ -18,7 +18,7 @@ import { BlockchainAddressesService } from './blockchainAddresses/blockchainAddr
 import { isValidAddress } from '../utils/address/address.validator'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
 import { AssociateEmailAccountDto } from './dto/associate-email-account.dto'
-import { CreateBlockchainAddress } from './blockchainAddresses/create-blockchain-address'
+import { CreateBlockchainAddressDto } from './blockchainAddresses/create-blockchain-address.dto'
 
 @Injectable()
 export class UsersService {
@@ -111,7 +111,7 @@ export class UsersService {
             ),
         )
         await this.blockchainAddressService.create(
-            new CreateBlockchainAddress(createBlockchainUserDto.blockchainAddress, user),
+            new CreateBlockchainAddressDto(createBlockchainUserDto.blockchainAddress, user),
         )
         return (await this.findOne(user.id))!
     }
@@ -125,7 +125,7 @@ export class UsersService {
         if (alreadyHasAddress) {
             throw new BadRequestException('Address already associated')
         }
-        await this.blockchainAddressService.create(new CreateBlockchainAddress(address, user))
+        await this.blockchainAddressService.create(new CreateBlockchainAddressDto(address, user))
         return (await this.findOne(user.id))!
     }
 

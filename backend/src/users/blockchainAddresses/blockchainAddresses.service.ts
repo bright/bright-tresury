@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BlockchainAddress } from './blockchainAddress.entity'
-import { CreateBlockchainAddress } from './create-blockchain-address'
+import { CreateBlockchainAddressDto } from './create-blockchain-address.dto'
 
 @Injectable()
 export class BlockchainAddressesService {
@@ -11,7 +11,7 @@ export class BlockchainAddressesService {
         private readonly blockchainAddressRepository: Repository<BlockchainAddress>,
     ) {}
 
-    async create(createBlockchainAddress: CreateBlockchainAddress): Promise<BlockchainAddress> {
+    async create(createBlockchainAddress: CreateBlockchainAddressDto): Promise<BlockchainAddress> {
         const isPrimary = !(await this.hasAnyAddresses(createBlockchainAddress.user!.id))
         const blockchainAddress = new BlockchainAddress(
             createBlockchainAddress.address,

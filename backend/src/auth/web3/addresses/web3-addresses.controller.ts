@@ -6,8 +6,8 @@ import { ReqSession, SessionData } from '../../session/session.decorator'
 import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 
-@Controller('/v1/auth/web3/address/:address')
-@ApiTags('auth.web3.addressManagement')
+@Controller('/v1/auth/web3/addresses/:address')
+@ApiTags('auth.web3.addresses')
 export class Web3AddressesController {
     constructor(private readonly usersService: UsersService, private readonly superTokensService: SuperTokensService) {}
 

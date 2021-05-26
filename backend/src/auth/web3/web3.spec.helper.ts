@@ -12,7 +12,7 @@ import { v4 as uuid } from 'uuid'
 import { UsersService } from '../../users/users.service'
 import { BlockchainAddressesService } from '../../users/blockchainAddresses/blockchainAddresses.service'
 import { CreateUserDto } from '../../users/dto/create-user.dto'
-import { CreateBlockchainAddress } from '../../users/blockchainAddresses/create-blockchain-address'
+import { CreateBlockchainAddressDto } from '../../users/blockchainAddresses/create-blockchain-address.dto'
 
 export async function beforeEachWeb3E2eTest(accessor: Accessor<INestApplication>): Promise<void> {
     /**
@@ -34,7 +34,7 @@ export async function signInAndGetSessionHandler(
     const usersService = app.get().get(UsersService)
     const user = await usersService.create(new CreateUserDto(uuid(), 'Bob', 'bob@email.com'))
     const blockchainAddressService = app.get().get(BlockchainAddressesService)
-    await blockchainAddressService.create(new CreateBlockchainAddress(address, user))
+    await blockchainAddressService.create(new CreateBlockchainAddressDto(address, user))
 
     await request(app()).post(`/api/v1/auth/web3/signin/start`).send({ address })
     const confirmSignInResponse = await request(app()).post(`/api/v1/auth/web3/signin/confirm`).send({

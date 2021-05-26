@@ -20,7 +20,7 @@ describe(`Web3 Addresses Controller`, () => {
             await getUsersService().associateBlockchainAddress(sessionHandler.sessionData.user, charlieAddress)
 
             await sessionHandler.authorizeRequest(
-                request(app()).del(`/api/v1/auth/web3/address/${charlieAddress}`).send(),
+                request(app()).del(`/api/v1/auth/web3/addresses/${charlieAddress}`).send(),
             )
 
             const userAfterUnlinking = await getUsersService().findOne(sessionHandler.sessionData.user.id)
@@ -28,7 +28,7 @@ describe(`Web3 Addresses Controller`, () => {
             expect(userAfterUnlinking.blockchainAddresses![0].address).toBe(bobAddress)
         })
         it('should throw forbidden exception if not signed in', () => {
-            return request(app()).del(`/api/v1/auth/web3/address/${charlieAddress}`).send().expect(HttpStatus.FORBIDDEN)
+            return request(app()).del(`/api/v1/auth/web3/addresses/${charlieAddress}`).send().expect(HttpStatus.FORBIDDEN)
         })
     })
 
@@ -38,7 +38,7 @@ describe(`Web3 Addresses Controller`, () => {
             await getUsersService().associateBlockchainAddress(sessionHandler.sessionData.user, charlieAddress)
 
             await sessionHandler.authorizeRequest(
-                request(app()).post(`/api/v1/auth/web3/address/${charlieAddress}/make-primary`).send(),
+                request(app()).post(`/api/v1/auth/web3/addresses/${charlieAddress}/make-primary`).send(),
             )
 
             const userAfterMakingAddressPrimary = await getUsersService().findOne(sessionHandler.sessionData.user.id)
@@ -53,7 +53,7 @@ describe(`Web3 Addresses Controller`, () => {
         })
         it('should throw forbidden exception if not signed in', () => {
             return request(app())
-                .post(`/api/v1/auth/web3/address/${charlieAddress}/make-primary`)
+                .post(`/api/v1/auth/web3/addresses/${charlieAddress}/make-primary`)
                 .send({ address: charlieAddress })
                 .expect(HttpStatus.FORBIDDEN)
         })
