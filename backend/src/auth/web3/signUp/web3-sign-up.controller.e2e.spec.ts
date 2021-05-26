@@ -23,7 +23,7 @@ describe(`Web3 Sign Up Controller`, () => {
 
             await request(app()).post(`/api/v1/auth/web3/signup/confirm`).send({
                 address: bobAddress,
-                network: 'localhost',
+                details: {network: 'localhost',},
                 signature: uuid(),
             })
 
@@ -40,7 +40,7 @@ describe(`Web3 Sign Up Controller`, () => {
 
             const confirmSignUpResponse = await request(app()).post(`/api/v1/auth/web3/signup/confirm`).send({
                 address: bobAddress,
-                network: 'localhost',
+                details: {network: 'localhost',},
                 signature: uuid(),
             })
             const user = await getUsersService().findOneByBlockchainAddress(bobAddress)

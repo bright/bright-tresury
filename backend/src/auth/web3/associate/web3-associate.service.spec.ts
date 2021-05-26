@@ -1,11 +1,10 @@
 import {BadRequestException} from '@nestjs/common'
 import {v4 as uuid, validate} from 'uuid'
-import {CreateBlockchainUserDto} from '../../../users/dto/create-blockchain-user.dto'
-import {User} from "../../../users/user.entity";
 import {UsersService} from '../../../users/users.service'
 import {beforeSetupFullApp} from '../../../utils/spec.helpers'
+import {SessionData} from "../../session/session.decorator";
 import {cleanAuthorizationDatabase} from "../../supertokens/specHelpers/supertokens.database.spec.helper";
-import {createBlockchainSessionHandler, createUserSessionHandler, SessionHandler} from '../../supertokens/specHelpers/supertokens.session.spec.helper'
+import {createUserSessionHandler, SessionHandler} from '../../supertokens/specHelpers/supertokens.session.spec.helper'
 import {SuperTokensService} from '../../supertokens/supertokens.service'
 import {SignatureValidator} from '../signMessage/signature.validator'
 import {cleanDatabases} from '../web3.spec.helper'
@@ -29,14 +28,14 @@ describe(`Web3 Associate Service`, () => {
         await cleanAuthorizationDatabase()
     })
 
-    describe('adding web3 account to email only account', async () => {
+    describe('adding web3 account to email only account',  () => {
         let sessionHandler: SessionHandler
         const password = uuid()
         beforeEach(async () => {
             sessionHandler = await createUserSessionHandler(app.get(), 'bob@example.com', 'bob', password)
         })
 
-        describe('start', async () => {
+        describe('start',  () => {
             it('should return uuid', async () => {
                 const signMessageResponse = await getService().start({address: bobAddress, password}, sessionHandler.sessionData)
                 expect(signMessageResponse.signMessage).toBeDefined()
@@ -91,28 +90,34 @@ describe(`Web3 Associate Service`, () => {
         })
     })
 
-    describe('adding web3 account to web3 only account', async () => {
-        let sessionHandler: SessionHandler
+    describe('adding web3 account to web3 only account', () => {
+        let sessionData: SessionData
         const password = uuid()
         beforeEach(async () => {
-            sessionHandler = await createBlockchainSessionHandler(app.get(), charlieAddress)
+            sessionData = {
+                user: await getUsersService().createBlockchainUser({
+                    authId: uuid(),
+                    blockchainAddress: charlieAddress,
+                    username: 'charlie'
+                })
+            }
         })
 
-        describe('start', async () => {
+        describe('start',  () => {
             it('should return uuid without password', async () => {
-                const signMessageResponse = await getService().start({address: bobAddress}, sessionHandler.sessionData)
+                const signMessageResponse = await getService().start({address: bobAddress}, sessionData)
                 expect(signMessageResponse.signMessage).toBeDefined()
                 expect(validate(signMessageResponse.signMessage)).toBe(true)
             })
 
             it('should allow invalid address and no password', async () => {
-                await expect(await getService().start({address: uuid()}, sessionHandler.sessionData)).resolves
+                await expect(await getService().start({address: uuid()}, sessionData)).resolves
             })
         })
 
         describe('confirm', () => {
             beforeEach(async () => {
-                await getService().start({address: bobAddress}, sessionHandler.sessionData)
+                await getService().start({address: bobAddress}, sessionData)
             })
 
             it('should associate account and NOT make primary', async () => {
@@ -123,10 +128,10 @@ describe(`Web3 Associate Service`, () => {
                         signature: uuid(),
                         address: bobAddress,
                     },
-                    sessionHandler.sessionData,
+                    sessionData,
                 )
 
-                const actualUser = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+                const actualUser = await getUsersService().findOne(sessionData.user.id)
                 expect(actualUser.blockchainAddresses!.length).toBe(2)
                 const addedBlockchainAddress = actualUser.blockchainAddresses?.find((address) => address.address === bobAddress)
                 expect(addedBlockchainAddress).toBeDefined()
@@ -142,14 +147,14 @@ describe(`Web3 Associate Service`, () => {
                             signature: uuid(),
                             address: bobAddress,
                         },
-                        sessionHandler.sessionData,
+                        sessionData,
                     ),
                 ).rejects.toThrow(BadRequestException)
             })
         })
     })
 
-    describe('adding web3 account to email&web3 account', async () => {
+    describe('adding web3 account to email&web3 account',  () => {
         let sessionHandler: SessionHandler
         const password = uuid()
         beforeEach(async () => {
@@ -165,7 +170,7 @@ describe(`Web3 Associate Service`, () => {
             )
         })
 
-        describe('start', async () => {
+        describe('start',  () => {
             it('should return uuid', async () => {
                 const signMessageResponse = await getService().start({address: charlieAddress, password}, sessionHandler.sessionData)
                 expect(signMessageResponse.signMessage).toBeDefined()
