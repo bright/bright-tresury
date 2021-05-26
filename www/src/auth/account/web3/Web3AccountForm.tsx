@@ -11,6 +11,7 @@ import { InfoBox } from '../../../components/form/InfoBox'
 import { Label } from '../../../components/text/Label'
 import { Web3LinkingButton } from './Web3LinkingButton'
 import { EnterPasswordModal } from '../emailPassword/passwordModal/EnterPasswordModal'
+import { useModal } from '../../../components/modal/useModal'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -37,16 +38,8 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
     const { t } = useTranslation()
     const accounts = useAccounts()
     const { user, web3Associate } = useAuth()
-    const [passwordModalOpen, setPasswordModalOpen] = useState(false)
+    const passwordModal = useModal()
     const [selectedAccount, setSelectedAccount] = useState<Account>()
-
-    const hidePasswordModal = () => {
-        setPasswordModalOpen(false)
-    }
-
-    const showPasswordModal = () => {
-        setPasswordModalOpen(true)
-    }
 
     const { call: associateCall, loadingState, error } = useLoading(web3Associate)
 
@@ -54,7 +47,7 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
         try {
             await associateCall({ account: selectedAccount, password } as Web3AssociateValues)
         } finally {
-            hidePasswordModal()
+            passwordModal.close()
         }
     }
 
@@ -63,7 +56,7 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
             await associateCall({ account: values.account } as Web3AssociateValues)
         } else {
             setSelectedAccount(values.account)
-            showPasswordModal()
+            passwordModal.open()
         }
     }
 
@@ -110,7 +103,11 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
                     </form>
                 )}
             </Formik>
-            <EnterPasswordModal open={passwordModalOpen} onClose={hidePasswordModal} onConfirm={onConfirmPassword} />
+            <EnterPasswordModal
+                open={passwordModal.visible}
+                onClose={passwordModal.close}
+                onConfirm={onConfirmPassword}
+            />
         </>
     )
 }
