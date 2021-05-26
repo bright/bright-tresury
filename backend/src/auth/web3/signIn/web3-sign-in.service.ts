@@ -1,23 +1,22 @@
-import {BadRequestException, Injectable, NotFoundException} from '@nestjs/common'
-import {Response} from 'express'
-import {BlockchainAddressService} from '../../../users/blockchainAddress/blockchainAddress.service'
-import {UsersService} from '../../../users/users.service'
-import {isValidAddress} from '../../../utils/address/address.validator'
-import {SuperTokensService} from '../../supertokens/supertokens.service'
-import {ConfirmSignMessageRequestDto} from '../signMessage/confirm-sign-message-request.dto'
-import {SignMessageService} from '../signMessage/sign-message.service'
-import {StartSignMessageRequestDto} from "../signMessage/start-sign-message-request.dto";
-import {StartSignMessageResponseDto} from "../signMessage/start-sign-message-response.dto";
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { Response } from 'express'
+import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
+import { UsersService } from '../../../users/users.service'
+import { isValidAddress } from '../../../utils/address/address.validator'
+import { SuperTokensService } from '../../supertokens/supertokens.service'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
+import { SignMessageService } from '../signMessage/sign-message.service'
+import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
+import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
 
 @Injectable()
 export class Web3SignInService {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressService,
+        private readonly blockchainAddressService: BlockchainAddressesService,
         private readonly superTokensService: SuperTokensService,
         private readonly signMessageService: SignMessageService,
-    ) {
-    }
+    ) {}
 
     private readonly cacheKey = 'SignInMessage'
 

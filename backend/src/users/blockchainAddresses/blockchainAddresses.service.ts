@@ -4,7 +4,7 @@ import { Repository } from 'typeorm'
 import { BlockchainAddress } from './blockchainAddress.entity'
 
 @Injectable()
-export class BlockchainAddressService {
+export class BlockchainAddressesService {
     constructor(
         @InjectRepository(BlockchainAddress)
         private readonly blockchainAddressRepository: Repository<BlockchainAddress>,

@@ -1,33 +1,28 @@
-import {Column, Entity, OneToMany} from "typeorm";
-import {BaseEntity} from "../database/base.entity";
-import {v4 as uuid} from "uuid"
-import {BlockchainAddress} from "./blockchainAddress/blockchainAddress.entity";
+import { Column, Entity, OneToMany } from 'typeorm'
+import { BaseEntity } from '../database/base.entity'
+import { v4 as uuid } from 'uuid'
+import { BlockchainAddress } from './blockchainAddresses/blockchainAddress.entity'
 
-@Entity("users")
+@Entity('users')
 export class User extends BaseEntity {
-
-    @Column({nullable: false, type: "text", unique: true})
+    @Column({ nullable: false, type: 'text', unique: true })
     authId: string
 
-    @Column({nullable: false, type: "text", unique: true})
+    @Column({ nullable: false, type: 'text', unique: true })
     username: string
 
-    @Column({nullable: false, type: "text", unique: true})
+    @Column({ nullable: false, type: 'text', unique: true })
     email: string
 
-    @Column({nullable: false, type: "boolean"})
+    @Column({ nullable: false, type: 'boolean' })
     isEmailPasswordEnabled: boolean
 
-    @OneToMany(
-        () => BlockchainAddress,
-        (blockchainAddress) => blockchainAddress.user,
-        {
-            cascade: true,
-            onDelete: 'CASCADE',
-            onUpdate: 'CASCADE'
-        }
-    )
-    blockchainAddresses?: BlockchainAddress[];
+    @OneToMany(() => BlockchainAddress, (blockchainAddress) => blockchainAddress.user, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    blockchainAddresses?: BlockchainAddress[]
 
     constructor(
         authId: string,
@@ -35,7 +30,7 @@ export class User extends BaseEntity {
         email: string,
         isEmailPasswordEnabled: boolean,
         blockchainAddresses?: BlockchainAddress[],
-        id?: string
+        id?: string,
     ) {
         super()
         this.authId = authId

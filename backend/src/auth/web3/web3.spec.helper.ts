@@ -10,8 +10,8 @@ import {
 } from '../supertokens/specHelpers/supertokens.session.spec.helper'
 import { v4 as uuid } from 'uuid'
 import { UsersService } from '../../users/users.service'
-import { BlockchainAddressService } from '../../users/blockchainAddress/blockchainAddress.service'
-import { BlockchainAddress } from '../../users/blockchainAddress/blockchainAddress.entity'
+import { BlockchainAddressesService } from '../../users/blockchainAddresses/blockchainAddresses.service'
+import { BlockchainAddress } from '../../users/blockchainAddresses/blockchainAddress.entity'
 import { CreateUserDto } from '../../users/dto/create-user.dto'
 
 export async function beforeEachWeb3E2eTest(accessor: Accessor<INestApplication>): Promise<void> {
@@ -33,7 +33,7 @@ export async function signInAndGetSessionHandler(
 ): Promise<SessionHandler> {
     const usersService = app.get().get(UsersService)
     const user = await usersService.create(new CreateUserDto(uuid(), 'Bob', 'bob@email.com'))
-    const blockchainAddressService = app.get().get(BlockchainAddressService)
+    const blockchainAddressService = app.get().get(BlockchainAddressesService)
     await blockchainAddressService.create(new BlockchainAddress(address, user, true))
 
     await request(app()).post(`/api/v1/auth/web3/signin/start`).send({ address })

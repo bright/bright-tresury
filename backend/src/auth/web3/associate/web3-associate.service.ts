@@ -1,28 +1,25 @@
-import {BadRequestException, Injectable} from '@nestjs/common'
-import {BlockchainAddressService} from '../../../users/blockchainAddress/blockchainAddress.service'
-import {UsersService} from '../../../users/users.service'
-import {SessionData} from '../../session/session.decorator'
-import {SuperTokensService} from '../../supertokens/supertokens.service'
-import {ConfirmSignMessageRequestDto} from '../signMessage/confirm-sign-message-request.dto'
-import {SignMessageService} from '../signMessage/sign-message.service'
-import {StartSignMessageResponseDto} from '../signMessage/start-sign-message-response.dto'
-import {StartWeb3AssociateRequestDto} from './dto/start-web3-associate-request.dto'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
+import { UsersService } from '../../../users/users.service'
+import { SessionData } from '../../session/session.decorator'
+import { SuperTokensService } from '../../supertokens/supertokens.service'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
+import { SignMessageService } from '../signMessage/sign-message.service'
+import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
+import { StartWeb3AssociateRequestDto } from './dto/start-web3-associate-request.dto'
 
 @Injectable()
 export class Web3AssociateService {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressService,
+        private readonly blockchainAddressService: BlockchainAddressesService,
         private readonly signMessageService: SignMessageService,
         private readonly superTokensService: SuperTokensService,
     ) {}
 
     private readonly cacheKey = 'Web3AssociateMessage'
 
-    async start(
-        dto: StartWeb3AssociateRequestDto,
-        {user}: SessionData,
-    ): Promise<StartSignMessageResponseDto> {
+    async start(dto: StartWeb3AssociateRequestDto, { user }: SessionData): Promise<StartSignMessageResponseDto> {
         if (user.isEmailPasswordEnabled) {
             if (!dto.password) {
                 throw new BadRequestException('Please provide password for this user')
@@ -39,7 +36,7 @@ export class Web3AssociateService {
         return this.signMessageService.start(dto, this.cacheKey)
     }
 
-    async confirm(dto: ConfirmSignMessageRequestDto, {user}: SessionData): Promise<void> {
+    async confirm(dto: ConfirmSignMessageRequestDto, { user }: SessionData): Promise<void> {
         await this.userService.validateAssociateAddress(dto.address)
         await this.signMessageService.confirm(dto, this.cacheKey)
         await this.userService.associateBlockchainAddress(user, dto.address)

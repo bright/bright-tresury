@@ -6,7 +6,7 @@ import { UsersService } from './users.service'
 import { User } from './user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { CreateBlockchainUserDto } from './dto/create-blockchain-user.dto'
-import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
+import { BlockchainAddress } from './blockchainAddresses/blockchainAddress.entity'
 
 describe(`Users Service`, () => {
     const app = beforeSetupFullApp()
@@ -151,32 +151,32 @@ describe(`Users Service`, () => {
         })
 
         it('should throw not found for not existing user', async () => {
-            await expect(getService().associateEmailAccount(uuid(), {
-                username: 'Bob',
-                email: 'bob@email.com',
-            }))
-                .rejects
-                .toThrow(NotFoundException)
+            await expect(
+                getService().associateEmailAccount(uuid(), {
+                    username: 'Bob',
+                    email: 'bob@email.com',
+                }),
+            ).rejects.toThrow(NotFoundException)
         })
 
         it('should throw conflict exception for already existing email', async () => {
-            const aliceUser = await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
-            await expect(getService().associateEmailAccount(user.id, {
-                email: aliceUser.email,
-                username: 'Bob',
-            }))
-                .rejects
-                .toThrow(ConflictException)
+            const aliceUser = await getService().create({ authId: uuid(), username: 'Alice', email: 'alice@email.com' })
+            await expect(
+                getService().associateEmailAccount(user.id, {
+                    email: aliceUser.email,
+                    username: 'Bob',
+                }),
+            ).rejects.toThrow(ConflictException)
         })
 
         it('should throw conflict exception for already existing username', async () => {
-            const aliceUser =  await getService().create({authId: uuid(), username: 'Alice', email: 'alice@email.com',})
-            await expect(getService().associateEmailAccount(user.id, {
-                username: aliceUser.username,
-                email: 'bob@examplecom',
-            }))
-                .rejects
-                .toThrow(ConflictException)
+            const aliceUser = await getService().create({ authId: uuid(), username: 'Alice', email: 'alice@email.com' })
+            await expect(
+                getService().associateEmailAccount(user.id, {
+                    username: aliceUser.username,
+                    email: 'bob@examplecom',
+                }),
+            ).rejects.toThrow(ConflictException)
         })
     })
 

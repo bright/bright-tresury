@@ -1,22 +1,22 @@
-import {BadRequestException, ConflictException, Injectable} from '@nestjs/common'
-import {Response} from 'express'
-import {User as SuperTokensUser} from 'supertokens-node/lib/build/recipe/emailpassword/types'
-import {v4 as uuid} from 'uuid'
-import {BlockchainAddressService} from '../../../users/blockchainAddress/blockchainAddress.service'
-import {CreateBlockchainUserDto} from '../../../users/dto/create-blockchain-user.dto'
-import {UsersService} from '../../../users/users.service'
-import {isValidAddress} from '../../../utils/address/address.validator'
-import {SuperTokensService} from '../../supertokens/supertokens.service'
-import {SignMessageService} from '../signMessage/sign-message.service'
-import {StartSignMessageRequestDto} from '../signMessage/start-sign-message-request.dto'
-import {StartSignMessageResponseDto} from '../signMessage/start-sign-message-response.dto'
-import {ConfirmWeb3SignUpRequestDto} from './dto/confirm-web3-sign-up-request.dto'
+import { BadRequestException, ConflictException, Injectable } from '@nestjs/common'
+import { Response } from 'express'
+import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import { v4 as uuid } from 'uuid'
+import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
+import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
+import { UsersService } from '../../../users/users.service'
+import { isValidAddress } from '../../../utils/address/address.validator'
+import { SuperTokensService } from '../../supertokens/supertokens.service'
+import { SignMessageService } from '../signMessage/sign-message.service'
+import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
+import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
+import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 
 @Injectable()
 export class Web3SignUpService {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressService,
+        private readonly blockchainAddressService: BlockchainAddressesService,
         private readonly superTokensService: SuperTokensService,
         private readonly signMessageService: SignMessageService,
     ) {}

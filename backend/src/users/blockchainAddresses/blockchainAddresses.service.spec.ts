@@ -1,6 +1,6 @@
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { v4 as uuid } from 'uuid'
-import { BlockchainAddressService } from './blockchainAddress.service'
+import { BlockchainAddressesService } from './blockchainAddresses.service'
 import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
 import { BlockchainAddress } from './blockchainAddress.entity'
 import { User } from '../user.entity'
@@ -8,9 +8,9 @@ import { UsersService } from '../users.service'
 import { CreateUserDto } from '../dto/create-user.dto'
 import { BadRequestException, ConflictException } from '@nestjs/common'
 
-describe(`Blockchain Address Service`, () => {
+describe(`Blockchain Addresses Service`, () => {
     const app = beforeSetupFullApp()
-    const getService = () => app.get().get(BlockchainAddressService)
+    const getService = () => app.get().get(BlockchainAddressesService)
     const getUserService = () => app.get().get(UsersService)
     const getRepository = () => app.get().get(getRepositoryToken(BlockchainAddress))
 
@@ -46,7 +46,7 @@ describe(`Blockchain Address Service`, () => {
                 ConflictException,
             )
         })
-        it('should throw conflict exception for secondary address if there is no primary address', async () => {
+        it('should throw bad request exception for secondary address if there is no primary address', async () => {
             await expect(getService().create(new BlockchainAddress(aliceAddress, user, false))).rejects.toThrow(
                 BadRequestException,
             )

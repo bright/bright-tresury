@@ -13,8 +13,8 @@ import { validateOrReject } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 import { handleFindError } from '../utils/exceptions/databaseExceptions.handler'
 import { CreateBlockchainUserDto } from './dto/create-blockchain-user.dto'
-import { BlockchainAddress } from './blockchainAddress/blockchainAddress.entity'
-import { BlockchainAddressService } from './blockchainAddress/blockchainAddress.service'
+import { BlockchainAddress } from './blockchainAddresses/blockchainAddress.entity'
+import { BlockchainAddressesService } from './blockchainAddresses/blockchainAddresses.service'
 import { isValidAddress } from '../utils/address/address.validator'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
 import { AssociateEmailAccountDto } from './dto/associate-email-account.dto'
@@ -24,7 +24,7 @@ export class UsersService {
     constructor(
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
-        private readonly blockchainAddressService: BlockchainAddressService,
+        private readonly blockchainAddressService: BlockchainAddressesService,
     ) {}
 
     async findOne(id: string): Promise<User> {
@@ -93,7 +93,7 @@ export class UsersService {
             await this.validateUsername(dto.username)
         }
         const user = await this.findOne(id)
-        const userToSave = {...user, ...dto, isEmailPasswordEnabled: true}
+        const userToSave = { ...user, ...dto, isEmailPasswordEnabled: true }
         await this.userRepository.save(userToSave)
         return (await this.findOne(id))!
     }
