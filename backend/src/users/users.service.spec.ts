@@ -521,7 +521,7 @@ describe(`Users Service`, () => {
         })
     })
 
-    describe('make address as primary', () => {
+    describe('make address primary', () => {
         it('successfully makes address and set other addresses as non-primary', async () => {
             const user = await getService().createBlockchainUser({
                 authId: uuid(),

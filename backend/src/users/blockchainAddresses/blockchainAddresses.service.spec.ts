@@ -6,7 +6,8 @@ import { BlockchainAddress } from './blockchainAddress.entity'
 import { User } from '../user.entity'
 import { UsersService } from '../users.service'
 import { CreateUserDto } from '../dto/create-user.dto'
-import { BadRequestException, ConflictException } from '@nestjs/common'
+import { BadRequestException } from '@nestjs/common'
+import { CreateBlockchainAddress } from './create-blockchain-address'
 
 describe(`Blockchain Addresses Service`, () => {
     const app = beforeSetupFullApp()
@@ -30,31 +31,15 @@ describe(`Blockchain Addresses Service`, () => {
 
     describe('create', () => {
         it('should return blockchain address', async () => {
-            const blockchainAddress = await getService().create(new BlockchainAddress(bobAddress, user, true))
+            const blockchainAddress = await getService().create(new CreateBlockchainAddress(bobAddress, user))
             expect(blockchainAddress).toBeDefined()
             expect(blockchainAddress.address).toBe(bobAddress)
         })
         it('should save blockchain address', async () => {
-            const blockchainAddress = await getService().create(new BlockchainAddress(bobAddress, user, true))
+            const blockchainAddress = await getService().create(new CreateBlockchainAddress(bobAddress, user))
             const savedBlockchainAddress = await getRepository().findOne(blockchainAddress.id)
             expect(savedBlockchainAddress).toBeDefined()
             expect(savedBlockchainAddress.address).toBe(bobAddress)
-        })
-        it('should throw conflict exception if primary address already exist', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
-            await expect(getService().create(new BlockchainAddress(aliceAddress, user, true))).rejects.toThrow(
-                ConflictException,
-            )
-        })
-        it('should throw bad request exception for secondary address if there is no primary address', async () => {
-            await expect(getService().create(new BlockchainAddress(aliceAddress, user, false))).rejects.toThrow(
-                BadRequestException,
-            )
-        })
-        it('should allow creating secondary address if primary address already exist', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
-            const secondaryAddress = await getService().create(new BlockchainAddress(aliceAddress, user, false))
-            expect(secondaryAddress).toBeDefined()
         })
     })
 
@@ -64,7 +49,7 @@ describe(`Blockchain Addresses Service`, () => {
             expect(doesAddressExist).toBe(false)
         })
         it('should return true if address exists', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
+            await getService().create(new CreateBlockchainAddress(bobAddress, user))
 
             const doesAddressExist = await getService().doesAddressExist(bobAddress)
             expect(doesAddressExist).toBe(true)
@@ -73,8 +58,8 @@ describe(`Blockchain Addresses Service`, () => {
 
     describe('find by user id', () => {
         it('should return addresses belonging to the user', async () => {
-            const address1 = await getService().create(new BlockchainAddress(bobAddress, user, true))
-            const address2 = await getService().create(new BlockchainAddress(aliceAddress, user, false))
+            const address1 = await getService().create(new CreateBlockchainAddress(bobAddress, user))
+            const address2 = await getService().create(new CreateBlockchainAddress(aliceAddress, user))
 
             const addresses = await getService().findByUserId(user.id)
             expect(addresses.length).toBe(2)
@@ -88,13 +73,13 @@ describe(`Blockchain Addresses Service`, () => {
             expect(addresses.length).toBe(0)
         })
         it('should not return addresses of another user', async () => {
-            const addressBobUser = await getService().create(new BlockchainAddress(bobAddress, user, true))
+            const addressBobUser = await getService().create(new CreateBlockchainAddress(bobAddress, user))
             const aliceUser = await getUserService().create({
                 authId: uuid(),
                 username: 'Alice',
                 email: 'alice@email.com',
             } as CreateUserDto)
-            const addressAliceUser = await getService().create(new BlockchainAddress(aliceAddress, aliceUser, true))
+            const addressAliceUser = await getService().create(new CreateBlockchainAddress(aliceAddress, aliceUser))
 
             const addresses = await getService().findByUserId(user.id)
             expect(addresses.length).toBe(1)
@@ -107,13 +92,13 @@ describe(`Blockchain Addresses Service`, () => {
 
     describe('delete', () => {
         it('throw bad request exception if address is primary', async () => {
-            const primaryAddress = await getService().create(new BlockchainAddress(bobAddress, user, true))
-            await getService().create(new BlockchainAddress(aliceAddress, user, false))
+            const primaryAddress = await getService().create(new CreateBlockchainAddress(bobAddress, user))
+            await getService().create(new CreateBlockchainAddress(aliceAddress, user))
             await expect(getService().deleteAddress(primaryAddress)).rejects.toThrow(BadRequestException)
         })
         it('removes secondary address', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
-            const secondaryAddress = await getService().create(new BlockchainAddress(aliceAddress, user, false))
+            await getService().create(new CreateBlockchainAddress(bobAddress, user))
+            const secondaryAddress = await getService().create(new CreateBlockchainAddress(aliceAddress, user))
             await getService().deleteAddress(secondaryAddress)
 
             const addresses = await getService().findByUserId(user.id)
@@ -126,44 +111,26 @@ describe(`Blockchain Addresses Service`, () => {
 
     describe('has any address', () => {
         it('returns true if there is an address', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
+            await getService().create(new CreateBlockchainAddress(bobAddress, user))
             const hasAnyAddresses = await getService().hasAnyAddresses(user.id)
             expect(hasAnyAddresses).toBeTruthy()
         })
         it('returns true if there are multiple addresses', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
-            await getService().create(new BlockchainAddress(aliceAddress, user, false))
+            await getService().create(new CreateBlockchainAddress(bobAddress, user))
+            await getService().create(new CreateBlockchainAddress(aliceAddress, user))
             const hasAnyAddresses = await getService().hasAnyAddresses(user.id)
             expect(hasAnyAddresses).toBeTruthy()
         })
         it('returns false if there are no addresses', async () => {
             const hasAnyAddresses = await getService().hasAnyAddresses(user.id)
-            expect(hasAnyAddresses).toBeFalsy()
-        })
-    })
-
-    describe('has primary address', () => {
-        it('returns true if there is a primary address', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
-            const hasAnyAddresses = await getService().hasPrimaryAddress(user.id)
-            expect(hasAnyAddresses).toBeTruthy()
-        })
-        it('returns true if there are multiple addresses and one is primary', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
-            await getService().create(new BlockchainAddress(aliceAddress, user, false))
-            const hasAnyAddresses = await getService().hasPrimaryAddress(user.id)
-            expect(hasAnyAddresses).toBeTruthy()
-        })
-        it('returns false if there are no addresses', async () => {
-            const hasAnyAddresses = await getService().hasPrimaryAddress(user.id)
             expect(hasAnyAddresses).toBeFalsy()
         })
     })
 
     describe('make primary', () => {
         it('makes address primary', async () => {
-            await getService().create(new BlockchainAddress(bobAddress, user, true))
-            await getService().create(new BlockchainAddress(aliceAddress, user, false))
+            await getService().create(new CreateBlockchainAddress(bobAddress, user))
+            await getService().create(new CreateBlockchainAddress(aliceAddress, user))
             await getService().makePrimary(user.id, aliceAddress)
 
             const blockchainAddresses = await getService().findByUserId(user.id)
@@ -171,8 +138,8 @@ describe(`Blockchain Addresses Service`, () => {
             expect(aliceBlockchainAddress!.isPrimary).toBeTruthy()
         })
         it('make other addresses non primary', async () => {
-            await getService().create(new BlockchainAddress(aliceAddress, user, true))
-            await getService().create(new BlockchainAddress(bobAddress, user, false))
+            await getService().create(new CreateBlockchainAddress(aliceAddress, user))
+            await getService().create(new CreateBlockchainAddress(bobAddress, user))
             await getService().makePrimary(user.id, bobAddress)
 
             const blockchainAddresses = await getService().findByUserId(user.id)
