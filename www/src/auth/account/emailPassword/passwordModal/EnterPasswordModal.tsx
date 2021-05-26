@@ -1,9 +1,9 @@
 import React from 'react'
+import {FormFooterButtonsContainer} from "../../../../components/form/footer/FormFooterButtonsContainer";
 import { Modal } from '../../../../components/modal/Modal'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../../components/button/Button'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { ButtonsContainer } from '../../../../components/form/buttons/ButtonsContainer'
 import { Formik } from 'formik'
 import { PasswordInput } from '../../../../components/form/input/password/PasswordInput'
 import * as Yup from 'yup'
@@ -75,14 +75,14 @@ export const EnterPasswordModal = ({ open, onClose, onConfirm }: Props) => {
                                 validationRules={passwordValidationRules}
                             />
                         </div>
-                        <ButtonsContainer>
+                        <FormFooterButtonsContainer>
                             <Button variant="contained" color="primary" type="submit">
                                 {t('account.passwordModal.confirm')}
                             </Button>
                             <Button variant="text" color="primary" onClick={onClose}>
                                 {t('account.passwordModal.cancel')}
                             </Button>
-                        </ButtonsContainer>
+                        </FormFooterButtonsContainer>
                     </form>
                 )}
             </Formik>

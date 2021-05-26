@@ -1,13 +1,13 @@
 import React from 'react'
 import {useTranslation} from 'react-i18next'
-import {useAccounts} from "../../../substrate-lib/hooks/useAccounts";
+import {useAccounts} from "../../../substrate-lib/accounts/useAccounts";
 import {useAuth} from "../../AuthContext";
 import EmailSignUpForm, {SignUpValues} from '../../sign-up/email/EmailSignUpForm'
 
 const EmailPasswordAccountForm = () => {
     const {t} = useTranslation()
     const {user, emailPasswordAssociate} = useAuth()
-    const accounts = useAccounts()
+    const {accounts} = useAccounts()
 
     const submit = (data: SignUpValues) => {
         const address = user?.web3Addresses.find((address) => address.isPrimary)
