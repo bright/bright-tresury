@@ -1,4 +1,4 @@
-import { Body, Controller, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common'
+import { Body, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common'
 import {
     ApiBadRequestResponse,
     ApiConflictResponse,
@@ -7,6 +7,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger'
 import { Request, Response } from 'express'
+import {ControllerApiVersion} from "../../../utils/ControllerApiVersion";
 import { Web3AssociateService } from './web3-associate.service'
 import { SessionGuard } from '../../session/guard/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
@@ -15,7 +16,7 @@ import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-r
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { StartWeb3AssociateRequestDto } from './dto/start-web3-associate-request.dto'
 
-@Controller('/v1/auth/web3/associate')
+@ControllerApiVersion('/auth/web3/associate', ['v1'])
 @ApiTags('auth.web3.associate')
 export class Web3AssociateController {
     constructor(

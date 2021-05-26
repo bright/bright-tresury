@@ -1,6 +1,7 @@
-import {Body, Controller, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
+import {Body, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
 import {ApiBadRequestResponse, ApiConflictResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
 import {Request, Response} from "express";
+import {ControllerApiVersion} from "../../../utils/ControllerApiVersion";
 import {SessionGuard} from "../../session/guard/session.guard";
 import {ReqSession, SessionData} from "../../session/session.decorator";
 import {SuperTokensService} from "../../supertokens/supertokens.service";
@@ -9,7 +10,7 @@ import {ConfirmEmailPasswordAssociateRequestDto} from "./dto/confirm.request.dto
 import {StartEmailPasswordAssociateRequestDto} from "./dto/start.request.dto";
 import {EmailPasswordAssociateService} from "./email-password.associate.service";
 
-@Controller('/v1/auth/email-password/associate')
+@ControllerApiVersion('/auth/email-password/associate', ['v1'])
 @ApiTags('auth.web3')
 export class EmailPasswordAssociateController {
     constructor(private readonly emailPasswordAssociateService: EmailPasswordAssociateService,

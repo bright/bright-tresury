@@ -1,12 +1,13 @@
-import { Controller, Delete, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/common'
+import { Delete, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/common'
 import { Request, Response } from 'express'
 import { ApiBadRequestResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import {ControllerApiVersion} from "../../../utils/ControllerApiVersion";
 import { SessionGuard } from '../../session/guard/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
 import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 
-@Controller('/v1/auth/web3/addresses/:address')
+@ControllerApiVersion('/auth/web3/addresses/:address', ['v1'])
 @ApiTags('auth.web3.addresses')
 export class Web3AddressesController {
     constructor(private readonly usersService: UsersService, private readonly superTokensService: SuperTokensService) {}
