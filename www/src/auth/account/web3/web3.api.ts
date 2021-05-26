@@ -1,5 +1,5 @@
-import { apiPost } from '../../../api'
-import {ConfirmWeb3SignRequestDto, StartWeb3SignResponseDto} from "../../handleWeb3Sign";
+import { apiDelete, apiPost } from '../../../api'
+import { ConfirmWeb3SignRequestDto, StartWeb3SignResponseDto } from '../../handleWeb3Sign'
 
 export interface StartWeb3AssociateRequestDto {
     address: string
@@ -15,9 +15,9 @@ export function confirmWeb3Association(dto: ConfirmWeb3SignRequestDto): Promise<
 }
 
 export function unlinkAddress(address: string) {
-    return apiPost('/auth/web3/address/unlink', { address })
+    return apiDelete(`/auth/web3/address/${address}`)
 }
 
 export function makePrimary(address: string) {
-    return apiPost('/auth/web3/address/make-primary', { address })
+    return apiPost(`/auth/web3/address/${address}/make-primary`)
 }

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { UsersModule } from '../../../users/users.module'
 import { SessionModule } from '../../session/session.module'
-import { Web3AddressManagementController } from './web3-address-management.controller'
 import { SuperTokensModule } from '../../supertokens/supertokens.module'
+import { Web3AddressesController } from './web3-addresses.controller'
 
 @Module({
     imports: [UsersModule, SessionModule, SuperTokensModule],
-    controllers: [Web3AddressManagementController],
+    controllers: [Web3AddressesController],
 })
-export class Web3AddressManagementModule {}
+export class Web3AddressesModule {}
