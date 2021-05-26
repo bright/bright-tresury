@@ -11,10 +11,6 @@ const useStyles = makeStyles(() =>
             width: '17px',
             height: '17px',
         },
-        disabled: {
-            display: 'none',
-            color: 'tomato !important',
-        },
     }),
 )
 
