@@ -1,9 +1,11 @@
-import {BlockchainProposal, BlockchainProposalMotion} from "../blockchain/dto/blockchainProposal.dto";
+import {BlockchainProposal} from "../blockchain/dto/blockchainProposal.dto";
 import {Time} from "@polkadot/util/types";
 import {getLogger} from "../logging.module";
 import {BlockchainAccountInfo} from "../blockchain/dto/blockchainAccountInfo.dto";
+import {BlockchainProposalMotion} from "../blockchain/dto/blockchainProposalMotion.dto";
 
-const makeMotion = (hash: string, method: string, motionIndex: number, ayes: BlockchainAccountInfo[], nays: BlockchainAccountInfo[]): BlockchainProposalMotion =>
+const makeMotion = (hash: string, method: string, motionIndex: number,
+                    ayes: BlockchainAccountInfo[], nays: BlockchainAccountInfo[]): BlockchainProposalMotion =>
     ({hash, method, motionIndex, ayes, nays, threshold: 2, end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6} as Time}});
 
 export const mockedBlockchainService = {
@@ -17,7 +19,7 @@ export const mockedBlockchainService = {
                 bond: 0.001,
                 value: 1e-14,
                 status: 'proposal',
-                council: [
+                motions: [
                     makeMotion('hash_0_0', 'approveProposal', 0, [], [])
                 ] as BlockchainProposalMotion[]
             },
@@ -28,7 +30,7 @@ export const mockedBlockchainService = {
                 bond: 40,
                 value: 2000,
                 status: 'proposal',
-                council: [
+                motions: [
                     makeMotion('hash_1_0', 'approveProposal', 1, [], [])
                 ] as BlockchainProposalMotion[]
             },
@@ -39,7 +41,7 @@ export const mockedBlockchainService = {
                 bond: 20,
                 value: 1000,
                 status: 'approval',
-                council: [
+                motions: [
                     makeMotion('hash_3_0', 'approveProposal', 2, [], [])
                 ] as BlockchainProposalMotion[]
             }

@@ -3,9 +3,11 @@ import {CardHeader} from "../../../components/card/components/CardHeader";
 import ayeIcon from "../../../assets/aye.svg";
 import nayIcon from "../../../assets/nay.svg";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {Time} from "@polkadot/util/types";
 import {useTranslation} from "react-i18next";
 import {ProposalMotionEnd} from "../../proposals.api";
+import {Nil} from "../../../util/types";
+import {formatNumber} from "../../../util/numberUtil";
+import {remainingTimeToStr} from "../../../util/stringUtil";
 
 const useStyles = makeStyles( (theme: Theme) => createStyles({
     root: {
@@ -41,28 +43,19 @@ const useStyles = makeStyles( (theme: Theme) => createStyles({
 
 interface MotionHeaderProps {
     method: string,
-    end: ProposalMotionEnd,
-    ayesCount: number,
-    naysCount: number
+    end: Nil<ProposalMotionEnd>,
+    ayesCount: Nil<number>,
+    naysCount: Nil<number>
 }
-const singularPluralOrNull = (count: number, singular: string, plural: string): string | null =>
-    count ? count > 1 ? `${count}${plural}` : `1${singular}` : null;
-const makeTimeStr = ({ days, hours, minutes, seconds }: Time) =>
-    [
-        singularPluralOrNull(days, 'day', 'days'), singularPluralOrNull(hours, 'hr', 'hrs'),
-        singularPluralOrNull(minutes, 'min', 'mins'), singularPluralOrNull(seconds, 's', 's')
-    ]
-    .filter((value): value is string => !!value)
-    .slice(0, 2)
-    .join(' ');
 
-const MotionHeader: React.FC<MotionHeaderProps> = ({method, ayesCount, naysCount, end}) => {
+const MotionHeader = ({method, ayesCount, naysCount, end}: MotionHeaderProps) => {
     const styles = useStyles();
     const {t} = useTranslation()
     const isApprovalMotion = method === 'approveProposal';
-    const {endBlock, timeLeft} = end;
-    const endBlockStr = endBlock ? `#${endBlock.toLocaleString('en-US')}` : 'N/A';
-    const timeStr = timeLeft ? `(${makeTimeStr(timeLeft)})` : '';
+    const {endBlock, timeLeft} = end || {};
+
+    const endBlockStr = endBlock ? `#${formatNumber(endBlock)}` : t('common.na');
+    const timeStr = timeLeft ? `(${remainingTimeToStr(timeLeft, t)})` : '';
 
     return (
             <CardHeader>

@@ -10,8 +10,7 @@ import {ProposalContentType} from "../ProposalContentTypeTabs";
 const useStyles = makeStyles( (theme: Theme) => createStyles({
     root: {
         width: '100%',
-        textAlign: 'center',
-
+        textAlign: 'center'
     },
     header: {
         fontSize: '18px',
@@ -29,10 +28,12 @@ const useStyles = makeStyles( (theme: Theme) => createStyles({
         display: 'block'
     }
 }));
+
 interface NoMotionProps {
     proposalIndex: number
 }
-const NoMotion: React.FC<NoMotionProps> = ({proposalIndex}) => {
+
+const NoMotion = ({proposalIndex}: NoMotionProps) => {
     const {t} = useTranslation();
     const styles = useStyles();
     const toDiscussion = `${generatePath(ROUTE_PROPOSAL,{proposalIndex})}/${ProposalContentType.Discussion}`;

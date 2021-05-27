@@ -6,10 +6,16 @@ import {extractTime} from '@polkadot/util';
 import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
 import {ExtrinsicEvent} from "../extrinsics/extrinsicEvent";
 import {getLogger} from "../logging.module";
-import {BlockchainProposal, BlockchainProposalStatus, toBlockchainProposal} from "./dto/blockchainProposal.dto";
+import {
+    BlockchainProposal,
+    BlockchainProposalStatus,
+    toBlockchainProposal
+} from "./dto/blockchainProposal.dto";
 import {DeriveAccountRegistration} from "@polkadot/api-derive/accounts/types";
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime';
 import {getProposers, getBeneficiaries, getVoters} from './utils'
+import BN from "bn.js";
+import {BlockchainProposalMotionEnd} from "./dto/blockchainProposalMotionEnd.dto";
 
 const logger = getLogger()
 
@@ -96,13 +102,10 @@ export class BlockchainService implements OnModuleDestroy {
         return identities;
     }
 
-    getRemainingTime(currentBlockNumber: BlockNumber , futureBlockNumber: BlockNumber | undefined) {
-        if (!futureBlockNumber) {
-            return {}
-        }
-        const DEFAULT_TIME = 6000
+    getRemainingTime(currentBlockNumber: BlockNumber , futureBlockNumber: BlockNumber): BlockchainProposalMotionEnd {
+        const DEFAULT_BLOCK_TIME = 6000; // 6s - Source: https://wiki.polkadot.network/docs/en/faq#what-is-the-block-time-of-the-relay-chain
         const {babe, difficulty, timestamp} = this.polkadotApi.consts;
-        const blockTime = babe?.expectedBlockTime || difficulty?.targetBlockTime || timestamp?.minimumPeriod.muln(2) || DEFAULT_TIME
+        const blockTime = babe?.expectedBlockTime ?? difficulty?.targetBlockTime ?? timestamp?.minimumPeriod.muln(2) ?? new BN(DEFAULT_BLOCK_TIME)
         const remainingBlocks = futureBlockNumber.sub(currentBlockNumber);
         const remainingMilliseconds = blockTime.mul(remainingBlocks).toNumber();
         const timeLeft = extractTime(Math.abs(remainingMilliseconds));
@@ -131,11 +134,15 @@ export class BlockchainService implements OnModuleDestroy {
 
         // make a function that will compute remaining voting time
         const currentBlockNumber = await this.polkadotApi.derive.chain.bestNumber();
-        const calcRemainingTime = (endBlock: BlockNumber | undefined) => this.getRemainingTime(currentBlockNumber, endBlock);
+        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd => this.getRemainingTime(currentBlockNumber, endBlock);
 
         return [
-            ...proposals.map((derivedProposal) => toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Proposal, identities, calcRemainingTime)),
-            ...approvals.map((derivedProposal) => toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Approval, identities, calcRemainingTime))
+            ...proposals.map((derivedProposal) =>
+                toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Proposal, identities, toBlockchainProposalMotionEnd)
+            ),
+            ...approvals.map((derivedProposal) =>
+                toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Approval, identities, toBlockchainProposalMotionEnd)
+            )
         ]
     }
 

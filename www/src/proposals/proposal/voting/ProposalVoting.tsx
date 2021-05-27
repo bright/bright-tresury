@@ -47,9 +47,10 @@ const Motions: React.FC<MotionsProp> = ({motions}) => {
 interface ProposalVotingProps {
     proposal: ProposalDto
 }
-const ProposalVoting: React.FC<ProposalVotingProps> = ({proposal}) => {
+
+const ProposalVoting = ({proposal}: ProposalVotingProps) => {
     return (
-        proposal.council?.length ? <Motions motions={proposal.council}/> : <NoMotion proposalIndex={proposal.proposalIndex} />
+        proposal.motions?.length ? <Motions motions={proposal.motions}/> : <NoMotion proposalIndex={proposal.proposalIndex} />
     );
 }
 

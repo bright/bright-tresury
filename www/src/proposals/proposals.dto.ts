@@ -1,4 +1,5 @@
 import {Time} from "@polkadot/util/types";
+import {Nil} from "../util/types";
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -20,24 +21,25 @@ export interface ProposalDto {
     isCreatedFromIdeaMilestone: boolean
     ideaId?: string
     ideaMilestoneId?: string
-    council: ProposalMotion[]
+    motions: ProposalMotion[]
 }
 
 export interface ProposalMotionEnd {
-    endBlock?: number,
-    remainingBlocks?: number,
-    timeLeft?: Time
+    endBlock: number,
+    remainingBlocks: number,
+    timeLeft: Time
 }
 
 export interface ProposalMotion {
     hash: string,
-    method: string,
-    ayes: AccountInfo[],
-    nays: AccountInfo[],
-    motionIndex: number,
-    threshold: number,
-    end: ProposalMotionEnd // block number when voting is over
+    method: ProposalMotionMethod,
+    ayes: Nil<AccountInfo[]>,
+    nays: Nil<AccountInfo[]>,
+    motionIndex: Nil<number>,
+    threshold: Nil<number>,
+    end: Nil<ProposalMotionEnd>
 }
+
 export interface AccountInfo {
     address: string,
     display?: string;
@@ -47,4 +49,11 @@ export interface AccountInfo {
     twitter?: string;
     web?: string;
 }
+
+export enum ProposalMotionMethod {
+    Approve = 'approveProposal',
+    Reject = 'rejectProposal',
+}
+
+
 

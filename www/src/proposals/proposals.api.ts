@@ -1,7 +1,6 @@
 import { apiGet } from '../api'
 import { ProposalDto } from './proposals.dto'
 import { useQuery, UseQueryOptions } from 'react-query'
-
 const PROPOSALS_API_PATH = '/proposals'
 
 // GET ALL

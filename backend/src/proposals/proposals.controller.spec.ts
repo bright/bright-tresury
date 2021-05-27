@@ -109,7 +109,16 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal1!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal1!.ideaId).toBe(idea.id)
             expect(proposal1!.ideaMilestoneId).toBeUndefined()
-            expect(proposal1!.council).toBeDefined()
+            expect(proposal1!.motions).toBeDefined()
+            expect(proposal1!.motions[0]).toEqual({
+                hash: 'hash_0_0',
+                method: 'approveProposal',
+                motionIndex: 0,
+                ayes: [],
+                nays: [],
+                threshold: 2,
+                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+            })
 
             const proposal2 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 1)
 
@@ -124,7 +133,16 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal2!.isCreatedFromIdeaMilestone).toBe(true)
             expect(proposal2!.ideaId).toBe(otherIdea.id)
             expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
-            expect(proposal2!.council).toBeDefined()
+            expect(proposal2!.motions).toBeDefined()
+            expect(proposal2!.motions[0]).toEqual({
+                hash: 'hash_1_0',
+                method: 'approveProposal',
+                motionIndex: 1,
+                ayes: [],
+                nays: [],
+                threshold: 2,
+                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+            })
 
             const proposal3 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 3)
 
@@ -138,7 +156,16 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal3!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal3!.ideaId).toBeUndefined()
             expect(proposal3!.ideaMilestoneId).toBeUndefined()
-            expect(proposal2!.council).toBeDefined()
+            expect(proposal3!.motions).toBeDefined()
+            expect(proposal3!.motions[0]).toEqual({
+                hash: 'hash_3_0',
+                method: 'approveProposal',
+                motionIndex: 2,
+                ayes: [],
+                nays: [],
+                threshold: 2,
+                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+            })
         })
     })
 
@@ -163,7 +190,6 @@ describe(`/api/v1/proposals`, () => {
             const result = await request(app()).get(`${baseUrl}/0?network=localhost`)
 
             const body = result.body as ProposalDto
-
             expect(body.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.beneficiary.address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
             expect(body.bond).toBe(0.001)
@@ -172,6 +198,16 @@ describe(`/api/v1/proposals`, () => {
             expect(body.title).toBe('ideaTitle')
             expect(body.isCreatedFromIdea).toBe(true)
             expect(body.ideaId).toBe(idea.id)
+            expect(body.motions).toBeDefined()
+            expect(body.motions[0]).toEqual({
+                hash: 'hash_0_0',
+                method: 'approveProposal',
+                motionIndex: 0,
+                ayes: [],
+                nays: [],
+                threshold: 2,
+                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+            })
         })
 
         it('should return proposal with idea milestone details for proposal created from idea milestone', async () => {
@@ -188,6 +224,16 @@ describe(`/api/v1/proposals`, () => {
             expect(body.isCreatedFromIdeaMilestone).toBe(true)
             expect(body.ideaId).toBe(otherIdea.id)
             expect(body.ideaMilestoneId).toBe(ideaMilestone.id)
+            expect(body.motions).toBeDefined()
+            expect(body.motions[0]).toEqual({
+                hash: 'hash_1_0',
+                method: 'approveProposal',
+                motionIndex: 1,
+                ayes: [],
+                nays: [],
+                threshold: 2,
+                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+            })
         })
 
         it('should return proposal without idea nor idea milestone details for proposal created externally', async () => {
@@ -205,6 +251,16 @@ describe(`/api/v1/proposals`, () => {
             expect(body.isCreatedFromIdeaMilestone).toBe(false)
             expect(body.ideaId).toBeUndefined()
             expect(body.ideaMilestoneId).toBeUndefined()
+            expect(body.motions).toBeDefined()
+            expect(body.motions[0]).toEqual({
+                hash: 'hash_3_0',
+                method: 'approveProposal',
+                motionIndex: 2,
+                ayes: [],
+                nays: [],
+                threshold: 2,
+                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+            })
         })
     })
 })

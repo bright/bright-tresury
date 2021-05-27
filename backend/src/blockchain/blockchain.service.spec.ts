@@ -137,20 +137,26 @@ describe(`Blockchain service`, () => {
             const identities = await service().getIdentities([aliceAddress]);
             expect(identities.get(aliceAddress)?.display).toBe(displayRaw);
         }, 60000)
+        it ('should not fail when no identity in blockchain', async () => {
+            const identities = await service().getIdentities([bobAddress]);
+            const bobIdentity = identities.get(bobAddress)
+            expect(bobIdentity).toBeDefined();
+            expect(bobIdentity!.display).toBeUndefined();
+        }, 60000)
     })
     describe('getRemainingTime', () => {
-        it(' ', async (done) => {
+        it('should correctly calculate remaining time', async () => {
             const currentBlockNumber = await api.derive.chain.bestNumber();
             const futureBlockNumber = currentBlockNumber.add(new BN(1));
-            const {endBlock, remainingBlocks, timeLeft} = service().getRemainingTime(currentBlockNumber,futureBlockNumber);
-            expect(endBlock).toBe(futureBlockNumber.toNumber());
-            expect(remainingBlocks).toBe(1);
-            expect(timeLeft?.seconds).toBe(6); // assuming that time for one block is 6 seconds
-            done();
+            const remainingTime = service().getRemainingTime(currentBlockNumber,futureBlockNumber);
+
+            expect(remainingTime.endBlock).toBe(futureBlockNumber.toNumber());
+            expect(remainingTime.remainingBlocks).toBe(1);
+            expect(remainingTime.timeLeft.seconds).toBe(6); // assuming that time for one block is 6 seconds
         }, 60000)
     })
     describe('getProposals', () => {
-        it('should return existing proposals', async (done) => {
+        it('should return existing proposals', async () => {
             // create a proposal
             const setIdentityExtrinsic = api.tx.identity.setIdentity({display: {Raw: 'Alice'}})
             await signAndSend(setIdentityExtrinsic, aliceKeypair);
@@ -166,7 +172,6 @@ describe(`Blockchain service`, () => {
             expect(lastProposal.beneficiary.address).toBe(bobAddress)
             expect(lastProposal.bond).toBe(50)
             expect(lastProposal.value).toBe(1000)
-            done()
         }, 60000)
     })
 });

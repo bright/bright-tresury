@@ -82,7 +82,6 @@ describe('ProposalsService', () => {
     describe('find', () => {
         it('should return proposals', async () => {
             const proposals = await proposalsService().find('localhost')
-            console.log(proposals);
             expect(proposals.length).toBe(3)
 
             const proposal1 = proposals.find(
@@ -100,7 +99,7 @@ describe('ProposalsService', () => {
             expect(proposal1!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal1!.ideaId).toBe(idea.id)
             expect(proposal1!.ideaMilestoneId).toBeUndefined()
-            expect(proposal1!.council).toBeDefined()
+            expect(proposal1!.motions).toBeDefined()
             const proposal2 = proposals.find(
                 ({ proposalIndex }: BlockchainProposalWithDomainDetails) => proposalIndex === 1,
             )
@@ -116,7 +115,7 @@ describe('ProposalsService', () => {
             expect(proposal2!.isCreatedFromIdeaMilestone).toBe(true)
             expect(proposal2!.ideaId).toBe(otherIdea.id)
             expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
-            expect(proposal2!.council).toBeDefined()
+            expect(proposal2!.motions).toBeDefined()
             const proposal3 = proposals.find(
                 ({ proposalIndex }: BlockchainProposalWithDomainDetails) => proposalIndex === 3,
             )
@@ -131,11 +130,11 @@ describe('ProposalsService', () => {
             expect(proposal3!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal3!.ideaId).toBeUndefined()
             expect(proposal3!.ideaMilestoneId).toBeUndefined()
-            expect(proposal3!.council).toBeDefined()
+            expect(proposal3!.motions).toBeDefined()
         })
     })
 
-    xdescribe('findOne', () => {
+    describe('findOne', () => {
         it('should return proposal details', async () => {
             const proposal = await proposalsService().findOne(0, 'localhost')
 
