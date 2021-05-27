@@ -1,5 +1,4 @@
 import {SendVerifyEmailAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailverification/types'
-import {StartEmailPasswordAssociateRequestDto} from "../../../../../backend/src/auth/email-password/associate/dto/start.request.dto";
 import {apiPost} from '../../../api'
 import {Account} from "../../../substrate-lib/accounts/AccountsContext";
 import {sendVerifyEmail} from '../../auth.api'
@@ -16,7 +15,7 @@ export interface EmailPasswordAssociateDetailsDto {
     password: string
 }
 
-export type ConfirmEmailPasswordAssociateDto = StartEmailPasswordAssociateRequestDto & { signature: string }
+export type ConfirmEmailPasswordAssociateDto = StartEmailPasswordAssociateDto & { signature: string }
 
 export async function associateEmailPassword(account: Account, details: EmailPasswordAssociateDetailsDto) {
     return await handleWeb3Sign(account, startEmailPasswordAssociation, confirmEmailPasswordAssociation, details)
