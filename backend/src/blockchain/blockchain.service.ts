@@ -1,32 +1,25 @@
-import {Inject, Injectable, OnModuleDestroy} from '@nestjs/common'
-import {ApiPromise} from '@polkadot/api'
-import Extrinsic from "@polkadot/types/extrinsic/Extrinsic";
-import {EventRecord, Header} from '@polkadot/types/interfaces';
-import {extractTime} from '@polkadot/util';
-import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
-import {ExtrinsicEvent} from "../extrinsics/extrinsicEvent";
-import {getLogger} from "../logging.module";
-import {
-    BlockchainProposal,
-    BlockchainProposalStatus,
-    toBlockchainProposal
-} from "./dto/blockchainProposal.dto";
-import {DeriveAccountRegistration} from "@polkadot/api-derive/accounts/types";
-import type { BlockNumber } from '@polkadot/types/interfaces/runtime';
-import {getProposers, getBeneficiaries, getVoters} from './utils'
-import BN from "bn.js";
-import {BlockchainProposalMotionEnd} from "./dto/blockchainProposalMotionEnd.dto";
+import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
+import { ApiPromise } from '@polkadot/api'
+import Extrinsic from '@polkadot/types/extrinsic/Extrinsic'
+import { EventRecord, Header } from '@polkadot/types/interfaces'
+import { extractTime } from '@polkadot/util'
+import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
+import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
+import { getLogger } from '../logging.module'
+import { BlockchainProposal, BlockchainProposalStatus, toBlockchainProposal } from './dto/blockchain-proposal.dto'
+import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
+import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
+import { getProposers, getBeneficiaries, getVoters } from './utils'
+import BN from 'bn.js'
+import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
 
 const logger = getLogger()
 
 @Injectable()
 export class BlockchainService implements OnModuleDestroy {
-    private unsub?: () => void;
+    private unsub?: () => void
 
-    constructor(
-        @Inject('PolkadotApi') private readonly polkadotApi: ApiPromise,
-    ) {
-    }
+    constructor(@Inject('PolkadotApi') private readonly polkadotApi: ApiPromise) {}
 
     async getApi(): Promise<ApiPromise> {
         return this.polkadotApi
@@ -41,35 +34,36 @@ export class BlockchainService implements OnModuleDestroy {
         this.unsub = undefined
     }
 
-    async listenForExtrinsic(
-        extrinsicHash: string,
-        cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) {
-
-        let blocksCount = 0;
+    async listenForExtrinsic(extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) {
+        let blocksCount = 0
 
         this.unsub = await this.polkadotApi.rpc.chain.subscribeFinalizedHeads(async (header: Header) => {
             blocksCount++
-            const signedBlock = await this.polkadotApi.rpc.chain.getBlock(header.hash);
+            const signedBlock = await this.polkadotApi.rpc.chain.getBlock(header.hash)
             // TODO fix types!
             // @ts-ignore
-            const extrinsic: Extrinsic | undefined = signedBlock.block.extrinsics.find((ex) => ex.hash.toString() === extrinsicHash)
+            const extrinsic: Extrinsic | undefined = signedBlock.block.extrinsics.find(
+                (ex) => ex.hash.toString() === extrinsicHash,
+            )
             if (extrinsic) {
-                const events = ((await this.polkadotApi.query.system.events.at(header.hash)) as unknown) as EventRecord[];
+                const events = ((await this.polkadotApi.query.system.events.at(
+                    header.hash,
+                )) as unknown) as EventRecord[]
                 await this.callUnsub()
 
                 const applyExtrinsicEvents = events
-                    .filter(({phase, event}) => phase.isApplyExtrinsic)
-                    .map(({event}) => {
-                        const types = event.typeDef;
+                    .filter(({ phase, event }) => phase.isApplyExtrinsic)
+                    .map(({ event }) => {
+                        const types = event.typeDef
                         return {
                             section: event.section,
                             method: event.method,
                             data: event.data.map((value, index) => {
                                 return {
                                     name: types[index].type,
-                                    value: value.toString()
+                                    value: value.toString(),
                                 }
-                            })
+                            }),
                         } as ExtrinsicEvent
                     })
 
@@ -79,7 +73,7 @@ export class BlockchainService implements OnModuleDestroy {
                 const result = {
                     blockHash: header.hash.toString(),
                     events: applyExtrinsicEvents,
-                    data: args
+                    data: args,
                 } as UpdateExtrinsicDto
 
                 await cb(result)
@@ -99,22 +93,30 @@ export class BlockchainService implements OnModuleDestroy {
         for (const address of addresses) {
             identities.set(address, await this.polkadotApi.derive.accounts.identity(address))
         }
-        return identities;
+        return identities
     }
 
-    getRemainingTime(currentBlockNumber: BlockNumber , futureBlockNumber: BlockNumber): BlockchainProposalMotionEnd {
-        const DEFAULT_BLOCK_TIME = 6000; // 6s - Source: https://wiki.polkadot.network/docs/en/faq#what-is-the-block-time-of-the-relay-chain
-        const {babe, difficulty, timestamp} = this.polkadotApi.consts;
-        const blockTime = babe?.expectedBlockTime ?? difficulty?.targetBlockTime ?? timestamp?.minimumPeriod.muln(2) ?? new BN(DEFAULT_BLOCK_TIME)
-        const remainingBlocks = futureBlockNumber.sub(currentBlockNumber);
-        const remainingMilliseconds = blockTime.mul(remainingBlocks).toNumber();
-        const timeLeft = extractTime(Math.abs(remainingMilliseconds));
-        return { endBlock: futureBlockNumber.toNumber(), remainingBlocks: remainingBlocks.toNumber(), timeLeft }
+    getRemainingTime(currentBlockNumber: BlockNumber, futureBlockNumber: BlockNumber): BlockchainProposalMotionEnd {
+        const DEFAULT_BLOCK_TIME = 6000 // 6s - Source: https://wiki.polkadot.network/docs/en/faq#what-is-the-block-time-of-the-relay-chain
+        const { babe, difficulty, timestamp } = this.polkadotApi.consts
+        const blockTime =
+            babe?.expectedBlockTime ??
+            difficulty?.targetBlockTime ??
+            timestamp?.minimumPeriod.muln(2) ??
+            new BN(DEFAULT_BLOCK_TIME)
+        const remainingBlocks = futureBlockNumber.sub(currentBlockNumber)
+        const remainingMilliseconds = blockTime.mul(remainingBlocks).toNumber()
+        const timeLeft = extractTime(Math.abs(remainingMilliseconds))
+        return new BlockchainProposalMotionEnd({
+            endBlock: futureBlockNumber.toNumber(),
+            remainingBlocks: remainingBlocks.toNumber(),
+            timeLeft,
+        })
     }
 
     async getProposals(): Promise<BlockchainProposal[]> {
         logger.info('Getting proposals from blockchain...')
-        const {proposals, proposalCount, approvals} = await this.polkadotApi.derive.treasury.proposals()
+        const { proposals, proposalCount, approvals } = await this.polkadotApi.derive.treasury.proposals()
 
         const proposalCountNumber = proposalCount.toNumber()
         logger.info(`ProposalCount is ${proposalCountNumber}.`)
@@ -122,39 +124,53 @@ export class BlockchainService implements OnModuleDestroy {
             return []
         }
 
-        logger.info('Getting voters');
+        logger.info('Getting voters')
 
         // get unique (set) accountIds as strings (toHuman) from ongoing proposals and approvals
-        const addresses = new Set([
-            ...getProposers(proposals), ...getProposers(approvals),
-            ...getBeneficiaries(proposals), ...getBeneficiaries(approvals),
-            ...getVoters(proposals), ...getVoters(approvals)
-        ].map((accountId) => accountId.toHuman()));
-        const identities = await this.getIdentities(Array.from(addresses));
+        const addresses = new Set(
+            [
+                ...getProposers(proposals),
+                ...getProposers(approvals),
+                ...getBeneficiaries(proposals),
+                ...getBeneficiaries(approvals),
+                ...getVoters(proposals),
+                ...getVoters(approvals),
+            ].map((accountId) => accountId.toHuman()),
+        )
+        const identities = await this.getIdentities(Array.from(addresses))
 
         // make a function that will compute remaining voting time
-        const currentBlockNumber = await this.polkadotApi.derive.chain.bestNumber();
-        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd => this.getRemainingTime(currentBlockNumber, endBlock);
+        const currentBlockNumber = await this.polkadotApi.derive.chain.bestNumber()
+        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd =>
+            this.getRemainingTime(currentBlockNumber, endBlock)
 
         return [
             ...proposals.map((derivedProposal) =>
-                toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Proposal, identities, toBlockchainProposalMotionEnd)
+                toBlockchainProposal(
+                    derivedProposal,
+                    BlockchainProposalStatus.Proposal,
+                    identities,
+                    toBlockchainProposalMotionEnd,
+                ),
             ),
             ...approvals.map((derivedProposal) =>
-                toBlockchainProposal(derivedProposal, BlockchainProposalStatus.Approval, identities, toBlockchainProposalMotionEnd)
-            )
+                toBlockchainProposal(
+                    derivedProposal,
+                    BlockchainProposalStatus.Approval,
+                    identities,
+                    toBlockchainProposalMotionEnd,
+                ),
+            ),
         ]
     }
 
     extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
-
         logger.info('Looking for a blockchain proposal index')
         logger.info('Extracting event from extrinsicEvents with section: treasury, method: Proposed')
 
         const event = extrinsicEvents.find(({ section, method }) => section === 'treasury' && method === 'Proposed')
 
         if (event) {
-
             logger.info('Event found')
 
             const proposalIndex = Number(event?.data.find(({ name }) => name === 'ProposalIndex')?.value)
@@ -172,5 +188,4 @@ export class BlockchainService implements OnModuleDestroy {
 
         return
     }
-
 }

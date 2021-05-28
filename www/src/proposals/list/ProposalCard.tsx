@@ -35,7 +35,7 @@ export const ProposalCard = ({ proposal: { proposalIndex, status, title, value, 
 
     const { t } = useTranslation()
 
-    const redirectTo = `${generatePath(ROUTE_PROPOSAL,{proposalIndex})}/${ProposalContentType.Info}}`
+    const redirectTo = `${generatePath(ROUTE_PROPOSAL, { proposalIndex })}/${ProposalContentType.Info}`
 
     return (
         <NetworkCard redirectTo={redirectTo}>
@@ -56,7 +56,6 @@ export const ProposalCard = ({ proposal: { proposalIndex, status, title, value, 
             <div className={classes.accountsWrapper}>
                 <AddressInfoWithLabel label={t('proposal.list.card.beneficiary')} address={beneficiary.address} />
                 <AddressInfoWithLabel label={t('proposal.list.card.proposer')} address={proposer.address} />
-
             </div>
         </NetworkCard>
     )

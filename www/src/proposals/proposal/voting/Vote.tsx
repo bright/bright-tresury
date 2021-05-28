@@ -1,19 +1,22 @@
-import {AccountInfo} from "../../proposals.api";
-import {AddressInfoWithLabel} from "../../../components/identicon/AddressInfoWithLabel";
-import React from "react";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
-import {Theme} from "@material-ui/core";
+import { AddressInfoWithLabel } from '../../../components/identicon/AddressInfoWithLabel'
+import React from 'react'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { Theme } from '@material-ui/core'
+import { AccountInfo } from '../../proposals.dto'
 
-const useStyles = makeStyles((theme: Theme) => createStyles({
-    vote: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItem: 'center'
-    }
-}));
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        vote: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItem: 'center',
+        },
+    }),
+)
 
 export enum VoteType {
-    AYE = "Aye", NAY = "Nay"
+    AYE = 'Aye',
+    NAY = 'Nay',
 }
 
 interface VoteProps {
@@ -21,13 +24,16 @@ interface VoteProps {
     voteType: VoteType
 }
 
-const Vote = ({accountInfo, voteType}: VoteProps) => {
-    const styles = useStyles();
+const Vote = ({ accountInfo, voteType }: VoteProps) => {
+    const styles = useStyles()
     return (
-        <div className={styles.vote} key={`${voteType}_${accountInfo.address}`}>
-            <AddressInfoWithLabel address={accountInfo.address} label={accountInfo.display || ''}></AddressInfoWithLabel>
+        <div className={styles.vote}>
+            <AddressInfoWithLabel
+                address={accountInfo.address}
+                label={accountInfo.display || ''}
+            ></AddressInfoWithLabel>
             <span style={{}}>{voteType}</span>
         </div>
     )
 }
-export default Vote;
+export default Vote

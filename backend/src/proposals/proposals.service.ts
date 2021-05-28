@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { BlockchainProposal } from '../blockchain/dto/blockchainProposal.dto'
+import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
 import { IdeasService } from '../ideas/ideas.service'
 import { getLogger } from '../logging.module'
 import { IdeaMilestonesService } from '../ideas/ideaMilestones/idea.milestones.service'

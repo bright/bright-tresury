@@ -1,9 +1,8 @@
-import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {BlockchainProposalStatus} from "../../blockchain/dto/blockchainProposal.dto";
-import {BlockchainAccountInfo} from "../../blockchain/dto/blockchainAccountInfo.dto";
-import {BlockchainProposalWithDomainDetails} from "../proposals.service";
-import {BlockchainProposalMotion} from "../../blockchain/dto/blockchainProposalMotion.dto";
-
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { BlockchainProposalStatus } from '../../blockchain/dto/blockchain-proposal.dto'
+import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
+import { BlockchainProposalWithDomainDetails } from '../proposals.service'
+import { BlockchainProposalMotion } from '../../blockchain/dto/blockchain-proposal-motion.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -18,10 +17,10 @@ export class ProposalDto {
     })
     proposalIndex: number
 
-    @ApiProperty({description: 'Proposer account info'})
+    @ApiProperty({ description: 'Proposer account information', type: BlockchainAccountInfo })
     proposer: BlockchainAccountInfo
 
-    @ApiProperty({description: 'Beneficiary account info'})
+    @ApiProperty({ description: 'Beneficiary account information', type: BlockchainAccountInfo })
     beneficiary: BlockchainAccountInfo
 
     @ApiProperty({
@@ -55,11 +54,13 @@ export class ProposalDto {
     })
     isCreatedFromIdeaMilestone: boolean
 
-    // TODO: Fill with proper description
-    @ApiProperty({description: 'Voting info'})
+    @ApiProperty({
+        description: 'Motions submitted to approve or reject this proposal',
+        type: [BlockchainProposalMotion],
+    })
     motions: BlockchainProposalMotion[]
 
-    @ApiPropertyOptional({description: 'Id of a corresponding idea'})
+    @ApiPropertyOptional({ description: 'Id of a corresponding idea' })
     ideaId?: string
 
     @ApiPropertyOptional({
