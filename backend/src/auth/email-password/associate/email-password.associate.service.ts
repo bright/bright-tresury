@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
+import { Web3AddressesService } from '../../../users/web3-addresses/web3-addresses.service'
 import { UsersService } from '../../../users/users.service'
 import { SessionData } from '../../session/session.decorator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
@@ -13,7 +13,7 @@ import { StartEmailPasswordAssociateRequestDto } from './dto/start.request.dto'
 export class EmailPasswordAssociateService {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressesService,
+        private readonly web3AddressesService: Web3AddressesService,
         private readonly superTokensService: SuperTokensService,
         private readonly signMessageService: SignMessageService,
     ) {}

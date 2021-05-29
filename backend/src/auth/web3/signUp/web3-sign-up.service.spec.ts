@@ -5,7 +5,7 @@ import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { beforeSetupFullApp } from '../../../utils/spec.helpers'
 import { getAuthUser } from '../../supertokens/specHelpers/supertokens.database.spec.helper'
-import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
+import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
 import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 import { SignatureValidator } from '../signMessage/signature.validator'
 import { Web3SignUpService } from './web3-sign-up.service'
@@ -39,11 +39,11 @@ describe(`Web3 Sign Up Service`, () => {
             await expect(getService().start({ address: uuid() })).rejects.toThrow(BadRequestException)
         })
         it('should throw conflict if user with this address exists', async () => {
-            await getUsersService().createBlockchainUser({
+            await getUsersService().createWeb3User({
                 authId: uuid(),
                 username: bobUsername,
-                blockchainAddress: bobAddress,
-            } as CreateBlockchainUserDto)
+                web3Address: bobAddress,
+            } as CreateWeb3UserDto)
             await expect(getService().start({ address: bobAddress })).rejects.toThrow(ConflictException)
         })
     })
@@ -55,13 +55,13 @@ describe(`Web3 Sign Up Service`, () => {
             await getService().confirm(
                 {
                     signature: uuid(),
-                    details: {network},
+                    details: { network },
                     address: bobAddress,
                 } as ConfirmWeb3SignUpRequestDto,
                 {} as Response,
             )
 
-            const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
+            const user = await getUsersService().findOneByWeb3Address(bobAddress)
             const superTokensUser = await getAuthUser(user.authId)
             expect(user).toBeDefined()
             expect(superTokensUser).toBeDefined()
@@ -73,7 +73,7 @@ describe(`Web3 Sign Up Service`, () => {
                 getService().confirm(
                     {
                         signature: uuid(),
-                        details: {network},
+                        details: { network },
                         address: aliceAddress,
                     } as ConfirmWeb3SignUpRequestDto,
                     {} as Response,
@@ -87,7 +87,7 @@ describe(`Web3 Sign Up Service`, () => {
                 getService().confirm(
                     {
                         signature: uuid(),
-                        details: {network},
+                        details: { network },
                         address: bobAddress,
                     } as ConfirmWeb3SignUpRequestDto,
                     {} as Response,

@@ -3,11 +3,11 @@ import { User } from './user.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersService } from './users.service'
 import { Module } from '@nestjs/common'
-import { BlockchainAddress } from './blockchainAddresses/blockchainAddress.entity'
-import { BlockchainAddressesModule } from './blockchainAddresses/blockchainAddresses.module'
+import { Web3Address } from './web3-addresses/web3-address.entity'
+import { Web3AddressesModule } from './web3-addresses/web3-addresses.module'
 
 @Module({
-    imports: [DatabaseModule, TypeOrmModule.forFeature([User, BlockchainAddress]), BlockchainAddressesModule],
+    imports: [DatabaseModule, TypeOrmModule.forFeature([User, Web3Address]), Web3AddressesModule],
     providers: [UsersService],
     exports: [UsersService],
 })

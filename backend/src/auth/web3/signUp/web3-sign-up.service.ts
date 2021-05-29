@@ -8,8 +8,8 @@ import {
 import { Response } from 'express'
 import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import { v4 as uuid } from 'uuid'
-import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
-import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
+import { Web3AddressesService } from '../../../users/web3-addresses/web3-addresses.service'
+import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
 import { UsersService } from '../../../users/users.service'
 import { isValidAddress } from '../../../utils/address/address.validator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
@@ -22,7 +22,7 @@ import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.
 export class Web3SignUpService {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressesService,
+        private readonly web3AddressesService: Web3AddressesService,
         private readonly superTokensService: SuperTokensService,
         private readonly signMessageService: SignMessageService,
     ) {}
@@ -37,7 +37,7 @@ export class Web3SignUpService {
     async confirm(dto: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
         await this.validateAddress(dto.address)
         await this.signMessageService.confirm(dto, this.cacheKey)
-        await this.createBlockchainUser(dto.address, res)
+        await this.createWeb3User(dto.address, res)
     }
 
     private async validateAddress(address: string) {
@@ -45,13 +45,13 @@ export class Web3SignUpService {
         if (!isValid) {
             throw new BadRequestException('Incorrect address')
         }
-        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
+        const doesAddressExist = await this.web3AddressesService.doesAddressExist(address)
         if (doesAddressExist) {
             throw new ConflictException('User with this address already exists')
         }
     }
 
-    private async createBlockchainUser(address: string, res: Response) {
+    private async createWeb3User(address: string, res: Response) {
         const userUuid = uuid()
         const password = uuid()
 
@@ -59,9 +59,9 @@ export class Web3SignUpService {
         const createUserDto = {
             authId: superTokensUser.id,
             username: userUuid,
-            blockchainAddress: address,
-        } as CreateBlockchainUserDto
-        const user = await this.userService.createBlockchainUser(createUserDto)
+            web3Address: address,
+        } as CreateWeb3UserDto
+        const user = await this.userService.createWeb3User(createUserDto)
         try {
             await this.superTokensService.verifyEmail(user.authId, superTokensUser.email)
             await this.superTokensService.createSession(res, superTokensUser.id)

@@ -6,7 +6,7 @@ import {
     createEmailVerificationToken,
     verifyEmailUsingToken,
 } from 'supertokens-node/lib/build/recipe/emailverification'
-import {getAllSessionHandlesForUser, revokeSession} from "supertokens-node/lib/build/recipe/session";
+import { getAllSessionHandlesForUser, revokeSession } from 'supertokens-node/lib/build/recipe/session'
 import { User } from '../../../users/user.entity'
 import { request } from '../../../utils/spec.helpers'
 import { v4 as uuid } from 'uuid'
@@ -43,10 +43,7 @@ export class SessionHandler {
     }
 }
 
-export const createBlockchainSessionHandler = async (
-    app: INestApplication,
-    address: string,
-): Promise<SessionHandler> => {
+export const createWeb3SessionHandler = async (app: INestApplication, address: string): Promise<SessionHandler> => {
     const signatureValidator = app.get(SignatureValidator)
     /**
      * Mock signature validation so that we don't use real blockchain for signin.
@@ -55,14 +52,16 @@ export const createBlockchainSessionHandler = async (
 
     await request(app).post(`/api/v1/auth/web3/signup/start`).send({ address })
 
-    const confirmSignUpRes: any = await request(app).post(`/api/v1/auth/web3/signup/confirm`).send({
-        address,
-        details: {
-            network: 'localhost',
-        },
-        signature: uuid(),
-    })
-    const user = await app.get(UsersService).findOneByBlockchainAddress(address)
+    const confirmSignUpRes: any = await request(app)
+        .post(`/api/v1/auth/web3/signup/confirm`)
+        .send({
+            address,
+            details: {
+                network: 'localhost',
+            },
+            signature: uuid(),
+        })
+    const user = await app.get(UsersService).findOneByWeb3Address(address)
     return createSessionHandler(confirmSignUpRes, user)
 }
 

@@ -6,7 +6,7 @@ import {
     NotFoundException,
 } from '@nestjs/common'
 import { Response } from 'express'
-import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
+import { Web3AddressesService } from '../../../users/web3-addresses/web3-addresses.service'
 import { UsersService } from '../../../users/users.service'
 import { isValidAddress } from '../../../utils/address/address.validator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
@@ -19,7 +19,7 @@ import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-r
 export class Web3SignInService {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressesService,
+        private readonly web3AddressesService: Web3AddressesService,
         private readonly superTokensService: SuperTokensService,
         private readonly signMessageService: SignMessageService,
     ) {}
@@ -42,7 +42,7 @@ export class Web3SignInService {
          * then we are sure that this user owns the address and can obtain information regarding associated account.
          */
         await this.validateAddress(dto.address)
-        const user = await this.userService.findOneByBlockchainAddress(dto.address)
+        const user = await this.userService.findOneByWeb3Address(dto.address)
         if (res) {
             try {
                 await this.superTokensService.createSession(res, user.authId)
@@ -57,7 +57,7 @@ export class Web3SignInService {
         if (!isValid) {
             throw new BadRequestException('Incorrect address')
         }
-        const doesAddressExist = await this.blockchainAddressService.doesAddressExist(address)
+        const doesAddressExist = await this.web3AddressesService.doesAddressExist(address)
         if (!doesAddressExist) {
             throw new NotFoundException('There is no user associated with this address')
         }

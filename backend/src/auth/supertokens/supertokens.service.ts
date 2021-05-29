@@ -250,8 +250,8 @@ export class SuperTokensService {
                 payload.email = user.email
             }
             payload.isEmailVerified = await this.isEmailVerified(user)
-            payload.web3Addresses = user.blockchainAddresses
-                ? user.blockchainAddresses.map((bAddress) => {
+            payload.web3Addresses = user.web3Addresses
+                ? user.web3Addresses.map((bAddress) => {
                       return {
                           address: bAddress.address,
                           isPrimary: bAddress.isPrimary,

@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common'
 import { CachingModule } from '../../cache/cache.module'
-import { BlockchainAddressesModule } from '../../users/blockchainAddresses/blockchainAddresses.module'
+import { Web3AddressesModule } from '../../users/web3-addresses/web3-addresses.module'
 import { UsersModule } from '../../users/users.module'
 import { SessionModule } from '../session/session.module'
 import { SuperTokensModule } from '../supertokens/supertokens.module'
@@ -13,7 +13,7 @@ import { VerifyEmailModule } from './verify-email/verify-email.module'
 @Module({
     imports: [
         UsersModule,
-        BlockchainAddressesModule,
+        Web3AddressesModule,
         SessionModule,
         SuperTokensModule,
         CachingModule,

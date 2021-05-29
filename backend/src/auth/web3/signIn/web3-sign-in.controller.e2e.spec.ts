@@ -3,7 +3,7 @@ import { beforeSetupFullApp, request } from '../../../utils/spec.helpers'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { UsersService } from '../../../users/users.service'
 import { createSessionHandler } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
-import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
+import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
 import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
 
 describe(`Web3 Sign In Controller`, () => {
@@ -19,14 +19,14 @@ describe(`Web3 Sign In Controller`, () => {
 
     describe('sign in', () => {
         it('should create session', async () => {
-            await getUsersService().createBlockchainUser(new CreateBlockchainUserDto(uuid(), 'Bob', bobAddress))
+            await getUsersService().createWeb3User(new CreateWeb3UserDto(uuid(), 'Bob', bobAddress))
             await request(app()).post(`/api/v1/auth/web3/signin/start`).send({ address: bobAddress })
 
             const confirmSignInResponse = await request(app()).post(`/api/v1/auth/web3/signin/confirm`).send({
                 address: bobAddress,
                 signature: uuid(),
             })
-            const user = await getUsersService().findOneByBlockchainAddress(bobAddress)
+            const user = await getUsersService().findOneByWeb3Address(bobAddress)
             const sessionHandler = createSessionHandler(confirmSignInResponse, user)
             const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, false)
 

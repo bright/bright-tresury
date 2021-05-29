@@ -10,9 +10,9 @@ import {
 } from '../supertokens/specHelpers/supertokens.session.spec.helper'
 import { v4 as uuid } from 'uuid'
 import { UsersService } from '../../users/users.service'
-import { BlockchainAddressesService } from '../../users/blockchainAddresses/blockchainAddresses.service'
+import { Web3AddressesService } from '../../users/web3-addresses/web3-addresses.service'
 import { CreateUserDto } from '../../users/dto/create-user.dto'
-import { CreateBlockchainAddressDto } from '../../users/blockchainAddresses/create-blockchain-address.dto'
+import { CreateWeb3AddressDto } from '../../users/web3-addresses/create-web3-address.dto'
 
 export async function beforeEachWeb3E2eTest(accessor: Accessor<INestApplication>): Promise<void> {
     /**
@@ -33,8 +33,8 @@ export async function signInAndGetSessionHandler(
 ): Promise<SessionHandler> {
     const usersService = app.get().get(UsersService)
     const user = await usersService.create(new CreateUserDto(uuid(), 'Bob', 'bob@email.com'))
-    const blockchainAddressService = app.get().get(BlockchainAddressesService)
-    await blockchainAddressService.create(new CreateBlockchainAddressDto(address, user))
+    const web3AddressesService = app.get().get(Web3AddressesService)
+    await web3AddressesService.create(new CreateWeb3AddressDto(address, user))
 
     await request(app()).post(`/api/v1/auth/web3/signin/start`).send({ address })
     const confirmSignInResponse = await request(app()).post(`/api/v1/auth/web3/signin/confirm`).send({
@@ -42,7 +42,7 @@ export async function signInAndGetSessionHandler(
         signature: uuid(),
     })
 
-    const signedUser = await usersService.findOneByBlockchainAddress(address)
+    const signedUser = await usersService.findOneByWeb3Address(address)
     const handler = createSessionHandler(confirmSignInResponse, signedUser)
     await verifyEmail(app.get(), handler)
     return handler

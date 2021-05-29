@@ -1,14 +1,19 @@
-import {ConflictException, INestApplication} from '@nestjs/common'
-import {getUserById} from "supertokens-node/lib/build/recipe/emailpassword";
-import {v4 as uuid, validate} from 'uuid'
-import {UsersService} from "../../../users/users.service";
-import {beforeSetupFullApp, cleanDatabase} from '../../../utils/spec.helpers'
-import {cleanAuthorizationDatabase} from '../../supertokens/specHelpers/supertokens.database.spec.helper'
-import {createBlockchainSessionHandler, createUserSessionHandler, SessionHandler} from "../../supertokens/specHelpers/supertokens.session.spec.helper";
-import {SignatureValidator} from '../../web3/signMessage/signature.validator';
-import {EmailPasswordAssociateService} from "./email-password.associate.service";
+import { ConflictException, INestApplication } from '@nestjs/common'
+import { getUserById } from 'supertokens-node/lib/build/recipe/emailpassword'
+import { v4 as uuid, validate } from 'uuid'
+import { UsersService } from '../../../users/users.service'
+import { beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
+import { cleanAuthorizationDatabase } from '../../supertokens/specHelpers/supertokens.database.spec.helper'
+import {
+    createUserSessionHandler,
+    createWeb3SessionHandler,
+    SessionHandler,
+} from '../../supertokens/specHelpers/supertokens.session.spec.helper'
+import { SignatureValidator } from '../../web3/signMessage/signature.validator'
+import { EmailPasswordAssociateService } from './email-password.associate.service'
 
-const createAliceSessionHandler = (app: INestApplication) => createUserSessionHandler(app, 'alice@example.com', 'alice', uuid())
+const createAliceSessionHandler = (app: INestApplication) =>
+    createUserSessionHandler(app, 'alice@example.com', 'alice', uuid())
 
 describe(`Auth Email Password Associate Service`, () => {
     const app = beforeSetupFullApp()
@@ -23,21 +28,21 @@ describe(`Auth Email Password Associate Service`, () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
 
-        sessionHandler = await createBlockchainSessionHandler(app(), bobAddress)
+        sessionHandler = await createWeb3SessionHandler(app(), bobAddress)
     })
 
     const password = uuid()
     const details = {
         username: 'bob',
         email: 'bob@example.com',
-        password
+        password,
     }
 
     describe('start associate', () => {
         it('should return uuid', async () => {
             const signMessageResponse = await getService().start({
                 address: bobAddress,
-                details
+                details,
             })
 
             expect(signMessageResponse.signMessage).toBeDefined()
@@ -45,39 +50,42 @@ describe(`Auth Email Password Associate Service`, () => {
         })
 
         it('should return conflict exception if email already exists', async () => {
-            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
+            const {
+                sessionData: { user: aliceUser },
+            } = await createAliceSessionHandler(app())
 
-            await expect(getService().start(
-                {
+            await expect(
+                getService().start({
                     address: bobAddress,
                     details: {
                         ...details,
                         email: aliceUser.email,
-                    }
-                }
-            )).rejects.toThrow(ConflictException)
+                    },
+                }),
+            ).rejects.toThrow(ConflictException)
         })
 
         it('should return conflict exception if username already exists', async () => {
-            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
+            const {
+                sessionData: { user: aliceUser },
+            } = await createAliceSessionHandler(app())
 
-            await expect(getService().start(
-                {
+            await expect(
+                getService().start({
                     address: bobAddress,
                     details: {
                         ...details,
                         username: aliceUser.username,
-                    }
-                }
-            )).rejects.toThrow(ConflictException)
+                    },
+                }),
+            ).rejects.toThrow(ConflictException)
         })
     })
 
     describe('confirm associate', () => {
-
         beforeEach(async () => {
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => true)
-            await getService().start({address: bobAddress, details})
+            await getService().start({ address: bobAddress, details })
         })
 
         it('should update account details in users table', async () => {
@@ -85,9 +93,9 @@ describe(`Auth Email Password Associate Service`, () => {
                 {
                     signature: uuid(),
                     address: bobAddress,
-                    details
+                    details,
                 },
-                sessionHandler.sessionData
+                sessionHandler.sessionData,
             )
 
             const updatedUser = await getUsersService().findOne(sessionHandler.sessionData.user.id)
@@ -97,11 +105,14 @@ describe(`Auth Email Password Associate Service`, () => {
         })
 
         it.only('should update account details in auth database', async () => {
-            await getService().confirm({
-                signature: uuid(),
-                address: bobAddress,
-                details
-            }, sessionHandler.sessionData)
+            await getService().confirm(
+                {
+                    signature: uuid(),
+                    address: bobAddress,
+                    details,
+                },
+                sessionHandler.sessionData,
+            )
 
             const actualUser = await getUserById(sessionHandler.sessionData.user.authId)
 
@@ -110,33 +121,45 @@ describe(`Auth Email Password Associate Service`, () => {
         })
 
         it('should return conflict exception if email already exists', async () => {
-            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
+            const {
+                sessionData: { user: aliceUser },
+            } = await createAliceSessionHandler(app())
 
-            await expect(getService().confirm({
-                    signature: uuid(),
-                    address: bobAddress,
-                    details: {
-                        username: 'bob',
-                        email: aliceUser.email,
-                        password
-                    }
-                }
-                , sessionHandler.sessionData)).rejects.toThrow(ConflictException)
+            await expect(
+                getService().confirm(
+                    {
+                        signature: uuid(),
+                        address: bobAddress,
+                        details: {
+                            username: 'bob',
+                            email: aliceUser.email,
+                            password,
+                        },
+                    },
+                    sessionHandler.sessionData,
+                ),
+            ).rejects.toThrow(ConflictException)
         })
 
         it('should return conflict exception if username already exists', async () => {
-            const {sessionData: {user: aliceUser}} = await createAliceSessionHandler(app())
+            const {
+                sessionData: { user: aliceUser },
+            } = await createAliceSessionHandler(app())
 
-            await expect(getService().confirm({
-                    signature: uuid(),
-                    address: bobAddress,
-                    details: {
-                        username: aliceUser.username,
-                        email: 'bob@example.com',
-                        password
-                    }
-                }
-                , sessionHandler.sessionData)).rejects.toThrow(ConflictException)
+            await expect(
+                getService().confirm(
+                    {
+                        signature: uuid(),
+                        address: bobAddress,
+                        details: {
+                            username: aliceUser.username,
+                            email: 'bob@example.com',
+                            password,
+                        },
+                    },
+                    sessionHandler.sessionData,
+                ),
+            ).rejects.toThrow(ConflictException)
         })
     })
 })

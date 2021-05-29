@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
-import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
+import { Web3AddressesService } from '../../../users/web3-addresses/web3-addresses.service'
 import { UsersService } from '../../../users/users.service'
 import { SessionData } from '../../session/session.decorator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
@@ -12,7 +12,7 @@ import { StartWeb3AssociateRequestDto } from './dto/start-web3-associate-request
 export class Web3AssociateService {
     constructor(
         private readonly userService: UsersService,
-        private readonly blockchainAddressService: BlockchainAddressesService,
+        private readonly web3AddressesService: Web3AddressesService,
         private readonly signMessageService: SignMessageService,
         private readonly superTokensService: SuperTokensService,
     ) {}
@@ -26,7 +26,7 @@ export class Web3AssociateService {
             }
             await this.superTokensService.verifyPassword(user.email, dto.password)
         }
-        const hasAnyWeb3Address = await this.blockchainAddressService.hasAnyAddresses(user.id)
+        const hasAnyWeb3Address = await this.web3AddressesService.hasAnyAddresses(user.id)
         if (!hasAnyWeb3Address) {
             if (!user.email) {
                 throw new BadRequestException('No email or Web3 address associated with this user')
@@ -37,8 +37,8 @@ export class Web3AssociateService {
     }
 
     async confirm(dto: ConfirmSignMessageRequestDto, { user }: SessionData): Promise<void> {
-        await this.userService.validateBlockchainAddress(dto.address)
+        await this.userService.validateWeb3Address(dto.address)
         await this.signMessageService.confirm(dto, this.cacheKey)
-        await this.userService.associateBlockchainAddress(user, dto.address)
+        await this.userService.associateWeb3Address(user, dto.address)
     }
 }

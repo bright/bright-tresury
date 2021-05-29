@@ -1,19 +1,19 @@
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { v4 as uuid } from 'uuid'
-import { BlockchainAddressesService } from './blockchainAddresses.service'
+import { Web3AddressesService } from './web3-addresses.service'
 import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
-import { BlockchainAddress } from './blockchainAddress.entity'
+import { Web3Address } from './web3-address.entity'
 import { User } from '../user.entity'
 import { UsersService } from '../users.service'
 import { CreateUserDto } from '../dto/create-user.dto'
 import { BadRequestException } from '@nestjs/common'
-import { CreateBlockchainAddressDto } from './create-blockchain-address.dto'
+import { CreateWeb3AddressDto } from './create-web3-address.dto'
 
-describe(`Blockchain Addresses Service`, () => {
+describe(`Web3 Addresses Service`, () => {
     const app = beforeSetupFullApp()
-    const getService = () => app.get().get(BlockchainAddressesService)
+    const getService = () => app.get().get(Web3AddressesService)
     const getUserService = () => app.get().get(UsersService)
-    const getRepository = () => app.get().get(getRepositoryToken(BlockchainAddress))
+    const getRepository = () => app.get().get(getRepositoryToken(Web3Address))
 
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
@@ -30,16 +30,16 @@ describe(`Blockchain Addresses Service`, () => {
     })
 
     describe('create', () => {
-        it('should return blockchain address', async () => {
-            const blockchainAddress = await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
-            expect(blockchainAddress).toBeDefined()
-            expect(blockchainAddress.address).toBe(bobAddress)
+        it('should return web3 address', async () => {
+            const web3Address = await getService().create(new CreateWeb3AddressDto(bobAddress, user))
+            expect(web3Address).toBeDefined()
+            expect(web3Address.address).toBe(bobAddress)
         })
-        it('should save blockchain address', async () => {
-            const blockchainAddress = await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
-            const savedBlockchainAddress = await getRepository().findOne(blockchainAddress.id)
-            expect(savedBlockchainAddress).toBeDefined()
-            expect(savedBlockchainAddress.address).toBe(bobAddress)
+        it('should save web3 address', async () => {
+            const web3Address = await getService().create(new CreateWeb3AddressDto(bobAddress, user))
+            const savedWeb3Address = await getRepository().findOne(web3Address.id)
+            expect(savedWeb3Address).toBeDefined()
+            expect(savedWeb3Address.address).toBe(bobAddress)
         })
     })
 
@@ -49,7 +49,7 @@ describe(`Blockchain Addresses Service`, () => {
             expect(doesAddressExist).toBe(false)
         })
         it('should return true if address exists', async () => {
-            await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
+            await getService().create(new CreateWeb3AddressDto(bobAddress, user))
 
             const doesAddressExist = await getService().doesAddressExist(bobAddress)
             expect(doesAddressExist).toBe(true)
@@ -58,8 +58,8 @@ describe(`Blockchain Addresses Service`, () => {
 
     describe('find by user id', () => {
         it('should return addresses belonging to the user', async () => {
-            const address1 = await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
-            const address2 = await getService().create(new CreateBlockchainAddressDto(aliceAddress, user))
+            const address1 = await getService().create(new CreateWeb3AddressDto(bobAddress, user))
+            const address2 = await getService().create(new CreateWeb3AddressDto(aliceAddress, user))
 
             const addresses = await getService().findByUserId(user.id)
             expect(addresses.length).toBe(2)
@@ -73,13 +73,13 @@ describe(`Blockchain Addresses Service`, () => {
             expect(addresses.length).toBe(0)
         })
         it('should not return addresses of another user', async () => {
-            const addressBobUser = await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
+            const addressBobUser = await getService().create(new CreateWeb3AddressDto(bobAddress, user))
             const aliceUser = await getUserService().create({
                 authId: uuid(),
                 username: 'Alice',
                 email: 'alice@email.com',
             } as CreateUserDto)
-            const addressAliceUser = await getService().create(new CreateBlockchainAddressDto(aliceAddress, aliceUser))
+            const addressAliceUser = await getService().create(new CreateWeb3AddressDto(aliceAddress, aliceUser))
 
             const addresses = await getService().findByUserId(user.id)
             expect(addresses.length).toBe(1)
@@ -92,13 +92,13 @@ describe(`Blockchain Addresses Service`, () => {
 
     describe('delete', () => {
         it('throw bad request exception if address is primary', async () => {
-            const primaryAddress = await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
-            await getService().create(new CreateBlockchainAddressDto(aliceAddress, user))
+            const primaryAddress = await getService().create(new CreateWeb3AddressDto(bobAddress, user))
+            await getService().create(new CreateWeb3AddressDto(aliceAddress, user))
             await expect(getService().deleteAddress(primaryAddress)).rejects.toThrow(BadRequestException)
         })
         it('removes secondary address', async () => {
-            await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
-            const secondaryAddress = await getService().create(new CreateBlockchainAddressDto(aliceAddress, user))
+            await getService().create(new CreateWeb3AddressDto(bobAddress, user))
+            const secondaryAddress = await getService().create(new CreateWeb3AddressDto(aliceAddress, user))
             await getService().deleteAddress(secondaryAddress)
 
             const addresses = await getService().findByUserId(user.id)
@@ -111,13 +111,13 @@ describe(`Blockchain Addresses Service`, () => {
 
     describe('has any address', () => {
         it('returns true if there is an address', async () => {
-            await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
+            await getService().create(new CreateWeb3AddressDto(bobAddress, user))
             const hasAnyAddresses = await getService().hasAnyAddresses(user.id)
             expect(hasAnyAddresses).toBeTruthy()
         })
         it('returns true if there are multiple addresses', async () => {
-            await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
-            await getService().create(new CreateBlockchainAddressDto(aliceAddress, user))
+            await getService().create(new CreateWeb3AddressDto(bobAddress, user))
+            await getService().create(new CreateWeb3AddressDto(aliceAddress, user))
             const hasAnyAddresses = await getService().hasAnyAddresses(user.id)
             expect(hasAnyAddresses).toBeTruthy()
         })
@@ -128,23 +128,24 @@ describe(`Blockchain Addresses Service`, () => {
     })
 
     describe('make primary', () => {
+        beforeEach(async () => {
+            await getService().create(new CreateWeb3AddressDto(bobAddress, user))
+            await getService().create(new CreateWeb3AddressDto(aliceAddress, user))
+        })
+
         it('makes address primary', async () => {
-            await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
-            await getService().create(new CreateBlockchainAddressDto(aliceAddress, user))
             await getService().makePrimary(user.id, aliceAddress)
 
-            const blockchainAddresses = await getService().findByUserId(user.id)
-            const aliceBlockchainAddress = blockchainAddresses.find((bAddress) => bAddress.address === aliceAddress)
-            expect(aliceBlockchainAddress!.isPrimary).toBeTruthy()
+            const web3Addresses = await getService().findByUserId(user.id)
+            const aliceWeb3Address = web3Addresses.find((web3Address) => web3Address.address === aliceAddress)
+            expect(aliceWeb3Address!.isPrimary).toBeTruthy()
         })
         it('make other addresses non primary', async () => {
-            await getService().create(new CreateBlockchainAddressDto(aliceAddress, user))
-            await getService().create(new CreateBlockchainAddressDto(bobAddress, user))
             await getService().makePrimary(user.id, bobAddress)
 
-            const blockchainAddresses = await getService().findByUserId(user.id)
-            const aliceBlockchainAddress = blockchainAddresses.find((bAddress) => bAddress.address === aliceAddress)
-            expect(aliceBlockchainAddress!.isPrimary).toBeFalsy()
+            const web3Addresses = await getService().findByUserId(user.id)
+            const aliceWeb3Address = web3Addresses.find((bAddress) => bAddress.address === aliceAddress)
+            expect(aliceWeb3Address!.isPrimary).toBeFalsy()
         })
     })
 })

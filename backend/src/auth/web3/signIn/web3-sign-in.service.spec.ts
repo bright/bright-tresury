@@ -2,7 +2,7 @@ import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { beforeSetupFullApp } from '../../../utils/spec.helpers'
 import { v4 as uuid } from 'uuid'
-import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
+import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
 import { Response } from 'express'
 import { BadRequestException, NotFoundException } from '@nestjs/common'
 import { SignatureValidator } from '../signMessage/signature.validator'
@@ -28,11 +28,11 @@ describe(`Web3 Sign In Service`, () => {
 
     describe('start sign in', () => {
         it('returns uuid', async () => {
-            await getUsersService().createBlockchainUser({
+            await getUsersService().createWeb3User({
                 authId: uuid(),
                 username: bobUsername,
-                blockchainAddress: bobAddress,
-            } as CreateBlockchainUserDto)
+                web3Address: bobAddress,
+            } as CreateWeb3UserDto)
 
             const signMessageResponse = await getService().start({ address: bobAddress })
             expect(signMessageResponse.signMessage).toBeDefined()
@@ -52,11 +52,11 @@ describe(`Web3 Sign In Service`, () => {
             const initialCallsCount = createSessionSpy.mock.calls.length
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => true)
 
-            await getUsersService().createBlockchainUser({
+            await getUsersService().createWeb3User({
                 authId: uuid(),
                 username: bobUsername,
-                blockchainAddress: bobAddress,
-            } as CreateBlockchainUserDto)
+                web3Address: bobAddress,
+            } as CreateWeb3UserDto)
             await getService().start({ address: bobAddress })
             await getService().confirm(
                 {
@@ -70,11 +70,11 @@ describe(`Web3 Sign In Service`, () => {
         })
         it("throws not found if sign in for requested address haven't started", async () => {
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => true)
-            await getUsersService().createBlockchainUser({
+            await getUsersService().createWeb3User({
                 authId: uuid(),
                 username: bobUsername,
-                blockchainAddress: bobAddress,
-            } as CreateBlockchainUserDto)
+                web3Address: bobAddress,
+            } as CreateWeb3UserDto)
             await getService().start({ address: bobAddress })
 
             await expect(
@@ -101,11 +101,11 @@ describe(`Web3 Sign In Service`, () => {
             ).rejects.toThrow(NotFoundException)
         })
         it('throws bad request when signature is invalid', async () => {
-            await getUsersService().createBlockchainUser({
+            await getUsersService().createWeb3User({
                 authId: uuid(),
                 username: bobUsername,
-                blockchainAddress: bobAddress,
-            } as CreateBlockchainUserDto)
+                web3Address: bobAddress,
+            } as CreateWeb3UserDto)
             jest.spyOn(getSignatureValidator(), 'validateSignature').mockImplementation((): boolean => false)
             await getService().start({ address: bobAddress })
 

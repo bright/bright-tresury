@@ -2,8 +2,8 @@ import { v4 as uuid } from 'uuid'
 import { UsersService } from '../../../users/users.service'
 import { beforeSetupFullApp, request } from '../../../utils/spec.helpers'
 import {
-    createBlockchainSessionHandler,
     createUserSessionHandlerWithVerifiedEmail,
+    createWeb3SessionHandler,
 } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
 import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
@@ -22,7 +22,7 @@ describe(`Web3 Associate Controller`, () => {
 
     describe('associate', () => {
         it('should associate address', async () => {
-            const sessionHandler = await createBlockchainSessionHandler(app.get(), bobAddress)
+            const sessionHandler = await createWeb3SessionHandler(app.get(), bobAddress)
             await sessionHandler.authorizeRequest(
                 request(app()).post('/api/v1/auth/web3/associate/start').send({ address: charlieAddress }),
             )
@@ -32,11 +32,9 @@ describe(`Web3 Associate Controller`, () => {
                     .send({ address: charlieAddress, signature: uuid() } as ConfirmSignMessageRequestDto),
             )
 
-            const userWithAssociatedAddress = await getUsersService().findOneByBlockchainAddress(bobAddress)
+            const userWithAssociatedAddress = await getUsersService().findOneByWeb3Address(bobAddress)
 
-            const addresses = userWithAssociatedAddress.blockchainAddresses!.map(
-                (blockchainAddress) => blockchainAddress.address,
-            )
+            const addresses = userWithAssociatedAddress.web3Addresses!.map((web3Address) => web3Address.address)
 
             expect(addresses).toContain(bobAddress)
             expect(addresses).toContain(charlieAddress)
@@ -62,9 +60,7 @@ describe(`Web3 Associate Controller`, () => {
             )
             const userWithAssociatedAddress = await getUsersService().findOne(sessionHandler.sessionData.user.id)
 
-            const addresses = userWithAssociatedAddress.blockchainAddresses!.map(
-                (blockchainAddress) => blockchainAddress.address,
-            )
+            const addresses = userWithAssociatedAddress.web3Addresses!.map((web3Address) => web3Address.address)
 
             expect(addresses.length).toBe(1)
             expect(addresses).toContain(charlieAddress)

@@ -17,39 +17,42 @@ describe(`Web3 Addresses Controller`, () => {
     describe('delete', () => {
         it('should delete address', async () => {
             const sessionHandler = await signInAndGetSessionHandler(app, bobAddress)
-            await getUsersService().associateBlockchainAddress(sessionHandler.sessionData.user, charlieAddress)
+            await getUsersService().associateWeb3Address(sessionHandler.sessionData.user, charlieAddress)
 
             await sessionHandler.authorizeRequest(
                 request(app()).del(`/api/v1/auth/web3/addresses/${charlieAddress}`).send(),
             )
 
             const userAfterUnlinking = await getUsersService().findOne(sessionHandler.sessionData.user.id)
-            expect(userAfterUnlinking.blockchainAddresses!.length).toBe(1)
-            expect(userAfterUnlinking.blockchainAddresses![0].address).toBe(bobAddress)
+            expect(userAfterUnlinking.web3Addresses!.length).toBe(1)
+            expect(userAfterUnlinking.web3Addresses![0].address).toBe(bobAddress)
         })
         it('should throw forbidden exception if not signed in', () => {
-            return request(app()).del(`/api/v1/auth/web3/addresses/${charlieAddress}`).send().expect(HttpStatus.FORBIDDEN)
+            return request(app())
+                .del(`/api/v1/auth/web3/addresses/${charlieAddress}`)
+                .send()
+                .expect(HttpStatus.FORBIDDEN)
         })
     })
 
     describe('make primary', () => {
         it('should make address primary', async () => {
             const sessionHandler = await signInAndGetSessionHandler(app, bobAddress)
-            await getUsersService().associateBlockchainAddress(sessionHandler.sessionData.user, charlieAddress)
+            await getUsersService().associateWeb3Address(sessionHandler.sessionData.user, charlieAddress)
 
             await sessionHandler.authorizeRequest(
                 request(app()).post(`/api/v1/auth/web3/addresses/${charlieAddress}/make-primary`).send(),
             )
 
             const userAfterMakingAddressPrimary = await getUsersService().findOne(sessionHandler.sessionData.user.id)
-            const charlieBlockchainAddress = userAfterMakingAddressPrimary.blockchainAddresses!.find(
+            const charlieWeb3Address = userAfterMakingAddressPrimary.web3Addresses!.find(
                 (bAddress) => bAddress.address === charlieAddress,
             )
-            expect(charlieBlockchainAddress!.isPrimary).toBeTruthy()
-            const bobBlockchainAddress = userAfterMakingAddressPrimary.blockchainAddresses!.find(
+            expect(charlieWeb3Address!.isPrimary).toBeTruthy()
+            const bobWeb3Address = userAfterMakingAddressPrimary.web3Addresses!.find(
                 (bAddress) => bAddress.address === bobAddress,
             )
-            expect(bobBlockchainAddress!.isPrimary).toBeFalsy()
+            expect(bobWeb3Address!.isPrimary).toBeFalsy()
         })
         it('should throw forbidden exception if not signed in', () => {
             return request(app())
