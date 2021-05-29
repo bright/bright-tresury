@@ -1,5 +1,5 @@
 import React from 'react'
-import {FormFooterButtonsContainer} from "../../../../components/form/footer/FormFooterButtonsContainer";
+import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
 import { Modal } from '../../../../components/modal/Modal'
 import { useTranslation } from 'react-i18next'
 import { Button } from '../../../../components/button/Button'
@@ -26,6 +26,9 @@ const useStyles = makeStyles(() =>
         },
         password: {
             border: '1px solid #7B7B7B43',
+        },
+        buttonsContainer: {
+            marginTop: 24,
         },
     }),
 )
@@ -75,14 +78,16 @@ export const EnterPasswordModal = ({ open, onClose, onConfirm }: Props) => {
                                 validationRules={passwordValidationRules}
                             />
                         </div>
-                        <FormFooterButtonsContainer>
-                            <Button variant="contained" color="primary" type="submit">
-                                {t('account.passwordModal.confirm')}
-                            </Button>
-                            <Button variant="text" color="primary" onClick={onClose}>
-                                {t('account.passwordModal.cancel')}
-                            </Button>
-                        </FormFooterButtonsContainer>
+                        <div className={classes.buttonsContainer}>
+                            <FormFooterButtonsContainer>
+                                <Button variant="contained" color="primary" type="submit">
+                                    {t('account.passwordModal.confirm')}
+                                </Button>
+                                <Button variant="text" color="primary" onClick={onClose}>
+                                    {t('account.passwordModal.cancel')}
+                                </Button>
+                            </FormFooterButtonsContainer>
+                        </div>
                     </form>
                 )}
             </Formik>
