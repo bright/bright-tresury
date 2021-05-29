@@ -1,16 +1,22 @@
-import {BadRequestException, ConflictException, Injectable} from '@nestjs/common'
-import {Response} from 'express'
-import {User as SuperTokensUser} from 'supertokens-node/lib/build/recipe/emailpassword/types'
-import {v4 as uuid} from 'uuid'
-import {BlockchainAddressesService} from '../../../users/blockchainAddresses/blockchainAddresses.service'
-import {CreateBlockchainUserDto} from '../../../users/dto/create-blockchain-user.dto'
-import {UsersService} from '../../../users/users.service'
-import {isValidAddress} from '../../../utils/address/address.validator'
-import {SuperTokensService} from '../../supertokens/supertokens.service'
-import {SignMessageService} from '../signMessage/sign-message.service'
-import {StartSignMessageRequestDto} from '../signMessage/start-sign-message-request.dto'
-import {StartSignMessageResponseDto} from '../signMessage/start-sign-message-response.dto'
-import {ConfirmWeb3SignUpRequestDto} from './dto/confirm-web3-sign-up-request.dto'
+import {
+    BadRequestException,
+    ConflictException,
+    HttpStatus,
+    Injectable,
+    InternalServerErrorException,
+} from '@nestjs/common'
+import { Response } from 'express'
+import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import { v4 as uuid } from 'uuid'
+import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
+import { CreateBlockchainUserDto } from '../../../users/dto/create-blockchain-user.dto'
+import { UsersService } from '../../../users/users.service'
+import { isValidAddress } from '../../../utils/address/address.validator'
+import { SuperTokensService } from '../../supertokens/supertokens.service'
+import { SignMessageService } from '../signMessage/sign-message.service'
+import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
+import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
+import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 
 @Injectable()
 export class Web3SignUpService {
@@ -56,7 +62,11 @@ export class Web3SignUpService {
             blockchainAddress: address,
         } as CreateBlockchainUserDto
         const user = await this.userService.createBlockchainUser(createUserDto)
-        await this.superTokensService.verifyEmail(user.authId, superTokensUser.email)
-        await this.superTokensService.createSession(res, superTokensUser.id)
+        try {
+            await this.superTokensService.verifyEmail(user.authId, superTokensUser.email)
+            await this.superTokensService.createSession(res, superTokensUser.id)
+        } catch (error) {
+            throw new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
+        }
     }
 }

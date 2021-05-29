@@ -1,4 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import {
+    BadRequestException,
+    HttpStatus,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+} from '@nestjs/common'
 import { Response } from 'express'
 import { BlockchainAddressesService } from '../../../users/blockchainAddresses/blockchainAddresses.service'
 import { UsersService } from '../../../users/users.service'
@@ -38,7 +44,11 @@ export class Web3SignInService {
         await this.validateAddress(dto.address)
         const user = await this.userService.findOneByBlockchainAddress(dto.address)
         if (res) {
-            await this.superTokensService.createSession(res, user.authId)
+            try {
+                await this.superTokensService.createSession(res, user.authId)
+            } catch (error) {
+                throw new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
+            }
         }
     }
 
