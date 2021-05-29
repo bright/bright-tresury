@@ -4,7 +4,6 @@ import { FormikHelpers } from 'formik/dist/types'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
-import { Button } from '../../../components/button/Button'
 import { InfoBox } from '../../../components/form/InfoBox'
 import { Input } from '../../../components/form/input/Input'
 import { PasswordInput } from '../../../components/form/input/password/PasswordInput'
@@ -78,9 +77,10 @@ const EmailSignIn = () => {
                         />
                     </SignComponentWrapper>
                     <SignInButton disabled={loadingState === LoadingState.Loading} />
-                    <Button className={classes.forgotPasswordButton} variant="text" color="default" type="button">
-                        {t('auth.signIn.emailSignIn.forgotPassword')}
-                    </Button>
+                    {/*Hidden due to TREAS-128. Feature is not implemented yet*/}
+                    {/*<Button className={classes.forgotPasswordButton} variant="text" color="default" type="button">*/}
+                    {/*    {t('auth.signIn.emailSignIn.forgotPassword')}*/}
+                    {/*</Button>*/}
                     <NotSignedUpYet signOption={SignOption.Email} />
                 </SignFormWrapper>
             )}
