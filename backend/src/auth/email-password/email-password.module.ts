@@ -8,6 +8,7 @@ import { Web3SignMessageModule } from '../web3/signMessage/web3-sign-message.mod
 import { Web3Module } from '../web3/web3.module'
 import { EmailPasswordAssociateController } from './associate/email-password.associate.controller'
 import { EmailPasswordAssociateService } from './associate/email-password.associate.service'
+import { VerifyEmailModule } from './verify-email/verify-email.module'
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { EmailPasswordAssociateService } from './associate/email-password.associ
         CachingModule,
         Web3Module,
         Web3SignMessageModule,
+        VerifyEmailModule,
     ],
     controllers: [EmailPasswordAssociateController],
     providers: [EmailPasswordAssociateService],

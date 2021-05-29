@@ -1,7 +1,7 @@
-import {SignInAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
-import {SendVerifyEmailAPIResponse, VerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
-import {apiGet, apiPost} from "../api";
-import {transformSignInRequestData} from "./supertokens.utils/transformRequestData.utils";
+import { SignInAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
+import { SendVerifyEmailAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailverification/types'
+import { apiGet, apiPost } from '../api'
+import { transformSignInRequestData } from './supertokens.utils/transformRequestData.utils'
 
 export interface SignInData {
     email: string
@@ -13,11 +13,7 @@ export function sendVerifyEmail() {
 }
 
 export function verifyEmail(token: string) {
-    const data = {
-        method: "token",
-        token
-    }
-    return apiPost<VerifyEmailAPIResponse>('/user/email/verify', data)
+    return apiPost<void>(`/auth/email-password/verify/${token}`)
 }
 
 export function signIn(data: SignInData) {

@@ -1,28 +1,42 @@
-import {BadRequestException, ConflictException,ForbiddenException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException,} from '@nestjs/common'
-import {Request, Response} from 'express'
+import {
+    BadRequestException,
+    ConflictException,
+    ForbiddenException,
+    HttpStatus,
+    Injectable,
+    InternalServerErrorException,
+    NotFoundException,
+} from '@nestjs/common'
+import { Request, Response } from 'express'
 import {
     createResetPasswordToken,
     getUserByEmail,
     getUserById,
     resetPasswordUsingToken,
     signIn,
-    signUp as superTokensSignUp
+    signUp as superTokensSignUp,
 } from 'supertokens-node/lib/build/recipe/emailpassword'
 import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
-import {TypeFormField, User as SuperTokensUser} from 'supertokens-node/lib/build/recipe/emailpassword/types'
-import {createNewSession, getSession as superTokensGetSession, updateSessionData,} from 'supertokens-node/lib/build/recipe/session'
+import { TypeFormField, User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import {
+    createNewSession,
+    getSession as superTokensGetSession,
+    updateSessionData,
+} from 'supertokens-node/lib/build/recipe/session'
 import SessionError from 'supertokens-node/lib/build/recipe/session/error'
 import Session from 'supertokens-node/lib/build/recipe/session/sessionClass'
-import {getConnection} from "typeorm";
-import {AuthorizationDatabaseName} from "../../database/authorization/authorization.database.module";
-import {EmailsService} from '../../emails/emails.service'
-import {getLogger} from '../../logging.module'
-import {CreateUserDto} from '../../users/dto/create-user.dto'
-import {User} from '../../users/user.entity'
-import {UsersService} from '../../users/users.service'
-import {SessionData} from '../session/session.decorator'
-import {SessionExpiredHttpStatus, SuperTokensUsernameKey} from './supertokens.recipeList'
-import {createEmailVerificationToken,isEmailVerified as superTokensIsEmailVerified,
+import { getConnection } from 'typeorm'
+import { AuthorizationDatabaseName } from '../../database/authorization/authorization.database.module'
+import { EmailsService } from '../../emails/emails.service'
+import { getLogger } from '../../logging.module'
+import { CreateUserDto } from '../../users/dto/create-user.dto'
+import { User } from '../../users/user.entity'
+import { UsersService } from '../../users/users.service'
+import { SessionData } from '../session/session.decorator'
+import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
+import {
+    createEmailVerificationToken,
+    isEmailVerified as superTokensIsEmailVerified,
     verifyEmailUsingToken,
 } from 'supertokens-node/lib/build/recipe/emailverification'
 
@@ -43,8 +57,7 @@ interface Web3Address {
 
 @Injectable()
 export class SuperTokensService {
-    constructor(private readonly usersService: UsersService, private readonly emailsService: EmailsService) {
-    }
+    constructor(private readonly usersService: UsersService, private readonly emailsService: EmailsService) {}
 
     /** Returns undefined if valid and error message otherwise */
     getUsernameValidationError = async (value: string): Promise<string | undefined> => {
@@ -63,8 +76,8 @@ export class SuperTokensService {
             value: any
         }>,
     ): Promise<void> => {
-        const {id, email} = user
-        const usernameFormField = formFields.find(({id: formFieldKey}) => formFieldKey === SuperTokensUsernameKey)
+        const { id, email } = user
+        const usernameFormField = formFields.find(({ id: formFieldKey }) => formFieldKey === SuperTokensUsernameKey)
         if (!usernameFormField) {
             throw new BadRequestException('Username was not found.')
         }
@@ -252,5 +265,14 @@ export class SuperTokensService {
     async verifyEmail(authId: string, email: string) {
         const token = await createEmailVerificationToken(authId, email)
         await verifyEmailUsingToken(token)
+    }
+
+    async verifyEmailByToken(req: Request, res: Response, token: string) {
+        try {
+            await verifyEmailUsingToken(token)
+            await this.refreshJwtPayload(req, res)
+        } catch (e) {
+            res.status(HttpStatus.BAD_REQUEST).send(e.message)
+        }
     }
 }

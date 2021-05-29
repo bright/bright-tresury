@@ -1,19 +1,20 @@
 import * as React from 'react'
-import {useEffect, useMemo, useState} from 'react'
-import {SignInAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
+import { useEffect, useMemo, useState } from 'react'
+import { SignInAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
-import {associateEmailPassword, EmailPasswordAssociateDetailsDto} from "./account/emailPassword/email-password.api";
-import {makePrimary, unlinkAddress} from './account/web3/web3.api'
-import {Web3AssociateValues} from './account/web3/Web3AccountForm'
-import {signIn as signInApi, SignInData, signOut as signOutApi} from './auth.api'
-import {handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp} from './handleWeb3Sign'
-import {Web3SignInValues} from './sign-in/web3/Web3SignIn'
-import {signUp, SignUpData} from "./sign-up/email/sign-up-email.api";
-import {Web3SignUpValues} from './sign-up/web3/Web3SignUp';
-import {Account} from "../substrate-lib/accounts/AccountsContext";
+import { associateEmailPassword, EmailPasswordAssociateDetailsDto } from './account/emailPassword/email-password.api'
+import { makePrimary, unlinkAddress } from './account/web3/web3.api'
+import { Web3AssociateValues } from './account/web3/Web3AccountForm'
+import { signIn as signInApi, SignInData, signOut as signOutApi, verifyEmail as verifyEmailApiCall } from './auth.api'
+import { handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp } from './handleWeb3Sign'
+import { Web3SignInValues } from './sign-in/web3/Web3SignIn'
+import { signUp, SignUpData } from './sign-up/email/sign-up-email.api'
+import { Web3SignUpValues } from './sign-up/web3/Web3SignUp'
+import { Account } from '../substrate-lib/accounts/AccountsContext'
 
 export interface AuthContextState {
     emailPasswordSignUp: (signUpData: SignUpData) => Promise<void>
+    verifyEmail: (verificationToken: string) => Promise<void>
     signIn: (signInData: SignInData) => Promise<SignInAPIResponse>
     emailPasswordAssociate: (account: Account, details: EmailPasswordAssociateDetailsDto) => Promise<void>
     signOut: () => Promise<void>
@@ -56,7 +57,7 @@ const AuthContextProvider: React.FC = (props) => {
                 setUser({
                     ...payload,
                     isWeb3: payload.web3Addresses && payload.web3Addresses.length > 0,
-                    isEmailPassword: !!payload.email
+                    isEmailPassword: !!payload.email,
                 })
             })
         } else {
@@ -131,13 +132,19 @@ const AuthContextProvider: React.FC = (props) => {
 
     const emailPasswordSignUp = (signUpData: SignUpData) => callWithSetSignedIn(signUp(signUpData))
 
-    const emailPasswordAssociate = (account: Account, details: EmailPasswordAssociateDetailsDto) => callWithRefreshToken(associateEmailPassword(account, details))
+    const emailPasswordAssociate = (account: Account, details: EmailPasswordAssociateDetailsDto) =>
+        callWithRefreshToken(associateEmailPassword(account, details))
 
-    const web3SignUp = (web3SignUpValues: Web3SignUpValues) => callWithSetSignedIn(handleWeb3SignUp(web3SignUpValues.account))
+    const verifyEmail = (verificationToken: string) => callWithRefreshToken(verifyEmailApiCall(verificationToken))
 
-    const web3SignIn = (web3SignInValues: Web3SignInValues) => callWithSetSignedIn(handleWeb3SignIn(web3SignInValues.account))
+    const web3SignUp = (web3SignUpValues: Web3SignUpValues) =>
+        callWithSetSignedIn(handleWeb3SignUp(web3SignUpValues.account))
 
-    const web3Associate = (web3AssociateValues: Web3AssociateValues) => callWithRefreshToken(handleAssociateWeb3Account(web3AssociateValues))
+    const web3SignIn = (web3SignInValues: Web3SignInValues) =>
+        callWithSetSignedIn(handleWeb3SignIn(web3SignInValues.account))
+
+    const web3Associate = (web3AssociateValues: Web3AssociateValues) =>
+        callWithRefreshToken(handleAssociateWeb3Account(web3AssociateValues))
 
     const web3Unlink = (address: string) => callWithRefreshToken(unlinkAddress(address))
 
@@ -151,6 +158,7 @@ const AuthContextProvider: React.FC = (props) => {
                 isUserVerified,
                 isUserSignedInAndVerified,
                 emailPasswordSignUp,
+                verifyEmail,
                 signIn,
                 emailPasswordAssociate,
                 signOut,
@@ -174,4 +182,4 @@ const useAuth = () => {
     return context
 }
 
-export {AuthContextProvider, useAuth}
+export { AuthContextProvider, useAuth }
