@@ -80,7 +80,7 @@
             "unlinkFailure": "Unlink failed",
             "makePrimaryFailure": "Changing primary account failed",
             "primary": "Primary account",
-            "add": "+ Add blockchain account",
+            "add": "+ Add web3 account",
             "isPrimary": "Primary account"
         },
         "passwordModal": {
@@ -137,7 +137,7 @@
                 }
             },
             "web3SignUp": {
-                "failureMessage": "Signing up with blockchain account failed.",
+                "failureMessage": "Signing up with web3 account failed.",
                 "extensionNotDetected": "Polkadot-js extension not detected.\nNo web 3 account integration could be found. To be able to vote on-chain, visit\nthis page on a computer with polkadot-js extension.",
                 "signUpWithEmail": "Sign up with your email",
                 "successSubtitle": "Start your experience with Bright Treasury"
@@ -155,7 +155,7 @@
             "submitButton": "Login",
             "web3SignIn": {
                 "userDoesNotExist": "User with this address doesn't exist. Please sign up first.",
-                "failureMessage": "Signing in with blockchain account failed."
+                "failureMessage": "Signing in with web3 account failed."
             },
             "emailSignIn": {
                 "emptyFieldError": "This field cannot be empty",
