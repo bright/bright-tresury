@@ -2,7 +2,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { AddressInfo } from '../../../components/identicon/AddressInfo'
-import {LoadingState, useLoading} from "../../../components/loading/useLoading";
+import { LoadingState, useLoading } from '../../../components/loading/useLoading'
 import { Label } from '../../../components/text/Label'
 import { useAuth, Web3Address } from '../../AuthContext'
 import { Web3AddressRow } from './Web3AddressRow'
@@ -40,8 +40,12 @@ const Web3AccountDetails = () => {
     return (
         <div>
             <Label className={classes.title} label={t('account.web3.web3Account')} />
-            {unlinkAddressError && <InfoBox message={t('account.web3.unlinkFailure')} level={'error'} />}
-            {makePrimaryError && <InfoBox message={t('account.web3.makePrimaryFailure')} level={'error'} />}
+            {unlinkAddressLoadingState === LoadingState.Error && unlinkAddressError && (
+                <InfoBox message={t('account.web3.unlinkFailure')} level={'error'} />
+            )}
+            {makePrimaryError === LoadingState.Error && makePrimaryError && (
+                <InfoBox message={t('account.web3.makePrimaryFailure')} level={'error'} />
+            )}
             {user?.web3Addresses?.map((address) => {
                 return (
                     <Web3AddressRow

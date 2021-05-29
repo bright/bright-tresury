@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { AccountSelect, EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
 import { Formik } from 'formik'
-import {LoadingState, useLoading} from "../../../components/loading/useLoading";
+import { LoadingState, useLoading } from '../../../components/loading/useLoading'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import {useAccounts} from "../../../substrate-lib/accounts/useAccounts";
-import {Account} from "../../../substrate-lib/accounts/AccountsContext";
+import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
+import { Account } from '../../../substrate-lib/accounts/AccountsContext'
 import { Web3AddressRow } from './Web3AddressRow'
 import { useAuth } from '../../AuthContext'
 import { useTranslation } from 'react-i18next'
@@ -37,7 +37,7 @@ interface OwnProps {
 const Web3AccountForm = ({ onSuccess }: OwnProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const {accounts} = useAccounts()
+    const { accounts } = useAccounts()
     const { user, web3Associate } = useAuth()
     const passwordModal = useModal()
     const [selectedAccount, setSelectedAccount] = useState<Account>()
@@ -53,7 +53,7 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
     }
 
     const onSubmit = async (values: { account: Account }) => {
-        if (user?.isWeb3) {
+        if (!user?.isEmailPassword) {
             await associateCall({ account: values.account } as Web3AssociateValues)
         } else {
             setSelectedAccount(values.account)
@@ -81,7 +81,7 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
                 {({ values, handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
                         <Label label={t('account.web3.associateWeb3Account')} />
-                        {error && (
+                        {loadingState === LoadingState.Error && error && (
                             <InfoBox
                                 className={classes.error}
                                 message={t('account.web3.linkFailure')}
