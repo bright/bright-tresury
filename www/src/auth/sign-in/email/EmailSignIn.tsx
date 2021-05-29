@@ -42,7 +42,7 @@ const EmailSignIn = () => {
     }
 
     const validationSchema = Yup.object().shape({
-        email: Yup.string().required(t('auth.signup.form.emptyFieldError')),
+        email: Yup.string().required(t('auth.signIn.emailSignIn.emptyFieldError')),
     })
 
     return (
