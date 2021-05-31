@@ -1,13 +1,13 @@
 import React from 'react'
 import { IdeaMilestones } from '../../../ideas/idea/milestones/IdeaMilestones'
-import { useGetIdea } from '../../../ideas/ideas.api'
+import { useIdea } from '../../../ideas/idea/useIdea'
 
-interface Props {
+export interface ProposalMilestonesProps {
     ideaId: string
 }
 
-export const ProposalMilestones = ({ ideaId }: Props) => {
-    const { data: idea } = useGetIdea(ideaId)
+export const ProposalMilestones = ({ ideaId }: ProposalMilestonesProps) => {
+    const { idea, canEdit } = useIdea(ideaId)
 
-    return <>{idea ? <IdeaMilestones idea={idea} canEdit={false} /> : null}</>
+    return <>{idea ? <IdeaMilestones idea={idea} canEdit={canEdit} displayWithinIdeaSubTab={false} /> : null}</>
 }

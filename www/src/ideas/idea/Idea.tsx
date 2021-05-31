@@ -1,7 +1,5 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useParams } from 'react-router'
-import { useAuth } from '../../auth/AuthContext'
-import { useGetIdea } from '../ideas.api'
 import IdeaHeader from './IdeaHeader'
 import { IdeaContentType } from './IdeaContentTypeTabs'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
@@ -11,6 +9,7 @@ import { IdeaMilestones } from './milestones/IdeaMilestones'
 import { LoadingWrapper } from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
+import { useIdea } from './useIdea'
 
 export const Idea = () => {
     const classes = useSuccessfullyLoadedItemStyles()
@@ -21,13 +20,7 @@ export const Idea = () => {
 
     let { ideaId } = useParams<{ ideaId: string }>()
 
-    const { isUserSignedInAndVerified, user } = useAuth()
-
-    const { status, data: idea } = useGetIdea(ideaId)
-
-    const canEdit = useMemo(() => {
-        return isUserSignedInAndVerified && idea?.ownerId === user?.id
-    }, [isUserSignedInAndVerified, idea, user])
+    const { status, idea, canEdit } = useIdea(ideaId)
 
     return (
         <LoadingWrapper
@@ -46,7 +39,7 @@ export const Idea = () => {
                             <IdeaInfo idea={idea} canEdit={canEdit} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
-                            <IdeaMilestones idea={idea} canEdit={canEdit} />
+                            <IdeaMilestones idea={idea} canEdit={canEdit} displayWithinIdeaSubTab={true} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
                             <IdeaDiscussion />
