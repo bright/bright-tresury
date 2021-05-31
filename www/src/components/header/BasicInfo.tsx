@@ -1,5 +1,5 @@
-import {createStyles, makeStyles} from "@material-ui/core/styles";
-import React from "react";
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import React from 'react'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -11,12 +11,12 @@ const useStyles = makeStyles(() =>
             flexDirection: 'row',
             flexWrap: 'wrap',
             marginBottom: '24px',
+            whiteSpace: 'pre-wrap',
         },
-    }))
+    }),
+)
 
-export const BasicInfo: React.FC = ({children}) => {
+export const BasicInfo: React.FC = ({ children }) => {
     const classes = useStyles()
-    return <div className={classes.root}>
-        {children}
-    </div>
+    return <div className={classes.root}>{children}</div>
 }

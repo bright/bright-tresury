@@ -1,17 +1,17 @@
-import React from "react";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../theme/theme";
-import {Trans} from "react-i18next";
-import ProposalStatusFilters, {ProposalFilter} from "./list/ProposalStatusFilters";
-import {ROUTE_NEW_IDEA} from "../routes/routes";
-import {RouterLink} from "../components/link/RouterLink";
-import {TimeSelect} from "../components/select/TimeSelect";
-import {BasicInfo} from "../components/header/BasicInfo";
-import {FlexBreakLine} from "../components/header/FlexBreakLine";
-import {HeaderListContainer} from "../components/header/list/HeaderListContainer";
-import {HeaderListTabs} from "../components/header/list/HeaderListTabs";
-import {PaperFilterBackground} from "../components/header/list/PaperFilterBackground";
-import {TimeSelectWrapper} from "../components/header/list/TimeSelectWrapper";
+import React from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../theme/theme'
+import { Trans } from 'react-i18next'
+import ProposalStatusFilters, { ProposalFilter } from './list/ProposalStatusFilters'
+import { ROUTE_NEW_IDEA } from '../routes/routes'
+import { RouterLink } from '../components/link/RouterLink'
+import { TimeSelect } from '../components/select/TimeSelect'
+import { BasicInfo } from '../components/header/BasicInfo'
+import { FlexBreakLine } from '../components/header/FlexBreakLine'
+import { HeaderListContainer } from '../components/header/list/HeaderListContainer'
+import { HeaderListTabs } from '../components/header/list/HeaderListTabs'
+import { PaperFilterBackground } from '../components/header/list/PaperFilterBackground'
+import { TimeSelectWrapper } from '../components/header/list/TimeSelectWrapper'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) => {
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 order: 5,
-            }
+            },
         },
     })
 })
@@ -51,18 +51,16 @@ interface Props {
 }
 
 export const ProposalsHeader = ({ filter }: Props) => {
-
     const classes = useStyles()
 
     return (
         <HeaderListContainer>
-
             <BasicInfo>
-                <Trans id='modal-description'
-                       i18nKey="proposal.list.introduceIdea"
-                       components={{
-                           a: <RouterLink to={ROUTE_NEW_IDEA} />
-                       }}
+                <Trans
+                    i18nKey="proposal.list.introduceIdea"
+                    components={{
+                        a: <RouterLink to={ROUTE_NEW_IDEA} />,
+                    }}
                 />
             </BasicInfo>
 
@@ -77,7 +75,6 @@ export const ProposalsHeader = ({ filter }: Props) => {
             <HeaderListTabs className={classes.statusFilters}>
                 <ProposalStatusFilters filter={filter} />
             </HeaderListTabs>
-
         </HeaderListContainer>
     )
 }
