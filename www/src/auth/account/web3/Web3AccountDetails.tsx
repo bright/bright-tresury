@@ -40,12 +40,12 @@ const Web3AccountDetails = () => {
     return (
         <div>
             <Label className={classes.title} label={t('account.web3.web3Account')} />
-            {unlinkAddressLoadingState === LoadingState.Error && unlinkAddressError && (
+            {unlinkAddressLoadingState === LoadingState.Error && unlinkAddressError ? (
                 <InfoBox message={t('account.web3.unlinkFailure')} level={'error'} />
-            )}
-            {makePrimaryError === LoadingState.Error && makePrimaryError && (
+            ) : null}
+            {makePrimaryError === LoadingState.Error && makePrimaryError ? (
                 <InfoBox message={t('account.web3.makePrimaryFailure')} level={'error'} />
-            )}
+            ) : null}
             {user?.web3Addresses?.map((address) => {
                 return (
                     <Web3AddressRow

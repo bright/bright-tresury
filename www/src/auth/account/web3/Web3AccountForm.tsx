@@ -30,11 +30,11 @@ export interface Web3AssociateValues {
     password?: string
 }
 
-interface OwnProps {
+interface Web3AccountFormProps {
     onSuccess: () => void
 }
 
-const Web3AccountForm = ({ onSuccess }: OwnProps) => {
+const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { accounts } = useAccounts()
@@ -81,13 +81,13 @@ const Web3AccountForm = ({ onSuccess }: OwnProps) => {
                 {({ values, handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
                         <Label label={t('account.web3.associateWeb3Account')} />
-                        {loadingState === LoadingState.Error && error && (
+                        {loadingState === LoadingState.Error && error ? (
                             <InfoBox
                                 className={classes.error}
                                 message={t('account.web3.linkFailure')}
                                 level={'error'}
                             />
-                        )}
+                        ) : null}
                         <Web3AddressRow
                             isPrimary={isFirstAddress}
                             primaryDisabled={true}
