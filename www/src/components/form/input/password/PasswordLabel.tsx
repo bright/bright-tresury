@@ -1,7 +1,8 @@
-import {createStyles} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import React from "react";
-import {IconButton} from "../../../button/IconButton";
+import React from 'react'
+import { createStyles } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import { IconButton } from '../../../button/IconButton'
+import { Label } from '../../../text/Label'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -12,9 +13,9 @@ const useStyles = makeStyles(() =>
         icon: {
             padding: 0,
             height: '12px',
-        }
+        },
     }),
-);
+)
 
 interface PasswordLabelProps {
     label: string
@@ -23,10 +24,17 @@ interface PasswordLabelProps {
     onClick: () => void
 }
 
-export const PasswordLabel: React.FC<PasswordLabelProps> = ({label, icon, iconDescription, onClick}) => {
+export const PasswordLabel = ({ label, icon, iconDescription, onClick }: PasswordLabelProps) => {
     const classes = useStyles()
-    return <div className={classes.root}>
-        <div>{label}</div>
-        <IconButton className={classes.icon} svg={icon} alt={iconDescription} onClick={onClick}/>
-    </div>
+
+    return (
+        <Label
+            label={
+                <div className={classes.root}>
+                    <div>{label}</div>
+                    <IconButton className={classes.icon} svg={icon} alt={iconDescription} onClick={onClick} />
+                </div>
+            }
+        />
+    )
 }
