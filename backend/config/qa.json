@@ -7,6 +7,6 @@
     },
     "auth": {
         "coreUrl": "http://testing.treasury-auth-qa:3567",
-        "cookieSecure": false
+        "cookieSecure": true
     }
 }
