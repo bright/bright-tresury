@@ -5,3 +5,4 @@ test*/*.js
 .env
 src/temp_*.ts
 test.sh
+run.sh

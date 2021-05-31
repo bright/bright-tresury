@@ -63,7 +63,7 @@ export interface IdeaDetailsProps {
     idea: IdeaDto
 }
 
-const IdeaDetails: React.FC<IdeaDetailsProps> = ({ idea }) => {
+const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 

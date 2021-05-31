@@ -9,6 +9,7 @@ import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
 import { IdeaDto } from '../ideas.dto'
 import { FormFooter } from '../../components/form/footer/FormFooter'
+import { Nil } from '../../util/types'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -41,6 +42,7 @@ const IdeaForm: React.FC<Props> = ({ idea, onSubmit, extendedValidation, foldabl
         beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
             return isValidAddressOrEmpty(address)
         }),
+        links: Yup.array().of(Yup.string().url(t('idea.details.form.badLinkError'))),
     })
 
     const extendedValidationSchema = Yup.object().shape({
@@ -54,6 +56,15 @@ const IdeaForm: React.FC<Props> = ({ idea, onSubmit, extendedValidation, foldabl
         ),
     })
 
+    const noEmptyLinks = (links: string[] | undefined) => links?.filter((link: string) => Boolean(link))
+
+    //FIXME: Find a better way to validate/process data(currently only links) just before submit. Current way is a bit 'hack-ish'
+    const onFormikSubmit = (formIdea: IdeaDto) =>
+        onSubmit({
+            ...formIdea,
+            links: noEmptyLinks(formIdea.links),
+        })
+
     return (
         <Formik
             enableReinitialize={true}
@@ -62,7 +73,7 @@ const IdeaForm: React.FC<Props> = ({ idea, onSubmit, extendedValidation, foldabl
                 links: idea.links && idea.links.length > 0 ? idea.links : [''],
             }}
             validationSchema={extendedValidation ? validationSchema.concat(extendedValidationSchema) : validationSchema}
-            onSubmit={onSubmit}
+            onSubmit={onFormikSubmit}
         >
             {({ values, handleSubmit }) => (
                 <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>

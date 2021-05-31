@@ -1,5 +1,15 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { ArrayMinSize, IsArray, IsEnum, IsIn, IsNotEmpty, IsOptional, MaxLength, ValidateNested } from 'class-validator'
+import {
+    ArrayMinSize,
+    ArrayNotContains,
+    IsArray,
+    IsEnum,
+    IsIn,
+    IsNotEmpty,
+    IsOptional,
+    MaxLength,
+    ValidateNested,
+} from 'class-validator'
 import { ideaRestrictions } from '../entities/idea.entity'
 import { IdeaStatus } from '../ideaStatus'
 import { Type } from 'class-transformer'
@@ -62,6 +72,7 @@ export class CreateIdeaDto {
     })
     @IsArray()
     @IsOptional()
+    @ArrayNotContains(['', null, undefined])
     links?: string[]
 
     @ApiPropertyOptional({

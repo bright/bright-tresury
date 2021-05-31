@@ -24,11 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+export interface FoldedIdeaFormFieldsProps {
     values: IdeaDto
 }
 
-const FoldedIdeaFormFields: React.FC<Props> = ({ values }) => {
+const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     return (

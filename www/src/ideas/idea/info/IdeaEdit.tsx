@@ -9,11 +9,11 @@ import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 import { FormFooterErrorBox } from '../../../components/form/footer/FormFooterErrorBox'
 import { FormFooterButtonsContainer } from '../../../components/form/footer/FormFooterButtonsContainer'
 
-interface Props {
+export interface IdeaEditProps {
     idea: IdeaDto
 }
 
-export const IdeaEdit = ({ idea }: Props) => {
+const IdeaEdit = ({ idea }: IdeaEditProps) => {
     const { t } = useTranslation()
 
     const [activate, setActivate] = useState(false)
@@ -55,3 +55,4 @@ export const IdeaEdit = ({ idea }: Props) => {
         </IdeaForm>
     )
 }
+export default IdeaEdit

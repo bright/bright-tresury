@@ -21,6 +21,7 @@ describe('stringUtil', () => {
             const ellipseText = ellipseTextInTheMiddle('', 3)
             expect(ellipseText).toBe('')
         })
+
     })
     describe('singularPluralOrNull', () => {
         const SINGULAR = 'singular'
