@@ -286,10 +286,10 @@ export default cloudform({
                 DesiredTasksCount: 1,
             },
             qa: {
-                InstanceType: 't2.small',
+                InstanceType: 't2.medium',
                 ContainerName: `${ProjectName}-app-qa`,
                 ContainerPort: '3000',
-                Memory: '600',
+                Memory: '1000',
                 SubstrateContainerName: `${ProjectName}-substrate-qa`,
                 SubstrateHttpContainerPort: '9933',
                 SubstrateWsContainerPort: '9944',
@@ -315,7 +315,7 @@ export default cloudform({
                 ARN: '',
             },
             qa: {
-                ARN: '',
+                ARN: 'arn:aws:acm:eu-central-1:339594496974:certificate/c029b55b-16b1-4df2-b2d6-eb6648aca97b',
             },
             stage: {
                 ARN: 'arn:aws:acm:eu-central-1:339594496974:certificate/5b31829b-fec3-4324-87e9-6660a57008cc',
