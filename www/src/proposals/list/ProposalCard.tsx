@@ -26,11 +26,13 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+export interface ProposalCardProps {
     proposal: ProposalDto
 }
 
-export const ProposalCard = ({ proposal: { proposalIndex, status, title, value, beneficiary, proposer } }: Props) => {
+export const ProposalCard = ({
+    proposal: { proposalIndex, status, title, value, beneficiary, proposer },
+}: ProposalCardProps) => {
     const classes = useStyles()
 
     const { t } = useTranslation()

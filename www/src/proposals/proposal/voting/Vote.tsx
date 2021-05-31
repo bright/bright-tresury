@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'space-between',
             alignItem: 'center',
         },
+        voteType: {
+            marginTop: '24px',
+        },
     }),
 )
 
@@ -32,7 +35,7 @@ const Vote = ({ accountInfo, voteType }: VoteProps) => {
                 address={accountInfo.address}
                 label={accountInfo.display || ''}
             ></AddressInfoWithLabel>
-            <span style={{}}>{voteType}</span>
+            <span className={styles.voteType}>{voteType}</span>
         </div>
     )
 }

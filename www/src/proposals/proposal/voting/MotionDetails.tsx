@@ -25,19 +25,18 @@ export interface MotionDetailsProps {
 const MotionDetails = ({ ayes, nays }: MotionDetailsProps) => {
     ayes = ayes || []
     nays = nays || []
+
     const styles = useStyles()
+
+    const renderVote = (accountInfo: AccountInfo, voteType: VoteType) => (
+        <Vote key={`${voteType}_${accountInfo.address}`} accountInfo={accountInfo} voteType={voteType} />
+    )
 
     return (
         <CardDetails>
             <div className={styles.root}>
-                {[
-                    ...ayes.map((aye: AccountInfo) => (
-                        <Vote key={`${VoteType.AYE}_${aye.address}`} accountInfo={aye} voteType={VoteType.AYE} />
-                    )),
-                    ...nays.map((nay: AccountInfo) => (
-                        <Vote key={`${VoteType.NAY}_${nay.address}`} accountInfo={nay} voteType={VoteType.NAY} />
-                    )),
-                ]}
+                {ayes.map((aye: AccountInfo) => renderVote(aye, VoteType.AYE))}
+                {nays.map((nay: AccountInfo) => renderVote(nay, VoteType.NAY))}
             </div>
         </CardDetails>
     )

@@ -6,7 +6,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { Nil } from '../../../util/types'
 import { formatNumber } from '../../../util/numberUtil'
-import { remainingTimeToStr } from '../../../util/stringUtil'
+import { timeToString } from '../../../util/dateUtil'
 import { ProposalMotionEnd, ProposalMotionMethod } from '../../proposals.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -61,7 +61,7 @@ const MotionHeader = ({ method, ayesCount, naysCount, end }: MotionHeaderProps) 
     const { endBlock, timeLeft } = end || {}
 
     const endBlockStr = endBlock ? `#${formatNumber(endBlock)}` : t('common.na')
-    const timeStr = timeLeft ? remainingTimeToStr(timeLeft, t) : ''
+    const timeStr = timeLeft ? timeToString(timeLeft, t) : ''
 
     return (
         <CardHeader>
