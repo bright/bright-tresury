@@ -1,6 +1,9 @@
 import configCommon from './common.json'
+
+const env = process.env.REACT_APP_DEPLOY_ENV || 'development'
+
 // Using `require` as `import` does not support dynamic loading (yet).
-const configEnv = require(`./${process.env.REACT_APP_DEPLOY_ENV}.json`)
+const configEnv = require(`./${env}.json`)
 
 // Accepting React env vars and aggregating them into `config` object.
 const envVarNames = ['REACT_APP_PROVIDER_SOCKET', 'REACT_APP_DEVELOPMENT_KEYRING']
