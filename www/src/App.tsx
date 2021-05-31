@@ -19,6 +19,7 @@ import { PublicOnlyRoute } from './routes/PublicOnlyRoute'
 import {
     ROUTE_ACCOUNT,
     ROUTE_EDIT_IDEA,
+    ROUTE_EMAIL_NOT_VERIFIED,
     ROUTE_IDEA,
     ROUTE_IDEAS,
     ROUTE_NEW_IDEA,
@@ -31,18 +32,17 @@ import {
     ROUTE_STATS,
     ROUTE_TURN_IDEA,
     ROUTE_VERIFY_EMAIL,
-    ROUTE_EMAIL_NOT_VERIFIED,
 } from './routes/routes'
 import Stats from './stats/Stats'
 import { initializeSupertokens } from './supertokens'
 import { ThemeWrapper } from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
-import { SignUpSuccess } from './auth/sign-up/common/SignUpSuccess'
 import VerifyEmail from './auth/sign-in/email/VerifyEmail'
-import { QueryClientProvider, QueryClient } from 'react-query'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import { EmailNotVerified } from './auth/email-not-verified/EmailNotVerified'
 import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContext'
 import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
+import { Web3SignUpSuccess } from './auth/sign-up/web3/Web3SignUpSuccess'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -73,7 +73,7 @@ function AppRoutes() {
                             redirectTo={ROUTE_SIGNUP_WEB3_SUCCESS}
                         />
                         <PublicOnlyRoute exact={false} path={ROUTE_SIGNIN} component={SignIn} />
-                        <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={SignUpSuccess} />
+                        <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={Web3SignUpSuccess} />
                         <Route exact={true} path={ROUTE_EMAIL_NOT_VERIFIED}>
                             <EmailNotVerified />
                         </Route>

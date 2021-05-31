@@ -251,10 +251,10 @@ export class SuperTokensService {
             }
             payload.isEmailVerified = await this.isEmailVerified(user)
             payload.web3Addresses = user.web3Addresses
-                ? user.web3Addresses.map((bAddress) => {
+                ? user.web3Addresses.map((web3Address) => {
                       return {
-                          address: bAddress.address,
-                          isPrimary: bAddress.isPrimary,
+                          address: web3Address.address,
+                          isPrimary: web3Address.isPrimary,
                       } as Web3Address
                   })
                 : []

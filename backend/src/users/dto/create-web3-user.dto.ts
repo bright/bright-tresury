@@ -2,15 +2,15 @@ import { ApiProperty } from '@nestjs/swagger'
 import { IsNotEmpty } from 'class-validator'
 
 export class CreateWeb3UserDto {
-    @ApiProperty({ description: 'Authorization core id.' })
+    @ApiProperty({ description: 'Authorization core id of the new user' })
     @IsNotEmpty()
     authId!: string
 
-    @ApiProperty()
+    @ApiProperty({ description: 'Username of the new user' })
     @IsNotEmpty()
     username!: string
 
-    @ApiProperty()
+    @ApiProperty({ description: 'Web3 address of the new user' })
     @IsNotEmpty()
     web3Address!: string
 
