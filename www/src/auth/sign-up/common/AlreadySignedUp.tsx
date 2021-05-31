@@ -16,11 +16,11 @@ const useStyles = makeStyles(() => {
     }
 })
 
-interface OwnProps {
+export interface AlreadySignedUpProps {
     signOption: SignOption
 }
 
-export const AlreadySignedUp: React.FC<OwnProps> = ({ signOption }) => {
+export const AlreadySignedUp = ({ signOption }: AlreadySignedUpProps) => {
     const classes = useStyles()
 
     const getRoute = () => {
