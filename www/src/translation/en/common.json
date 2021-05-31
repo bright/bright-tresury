@@ -257,11 +257,16 @@
         "milestones": {
             "createMilestone": "+ Create Milestone",
             "ordinalNumberPrefix": "Milestone - ",
-            "noIdeaMilestonesInfoDisplayedWithinIdeaSubTabForPeronWhoCanEdit": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better",
-            "noIdeaMilestonesInfoDisplayedWithinIdeaSubTabForPeronWhoCannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab",
-            "noIdeaMilestonesInfoDisplayedOutsideIdeaSubTabForPersonWhoCanEdit": "Please navigate to ideas and add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better",
-            "noIdeaMilestonesInfoDisplayedOutsideIdeaSubTabForPersonWhoCannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab",
-            "noIdeaMilestonesInfoFallback": "No milestones have been added yet",
+            "noIdeaMilestones": {
+                "withinIdeaSubTab": {
+                    "canEdit": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better",
+                    "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab"
+                },
+                "outsideIdeaSubTab": {
+                    "canEdit": "Please navigate to ideas and add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better",
+                    "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab"
+                }
+            },
             "modal": {
                 "milestone": "Milestone",
                 "createMilestone": "Create Milestone",

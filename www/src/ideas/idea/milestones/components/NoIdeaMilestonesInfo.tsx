@@ -10,20 +10,16 @@ export const NoIdeaMilestonesInfo = ({ canEdit, displayWithinIdeaSubTab }: NoIde
     const { t } = useTranslation()
 
     if (canEdit && displayWithinIdeaSubTab) {
-        return <p>{t('idea.milestones.noIdeaMilestonesInfoDisplayedWithinIdeaSubTabForPeronWhoCanEdit')}</p>
+        return <p>{t('idea.milestones.noIdeaMilestones.withinIdeaSubTab.canEdit')}</p>
     }
 
     if (!canEdit && displayWithinIdeaSubTab) {
-        return <p>{t('idea.milestones.noIdeaMilestonesInfoDisplayedWithinIdeaSubTabForPeronWhoCannotEdit')}</p>
+        return <p>{t('idea.milestones.noIdeaMilestones.withinIdeaSubTab.cannotEdit')}</p>
     }
 
     if (canEdit && !displayWithinIdeaSubTab) {
-        return <p>{t('idea.milestones.noIdeaMilestonesInfoDisplayedOutsideIdeaSubTabForPersonWhoCanEdit')}</p>
+        return <p>{t('idea.milestones.noIdeaMilestones.outsideIdeaSubTab.canEdit')}</p>
     }
 
-    if (!canEdit && !displayWithinIdeaSubTab) {
-        return <p>{t('idea.milestones.noIdeaMilestonesInfoDisplayedOutsideIdeaSubTabForPersonWhoCannotEdit')}</p>
-    }
-
-    return <p>{t('idea.milestones.noIdeaMilestonesInfoFallback')}</p>
+    return <p>{t('idea.milestones.noIdeaMilestones.outsideIdeaSubTab.cannotEdit')}</p>
 }
