@@ -24,11 +24,11 @@ export interface MotionCardProps {
 }
 
 const MotionCard = ({ motion }: MotionCardProps) => {
-    const { method, ayes, nays, end } = motion
+    const { method, ayes, nays, motionEnd } = motion
     const styles = useStyles()
     return (
         <Paper className={styles.root}>
-            <MotionHeader method={method} end={end} ayesCount={ayes?.length} naysCount={nays?.length} />
+            <MotionHeader method={method} motionEnd={motionEnd} ayesCount={ayes?.length} naysCount={nays?.length} />
             <Divider />
             <MotionDetails ayes={ayes} nays={nays} />
         </Paper>

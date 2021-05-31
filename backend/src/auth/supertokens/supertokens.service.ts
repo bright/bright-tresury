@@ -16,6 +16,7 @@ import {
     signIn,
     signUp as superTokensSignUp,
 } from 'supertokens-node/lib/build/recipe/emailpassword'
+
 import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
 import { TypeFormField, User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import {
@@ -240,6 +241,7 @@ export class SuperTokensService {
             username: '',
             isEmailVerified: false,
         } as JWTPayload
+
         try {
             const user = await this.usersService.findOneByAuthId(authId)
             payload.id = user.id

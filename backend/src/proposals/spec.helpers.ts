@@ -1,8 +1,8 @@
 import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
-import { Time } from '@polkadot/util/types'
 import { getLogger } from '../logging.module'
 import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info.dto'
 import { BlockchainProposalMotion } from '../blockchain/dto/blockchain-proposal-motion.dto'
+import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
 
 const makeMotion = (
     hash: string,
@@ -17,7 +17,7 @@ const makeMotion = (
     ayes,
     nays,
     threshold: 2,
-    end: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } as Time },
+    motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } as BlockchainTimeLeft },
 })
 
 export const mockedBlockchainService = {

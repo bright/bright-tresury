@@ -9,30 +9,36 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 export class BlockchainProposalMotion {
     @ApiProperty({ description: 'Hash of the motion' })
     hash: string
+
     @ApiProperty({ description: 'Either approveProposal or rejectProposal' })
     method: string
+
     @ApiPropertyOptional({ description: 'List of accounts that voted aye', type: [BlockchainAccountInfo] })
     ayes: Nil<BlockchainAccountInfo[]>
+
     @ApiPropertyOptional({ description: 'List of accounts that voted nay', type: [BlockchainAccountInfo] })
     nays: Nil<BlockchainAccountInfo[]>
+
     @ApiPropertyOptional({ description: 'Index of this motion', type: Number })
     motionIndex: Nil<number>
+
     @ApiPropertyOptional({
         description: 'Threshold after which the motion will be either approve or rejected',
         type: Number,
     })
     threshold: Nil<number>
-    @ApiPropertyOptional({ description: 'Motion end information', type: BlockchainProposalMotionEnd })
-    end: Nil<BlockchainProposalMotionEnd>
 
-    constructor({ hash, method, ayes, nays, motionIndex, threshold, end }: BlockchainProposalMotion) {
+    @ApiPropertyOptional({ description: 'Motion end information', type: BlockchainProposalMotionEnd })
+    motionEnd: Nil<BlockchainProposalMotionEnd>
+
+    constructor({ hash, method, ayes, nays, motionIndex, threshold, motionEnd }: BlockchainProposalMotion) {
         this.hash = hash
         this.method = method
         this.ayes = ayes
         this.nays = nays
         this.motionIndex = motionIndex
         this.threshold = threshold
-        this.end = end
+        this.motionEnd = motionEnd
     }
 }
 
@@ -52,7 +58,7 @@ export function toBlockchainProposalMotion(
             nays: null,
             motionIndex: null,
             threshold: null,
-            end: null,
+            motionEnd: null,
         })
     }
     return new BlockchainProposalMotion({
@@ -66,6 +72,6 @@ export function toBlockchainProposalMotion(
         ),
         motionIndex: votes.index.toNumber(),
         threshold: votes.threshold.toNumber(),
-        end: toBlockchainProposalMotionEnd(votes.end),
+        motionEnd: toBlockchainProposalMotionEnd(votes.end),
     })
 }

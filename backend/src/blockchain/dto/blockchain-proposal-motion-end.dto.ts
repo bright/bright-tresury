@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Time } from '@polkadot/util/types'
+import { BlockchainTimeLeft } from './blockchain-time-left.dto'
 
 export class BlockchainProposalMotionEnd {
     @ApiProperty({ description: 'Block number when voting for this proposal motion ends' })
@@ -7,9 +7,10 @@ export class BlockchainProposalMotionEnd {
     @ApiProperty({ description: 'Amount of blocks that is left to mine until voting for this proposal motion ends' })
     remainingBlocks: number
     @ApiProperty({
-        description: 'Days, hours, minutes, seconds, milliseconds until voting for this proposal motion ends',
+        description: 'Time lft until voting for this proposal motion ends',
+        type: BlockchainTimeLeft,
     })
-    timeLeft: Time
+    timeLeft: BlockchainTimeLeft
 
     constructor({ endBlock, remainingBlocks, timeLeft }: BlockchainProposalMotionEnd) {
         this.endBlock = endBlock

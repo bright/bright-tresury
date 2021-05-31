@@ -1,5 +1,5 @@
-import {Time} from "@polkadot/util/types";
-import {Nil} from "../util/types";
+import { Time } from '@polkadot/util/types'
+import { Nil } from '../util/types'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -24,36 +24,33 @@ export interface ProposalDto {
     motions: ProposalMotion[]
 }
 
+export interface ProposalMotion {
+    hash: string
+    method: ProposalMotionMethod
+    ayes: Nil<AccountInfo[]>
+    nays: Nil<AccountInfo[]>
+    motionIndex: Nil<number>
+    threshold: Nil<number>
+    motionEnd: Nil<ProposalMotionEnd>
+}
+
 export interface ProposalMotionEnd {
-    endBlock: number,
-    remainingBlocks: number,
+    endBlock: number
+    remainingBlocks: number
     timeLeft: Time
 }
 
-export interface ProposalMotion {
-    hash: string,
-    method: ProposalMotionMethod,
-    ayes: Nil<AccountInfo[]>,
-    nays: Nil<AccountInfo[]>,
-    motionIndex: Nil<number>,
-    threshold: Nil<number>,
-    end: Nil<ProposalMotionEnd>
-}
-
 export interface AccountInfo {
-    address: string,
-    display?: string;
-    email?: string;
-    legal?: string;
-    riot?: string;
-    twitter?: string;
-    web?: string;
+    address: string
+    display?: string
+    email?: string
+    legal?: string
+    riot?: string
+    twitter?: string
+    web?: string
 }
 
 export enum ProposalMotionMethod {
     Approve = 'approveProposal',
     Reject = 'rejectProposal',
 }
-
-
-

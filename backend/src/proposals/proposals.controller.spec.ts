@@ -12,7 +12,6 @@ import { CreateIdeaMilestoneDto } from '../ideas/ideaMilestones/dto/createIdeaMi
 import { IdeaMilestoneNetwork } from '../ideas/ideaMilestones/entities/idea.milestone.network.entity'
 import { IdeaMilestone } from '../ideas/ideaMilestones/entities/idea.milestone.entity'
 import { Repository } from 'typeorm'
-import exp from 'constants'
 
 const baseUrl = '/api/v1/proposals'
 
@@ -117,7 +116,7 @@ describe(`/api/v1/proposals`, () => {
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
 
             const proposal2 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 1)
@@ -141,7 +140,7 @@ describe(`/api/v1/proposals`, () => {
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
 
             const proposal3 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 3)
@@ -164,7 +163,7 @@ describe(`/api/v1/proposals`, () => {
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
         })
     })
@@ -206,7 +205,7 @@ describe(`/api/v1/proposals`, () => {
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
         })
 
@@ -232,7 +231,7 @@ describe(`/api/v1/proposals`, () => {
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
         })
 
@@ -259,7 +258,7 @@ describe(`/api/v1/proposals`, () => {
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                end: {endBlock:1, remainingBlocks: 1, timeLeft: {seconds: 6}}
+                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
         })
     })

@@ -49,16 +49,16 @@ const MOTION_ICON = {
 
 export interface MotionHeaderProps {
     method: string
-    end: Nil<ProposalMotionEnd>
+    motionEnd: Nil<ProposalMotionEnd>
     ayesCount: Nil<number>
     naysCount: Nil<number>
 }
 
-const MotionHeader = ({ method, ayesCount, naysCount, end }: MotionHeaderProps) => {
+const MotionHeader = ({ method, ayesCount, naysCount, motionEnd }: MotionHeaderProps) => {
     const styles = useStyles()
     const { t } = useTranslation()
     const isApprovalMotion = method === 'approveProposal'
-    const { endBlock, timeLeft } = end || {}
+    const { endBlock, timeLeft } = motionEnd || {}
 
     const endBlockStr = endBlock ? `#${formatNumber(endBlock)}` : t('common.na')
     const timeStr = timeLeft ? timeToString(timeLeft, t) : ''
