@@ -42,12 +42,6 @@ describe('filter ideas', () => {
                 ideas[4],
             ])
         })
-
-        it(`should return ideas with ${IdeaStatus.Draft} status only for their owners`, () => {
-            const ideas = [createIdea(IdeaStatus.Draft, user), createIdea(IdeaStatus.Draft, otherUser)]
-
-            expect(filterIdeas(ideas, IdeaFilter.All, user)).toStrictEqual([ideas[0]])
-        })
     })
 
     describe(`filter by ${IdeaFilter.Mine}`, () => {
@@ -85,12 +79,6 @@ describe('filter ideas', () => {
                 createIdea(IdeaStatus.TurnedIntoProposalByMilestone, user),
                 createIdea(IdeaStatus.Closed, user),
             ]
-
-            expect(filterIdeas(ideas, IdeaFilter.Draft, user)).toStrictEqual([ideas[0]])
-        })
-
-        it('should not return ideas owned by other users', () => {
-            const ideas = [createIdea(IdeaStatus.Draft, user), createIdea(IdeaStatus.Draft, otherUser)]
 
             expect(filterIdeas(ideas, IdeaFilter.Draft, user)).toStrictEqual([ideas[0]])
         })

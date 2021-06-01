@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useGetIdeas } from './ideas.api'
 import { IdeaDefaultFilter, IdeaFilter, IdeaFilterSearchParamName } from './list/IdeaStatusFilters'
@@ -17,20 +17,24 @@ interface Props {
 export const Ideas = ({ network = config.NETWORK_NAME }: Props) => {
     const { t } = useTranslation()
 
-    const location = useLocation()
+    const { search } = useLocation()
 
     const { user } = useAuth()
 
-    const { status, data: ideas } = useGetIdeas(network)
+    const { status, data: ideas, refetch } = useGetIdeas(network)
+
+    useEffect(() => {
+        refetch()
+    }, [user])
 
     const filter = useMemo(() => {
-        const filterParam = new URLSearchParams(location.search).get(IdeaFilterSearchParamName)
+        const filterParam = new URLSearchParams(search).get(IdeaFilterSearchParamName)
         return filterParam ? (filterParam as IdeaFilter) : IdeaDefaultFilter
-    }, [location.search])
+    }, [search])
 
     const filteredIdeas = useMemo(() => {
         return ideas ? filterIdeas(ideas, filter, user) : []
-    }, [filter, ideas])
+    }, [ideas, filter, user])
 
     return (
         <div>
