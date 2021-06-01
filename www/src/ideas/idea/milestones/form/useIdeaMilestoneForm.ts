@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
 import { IdeaMilestoneFormValues } from './IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
+import { isValidAddressOrEmpty } from '../../../../util/addressValidator'
 
 interface Props {
     idea: IdeaDto
@@ -14,6 +15,13 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
 
     const validationSchema = Yup.object().shape({
         subject: Yup.string().required(t('idea.milestones.modal.form.emptyFieldError')),
+        beneficiary: Yup.string().test(
+            'validate-address',
+            t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
+            (beneficiaryAddress) => {
+                return isValidAddressOrEmpty(beneficiaryAddress)
+            },
+        ),
         dateFrom: Yup.date()
             // Date is transformed because in form date is like "yyyy-mm-dd" but we need the full date obj to correctly proceed validation
             .transform((value) => (value ? new Date(value) : value))
@@ -26,7 +34,15 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
     })
 
     const extendedValidationSchema = Yup.object().shape({
-        beneficiary: Yup.string().required(t('idea.milestones.modal.form.emptyFieldError')),
+        beneficiary: Yup.string()
+            .required(t('idea.milestones.modal.form.emptyFieldError'))
+            .test(
+                'validate-address',
+                t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
+                (beneficiaryAddress) => {
+                    return isValidAddressOrEmpty(beneficiaryAddress)
+                },
+            ),
         networks: Yup.array().of(
             Yup.object().shape({
                 value: Yup.number()
