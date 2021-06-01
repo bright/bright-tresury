@@ -18,9 +18,7 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
         beneficiary: Yup.string().test(
             'validate-address',
             t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
-            (beneficiaryAddress) => {
-                return isValidAddressOrEmpty(beneficiaryAddress)
-            },
+            isValidAddressOrEmpty,
         ),
         dateFrom: Yup.date()
             // Date is transformed because in form date is like "yyyy-mm-dd" but we need the full date obj to correctly proceed validation
@@ -39,9 +37,7 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
             .test(
                 'validate-address',
                 t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
-                (beneficiaryAddress) => {
-                    return isValidAddressOrEmpty(beneficiaryAddress)
-                },
+                isValidAddressOrEmpty,
             ),
         networks: Yup.array().of(
             Yup.object().shape({
