@@ -3,13 +3,12 @@ import {PropsWithChildren, useEffect, useMemo, useState} from 'react'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import {makePrimary, unlinkAddress} from './account/web3/web3.api'
 import {Web3AssociateValues} from './account/web3/Web3AccountForm'
-import {signOut as signOutApi, verifyEmail as verifyEmailApiCall} from './auth.api'
+import {signOut as signOutApi} from './auth.api'
 import {handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp} from './handleWeb3Sign'
 import {Web3SignInValues} from './sign-in/web3/Web3SignIn'
 import {Web3SignUpValues} from './sign-up/web3/Web3SignUp'
 
 export interface AuthContextState {
-    verifyEmail: (verificationToken: string) => Promise<void>
     signOut: () => Promise<void>
     web3SignIn: (web3SignUpValues: Web3SignInValues) => Promise<void>
     web3SignUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
@@ -108,8 +107,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
             })
     }
 
-    const verifyEmail = (verificationToken: string) => callWithRefreshToken(verifyEmailApiCall(verificationToken))
-
     const web3SignUp = (web3SignUpValues: Web3SignUpValues) =>
         callWithSetSignedIn(handleWeb3SignUp(web3SignUpValues.account))
 
@@ -130,7 +127,7 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
                 isUserSignedIn,
                 isUserVerified,
                 isUserSignedInAndVerified,
-                verifyEmail,
+                // verifyEmail,
                 signOut,
                 web3SignIn,
                 web3SignUp,

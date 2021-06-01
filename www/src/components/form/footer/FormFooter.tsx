@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from '@material-ui/core/styles/styled'
 
 export const FormFooter = styled('div')(() => ({

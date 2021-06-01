@@ -1,4 +1,3 @@
-import React from 'react'
 import {useTranslation} from 'react-i18next'
 import * as Yup from "yup";
 import {ObjectSchema} from "yup";

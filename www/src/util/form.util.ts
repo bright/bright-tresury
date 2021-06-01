@@ -1,6 +1,5 @@
-import {AxiosError} from "axios";
 import {ObjectSchema} from "yup";
-import { FieldError } from "../auth/sign-up/email/sign-up-email.dto";
+import {FieldError} from "../auth/sign-up/email/sign-up-email.dto";
 
 /*
  * Formik does not support multiple errors
