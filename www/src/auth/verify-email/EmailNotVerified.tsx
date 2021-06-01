@@ -4,11 +4,10 @@ import Container from '../../components/form/Container'
 import { useTranslation } from 'react-i18next'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
-import { Button } from '../../components/button/Button'
-import { sendVerifyEmail } from '../auth.api'
 import { useAuth } from '../AuthContext'
 import { ROUTE_SIGNIN, ROUTE_STATS } from '../../routes/routes'
 import { useHistory } from 'react-router'
+import SendVerifyEmailButton from "./SendVerifyEmailButton";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -65,9 +64,7 @@ export const EmailNotVerified = () => {
             <p className={classes.subTitle}>{t('auth.emailNotVerified.pleaseVerifyYourEmail')}</p>
             <img className={classes.image} src={emailNotVerifiedImage} alt={''} />
             <div className={classes.buttonWrapper}>
-                <Button type={'button'} color={'primary'} onClick={sendVerifyEmail}>
-                    {t('auth.emailNotVerified.resendVerificationEmail')}
-                </Button>
+                <SendVerifyEmailButton type={'button'}/>
             </div>
         </Container>
     )

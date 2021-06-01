@@ -2,8 +2,8 @@ import {useMutation} from "react-query";
 import {SendVerifyEmailAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailverification/types'
 import {apiPost} from '../../../api'
 import {Account} from "../../../substrate-lib/accounts/AccountsContext";
-import {sendVerifyEmail} from '../../auth.api'
 import {handleWeb3Sign, StartWeb3SignResponseDto} from "../../handleWeb3Sign";
+import { sendVerifyEmail } from "../../verify-email/verify-email.api";
 
 export interface StartEmailPasswordAssociateDto {
     address: string

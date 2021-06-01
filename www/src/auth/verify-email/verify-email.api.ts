@@ -1,9 +1,16 @@
 import {useMutation} from "react-query";
 import {SendVerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
-import { apiPost } from "../../api";
+import {apiPost} from "../../api";
 
-function sendVerifyEmail() {
-    return apiPost<SendVerifyEmailAPIResponse>('/user/email/verify/token')
+export function sendVerifyEmail() {
+    return apiPost<SendVerifyEmailAPIResponse>('/user/email/verify/token').then((response) => {
+        switch (response.status) {
+            case "OK":
+                return response
+            case "EMAIL_ALREADY_VERIFIED_ERROR":
+                throw new Error("EMAIL_ALREADY_VERIFIED_ERROR")
+        }
+    })
 }
 
 function verifyEmail(token: string) {
