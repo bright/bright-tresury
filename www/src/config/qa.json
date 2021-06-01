@@ -5,9 +5,5 @@
     "PROVIDER_SOCKET": "wss://treasury-app-qa-2011867684.eu-central-1.elb.amazonaws.com:9944",
     "NETWORK_NAME": "localhost",
     "NETWORK_CURRENCY": "LOC",
-    "NETWORK_COLOR": "#E6007A",
-    "BOND_VALUE": {
-        "MIN_VALUE": 1000,
-        "PERCENT": 5
-    }
+    "NETWORK_COLOR": "#E6007A"
 }

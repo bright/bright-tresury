@@ -7,6 +7,10 @@
     "PROVIDER_SOCKET_LOCAL": "ws://localhost:9944",
     "PROVIDER_SOCKET_KUSAMA": "wss://kusama-rpc.polkadot.io",
     "PROVIDER_SOCKET_POLKADOT": "wss://rpc.polkadot.io",
+    "BOND_VALUE": {
+        "MIN_VALUE": 1000,
+        "PERCENT": 5
+    },
     "CUSTOM_TYPES": {
         "Address": "MultiAddress",
         "LookupSource": "MultiAddress"
