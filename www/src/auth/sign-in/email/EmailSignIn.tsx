@@ -1,20 +1,18 @@
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { Formik } from 'formik'
-import { FormikHelpers } from 'formik/dist/types'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
+import {createStyles, makeStyles} from '@material-ui/core/styles'
+import {Formik} from 'formik'
+import React, {useMemo} from 'react'
+import {useTranslation} from 'react-i18next'
 import * as Yup from 'yup'
-import { InfoBox } from '../../../components/form/InfoBox'
-import { Input } from '../../../components/form/input/Input'
-import { PasswordInput } from '../../../components/form/input/password/PasswordInput'
-import { useAuth } from '../../AuthContext'
-import { useSuperTokensRequest } from '../../supertokens.utils/useSuperTokensRequest'
-import { NotSignedUpYet } from '../common/NotSignedUpYet'
-import { SignInButton } from '../common/SignInButton'
-import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
-import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
-import { SignOption } from '../../sign-components/SignOption'
-import { LoadingState } from '../../../components/loading/useLoading'
+import {InfoBox} from '../../../components/form/InfoBox'
+import {Input} from '../../../components/form/input/Input'
+import {PasswordInput} from '../../../components/form/input/password/PasswordInput'
+import {useAuth} from '../../AuthContext'
+import {SignComponentWrapper} from '../../sign-components/SignComponentWrapper'
+import {SignFormWrapper} from '../../sign-components/SignFormWrapper'
+import {SignOption} from '../../sign-components/SignOption'
+import {NotSignedUpYet} from '../common/NotSignedUpYet'
+import {SignInButton} from '../common/SignInButton'
+import {useSignIn} from "./sign-in-email.api";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -30,16 +28,31 @@ interface SignInValues {
 }
 
 const EmailSignIn = () => {
-    const { t } = useTranslation()
+    const {t} = useTranslation()
     const classes = useStyles()
 
-    const { signIn } = useAuth()
+    const {setIsUserSignedIn} = useAuth()
 
-    const { loadingState, call, error } = useSuperTokensRequest(signIn)
+    const {isLoading, isError, mutateAsync, error} = useSignIn()
 
-    const onSubmit = async (values: SignInValues, { setErrors }: FormikHelpers<SignInValues>) => {
-        await call(values, setErrors)
+    const onSubmit = async (values: SignInValues) => {
+        await mutateAsync(values, {
+            onSuccess: () => {
+                setIsUserSignedIn(true)
+            },
+            onError: () => {
+                setIsUserSignedIn(false)
+            }
+        })
     }
+
+    const errorMessage = useMemo(() => {
+        if (!isError) {
+            return undefined
+        }
+        const typedError = error as Error
+        return typedError?.message === 'WRONG_CREDENTIALS_ERROR' ? t('auth.errors.wrongCredentialsError') : t('auth.errors.generalError')
+    }, [error])
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().required(t('auth.signIn.emailSignIn.emptyFieldError')),
@@ -55,11 +68,11 @@ const EmailSignIn = () => {
             validationSchema={validationSchema}
             onSubmit={onSubmit}
         >
-            {({ values, handleSubmit }) => (
+            {({handleSubmit}) => (
                 <SignFormWrapper handleSubmit={handleSubmit}>
-                    {loadingState === LoadingState.Error && error ? (
+                    {errorMessage ? (
                         <SignComponentWrapper>
-                            <InfoBox message={error} level={'error'} />
+                            <InfoBox message={errorMessage} level={'error'}/>
                         </SignComponentWrapper>
                     ) : null}
                     <SignComponentWrapper>
@@ -76,12 +89,12 @@ const EmailSignIn = () => {
                             placeholder={t('auth.signIn.emailSignIn.password.placeholder')}
                         />
                     </SignComponentWrapper>
-                    <SignInButton disabled={loadingState === LoadingState.Loading} />
+                    <SignInButton disabled={isLoading}/>
                     {/*Hidden due to TREAS-128. Feature is not implemented yet*/}
                     {/*<Button className={classes.forgotPasswordButton} variant="text" color="default" type="button">*/}
                     {/*    {t('auth.signIn.emailSignIn.forgotPassword')}*/}
                     {/*</Button>*/}
-                    <NotSignedUpYet signOption={SignOption.Email} />
+                    <NotSignedUpYet signOption={SignOption.Email}/>
                 </SignFormWrapper>
             )}
         </Formik>
