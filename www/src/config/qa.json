@@ -1,8 +1,8 @@
 {
     "APP_NAME": "treasury-qa",
-    "API_URL": "https://testing.treasury.brightinventions.pl",
-    "WEBSITE_URL": "https://testing.treasury.brightinventions.pl",
-    "PROVIDER_SOCKET": "wss://testing.treasury.brightinventions.pl:9944",
+    "API_URL": "http://treasury-app-qa-2011867684.eu-central-1.elb.amazonaws.com",
+    "WEBSITE_URL": "http://treasury-app-qa-2011867684.eu-central-1.elb.amazonaws.com",
+    "PROVIDER_SOCKET": "wss://treasury-app-qa-2011867684.eu-central-1.elb.amazonaws.com:9944",
     "NETWORK_NAME": "localhost",
     "NETWORK_CURRENCY": "LOC",
     "NETWORK_COLOR": "#E6007A",

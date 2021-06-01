@@ -1,12 +1,12 @@
 {
-    "apiUrl": "https://testing.treasury.brightinventions.pl:3000",
-    "websiteUrl": "https://testing.treasury.brightinventions.pl",
+    "apiUrl": "http://treasury-app-qa-2011867684.eu-central-1.elb.amazonaws.com:3000",
+    "websiteUrl": "http://treasury-app-qa-2011867684.eu-central-1.elb.amazonaws.com",
     "port": 3000,
     "blockchain": {
         "nodeUrl": "ws://treasury-substrate-qa:9944"
     },
     "auth": {
-        "coreUrl": "http://testing.treasury-auth-qa:3567",
+        "coreUrl": "http://treasury-auth-qa:3567",
         "cookieSecure": true
     }
 }
