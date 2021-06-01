@@ -1,4 +1,6 @@
+import {AxiosError} from "axios";
 import {ObjectSchema} from "yup";
+import {FieldError} from "../auth/sign-up/email/sign-up-email.api";
 
 /*
  * Formik does not support multiple errors
@@ -34,4 +36,16 @@ export function formikErrorToArray(errors?: string | string[]): string[] | undef
         return undefined
     }
     return Array.isArray(errors) ? errors : [errors]
+}
+
+export function toFormikErrors(error: unknown) {
+    const fieldError = error as FieldError
+    if (!fieldError.formFieldErrors || fieldError.formFieldErrors?.length === 0) {
+        return {}
+    }
+    const errors: any = {}
+    fieldError.formFieldErrors.forEach(({id, error}) => {
+        errors[id] = error
+    })
+    return errors
 }

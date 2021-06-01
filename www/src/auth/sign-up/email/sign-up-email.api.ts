@@ -1,3 +1,4 @@
+import {useMutation} from "react-query";
 import {FormFieldError, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
 import {SendVerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
 import {apiPost} from "../../../api";
@@ -19,7 +20,7 @@ export class FieldError extends Error {
     }
 }
 
-export async function signUp(data: SignUpData) {
+async function signUp(data: SignUpData) {
     const requestData = transformSignUpRequestData(data)
 
     return apiPost<SignUpAPIResponse | SendVerifyEmailAPIResponse>( `/signup`, requestData).then((response) => {
@@ -30,4 +31,8 @@ export async function signUp(data: SignUpData) {
                 throw new FieldError(response.formFields)
         }
     })
+}
+
+export const useSignUp = () => {
+    return useMutation(signUp)
 }

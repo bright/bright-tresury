@@ -1,3 +1,4 @@
+import {useMutation} from "react-query";
 import {SendVerifyEmailAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailverification/types'
 import {apiPost} from '../../../api'
 import {Account} from "../../../substrate-lib/accounts/AccountsContext";
@@ -17,8 +18,13 @@ export interface EmailPasswordAssociateDetailsDto {
 
 export type ConfirmEmailPasswordAssociateDto = StartEmailPasswordAssociateDto & { signature: string }
 
-export async function associateEmailPassword(account: Account, details: EmailPasswordAssociateDetailsDto) {
-    return await handleWeb3Sign(account, startEmailPasswordAssociation, confirmEmailPasswordAssociation, details)
+export interface EmailPasswordAssociateDto {
+    account: Account
+    details: EmailPasswordAssociateDetailsDto
+}
+
+async function associateEmailPassword(dto: EmailPasswordAssociateDto) {
+    return await handleWeb3Sign(dto.account, startEmailPasswordAssociation, confirmEmailPasswordAssociation, dto.details)
 }
 
 function startEmailPasswordAssociation(dto: StartEmailPasswordAssociateDto): Promise<StartWeb3SignResponseDto> {
@@ -29,4 +35,8 @@ function confirmEmailPasswordAssociation(dto: ConfirmEmailPasswordAssociateDto):
     return apiPost<void | SendVerifyEmailAPIResponse>('/auth/email-password/associate/confirm', dto).then(() => {
         return sendVerifyEmail()
     })
+}
+
+export const useAssociateEmailPassword = () => {
+    return useMutation(associateEmailPassword)
 }

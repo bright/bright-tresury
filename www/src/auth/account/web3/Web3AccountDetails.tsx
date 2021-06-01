@@ -49,6 +49,7 @@ const Web3AccountDetails = () => {
             {user?.web3Addresses?.map((address) => {
                 return (
                     <Web3AddressRow
+                        key={address.address}
                         onPrimaryChange={(checked) => onPrimaryChange(checked, address)}
                         isPrimary={address.isPrimary}
                         addressComponent={<AddressInfo address={address.address} />}

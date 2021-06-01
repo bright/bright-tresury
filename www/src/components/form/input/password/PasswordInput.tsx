@@ -38,8 +38,8 @@ export const PasswordInput = ({ label, validationRules, name = '', ...props }: P
             <TextField {...props} type={type} error={hasError} inputProps={{ ...field, ...meta }} />
             {!!validationRules &&
                 showValidationRules &&
-                validationRules.map((error) => {
-                    return <ValidationRuleLabel message={error} error={meta?.error} />
+                validationRules.map((error, index) => {
+                    return <ValidationRuleLabel key={index} message={error} error={meta?.error} />
                 })}
         </FormGroup>
     )
