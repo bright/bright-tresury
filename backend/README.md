@@ -1,52 +1,76 @@
 ## Local development
 
+### Dependencies:
+
+-   Install [nvm](https://github.com/nvm-sh/nvm#install--update-script)
+-   Install and use current npm and node: `nvm install v14.16.1; nvm use`  
+    (please check [.nvmrc](../.nvmrc) for the currently used node version and if need update this README)
+-   Install NestJS CLI: `npm install -g @nestjs/cli`
+-   Install Docker: https://docs.docker.com/docker-for-mac/install/
+-   Install polkadot node  
+    You can do either(or both):
+    -   clone and run: https://github.com/paritytech/polkadot  
+         (follow polkadot [README.md](https://github.com/paritytech/polkadot/blob/master/README.md) for installation details)  
+        or
+    -   Run: `docker run -p 9944:9944 -p 9933:9933 parity/polkadot:v0.8.30 --rpc-external --ws-external --dev`
+        read main [README.md](../README.md) to see tips and tricks related to running local polkadot node
+-   Install PostgreSQL: https://postgresapp.com/
+
 Please make sure that your PostgreSQL does not restrict providing a password for roles. It can be done by editing pg_hba.conf postgres configuration file and changing `METHOD` value to `trust`.
 
 Run once:
- `../deploy/database/init-user-db.sh`.
- 
+`../deploy/database/init-user-db.sh`.
+
 Please make sure that `web` role has required privileges for `treasury` and `treasury_test` database. The required privileges are:
 `select, insert, update, delete, truncate`.
 
 Run:
-* `nvm use`
-* `npm install`
-* `npm run compile` 
-* `DEPLOY_ENV=development-local DATABASE_USERNAME=deployer  npm run database:migrate`
-* `DEPLOY_ENV=development-local npm run auth:core:dev`
-* `DEPLOY_ENV=development-local npm run main`
+
+-   `nvm use`
+-   `npm install`
+-   `npm run compile`
+-   `DEPLOY_ENV=development-local DATABASE_USERNAME=deployer npm run database:migrate`
+-   `DEPLOY_ENV=development-local npm run auth:core:dev`
+-   `DEPLOY_ENV=development-local npm run main`
 
 Access [api documentation](http://localhost:3001/api/documentation/)
 
 Run tests
-* `npm run compile`
-* `DEPLOY_ENV=test-local DATABASE_USERNAME=deployer npm run database:migrate`
-* `DEPLOY_ENV=test-local npm run auth:core:test`
-* to run all tests `DEPLOY_ENV=test-local npm run test`
-* to run a single test suit `DEPLOY_ENV=test-local npm run test -- testSuitName`
+
+-   `npm run compile`
+-   `DEPLOY_ENV=test-local DATABASE_USERNAME=deployer npm run database:migrate`
+-   `DEPLOY_ENV=test-local npm run auth:core:test`
+-   to run all tests `DEPLOY_ENV=test-local npm run test`
+-   to run a single test suit `DEPLOY_ENV=test-local npm run test -- testSuitName`
 
 #### Authorization
 
-We are using SuperTokens as authorization core. 
+We are using SuperTokens as authorization core.
 
 The core is running on a docker container. It needs to connect to our localhost database for
 development purposes. PostgreSQL does not allow connecting from docker container. In order to allow
 such connections please do the following:
+
 1. Edit your PostgreSQL config file named `pg_hba.conf` by adding the following line:
+
 ```
 host all all 0.0.0.0/0 trust
-``` 
+```
+
 2. Edit your PostgreSQL config file named `postgresql.conf` by adding the following line:
+
 ```
 listen_addresses = '*'
 ```
 
 For development please run the following command:
+
 ```
 DEPLOY_ENV=development-local npm run auth:core:dev
-``` 
+```
 
 For tests please run the following command:
+
 ```
 DEPLOY_ENV=test-local npm run auth:core:test
 ```
@@ -56,17 +80,19 @@ DEPLOY_ENV=test-local npm run auth:core:test
 The pack uses [node-convict](https://github.com/mozilla/node-convict) for configuration.
 A config schema for particular module should reside close to that module e.g. database.config.ts is inside database.
 
-
 The configuration is loaded from multiple sources: defaults given in code, `/config/default.json`, files matching environment in `/config` e.g. `/config/development.json`, AWS SSM when not in test or development.
 
 ### AWS
 
 Any secrets e.g. database password, should be configured through AWS SSM.
 As an example a dot path to database password in `AppConfig` is:
+
 ```
 database.password
 ```
+
 To set this parameter **on stage** through AWS SSM we need to create a (secure) parameter named
+
 ```
 /stage/database/password
 ```
@@ -76,40 +102,39 @@ Note that it's possible to pass a more complex prefix to `tryLoadParamsFromSSM`.
 
 #### AWS credentials
 
-Please do not add `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` to `AWSConfig`. 
-All AWS SDK pick credentials automatically using environment variables and instance profiles/roles. 
+Please do not add `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` to `AWSConfig`.
+All AWS SDK pick credentials automatically using environment variables and instance profiles/roles.
 You should prefer using the instance profiles/roles.
-In local development you can use `AWS_PROFILE` environment variable to instruct `aws-sdk` which **locally** configured credentials it should use.   
+In local development you can use `AWS_PROFILE` environment variable to instruct `aws-sdk` which **locally** configured credentials it should use.
 
 ## Logging
 
-I cannot stress enough how important it is to have log messages printed whenever something meaningful happens inside the application. 
+I cannot stress enough how important it is to have log messages printed whenever something meaningful happens inside the application.
 As a rule of thumb:
-- try {} catch {}` should have the `error` printed in the `catch` clause
-- any business logic operation should print an `info` depicting what happened.
-- whenever there is some logic in code (e.g. `if`) one should **consider** adding `debug` describing why a branch was selected
+
+-   try {} catch {}`should have the`error`printed in the`catch` clause
+-   any business logic operation should print an `info` depicting what happened.
+-   whenever there is some logic in code (e.g. `if`) one should **consider** adding `debug` describing why a branch was selected
 
 Since most of our deployments happen on AWS and [CloudWatch](https://aws.amazon.com/about-aws/whats-new/2015/01/20/amazon-cloudwatch-logs-json-log-format-support/) supports JSON parsing the pack uses [structured logging](https://www.google.com/search?q=structured+logging).
 The pack uses [node-bunyan](https://github.com/trentm/node-bunyan) as logging implementation.
 Here are some examples of log statements:
 
 ```typescript
-
 const logger = getLogger()
 
-async function someBusinessLogic(userId){
+async function someBusinessLogic(userId) {
     try {
-        logger.info({message: `About to run logic`, userId})
+        logger.info({ message: `About to run logic`, userId })
         // run some logic
-    } catch(e){
+    } catch (e) {
         logger.error({
-            message: "Failed to to perform some logic",
+            message: 'Failed to to perform some logic',
             userId,
-            err: e
+            err: e,
         })
     }
 }
-``` 
+```
 
-**Note that the `e` variable is passed to the `error` function under `err` key.** 
-
+**Note that the `e` variable is passed to the `error` function under `err` key.**
