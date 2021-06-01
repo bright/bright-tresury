@@ -9,9 +9,5 @@
     "BOND_VALUE": {
         "MIN_VALUE": 1000,
         "PERCENT": 5
-    },
-    "CUSTOM_TYPES": {
-        "Address": "AccountId",
-        "LookupSource": "AccountId"
     }
 }
