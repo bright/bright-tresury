@@ -8,8 +8,9 @@ import { useCreateIdea } from '../ideas.api'
 import { FormFooterErrorBox } from '../../components/form/footer/FormFooterErrorBox'
 import { useHistory } from 'react-router'
 import { ROUTE_IDEAS } from '../../routes/routes'
-import { createEmptyIdea, IdeaDto, IdeaStatus } from '../ideas.dto'
+import { IdeaDto, IdeaStatus } from '../ideas.dto'
 import { FormFooterButtonsContainer } from '../../components/form/footer/FormFooterButtonsContainer'
+import { createEmptyIdea } from '../utils/ideas.utils'
 
 interface Props {
     network: string

@@ -32,22 +32,3 @@ export interface TurnIdeaIntoProposalDto {
     extrinsicHash: string
     lastBlockHash: string
 }
-
-export function doesIdeaBelongToUser(idea: IdeaDto) {
-    /** TODO: adjust when authorization will be possible */
-    return true
-}
-
-export function createEmptyIdea(network: string): IdeaDto {
-    return {
-        title: '',
-        beneficiary: '',
-        field: '',
-        content: '',
-        networks: [{ name: network, value: 0 } as IdeaNetworkDto],
-        contact: '',
-        portfolio: '',
-        links: [''],
-        status: IdeaStatus.Draft,
-    } as IdeaDto
-}

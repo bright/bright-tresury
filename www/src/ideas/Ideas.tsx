@@ -8,6 +8,7 @@ import IdeasHeader from './IdeasHeader'
 import { IdeasList } from './list/IdeasList'
 import { LoadingWrapper } from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
+import { useAuth } from '../auth/AuthContext'
 
 interface Props {
     network: string
@@ -18,6 +19,8 @@ export const Ideas = ({ network = config.NETWORK_NAME }: Props) => {
 
     const location = useLocation()
 
+    const { user } = useAuth()
+
     const { status, data: ideas } = useGetIdeas(network)
 
     const filter = useMemo(() => {
@@ -26,7 +29,7 @@ export const Ideas = ({ network = config.NETWORK_NAME }: Props) => {
     }, [location.search])
 
     const filteredIdeas = useMemo(() => {
-        return ideas ? filterIdeas(ideas, filter) : []
+        return ideas ? filterIdeas(ideas, filter, user) : []
     }, [filter, ideas])
 
     return (
