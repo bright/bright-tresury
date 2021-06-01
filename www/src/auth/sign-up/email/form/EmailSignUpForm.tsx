@@ -9,7 +9,8 @@ import {SignComponentWrapper} from '../../../sign-components/SignComponentWrappe
 import {SignFormWrapper} from '../../../sign-components/SignFormWrapper'
 import {SignUpButton} from '../../common/SignUpButton'
 import EmailSignUpSuccess from '../EmailSignUpSucces'
-import {FieldError, useSignUp} from "../sign-up-email.api";
+import {useSignUp} from "../sign-up-email.api";
+import {FieldError} from "../sign-up-email.dto";
 import EmailSignUpFormFields from "./EmailSignUpFormFields";
 import useSignUpForm, { SignUpValues } from "./useSignUpForm";
 
@@ -24,7 +25,7 @@ const EmailSignUpForm = () => {
             onSuccess: () => {
                 setIsUserSignedIn(true)
             },
-            onError: async (err) => {
+            onError: (err) => {
                 setErrors(toFormikErrors(err as FieldError))
                 setIsUserSignedIn(false)
             }

@@ -1,24 +1,10 @@
 import {useMutation} from "react-query";
-import {FormFieldError, SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
+import {SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
 import {SendVerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
 import {apiPost} from "../../../api";
-import { sendVerifyEmail } from '../../auth.api';
+import {sendVerifyEmail} from '../../auth.api';
 import {transformSignUpRequestData} from '../../supertokens.utils/transformRequestData.utils';
-
-export interface SignUpData {
-    email: string
-    password: string
-    username: string
-}
-
-export class FieldError extends Error {
-    formFieldErrors: FormFieldError[]
-
-    constructor(formFieldErrors: FormFieldError[], message?: string) {
-        super(message)
-        this.formFieldErrors = formFieldErrors
-    }
-}
+import {FieldError, SignUpData} from "./sign-up-email.dto";
 
 async function signUp(data: SignUpData) {
     const requestData = transformSignUpRequestData(data)

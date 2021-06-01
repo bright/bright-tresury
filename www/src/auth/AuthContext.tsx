@@ -43,7 +43,7 @@ export interface Web3Address {
 
 export const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
 
-const AuthContextProvider = (props: PropsWithChildren<{}>) => {
+const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
     const [user, setUser] = useState<AuthContextUser | undefined>()
     const [isUserSignedIn, setIsUserSignedIn] = useState(Session.doesSessionExist)
 
@@ -140,7 +140,7 @@ const AuthContextProvider = (props: PropsWithChildren<{}>) => {
                 setIsUserSignedIn,
                 refreshJwt
             }}
-            {...props}
+            children={children}
         />
     )
 }
