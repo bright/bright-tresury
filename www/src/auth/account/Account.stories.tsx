@@ -15,10 +15,6 @@ const Template: Story<AuthContextState> = (args) => <AuthContext.Provider value=
 
 export const Default = Template.bind({});
 Default.args = {
-    signOut: () => {
-        return new Promise((resolve) => {
-        })
-    },
     user: {
         id: 'b17049e9-0044-4ba5-a4e9-d008130a068a',
         username: 'chuck',

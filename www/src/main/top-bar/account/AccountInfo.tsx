@@ -9,7 +9,7 @@ import {useAuth} from "../../../auth/AuthContext";
 import {ROUTE_ACCOUNT} from "../../../routes/routes";
 import TopBarButton from "../TopBarButton";
 import EmailVerifyErrorMenuItem from "./EmailVerifyErrorMenuItem";
-import LogOutMenuItem from "./LogOutMenuItem";
+import SignOutMenuItem from "./SignOutMenuItem";
 import MenuItem from "./MenuItem";
 
 const useStyles = makeStyles(() =>
@@ -20,7 +20,7 @@ const useStyles = makeStyles(() =>
     }),
 );
 
-const AccountInfo: React.FC = () => {
+const AccountInfo = () => {
     const {t} = useTranslation()
     const classes = useStyles()
     const history = useHistory()
@@ -59,7 +59,7 @@ const AccountInfo: React.FC = () => {
             <MenuItem disabled={true}>{t('topBar.account.proposals')}</MenuItem>
             <MenuItem disabled={true}>{t('topBar.account.bounties')}</MenuItem>
             <Divider/>
-            <LogOutMenuItem/>
+            <SignOutMenuItem/>
         </Menu>
     </div>
 }
