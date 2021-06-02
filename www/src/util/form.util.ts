@@ -39,8 +39,8 @@ export function formikErrorToArray(errors?: string | string[]): string[] | undef
 
 export function toFormikErrors(error: unknown) {
     const fieldError = error as FieldError
-    if (!fieldError.formFieldErrors || fieldError.formFieldErrors?.length === 0) {
-        return {}
+    if (!fieldError.formFieldErrors || fieldError.formFieldErrors.length === 0) {
+        return undefined
     }
     const errors: any = {}
     fieldError.formFieldErrors.forEach(({id, error}) => {

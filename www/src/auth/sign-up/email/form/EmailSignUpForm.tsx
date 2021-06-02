@@ -1,6 +1,6 @@
 import {Formik} from 'formik'
 import {FormikHelpers} from 'formik/dist/types'
-import React from 'react'
+import React, {useState} from 'react'
 import {useTranslation} from 'react-i18next'
 import {InfoBox} from "../../../../components/form/InfoBox";
 import {fullValidatorForSchema, toFormikErrors} from '../../../../util/form.util'
@@ -19,6 +19,7 @@ const EmailSignUpForm = () => {
     const {initialValues, validationSchema} = useSignUpForm()
     const {setIsUserSignedIn} = useAuth()
     const {mutateAsync, isError, isLoading, isSuccess} = useSignUp()
+    const [showError, setShowError] = useState(true)
 
     const onSubmit = async (values: SignUpValues, {setErrors}: FormikHelpers<SignUpValues>) => {
         await mutateAsync(values, {
@@ -26,7 +27,13 @@ const EmailSignUpForm = () => {
                 setIsUserSignedIn(true)
             },
             onError: (err) => {
-                setErrors(toFormikErrors(err as FieldError))
+                const formikErrors = toFormikErrors(err as FieldError)
+                if (formikErrors) {
+                    setErrors(formikErrors)
+                    setShowError(false)
+                } else {
+                    setShowError(true)
+                }
                 setIsUserSignedIn(false)
             }
         })
@@ -43,10 +50,10 @@ const EmailSignUpForm = () => {
             validate={fullValidatorForSchema(validationSchema)}
             onSubmit={onSubmit}
         >
-            {({handleSubmit, isValid}) => (
+            {({handleSubmit}) => (
                 <SignFormWrapper handleSubmit={handleSubmit}>
                     <EmailSignUpFormFields/>
-                    {(isError && isValid) ? <SignComponentWrapper>
+                    {(isError && showError) ? <SignComponentWrapper>
                         <InfoBox message={t('auth.errors.generalError')} level={'error'}/>
                     </SignComponentWrapper> : null}
                     <SignUpButton disabled={isLoading}/>
