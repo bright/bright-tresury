@@ -3,8 +3,8 @@ import {SignUpAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpa
 import {SendVerifyEmailAPIResponse} from "supertokens-auth-react/lib/build/recipe/emailverification/types";
 import {apiPost} from "../../../api";
 import {transformSignUpRequestData} from '../../supertokens.utils/transformRequestData.utils';
-import {sendVerifyEmail} from "../../verify-email/verify-email.api";
-import {FieldError, SignUpData} from "./sign-up-email.dto";
+import {sendVerifyEmail} from "../../verifyEmail/verifyEmail.api";
+import {FieldError, SignUpData} from "./emailSignUp.dto";
 
 async function signUp(data: SignUpData) {
     const requestData = transformSignUpRequestData(data)

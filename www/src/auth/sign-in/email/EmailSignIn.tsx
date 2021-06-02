@@ -12,7 +12,7 @@ import {SignFormWrapper} from '../../sign-components/SignFormWrapper'
 import {SignOption} from '../../sign-components/SignOption'
 import {NotSignedUpYet} from '../common/NotSignedUpYet'
 import {SignInButton} from '../common/SignInButton'
-import {useSignIn} from "./sign-in-email.api";
+import {useSignIn} from "./emailSignIn.api";
 
 const useStyles = makeStyles(() =>
     createStyles({

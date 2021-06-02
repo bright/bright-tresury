@@ -1,6 +1,6 @@
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import { Account } from '../substrate-lib/accounts/AccountsContext'
-import {StartEmailPasswordAssociateDto} from "./account/emailPassword/email-password.api";
+import {StartEmailPasswordAssociateDto} from "./account/emailPassword/emailPassword.api";
 import {
     confirmWeb3SignIn,
     confirmWeb3SignUp,

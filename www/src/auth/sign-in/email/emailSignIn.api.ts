@@ -2,7 +2,7 @@ import {useMutation} from "react-query";
 import {SignInAPIResponse} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
 import {apiPost} from "../../../api";
 import {transformSignInRequestData} from '../../supertokens.utils/transformRequestData.utils';
-import {SignInData} from "./sign-in-email.dto";
+import {SignInData} from "./emailSignIn.dto";
 
 export function signIn(data: SignInData) {
     const requestData = transformSignInRequestData(data)

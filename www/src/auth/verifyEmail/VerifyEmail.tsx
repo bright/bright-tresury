@@ -3,7 +3,7 @@ import {useTranslation} from 'react-i18next'
 import {useLocation} from 'react-router-dom'
 import {Loader} from '../../components/loading/Loader'
 import {useAuth} from '../AuthContext'
-import {useVerifyEmail} from "./verify-email.api";
+import {useVerifyEmail} from "./verifyEmail.api";
 import VerifyEmailError from './VerifyEmailError'
 import VerifyEmailSuccess from './VerifyEmailSuccess'
 

@@ -11,7 +11,7 @@ import {SignFormWrapper} from "../../sign-components/SignFormWrapper";
 import {SignUpButton} from "../../sign-up/common/SignUpButton";
 import EmailSignUpFormFields from "../../sign-up/email/form/EmailSignUpFormFields";
 import useSignUpForm, {SignUpValues} from "../../sign-up/email/form/useSignUpForm";
-import {useAssociateEmailPassword} from "./email-password.api";
+import {useAssociateEmailPassword} from "./emailPassword.api";
 
 const EmailPasswordAccountForm = () => {
     const {t} = useTranslation()
@@ -19,7 +19,7 @@ const EmailPasswordAccountForm = () => {
     const {accounts} = useAccounts()
     const {initialValues, validationSchema} = useSignUpForm()
 
-    const {mutateAsync, isError, error, isLoading} = useAssociateEmailPassword()
+    const {mutateAsync, error, isLoading} = useAssociateEmailPassword()
 
     const onSubmit = (data: SignUpValues) => {
         const address = user?.web3Addresses.find((address) => address.isPrimary)
@@ -49,7 +49,7 @@ const EmailPasswordAccountForm = () => {
         const message = typedError.response?.data?.message || typedError?.message
 
         return message ?? t('account.emailPassword.addingFailed')
-    }, [error, isError])
+    }, [error, t])
 
     return (
         <Formik

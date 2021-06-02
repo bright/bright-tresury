@@ -3,7 +3,7 @@ import {SendVerifyEmailAPIResponse} from 'supertokens-auth-react/lib/build/recip
 import {apiPost} from '../../../api'
 import {Account} from "../../../substrate-lib/accounts/AccountsContext";
 import {handleWeb3Sign, StartWeb3SignResponseDto} from "../../handleWeb3Sign";
-import { sendVerifyEmail } from "../../verify-email/verify-email.api";
+import { sendVerifyEmail } from "../../verifyEmail/verifyEmail.api";
 
 export interface StartEmailPasswordAssociateDto {
     address: string
