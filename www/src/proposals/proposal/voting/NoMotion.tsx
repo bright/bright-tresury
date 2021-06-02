@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface NoMotionProps {
+export interface NoMotionProps {
     proposalIndex: number
 }
 

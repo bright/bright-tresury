@@ -5,7 +5,7 @@ import {useTranslation} from 'react-i18next'
 import * as Yup from 'yup'
 import {InfoBox} from '../../../components/form/InfoBox'
 import {Input} from '../../../components/form/input/Input'
-import {PasswordInput} from '../../../components/form/input/password/PasswordInput'
+import PasswordInput from "../../../components/form/input/password/PasswordInput";
 import {useAuth} from '../../AuthContext'
 import {SignComponentWrapper} from '../../sign-components/SignComponentWrapper'
 import {SignFormWrapper} from '../../sign-components/SignFormWrapper'

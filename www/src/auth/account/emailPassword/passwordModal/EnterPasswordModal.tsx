@@ -5,8 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { Button } from '../../../../components/button/Button'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
-import { PasswordInput } from '../../../../components/form/input/password/PasswordInput'
 import * as Yup from 'yup'
+import PasswordInput from '../../../../components/form/input/password/PasswordInput'
 
 const useStyles = makeStyles(() =>
     createStyles({

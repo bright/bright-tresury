@@ -16,7 +16,7 @@ interface OwnProps {
 
 export type PasswordInputProps = OwnProps & Omit<TextFieldProps, 'label'>
 
-export const PasswordInput = ({ label, validationRules, name = '', ...props }: PasswordInputProps) => {
+const PasswordInput = ({ label, validationRules, name = '', ...props }: PasswordInputProps) => {
     const { t } = useTranslation()
     const [show, setShow] = useState(false)
     const [field, meta] = useField(name)
@@ -44,3 +44,5 @@ export const PasswordInput = ({ label, validationRules, name = '', ...props }: P
         </FormGroup>
     )
 }
+
+export default PasswordInput

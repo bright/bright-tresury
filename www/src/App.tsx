@@ -7,7 +7,6 @@ import Account from './auth/account/Account'
 import { AuthContextProvider } from './auth/AuthContext'
 import SignIn from './auth/sign-in/SignIn'
 import SignUp from './auth/sign-up/SignUp'
-import {EmailNotVerified} from "./auth/verifyEmail/EmailNotVerified";
 import { IdeaCreate } from './ideas/create/IdeaCreate'
 import { TurnIdeaIntoProposal } from './ideas/idea/turnIntoProposal/TurnIdeaIntoProposal'
 import { Idea } from './ideas/idea/Idea'
@@ -43,6 +42,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContext'
 import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
 import { Web3SignUpSuccess } from './auth/sign-up/web3/Web3SignUpSuccess'
+import EmailNotVerified from './auth/verifyEmail/EmailNotVerified'
 
 const useStyles = makeStyles(() =>
     createStyles({

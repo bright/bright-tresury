@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export const EmailNotVerified = () => {
+const EmailNotVerified = () => {
     const classes = useStyles()
 
     const { t } = useTranslation()
@@ -69,3 +69,5 @@ export const EmailNotVerified = () => {
         </Container>
     )
 }
+
+export default EmailNotVerified

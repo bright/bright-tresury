@@ -9,7 +9,6 @@ import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
 import { IdeaDto } from '../ideas.dto'
 import { FormFooter } from '../../components/form/footer/FormFooter'
-import { Nil } from '../../util/types'
 
 const useStyles = makeStyles(() =>
     createStyles({

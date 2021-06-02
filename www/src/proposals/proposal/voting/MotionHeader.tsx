@@ -42,11 +42,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const MOTION_ICON = {
-    [ProposalMotionMethod.Approve]: ayeIcon,
-    [ProposalMotionMethod.Reject]: nayIcon,
-}
-
 export interface MotionHeaderProps {
     method: string
     motionEnd: Nil<ProposalMotionEnd>
