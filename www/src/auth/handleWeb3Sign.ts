@@ -1,20 +1,11 @@
-import { web3FromAddress } from '@polkadot/extension-dapp'
-import { Account } from '../substrate-lib/accounts/AccountsContext'
-import {
-    confirmWeb3SignIn,
-    startWeb3SignIn,
-} from './auth-web3.api'
-import { stringToHex } from '@polkadot/util'
-import { Nil } from '../util/types'
-import { Web3AssociateValues } from './account/web3/Web3AccountForm'
+import {web3FromAddress} from '@polkadot/extension-dapp'
+import {stringToHex} from '@polkadot/util'
+import {Account} from '../substrate-lib/accounts/AccountsContext'
+import {Nil} from '../util/types'
 import {confirmWeb3Association, startWeb3Association} from './account/web3/web3.api'
-
+import {Web3AssociateValues} from './account/web3/Web3AccountForm'
 
 //// TODO move
-
-export async function handleWeb3SignIn(account: Account) {
-    await handleWeb3Sign(account, startWeb3SignIn, confirmWeb3SignIn)
-}
 
 export async function handleAssociateWeb3Account(values: Web3AssociateValues) {
     const startCall = (dto: StartWeb3SignRequestDto): Promise<StartWeb3SignResponseDto> => {

@@ -3,11 +3,9 @@ import {PropsWithChildren, useEffect, useMemo, useState} from 'react'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import {makePrimary, unlinkAddress} from './account/web3/web3.api'
 import {Web3AssociateValues} from './account/web3/Web3AccountForm'
-import {handleAssociateWeb3Account, handleWeb3SignIn} from './handleWeb3Sign'
-import {Web3SignInValues} from './sign-in/web3/Web3SignIn'
+import {handleAssociateWeb3Account} from './handleWeb3Sign'
 
 export interface AuthContextState {
-    web3SignIn: (web3SignUpValues: Web3SignInValues) => Promise<void>
     web3Associate: (web3AssociateValues: Web3AssociateValues) => Promise<void>
     web3Unlink: (address: string) => Promise<void>
     web3MakePrimary: (address: string) => Promise<void>
@@ -67,18 +65,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
             })
     }
 
-    const callWithSetSignedIn = (call: Promise<any>) => {
-        return call
-            .then((result: any) => {
-                setIsUserSignedIn(true)
-            })
-            .catch((error) => {
-                console.error(error)
-                setIsUserSignedIn(false)
-                throw error
-            })
-    }
-
     useEffect(() => {
         refreshJwt()
     }, [isUserSignedIn])
@@ -88,12 +74,10 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
         [user],
     )
 
-    const isUserSignedInAndVerified = useMemo(() => {
-        return isUserSignedIn && isUserVerified
-    }, [isUserSignedIn, isUserVerified])
-
-    const web3SignIn = (web3SignInValues: Web3SignInValues) =>
-        callWithSetSignedIn(handleWeb3SignIn(web3SignInValues.account))
+    const isUserSignedInAndVerified = useMemo(
+        () => isUserSignedIn && isUserVerified,
+        [isUserSignedIn, isUserVerified],
+    )
 
     const web3Associate = (web3AssociateValues: Web3AssociateValues) =>
         callWithRefreshToken(handleAssociateWeb3Account(web3AssociateValues))
@@ -109,7 +93,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
                 isUserSignedIn,
                 isUserVerified,
                 isUserSignedInAndVerified,
-                web3SignIn,
                 web3Associate,
                 web3Unlink,
                 web3MakePrimary,
@@ -130,4 +113,4 @@ const useAuth = () => {
     return context
 }
 
-export { AuthContextProvider, useAuth }
+export {AuthContextProvider, useAuth}
