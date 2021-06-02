@@ -1,15 +1,8 @@
 import * as React from 'react'
 import {PropsWithChildren, useEffect, useMemo, useState} from 'react'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
-import {makePrimary, unlinkAddress} from './account/web3/web3.api'
-import {Web3AssociateValues} from './account/web3/Web3AccountForm'
-import {handleAssociateWeb3Account} from './handleWeb3Sign'
 
 export interface AuthContextState {
-    web3Associate: (web3AssociateValues: Web3AssociateValues) => Promise<void>
-    web3Unlink: (address: string) => Promise<void>
-    web3MakePrimary: (address: string) => Promise<void>
-
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
@@ -54,17 +47,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
         }
     }
 
-    const callWithRefreshToken = (call: Promise<any>) => {
-        return call
-            .then(() => {
-                return refreshJwt()
-            })
-            .catch((error) => {
-                console.error(error)
-                throw error
-            })
-    }
-
     useEffect(() => {
         refreshJwt()
     }, [isUserSignedIn])
@@ -79,13 +61,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
         [isUserSignedIn, isUserVerified],
     )
 
-    const web3Associate = (web3AssociateValues: Web3AssociateValues) =>
-        callWithRefreshToken(handleAssociateWeb3Account(web3AssociateValues))
-
-    const web3Unlink = (address: string) => callWithRefreshToken(unlinkAddress(address))
-
-    const web3MakePrimary = (address: string) => callWithRefreshToken(makePrimary(address))
-
     return (
         <AuthContext.Provider
             value={{
@@ -93,9 +68,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
                 isUserSignedIn,
                 isUserVerified,
                 isUserSignedInAndVerified,
-                web3Associate,
-                web3Unlink,
-                web3MakePrimary,
                 setIsUserSignedIn,
                 refreshJwt
             }}

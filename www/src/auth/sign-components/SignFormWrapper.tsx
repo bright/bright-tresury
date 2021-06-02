@@ -1,6 +1,5 @@
 import React, {PropsWithChildren} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {TextFieldColorScheme} from "../../components/form/input/textFieldStyles";
 
 const useStyles = makeStyles<Theme, SignFormWrapperStylesProps>(() =>
     createStyles({

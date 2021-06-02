@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react'
-import { AccountSelect, EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
-import { Formik } from 'formik'
-import { LoadingState, useLoading } from '../../../components/loading/useLoading'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
-import { Account } from '../../../substrate-lib/accounts/AccountsContext'
-import { Web3AddressRow } from './Web3AddressRow'
-import { useAuth } from '../../AuthContext'
-import { useTranslation } from 'react-i18next'
-import { InfoBox } from '../../../components/form/InfoBox'
-import { Label } from '../../../components/text/Label'
-import { Web3LinkingButton } from './Web3LinkingButton'
-import { EnterPasswordModal } from '../emailPassword/passwordModal/EnterPasswordModal'
-import { useModal } from '../../../components/modal/useModal'
+import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import {Formik} from 'formik'
+import React, {useState} from 'react'
+import {useTranslation} from 'react-i18next'
+import {InfoBox} from '../../../components/form/InfoBox'
+import {useModal} from '../../../components/modal/useModal'
+import {AccountSelect, EMPTY_ACCOUNT} from '../../../components/select/AccountSelect'
+import {Label} from '../../../components/text/Label'
+import {Account} from "../../../substrate-lib/accounts/AccountsContext";
+import {useAccounts} from "../../../substrate-lib/accounts/useAccounts";
+import {useAuth} from '../../AuthContext'
+import {EnterPasswordModal} from '../emailPassword/passwordModal/EnterPasswordModal'
+import {Web3AddressRow} from './Web3AddressRow'
+import {useAssociateWeb3Account} from "./web3Associate.api";
+import {Web3LinkingButton} from './Web3LinkingButton'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -30,7 +30,7 @@ export interface Web3AssociateValues {
     password?: string
 }
 
-interface Web3AccountFormProps {
+export interface Web3AccountFormProps {
     onSuccess: () => void
 }
 
@@ -38,15 +38,22 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { accounts } = useAccounts()
-    const { user, web3Associate } = useAuth()
+    const { user, refreshJwt } = useAuth()
     const passwordModal = useModal()
     const [selectedAccount, setSelectedAccount] = useState<Account>()
 
-    const { call: associateCall, loadingState, error } = useLoading(web3Associate)
+    const { mutateAsync, isLoading, isError } = useAssociateWeb3Account()
+
+    const onAssociateSuccess = () => {
+        refreshJwt()
+        onSuccess()
+    }
 
     const onConfirmPassword = async (password: string) => {
         try {
-            await associateCall({ account: selectedAccount, password } as Web3AssociateValues)
+            await mutateAsync({ account: selectedAccount, password } as Web3AssociateValues, {
+                onSuccess: onAssociateSuccess
+            })
         } finally {
             passwordModal.close()
         }
@@ -54,18 +61,14 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
 
     const onSubmit = async (values: { account: Account }) => {
         if (!user?.isEmailPassword) {
-            await associateCall({ account: values.account } as Web3AssociateValues)
+            await mutateAsync({ account: values.account } as Web3AssociateValues, {
+                onSuccess: onAssociateSuccess
+            })
         } else {
             setSelectedAccount(values.account)
             passwordModal.open()
         }
     }
-
-    useEffect(() => {
-        if (loadingState === LoadingState.Resolved) {
-            onSuccess()
-        }
-    }, [loadingState])
 
     const isFirstAddress = !user?.web3Addresses || user?.web3Addresses.length > 1
 
@@ -78,10 +81,10 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
                 }}
                 onSubmit={onSubmit}
             >
-                {({ values, handleSubmit }) => (
+                {({ handleSubmit }) => (
                     <form onSubmit={handleSubmit}>
                         <Label label={t('account.web3.associateWeb3Account')} />
-                        {loadingState === LoadingState.Error && error ? (
+                        {isError ? (
                             <InfoBox
                                 className={classes.error}
                                 message={t('account.web3.linkFailure')}
@@ -95,7 +98,7 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
                             linkComponent={
                                 <Web3LinkingButton
                                     label={t('account.web3.link')}
-                                    disabled={loadingState === LoadingState.Loading}
+                                    disabled={isLoading}
                                     className={classes.link}
                                     type="submit"
                                 />
