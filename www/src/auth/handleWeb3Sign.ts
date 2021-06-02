@@ -1,13 +1,9 @@
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import { Account } from '../substrate-lib/accounts/AccountsContext'
-import {StartEmailPasswordAssociateDto} from "./account/emailPassword/emailPassword.api";
 import {
     confirmWeb3SignIn,
-    confirmWeb3SignUp,
     startWeb3SignIn,
-    startWeb3SignUp,
 } from './auth-web3.api'
-import config from '../config/index'
 import { stringToHex } from '@polkadot/util'
 import { Nil } from '../util/types'
 import { Web3AssociateValues } from './account/web3/Web3AccountForm'
@@ -15,16 +11,6 @@ import {confirmWeb3Association, startWeb3Association} from './account/web3/web3.
 
 
 //// TODO move
-export async function handleWeb3SignUp(account: Account) {
-    await handleWeb3Sign(account, startWeb3SignUp, async (confirmDto: ConfirmWeb3SignRequestDto) => {
-        await confirmWeb3SignUp({
-            ...confirmDto,
-            details: {
-                network: config.NETWORK_NAME,
-            }
-        })
-    })
-}
 
 export async function handleWeb3SignIn(account: Account) {
     await handleWeb3Sign(account, startWeb3SignIn, confirmWeb3SignIn)

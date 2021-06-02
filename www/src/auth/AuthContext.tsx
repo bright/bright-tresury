@@ -3,13 +3,11 @@ import {PropsWithChildren, useEffect, useMemo, useState} from 'react'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import {makePrimary, unlinkAddress} from './account/web3/web3.api'
 import {Web3AssociateValues} from './account/web3/Web3AccountForm'
-import {handleAssociateWeb3Account, handleWeb3SignIn, handleWeb3SignUp} from './handleWeb3Sign'
+import {handleAssociateWeb3Account, handleWeb3SignIn} from './handleWeb3Sign'
 import {Web3SignInValues} from './sign-in/web3/Web3SignIn'
-import {Web3SignUpValues} from './sign-up/web3/Web3SignUp'
 
 export interface AuthContextState {
     web3SignIn: (web3SignUpValues: Web3SignInValues) => Promise<void>
-    web3SignUp: (web3SignUpValues: Web3SignUpValues) => Promise<void>
     web3Associate: (web3AssociateValues: Web3AssociateValues) => Promise<void>
     web3Unlink: (address: string) => Promise<void>
     web3MakePrimary: (address: string) => Promise<void>
@@ -94,9 +92,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
         return isUserSignedIn && isUserVerified
     }, [isUserSignedIn, isUserVerified])
 
-    const web3SignUp = (web3SignUpValues: Web3SignUpValues) =>
-        callWithSetSignedIn(handleWeb3SignUp(web3SignUpValues.account))
-
     const web3SignIn = (web3SignInValues: Web3SignInValues) =>
         callWithSetSignedIn(handleWeb3SignIn(web3SignInValues.account))
 
@@ -115,7 +110,6 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
                 isUserVerified,
                 isUserSignedInAndVerified,
                 web3SignIn,
-                web3SignUp,
                 web3Associate,
                 web3Unlink,
                 web3MakePrimary,

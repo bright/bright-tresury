@@ -1,25 +1,25 @@
-import { Formik } from 'formik'
-import React, { useEffect, useMemo } from 'react'
-import { useTranslation } from 'react-i18next'
+import {isWeb3Injected} from '@polkadot/extension-dapp'
+import {Formik} from 'formik'
+import React, {useEffect, useMemo} from 'react'
+import {useTranslation} from 'react-i18next'
+import {useHistory, useLocation} from 'react-router-dom'
 import * as Yup from 'yup'
-import { fullValidatorForSchema } from '../../../util/form.util'
-import { GetUserAgreementYupSchema, UserAgreementCheckbox } from '../common/UserAgreementCheckbox'
-import { PrivacyNotice } from '../common/PrivacyNotice'
-import { SignUpButton } from '../common/SignUpButton'
-import { AlreadySignedUp } from '../common/AlreadySignedUp'
-import { AccountSelect, EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
-import { Account } from '../../../substrate-lib/accounts/AccountsContext'
-import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
-import { isWeb3Injected } from '@polkadot/extension-dapp'
-import { ExtensionNotDetected } from './ExtensionNotDetected'
-import { InfoBox } from '../../../components/form/InfoBox'
-import { useHistory, useLocation } from 'react-router-dom'
-import { ROUTE_SIGNUP_WEB3_SUCCESS } from '../../../routes/routes'
-import { useAuth } from '../../AuthContext'
-import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
-import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
-import { SignOption } from '../../sign-components/SignOption'
-import { LoadingState, useLoading } from '../../../components/loading/useLoading'
+import {InfoBox} from '../../../components/form/InfoBox'
+import {AccountSelect, EMPTY_ACCOUNT} from '../../../components/select/AccountSelect'
+import {ROUTE_SIGNUP_WEB3_SUCCESS} from '../../../routes/routes'
+import {Account} from '../../../substrate-lib/accounts/AccountsContext'
+import {useAccounts} from '../../../substrate-lib/accounts/useAccounts'
+import {fullValidatorForSchema} from '../../../util/form.util'
+import {useAuth} from '../../AuthContext'
+import {SignComponentWrapper} from '../../sign-components/SignComponentWrapper'
+import {SignFormWrapper} from '../../sign-components/SignFormWrapper'
+import {SignOption} from '../../sign-components/SignOption'
+import {AlreadySignedUp} from '../common/AlreadySignedUp'
+import {PrivacyNotice} from '../common/PrivacyNotice'
+import {SignUpButton} from '../common/SignUpButton'
+import {GetUserAgreementYupSchema, UserAgreementCheckbox} from '../common/UserAgreementCheckbox'
+import {ExtensionNotDetected} from './ExtensionNotDetected'
+import {useWeb3SignUp} from './web3SignUp.api'
 
 export interface Web3SignUpValues {
     account: Account
@@ -31,7 +31,7 @@ export interface Web3SignUpLocationState {
     infoMessage: string
 }
 
-const Web3SignUp: React.FC = () => {
+const Web3SignUp = () => {
     const location = useLocation()
     const locationState = useMemo(() => location.state as Web3SignUpLocationState, [location])
 
@@ -49,23 +49,21 @@ const Web3SignUp: React.FC = () => {
 
     const history = useHistory()
 
-    const { web3SignUp } = useAuth()
-
-    const { call: signUpCall, loadingState, error } = useLoading(web3SignUp)
+    const { setIsUserSignedIn } = useAuth()
+    const {mutateAsync, isLoading, isError, error} = useWeb3SignUp()
 
     const onSubmit = async (values: Web3SignUpValues) => {
-        await signUpCall(values)
+        await mutateAsync(values, {
+            onSuccess: () => {
+                setIsUserSignedIn(true)
+                history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
+            }
+        })
     }
 
     const validationSchema = Yup.object().shape({
         ...GetUserAgreementYupSchema(t),
     })
-
-    useEffect(() => {
-        if (loadingState === LoadingState.Resolved) {
-            history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
-        }
-    }, [loadingState, history])
 
     if (!isWeb3Injected) {
         return <ExtensionNotDetected />
@@ -88,7 +86,7 @@ const Web3SignUp: React.FC = () => {
                             <InfoBox message={locationState.infoMessage} level={'info'} />
                         </SignComponentWrapper>
                     )}
-                    {loadingState === LoadingState.Error && error ? (
+                    {isError && error ? (
                         <SignComponentWrapper>
                             <InfoBox message={t('auth.signUp.web3SignUp.failureMessage')} level={'error'} />
                         </SignComponentWrapper>
@@ -102,7 +100,7 @@ const Web3SignUp: React.FC = () => {
                     <SignComponentWrapper>
                         <PrivacyNotice />
                     </SignComponentWrapper>
-                    <SignUpButton disabled={loadingState === LoadingState.Loading} />
+                    <SignUpButton disabled={isLoading} />
                     <AlreadySignedUp signOption={SignOption.Web3} />
                 </SignFormWrapper>
             )}
