@@ -89,7 +89,7 @@ function AppRoutes() {
                         <PrivateRoute exact={true} path={ROUTE_TURN_IDEA} component={TurnIdeaIntoProposal} />
                         <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea} />
                         <Route exact={false} path={ROUTE_IDEA} component={Idea} />
-                        <Route exact={false} path={ROUTE_ACCOUNT} component={Account} />
+                        <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} />
                     </Switch>
                 </Main>
             </Router>
