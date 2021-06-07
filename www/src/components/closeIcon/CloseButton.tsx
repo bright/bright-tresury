@@ -14,12 +14,17 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     onClose: () => void
 }
 
-export const CloseIcon: React.FC<Props & ClassNameProps> = ({ onClose, className = '' }) => {
+export type CloseButtonProps = OwnProps & ClassNameProps
+
+const CloseButton = ({ onClose, className = '' }: CloseButtonProps) => {
     const classes = useStyles()
 
     return <IconButton className={clsx(classes.root, className)} svg={crossSvg} onClick={onClose} />
 }
+
+export default CloseButton
+

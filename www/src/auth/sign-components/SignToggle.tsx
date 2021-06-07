@@ -1,6 +1,6 @@
 import React from 'react'
-import { ToggleButtonGroup } from '../../components/toggle/ToggleButtonGroup'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
+import ToggleButtonGroup from "../../components/toggle/ToggleButtonGroup";
 import { SignOption } from './SignOption'
 import { ToggleEntry } from '../../components/toggle/ToggleButton'
 import { useRouteMatch } from 'react-router-dom'
@@ -19,11 +19,11 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface OwnProps {
+export interface SignToggleProps {
     getTranslation: (option: SignOption) => string
 }
 
-export const SignToggle: React.FC<OwnProps> = ({ getTranslation }) => {
+const SignToggle = ({ getTranslation }: SignToggleProps) => {
     const classes = useStyles()
     let { path } = useRouteMatch()
 
@@ -44,3 +44,5 @@ export const SignToggle: React.FC<OwnProps> = ({ getTranslation }) => {
         </div>
     )
 }
+
+export default SignToggle

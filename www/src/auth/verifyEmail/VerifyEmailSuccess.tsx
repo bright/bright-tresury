@@ -3,7 +3,7 @@ import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import successImg from '../../assets/email_verify_success.svg'
 import Container from '../../components/form/Container'
-import { RouterLink } from '../../components/link/RouterLink'
+import  RouterLink  from '../../components/link/RouterLink'
 import { Header } from '../../components/text/Header'
 import { ROUTE_SIGNIN } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
@@ -48,7 +48,7 @@ const VerifyEmailSuccess = () => {
                     <p className={classes.information}>
                         <Trans
                             i18nKey="auth.signIn.verifyEmail.success.information"
-                            components={{ a: <RouterLink to={ROUTE_SIGNIN} /> }}
+                       components={{a: <RouterLink to={ROUTE_SIGNIN} replace={true}/> }}
                         />
                     </p>
                 )}

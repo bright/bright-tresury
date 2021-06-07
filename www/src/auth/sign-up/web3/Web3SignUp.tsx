@@ -14,7 +14,7 @@ import { useAuth } from '../../AuthContext'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignOption } from '../../sign-components/SignOption'
-import { AlreadySignedUp } from '../common/AlreadySignedUp'
+import  AlreadySignedUp  from '../common/AlreadySignedUp'
 import { PrivacyNotice } from '../common/PrivacyNotice'
 import { SignUpButton } from '../common/SignUpButton'
 import { GetUserAgreementYupSchema, UserAgreementCheckbox } from '../common/UserAgreementCheckbox'
@@ -56,7 +56,7 @@ const Web3SignUp = () => {
         await mutateAsync(values, {
             onSuccess: () => {
                 setIsUserSignedIn(true)
-                history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
+                history.replace(ROUTE_SIGNUP_WEB3_SUCCESS)
             },
         })
     }

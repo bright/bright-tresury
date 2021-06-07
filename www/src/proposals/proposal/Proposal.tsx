@@ -5,15 +5,15 @@ import { ProposalContentType } from './ProposalContentTypeTabs'
 import { ProposalMilestones } from './milestones/ProposalMilestones'
 import ProposalDiscussion from './discussion/ProposalDiscussion'
 import ProposalVoting from './voting/ProposalVoting'
-import { ProposalHeader } from './ProposalHeader'
 import { useParams } from 'react-router'
 import config from '../../config'
 import { useGetProposal } from '../proposals.api'
 import { LoadingWrapper } from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
+import ProposalHeader from './ProposalHeader'
 
-export const Proposal = () => {
+const Proposal = () => {
     const classes = useSuccessfullyLoadedItemStyles()
 
     const { t } = useTranslation()
@@ -57,3 +57,5 @@ export const Proposal = () => {
         </LoadingWrapper>
     )
 }
+
+export default Proposal

@@ -6,7 +6,6 @@ import { ProposalIndex } from '../list/ProposalIndex'
 import { ProposalStatusIndicator } from '../status/ProposalStatusIndicator'
 import { ProposalDto } from '../proposals.dto'
 import { NetworkRewardDeposit } from '../../components/network/NetworkRewardDeposit'
-import { CloseIcon } from '../../components/closeIcon/CloseIcon'
 import { ROUTE_PROPOSALS } from '../../routes/routes'
 import { useHistory } from 'react-router-dom'
 import { OptionalTitle } from '../../components/text/OptionalTitle'
@@ -18,6 +17,7 @@ import { HeaderTabs } from '../../components/header/HeaderTabs'
 import { BasicInfoDivider } from '../../components/header/details/BasicInfoDivider'
 import { Title } from '../../components/header/details/Title'
 import { Status } from '../../components/header/details/Status'
+import CloseButton from '../../components/closeIcon/CloseButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -48,11 +48,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+export interface ProposalHeaderProps {
     proposal: ProposalDto
 }
 
-export const ProposalHeader = ({ proposal }: Props) => {
+const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
     const classes = useStyles()
     const history = useHistory()
 
@@ -62,7 +62,7 @@ export const ProposalHeader = ({ proposal }: Props) => {
 
     return (
         <HeaderContainer>
-            <CloseIcon onClose={navigateToList} className={classes.closeIcon} />
+            <CloseButton onClose={navigateToList} className={classes.closeIcon} />
 
             <BasicInfo>
                 <ProposalIndex proposalIndex={proposal.proposalIndex} />
@@ -87,3 +87,5 @@ export const ProposalHeader = ({ proposal }: Props) => {
         </HeaderContainer>
     )
 }
+
+export default ProposalHeader

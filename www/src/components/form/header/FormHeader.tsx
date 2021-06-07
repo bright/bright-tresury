@@ -1,8 +1,7 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import crossSvg from '../../../assets/cross.svg'
-import { IconButton } from '../../button/IconButton'
+import CloseButton from "../../closeIcon/CloseButton";
 import { Header } from '../../text/Header'
 
 const useStyles = makeStyles(() =>
@@ -19,7 +18,7 @@ export interface FormHeaderProps {
     title: string
 }
 
-export const FormHeader: React.FC<FormHeaderProps> = ({ title }) => {
+const FormHeader = ({ title }: FormHeaderProps) => {
     const classes = useStyles()
     const history = useHistory()
 
@@ -30,7 +29,9 @@ export const FormHeader: React.FC<FormHeaderProps> = ({ title }) => {
     return (
         <div className={classes.headerContainer}>
             <Header>{title}</Header>
-            <IconButton svg={crossSvg} onClick={goBack} />
+            <CloseButton onClose={goBack}/>
         </div>
     )
 }
+
+export default FormHeader

@@ -42,19 +42,21 @@ export interface ToggleEntry {
     path: string
 }
 
-interface OwnProps {
+export interface ToggleButtonProps {
     entry: ToggleEntry
 }
 
-export const ToggleButton: React.FC<OwnProps> = ({ entry }) => {
+const ToggleButton = ({ entry }: ToggleButtonProps) => {
     const classes = useStyles()
     const toggleButtonClasses = useToggleButtonClasses()
 
     return (
-        <NavLink to={entry.path} className={classes.inactive} activeClassName={classes.active}>
+        <NavLink to={entry.path} className={classes.inactive} activeClassName={classes.active} replace={true}>
             <MaterialToggleButton classes={toggleButtonClasses} value={entry.label}>
                 {entry.label}
             </MaterialToggleButton>
         </NavLink>
     )
 }
+
+export default ToggleButton

@@ -10,7 +10,7 @@ import { useAuth } from '../../AuthContext'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignOption } from '../../sign-components/SignOption'
-import { NotSignedUpYet } from '../common/NotSignedUpYet'
+import  NotSignedUpYet  from "../common/NotSignedUpYet";
 import { SignInButton } from '../common/SignInButton'
 import { useSignIn } from './emailSignIn.api'
 

@@ -6,9 +6,9 @@ import Container from '../../components/form/Container'
 import { breakpoints } from '../../theme/theme'
 import EmailSignIn from './email/EmailSignIn'
 import { SignOption } from '../sign-components/SignOption'
-import { SignToggle } from '../sign-components/SignToggle'
-import { SignSwitch } from '../sign-components/SignSwitch'
 import Web3SignIn from './web3/Web3SignIn'
+import SignToggle from '../sign-components/SignToggle'
+import SignSwitch from '../sign-components/SignSwitch'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

@@ -1,5 +1,5 @@
 import { Trans } from 'react-i18next'
-import { RouterLink } from '../../../components/link/RouterLink'
+import  RouterLink  from '../../../components/link/RouterLink'
 import { ROUTE_SIGNUP_EMAIL, ROUTE_SIGNUP_WEB3 } from '../../../routes/routes'
 import { Typography } from '@material-ui/core'
 import React from 'react'
@@ -16,11 +16,11 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface OwnProps {
+export interface NotSignedUpYetProps {
     signOption: SignOption
 }
 
-export const NotSignedUpYet: React.FC<OwnProps> = ({ signOption }) => {
+const NotSignedUpYet = ({ signOption }: NotSignedUpYetProps) => {
     const classes = useStyles()
 
     const getRoute = () => {
@@ -38,9 +38,11 @@ export const NotSignedUpYet: React.FC<OwnProps> = ({ signOption }) => {
                 <Trans
                     id="privacy-notice"
                     i18nKey="auth.signIn.signUpLabel"
-                    components={{ a: <RouterLink to={getRoute()} /> }}
+                components={{a: <RouterLink to={getRoute()} replace={true}/> }}
                 />
             }
         </Typography>
     )
 }
+
+export default NotSignedUpYet

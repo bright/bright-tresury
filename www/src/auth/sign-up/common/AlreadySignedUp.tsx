@@ -1,8 +1,8 @@
 import { Trans } from 'react-i18next'
-import { RouterLink } from '../../../components/link/RouterLink'
 import { Typography } from '@material-ui/core'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import RouterLink from "../../../components/link/RouterLink";
 import { ROUTE_SIGNIN_EMAIL, ROUTE_SIGNIN_WEB3 } from '../../../routes/routes'
 import { SignOption } from '../../sign-components/SignOption'
 
@@ -20,7 +20,7 @@ export interface AlreadySignedUpProps {
     signOption: SignOption
 }
 
-export const AlreadySignedUp = ({ signOption }: AlreadySignedUpProps) => {
+const AlreadySignedUp = ({ signOption }: AlreadySignedUpProps) => {
     const classes = useStyles()
 
     const getRoute = () => {
@@ -38,9 +38,11 @@ export const AlreadySignedUp = ({ signOption }: AlreadySignedUpProps) => {
                 <Trans
                     id="privacy-notice"
                     i18nKey="auth.signUp.logInLabel"
-                    components={{ a: <RouterLink to={getRoute()} /> }}
+                    components={{ a: <RouterLink to={getRoute()} replace={true}/> }}
                 />
             }
         </Typography>
     )
 }
+
+export default AlreadySignedUp

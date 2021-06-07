@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { ProposalsHeader } from './ProposalsHeader'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { LoadingWrapper } from '../components/loading/LoadingWrapper'
 import { useGetProposals } from './proposals.api'
@@ -9,6 +8,7 @@ import { ProposalsList } from './list/ProposalsList'
 import { ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName } from './list/ProposalStatusFilters'
 import { filterProposals } from './list/filterProposals'
 import { useTranslation } from 'react-i18next'
+import ProposalsHeader from './ProposalsHeader'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -18,11 +18,11 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+export interface ProposalsProps {
     network: string
 }
 
-export const Proposals = ({ network = config.NETWORK_NAME }: Props) => {
+const Proposals = ({ network = config.NETWORK_NAME }: ProposalsProps) => {
     const classes = useStyles()
 
     const { t } = useTranslation()
@@ -53,3 +53,5 @@ export const Proposals = ({ network = config.NETWORK_NAME }: Props) => {
         </div>
     )
 }
+
+export default Proposals

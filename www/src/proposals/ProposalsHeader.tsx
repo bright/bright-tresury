@@ -4,7 +4,6 @@ import { breakpoints } from '../theme/theme'
 import { Trans } from 'react-i18next'
 import ProposalStatusFilters, { ProposalFilter } from './list/ProposalStatusFilters'
 import { ROUTE_NEW_IDEA } from '../routes/routes'
-import { RouterLink } from '../components/link/RouterLink'
 import { TimeSelect } from '../components/select/TimeSelect'
 import { BasicInfo } from '../components/header/BasicInfo'
 import { FlexBreakLine } from '../components/header/FlexBreakLine'
@@ -12,6 +11,7 @@ import { HeaderListContainer } from '../components/header/list/HeaderListContain
 import { HeaderListTabs } from '../components/header/list/HeaderListTabs'
 import { PaperFilterBackground } from '../components/header/list/PaperFilterBackground'
 import { TimeSelectWrapper } from '../components/header/list/TimeSelectWrapper'
+import RouterLink from '../components/link/RouterLink'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -46,11 +46,11 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 })
 
-interface Props {
+export interface ProposalsHeaderProps {
     filter: ProposalFilter
 }
 
-export const ProposalsHeader = ({ filter }: Props) => {
+const ProposalsHeader = ({ filter }: ProposalsHeaderProps) => {
     const classes = useStyles()
 
     return (
@@ -78,3 +78,5 @@ export const ProposalsHeader = ({ filter }: Props) => {
         </HeaderListContainer>
     )
 }
+
+export default ProposalsHeader

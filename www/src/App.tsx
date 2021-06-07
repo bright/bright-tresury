@@ -12,8 +12,8 @@ import { TurnIdeaIntoProposal } from './ideas/idea/turnIntoProposal/TurnIdeaInto
 import { Idea } from './ideas/idea/Idea'
 import { Ideas } from './ideas/Ideas'
 import Main from './main/Main'
-import { Proposal } from './proposals/proposal/Proposal'
-import { Proposals } from './proposals/Proposals'
+import Proposal from "./proposals/proposal/Proposal";
+import Proposals from "./proposals/Proposals";
 import { PrivateRoute } from './routes/PrivateRoute'
 import { PublicOnlyRoute } from './routes/PublicOnlyRoute'
 import {

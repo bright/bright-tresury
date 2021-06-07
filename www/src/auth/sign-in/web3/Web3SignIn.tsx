@@ -15,7 +15,7 @@ import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignOption } from '../../sign-components/SignOption'
 import { ExtensionNotDetected } from '../../sign-up/web3/ExtensionNotDetected'
 import { Web3SignUpLocationState } from '../../sign-up/web3/Web3SignUp'
-import { NotSignedUpYet } from '../common/NotSignedUpYet'
+import  NotSignedUpYet  from '../common/NotSignedUpYet'
 import { SignInButton } from '../common/SignInButton'
 import { useWeb3SignIn } from './web3SignIn.api'
 

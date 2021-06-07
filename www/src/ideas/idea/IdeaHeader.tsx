@@ -3,7 +3,6 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath, useHistory } from 'react-router-dom'
 import { Button } from '../../components/button/Button'
-import { CloseIcon } from '../../components/closeIcon/CloseIcon'
 import { BasicInfo } from '../../components/header/BasicInfo'
 import { BasicInfoDivider } from '../../components/header/details/BasicInfoDivider'
 import { HeaderContainer } from '../../components/header/details/HeaderContainer'
@@ -20,6 +19,7 @@ import IdeaContentTypeTabs from './IdeaContentTypeTabs'
 import { IdeaStatusIndicator } from './status/IdeaStatusIndicator'
 import { OrdinalNumber } from '../../components/ordinalNumber/OrdinalNumber'
 import { IdeaDto, IdeaStatus } from '../ideas.dto'
+import CloseButton from '../../components/closeIcon/CloseButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -77,12 +77,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+export interface IdeaHeaderProps {
     idea: IdeaDto
     canEdit: boolean
 }
 
-const IdeaHeader: React.FC<Props> = ({ idea, canEdit }) => {
+const IdeaHeader = ({ idea, canEdit }: IdeaHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
@@ -107,7 +107,7 @@ const IdeaHeader: React.FC<Props> = ({ idea, canEdit }) => {
 
     return (
         <HeaderContainer>
-            <CloseIcon onClose={navigateToList} className={classes.closeIcon} />
+            <CloseButton onClose={navigateToList} className={classes.closeIcon} />
             <BasicInfo>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
                 <BasicInfoDivider />

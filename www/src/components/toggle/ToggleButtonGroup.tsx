@@ -1,18 +1,21 @@
 import React from 'react'
 import { ToggleButtonGroup as MaterialToggleButtonGroup } from '@material-ui/lab'
-import { ToggleButton, ToggleEntry } from './ToggleButton'
+import  ToggleButton, {ToggleEntry } from './ToggleButton'
 
-interface OwnProps {
+interface ToggleButtonGroupProps {
     toggleEntries: ToggleEntry[]
     className?: string
 }
 
-export const ToggleButtonGroup: React.FC<OwnProps> = ({ toggleEntries, className }) => {
+const ToggleButtonGroup = ({toggleEntries, className}: ToggleButtonGroupProps) => {
     return (
         <MaterialToggleButtonGroup className={className}>
-            {toggleEntries.map((entry: ToggleEntry, index: number) => (
-                <ToggleButton key={index} entry={entry} />
-            ))}
-        </MaterialToggleButtonGroup>
+        {toggleEntries.map((entry: ToggleEntry, index: number) =>
+            <ToggleButton key={index} entry={entry}/>
+        )}
+    </MaterialToggleButtonGroup>
     )
-}
+};
+
+export default ToggleButtonGroup
+

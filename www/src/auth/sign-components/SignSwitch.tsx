@@ -5,12 +5,12 @@ import { RouteComponentProps } from 'react-router'
 
 type RouteComponent = React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>
 
-interface OwnProps {
+export interface SignSwitchProps {
     emailComponent: RouteComponent
     web3Component: RouteComponent
 }
 
-export const SignSwitch: React.FC<OwnProps> = ({ emailComponent, web3Component }) => {
+const SignSwitch = ({ emailComponent, web3Component }: SignSwitchProps) => {
     let { path } = useRouteMatch()
 
     return (
@@ -23,3 +23,5 @@ export const SignSwitch: React.FC<OwnProps> = ({ emailComponent, web3Component }
         </Switch>
     )
 }
+
+export default SignSwitch
