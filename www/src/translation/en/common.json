@@ -82,7 +82,7 @@
             "isPrimary": "Primary account"
         },
         "passwordModal": {
-            "title": "Please confirm adding an account with password",
+            "title": "Please confirm",
             "subtitle": "In order to add an account, please confirm it with your password",
             "confirm": "Confirm",
             "cancel": "Cancel",
