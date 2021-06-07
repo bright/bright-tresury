@@ -57,7 +57,7 @@ const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
     const history = useHistory()
 
     const navigateToList = () => {
-        history.push(ROUTE_PROPOSALS)
+        history.goBack()
     }
 
     return (

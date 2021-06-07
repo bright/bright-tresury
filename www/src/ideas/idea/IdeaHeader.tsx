@@ -88,7 +88,7 @@ const IdeaHeader = ({ idea, canEdit }: IdeaHeaderProps) => {
     const history = useHistory()
 
     const navigateToList = () => {
-        history.push(ROUTE_IDEAS)
+        history.goBack()
     }
 
     const navigateToTurnIntoProposal = () => {

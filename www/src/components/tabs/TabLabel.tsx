@@ -47,12 +47,13 @@ export const TabLabel: React.FC<Props> = ({ label, svg, path, isDefault }) => {
             <NavLink
                 className={classes.root}
                 to={path}
-                isActive={(match, location: Location) => {
-                    const isActiveByDefault =
-                        isDefault === true && `${location.pathname}${location.search}` === location.pathname
-                    return `${location.pathname}${location.search}` === path ? true : isActiveByDefault
-                }}
-                activeClassName={classes.selected}
+                replace={true}
+            isActive={(match, location: Location) => {
+                const isActiveByDefault = isDefault === true &&
+                    `${location.pathname}${location.search}` === location.pathname
+                return `${location.pathname}${location.search}` === path ? true : isActiveByDefault
+            }}
+            activeClassName={classes.selected}
             >
                 {svg ? <img className={classes.labelIcon} src={svg} alt={''} /> : null}
                 {label}
