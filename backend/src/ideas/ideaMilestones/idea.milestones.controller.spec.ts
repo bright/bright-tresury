@@ -463,6 +463,22 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
+        it(`should return ${HttpStatus.BAD_REQUEST} if network value is less than zero`, () => {
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .post(baseUrl(idea.id))
+                        .send({
+                            subject: 'ideaMilestoneSubject',
+                            networks: [{ name: 'polkadot', value: -1 }],
+                            dateFrom: null,
+                            dateTo: null,
+                            description: null,
+                        }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
         it(`should return ${HttpStatus.BAD_REQUEST} if beneficiary is incorrect`, () => {
             return sessionHandler
                 .authorizeRequest(

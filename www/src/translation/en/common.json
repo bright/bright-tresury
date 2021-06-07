@@ -209,6 +209,7 @@
                 "badLinkError": "This is not a valid URL",
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
+                "valueCannotBeLessThanZero": "The value cannot be less than zero",
                 "wrongBeneficiaryError": "Wrong beneficiary address",
                 "showAll": "Show all information",
                 "showLess": "Show less information"
@@ -283,6 +284,7 @@
                     "emptyFieldError": "This field cannot be empty",
                     "wrongBeneficiaryAddressError": "Wrong beneficiary address",
                     "nonZeroFieldError": "The value must be greater than zero",
+                    "valueCannotBeLessThanZero": "The value cannot be less than zero",
                     "endDatePriorToStartDateError": "End date can't be prior to the start date",
                     "yourMilestone": "Your Milestone",
                     "subject": "Subject",

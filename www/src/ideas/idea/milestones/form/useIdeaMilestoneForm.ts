@@ -29,6 +29,11 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
             .transform((value) => (value ? new Date(value) : value))
             .nullable()
             .min(Yup.ref('dateFrom'), t('idea.milestones.modal.form.endDatePriorToStartDateError')),
+        networks: Yup.array().of(
+            Yup.object().shape({
+                value: Yup.number().positive(t('idea.milestones.modal.form.valueCannotBeLessThanZero')),
+            }),
+        ),
     })
 
     const extendedValidationSchema = Yup.object().shape({
