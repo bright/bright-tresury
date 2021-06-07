@@ -1,6 +1,7 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
+import {ROUTE_ROOT} from "../../../routes/routes";
 import CloseButton from "../../closeIcon/CloseButton";
 import { Header } from '../../text/Header'
 
@@ -23,7 +24,12 @@ const FormHeader = ({ title }: FormHeaderProps) => {
     const history = useHistory()
 
     const goBack = () => {
-        history.goBack()
+        if (history.length > 1) {
+            history.goBack()
+        }
+        else {
+            history.replace(ROUTE_ROOT)
+        }
     }
 
     return (

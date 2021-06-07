@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { Nil } from '../../../util/types'
 import { formatNumber } from '../../../util/numberUtil'
 import { timeToString } from '../../../util/dateUtil'
-import { ProposalMotionEnd, ProposalMotionMethod } from '../../proposals.dto'
+import { ProposalMotionEnd } from '../../proposals.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
