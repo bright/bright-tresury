@@ -116,6 +116,12 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
                 .expect(HttpStatus.FORBIDDEN)
         })
 
+        it(`should return ${HttpStatus.BAD_REQUEST} for undefined request body`, () => {
+            return verifiedUserSessionHandler
+                .authorizeRequest(request(app()).post(baseUrl(idea.id)).send(undefined))
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
         it(`it should return ${HttpStatus.NOT_FOUND} for not existing idea`, async () => {
             return verifiedUserSessionHandler
                 .authorizeRequest(request(app()).post(baseUrl(uuid())).send(createIdeaProposalDto(idea.networks[0].id)))
