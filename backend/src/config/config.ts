@@ -38,7 +38,16 @@ export type AppConfig = EnvConfig & {
 const configSchema = convict<AppConfig>({
     deployEnv: {
         doc: 'The application environment.',
-        format: ['production', 'development', 'development-local', 'stage', 'qa', 'test', 'test-local'],
+        format: [
+            'production',
+            'development',
+            'development-local',
+            'development-docker',
+            'stage',
+            'qa',
+            'test',
+            'test-local',
+        ],
         default: 'development',
         env: 'DEPLOY_ENV',
     },
@@ -99,7 +108,6 @@ const loadConfig = memoize(async () => {
     }
 
     configSchema.validate()
-
     return configSchema.getProperties()
 })
 

@@ -1,0 +1,18 @@
+{
+    "apiUrl": "http://localhost:3001",
+    "websiteUrl": "http://localhost:3001",
+    "auth": {
+        "coreUrl": "http://authorization:3567",
+        "cookieSecure": false
+    },
+    "database": {
+        "host": "database",
+        "database": "treasury"
+    },
+    "authorizationDatabase": {
+        "host": "database"
+    },
+    "blockchain": {
+        "nodeUrl": "ws://substrate:9944"
+    }
+}

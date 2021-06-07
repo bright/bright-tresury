@@ -22,7 +22,15 @@ We have a testing environment set up. You can register and play with the app:
 
 ## Development
 
-To run backend and frontend in development mode see the corresponding readme files.
+In order to run the whole treasury app, open terminal and do:
+
+-   `cd deploy`
+-   `docker-compose --file docker-compose.development-docker.yml up`
+
+This will run frontend, backend, postgres database, authentication:core and local dev polkadot node in docker containers.
+After the booting process is finished, open your web browser and go to [http://localhost:3001/](http://localhost:3001/)
+
+To run backend and frontend in development mode (without using docker images) check the corresponding readme files. To run a local Substrate node check the next section of this file.
 
 ### Local Substrate node
 

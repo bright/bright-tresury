@@ -11,7 +11,7 @@ export async function tryLoadParamsFromSSM(
     deployEnv: string,
     prefix = `/treasury-${deployEnv}/`,
 ) {
-    if (/(test|test-local|development-local)/.test(deployEnv)) {
+    if (/(test|test-local|development-local|development-docker)/.test(deployEnv)) {
         logger.debug('Skipping loading parameters from ssm')
         return null
     }
