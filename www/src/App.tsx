@@ -89,27 +89,17 @@ function AppRoutes() {
                             exact={true}
                             path={ROUTE_NEW_IDEA}
                             component={IdeaCreate}
-                            requireBeingVerified={true}
+                            requireVerified={true}
                         />
                         <PrivateRoute
                             exact={true}
                             path={ROUTE_TURN_IDEA}
                             component={TurnIdeaIntoProposal}
-                            requireBeingVerified={true}
+                            requireVerified={true}
                         />
-                        <PrivateRoute
-                            exact={true}
-                            path={ROUTE_EDIT_IDEA}
-                            component={Idea}
-                            requireBeingVerified={true}
-                        />
+                        <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea} requireVerified={true} />
                         <Route exact={false} path={ROUTE_IDEA} component={Idea} />
-                        <PrivateRoute
-                            exact={false}
-                            path={ROUTE_ACCOUNT}
-                            component={Account}
-                            requireBeingVerified={false}
-                        />
+                        <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
                     </Switch>
                 </Main>
             </Router>
