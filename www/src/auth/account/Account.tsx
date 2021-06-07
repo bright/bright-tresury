@@ -1,9 +1,9 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
-import {useTranslation} from 'react-i18next'
+import { useTranslation } from 'react-i18next'
 import Avatar from '../../components/avatar/Avatar'
 import Container from '../../components/form/Container'
-import {breakpoints} from '../../theme/theme'
+import { breakpoints } from '../../theme/theme'
 import EmailPasswordAccount from './emailPassword/EmailPasswordAccount'
 import Web3Account from './web3/Web3Account'
 import clsx from 'clsx'
@@ -60,22 +60,22 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 const Account = () => {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     const classes = useStyles()
 
     return (
         <Container title={t('account.title')}>
             <div className={classes.root}>
                 <div className={classes.avatarContainer}>
-                    <Avatar/>
+                    <Avatar />
                 </div>
                 <div className={classes.content}>
-                    <EmailPasswordAccount/>
-                    <div className={clsx(classes.spacer, classes.halfWidth)}/>
+                    <EmailPasswordAccount />
+                    <div className={clsx(classes.spacer, classes.halfWidth)} />
                     <div className={classes.wide}>
-                        <Web3Account/>
+                        <Web3Account />
                     </div>
-                    <div className={clsx(classes.spacer, classes.halfWidth)}/>
+                    <div className={clsx(classes.spacer, classes.halfWidth)} />
                 </div>
             </div>
         </Container>
