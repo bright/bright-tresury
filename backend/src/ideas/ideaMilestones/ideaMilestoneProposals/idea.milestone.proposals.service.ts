@@ -16,7 +16,6 @@ import { SessionData } from '../../../auth/session/session.decorator'
 
 @Injectable()
 export class IdeaMilestoneProposalsService {
-
     constructor(
         @InjectRepository(Idea)
         private readonly ideaRepository: Repository<Idea>,
@@ -28,8 +27,7 @@ export class IdeaMilestoneProposalsService {
         private readonly ideaMilestonesService: IdeaMilestonesService,
         private readonly extrinsicsService: ExtrinsicsService,
         private readonly blockchainService: BlockchainService,
-    ) {
-    }
+    ) {}
 
     async createProposal(
         ideaId: string,
@@ -37,7 +35,6 @@ export class IdeaMilestoneProposalsService {
         { ideaMilestoneNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto,
         sessionData: SessionData,
     ): Promise<IdeaMilestoneNetwork> {
-
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.canEditOrThrow(sessionData.user)
@@ -57,18 +54,27 @@ export class IdeaMilestoneProposalsService {
         ideaMilestoneNetwork.canTurnIntoProposalOrThrow()
 
         const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
-
-            const blockchainProposalIndex = this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents)
+            const blockchainProposalIndex = this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(
+                extrinsicEvents,
+            )
 
             if (blockchainProposalIndex !== undefined) {
-                await this.turnIdeaMilestoneIntoProposal(idea, ideaMilestone, ideaMilestoneNetwork, blockchainProposalIndex)
+                await this.turnIdeaMilestoneIntoProposal(
+                    idea,
+                    ideaMilestone,
+                    ideaMilestoneNetwork,
+                    blockchainProposalIndex,
+                )
             }
         }
 
-        ideaMilestoneNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic({
-            extrinsicHash,
-            lastBlockHash,
-        }, callback)
+        ideaMilestoneNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic(
+            {
+                extrinsicHash,
+                lastBlockHash,
+            },
+            callback,
+        )
 
         await this.ideaMilestoneNetworkRepository.save(ideaMilestoneNetwork)
 
@@ -82,7 +88,6 @@ export class IdeaMilestoneProposalsService {
         validIdeaMilestoneNetwork: IdeaMilestoneNetwork,
         blockchainProposalIndex: number,
     ): Promise<void> {
-
         await this.ideaRepository.save({
             ...validIdea,
             status: IdeaStatus.TurnedIntoProposalByMilestone,
@@ -98,5 +103,4 @@ export class IdeaMilestoneProposalsService {
             blockchainProposalId: blockchainProposalIndex,
         })
     }
-
 }

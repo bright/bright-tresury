@@ -1,25 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { BlockchainService } from "../blockchain/blockchain.service";
-import { CreateExtrinsicDto } from "./dto/createExtrinsic.dto";
-import { UpdateExtrinsicDto } from './dto/updateExtrinsic.dto';
-import { Extrinsic, ExtrinsicStatuses } from "./extrinsic.entity";
-import { ExtrinsicEvent } from "./extrinsicEvent";
+import { Injectable } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { BlockchainService } from '../blockchain/blockchain.service'
+import { CreateExtrinsicDto } from './dto/createExtrinsic.dto'
+import { UpdateExtrinsicDto } from './dto/updateExtrinsic.dto'
+import { Extrinsic, ExtrinsicStatuses } from './extrinsic.entity'
+import { ExtrinsicEvent } from './extrinsicEvent'
 
 @Injectable()
 export class ExtrinsicsService {
     constructor(
         @InjectRepository(Extrinsic) private readonly extrinsicRepository: Repository<Extrinsic>,
-        private readonly blockchainService: BlockchainService
-    ) {
-    }
+        private readonly blockchainService: BlockchainService,
+    ) {}
 
     async findByExtrinsicHash(extrinsicHash: string): Promise<Extrinsic | undefined> {
         return this.extrinsicRepository.findOne({ extrinsicHash })
     }
 
-    async listenForExtrinsic(createExtrinsicDto: CreateExtrinsicDto, extractEvents?: (events: ExtrinsicEvent[]) => Promise<void>): Promise<Extrinsic> {
+    async listenForExtrinsic(
+        createExtrinsicDto: CreateExtrinsicDto,
+        extractEvents?: (events: ExtrinsicEvent[]) => Promise<void>,
+    ): Promise<Extrinsic> {
         const extrinsic = await this.create(createExtrinsicDto)
 
         const callback = async (updateExtrinsicDto: UpdateExtrinsicDto) => {

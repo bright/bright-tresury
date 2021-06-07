@@ -53,12 +53,12 @@ export const TurnIdeaIntoProposal = () => {
     }
 
     const onTurn = useCallback(
-        async (extrinsicDetails: ExtrinsicDetails) => {
+        async ({ extrinsicHash, lastBlockHash }: ExtrinsicDetails) => {
             if (idea) {
                 const turnIdeaIntoProposalDto: TurnIdeaIntoProposalDto = {
                     ideaNetworkId: idea.networks[0].id!,
-                    extrinsicHash: extrinsicDetails.lastBlockHash,
-                    lastBlockHash: extrinsicDetails.lastBlockHash,
+                    extrinsicHash,
+                    lastBlockHash,
                 }
                 await turnMutateAsync({ ideaId: idea.id!, data: turnIdeaIntoProposalDto })
             }

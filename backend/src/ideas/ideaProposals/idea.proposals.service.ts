@@ -1,15 +1,15 @@
-import {Injectable, NotFoundException} from '@nestjs/common'
-import {InjectRepository} from '@nestjs/typeorm';
-import {Repository} from 'typeorm';
-import {SessionData} from "../../auth/session/session.decorator";
-import {ExtrinsicEvent} from "../../extrinsics/extrinsicEvent";
-import {ExtrinsicsService} from "../../extrinsics/extrinsics.service";
-import {IdeaNetwork} from '../entities/ideaNetwork.entity';
-import {CreateIdeaProposalDto} from "./dto/createIdeaProposal.dto";
-import {IdeasService} from "../ideas.service";
-import {BlockchainService} from '../../blockchain/blockchain.service'
-import {Idea} from '../entities/idea.entity'
-import {IdeaStatus} from '../ideaStatus'
+import { Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { SessionData } from '../../auth/session/session.decorator'
+import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
+import { ExtrinsicsService } from '../../extrinsics/extrinsics.service'
+import { IdeaNetwork } from '../entities/ideaNetwork.entity'
+import { CreateIdeaProposalDto } from './dto/createIdeaProposal.dto'
+import { IdeasService } from '../ideas.service'
+import { BlockchainService } from '../../blockchain/blockchain.service'
+import { Idea } from '../entities/idea.entity'
+import { IdeaStatus } from '../ideaStatus'
 
 @Injectable()
 export class IdeaProposalsService {
@@ -20,19 +20,21 @@ export class IdeaProposalsService {
         private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
         private readonly extrinsicsService: ExtrinsicsService,
         private readonly ideasService: IdeasService,
-        private readonly blockchainService: BlockchainService
-    ) {
-    }
+        private readonly blockchainService: BlockchainService,
+    ) {}
 
-    async createProposal(ideaId: string, createIdeaProposalDto: CreateIdeaProposalDto, sessionData: SessionData): Promise<IdeaNetwork> {
-
+    async createProposal(
+        ideaId: string,
+        { ideaNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaProposalDto,
+        sessionData: SessionData,
+    ): Promise<IdeaNetwork> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.canEditOrThrow(sessionData.user)
 
         idea.canTurnIntoProposalOrThrow()
 
-        const ideaNetwork = await idea.networks?.find(({ id }) => id === createIdeaProposalDto.ideaNetworkId)
+        const ideaNetwork = await idea.networks?.find(({ id }) => id === ideaNetworkId)
 
         if (!ideaNetwork) {
             throw new NotFoundException('Idea network with the given id not found')
@@ -40,16 +42,23 @@ export class IdeaProposalsService {
 
         ideaNetwork.canTurnIntoProposalOrThrow()
 
-        const callback = async (events: ExtrinsicEvent[]) => {
-
-            const blockchainProposalIndex = this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(events)
+        const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
+            const blockchainProposalIndex = this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(
+                extrinsicEvents,
+            )
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaIntoProposal(idea, ideaNetwork, blockchainProposalIndex)
             }
         }
 
-        ideaNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic(createIdeaProposalDto, callback)
+        ideaNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic(
+            {
+                extrinsicHash,
+                lastBlockHash,
+            },
+            callback,
+        )
 
         await this.ideaNetworkRepository.save(ideaNetwork)
 
@@ -60,18 +69,16 @@ export class IdeaProposalsService {
     async turnIdeaIntoProposal(
         validIdea: Idea,
         validIdeaNetwork: IdeaNetwork,
-        blockchainProposalIndex: number
+        blockchainProposalIndex: number,
     ): Promise<void> {
-
         await this.ideaRepository.save({
             ...validIdea,
-            status: IdeaStatus.TurnedIntoProposal
+            status: IdeaStatus.TurnedIntoProposal,
         })
 
         await this.ideaNetworkRepository.save({
             ...validIdeaNetwork,
-            blockchainProposalId: blockchainProposalIndex
+            blockchainProposalId: blockchainProposalIndex,
         })
     }
-
 }

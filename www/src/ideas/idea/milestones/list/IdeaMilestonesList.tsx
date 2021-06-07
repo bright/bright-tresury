@@ -67,12 +67,12 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => 
     }
 
     const onTurn = useCallback(
-        async (extrinsicDetails: ExtrinsicDetails) => {
+        async ({ extrinsicHash, lastBlockHash }: ExtrinsicDetails) => {
             if (ideaMilestoneToBeTurnedIntoProposal) {
                 const turnIdeaMilestoneIntoProposalDto: TurnIdeaMilestoneIntoProposalDto = {
                     ideaMilestoneNetworkId: ideaMilestoneToBeTurnedIntoProposal.networks[0].id,
-                    extrinsicHash: extrinsicDetails.extrinsicHash,
-                    lastBlockHash: extrinsicDetails.lastBlockHash,
+                    extrinsicHash,
+                    lastBlockHash,
                 }
 
                 await mutateAsync({
