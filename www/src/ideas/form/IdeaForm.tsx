@@ -41,6 +41,11 @@ const IdeaForm: React.FC<Props> = ({ idea, onSubmit, extendedValidation, foldabl
         beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
             return isValidAddressOrEmpty(address)
         }),
+        networks: Yup.array().of(
+            Yup.object().shape({
+                value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
+            }),
+        ),
         links: Yup.array().of(Yup.string().url(t('idea.details.form.badLinkError'))),
     })
 

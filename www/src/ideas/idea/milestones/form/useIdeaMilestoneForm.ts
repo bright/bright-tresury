@@ -31,7 +31,7 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
             .min(Yup.ref('dateFrom'), t('idea.milestones.modal.form.endDatePriorToStartDateError')),
         networks: Yup.array().of(
             Yup.object().shape({
-                value: Yup.number().positive(t('idea.milestones.modal.form.valueCannotBeLessThanZero')),
+                value: Yup.number().min(0, t('idea.milestones.modal.form.valueCannotBeLessThanZero')),
             }),
         ),
     })
