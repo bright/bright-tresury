@@ -1,25 +1,25 @@
-import { Module } from "@nestjs/common"
-import { NestFactory } from "@nestjs/core"
-import { Connection } from "typeorm"
-import { ConfigModule } from "./config/config"
-import { DatabaseModule } from "./database/database.module"
-import { getLogger, NestLoggerAdapter } from "./logging.module";
+import { Module } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { Connection } from 'typeorm'
+import { ConfigModule } from './config/config'
+import { DatabaseModule } from './database/database.module'
+import { getLogger, NestLoggerAdapter } from './logging.module'
 
-const logger = getLogger();
+const logger = getLogger()
 
 @Module({
     imports: [ConfigModule, DatabaseModule],
-    exports: []
+    exports: [],
 })
 export class AppModule {
     constructor(private readonly connection: Connection) {
         connection
             .runMigrations()
             .then(() => {
-                logger.info("done") //
+                logger.info('done') //
                 process.exit()
             })
-            .catch(err => {
+            .catch((err) => {
                 logger.error(err)
                 process.exit(1)
             })
@@ -28,7 +28,7 @@ export class AppModule {
 
 async function bootstrap() {
     await NestFactory.create(AppModule, {
-        logger: new NestLoggerAdapter(logger)
+        logger: new NestLoggerAdapter(logger),
     })
 }
 

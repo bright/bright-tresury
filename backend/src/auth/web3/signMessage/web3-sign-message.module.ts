@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import {SignMessageService} from "./sign-message.service";
+import { SignMessageService } from './sign-message.service'
 import { SignatureValidator } from './signature.validator'
 import { CachingModule } from '../../../cache/cache.module'
 

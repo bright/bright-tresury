@@ -1,4 +1,4 @@
-import {isValidAddress, isValidAddressOrEmpty} from "./addressValidator";
+import { isValidAddress, isValidAddressOrEmpty } from './addressValidator'
 
 describe('address validator', () => {
     it('correct address is valid', () => {
@@ -18,22 +18,18 @@ describe('address validator', () => {
 describe('address validator constraint', () => {
     it('correct address is valid', () => {
         const validAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-        expect(isValidAddressOrEmpty(validAddress))
-            .toBeTruthy()
+        expect(isValidAddressOrEmpty(validAddress)).toBeTruthy()
     })
     it('wrong address is invalid', () => {
         const invalidAddress = '5GrwvaEF5zXb26Fz9'
-        expect(isValidAddressOrEmpty(invalidAddress))
-            .toBeFalsy()
+        expect(isValidAddressOrEmpty(invalidAddress)).toBeFalsy()
     })
     it('empty address is valid', () => {
         const emptyAddress = ''
-        expect(isValidAddressOrEmpty(emptyAddress))
-            .toBeTruthy()
+        expect(isValidAddressOrEmpty(emptyAddress)).toBeTruthy()
     })
     it('undefined address is valid', () => {
         const undefinedAddress = undefined
-        expect(isValidAddressOrEmpty(undefinedAddress))
-            .toBeTruthy()
+        expect(isValidAddressOrEmpty(undefinedAddress)).toBeTruthy()
     })
 })

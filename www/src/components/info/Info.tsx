@@ -1,9 +1,9 @@
-import {BoxProps,} from "@material-ui/core";
-import Box from "@material-ui/core/Box";
-import styled from "@material-ui/core/styles/styled";
-import React from "react";
+import { BoxProps } from '@material-ui/core'
+import Box from '@material-ui/core/Box'
+import styled from '@material-ui/core/styles/styled'
+import React from 'react'
 
-const StyledBox = styled(Box)(({theme}) => ({
+const StyledBox = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.main,
     borderColor: theme.palette.primary.main,
     borderWidth: 1,
@@ -18,15 +18,11 @@ const StyledBox = styled(Box)(({theme}) => ({
     marginRight: 0,
 }))
 
-export const Info: React.FC<BoxProps> = ({children, ...props}) => {
-    return (
-        <StyledBox {...props}>
-            {children}
-        </StyledBox>
-    )
+export const Info: React.FC<BoxProps> = ({ children, ...props }) => {
+    return <StyledBox {...props}>{children}</StyledBox>
 }
 
-const StyledStrong = styled('strong')(({theme}) => ({
+const StyledStrong = styled('strong')(({ theme }) => ({
     color: theme.palette.primary.main,
 }))
 
@@ -34,7 +30,7 @@ interface StrongProps {
     color?: StrongColor
 }
 
-export const Strong: React.FC<StrongProps> = ({children, color = 'default'}) => {
+export const Strong: React.FC<StrongProps> = ({ children, color = 'default' }) => {
     if (color === 'primary') {
         return <StyledStrong>{children}</StyledStrong>
     }

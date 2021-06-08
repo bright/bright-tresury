@@ -9,7 +9,7 @@ Accepted
 ## Context
 
 We were using different files naming conventions.
- 
+
 ## Decision
 
 Files with components we will name after the component name with `CapitalCamelCase`. Example: `IdeaForm.tsx`.

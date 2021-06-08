@@ -1,6 +1,6 @@
 export class HealthCheckResponse {
-  message: string
-  constructor() {
-    this.message = "OK"
-  }
+    message: string
+    constructor() {
+        this.message = 'OK'
+    }
 }

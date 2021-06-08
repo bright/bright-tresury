@@ -1,8 +1,8 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React from "react";
-import {breakpoints} from "../../../../theme/theme";
-import SendVerifyEmailButton from "../../../verifyEmail/SendVerifyEmailButton";
-import VerifyErrorLabel from "./VerifyErrorLabel";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
+import { breakpoints } from '../../../../theme/theme'
+import SendVerifyEmailButton from '../../../verifyEmail/SendVerifyEmailButton'
+import VerifyErrorLabel from './VerifyErrorLabel'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,8 +31,8 @@ const EmailNotVerifiedError = () => {
 
     return (
         <div className={classes.root}>
-            <VerifyErrorLabel/>
-            <SendVerifyEmailButton variant='text'/>
+            <VerifyErrorLabel />
+            <SendVerifyEmailButton variant="text" />
         </div>
     )
 }

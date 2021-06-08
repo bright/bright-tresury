@@ -1,8 +1,8 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
-import React from "react";
-import {ClassNameProps} from "../props/className.props";
-import clsx from "clsx";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../theme/theme'
+import React from 'react'
+import { ClassNameProps } from '../props/className.props'
+import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,11 +12,10 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingBottom: 0,
             },
         },
-    }))
+    }),
+)
 
-export const HeaderTabs: React.FC<ClassNameProps> = ({className, children}) => {
+export const HeaderTabs: React.FC<ClassNameProps> = ({ className, children }) => {
     const classes = useStyles()
-    return <div className={clsx(classes.root, className)}>
-        {children}
-    </div>
+    return <div className={clsx(classes.root, className)}>{children}</div>
 }

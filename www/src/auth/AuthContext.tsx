@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {PropsWithChildren, useEffect, useMemo, useState} from 'react'
+import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 
 export interface AuthContextState {
@@ -29,7 +29,7 @@ export interface Web3Address {
 
 export const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
 
-const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
+const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const [user, setUser] = useState<AuthContextUser | undefined>()
     const [isUserSignedIn, setIsUserSignedIn] = useState(Session.doesSessionExist)
 
@@ -56,10 +56,7 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
         [user],
     )
 
-    const isUserSignedInAndVerified = useMemo(
-        () => isUserSignedIn && isUserVerified,
-        [isUserSignedIn, isUserVerified],
-    )
+    const isUserSignedInAndVerified = useMemo(() => isUserSignedIn && isUserVerified, [isUserSignedIn, isUserVerified])
 
     return (
         <AuthContext.Provider
@@ -69,7 +66,7 @@ const AuthContextProvider = ({children}: PropsWithChildren<{}>) => {
                 isUserVerified,
                 isUserSignedInAndVerified,
                 setIsUserSignedIn,
-                refreshJwt
+                refreshJwt,
             }}
             children={children}
         />
@@ -85,4 +82,4 @@ const useAuth = () => {
     return context
 }
 
-export {AuthContextProvider, useAuth}
+export { AuthContextProvider, useAuth }

@@ -1,9 +1,9 @@
-import {Typography} from "@material-ui/core";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
-import React from "react";
-import {useTranslation} from "react-i18next";
-import emailSignUpSuccess from "../../../assets/email_signup_success.svg";
-import {SignUpSuccessContent} from "../common/SignUpSuccessContent";
+import { Typography } from '@material-ui/core'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import emailSignUpSuccess from '../../../assets/email_signup_success.svg'
+import { SignUpSuccessContent } from '../common/SignUpSuccessContent'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -22,15 +22,17 @@ const useStyles = makeStyles(() =>
             marginTop: '64px',
         },
     }),
-);
+)
 
 const EmailSignUpSuccess: React.FC = () => {
     const classes = useStyles()
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
-    return <SignUpSuccessContent successImg={emailSignUpSuccess}>
-        <Typography className={classes.subtitle}>{t('auth.signUp.emailSignUp.form.successSubtitle')}</Typography>
-    </SignUpSuccessContent>
+    return (
+        <SignUpSuccessContent successImg={emailSignUpSuccess}>
+            <Typography className={classes.subtitle}>{t('auth.signUp.emailSignUp.form.successSubtitle')}</Typography>
+        </SignUpSuccessContent>
+    )
 }
 
 export default EmailSignUpSuccess

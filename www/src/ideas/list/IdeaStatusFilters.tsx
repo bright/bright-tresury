@@ -1,11 +1,11 @@
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles, Hidden} from "@material-ui/core";
-import React from "react";
-import {Tabs} from "../../components/tabs/Tabs";
-import {useTranslation} from "react-i18next";
-import {breakpoints} from "../../theme/theme";
-import {ROUTE_IDEAS} from "../../routes/routes";
-import {NavSelect} from "../../components/select/NavSelect";
+import { makeStyles, Theme } from '@material-ui/core/styles'
+import { createStyles, Hidden } from '@material-ui/core'
+import React from 'react'
+import { Tabs } from '../../components/tabs/Tabs'
+import { useTranslation } from 'react-i18next'
+import { breakpoints } from '../../theme/theme'
+import { ROUTE_IDEAS } from '../../routes/routes'
+import { NavSelect } from '../../components/select/NavSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
     }),
-);
+)
 
 export enum IdeaFilter {
     All = 'all',
@@ -28,16 +28,16 @@ export enum IdeaFilter {
     Closed = 'closed',
 }
 
-export const IdeaFilterSearchParamName = "filter"
+export const IdeaFilterSearchParamName = 'filter'
 export const IdeaDefaultFilter = IdeaFilter.All
 
 interface Props {
     filter: IdeaFilter
 }
 
-const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
+const IdeaStatusFilters: React.FC<Props> = ({ filter }) => {
     const classes = useStyles()
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
     const getTranslation = (ideaFilter: IdeaFilter): string => {
         switch (ideaFilter) {
@@ -62,7 +62,7 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
         return {
             isDefault: filter === IdeaDefaultFilter,
             label: getTranslation(filter),
-            path: `${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${filter}`
+            path: `${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${filter}`,
         }
     }
     const filterOptions = filterValues.map((filter: IdeaFilter) => getFilterOption(filter))
@@ -70,20 +70,16 @@ const IdeaStatusFilters: React.FC<Props> = ({filter}) => {
     /**
      * Current tab entry is forced, because there should be always some filter specified.
      */
-    const currentFilterOption = filterOptions.find(entry =>
-        entry.label === getTranslation(filter)
-    )!
+    const currentFilterOption = filterOptions.find((entry) => entry.label === getTranslation(filter))!
 
-    return <div>
-        <Hidden only={breakpoints.mobile}>
-            <Tabs values={filterOptions}/>
-        </Hidden>
-        <NavSelect
-            className={classes.filterSelect}
-            value={currentFilterOption}
-            options={filterOptions}
-        />
-    </div>
+    return (
+        <div>
+            <Hidden only={breakpoints.mobile}>
+                <Tabs values={filterOptions} />
+            </Hidden>
+            <NavSelect className={classes.filterSelect} value={currentFilterOption} options={filterOptions} />
+        </div>
+    )
 }
 
 export default IdeaStatusFilters

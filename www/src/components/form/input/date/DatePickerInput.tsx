@@ -1,11 +1,11 @@
 import React from 'react'
-import {useField} from "formik";
-import {MuiPickersUtilsProvider, DatePicker as MaterialDatePicker} from "@material-ui/pickers";
-import {Label} from "../../../text/Label";
-import FormGroup from "@material-ui/core/FormGroup";
-import DateFnsUtils from "@date-io/date-fns";
-import {ErrorLabel} from "../ErrorLabel";
-import {TextFieldColorScheme, useTextFieldStyles} from "../textFieldStyles";
+import { useField } from 'formik'
+import { MuiPickersUtilsProvider, DatePicker as MaterialDatePicker } from '@material-ui/pickers'
+import { Label } from '../../../text/Label'
+import FormGroup from '@material-ui/core/FormGroup'
+import DateFnsUtils from '@date-io/date-fns'
+import { ErrorLabel } from '../ErrorLabel'
+import { TextFieldColorScheme, useTextFieldStyles } from '../textFieldStyles'
 
 interface Props {
     name: string
@@ -15,8 +15,12 @@ interface Props {
     textFieldColorScheme?: TextFieldColorScheme
 }
 
-export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldColorScheme.Light, ...props }: Props) => {
-
+export const DatePickerInput = ({
+    name,
+    label,
+    textFieldColorScheme = TextFieldColorScheme.Light,
+    ...props
+}: Props) => {
     const classes = useTextFieldStyles({ colorScheme: textFieldColorScheme })()
 
     const [field, meta, helpers] = useField(name)
@@ -25,7 +29,7 @@ export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldC
 
     return (
         <FormGroup>
-            { label ? <Label label={label} /> : null }
+            {label ? <Label label={label} /> : null}
             <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <MaterialDatePicker
                     {...props}
@@ -36,9 +40,9 @@ export const DatePickerInput = ({ name, label, textFieldColorScheme = TextFieldC
                     disableToolbar
                     error={hasError}
                     format={'yyyy-MM-dd'}
-                    onChange={date => helpers.setValue(date)}
+                    onChange={(date) => helpers.setValue(date)}
                     InputProps={{
-                        classes: {...classes},
+                        classes: { ...classes },
                         disableUnderline: true,
                     }}
                 />

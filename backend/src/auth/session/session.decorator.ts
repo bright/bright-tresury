@@ -1,13 +1,13 @@
-import {createParamDecorator, ExecutionContext} from '@nestjs/common';
-import {User} from "../../users/user.entity";
+import { createParamDecorator, ExecutionContext } from '@nestjs/common'
+import { User } from '../../users/user.entity'
 
 export interface SessionData {
-    user: User,
+    user: User
 }
 
 export const ReqSession = createParamDecorator(
     async (data: unknown, ctx: ExecutionContext): Promise<SessionData | undefined> => {
-        const req = ctx.switchToHttp().getRequest();
-        return req.session;
+        const req = ctx.switchToHttp().getRequest()
+        return req.session
     },
-);
+)

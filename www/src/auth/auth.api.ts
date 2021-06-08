@@ -1,5 +1,5 @@
-import {useMutation} from "react-query";
-import {apiPost} from '../api'
+import { useMutation } from 'react-query'
+import { apiPost } from '../api'
 
 /*
  We pass the `signOut` function to `useMutation` hook from the react-query lib.

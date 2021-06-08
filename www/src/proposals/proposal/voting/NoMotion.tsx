@@ -1,12 +1,12 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
-import {useTranslation} from 'react-i18next'
-import {generatePath} from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { generatePath } from 'react-router-dom'
 import proposalNoMotion from '../../../assets/proposal_no_motion.svg'
-import {RouterLink} from '../../../components/link/RouterLink'
-import {useSuccessfullyLoadedItemStyles} from '../../../components/loading/useSuccessfullyLoadedItemStyles'
-import {ROUTE_PROPOSAL} from '../../../routes/routes'
-import {ProposalContentType} from '../ProposalContentTypeTabs'
+import { RouterLink } from '../../../components/link/RouterLink'
+import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import { ROUTE_PROPOSAL } from '../../../routes/routes'
+import { ProposalContentType } from '../ProposalContentTypeTabs'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

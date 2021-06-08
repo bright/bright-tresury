@@ -1,10 +1,10 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React from "react";
-import {useTranslation} from "react-i18next";
-import errorImg from "../../assets/email_verify_error.svg";
-import Container from "../../components/form/Container";
-import {Header} from "../../components/text/Header";
-import {breakpoints} from "../../theme/theme";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import errorImg from '../../assets/email_verify_error.svg'
+import Container from '../../components/form/Container'
+import { Header } from '../../components/text/Header'
+import { breakpoints } from '../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -32,21 +32,23 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         button: {
             marginTop: '36px',
-        }
+        },
     }),
-);
+)
 
 const VerifyEmailError = () => {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     const classes = useStyles()
 
-    return <Container title={t('auth.signIn.verifyEmail.error.title')}>
-        <div className={classes.imageContainer}>
-            <Header>{t('auth.signIn.verifyEmail.error.subtitle')}</Header>
-            <p className={classes.information}>{t('auth.signIn.verifyEmail.error.information')}</p>
-            <img className={classes.image} src={errorImg} alt={''}/>
-        </div>
-    </Container>
+    return (
+        <Container title={t('auth.signIn.verifyEmail.error.title')}>
+            <div className={classes.imageContainer}>
+                <Header>{t('auth.signIn.verifyEmail.error.subtitle')}</Header>
+                <p className={classes.information}>{t('auth.signIn.verifyEmail.error.information')}</p>
+                <img className={classes.image} src={errorImg} alt={''} />
+            </div>
+        </Container>
+    )
 }
 
 export default VerifyEmailError

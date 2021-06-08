@@ -1,7 +1,7 @@
 import { Get, Param, Query } from '@nestjs/common'
 import { ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumberString } from 'class-validator'
-import {ControllerApiVersion} from "../utils/ControllerApiVersion";
+import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { ProposalDto } from './dto/proposal.dto'
 import { ProposalsService } from './proposals.service'
 

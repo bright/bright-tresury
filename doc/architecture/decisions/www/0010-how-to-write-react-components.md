@@ -8,8 +8,8 @@ Accepted
 
 ## Context
 
-React is not opinionated, so each team has to find their own ways to keep the code consistent. 
- 
+React is not opinionated, so each team has to find their own ways to keep the code consistent.
+
 ## Decision
 
 We do not explicitly type the component, only the props in the component definition. Example: `const Button = ({color, children}: ButtonProps) => {`

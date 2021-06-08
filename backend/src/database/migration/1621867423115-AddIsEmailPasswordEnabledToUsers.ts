@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner, TableColumn} from "typeorm";
+import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm'
 
 export class AddIsEmailPasswordEnabledToUsers1621867423115 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.addColumn(
             'users',
@@ -9,8 +8,9 @@ export class AddIsEmailPasswordEnabledToUsers1621867423115 implements MigrationI
                 name: 'isEmailPasswordEnabled',
                 type: 'boolean',
                 isNullable: false,
-                default: 'false'
-            }))
+                default: 'false',
+            }),
+        )
         /*
          For users with disabled email-password account we have a random uuid in `email` column
          For users with enable email-password account we have a valid email in `email` column
@@ -21,5 +21,4 @@ export class AddIsEmailPasswordEnabledToUsers1621867423115 implements MigrationI
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.dropColumn('users', 'isEmailPasswordEnabled')
     }
-
 }

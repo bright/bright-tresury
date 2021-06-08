@@ -1,15 +1,15 @@
-import {Test} from "@nestjs/testing";
-import {Keyring, SubmittableResult} from "@polkadot/api";
-import ApiPromise from "@polkadot/api/promise";
-import {KeyringPair} from "@polkadot/keyring/types";
-import {UpdateExtrinsicDto} from "../extrinsics/dto/updateExtrinsic.dto";
-import {beforeAllSetup} from "../utils/spec.helpers";
-import {BlockchainModule} from "./blockchain.module";
-import BN from 'bn.js';
-import {BlockchainService} from "./blockchain.service";
-import {BN_TEN} from "./utils";
-import {ApiTypes} from '@polkadot/api/types'
-import {SubmittableExtrinsic} from "@polkadot/api/submittable/types";
+import { Test } from '@nestjs/testing'
+import { Keyring, SubmittableResult } from '@polkadot/api'
+import ApiPromise from '@polkadot/api/promise'
+import { KeyringPair } from '@polkadot/keyring/types'
+import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
+import { beforeAllSetup } from '../utils/spec.helpers'
+import { BlockchainModule } from './blockchain.module'
+import BN from 'bn.js'
+import { BlockchainService } from './blockchain.service'
+import { BN_TEN } from './utils'
+import { ApiTypes } from '@polkadot/api/types'
+import { SubmittableExtrinsic } from '@polkadot/api/submittable/types'
 
 describe(`Blockchain service`, () => {
     // TODO fix types!
@@ -20,18 +20,19 @@ describe(`Blockchain service`, () => {
     const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
     const bobAddress = '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3'
 
-    const module = beforeAllSetup(async () =>
-        await Test.createTestingModule({
-            imports: [BlockchainModule]
-        }).compile()
+    const module = beforeAllSetup(
+        async () =>
+            await Test.createTestingModule({
+                imports: [BlockchainModule],
+            }).compile(),
     )
 
     const service = beforeAllSetup(() => module().get<BlockchainService>(BlockchainService))
 
     beforeEach(async () => {
-        api = await service().getApi();
-        keyring = new Keyring({type: 'sr25519'});
-        aliceKeypair = keyring.addFromUri('//Alice', {name: 'Alice default'});
+        api = await service().getApi()
+        keyring = new Keyring({ type: 'sr25519' })
+        aliceKeypair = keyring.addFromUri('//Alice', { name: 'Alice default' })
     })
 
     describe('findExtrinsic', () => {
@@ -50,10 +51,12 @@ describe(`Blockchain service`, () => {
                 expect(result!.events).toContainEqual({
                     section: 'treasury',
                     method: 'Proposed',
-                    data: [{
-                        name: 'ProposalIndex',
-                        value: `${expectedProposalId}`
-                    }]
+                    data: [
+                        {
+                            name: 'ProposalIndex',
+                            value: `${expectedProposalId}`,
+                        },
+                    ],
                 })
                 expect(result!.events).toContainEqual({
                     section: 'balances',
@@ -61,18 +64,19 @@ describe(`Blockchain service`, () => {
                     data: [
                         {
                             name: 'AccountId',
-                            value: aliceAddress
+                            value: aliceAddress,
                         },
                         {
                             name: 'Balance',
-                            value: '1000000000000'
-                        }]
+                            value: '1000000000000',
+                        },
+                    ],
                 })
                 expect(result!.data).toStrictEqual({
                     value: 10,
                     beneficiary: {
-                        id: bobAddress
-                    }
+                        id: bobAddress,
+                    },
                 })
                 done()
             })
@@ -82,8 +86,9 @@ describe(`Blockchain service`, () => {
                 if (result.isFinalized) {
                     // TODO fix types
                     expectedBlockHash = result.status.asFinalized.toString()
-                    const event = result.events
-                        .find(({event: e}: { event: any }) => e.section === 'treasury' && e.method === 'Proposed')
+                    const event = result.events.find(
+                        ({ event: e }: { event: any }) => e.section === 'treasury' && e.method === 'Proposed',
+                    )
                     expectedProposalId = Number(event?.event.data[0])
                 }
             })
@@ -104,7 +109,7 @@ describe(`Blockchain service`, () => {
                 expect(errorEvent).toBeDefined()
                 expect(errorEvent!.data).toContainEqual({
                     name: 'DispatchError',
-                    value: 'BadOrigin'
+                    value: 'BadOrigin',
                 })
                 done()
             })
@@ -118,51 +123,54 @@ describe(`Blockchain service`, () => {
         }, 60000)
     })
 
-    const signAndSend = (extrinsic: SubmittableExtrinsic<ApiTypes>, keyringPair: KeyringPair): Promise<SubmittableResult> =>
+    const signAndSend = (
+        extrinsic: SubmittableExtrinsic<ApiTypes>,
+        keyringPair: KeyringPair,
+    ): Promise<SubmittableResult> =>
         new Promise((resolve) => {
             extrinsic.signAndSend(keyringPair, (result: SubmittableResult) => {
                 if (result.isFinalized) {
                     resolve(result)
                 }
             })
-    })
+        })
 
-    const randomString = (): string => Math.random().toString(36).substring(7);
+    const randomString = (): string => Math.random().toString(36).substring(7)
 
     describe('getIdentities', () => {
-        it ('should return Alice identity', async () => {
-            const displayRaw = randomString();
-            const extrinsic = api.tx.identity.setIdentity({display: {Raw: displayRaw}})
-            await signAndSend(extrinsic, aliceKeypair);
-            const identities = await service().getIdentities([aliceAddress]);
-            expect(identities.get(aliceAddress)?.display).toBe(displayRaw);
+        it('should return Alice identity', async () => {
+            const displayRaw = randomString()
+            const extrinsic = api.tx.identity.setIdentity({ display: { Raw: displayRaw } })
+            await signAndSend(extrinsic, aliceKeypair)
+            const identities = await service().getIdentities([aliceAddress])
+            expect(identities.get(aliceAddress)?.display).toBe(displayRaw)
         }, 60000)
-        it ('should not fail when no identity in blockchain', async () => {
-            const identities = await service().getIdentities([bobAddress]);
+        it('should not fail when no identity in blockchain', async () => {
+            const identities = await service().getIdentities([bobAddress])
             const bobIdentity = identities.get(bobAddress)
-            expect(bobIdentity).toBeDefined();
-            expect(bobIdentity!.display).toBeUndefined();
+            expect(bobIdentity).toBeDefined()
+            expect(bobIdentity!.display).toBeUndefined()
         }, 60000)
     })
     describe('getRemainingTime', () => {
         it('should correctly calculate remaining time', async () => {
-            const currentBlockNumber = await api.derive.chain.bestNumber();
-            const futureBlockNumber = currentBlockNumber.add(new BN(1));
-            const remainingTime = service().getRemainingTime(currentBlockNumber,futureBlockNumber);
+            const currentBlockNumber = await api.derive.chain.bestNumber()
+            const futureBlockNumber = currentBlockNumber.add(new BN(1))
+            const remainingTime = service().getRemainingTime(currentBlockNumber, futureBlockNumber)
 
-            expect(remainingTime.endBlock).toBe(futureBlockNumber.toNumber());
-            expect(remainingTime.remainingBlocks).toBe(1);
-            expect(remainingTime.timeLeft.seconds).toBe(6); // assuming that time for one block is 6 seconds
+            expect(remainingTime.endBlock).toBe(futureBlockNumber.toNumber())
+            expect(remainingTime.remainingBlocks).toBe(1)
+            expect(remainingTime.timeLeft.seconds).toBe(6) // assuming that time for one block is 6 seconds
         }, 60000)
     })
     describe('getProposals', () => {
         it('should return existing proposals', async () => {
             // create a proposal
-            const setIdentityExtrinsic = api.tx.identity.setIdentity({display: {Raw: 'Alice'}})
-            await signAndSend(setIdentityExtrinsic, aliceKeypair);
+            const setIdentityExtrinsic = api.tx.identity.setIdentity({ display: { Raw: 'Alice' } })
+            await signAndSend(setIdentityExtrinsic, aliceKeypair)
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
             const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), bobAddress)
-            await signAndSend(extrinsic, aliceKeypair);
+            await signAndSend(extrinsic, aliceKeypair)
             const proposals = await service().getProposals()
             expect(proposals.length).toBeGreaterThan(0)
             const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
@@ -174,4 +182,4 @@ describe(`Blockchain service`, () => {
             expect(lastProposal.value).toBe(1000)
         }, 60000)
     })
-});
+})

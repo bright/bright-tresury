@@ -1,9 +1,9 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React from 'react';
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React from 'react'
 
-import {breakpoints} from "../theme/theme";
-import TopBar, {desktopTopBarHeight, tabletTopBarHeight} from "./top-bar/TopBar";
-import Menu from "./menu/Menu";
+import { breakpoints } from '../theme/theme'
+import TopBar, { desktopTopBarHeight, tabletTopBarHeight } from './top-bar/TopBar'
+import Menu from './menu/Menu'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -11,33 +11,31 @@ const useStyles = makeStyles((theme: Theme) =>
             minHeight: '100%',
             marginTop: desktopTopBarHeight,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginTop: tabletTopBarHeight
+                marginTop: tabletTopBarHeight,
             },
             display: 'flex',
             flexDirection: 'row',
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                flexDirection: 'column'
+                flexDirection: 'column',
             },
-            backgroundColor: theme.palette.background.paper
+            backgroundColor: theme.palette.background.paper,
         },
         content: {
             overflow: 'hidden',
             width: '100%',
-        }
+        },
     }),
-);
+)
 
-const Main: React.FC = ({children}) => {
-    const classes = useStyles();
+const Main: React.FC = ({ children }) => {
+    const classes = useStyles()
 
     return (
         <>
-            <TopBar/>
+            <TopBar />
             <div className={classes.dashboard}>
-                <Menu/>
-                <div className={classes.content}>
-                    {children}
-                </div>
+                <Menu />
+                <div className={classes.content}>{children}</div>
             </div>
         </>
     )

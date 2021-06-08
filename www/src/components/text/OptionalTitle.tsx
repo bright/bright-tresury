@@ -1,8 +1,8 @@
-import React from "react";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
-import {Placeholder} from "../text/Placeholder";
-import {useTranslation} from "react-i18next";
+import React from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../theme/theme'
+import { Placeholder } from '../text/Placeholder'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,19 +20,24 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         titlePlaceholder: {
             color: theme.palette.text.hint,
-            fontWeight: 500
+            fontWeight: 500,
         },
-    }))
+    }),
+)
 
 interface Props {
     title?: string
 }
 
-export const OptionalTitle: React.FC<Props> = ({title}) => {
+export const OptionalTitle: React.FC<Props> = ({ title }) => {
     const classes = useStyles()
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
-    return <div className={classes.root}>
-        {title || <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')}/>}
-    </div>
+    return (
+        <div className={classes.root}>
+            {title || (
+                <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')} />
+            )}
+        </div>
+    )
 }

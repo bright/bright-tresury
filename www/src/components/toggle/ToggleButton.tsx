@@ -1,7 +1,7 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
-import {ToggleButton as MaterialToggleButton} from '@material-ui/lab'
-import {NavLink} from 'react-router-dom'
+import { ToggleButton as MaterialToggleButton } from '@material-ui/lab'
+import { NavLink } from 'react-router-dom'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,7 +35,7 @@ const useToggleButtonClasses = makeStyles(() =>
             padding: `11px 34px`,
         },
     }),
-);
+)
 
 export interface ToggleEntry {
     label: string
@@ -46,7 +46,7 @@ interface OwnProps {
     entry: ToggleEntry
 }
 
-export const ToggleButton: React.FC<OwnProps> = ({entry}) => {
+export const ToggleButton: React.FC<OwnProps> = ({ entry }) => {
     const classes = useStyles()
     const toggleButtonClasses = useToggleButtonClasses()
 
@@ -57,4 +57,4 @@ export const ToggleButton: React.FC<OwnProps> = ({entry}) => {
             </MaterialToggleButton>
         </NavLink>
     )
-};
+}

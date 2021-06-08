@@ -1,15 +1,15 @@
 import React from 'react'
-import {useTranslation} from 'react-i18next'
-import {Input} from '../../../../components/form/input/Input'
-import PasswordInput from "../../../../components/form/input/password/PasswordInput";
-import {SignComponentWrapper} from '../../../sign-components/SignComponentWrapper'
-import {PrivacyNotice} from '../../common/PrivacyNotice'
-import {UserAgreementCheckbox} from '../../common/UserAgreementCheckbox'
-import useSignUpForm from "./useSignUpForm";
+import { useTranslation } from 'react-i18next'
+import { Input } from '../../../../components/form/input/Input'
+import PasswordInput from '../../../../components/form/input/password/PasswordInput'
+import { SignComponentWrapper } from '../../../sign-components/SignComponentWrapper'
+import { PrivacyNotice } from '../../common/PrivacyNotice'
+import { UserAgreementCheckbox } from '../../common/UserAgreementCheckbox'
+import useSignUpForm from './useSignUpForm'
 
 const EmailSignUpFormFields = () => {
-    const {t} = useTranslation()
-    const {passwordValidationRules} = useSignUpForm()
+    const { t } = useTranslation()
+    const { passwordValidationRules } = useSignUpForm()
     return (
         <>
             <SignComponentWrapper>
@@ -35,10 +35,10 @@ const EmailSignUpFormFields = () => {
                 />
             </SignComponentWrapper>
             <SignComponentWrapper>
-                <UserAgreementCheckbox/>
+                <UserAgreementCheckbox />
             </SignComponentWrapper>
             <SignComponentWrapper>
-                <PrivacyNotice/>
+                <PrivacyNotice />
             </SignComponentWrapper>
         </>
     )

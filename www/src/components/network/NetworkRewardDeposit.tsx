@@ -1,10 +1,10 @@
-import React from "react";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
-import {useTranslation} from "react-i18next";
-import {Amount} from "../amount/Amount";
-import config from "../../config";
-import {calculateBondValue} from "../../networks/bondUtil";
+import React from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../theme/theme'
+import { useTranslation } from 'react-i18next'
+import { Amount } from '../amount/Amount'
+import config from '../../config'
+import { calculateBondValue } from '../../networks/bondUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -13,25 +13,26 @@ const useStyles = makeStyles((theme: Theme) =>
             flexDirection: 'row',
         },
         reward: {
-            flex: 1
+            flex: 1,
         },
         deposit: {
             flex: 1,
             marginLeft: '32px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginLeft: '18px'
+                marginLeft: '18px',
             },
         },
-    }))
+    }),
+)
 
 interface Props {
     rewardValue: number
     bondValue?: number
 }
 
-export const NetworkRewardDeposit: React.FC<Props> = ({rewardValue, bondValue}) => {
+export const NetworkRewardDeposit: React.FC<Props> = ({ rewardValue, bondValue }) => {
     const classes = useStyles()
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
     let resolvedBondValue
     if (!bondValue) {
@@ -40,17 +41,18 @@ export const NetworkRewardDeposit: React.FC<Props> = ({rewardValue, bondValue}) 
         resolvedBondValue = bondValue
     }
 
-    return <div className={classes.root}>
-        <div className={classes.reward}>
-            <Amount amount={rewardValue}
-                    currency={config.NETWORK_CURRENCY}
-                    label={t('idea.content.info.reward')}/>
-        </div>
-        <div className={classes.deposit}>
-            <Amount amount={resolvedBondValue}
+    return (
+        <div className={classes.root}>
+            <div className={classes.reward}>
+                <Amount amount={rewardValue} currency={config.NETWORK_CURRENCY} label={t('idea.content.info.reward')} />
+            </div>
+            <div className={classes.deposit}>
+                <Amount
+                    amount={resolvedBondValue}
                     currency={config.NETWORK_CURRENCY}
                     label={t('idea.content.info.deposit')}
-            />
+                />
+            </div>
         </div>
-    </div>
+    )
 }

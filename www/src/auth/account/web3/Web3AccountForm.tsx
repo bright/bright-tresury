@@ -1,18 +1,18 @@
-import {createStyles, makeStyles, Theme} from '@material-ui/core/styles'
-import {Formik} from 'formik'
-import React, {useState} from 'react'
-import {useTranslation} from 'react-i18next'
-import {InfoBox} from '../../../components/form/InfoBox'
-import {useModal} from '../../../components/modal/useModal'
-import {AccountSelect, EMPTY_ACCOUNT} from '../../../components/select/AccountSelect'
-import {Label} from '../../../components/text/Label'
-import {Account} from "../../../substrate-lib/accounts/AccountsContext";
-import {useAccounts} from "../../../substrate-lib/accounts/useAccounts";
-import {useAuth} from '../../AuthContext'
-import {EnterPasswordModal} from '../emailPassword/passwordModal/EnterPasswordModal'
-import {Web3AddressRow} from './Web3AddressRow'
-import {useAssociateWeb3Account} from "./web3Associate.api";
-import {Web3LinkingButton} from './Web3LinkingButton'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { Formik } from 'formik'
+import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
+import { InfoBox } from '../../../components/form/InfoBox'
+import { useModal } from '../../../components/modal/useModal'
+import { AccountSelect, EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
+import { Label } from '../../../components/text/Label'
+import { Account } from '../../../substrate-lib/accounts/AccountsContext'
+import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
+import { useAuth } from '../../AuthContext'
+import { EnterPasswordModal } from '../emailPassword/passwordModal/EnterPasswordModal'
+import { Web3AddressRow } from './Web3AddressRow'
+import { useAssociateWeb3Account } from './web3Associate.api'
+import { Web3LinkingButton } from './Web3LinkingButton'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -52,7 +52,7 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
     const onConfirmPassword = async (password: string) => {
         try {
             await mutateAsync({ account: selectedAccount, password } as Web3AssociateValues, {
-                onSuccess: onAssociateSuccess
+                onSuccess: onAssociateSuccess,
             })
         } finally {
             passwordModal.close()
@@ -62,7 +62,7 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
     const onSubmit = async (values: { account: Account }) => {
         if (!user?.isEmailPassword) {
             await mutateAsync({ account: values.account } as Web3AssociateValues, {
-                onSuccess: onAssociateSuccess
+                onSuccess: onAssociateSuccess,
             })
         } else {
             setSelectedAccount(values.account)

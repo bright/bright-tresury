@@ -1,19 +1,18 @@
 export default class AsyncSetup<T> {
     private t: T | null = null
 
-    constructor(private readonly init: () => Promise<T>) {
-    }
+    constructor(private readonly init: () => Promise<T>) {}
 
     public get instance(): T {
-        const anInstance = this.t;
+        const anInstance = this.t
         if (anInstance === null) {
             throw Error(`setup not yet called for ${this}`)
         }
-        return anInstance;
+        return anInstance
     }
 
     public readonly setup = async () => {
-        this.t = await this.init();
+        this.t = await this.init()
         return this.t
     }
 
@@ -26,8 +25,8 @@ export default class AsyncSetup<T> {
 }
 
 function isCloseable(what: Closeable | any): what is Closeable {
-    const possiblyCloseable = what as Closeable;
-    return typeof possiblyCloseable.close === 'function';
+    const possiblyCloseable = what as Closeable
+    return typeof possiblyCloseable.close === 'function'
 }
 
 interface Closeable {

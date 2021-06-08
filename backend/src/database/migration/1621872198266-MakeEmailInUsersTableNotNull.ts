@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner, TableColumn} from "typeorm";
+import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm'
 
 export class MakeEmailInUsersTableNotNull1621872198266 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             update users set email = username where email is null;
@@ -14,5 +13,4 @@ export class MakeEmailInUsersTableNotNull1621872198266 implements MigrationInter
             alter table users alter column email drop not null;
         `)
     }
-
 }

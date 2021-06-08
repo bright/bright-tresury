@@ -1,15 +1,15 @@
 {
-  "name": "dbdeploy",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Deployment scripts",
-  "scripts": {
-    "generate-aws-template": "./node_modules/.bin/cloudform aws-template > aws.template"
-  },
-  "devDependencies": {
-    "cloudform": "^5.0.1"
-  },
-  "engines": {
-    "node": ">12.5.0"
-  }
+    "name": "dbdeploy",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Deployment scripts",
+    "scripts": {
+        "generate-aws-template": "./node_modules/.bin/cloudform aws-template > aws.template"
+    },
+    "devDependencies": {
+        "cloudform": "^5.0.1"
+    },
+    "engines": {
+        "node": ">12.5.0"
+    }
 }

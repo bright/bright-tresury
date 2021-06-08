@@ -1,4 +1,4 @@
-import { responseMatchers, StatusOrStatusPredicate } from "./responseMatchingHelpers";
+import { responseMatchers, StatusOrStatusPredicate } from './responseMatchingHelpers'
 
 declare global {
     export namespace jest {

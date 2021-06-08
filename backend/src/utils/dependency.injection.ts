@@ -1,4 +1,4 @@
-import { FactoryProvider } from "@nestjs/common/interfaces";
+import { FactoryProvider } from '@nestjs/common/interfaces'
 
 export interface AsyncFactoryProvider<T> extends FactoryProvider {
     provide: string
@@ -8,10 +8,11 @@ export interface AsyncFactoryProvider<T> extends FactoryProvider {
 export function propertyOfProvider<T>(
     parentProvider: AsyncFactoryProvider<T>,
     property: keyof T,
-    name: string): AsyncFactoryProvider<T[typeof property]> {
+    name: string,
+): AsyncFactoryProvider<T[typeof property]> {
     return {
         provide: name,
         useFactory: (parent: T) => parent[property],
-        inject: [parentProvider.provide]
-    };
+        inject: [parentProvider.provide],
+    }
 }

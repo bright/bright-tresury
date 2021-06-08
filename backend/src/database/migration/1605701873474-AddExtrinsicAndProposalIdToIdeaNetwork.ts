@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddExtrinsicAndProposalIdToIdeaNetwork1605701873474 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
         alter table "idea_networks" add column "blockchainProposalId" integer null;
@@ -15,5 +14,4 @@ export class AddExtrinsicAndProposalIdToIdeaNetwork1605701873474 implements Migr
         alter table "idea_networks" drop column "blockchainProposalId";
         `)
     }
-
 }

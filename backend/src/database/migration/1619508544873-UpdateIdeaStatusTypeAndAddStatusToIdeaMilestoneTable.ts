@@ -1,9 +1,7 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class UpdateIdeaStatusTypeAndAddStatusToIdeaMilestoneTable1619508544873 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
-
         await queryRunner.query(`
             alter type idea_status rename to idea_status_old;
             
@@ -25,11 +23,9 @@ export class UpdateIdeaStatusTypeAndAddStatusToIdeaMilestoneTable1619508544873 i
         await queryRunner.query(`
             alter table idea_milestones add status idea_milestone_status default 'active' not null
         `)
-
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
-
         await queryRunner.query(`
             update ideas set status = 'turned_into_proposal' where status = 'turned_into_proposal_by_milestone'
         `)
@@ -56,5 +52,4 @@ export class UpdateIdeaStatusTypeAndAddStatusToIdeaMilestoneTable1619508544873 i
             drop type idea_milestone_status;
         `)
     }
-
 }

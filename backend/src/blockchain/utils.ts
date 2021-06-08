@@ -1,23 +1,29 @@
-import BN from "bn.js";
-import {Vec} from "@polkadot/types";
-import {AccountId} from "@polkadot/types/interfaces/runtime";
-import {DeriveCollectiveProposal, DeriveTreasuryProposal} from "@polkadot/api-derive/types";
+import BN from 'bn.js'
+import { Vec } from '@polkadot/types'
+import { AccountId } from '@polkadot/types/interfaces/runtime'
+import { DeriveCollectiveProposal, DeriveTreasuryProposal } from '@polkadot/api-derive/types'
 
 export const BN_TEN = new BN(10)
 
 export const vecToArray = (vec: Vec<AccountId> | undefined): AccountId[] => vec?.toArray() || []
 
 const getVotersFromCouncil = (council: DeriveCollectiveProposal[]) =>
-    council.reduce((motionVoters, {votes}) => [...motionVoters, ...vecToArray(votes?.nays), ...vecToArray(votes?.ayes)], [] as AccountId[]);
+    council.reduce(
+        (motionVoters, { votes }) => [...motionVoters, ...vecToArray(votes?.nays), ...vecToArray(votes?.ayes)],
+        [] as AccountId[],
+    )
 
 export const getVoters = (deriveTreasuryProposals: DeriveTreasuryProposal[]): AccountId[] =>
-    deriveTreasuryProposals.reduce((proposalVoters, {council}) => [...proposalVoters, ...getVotersFromCouncil(council)], [] as AccountId[])
+    deriveTreasuryProposals.reduce(
+        (proposalVoters, { council }) => [...proposalVoters, ...getVotersFromCouncil(council)],
+        [] as AccountId[],
+    )
 
 export const getProposers = (deriveTreasuryProposals: DeriveTreasuryProposal[]): AccountId[] =>
-    deriveTreasuryProposals.map(({proposal}) => proposal.proposer)
+    deriveTreasuryProposals.map(({ proposal }) => proposal.proposer)
 
 export const getBeneficiaries = (deriveTreasuryProposals: DeriveTreasuryProposal[]): AccountId[] =>
-    deriveTreasuryProposals.map(({proposal}) => proposal.beneficiary)
+    deriveTreasuryProposals.map(({ proposal }) => proposal.beneficiary)
 
 export const transformBalance = (balance: string | BN, decimals: number, base: number | 'hex' = 'hex'): number => {
     if (typeof balance === 'string') {

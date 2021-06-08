@@ -4,15 +4,15 @@ import {
     InputLabel,
     MenuItem,
     Select as MaterialSelect,
-    SelectProps as MaterialSelectProps
-} from "@material-ui/core";
-import {makeStyles} from "@material-ui/core/styles";
-import React from "react";
+    SelectProps as MaterialSelectProps,
+} from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
+import React from 'react'
 
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
-            padding: '0'
+            padding: '0',
         },
         label: {
             marginBottom: '1em',
@@ -25,7 +25,7 @@ const useStyles = makeStyles(() =>
             fontWeight: 500,
         },
     }),
-);
+)
 
 interface SelectProps<T> {
     value?: T
@@ -37,26 +37,31 @@ interface SelectProps<T> {
 
 export type ISelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps>
 
-export const Select: ISelect = ({inputProps, value, renderOption, options, label, placeholder, ...props}) => {
+export const Select: ISelect = ({ inputProps, value, renderOption, options, label, placeholder, ...props }) => {
     const classes = useStyles()
-    return <FormGroup>
-        {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
-        <MaterialSelect
-            {...props}
-            value={value ? value : ''}
-            disableUnderline={true}
-            inputProps={{
-                classes: {
-                    select: classes.select
-                },
-                ...inputProps
-            }}>
-            {placeholder ? <MenuItem value={''}>{placeholder}</MenuItem> : null}
-            {options ? options.map((option: any, index: number) =>
-                <MenuItem key={index} value={option}>
-                    {renderOption ? renderOption(option) : option}
-                </MenuItem>
-            ) : null}
-        </MaterialSelect>
-    </FormGroup>
+    return (
+        <FormGroup>
+            {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
+            <MaterialSelect
+                {...props}
+                value={value ? value : ''}
+                disableUnderline={true}
+                inputProps={{
+                    classes: {
+                        select: classes.select,
+                    },
+                    ...inputProps,
+                }}
+            >
+                {placeholder ? <MenuItem value={''}>{placeholder}</MenuItem> : null}
+                {options
+                    ? options.map((option: any, index: number) => (
+                          <MenuItem key={index} value={option}>
+                              {renderOption ? renderOption(option) : option}
+                          </MenuItem>
+                      ))
+                    : null}
+            </MaterialSelect>
+        </FormGroup>
+    )
 }

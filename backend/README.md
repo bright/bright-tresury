@@ -99,4 +99,3 @@ Please do not add `AWS_SECRET_ACCESS_KEY` and `AWS_ACCESS_KEY_ID` to `AWSConfig`
 All AWS SDK pick credentials automatically using environment variables and instance profiles/roles.
 You should prefer using the instance profiles/roles.
 In local development you can use `AWS_PROFILE` environment variable to instruct `aws-sdk` which **locally** configured credentials it should use.
-

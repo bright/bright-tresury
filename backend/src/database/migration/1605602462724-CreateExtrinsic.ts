@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class CreateExtrinsic1605602462724 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
         create table "extrinsics" (
@@ -23,5 +22,4 @@ export class CreateExtrinsic1605602462724 implements MigrationInterface {
         drop table "extrinsics";
         `)
     }
-
 }

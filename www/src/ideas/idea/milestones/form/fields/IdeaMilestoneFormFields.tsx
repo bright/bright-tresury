@@ -1,23 +1,22 @@
-import React from "react";
-import {Input} from "../../../../../components/form/input/Input";
-import config from "../../../../../config";
-import {DatePickerInput} from "../../../../../components/form/input/date/DatePickerInput";
-import {Label} from "../../../../../components/text/Label";
-import {FormGroup} from "@material-ui/core";
-import {TextFieldColorScheme} from "../../../../../components/form/input/textFieldStyles";
-import {useTranslation} from "react-i18next";
-import {IdeaMilestoneFormValues} from "../IdeaMilestoneForm";
+import React from 'react'
+import { Input } from '../../../../../components/form/input/Input'
+import config from '../../../../../config'
+import { DatePickerInput } from '../../../../../components/form/input/date/DatePickerInput'
+import { Label } from '../../../../../components/text/Label'
+import { FormGroup } from '@material-ui/core'
+import { TextFieldColorScheme } from '../../../../../components/form/input/textFieldStyles'
+import { useTranslation } from 'react-i18next'
+import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
 import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
 interface Props {
     values: IdeaMilestoneFormValues
-    readonly : boolean
+    readonly: boolean
 }
 
 export const IdeaMilestoneFormFields = ({ values, readonly }: Props) => {
-
     const classes = useIdeaMilestoneFormFieldsStyles()
     const { t } = useTranslation()
 
@@ -54,22 +53,20 @@ export const IdeaMilestoneFormFields = ({ values, readonly }: Props) => {
                     />
                 </div>
             </FormGroup>
-            {
-                values.networks.map((network, idx) => {
-                    return (
-                        <Input
-                            name={`networks[${idx}].value`}
-                            type={`number`}
-                            label={t(`${translationKeyPrefix}.budget`)}
-                            key={idx}
-                            endAdornment={config.NETWORK_CURRENCY}
-                            textFieldColorScheme={TextFieldColorScheme.Dark}
-                            className={classes.narrowField}
-                            disabled={readonly}
-                        />
-                    )
-                }
-            )}
+            {values.networks.map((network, idx) => {
+                return (
+                    <Input
+                        name={`networks[${idx}].value`}
+                        type={`number`}
+                        label={t(`${translationKeyPrefix}.budget`)}
+                        key={idx}
+                        endAdornment={config.NETWORK_CURRENCY}
+                        textFieldColorScheme={TextFieldColorScheme.Dark}
+                        className={classes.narrowField}
+                        disabled={readonly}
+                    />
+                )
+            })}
             <Input
                 name="description"
                 label={t(`${translationKeyPrefix}.description`)}

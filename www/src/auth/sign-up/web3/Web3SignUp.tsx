@@ -1,25 +1,25 @@
-import {isWeb3Injected} from '@polkadot/extension-dapp'
-import {Formik} from 'formik'
-import React, {useEffect, useMemo} from 'react'
-import {useTranslation} from 'react-i18next'
-import {useHistory, useLocation} from 'react-router-dom'
+import { isWeb3Injected } from '@polkadot/extension-dapp'
+import { Formik } from 'formik'
+import React, { useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useHistory, useLocation } from 'react-router-dom'
 import * as Yup from 'yup'
-import {InfoBox} from '../../../components/form/InfoBox'
-import {AccountSelect, EMPTY_ACCOUNT} from '../../../components/select/AccountSelect'
-import {ROUTE_SIGNUP_WEB3_SUCCESS} from '../../../routes/routes'
-import {Account} from '../../../substrate-lib/accounts/AccountsContext'
-import {useAccounts} from '../../../substrate-lib/accounts/useAccounts'
-import {fullValidatorForSchema} from '../../../util/form.util'
-import {useAuth} from '../../AuthContext'
-import {SignComponentWrapper} from '../../sign-components/SignComponentWrapper'
-import {SignFormWrapper} from '../../sign-components/SignFormWrapper'
-import {SignOption} from '../../sign-components/SignOption'
-import {AlreadySignedUp} from '../common/AlreadySignedUp'
-import {PrivacyNotice} from '../common/PrivacyNotice'
-import {SignUpButton} from '../common/SignUpButton'
-import {GetUserAgreementYupSchema, UserAgreementCheckbox} from '../common/UserAgreementCheckbox'
-import {ExtensionNotDetected} from './ExtensionNotDetected'
-import {useWeb3SignUp} from './web3SignUp.api'
+import { InfoBox } from '../../../components/form/InfoBox'
+import { AccountSelect, EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
+import { ROUTE_SIGNUP_WEB3_SUCCESS } from '../../../routes/routes'
+import { Account } from '../../../substrate-lib/accounts/AccountsContext'
+import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
+import { fullValidatorForSchema } from '../../../util/form.util'
+import { useAuth } from '../../AuthContext'
+import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
+import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
+import { SignOption } from '../../sign-components/SignOption'
+import { AlreadySignedUp } from '../common/AlreadySignedUp'
+import { PrivacyNotice } from '../common/PrivacyNotice'
+import { SignUpButton } from '../common/SignUpButton'
+import { GetUserAgreementYupSchema, UserAgreementCheckbox } from '../common/UserAgreementCheckbox'
+import { ExtensionNotDetected } from './ExtensionNotDetected'
+import { useWeb3SignUp } from './web3SignUp.api'
 
 export interface Web3SignUpValues {
     account: Account
@@ -50,14 +50,14 @@ const Web3SignUp = () => {
     const history = useHistory()
 
     const { setIsUserSignedIn } = useAuth()
-    const {mutateAsync, isLoading, isError, error} = useWeb3SignUp()
+    const { mutateAsync, isLoading, isError, error } = useWeb3SignUp()
 
     const onSubmit = async (values: Web3SignUpValues) => {
         await mutateAsync(values, {
             onSuccess: () => {
                 setIsUserSignedIn(true)
                 history.push(ROUTE_SIGNUP_WEB3_SUCCESS)
-            }
+            },
         })
     }
 

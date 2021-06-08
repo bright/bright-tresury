@@ -1,19 +1,15 @@
-import {decodeAddress, encodeAddress} from '@polkadot/keyring';
-import {hexToU8a, isHex} from '@polkadot/util';
+import { decodeAddress, encodeAddress } from '@polkadot/keyring'
+import { hexToU8a, isHex } from '@polkadot/util'
 
 export function isValidAddress(address: string): boolean {
     try {
-        encodeAddress(
-            isHex(address)
-                ? hexToU8a(address)
-                : decodeAddress(address)
-        );
+        encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address))
 
-        return true;
+        return true
     } catch (error) {
-        return false;
+        return false
     }
-};
+}
 
 export function isValidAddressOrEmpty(address?: string): boolean {
     return !address || isValidAddress(address)

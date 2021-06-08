@@ -1,3 +1,3 @@
 export enum DatabaseErrorCode {
-    UniqueConstraint = '23505'
+    UniqueConstraint = '23505',
 }

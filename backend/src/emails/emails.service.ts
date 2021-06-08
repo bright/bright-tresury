@@ -1,13 +1,13 @@
-import {SendRawEmailCommand, SESClient} from '@aws-sdk/client-ses';
-import {Inject, Injectable} from '@nestjs/common';
-import * as fs from "fs";
-import handlebars from 'handlebars';
-import {createTransport} from 'nodemailer';
-import Mail from "nodemailer/lib/mailer";
-import * as path from "path";
-import {AWSConfig, AWSConfigToken} from "../aws.config";
-import {getLogger} from "../logging.module";
-import {EmailsConfig, EmailsConfigToken} from "./emails.config";
+import { SendRawEmailCommand, SESClient } from '@aws-sdk/client-ses'
+import { Inject, Injectable } from '@nestjs/common'
+import * as fs from 'fs'
+import handlebars from 'handlebars'
+import { createTransport } from 'nodemailer'
+import Mail from 'nodemailer/lib/mailer'
+import * as path from 'path'
+import { AWSConfig, AWSConfigToken } from '../aws.config'
+import { getLogger } from '../logging.module'
+import { EmailsConfig, EmailsConfigToken } from './emails.config'
 
 const logger = getLogger()
 
@@ -20,19 +20,19 @@ export class EmailsService {
         @Inject(EmailsConfigToken) private readonly emailsConfig: EmailsConfig,
         @Inject(AWSConfigToken) private readonly awsConfig: AWSConfig,
     ) {
-        this.sesClient = new SESClient({region: this.awsConfig.region})
+        this.sesClient = new SESClient({ region: this.awsConfig.region })
         this.nodemailerTransport = createTransport({
             SES: {
                 ses: this.sesClient,
-                aws: {SendRawEmailCommand}
-            }
-        });
+                aws: { SendRawEmailCommand },
+            },
+        })
     }
 
     async sendVerifyEmail(to: string, verifyUrl: string) {
         logger.info(`Sending verify email to ${to}`)
         const templateData = {
-            url: verifyUrl
+            url: verifyUrl,
         }
         const subject = 'Welcome to BrightTreasury!'
         const text = `Please confirm your registration and login to Treasury app: ${verifyUrl}`
@@ -49,13 +49,13 @@ export class EmailsService {
             subject,
             text,
             html,
-        };
+        }
 
         try {
             const data = await this.nodemailerTransport.sendMail(params)
-            logger.info("Email sent", data)
+            logger.info('Email sent', data)
         } catch (err) {
-            logger.error("Error sending email", err)
+            logger.error('Error sending email', err)
         }
         return
     }
@@ -77,9 +77,13 @@ export class EmailsService {
     }
 
     private getTemplateSource(name: string) {
-        const baseTemplatesDir = path.join(__dirname, "/../emails/templates/")
-        const fallbackTemplatesDir = path.join(__dirname, "/../../emails/templates/")
-        const templatesDir = fs.existsSync(baseTemplatesDir) ? baseTemplatesDir : (fs.existsSync(fallbackTemplatesDir) ? fallbackTemplatesDir : undefined)
+        const baseTemplatesDir = path.join(__dirname, '/../emails/templates/')
+        const fallbackTemplatesDir = path.join(__dirname, '/../../emails/templates/')
+        const templatesDir = fs.existsSync(baseTemplatesDir)
+            ? baseTemplatesDir
+            : fs.existsSync(fallbackTemplatesDir)
+            ? fallbackTemplatesDir
+            : undefined
         if (!templatesDir) {
             return undefined
         }
@@ -87,7 +91,6 @@ export class EmailsService {
         if (!fs.existsSync(templateFile)) {
             return undefined
         }
-        return fs.readFileSync(templateFile, "utf8")
+        return fs.readFileSync(templateFile, 'utf8')
     }
-
 }

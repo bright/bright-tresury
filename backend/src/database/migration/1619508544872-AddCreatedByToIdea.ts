@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddCreatedByToIdea1619508544872 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
         alter table "ideas" add column "ownerId" uuid REFERENCES users (id);
@@ -19,5 +18,4 @@ export class AddCreatedByToIdea1619508544872 implements MigrationInterface {
             alter table "ideas" drop column "ownerId";
         `)
     }
-
 }

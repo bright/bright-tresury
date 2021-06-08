@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class IdeaNetworksForeignKeyChangedToCascade1606750513669 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
             ALTER TABLE idea_networks
@@ -29,5 +28,4 @@ export class IdeaNetworksForeignKeyChangedToCascade1606750513669 implements Migr
                 ON DELETE NO ACTION ON UPDATE NO ACTION;
         `)
     }
-
 }

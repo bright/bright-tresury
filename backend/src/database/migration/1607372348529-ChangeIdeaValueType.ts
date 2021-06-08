@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class ChangeIdeaValueType1607372348529 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
         alter table "idea_networks" drop column "value";
@@ -15,5 +14,4 @@ export class ChangeIdeaValueType1607372348529 implements MigrationInterface {
         alter table "idea_networks" add column "value" integer not null default 0;
         `)
     }
-
 }

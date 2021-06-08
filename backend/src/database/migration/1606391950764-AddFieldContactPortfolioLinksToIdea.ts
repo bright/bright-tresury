@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddFieldContactPortfolioLinksToIdea1606391950764 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
             alter table ideas 
@@ -21,5 +20,4 @@ export class AddFieldContactPortfolioLinksToIdea1606391950764 implements Migrati
                 drop column "field";
         `)
     }
-
 }

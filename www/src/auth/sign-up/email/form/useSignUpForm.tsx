@@ -1,6 +1,6 @@
-import {useTranslation} from 'react-i18next'
-import * as Yup from "yup";
-import {ObjectSchema} from "yup";
+import { useTranslation } from 'react-i18next'
+import * as Yup from 'yup'
+import { ObjectSchema } from 'yup'
 
 export interface SignUpValues {
     username: string
@@ -16,7 +16,7 @@ interface UseSignUpFormResult {
 }
 
 const useSignUpForm = (): UseSignUpFormResult => {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
     const validationSchema = Yup.object().shape({
         username: Yup.string().required(t('auth.signUp.emptyFieldError')),
@@ -31,7 +31,7 @@ const useSignUpForm = (): UseSignUpFormResult => {
     })
 
     const passwordValidationRules = validationSchema.fields.password.tests.map(
-        ({OPTIONS}) => OPTIONS.message?.toString() || '',
+        ({ OPTIONS }) => OPTIONS.message?.toString() || '',
     )
 
     const initialValues = {
@@ -44,7 +44,7 @@ const useSignUpForm = (): UseSignUpFormResult => {
     return {
         validationSchema,
         passwordValidationRules,
-        initialValues
+        initialValues,
     }
 }
 

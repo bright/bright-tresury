@@ -1,10 +1,8 @@
 {
-  "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
-  "compilerOptions": {
-    "assets": [
-      "**/*.hbs"
-    ],
-    "watchAssets": true
-  }
+    "collection": "@nestjs/schematics",
+    "sourceRoot": "src",
+    "compilerOptions": {
+        "assets": ["**/*.hbs"],
+        "watchAssets": true
+    }
 }

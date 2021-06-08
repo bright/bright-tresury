@@ -1,19 +1,19 @@
-import React from "react";
-import {TabEntry, Tabs} from "../../components/tabs/Tabs";
-import {useTranslation} from "react-i18next";
-import infoIcon from "../../assets/info.svg";
-import milestonesIcon from "../../assets/milestones.svg";
-import discussionIcon from "../../assets/discussion.svg";
-import {useRouteMatch} from "react-router-dom";
+import React from 'react'
+import { TabEntry, Tabs } from '../../components/tabs/Tabs'
+import { useTranslation } from 'react-i18next'
+import infoIcon from '../../assets/info.svg'
+import milestonesIcon from '../../assets/milestones.svg'
+import discussionIcon from '../../assets/discussion.svg'
+import { useRouteMatch } from 'react-router-dom'
 
 export enum IdeaContentType {
-    Info = "info",
-    Milestones = "milestones",
-    Discussion = "discussion"
+    Info = 'info',
+    Milestones = 'milestones',
+    Discussion = 'discussion',
 }
 
 const IdeaContentTypeTabs = () => {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
     const getTranslation = (ideaContentType: IdeaContentType): string => {
         switch (ideaContentType) {
@@ -39,20 +39,21 @@ const IdeaContentTypeTabs = () => {
 
     const contentTypes = Object.values(IdeaContentType)
 
-    let { url } = useRouteMatch();
+    let { url } = useRouteMatch()
 
     const tabEntries = contentTypes.map((contentType: IdeaContentType) => {
-            return {
-                label: getTranslation(contentType),
-                path: `${url}/${contentType}`,
-                svg: getIcon(contentType)
-            } as TabEntry
-        }
-    )
+        return {
+            label: getTranslation(contentType),
+            path: `${url}/${contentType}`,
+            svg: getIcon(contentType),
+        } as TabEntry
+    })
 
-    return <div>
-        <Tabs values={tabEntries}/>
-    </div>
+    return (
+        <div>
+            <Tabs values={tabEntries} />
+        </div>
+    )
 }
 
 export default IdeaContentTypeTabs

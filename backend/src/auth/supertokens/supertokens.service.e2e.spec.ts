@@ -1,11 +1,10 @@
-import {v4 as uuid} from 'uuid';
-import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
-import {SuperTokensService} from "./supertokens.service";
-import {cleanAuthorizationDatabase, getAuthUser} from "./specHelpers/supertokens.database.spec.helper";
-import {ConflictException} from "@nestjs/common";
+import { v4 as uuid } from 'uuid'
+import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
+import { SuperTokensService } from './supertokens.service'
+import { cleanAuthorizationDatabase, getAuthUser } from './specHelpers/supertokens.database.spec.helper'
+import { ConflictException } from '@nestjs/common'
 
 describe(`SuperTokens Service`, () => {
-
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(SuperTokensService)
 
@@ -26,9 +25,7 @@ describe(`SuperTokens Service`, () => {
         })
         it('should not save user if email already taken', async () => {
             await getService().signUp(email, password)
-            await expect(getService().signUp(email, password))
-                .rejects
-                .toThrow(ConflictException)
+            await expect(getService().signUp(email, password)).rejects.toThrow(ConflictException)
         })
     })
 })

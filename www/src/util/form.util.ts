@@ -1,5 +1,5 @@
-import {ObjectSchema} from "yup";
-import {FieldError} from "../auth/sign-up/email/emailSignUp.dto";
+import { ObjectSchema } from 'yup'
+import { FieldError } from '../auth/sign-up/email/emailSignUp.dto'
 
 /*
  * Formik does not support multiple errors
@@ -8,13 +8,22 @@ import {FieldError} from "../auth/sign-up/email/emailSignUp.dto";
  * Use errorsToString and errorsToArray functions to access FieldMetaProps.error
  */
 export function fullValidatorForSchema<T>(schema: ObjectSchema<any>) {
-    return (values: T) => schema.validate(values, {
-        abortEarly: false,
-        strict: false,
-    }).then(() => ({})).catch(({inner}: any) => inner.reduce((memo: any, {path, message}: any) => ({
-        ...memo,
-        [path]: (memo[path] || []).concat(message),
-    }), {}))
+    return (values: T) =>
+        schema
+            .validate(values, {
+                abortEarly: false,
+                strict: false,
+            })
+            .then(() => ({}))
+            .catch(({ inner }: any) =>
+                inner.reduce(
+                    (memo: any, { path, message }: any) => ({
+                        ...memo,
+                        [path]: (memo[path] || []).concat(message),
+                    }),
+                    {},
+                ),
+            )
 }
 
 export function formikErrorToString(errors?: string | string[]): string | undefined {
@@ -43,7 +52,7 @@ export function toFormikErrors(error: unknown) {
         return undefined
     }
     const errors: any = {}
-    fieldError.formFieldErrors.forEach(({id, error}) => {
+    fieldError.formFieldErrors.forEach(({ id, error }) => {
         errors[id] = error
     })
     return errors

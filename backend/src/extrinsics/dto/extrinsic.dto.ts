@@ -1,5 +1,5 @@
-import {Extrinsic, ExtrinsicStatuses} from "../extrinsic.entity";
-import {Allow} from "class-validator";
+import { Extrinsic, ExtrinsicStatuses } from '../extrinsic.entity'
+import { Allow } from 'class-validator'
 
 export class ExtrinsicDto {
     extrinsicHash: string
@@ -8,12 +8,7 @@ export class ExtrinsicDto {
     @Allow()
     status: ExtrinsicStatuses
 
-    constructor(
-        extrinsicHash: string,
-        lastBlockHash: string,
-        data: string,
-        status: ExtrinsicStatuses
-    ) {
+    constructor(extrinsicHash: string, lastBlockHash: string, data: string, status: ExtrinsicStatuses) {
         this.extrinsicHash = extrinsicHash
         this.lastBlockHash = lastBlockHash
         this.data = data
@@ -22,10 +17,5 @@ export class ExtrinsicDto {
 }
 
 export function toExtrinsicDto(extrinsic: Extrinsic) {
-    return new ExtrinsicDto(
-        extrinsic.extrinsicHash,
-        extrinsic.lastBlockHash,
-        extrinsic.data,
-        extrinsic.status
-    )
+    return new ExtrinsicDto(extrinsic.extrinsicHash, extrinsic.lastBlockHash, extrinsic.data, extrinsic.status)
 }

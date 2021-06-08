@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class RenameProposalToIdea1603134241443 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
         drop table "proposal_networks";
@@ -57,5 +56,4 @@ export class RenameProposalToIdea1603134241443 implements MigrationInterface {
         )
         `)
     }
-
 }

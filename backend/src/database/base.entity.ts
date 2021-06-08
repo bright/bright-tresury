@@ -1,17 +1,17 @@
-import { BeforeInsert, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from "typeorm"
-import { v4 as uuid } from "uuid"
+import { BeforeInsert, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
+import { v4 as uuid } from 'uuid'
 
 export class BaseEntity {
-    @PrimaryColumn() id: string = uuid();
+    @PrimaryColumn() id: string = uuid()
 
     @CreateDateColumn({
-        type: "timestamp"
+        type: 'timestamp',
     })
     createdAt: Date = new Date()
 
     @UpdateDateColumn({
-        type: "timestamp",
-        name: "updatedAt"
+        type: 'timestamp',
+        name: 'updatedAt',
     })
     updatedAt: Date = this.createdAt
 

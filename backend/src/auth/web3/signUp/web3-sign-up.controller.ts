@@ -1,7 +1,7 @@
 import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common'
 import { ApiBadRequestResponse, ApiConflictResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
-import {ControllerApiVersion} from "../../../utils/ControllerApiVersion";
+import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { Web3SignUpService } from './web3-sign-up.service'
 import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'

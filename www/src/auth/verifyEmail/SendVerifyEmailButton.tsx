@@ -1,14 +1,14 @@
-import React from "react";
-import {useTranslation} from "react-i18next";
-import {Button, ButtonProps} from "../../components/button/Button";
-import {useSendVerifyEmail} from "./verifyEmail.api";
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Button, ButtonProps } from '../../components/button/Button'
+import { useSendVerifyEmail } from './verifyEmail.api'
 
-export type SendVerifyEmailButtonProps = Omit<ButtonProps, "children">
+export type SendVerifyEmailButtonProps = Omit<ButtonProps, 'children'>
 
 const SendVerifyEmailButton = (props: SendVerifyEmailButtonProps) => {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
 
-    const {mutateAsync, status} = useSendVerifyEmail()
+    const { mutateAsync, status } = useSendVerifyEmail()
 
     const onClick = async () => {
         await mutateAsync()

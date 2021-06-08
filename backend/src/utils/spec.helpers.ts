@@ -1,18 +1,18 @@
-import {INestApplication} from "@nestjs/common";
-import {ModuleMetadata} from "@nestjs/common/interfaces";
-import {Test, TestingModuleBuilder} from "@nestjs/testing";
-import {memoize} from 'lodash';
-import supertest from "supertest";
-import {getConnection} from 'typeorm';
-import {v4 as uuid} from "uuid";
-import {AppModule, configureGlobalServices} from "../app.module";
-import {createUserSessionHandler} from "../auth/supertokens/specHelpers/supertokens.session.spec.helper";
-import {NestLoggerAdapter} from "../logging.module";
-import {Accessor} from "./accessor";
-import {tryClose} from "./closeable";
-import './responseMatching';
-import {responseMatchers} from "./responseMatchingHelpers";
-import {TypeOrmAuthorizationModule} from "../database/authorization/authorization.database.module";
+import { INestApplication } from '@nestjs/common'
+import { ModuleMetadata } from '@nestjs/common/interfaces'
+import { Test, TestingModuleBuilder } from '@nestjs/testing'
+import { memoize } from 'lodash'
+import supertest from 'supertest'
+import { getConnection } from 'typeorm'
+import { v4 as uuid } from 'uuid'
+import { AppModule, configureGlobalServices } from '../app.module'
+import { createUserSessionHandler } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
+import { NestLoggerAdapter } from '../logging.module'
+import { Accessor } from './accessor'
+import { tryClose } from './closeable'
+import './responseMatching'
+import { responseMatchers } from './responseMatchingHelpers'
+import { TypeOrmAuthorizationModule } from '../database/authorization/authorization.database.module'
 
 if (!process.env.DEPLOY_ENV) {
     process.env.DEPLOY_ENV = 'test'
@@ -24,58 +24,64 @@ export const request = memoize((app: INestApplication) => {
     return supertest(app.getHttpServer())
 })
 
-export function beforeEachSetup<T>(setupCall: () => T | PromiseLike<T>, options: { autoClose: boolean } = {autoClose: true}): Accessor<T> {
-    let result: T | undefined;
+export function beforeEachSetup<T>(
+    setupCall: () => T | PromiseLike<T>,
+    options: { autoClose: boolean } = { autoClose: true },
+): Accessor<T> {
+    let result: T | undefined
 
     function accessor() {
         if (result === undefined) {
             throw new Error('beforeEach not yet called with ' + setupCall)
         }
-        return result;
+        return result
     }
 
     accessor.set = (newResult: T) => {
-        result = newResult;
-    };
+        result = newResult
+    }
 
-    accessor.get = accessor;
+    accessor.get = accessor
 
     beforeEach(async () => {
-        accessor.set(await setupCall());
+        accessor.set(await setupCall())
     })
 
     afterEach(async () => {
         if (options.autoClose) {
-            await tryClose(result);
+            await tryClose(result)
         }
     })
 
     return accessor
 }
 
-export function beforeAllSetup<T>(setupCall: () => T | PromiseLike<T>, options: { autoClose: boolean } = {autoClose: true}): Accessor<T> {
-    let result: T | undefined;
+export function beforeAllSetup<T>(
+    setupCall: () => T | PromiseLike<T>,
+    options: { autoClose: boolean } = { autoClose: true },
+): Accessor<T> {
+    let result: T | undefined
 
     function accessor() {
         if (result === undefined) {
             throw new Error('before not yet called with ' + setupCall)
         }
-        return result;
+        return result
     }
 
     accessor.set = (newResult: T) => {
-        result = newResult;
-    };
+        result = newResult
+    }
 
-    accessor.get = accessor;
+    accessor.get = accessor
 
     beforeAll(async () => {
-        accessor.set(await setupCall());
+        accessor.set(await setupCall())
     })
 
     afterAll(async () => {
         if (options.autoClose) {
-            await tryClose(result);
+            await tryClose(result)
         }
     })
 
@@ -83,14 +89,15 @@ export function beforeAllSetup<T>(setupCall: () => T | PromiseLike<T>, options: 
 }
 
 export async function createTestingApp(
-    moduleToTest: ModuleMetadata | ModuleMetadata["imports"],
+    moduleToTest: ModuleMetadata | ModuleMetadata['imports'],
     ...customize: Array<(builder: TestingModuleBuilder) => TestingModuleBuilder>
 ) {
-    const moduleMetadata: ModuleMetadata = moduleToTest && 'imports' in moduleToTest
-        ? moduleToTest as ModuleMetadata
-        : {imports: moduleToTest as ModuleMetadata['imports']}
+    const moduleMetadata: ModuleMetadata =
+        moduleToTest && 'imports' in moduleToTest
+            ? (moduleToTest as ModuleMetadata)
+            : { imports: moduleToTest as ModuleMetadata['imports'] }
 
-    let module = Test.createTestingModule(moduleMetadata);
+    let module = Test.createTestingModule(moduleMetadata)
     for (const customization of customize) {
         if (customization) {
             module = await customization(module)
@@ -98,31 +105,31 @@ export async function createTestingApp(
     }
 
     const nestApp = (await module.compile()).createNestApplication(undefined, {
-        logger: new NestLoggerAdapter()
+        logger: new NestLoggerAdapter(),
     })
 
     configureGlobalServices(nestApp)
 
     await nestApp.init()
 
-    return nestApp;
+    return nestApp
 }
 
-export const beforeSetupFullApp = memoize((
-    ...customize: Array<(builder: TestingModuleBuilder) => TestingModuleBuilder>
-) => {
-    let app: INestApplication | null = null
-    afterAll(async () => {
-        if (app) {
-            await app.close()
-        }
-    })
+export const beforeSetupFullApp = memoize(
+    (...customize: Array<(builder: TestingModuleBuilder) => TestingModuleBuilder>) => {
+        let app: INestApplication | null = null
+        afterAll(async () => {
+            if (app) {
+                await app.close()
+            }
+        })
 
-    return beforeAllSetup(async () => {
-        app = await createTestingApp([AppModule, TypeOrmAuthorizationModule], ...customize);
-        return app;
-    });
-})
+        return beforeAllSetup(async () => {
+            app = await createTestingApp([AppModule, TypeOrmAuthorizationModule], ...customize)
+            return app
+        })
+    },
+)
 
 const tablesToRemove = memoize(
     async (): Promise<Array<{ table_name: string }>> => {
@@ -133,9 +140,9 @@ const tablesToRemove = memoize(
         from information_schema.tables 
         where 
             table_schema='public' and table_name != 'migrations'
-        `
+        `,
         )
-    }
+    },
 )
 
 export const cleanDatabase = async () => {

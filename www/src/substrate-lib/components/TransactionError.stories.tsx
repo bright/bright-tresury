@@ -1,65 +1,72 @@
-import {Meta, Story} from '@storybook/react/types-6-0';
-import i18next from "i18next";
-import React from 'react';
-import {Trans} from "react-i18next";
-import {Modal} from "../../components/modal/Modal";
-import TransactionError, {Props} from "./TransactionError";
+import { Meta, Story } from '@storybook/react/types-6-0'
+import i18next from 'i18next'
+import React from 'react'
+import { Trans } from 'react-i18next'
+import { Modal } from '../../components/modal/Modal'
+import TransactionError, { Props } from './TransactionError'
 
 export default {
     title: 'Transaction Error',
     component: TransactionError,
-} as Meta;
+} as Meta
 
-const Template: Story<Props> = (args) => <Modal open={true}><TransactionError {...args}/></Modal>;
+const Template: Story<Props> = (args) => (
+    <Modal open={true}>
+        <TransactionError {...args} />
+    </Modal>
+)
 
-export const Default = Template.bind({});
+export const Default = Template.bind({})
 Default.args = {
     error: {},
     onOk: () => {
         console.log('ok')
     },
     title: 'Error title',
-    subtitle: 'Error longer description'
-};
+    subtitle: 'Error longer description',
+}
 
-export const WithKnownError = Template.bind({});
+export const WithKnownError = Template.bind({})
 WithKnownError.args = {
     error: {
-        message: '1010: Known error message'
+        message: '1010: Known error message',
     },
     onOk: () => {
         console.log('ok')
     },
-    title: 'Error title'
-};
+    title: 'Error title',
+}
 
-export const WithUnknownError = Template.bind({});
+export const WithUnknownError = Template.bind({})
 WithUnknownError.args = {
     error: {
-        message: '1020: Unknown error message'
+        message: '1020: Unknown error message',
     },
     onOk: () => {
         console.log('ok')
     },
-    title: 'Error title'
-};
+    title: 'Error title',
+}
 
-export const WithNoErrorObject = Template.bind({});
+export const WithNoErrorObject = Template.bind({})
 WithNoErrorObject.args = {
     onOk: () => {
         console.log('ok')
     },
-    title: 'Error title'
-};
+    title: 'Error title',
+}
 
-export const NoAccounts = Template.bind({});
+export const NoAccounts = Template.bind({})
 NoAccounts.args = {
     onOk: () => {
         console.log('ok')
     },
     title: i18next.t('substrate.error.accounts.title'),
-    subtitle: <Trans id='modal-description'
-                     i18nKey="substrate.error.accounts.subtitle"
-                     components={{a: <a href='https://google.pl'/>}}
-    />
-};
+    subtitle: (
+        <Trans
+            id="modal-description"
+            i18nKey="substrate.error.accounts.subtitle"
+            components={{ a: <a href="https://google.pl" /> }}
+        />
+    ),
+}

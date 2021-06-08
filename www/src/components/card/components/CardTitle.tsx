@@ -1,8 +1,8 @@
-import React from "react";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {useTranslation} from "react-i18next";
-import {breakpoints} from "../../../theme/theme";
-import {Placeholder} from "../../text/Placeholder";
+import React from 'react'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
+import { breakpoints } from '../../../theme/theme'
+import { Placeholder } from '../../text/Placeholder'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,33 +19,32 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.up(breakpoints.tablet)]: {
                 height: '3em',
                 flex: 1,
-                marginTop: '16px'
+                marginTop: '16px',
             },
         },
         titlePlaceholder: {
             fontSize: '18px',
             color: theme.palette.text.hint,
-            fontWeight: 500
+            fontWeight: 500,
         },
-    }))
+    }),
+)
 
 interface Props {
     title?: string
 }
 
 export const CardTitle = ({ title }: Props) => {
-
     const classes = useStyles()
     const { t } = useTranslation()
 
     return (
         <p className={classes.root}>
-            { title
-                ? title
-                : (
-                    <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')} />
-                )
-            }
+            {title ? (
+                title
+            ) : (
+                <Placeholder className={classes.titlePlaceholder} value={t('proposal.list.card.titlePlaceholder')} />
+            )}
         </p>
     )
 }

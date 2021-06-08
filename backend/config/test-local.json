@@ -1,19 +1,19 @@
 {
-  "apiUrl": "http://localhost:3001",
-  "websiteUrl": "http://localhost:3000",
-  "auth": {
-    "coreUrl": "http://localhost:3568",
-    "cookieSecure": false
-  },
-  "database": {
-    "host": "localhost",
-    "database": "treasury_test"
-  },
-  "authorizationDatabase": {
-    "host": "localhost",
-    "database": "treasury_authorization_test"
-  },
-  "blockchain": {
-    "nodeUrl": "ws://localhost:9944"
-  }
+    "apiUrl": "http://localhost:3001",
+    "websiteUrl": "http://localhost:3000",
+    "auth": {
+        "coreUrl": "http://localhost:3568",
+        "cookieSecure": false
+    },
+    "database": {
+        "host": "localhost",
+        "database": "treasury_test"
+    },
+    "authorizationDatabase": {
+        "host": "localhost",
+        "database": "treasury_authorization_test"
+    },
+    "blockchain": {
+        "nodeUrl": "ws://localhost:9944"
+    }
 }

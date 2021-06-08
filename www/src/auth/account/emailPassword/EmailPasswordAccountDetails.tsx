@@ -1,10 +1,10 @@
-import {createStyles, makeStyles} from "@material-ui/core/styles";
-import React from "react";
-import {useTranslation} from "react-i18next";
-import {Button} from "../../../components/button/Button";
-import {useAuth} from "../../AuthContext";
-import DisabledFormField from "./components/DisabledFormField";
-import EmailNotVerifiedError from "./components/EmailNotVerifiedError";
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { Button } from '../../../components/button/Button'
+import { useAuth } from '../../AuthContext'
+import DisabledFormField from './components/DisabledFormField'
+import EmailNotVerifiedError from './components/EmailNotVerifiedError'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -12,22 +12,35 @@ const useStyles = makeStyles(() =>
             marginTop: '32px',
         },
     }),
-);
+)
 
 const EmailPasswordAccountDetails = () => {
-    const {t} = useTranslation()
+    const { t } = useTranslation()
     const classes = useStyles()
-    const {user} = useAuth()
+    const { user } = useAuth()
 
-    return <div>
-        <DisabledFormField className={classes.spacing} title={t('account.emailPassword.username')} value={user?.username ?? ''}/>
-        <DisabledFormField className={classes.spacing} title={t('account.emailPassword.login')} value={user?.email ?? ''}/>
-        {/* TODO: add reset password button behaviour*/}
-        {!user?.isEmailVerified ? <EmailNotVerifiedError/> :
-            <Button className={classes.spacing} variant='text' color='primary'>{t('account.emailPassword.resetPassword')}</Button>
-        }
-
-    </div>
+    return (
+        <div>
+            <DisabledFormField
+                className={classes.spacing}
+                title={t('account.emailPassword.username')}
+                value={user?.username ?? ''}
+            />
+            <DisabledFormField
+                className={classes.spacing}
+                title={t('account.emailPassword.login')}
+                value={user?.email ?? ''}
+            />
+            {/* TODO: add reset password button behaviour*/}
+            {!user?.isEmailVerified ? (
+                <EmailNotVerifiedError />
+            ) : (
+                <Button className={classes.spacing} variant="text" color="primary">
+                    {t('account.emailPassword.resetPassword')}
+                </Button>
+            )}
+        </div>
+    )
 }
 
 export default EmailPasswordAccountDetails

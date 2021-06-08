@@ -1,21 +1,28 @@
-import {Body, HttpCode, HttpStatus, Post, Req, Res, UseGuards} from '@nestjs/common';
-import {ApiBadRequestResponse, ApiConflictResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags} from "@nestjs/swagger";
-import {Request, Response} from "express";
-import {ControllerApiVersion} from "../../../utils/ControllerApiVersion";
-import {SessionGuard} from "../../session/guard/session.guard";
-import {ReqSession, SessionData} from "../../session/session.decorator";
-import {SuperTokensService} from "../../supertokens/supertokens.service";
-import {StartSignMessageResponseDto} from "../../web3/signMessage/start-sign-message-response.dto";
-import {ConfirmEmailPasswordAssociateRequestDto} from "./dto/confirm.request.dto";
-import {StartEmailPasswordAssociateRequestDto} from "./dto/start.request.dto";
-import {EmailPasswordAssociateService} from "./email-password.associate.service";
+import { Body, HttpCode, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common'
+import {
+    ApiBadRequestResponse,
+    ApiConflictResponse,
+    ApiForbiddenResponse,
+    ApiOkResponse,
+    ApiTags,
+} from '@nestjs/swagger'
+import { Request, Response } from 'express'
+import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
+import { SessionGuard } from '../../session/guard/session.guard'
+import { ReqSession, SessionData } from '../../session/session.decorator'
+import { SuperTokensService } from '../../supertokens/supertokens.service'
+import { StartSignMessageResponseDto } from '../../web3/signMessage/start-sign-message-response.dto'
+import { ConfirmEmailPasswordAssociateRequestDto } from './dto/confirm.request.dto'
+import { StartEmailPasswordAssociateRequestDto } from './dto/start.request.dto'
+import { EmailPasswordAssociateService } from './email-password.associate.service'
 
 @ControllerApiVersion('/auth/email-password/associate', ['v1'])
 @ApiTags('auth.web3')
 export class EmailPasswordAssociateController {
-    constructor(private readonly emailPasswordAssociateService: EmailPasswordAssociateService,
-                private readonly superTokensService: SuperTokensService,) {
-    }
+    constructor(
+        private readonly emailPasswordAssociateService: EmailPasswordAssociateService,
+        private readonly superTokensService: SuperTokensService,
+    ) {}
 
     @Post('/start')
     @ApiOkResponse({
@@ -33,7 +40,10 @@ export class EmailPasswordAssociateController {
     })
     @UseGuards(SessionGuard)
     @HttpCode(HttpStatus.OK)
-    async startAssociate(@ReqSession() session: SessionData, @Body() dto: StartEmailPasswordAssociateRequestDto): Promise<StartSignMessageResponseDto> {
+    async startAssociate(
+        @ReqSession() session: SessionData,
+        @Body() dto: StartEmailPasswordAssociateRequestDto,
+    ): Promise<StartSignMessageResponseDto> {
         return this.emailPasswordAssociateService.start(dto)
     }
 

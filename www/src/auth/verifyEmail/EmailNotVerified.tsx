@@ -7,7 +7,7 @@ import { breakpoints } from '../../theme/theme'
 import { useAuth } from '../AuthContext'
 import { ROUTE_SIGNIN, ROUTE_STATS } from '../../routes/routes'
 import { useHistory } from 'react-router'
-import SendVerifyEmailButton from "./SendVerifyEmailButton";
+import SendVerifyEmailButton from './SendVerifyEmailButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -64,7 +64,7 @@ const EmailNotVerified = () => {
             <p className={classes.subTitle}>{t('auth.emailNotVerified.pleaseVerifyYourEmail')}</p>
             <img className={classes.image} src={emailNotVerifiedImage} alt={''} />
             <div className={classes.buttonWrapper}>
-                <SendVerifyEmailButton type={'button'}/>
+                <SendVerifyEmailButton type={'button'} />
             </div>
         </Container>
     )

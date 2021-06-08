@@ -1,6 +1,6 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../../theme/theme";
-import React from "react";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../../theme/theme'
+import React from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -8,23 +8,22 @@ const useStyles = makeStyles((theme: Theme) =>
             background: theme.palette.background.default,
             padding: '32px 32px 24px 32px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                padding: '24px 2.2em 24px 2.2em'
+                padding: '24px 2.2em 24px 2.2em',
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                paddingLeft:'16px',
+                paddingLeft: '16px',
                 paddingRight: '16px',
             },
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
         },
-    }))
+    }),
+)
 
-export const HeaderContainer: React.FC = ({children}) => {
+export const HeaderContainer: React.FC = ({ children }) => {
     const classes = useStyles()
-    return <div className={classes.root}>
-        {children}
-    </div>
+    return <div className={classes.root}>{children}</div>
 }

@@ -1,4 +1,4 @@
-import {Breakpoint} from "@material-ui/core/styles/createBreakpoints";
+import { Breakpoint } from '@material-ui/core/styles/createBreakpoints'
 
 export const theme = {
     typography: {
@@ -8,26 +8,26 @@ export const theme = {
             fontSize: 18,
             lineHeight: 22,
             letterSpacing: 0,
-            align: 'center'
+            align: 'center',
         },
     },
     palette: {
         primary: {
             main: '#0E65F2',
-            light: '#E6F0FD'
+            light: '#E6F0FD',
         },
         secondary: {
-            main: '#E6F0FD'
+            main: '#E6F0FD',
         },
         text: {
             primary: '#1B1D1C',
             secondary: '#0E65F2',
             disabled: '#7B7B7B',
-            hint: '#777777'
+            hint: '#777777',
         },
         background: {
             default: '#FFFFFF',
-            paper: '#F5F5F5'
+            paper: '#F5F5F5',
         },
         warning: {
             main: '#FF0000',
@@ -37,9 +37,9 @@ export const theme = {
             active: '#0E65F2',
             turnedIntoProposal: '#2FD3AE',
             turnedIntoProposalByMilestone: '#2FD3AE',
-            closed: '#1B1D1C'
-        }
-    }
+            closed: '#1B1D1C',
+        },
+    },
 }
 
 export const breakpoints = {

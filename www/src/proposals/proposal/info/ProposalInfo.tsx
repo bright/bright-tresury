@@ -80,7 +80,9 @@ export const ProposalInfo = ({
             <div className={classes.proposer}>
                 <>
                     <Identicon address={proposer.address} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>{ellipseTextInTheMiddle(proposer.address)}</div>
+                    <div className={`${classes.accountValue} ${classes.text}`}>
+                        {ellipseTextInTheMiddle(proposer.address)}
+                    </div>
                 </>
             </div>
 

@@ -1,5 +1,5 @@
-import React from "react";
-import {createStyles, makeStyles} from "@material-ui/core/styles";
+import React from 'react'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -9,9 +9,9 @@ const useStyles = makeStyles(() =>
         },
         ordinalNumber: {
             fontSize: '16px',
-            fontWeight: 700
-        }
-    })
+            fontWeight: 700,
+        },
+    }),
 )
 
 interface Props {
@@ -20,15 +20,12 @@ interface Props {
 }
 
 export const OrdinalNumber = ({ prefix, ordinalNumber }: Props) => {
-
     const classes = useStyles()
 
     return (
         <div className={classes.root}>
             {prefix}
-            <span className={classes.ordinalNumber}>
-                {ordinalNumber}
-            </span>
+            <span className={classes.ordinalNumber}>{ordinalNumber}</span>
         </div>
     )
 }

@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddStatusToIdea1610786062911 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
             create type idea_status 
@@ -20,5 +19,4 @@ export class AddStatusToIdea1610786062911 implements MigrationInterface {
             drop type idea_status;
         `)
     }
-
 }

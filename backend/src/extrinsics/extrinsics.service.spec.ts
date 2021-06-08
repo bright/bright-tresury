@@ -1,49 +1,53 @@
-import {Test} from '@nestjs/testing';
-import {getRepositoryToken} from "@nestjs/typeorm";
-import {Repository} from "typeorm";
-import {BlockchainService} from "../blockchain/blockchain.service";
-import {beforeAllSetup, cleanDatabase} from "../utils/spec.helpers";
-import {CreateExtrinsicDto} from "./dto/createExtrinsic.dto";
-import {UpdateExtrinsicDto} from "./dto/updateExtrinsic.dto";
-import {Extrinsic, ExtrinsicStatuses} from "./extrinsic.entity";
-import {ExtrinsicsModule} from "./extrinsics.module";
-import {ExtrinsicsService} from './extrinsics.service';
+import { Test } from '@nestjs/testing'
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { BlockchainService } from '../blockchain/blockchain.service'
+import { beforeAllSetup, cleanDatabase } from '../utils/spec.helpers'
+import { CreateExtrinsicDto } from './dto/createExtrinsic.dto'
+import { UpdateExtrinsicDto } from './dto/updateExtrinsic.dto'
+import { Extrinsic, ExtrinsicStatuses } from './extrinsic.entity'
+import { ExtrinsicsModule } from './extrinsics.module'
+import { ExtrinsicsService } from './extrinsics.service'
 
 describe('ExtrinsicsService', () => {
     const blockchainService = {
         listenForExtrinsic: (extrinsicDto: CreateExtrinsicDto, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => {}) => {
             cb({
                 blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
-                events: [{
-                    section: 'treasury',
-                    method: 'Proposed',
-                    data: [{
-                        name: 'ProposalIndex',
-                        value: '3'
-                    }]
-                }
+                events: [
+                    {
+                        section: 'treasury',
+                        method: 'Proposed',
+                        data: [
+                            {
+                                name: 'ProposalIndex',
+                                value: '3',
+                            },
+                        ],
+                    },
                 ],
                 data: {
                     value: 10,
-                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-                }
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                },
             })
-        }
+        },
     }
 
     const createExtrinsicDto = {
         extrinsicHash: '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1',
         lastBlockHash: '0x8d152599c9e65cc7195b483d3158b832fdcd3738ee88fe809dff80227f2c2e43',
-        data: {someField: 'some value'}
+        data: { someField: 'some value' },
     }
 
-    const module = beforeAllSetup(async () =>
-        await Test.createTestingModule({
-            imports: [ExtrinsicsModule]
-        })
-            .overrideProvider(BlockchainService)
-            .useValue(blockchainService)
-            .compile()
+    const module = beforeAllSetup(
+        async () =>
+            await Test.createTestingModule({
+                imports: [ExtrinsicsModule],
+            })
+                .overrideProvider(BlockchainService)
+                .useValue(blockchainService)
+                .compile(),
     )
 
     const service = beforeAllSetup(() => module().get<ExtrinsicsService>(ExtrinsicsService))
@@ -54,13 +58,14 @@ describe('ExtrinsicsService', () => {
     })
 
     it('should be defined', () => {
-        expect(service).toBeDefined();
-    });
+        expect(service).toBeDefined()
+    })
 
     describe('findByExtrinsicHash', () => {
         const extrinsic = new Extrinsic(
             '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1',
-            '0x8d152599c9e65cc7195b483d3158b832fdcd3738ee88fe809dff80227f2c2e43')
+            '0x8d152599c9e65cc7195b483d3158b832fdcd3738ee88fe809dff80227f2c2e43',
+        )
 
         it('should return existing extrinsic', async () => {
             await repository().save(extrinsic)
@@ -81,7 +86,9 @@ describe('ExtrinsicsService', () => {
         it('should save extrinsic with minimal data', async () => {
             await service().create(createExtrinsicDto)
 
-            const actual = await repository().findOne({extrinsicHash: '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1'})
+            const actual = await repository().findOne({
+                extrinsicHash: '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1',
+            })
             expect(actual).toBeDefined()
             expect(actual!.lastBlockHash).toBe(createExtrinsicDto.lastBlockHash)
             expect(actual!.data).toStrictEqual(createExtrinsicDto.data)
@@ -93,14 +100,18 @@ describe('ExtrinsicsService', () => {
             const ex = await service().create(createExtrinsicDto)
             const updateExtrinsicDto = {
                 blockHash: '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1',
-                events: [{
-                    section: 'balances',
-                    method: 'transfer',
-                    data: [{
-                        name: 'value',
-                        value: '10'
-                    }]
-                }],
+                events: [
+                    {
+                        section: 'balances',
+                        method: 'transfer',
+                        data: [
+                            {
+                                name: 'value',
+                                value: '10',
+                            },
+                        ],
+                    },
+                ],
             } as UpdateExtrinsicDto
 
             await service().update(ex.id, updateExtrinsicDto)
@@ -139,7 +150,6 @@ describe('ExtrinsicsService', () => {
 
             await service().listenForExtrinsic(createExtrinsicDto)
             expect(spy).toHaveBeenCalled()
-
         })
 
         it('should run update extrinsic if extrinsic found', async () => {
@@ -149,4 +159,4 @@ describe('ExtrinsicsService', () => {
             expect(spy).toHaveBeenCalled()
         })
     })
-});
+})

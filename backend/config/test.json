@@ -1,16 +1,16 @@
 {
-  "apiUrl": "http://backend.test:3001",
-  "websiteUrl": "http://localhost:3000",
-  "auth": {
-    "coreUrl": "http://authorization.test:3567",
-    "cookieSecure": false
-  },
-  "database": {
-    "host": "database",
-    "database": "treasury_test"
-  },
-  "authorizationDatabase": {
-    "host": "database",
-    "database": "treasury_authorization_test"
-  }
+    "apiUrl": "http://backend.test:3001",
+    "websiteUrl": "http://localhost:3000",
+    "auth": {
+        "coreUrl": "http://authorization.test:3567",
+        "cookieSecure": false
+    },
+    "database": {
+        "host": "database",
+        "database": "treasury_test"
+    },
+    "authorizationDatabase": {
+        "host": "database",
+        "database": "treasury_authorization_test"
+    }
 }

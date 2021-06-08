@@ -1,23 +1,23 @@
-import {INestApplication, MiddlewareConsumer, Module, NestModule, ValidationPipe} from '@nestjs/common';
-import {NestFactory} from "@nestjs/core";
-import {timeout} from "rxjs/operators";
-import {ConfigModule} from "./config/config";
-import {DatabaseModule} from "./database/database.module";
-import {LoggingModule, NestLoggerAdapter} from "./logging.module";
-import {IdeasModule} from './ideas/ideas.module';
-import {ProposalsModule} from './proposals/proposals.module';
-import {AppController} from "./app.controller";
-import {FrontendMiddleware} from './front-end.middleware';
-import {NestExpressApplication} from "@nestjs/platform-express";
-import {UsersModule} from "./users/users.module";
-import {SuperTokensModule} from "./auth/supertokens/supertokens.module";
-import {AuthModule} from "./auth/auth.module";
-import supertokens from "supertokens-node";
-import {SuperTokensExceptionFilter} from "./auth/supertokens/supertokens.exceptionFilter";
-import {initializeSupertokens} from "./auth/supertokens/supertokens.config";
-import {SuperTokensService} from "./auth/supertokens/supertokens.service";
-import {EmailsModule} from './emails/emails.module';
-import {CachingModule} from "./cache/cache.module";
+import { INestApplication, MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { timeout } from 'rxjs/operators'
+import { ConfigModule } from './config/config'
+import { DatabaseModule } from './database/database.module'
+import { LoggingModule, NestLoggerAdapter } from './logging.module'
+import { IdeasModule } from './ideas/ideas.module'
+import { ProposalsModule } from './proposals/proposals.module'
+import { AppController } from './app.controller'
+import { FrontendMiddleware } from './front-end.middleware'
+import { NestExpressApplication } from '@nestjs/platform-express'
+import { UsersModule } from './users/users.module'
+import { SuperTokensModule } from './auth/supertokens/supertokens.module'
+import { AuthModule } from './auth/auth.module'
+import supertokens from 'supertokens-node'
+import { SuperTokensExceptionFilter } from './auth/supertokens/supertokens.exceptionFilter'
+import { initializeSupertokens } from './auth/supertokens/supertokens.config'
+import { SuperTokensService } from './auth/supertokens/supertokens.service'
+import { EmailsModule } from './emails/emails.module'
+import { CachingModule } from './cache/cache.module'
 
 @Module({
     imports: [
@@ -30,16 +30,14 @@ import {CachingModule} from "./cache/cache.module";
         UsersModule,
         AuthModule,
         EmailsModule,
-        CachingModule
+        CachingModule,
     ],
     exports: [],
-    controllers: [AppController]
+    controllers: [AppController],
 })
 export class AppModule implements NestModule {
     configure(consumer: MiddlewareConsumer): void {
-        consumer.apply(FrontendMiddleware)
-            .exclude('api/(.*)')
-            .forRoutes('/**')
+        consumer.apply(FrontendMiddleware).exclude('api/(.*)').forRoutes('/**')
     }
 }
 
@@ -50,19 +48,19 @@ export function configureGlobalServices(app: INestApplication) {
 
     app.enableCors({
         origin: config.websiteUrl,
-        allowedHeaders: ["content-type", ...supertokens.getAllCORSHeaders()],
+        allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
         credentials: true,
     })
 
-    app.use(supertokens.middleware());
+    app.use(supertokens.middleware())
     app.use(supertokens.errorHandler())
     app.useGlobalFilters(new SuperTokensExceptionFilter())
 
     app.useGlobalPipes(
         new ValidationPipe({
             transform: true,
-            whitelist: true
-        })
+            whitelist: true,
+        }),
     )
 }
 

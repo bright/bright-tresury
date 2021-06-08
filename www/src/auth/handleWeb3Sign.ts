@@ -1,7 +1,7 @@
-import {web3FromAddress} from '@polkadot/extension-dapp'
-import {stringToHex} from '@polkadot/util'
-import {Account} from '../substrate-lib/accounts/AccountsContext'
-import {Nil} from '../util/types'
+import { web3FromAddress } from '@polkadot/extension-dapp'
+import { stringToHex } from '@polkadot/util'
+import { Account } from '../substrate-lib/accounts/AccountsContext'
+import { Nil } from '../util/types'
 
 export interface StartWeb3SignRequestDto {
     address: string
@@ -22,7 +22,7 @@ export async function handleWeb3Sign(
     account: Account,
     startCall: (dto: StartWeb3SignRequestDto) => Promise<StartWeb3SignResponseDto>,
     confirmCall: (confirmDto: ConfirmWeb3SignRequestDto) => Promise<void | any>,
-    details?: any
+    details?: any,
 ) {
     const injected = await web3FromAddress(account.address)
     if (!injected) {
@@ -33,7 +33,7 @@ export async function handleWeb3Sign(
         throw new Error('Signer was not available')
     }
 
-    const startSignUpResponse = await startCall({address: account.address, details})
+    const startSignUpResponse = await startCall({ address: account.address, details })
 
     const signMessage = startSignUpResponse?.signMessage
 
@@ -50,6 +50,6 @@ export async function handleWeb3Sign(
     return await confirmCall({
         address: account.address,
         signature,
-        details
+        details,
     })
 }

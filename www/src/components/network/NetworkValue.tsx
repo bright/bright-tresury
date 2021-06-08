@@ -1,8 +1,8 @@
-import React from "react";
-import {formatNumber} from "../../util/numberUtil";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {breakpoints} from "../../theme/theme";
-import config from "../../config/index";
+import React from 'react'
+import { formatNumber } from '../../util/numberUtil'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../theme/theme'
+import config from '../../config/index'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,17 +17,20 @@ const useStyles = makeStyles((theme: Theme) =>
                 marginLeft: '4em',
             },
             fontWeight: 500,
-            padding: '3px'
-        }
-    }))
+            padding: '3px',
+        },
+    }),
+)
 
 interface Props {
     value: number
 }
 
-export const NetworkValue: React.FC<Props> = ({value}) => {
+export const NetworkValue: React.FC<Props> = ({ value }) => {
     const classes = useStyles()
-    return <p className={classes.root}>
-        {formatNumber(value)} {config.NETWORK_CURRENCY}
-    </p>
+    return (
+        <p className={classes.root}>
+            {formatNumber(value)} {config.NETWORK_CURRENCY}
+        </p>
+    )
 }

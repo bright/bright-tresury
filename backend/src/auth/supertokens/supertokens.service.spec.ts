@@ -1,16 +1,15 @@
-import {ConflictException, NotFoundException} from "@nestjs/common";
-import {getUserById} from "supertokens-node/lib/build/recipe/emailpassword";
-import {User as SuperTokensUser} from "supertokens-node/lib/build/recipe/emailpassword/types";
-import {v4 as uuid} from 'uuid';
-import {EmailsService} from "../../emails/emails.service";
-import {UsersService} from "../../users/users.service";
-import {beforeSetupFullApp, cleanDatabase} from '../../utils/spec.helpers';
-import {cleanAuthorizationDatabase} from "./specHelpers/supertokens.database.spec.helper";
-import {SuperTokensUsernameKey} from "./supertokens.recipeList";
-import {SuperTokensService} from "./supertokens.service";
+import { ConflictException, NotFoundException } from '@nestjs/common'
+import { getUserById } from 'supertokens-node/lib/build/recipe/emailpassword'
+import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import { v4 as uuid } from 'uuid'
+import { EmailsService } from '../../emails/emails.service'
+import { UsersService } from '../../users/users.service'
+import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
+import { cleanAuthorizationDatabase } from './specHelpers/supertokens.database.spec.helper'
+import { SuperTokensUsernameKey } from './supertokens.recipeList'
+import { SuperTokensService } from './supertokens.service'
 
 describe(`SuperTokens Service`, () => {
-
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(SuperTokensService)
     const getUsersService = () => app.get().get(UsersService)
@@ -31,7 +30,7 @@ describe(`SuperTokens Service`, () => {
             await getUsersService().create({
                 authId: uuid(),
                 username,
-                email: 'chuck@email.com'
+                email: 'chuck@email.com',
             })
             const validationResult = await getService().getUsernameValidationError(username)
 
@@ -45,13 +44,13 @@ describe(`SuperTokens Service`, () => {
             const username = 'Chuck'
             const user = {
                 id: uuid(),
-                email: 'chuck@email.com'
+                email: 'chuck@email.com',
             } as SuperTokensUser
             const additionalValues = [
                 {
                     id: SuperTokensUsernameKey,
-                    value: username
-                }
+                    value: username,
+                },
             ]
             await getService().handleCustomFormFieldsPostSignUp(user, additionalValues)
 
@@ -64,13 +63,13 @@ describe(`SuperTokens Service`, () => {
             const email = 'chuck@email.com'
             const user = {
                 id: uuid(),
-                email
+                email,
             } as SuperTokensUser
             const additionalValues = [
                 {
                     id: SuperTokensUsernameKey,
-                    value: username
-                }
+                    value: username,
+                },
             ]
             await getService().handleCustomFormFieldsPostSignUp(user, additionalValues)
 
@@ -82,9 +81,11 @@ describe(`SuperTokens Service`, () => {
 
     describe('send verify email template', () => {
         it('should send email', async () => {
-            const spy = jest.spyOn(app.get().get(EmailsService), 'sendVerifyEmail').mockImplementationOnce(async (to: string, verifyUrl: string) => {
-                return
-            })
+            const spy = jest
+                .spyOn(app.get().get(EmailsService), 'sendVerifyEmail')
+                .mockImplementationOnce(async (to: string, verifyUrl: string) => {
+                    return
+                })
             const user = {
                 id: uuid(),
                 email: 'chuck@email.com',
@@ -105,26 +106,22 @@ describe(`SuperTokens Service`, () => {
         })
 
         it('should throw not found for not existing user id', async () => {
-            await expect(getService().updateEmail(uuid(), 'other-email@example.com'))
-                .rejects
-                .toThrow(NotFoundException)
+            await expect(getService().updateEmail(uuid(), 'other-email@example.com')).rejects.toThrow(NotFoundException)
         })
 
         it('should throw conflict exception for already existing email id', async () => {
             const user = await getService().signUp('chuck@example.com', uuid())
             await getService().signUp('other-email@example.com', uuid())
 
-            await expect(getService().updateEmail(user.id, 'other-email@example.com'))
-                .rejects
-                .toThrow(ConflictException)
+            await expect(getService().updateEmail(user.id, 'other-email@example.com')).rejects.toThrow(
+                ConflictException,
+            )
         })
 
         it('should throw conflict exception when trying to overwrite email with the same value', async () => {
             const user = await getService().signUp('chuck@example.com', uuid())
 
-            await expect(getService().updateEmail(user.id, 'chuck@example.com'))
-                .rejects
-                .toThrow(ConflictException)
+            await expect(getService().updateEmail(user.id, 'chuck@example.com')).rejects.toThrow(ConflictException)
         })
     })
 })

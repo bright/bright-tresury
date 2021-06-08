@@ -1,4 +1,4 @@
-import { ExtrinsicEvent } from "../extrinsicEvent";
+import { ExtrinsicEvent } from '../extrinsicEvent'
 
 export interface UpdateExtrinsicDto {
     blockHash: string

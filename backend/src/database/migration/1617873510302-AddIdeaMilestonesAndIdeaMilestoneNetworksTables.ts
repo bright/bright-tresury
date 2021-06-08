@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddIdeaMilestonesAndIdeaMilestoneNetworksTables1617873510302 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
             create table "idea_milestones" (
@@ -27,7 +26,6 @@ export class AddIdeaMilestonesAndIdeaMilestoneNetworksTables1617873510302 implem
               "ideaMilestoneId" uuid REFERENCES idea_milestones (id) ON DELETE CASCADE ON UPDATE CASCADE
             )
         `)
-
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {

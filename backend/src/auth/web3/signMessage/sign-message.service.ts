@@ -1,10 +1,10 @@
-import {BadRequestException, Injectable} from '@nestjs/common'
-import {v4 as uuid} from 'uuid'
-import {CacheManager} from '../../../cache/cache.manager'
-import {ConfirmSignMessageRequestDto} from './confirm-sign-message-request.dto'
-import {SignatureValidator} from './signature.validator'
-import {StartSignMessageRequestDto} from './start-sign-message-request.dto'
-import {StartSignMessageResponseDto} from './start-sign-message-response.dto'
+import { BadRequestException, Injectable } from '@nestjs/common'
+import { v4 as uuid } from 'uuid'
+import { CacheManager } from '../../../cache/cache.manager'
+import { ConfirmSignMessageRequestDto } from './confirm-sign-message-request.dto'
+import { SignatureValidator } from './signature.validator'
+import { StartSignMessageRequestDto } from './start-sign-message-request.dto'
+import { StartSignMessageResponseDto } from './start-sign-message-response.dto'
 
 @Injectable()
 export class SignMessageService {
@@ -13,16 +13,12 @@ export class SignMessageService {
      */
     private readonly SignMessageTtlInSeconds = 5 * 60
 
-    constructor(
-        private readonly cacheManager: CacheManager,
-        private readonly signatureValidator: SignatureValidator,
-    ) {
-    }
+    constructor(private readonly cacheManager: CacheManager, private readonly signatureValidator: SignatureValidator) {}
 
     async start(startRequest: StartSignMessageRequestDto, cacheKey: string): Promise<StartSignMessageResponseDto> {
         const signMessage = uuid()
         const signMessageKey = this.getCacheKey(startRequest.address, cacheKey)
-        await this.cacheManager.set<string>(signMessageKey, signMessage, {ttl: this.SignMessageTtlInSeconds})
+        await this.cacheManager.set<string>(signMessageKey, signMessage, { ttl: this.SignMessageTtlInSeconds })
 
         return new StartSignMessageResponseDto(signMessage)
     }

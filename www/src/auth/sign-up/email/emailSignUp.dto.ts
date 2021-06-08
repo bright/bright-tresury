@@ -1,4 +1,4 @@
-import {FormFieldError} from 'supertokens-auth-react/lib/build/recipe/emailpassword/types';
+import { FormFieldError } from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
 
 export interface SignUpData {
     email: string

@@ -1,18 +1,18 @@
-import {PostgresConnectionOptions} from "typeorm/driver/postgres/PostgresConnectionOptions";
-import {TypeOrmLoggerAdapater} from "../../logging.module";
-import {TypeOrmModule} from "@nestjs/typeorm";
-import {ConfigModule} from "../../config/config";
-import {AuthorizationDatabaseConfigToken, DatabaseConfig} from "../database.config";
-import {TypeOrmModuleOptions} from "@nestjs/typeorm/dist/interfaces/typeorm-options.interface";
+import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions'
+import { TypeOrmLoggerAdapater } from '../../logging.module'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { ConfigModule } from '../../config/config'
+import { AuthorizationDatabaseConfigToken, DatabaseConfig } from '../database.config'
+import { TypeOrmModuleOptions } from '@nestjs/typeorm/dist/interfaces/typeorm-options.interface'
 
 export const AuthorizationDatabaseName = 'authorization'
 
 const authorizationDatabaseStaticTypeOrmOptions: Partial<PostgresConnectionOptions> = {
-    type: "postgres",
+    type: 'postgres',
     name: AuthorizationDatabaseName,
     entities: [],
     migrations: [],
-    logger: new TypeOrmLoggerAdapater()
+    logger: new TypeOrmLoggerAdapater(),
 }
 
 export const TypeOrmAuthorizationModule = TypeOrmModule.forRootAsync({
@@ -20,9 +20,9 @@ export const TypeOrmAuthorizationModule = TypeOrmModule.forRootAsync({
     inject: [AuthorizationDatabaseConfigToken],
     useFactory(databaseConfig: DatabaseConfig): TypeOrmModuleOptions {
         return {
-            type: "postgres",
+            type: 'postgres',
             ...authorizationDatabaseStaticTypeOrmOptions,
-            ...databaseConfig
+            ...databaseConfig,
         }
-    }
-});
+    },
+})

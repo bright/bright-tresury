@@ -1,6 +1,6 @@
-import {makeStyles, Theme} from "@material-ui/core/styles";
-import {createStyles} from "@material-ui/core";
-import React from "react";
+import { makeStyles, Theme } from '@material-ui/core/styles'
+import { createStyles } from '@material-ui/core'
+import React from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -9,16 +9,14 @@ const useStyles = makeStyles((theme: Theme) =>
             fontSize: '12px',
         },
     }),
-);
+)
 
 interface Props {
     value: string
     className?: string
 }
 
-export const Placeholder: React.FC<Props> = ({value, className}) => {
+export const Placeholder: React.FC<Props> = ({ value, className }) => {
     const classes = useStyles()
-    return <div className={className ?? classes.default}>
-        {value}
-    </div>
+    return <div className={className ?? classes.default}>{value}</div>
 }

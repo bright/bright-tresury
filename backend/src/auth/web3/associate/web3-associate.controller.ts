@@ -7,7 +7,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger'
 import { Request, Response } from 'express'
-import {ControllerApiVersion} from "../../../utils/ControllerApiVersion";
+import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { Web3AssociateService } from './web3-associate.service'
 import { SessionGuard } from '../../session/guard/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'

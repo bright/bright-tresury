@@ -1,25 +1,29 @@
-import React from 'react';
-import {useTranslation} from "react-i18next";
-import cautionImg from "../../assets/caution.svg"
-import {Button} from "../../components/button/Button";
-import {ExtrinsicError} from "./SubmittingTransaction";
-import TransactionModal from "./TransactionModal";
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import cautionImg from '../../assets/caution.svg'
+import { Button } from '../../components/button/Button'
+import { ExtrinsicError } from './SubmittingTransaction'
+import TransactionModal from './TransactionModal'
 
 export interface Props {
-    error: ExtrinsicError,
+    error: ExtrinsicError
     onOk: () => void
 }
 
-const ExtrinsicFailed: React.FC<Props> = ({error, onOk}) => {
-    const {t} = useTranslation()
+const ExtrinsicFailed: React.FC<Props> = ({ error, onOk }) => {
+    const { t } = useTranslation()
     return (
         <TransactionModal
             title={t('substrate.extrinsicError.title')}
             subtitle={t([`substrate.extrinsicError.subtitle.${error.section}.${error.name}`, error.description])}
             imgSrc={cautionImg}
-            buttons={<Button color='primary' onClick={onOk}>{t('substrate.extrinsicError.ok')}</Button>}
+            buttons={
+                <Button color="primary" onClick={onOk}>
+                    {t('substrate.extrinsicError.ok')}
+                </Button>
+            }
         />
-    );
+    )
 }
 
 export default ExtrinsicFailed

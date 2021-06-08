@@ -49,9 +49,8 @@ export const Proposal = () => {
                             <ProposalDiscussion />
                         </Route>
                         <Route exact={true} path={`${path}/${ProposalContentType.Voting}`}>
-                            {proposal ? <ProposalVoting proposal={proposal}/> : null}
+                            {proposal ? <ProposalVoting proposal={proposal} /> : null}
                         </Route>
-
                     </Switch>
                 </div>
             ) : null}

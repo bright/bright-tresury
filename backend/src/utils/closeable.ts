@@ -1,15 +1,15 @@
-import { CannotExecuteNotConnectedError } from "typeorm/error/CannotExecuteNotConnectedError";
+import { CannotExecuteNotConnectedError } from 'typeorm/error/CannotExecuteNotConnectedError'
 
 interface Closeable {
-    close(): void | Promise<void>;
+    close(): void | Promise<void>
 }
 
 function isCloseable(x: unknown): x is Closeable {
     if (typeof x === 'object' && x != null) {
-        const close = (x as any).close;
+        const close = (x as any).close
         return typeof close === 'function'
     }
-    return false;
+    return false
 }
 
 export async function tryClose(result: unknown) {
@@ -18,7 +18,7 @@ export async function tryClose(result: unknown) {
             await result.close()
         } catch (e) {
             if (!(e instanceof CannotExecuteNotConnectedError)) {
-                throw e;
+                throw e
             }
         }
     }

@@ -1,28 +1,28 @@
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import React, {useMemo} from "react";
-import {breakpoints} from "../../theme/theme";
-import {ellipseTextInTheMiddle} from "../../util/stringUtil";
-import {Identicon} from "./Identicon";
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import React, { useMemo } from 'react'
+import { breakpoints } from '../../theme/theme'
+import { ellipseTextInTheMiddle } from '../../util/stringUtil'
+import { Identicon } from './Identicon'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
         root: {
             display: 'flex',
-            alignItems: 'center'
+            alignItems: 'center',
         },
         address: {
             marginLeft: '.5em',
             fontSize: '14px',
             fontWeight: 500,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                fontSize: '18px'
+                fontSize: '18px',
             },
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                fontSize: '16px'
-            }
+                fontSize: '16px',
+            },
         },
     })
-});
+})
 
 interface OwnProps {
     address: string
@@ -30,7 +30,7 @@ interface OwnProps {
 
 export type AddressInfoProps = OwnProps
 
-export const AddressInfo = ({address}: AddressInfoProps) => {
+export const AddressInfo = ({ address }: AddressInfoProps) => {
     const classes = useStyles()
 
     const addressFragment = useMemo(() => {
@@ -40,10 +40,10 @@ export const AddressInfo = ({address}: AddressInfoProps) => {
         return ellipseTextInTheMiddle(address, 12)
     }, [address])
 
-    return <div className={classes.root}>
-        <Identicon address={address}/>
-        <div className={classes.address}>
-            {addressFragment}
+    return (
+        <div className={classes.root}>
+            <Identicon address={address} />
+            <div className={classes.address}>{addressFragment}</div>
         </div>
-    </div>
+    )
 }

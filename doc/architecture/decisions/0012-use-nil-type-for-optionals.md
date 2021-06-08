@@ -9,10 +9,10 @@ Accepted
 ## Context
 
 In JS there are two non-value values: `undeifined` and `null`. We couldn't find a consensus on when to use each of them.
- 
+
 ## Decision
 
-We introduced custom type `Nil<T> = T | null | undefined`. 
+We introduced custom type `Nil<T> = T | null | undefined`.
 
 ## Consequences
 

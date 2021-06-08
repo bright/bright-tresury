@@ -1,7 +1,6 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm'
 
 export class AddBlockchainAddressToUserTable1615018421825 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`
             alter table users alter column email drop not null;
@@ -21,5 +20,4 @@ export class AddBlockchainAddressToUserTable1615018421825 implements MigrationIn
             alter table users drop column "blockchainAddress";
         `)
     }
-
 }
