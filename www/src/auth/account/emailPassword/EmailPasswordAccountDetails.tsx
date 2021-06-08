@@ -31,14 +31,11 @@ const EmailPasswordAccountDetails = () => {
                 title={t('account.emailPassword.login')}
                 value={user?.email ?? ''}
             />
-            {/* TODO: add reset password button behaviour*/}
-            {!user?.isEmailVerified ? (
-                <EmailNotVerifiedError />
-            ) : (
-                <Button className={classes.spacing} variant="text" color="primary">
-                    {t('account.emailPassword.resetPassword')}
-                </Button>
-            )}
+            {!user?.isEmailVerified ? <EmailNotVerifiedError /> : null}
+            {/*Feature is not implemented yet*/}
+            {/*<Button className={classes.spacing} variant="text" color="primary">*/}
+            {/*    {t('account.emailPassword.resetPassword')}*/}
+            {/*</Button>*/}
         </div>
     )
 }

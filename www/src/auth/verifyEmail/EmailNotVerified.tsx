@@ -51,11 +51,11 @@ const EmailNotVerified = () => {
     const { isUserSignedIn, isUserVerified } = useAuth()
 
     if (!isUserSignedIn) {
-        history.push(ROUTE_SIGNIN)
+        history.replace(ROUTE_SIGNIN)
     }
 
     if (isUserVerified) {
-        history.push(ROUTE_STATS)
+        history.replace(ROUTE_STATS)
     }
 
     return (

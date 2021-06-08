@@ -6,14 +6,15 @@ import './App.css'
 import Account from './auth/account/Account'
 import { AuthContextProvider } from './auth/AuthContext'
 import SignIn from './auth/sign-in/SignIn'
+import EmailSignUpSuccess from './auth/sign-up/email/EmailSignUpSucces'
 import SignUp from './auth/sign-up/SignUp'
 import { IdeaCreate } from './ideas/create/IdeaCreate'
 import { TurnIdeaIntoProposal } from './ideas/idea/turnIntoProposal/TurnIdeaIntoProposal'
 import { Idea } from './ideas/idea/Idea'
 import Ideas from './ideas/Ideas'
 import Main from './main/Main'
-import Proposal from "./proposals/proposal/Proposal";
-import Proposals from "./proposals/Proposals";
+import Proposal from './proposals/proposal/Proposal'
+import Proposals from './proposals/Proposals'
 import { PrivateRoute } from './routes/PrivateRoute'
 import { PublicOnlyRoute } from './routes/PublicOnlyRoute'
 import {
@@ -28,6 +29,7 @@ import {
     ROUTE_ROOT,
     ROUTE_SIGNIN,
     ROUTE_SIGNUP,
+    ROUTE_SIGNUP_EMAIL_SUCCESS,
     ROUTE_SIGNUP_WEB3_SUCCESS,
     ROUTE_STATS,
     ROUTE_TURN_IDEA,
@@ -41,7 +43,7 @@ import VerifyEmail from './auth/verifyEmail/VerifyEmail'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContext'
 import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
-import { Web3SignUpSuccess } from './auth/sign-up/web3/Web3SignUpSuccess'
+import Web3SignUpSuccess from './auth/sign-up/web3/Web3SignUpSuccess'
 import EmailNotVerified from './auth/verifyEmail/EmailNotVerified'
 
 const useStyles = makeStyles(() =>
@@ -66,20 +68,22 @@ function AppRoutes() {
             <Router>
                 <Main>
                     <Switch>
-                        <PublicOnlyRoute
-                            exact={false}
-                            path={ROUTE_SIGNUP}
-                            component={SignUp}
-                            redirectTo={ROUTE_SIGNUP_WEB3_SUCCESS}
-                        />
+                        <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp} />
                         <PublicOnlyRoute exact={false} path={ROUTE_SIGNIN} component={SignIn} />
-                        <Route exact={true} path={ROUTE_SIGNUP_WEB3_SUCCESS} component={Web3SignUpSuccess} />
-                        <Route exact={true} path={ROUTE_EMAIL_NOT_VERIFIED}>
-                            <EmailNotVerified />
-                        </Route>
-                        <Route exact={true} path={ROUTE_VERIFY_EMAIL}>
-                            <VerifyEmail />
-                        </Route>
+                        <PrivateRoute
+                            requireVerified={false}
+                            exact={true}
+                            path={ROUTE_SIGNUP_WEB3_SUCCESS}
+                            component={Web3SignUpSuccess}
+                        />
+                        <PrivateRoute
+                            requireVerified={false}
+                            exact={true}
+                            path={ROUTE_SIGNUP_EMAIL_SUCCESS}
+                            component={EmailSignUpSuccess}
+                        />
+                        <Route exact={true} path={ROUTE_EMAIL_NOT_VERIFIED} component={EmailNotVerified} />
+                        <Route exact={true} path={ROUTE_VERIFY_EMAIL} component={VerifyEmail} />
                         <Route exact={true} path={ROUTE_ROOT} component={Stats} />
                         <Route exact={true} path={ROUTE_STATS} component={Stats} />
                         <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />

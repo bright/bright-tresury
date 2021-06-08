@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export const Web3SignUpSuccess = () => {
+const Web3SignUpSuccess = () => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -34,3 +34,5 @@ export const Web3SignUpSuccess = () => {
         </Container>
     )
 }
+
+export default Web3SignUpSuccess
