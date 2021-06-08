@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Label } from '../../../components/text/Label'
-import { Identicon } from '../../../components/identicon/Identicon'
+import Identicon from '../../../components/identicon/Identicon'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { Link } from '../../../components/link/Link'
 import { breakpoints } from '../../../theme/theme'

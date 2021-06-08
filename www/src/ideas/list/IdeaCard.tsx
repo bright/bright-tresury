@@ -7,18 +7,18 @@ import { useTranslation } from 'react-i18next'
 import { IdeaContentType } from '../idea/IdeaContentTypeTabs'
 import { IdeaStatusIndicator } from '../idea/status/IdeaStatusIndicator'
 import { NetworkCard } from '../../components/network/NetworkCard'
-import { AddressInfoWithLabel } from '../../components/identicon/AddressInfoWithLabel'
+import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import { NetworkValue } from '../../components/network/NetworkValue'
 import { CardHeader } from '../../components/card/components/CardHeader'
 import { CardDetails } from '../../components/card/components/CardDetails'
 import { CardTitle } from '../../components/card/components/CardTitle'
 import { OrdinalNumber } from '../../components/ordinalNumber/OrdinalNumber'
 
-interface Props {
+export interface PropsIdeaCard {
     idea: IdeaDto
 }
 
-export const IdeaCard = ({ idea: { id, ordinalNumber, status, title, networks, beneficiary } }: Props) => {
+const IdeaCard = ({ idea: { id, ordinalNumber, status, title, networks, beneficiary } }: PropsIdeaCard) => {
     const { t } = useTranslation()
 
     return (
@@ -41,3 +41,5 @@ export const IdeaCard = ({ idea: { id, ordinalNumber, status, title, networks, b
         </NetworkCard>
     )
 }
+
+export default IdeaCard

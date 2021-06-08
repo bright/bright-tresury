@@ -1,4 +1,4 @@
-import { AddressInfoWithLabel } from '../../../components/identicon/AddressInfoWithLabel'
+import AddressInfoWithLabel from '../../../components/identicon/AddressInfoWithLabel'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
@@ -22,7 +22,7 @@ export enum VoteType {
     NAY = 'Nay',
 }
 
-interface VoteProps {
+export interface VoteProps {
     accountInfo: AccountInfo
     voteType: VoteType
 }

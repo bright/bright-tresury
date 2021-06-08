@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Avatar from '../../components/avatar/Avatar'
 import Container from '../../components/form/Container'
 import { breakpoints } from '../../theme/theme'
+import {useAuth} from "../AuthContext";
 import EmailPasswordAccount from './emailPassword/EmailPasswordAccount'
 import Web3Account from './web3/Web3Account'
 import clsx from 'clsx'
@@ -62,12 +63,13 @@ const useStyles = makeStyles((theme: Theme) =>
 const Account = () => {
     const { t } = useTranslation()
     const classes = useStyles()
+    const {user} = useAuth()
 
     return (
         <Container title={t('account.title')}>
             <div className={classes.root}>
                 <div className={classes.avatarContainer}>
-                    <Avatar />
+                    {user?.isEmailPassword ? <Avatar username={user.username} email={user.email} /> : null}
                 </div>
                 <div className={classes.content}>
                     <EmailPasswordAccount />

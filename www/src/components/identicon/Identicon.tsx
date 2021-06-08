@@ -1,6 +1,9 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React from 'react'
-import { breakpoints } from '../../theme/theme'
+import {isWidthDown, withWidth} from "@material-ui/core";
+import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {WithWidthProps} from "@material-ui/core/withWidth/withWidth";
+import React, {useMemo} from "react";
+import {breakpoints} from "../../theme/theme";
+import PolkadotIdenticon from '@polkadot/react-identicon';
 
 const useStyles = makeStyles((theme: Theme) => {
     const size = '32px'
@@ -13,29 +16,34 @@ const useStyles = makeStyles((theme: Theme) => {
                 width: tabletSize,
                 height: tabletSize,
             },
-            //TODO: remove once Identicon will be implemented
-            backgroundColor: 'tomato',
-            color: 'white',
-            borderRadius: 32,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
         },
     })
 })
 
-interface Props {
+interface OwnProps {
     address: string
 }
 
-export const Identicon: React.FC<Props> = ({ address }) => {
+export type IdenticonProps = OwnProps & WithWidthProps
+
+const IDENTICON_DESKTOP_SIZE = 32
+const IDENTICON_MOBILE_SIZE = 42
+
+const Identicon = ({ address , width}: IdenticonProps) => {
+    const size = useMemo(
+        () => width && isWidthDown(breakpoints.tablet, width) ? IDENTICON_MOBILE_SIZE : IDENTICON_DESKTOP_SIZE,
+        [width]
+    )
     const classes = useStyles()
     return (
         <div className={classes.identicon}>
-            {/** TODO: implement Identicon
-         https://github.com/polkadot-js/ui/tree/08132ef5663f677ed2b2a62112db76c1688c0b0e/packages/react-identicon
-         */}
-            {address.substring(0, 2)}
+            <PolkadotIdenticon
+            value={address}
+            size={size}
+            theme={'polkadot'}
+        />
         </div>
     )
 }
+
+export default withWidth()(Identicon)

@@ -1,7 +1,7 @@
 import React from 'react'
+import Identicon from "../../../components/identicon/Identicon";
 import { ProposalDto } from '../../proposals.dto'
 import { Label } from '../../../components/text/Label'
-import { Identicon } from '../../../components/identicon/Identicon'
 import { useTranslation } from 'react-i18next'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
@@ -54,13 +54,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+export interface ProposalInfoProps {
     proposal: ProposalDto
 }
 
-export const ProposalInfo = ({
+const ProposalInfo = ({
     proposal: { proposer, isCreatedFromIdeaMilestone, ideaId, ideaMilestoneId },
-}: Props) => {
+}: ProposalInfoProps) => {
     const successfullyLoadedItemClasses = useSuccessfullyLoadedItemStyles()
     const classes = useStyles()
 
@@ -115,3 +115,4 @@ export const ProposalInfo = ({
         </div>
     )
 }
+export default ProposalInfo

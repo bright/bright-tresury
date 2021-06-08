@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { ellipseTextInTheMiddle } from '../../util/stringUtil'
-import { Identicon } from './Identicon'
+import  Identicon  from './Identicon'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -38,7 +38,7 @@ interface OwnProps {
 
 export type AddressInfoWithLabelProps = OwnProps
 
-export const AddressInfoWithLabel = ({ address, label }: AddressInfoWithLabelProps) => {
+const AddressInfoWithLabel = ({ address, label }: AddressInfoWithLabelProps) => {
     const classes = useStyles()
 
     const addressFragment = useMemo(() => {
@@ -60,3 +60,5 @@ export const AddressInfoWithLabel = ({ address, label }: AddressInfoWithLabelPro
         </div>
     )
 }
+
+export default AddressInfoWithLabel

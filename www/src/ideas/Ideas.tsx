@@ -5,16 +5,16 @@ import { IdeaDefaultFilter, IdeaFilter, IdeaFilterSearchParamName } from './list
 import config from '../config'
 import { filterIdeas } from './list/filterIdeas'
 import IdeasHeader from './IdeasHeader'
-import { IdeasList } from './list/IdeasList'
+import IdeasList from './list/IdeasList'
 import { LoadingWrapper } from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
 
-interface Props {
+export interface IdeasProps {
     network: string
 }
 
-export const Ideas = ({ network = config.NETWORK_NAME }: Props) => {
+const Ideas = ({ network = config.NETWORK_NAME }: IdeasProps) => {
     const { t } = useTranslation()
 
     const { search } = useLocation()
@@ -49,3 +49,5 @@ export const Ideas = ({ network = config.NETWORK_NAME }: Props) => {
         </div>
     )
 }
+
+export default Ideas

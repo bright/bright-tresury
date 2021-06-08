@@ -10,7 +10,7 @@ import { ProposalStatusIndicator } from '../status/ProposalStatusIndicator'
 import { ProposalContentType } from '../proposal/ProposalContentTypeTabs'
 import { ProposalIndex } from './ProposalIndex'
 import { NetworkCard } from '../../components/network/NetworkCard'
-import { AddressInfoWithLabel } from '../../components/identicon/AddressInfoWithLabel'
+import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import { NetworkValue } from '../../components/network/NetworkValue'
 import { CardHeader } from '../../components/card/components/CardHeader'
 import { CardDetails } from '../../components/card/components/CardDetails'
@@ -30,7 +30,7 @@ export interface ProposalCardProps {
     proposal: ProposalDto
 }
 
-export const ProposalCard = ({
+const ProposalCard = ({
     proposal: { proposalIndex, status, title, value, beneficiary, proposer },
 }: ProposalCardProps) => {
     const classes = useStyles()
@@ -62,3 +62,5 @@ export const ProposalCard = ({
         </NetworkCard>
     )
 }
+
+export default ProposalCard

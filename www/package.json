@@ -33,7 +33,7 @@
         "date-fns": "2.9.0",
         "formik": "^2.2.5",
         "i18next": "^19.8.4",
-        "react": "^16.13.1",
+        "react": "^16.14.0",
         "react-dom": "^16.13.1",
         "react-i18next": "^11.7.3",
         "react-query": "^3.16.0",
