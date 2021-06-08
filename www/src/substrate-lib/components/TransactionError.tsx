@@ -4,16 +4,18 @@ import failedImg from '../../assets/failed.svg'
 import { Button } from '../../components/button/Button'
 import TransactionModal from './TransactionModal'
 
-export interface Props {
+export interface TransactionErrorProps {
     title: string
     subtitle?: string | JSX.Element
     error?: any
     onOk: () => void
 }
 
-const TransactionError: React.FC<Props> = ({ error, onOk, title, subtitle }) => {
+const TransactionError = ({ error, onOk, title, subtitle }: TransactionErrorProps) => {
     const { t } = useTranslation()
+
     const errorCode = useMemo(() => error?.message?.substr(0, 4) ?? '', [error])
+
     return (
         <TransactionModal
             imgSrc={failedImg}

@@ -1,14 +1,14 @@
 import React from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import { Modal } from '../../components/modal/Modal'
-import ExtrinsicFailed, { Props } from './ExtrinsicFailed'
+import ExtrinsicFailed, { ExtrinsicFailedProps } from './ExtrinsicFailed'
 
 export default {
     title: 'Extrinsic Failed',
     component: ExtrinsicFailed,
 } as Meta
 
-const Template: Story<Props> = (args) => (
+const Template: Story<ExtrinsicFailedProps> = (args) => (
     <Modal open={true}>
         <ExtrinsicFailed {...args} />
     </Modal>

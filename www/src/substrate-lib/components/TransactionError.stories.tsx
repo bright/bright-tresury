@@ -3,14 +3,14 @@ import i18next from 'i18next'
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { Modal } from '../../components/modal/Modal'
-import TransactionError, { Props } from './TransactionError'
+import TransactionError, { TransactionErrorProps } from './TransactionError'
 
 export default {
     title: 'Transaction Error',
     component: TransactionError,
 } as Meta
 
-const Template: Story<Props> = (args) => (
+const Template: Story<TransactionErrorProps> = (args) => (
     <Modal open={true}>
         <TransactionError {...args} />
     </Modal>

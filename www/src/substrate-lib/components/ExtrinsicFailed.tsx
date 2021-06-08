@@ -5,13 +5,14 @@ import { Button } from '../../components/button/Button'
 import { ExtrinsicError } from './SubmittingTransaction'
 import TransactionModal from './TransactionModal'
 
-export interface Props {
+export interface ExtrinsicFailedProps {
     error: ExtrinsicError
     onOk: () => void
 }
 
-const ExtrinsicFailed: React.FC<Props> = ({ error, onOk }) => {
+const ExtrinsicFailed = ({ error, onOk }: ExtrinsicFailedProps) => {
     const { t } = useTranslation()
+
     return (
         <TransactionModal
             title={t('substrate.extrinsicError.title')}
