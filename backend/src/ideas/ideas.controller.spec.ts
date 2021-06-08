@@ -83,7 +83,7 @@ describe(`/api/v1/ideas`, () => {
                 sessionHandler.sessionData,
             )
 
-            const result = await request(app()).get(`${baseUrl}`)
+            const result = await request(app()).get(baseUrl)
 
             expect(result.body.length).toBe(0)
 
@@ -204,7 +204,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: 'Test title', networks: [{ name: 'kusama', value: 3 }] }),
                 )
                 .expect(201)
@@ -212,13 +212,13 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return bad request if no networks', () => {
             return sessionHandler
-                .authorizeRequest(request(app()).post(`${baseUrl}`).send({ title: 'Test title', networks: null }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ title: 'Test title', networks: null }))
                 .expect(400)
         })
 
         it('should return bad request if empty networks', () => {
             return sessionHandler
-                .authorizeRequest(request(app()).post(`${baseUrl}`).send({ title: 'Test title', networks: [] }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ title: 'Test title', networks: [] }))
                 .expect(400)
         })
 
@@ -226,7 +226,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: 'Test title', networks: [{ name: 'kusama', value: null }] }),
                 )
                 .expect(400)
@@ -236,7 +236,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: 'Test title', networks: [{ name: null, value: 5 }] }),
                 )
                 .expect(400)
@@ -246,7 +246,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: 'Test title', networks: [{ name: null }] }),
                 )
                 .expect(400)
@@ -256,7 +256,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: 'Test title', networks: [{ name: 'polkadot', value: -1 }] }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -266,7 +266,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: 'Test title', networks: [{ name: 'kusama', value: 2 }], links: 'link' }),
                 )
                 .expect(400)
@@ -276,7 +276,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 2 }],
@@ -290,7 +290,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: '', networks: [{ name: 'kusama', value: 2 }] }),
                 )
                 .expect(400)
@@ -301,7 +301,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 2 }],
@@ -316,7 +316,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 2 }],
@@ -331,7 +331,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 2 }],
@@ -345,7 +345,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 10 }],
@@ -363,7 +363,7 @@ describe(`/api/v1/ideas`, () => {
         it('should return created idea for valid data', async (done) => {
             const response = await sessionHandler.authorizeRequest(
                 request(app())
-                    .post(`${baseUrl}`)
+                    .post(baseUrl)
                     .send({
                         title: 'Test title',
                         networks: [{ name: 'kusama', value: 10 }],
@@ -395,7 +395,7 @@ describe(`/api/v1/ideas`, () => {
         it('should create an idea and networks', async (done) => {
             const result = await sessionHandler.authorizeRequest(
                 request(app())
-                    .post(`${baseUrl}`)
+                    .post(baseUrl)
                     .send({ title: 'Test title', networks: [{ name: 'kusama', value: 10 }] }),
             )
 
@@ -411,7 +411,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return forbidden for not authorized request', () => {
             return request(app())
-                .post(`${baseUrl}`)
+                .post(baseUrl)
                 .send({ title: 'Test title', networks: [{ name: 'kusama', value: 3 }] })
                 .expect(HttpStatus.FORBIDDEN)
         })
@@ -425,7 +425,7 @@ describe(`/api/v1/ideas`, () => {
             await sessionHandlerNotVerified
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({ title: 'Test title', networks: [{ name: 'kusama', value: 3 }] }),
                 )
                 .expect(HttpStatus.FORBIDDEN)
@@ -436,7 +436,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 3 }],
@@ -450,7 +450,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 3 }],
@@ -464,7 +464,7 @@ describe(`/api/v1/ideas`, () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(`${baseUrl}`)
+                        .post(baseUrl)
                         .send({
                             title: 'Test title',
                             networks: [{ name: 'kusama', value: 3 }],
