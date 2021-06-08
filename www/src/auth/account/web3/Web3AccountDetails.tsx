@@ -63,12 +63,16 @@ const Web3AccountDetails = () => {
                         isPrimary={address.isPrimary}
                         addressComponent={<AddressInfo address={address.address} />}
                         linkComponent={
-                            <Web3LinkingButton
-                                onClick={() => onUnlinkCLick(address.address)}
-                                label={t('account.web3.unlink')}
-                                disabled={unlinkAddressIsLoading || makePrimaryIsLoading}
-                                className={classes.unlink}
-                            />
+                            address.isPrimary ? (
+                                ''
+                            ) : (
+                                <Web3LinkingButton
+                                    onClick={() => onUnlinkCLick(address.address)}
+                                    label={t('account.web3.unlink')}
+                                    disabled={unlinkAddressIsLoading || makePrimaryIsLoading}
+                                    className={classes.unlink}
+                                />
+                            )
                         }
                     />
                 )
