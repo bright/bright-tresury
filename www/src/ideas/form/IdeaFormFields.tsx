@@ -26,14 +26,16 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
+const MAX_LINKS = 10
 
-interface Props {
+export interface IdeaFormFieldsProps {
     values: IdeaDto
 }
 
-const IdeaFormFields: React.FC<Props> = ({ values }) => {
+const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+
     return (
         <>
             <div className={classes.inputField}>
@@ -116,6 +118,7 @@ const IdeaFormFields: React.FC<Props> = ({ values }) => {
                                 className={classes.inputField}
                                 variant={'text'}
                                 color="primary"
+                                disabled={values.links ? values.links.length >= MAX_LINKS : false}
                                 type="button"
                                 onClick={() => arrayHelpers.push('')}
                             >

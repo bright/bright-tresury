@@ -1,5 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
+    ArrayMaxSize,
     ArrayMinSize,
     ArrayNotContains,
     IsArray,
@@ -7,6 +8,8 @@ import {
     IsIn,
     IsNotEmpty,
     IsOptional,
+    IsString,
+    Length,
     MaxLength,
     ValidateNested,
 } from 'class-validator'
@@ -73,6 +76,9 @@ export class CreateIdeaDto {
     @IsArray()
     @IsOptional()
     @ArrayNotContains(['', null, undefined])
+    @ArrayMaxSize(10)
+    @IsString({ each: true })
+    @Length(1, 1000, { each: true })
     links?: string[]
 
     @ApiPropertyOptional({

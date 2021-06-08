@@ -46,7 +46,9 @@ const IdeaForm: React.FC<Props> = ({ idea, onSubmit, extendedValidation, foldabl
                 value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
             }),
         ),
-        links: Yup.array().of(Yup.string().url(t('idea.details.form.badLinkError'))),
+        links: Yup.array().of(
+            Yup.string().url(t('idea.details.form.badLinkError')).max(1000, t('idea.details.form.linkTooLong')),
+        ),
     })
 
     const extendedValidationSchema = Yup.object().shape({

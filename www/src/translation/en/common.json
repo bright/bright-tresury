@@ -208,6 +208,7 @@
                 "linkPlaceholder": "Add external link to your proposal here",
                 "addLink": "+ Add Link",
                 "badLinkError": "This is not a valid URL",
+                "linkTooLong": "URL too long",
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
                 "valueCannotBeLessThanZero": "The value cannot be less than zero",

@@ -433,45 +433,58 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should not save the idea with empty string in links array', () => {
+            const title = ''
+            const networks = [{ name: 'kusama', value: 3 }]
+            const links = ['', 'Test Link']
             return sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl)
-                        .send({
-                            title: 'Test title',
-                            networks: [{ name: 'kusama', value: 3 }],
-                            links: ['', 'Test Link'],
-                        }),
-                )
-                .expect(400)
+                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it('should not save the idea with undefined value in links array', () => {
+            const title = ''
+            const networks = [{ name: 'kusama', value: 3 }]
+            const links = [undefined, 'Test Link']
             return sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl)
-                        .send({
-                            title: 'Test title',
-                            networks: [{ name: 'kusama', value: 3 }],
-                            links: [undefined, 'Test Link'],
-                        }),
-                )
-                .expect(400)
+                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it('should not save the idea with null value in links array', () => {
+            const title = ''
+            const networks = [{ name: 'kusama', value: 3 }]
+            const links = [null, 'Test Link']
             return sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl)
-                        .send({
-                            title: 'Test title',
-                            networks: [{ name: 'kusama', value: 3 }],
-                            links: [null, 'Test Link'],
-                        }),
-                )
-                .expect(400)
+                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it('should not save the idea with numbers in links array', () => {
+            const title = ''
+            const networks = [{ name: 'kusama', value: 3 }]
+            const links = [123, 'Test Link']
+            return sessionHandler
+                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it('should not save the idea with too long links (length over 1000) in links array', () => {
+            const link = `https://${'x'.repeat(1000)}.com`
+            const title = ''
+            const networks = [{ name: 'kusama', value: 3 }]
+            const links = [link, 'Test Link']
+            return sessionHandler
+                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it('should not save the idea with too many links (more than 10) in links array', () => {
+            const links = new Array(11).map((_, index) => `https://${index}.com`)
+            const title = ''
+            const networks = [{ name: 'kusama', value: 3 }]
+            return sessionHandler
+                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .expect(HttpStatus.BAD_REQUEST)
         })
     })
 
