@@ -29,7 +29,7 @@ export const IdeaMilestones = ({ idea, canEdit, displayWithinIdeaSubTab }: IdeaM
         <LoadingWrapper
             status={status}
             errorText={t('errors.errorOccurredWhileLoadingIdeaMilestones')}
-            loadingText={t('loading.idea-milestones')}
+            loadingText={t('loading.ideaMilestones')}
         >
             {ideaMilestones ? (
                 <div className={classes.content}>
