@@ -3,9 +3,9 @@ import { ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiPar
 import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
+import { CreateIdeaProposalDto } from './dto/create-idea-proposal.dto'
+import { IdeaProposalsService } from './idea-proposals.service'
 import { IdeaNetworkDto } from '../dto/idea-network.dto'
-import { CreateIdeaProposalDto } from './dto/createIdeaProposal.dto'
-import { IdeaProposalsService } from './idea.proposals.service'
 
 @ControllerApiVersion('/ideas/:id/proposals', ['v1'])
 @ApiTags('ideas.proposals')

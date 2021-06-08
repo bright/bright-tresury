@@ -12,8 +12,8 @@ import { IdeaNetwork } from '../entities/idea-network.entity'
 import { IdeasService } from '../ideas.service'
 import { IdeaStatus } from '../idea-status'
 import { createIdea, createSessionData } from '../spec.helpers'
-import { CreateIdeaProposalDto, IdeaProposalDataDto } from './dto/createIdeaProposal.dto'
-import { IdeaProposalsService } from './idea.proposals.service'
+import { CreateIdeaProposalDto, IdeaProposalDataDto } from './dto/create-idea-proposal.dto'
+import { IdeaProposalsService } from './idea-proposals.service'
 import { v4 as uuid } from 'uuid'
 import { Idea } from '../entities/idea.entity'
 
@@ -262,8 +262,6 @@ describe('IdeaProposalsService', () => {
             expect(result.extrinsic!.lastBlockHash).toBe(
                 '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f',
             )
-            expect(result.extrinsic!.data).toBeDefined()
-            expect(result.extrinsic!.data.nextProposalId).toBe(3)
         })
     })
 

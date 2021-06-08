@@ -36,9 +36,6 @@ const createIdeaProposalDto = (ideaNetworkId: string) => {
         ideaNetworkId,
         extrinsicHash: '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
         lastBlockHash: '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f',
-        data: {
-            nextProposalId: 5,
-        },
     }
 }
 
@@ -236,8 +233,6 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
             expect(body.extrinsic!.lastBlockHash).toBe(
                 '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f',
             )
-            expect(body.extrinsic!.data).toBeDefined()
-            expect(body.extrinsic!.data.nextProposalId).toBe(5)
         })
     })
 })
