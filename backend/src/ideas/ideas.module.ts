@@ -13,9 +13,9 @@ import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
 import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-network.entity'
 import { IdeaMilestonesController } from './idea-milestones/idea-milestones.controller'
 import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
-import { IdeaMilestoneProposalsService } from './idea-milestones/idea-milestone-proposals/idea.milestone.proposals.service'
-import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milestone-proposals/idea.milestone.proposals.controller'
 import { BlockchainModule } from '../blockchain/blockchain.module'
+import { IdeaMilestoneProposalsService } from './idea-milestones/idea-milestone-proposals/idea-milestone-proposals.service'
+import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milestone-proposals/idea-milestone-proposals.controller'
 
 @Module({
     imports: [

@@ -5,7 +5,7 @@ import { ReqSession, SessionData } from '../../../auth/session/session.decorator
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
 import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
-import { IdeaMilestoneProposalsService } from './idea.milestone.proposals.service'
+import { IdeaMilestoneProposalsService } from './idea-milestone-proposals.service'
 
 @ControllerApiVersion('/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', ['v1'])
 @ApiTags('idea.milestone.proposals')

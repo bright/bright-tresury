@@ -1,6 +1,5 @@
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
 import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
-import { IdeaMilestoneProposalsService } from './idea.milestone.proposals.service'
 import { createIdea, createIdeaMilestone, createIdeaMilestoneByEntity, createSessionData } from '../../spec.helpers'
 import { IdeasService } from '../../ideas.service'
 import { v4 as uuid } from 'uuid'
@@ -19,6 +18,7 @@ import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
 import { IdeaMilestone } from '../entities/idea-milestone.entity'
+import { IdeaMilestoneProposalsService } from './idea-milestone-proposals.service'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
