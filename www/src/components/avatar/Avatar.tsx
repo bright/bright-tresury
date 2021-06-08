@@ -1,6 +1,8 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React from 'react'
+import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import React from 'react';
+import {ClassNameProps} from "../props/className.props";
 import {getInitials} from "./initials.helpers";
+import clsx from "clsx";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,16 +20,18 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface AvatarProps {
+interface OwnProps {
     username?: string
     email?: string
 }
 
-const Avatar = ({username, email}: AvatarProps) => {
+export type AvatarProps = OwnProps & ClassNameProps
+
+const Avatar = ({username, email, className}: AvatarProps) => {
     const classes = useStyles()
     const name = username ?? email
     const initials = getInitials(name)
-    return <div className={classes.root}>
+    return <div className={clsx(classes.root, className)}>
         {initials}
     </div>
 }

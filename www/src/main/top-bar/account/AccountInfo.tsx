@@ -1,16 +1,17 @@
-import { Divider } from '@material-ui/core'
-import Menu from '@material-ui/core/Menu'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React from 'react'
-import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
-import info from '../../../assets/info.svg'
-import { useAuth } from '../../../auth/AuthContext'
-import { ROUTE_ACCOUNT } from '../../../routes/routes'
-import TopBarButton from '../TopBarButton'
-import EmailVerifyErrorMenuItem from './EmailVerifyErrorMenuItem'
-import SignOutMenuItem from './SignOutMenuItem'
-import MenuItem from './MenuItem'
+import {Divider} from "@material-ui/core";
+import Menu from "@material-ui/core/Menu";
+import {createStyles, makeStyles} from "@material-ui/core/styles";
+import React from 'react';
+import {useTranslation} from "react-i18next";
+import {useHistory} from "react-router-dom";
+import arrowSvg from "../../../assets/account_menu_arrow.svg";
+import {useAuth} from "../../../auth/AuthContext";
+import {IconButton} from "../../../components/button/IconButton";
+import {ROUTE_ACCOUNT} from "../../../routes/routes";
+import AccountImage from "./AccountImage";
+import EmailVerifyErrorMenuItem from "./EmailVerifyErrorMenuItem";
+import MenuItem from "./MenuItem";
+import SignOutMenuItem from "./SignOutMenuItem";
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -21,10 +22,10 @@ const useStyles = makeStyles(() =>
 )
 
 const AccountInfo = () => {
-    const { t } = useTranslation()
+    const {t} = useTranslation()
     const classes = useStyles()
     const history = useHistory()
-    const { user } = useAuth()
+    const {user} = useAuth()
 
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null)
 
@@ -38,31 +39,30 @@ const AccountInfo = () => {
 
     const goToAccount = () => {
         history.push(ROUTE_ACCOUNT)
+        handleClose()
     }
 
     return (
         <div className={classes.root}>
-            {/*TODO: use user's avatar instead of the predefined icon*/}
-            <TopBarButton
-                alt={t('topBar.showAccountMenu')}
-                svg={info}
-                onClick={handleClick}
-                aria-controls="simple-menu"
-                aria-haspopup="true"
-            />
-            <Menu id="simple-menu" anchorEl={anchorEl} keepMounted open={Boolean(anchorEl)} onClose={handleClose}>
-                {user && !user.isEmailVerified ? (
-                    <>
-                        <EmailVerifyErrorMenuItem />
-                        <Divider />
-                    </>
-                ) : null}
+            <AccountImage/>
+            <IconButton onClick={handleClick} alt={t('topBar.showAccountMenu')} svg={arrowSvg}/>
+            <Menu
+                id="simple-menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={Boolean(anchorEl)}
+                onClose={handleClose}
+            >
+                {user && !user.isEmailVerified ? <>
+                    <EmailVerifyErrorMenuItem/>
+                    <Divider/>
+                </> : null}
                 <MenuItem onClick={goToAccount}>{t('topBar.account.account')}</MenuItem>
                 <MenuItem disabled={true}>{t('topBar.account.ideas')}</MenuItem>
                 <MenuItem disabled={true}>{t('topBar.account.proposals')}</MenuItem>
                 <MenuItem disabled={true}>{t('topBar.account.bounties')}</MenuItem>
-                <Divider />
-                <SignOutMenuItem />
+                <Divider/>
+                <SignOutMenuItem/>
             </Menu>
         </div>
     )
