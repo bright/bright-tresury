@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IdeaMilestoneNetwork } from '../entities/idea.milestone.network.entity'
+import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
 import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator'
 import { ExtrinsicDto, toExtrinsicDto } from '../../../extrinsics/dto/extrinsic.dto'
 

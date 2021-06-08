@@ -4,12 +4,12 @@ import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../../extrinsics/extrinsics.service'
-import { IdeaNetwork } from '../entities/ideaNetwork.entity'
+import { IdeaNetwork } from '../entities/idea-network.entity'
 import { CreateIdeaProposalDto } from './dto/createIdeaProposal.dto'
 import { IdeasService } from '../ideas.service'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { Idea } from '../entities/idea.entity'
-import { IdeaStatus } from '../ideaStatus'
+import { IdeaStatus } from '../idea-status'
 
 @Injectable()
 export class IdeaProposalsService {

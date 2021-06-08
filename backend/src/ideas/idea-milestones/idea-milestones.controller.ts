@@ -7,13 +7,13 @@ import {
     ApiParam,
     ApiTags,
 } from '@nestjs/swagger'
-import {ControllerApiVersion} from "../../utils/ControllerApiVersion"
+import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
-import { CreateIdeaMilestoneDto } from './dto/createIdeaMilestoneDto'
-import { IdeaMilestoneDto } from './dto/ideaMilestoneDto'
-import { UpdateIdeaMilestoneDto } from './dto/updateIdeaMilestoneDto'
-import { IdeaMilestonesService } from './idea.milestones.service'
+import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
+import { IdeaMilestoneDto } from './dto/idea-milestone.dto'
+import { UpdateIdeaMilestoneDto } from './dto/update-idea-milestone.dto'
+import { IdeaMilestonesService } from './idea-milestones.service'
 
 @ControllerApiVersion('/ideas/:ideaId/milestones', ['v1'])
 @ApiTags('ideas.milestones')

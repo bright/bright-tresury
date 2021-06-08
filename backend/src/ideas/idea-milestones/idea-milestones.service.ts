@@ -4,12 +4,12 @@ import { isBefore } from 'date-fns'
 import { In, Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
 import { IdeasService } from '../ideas.service'
-import { CreateIdeaMilestoneDto } from './dto/createIdeaMilestoneDto'
-import { IdeaMilestoneNetwork } from './entities/idea.milestone.network.entity'
-import { UpdateIdeaMilestoneDto } from './dto/updateIdeaMilestoneDto'
-import { IdeaMilestone } from './entities/idea.milestone.entity'
-import { IdeaMilestoneStatus } from './ideaMilestoneStatus'
-import { CreateIdeaMilestoneNetworkDto } from './dto/createIdeaMilestoneNetworkDto'
+import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
+import { IdeaMilestoneNetwork } from './entities/idea-milestone-network.entity'
+import { UpdateIdeaMilestoneDto } from './dto/update-idea-milestone.dto'
+import { IdeaMilestone } from './entities/idea-milestone.entity'
+import { IdeaMilestoneStatus } from './idea-milestone-status'
+import { CreateIdeaMilestoneNetworkDto } from './dto/create-idea-milestone-network.dto'
 
 @Injectable()
 export class IdeaMilestonesService {

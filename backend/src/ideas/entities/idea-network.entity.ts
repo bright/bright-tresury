@@ -1,10 +1,10 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from "typeorm";
-import { BaseEntity } from "../../database/base.entity";
-import { Extrinsic } from "../../extrinsics/extrinsic.entity";
-import { Idea } from "./idea.entity";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
+import { BaseEntity } from '../../database/base.entity'
+import { Extrinsic } from '../../extrinsics/extrinsic.entity'
+import { Idea } from './idea.entity'
 import { BadRequestException } from '@nestjs/common'
 
-@Entity("idea_networks")
+@Entity('idea_networks')
 export class IdeaNetwork extends BaseEntity {
     @Column({ nullable: false })
     name: string
@@ -12,21 +12,18 @@ export class IdeaNetwork extends BaseEntity {
     @Column('decimal', { precision: 39, scale: 15, nullable: false, default: 0 })
     value: number
 
-    @ManyToOne(
-        () => Idea,
-        (idea) => idea.networks
-    )
+    @ManyToOne(() => Idea, (idea) => idea.networks)
     idea?: Idea
 
     @OneToOne(() => Extrinsic)
     @JoinColumn()
     extrinsic: Extrinsic | null
 
-    @Column({ nullable: true, type: "integer", })
+    @Column({ nullable: true, type: 'integer' })
     blockchainProposalId: number | null
 
     constructor(name: string, value: number = 0, extrinsic = null, blockchainProposalId = null) {
-        super();
+        super()
         this.name = name
         this.value = value
         this.extrinsic = extrinsic

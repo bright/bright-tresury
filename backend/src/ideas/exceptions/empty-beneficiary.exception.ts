@@ -1,7 +1,7 @@
-import {BadRequestException} from "@nestjs/common";
+import { BadRequestException } from '@nestjs/common'
 
 export class EmptyBeneficiaryException extends BadRequestException {
     constructor() {
-        super(`Beneficiary can't be empty`);
+        super(`Beneficiary can't be empty`)
     }
 }

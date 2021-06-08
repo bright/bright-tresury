@@ -8,9 +8,9 @@ import {
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers'
 import { Idea } from './entities/idea.entity'
-import { IdeaNetwork } from './entities/ideaNetwork.entity'
+import { IdeaNetwork } from './entities/idea-network.entity'
 import { IdeasService } from './ideas.service'
-import { DefaultIdeaStatus, IdeaStatus } from './ideaStatus'
+import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
 import { createIdea, createSessionData } from './spec.helpers'
 
 const baseUrl = '/api/v1/ideas'
@@ -250,6 +250,16 @@ describe(`/api/v1/ideas`, () => {
                         .send({ title: 'Test title', networks: [{ name: null }] }),
                 )
                 .expect(400)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} if network has a value less than zero`, () => {
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .post(`${baseUrl}`)
+                        .send({ title: 'Test title', networks: [{ name: 'polkadot', value: -1 }] }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it('should return bad request if links are not array', () => {

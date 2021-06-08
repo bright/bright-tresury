@@ -1,14 +1,33 @@
-import {BadRequestException, Body, Delete, Get, HttpStatus, NotFoundException, Param, Patch, Post, Query, UseGuards,} from '@nestjs/common'
-import {ApiBadRequestResponse, ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiPropertyOptional, ApiTags,} from '@nestjs/swagger'
-import {IsOptional} from 'class-validator'
-import {validate as uuidValidate} from 'uuid'
-import {SessionGuard} from '../auth/session/guard/session.guard'
-import {ReqSession, SessionData} from '../auth/session/session.decorator'
-import {ControllerApiVersion} from "../utils/ControllerApiVersion";
-import {CreateIdeaDto} from './dto/createIdea.dto'
-import {IdeaDto} from './dto/idea.dto'
-import {UpdateIdeaDto} from './dto/updateIdea.dto'
-import {IdeasService} from './ideas.service'
+import {
+    BadRequestException,
+    Body,
+    Delete,
+    Get,
+    HttpStatus,
+    NotFoundException,
+    Param,
+    Patch,
+    Post,
+    Query,
+    UseGuards,
+} from '@nestjs/common'
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiPropertyOptional,
+    ApiTags,
+} from '@nestjs/swagger'
+import { IsOptional } from 'class-validator'
+import { validate as uuidValidate } from 'uuid'
+import { SessionGuard } from '../auth/session/guard/session.guard'
+import { ReqSession, SessionData } from '../auth/session/session.decorator'
+import { ControllerApiVersion } from '../utils/ControllerApiVersion'
+import { CreateIdeaDto } from './dto/create-idea.dto'
+import { IdeaDto } from './dto/idea.dto'
+import { UpdateIdeaDto } from './dto/update-idea.dto'
+import { IdeasService } from './ideas.service'
 
 class GetIdeasQuery {
     @ApiPropertyOptional()

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber, IsOptional } from 'class-validator'
-import { IdeaNetwork } from '../entities/ideaNetwork.entity'
+import { IsNotEmpty, IsNumber, IsOptional, Min } from 'class-validator'
+import { IdeaNetwork } from '../entities/idea-network.entity'
 import { ExtrinsicDto, toExtrinsicDto } from '../../extrinsics/dto/extrinsic.dto'
 
 export class IdeaNetworkDto {
@@ -21,6 +21,7 @@ export class IdeaNetworkDto {
         type: Number,
     })
     @IsNumber()
+    @Min(0)
     value: number
 
     @IsOptional()

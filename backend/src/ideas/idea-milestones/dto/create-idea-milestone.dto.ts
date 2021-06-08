@@ -1,20 +1,20 @@
-import {ApiProperty, ApiPropertyOptional} from "@nestjs/swagger";
-import {ArrayMinSize, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested} from "class-validator";
-import {Type} from "class-transformer";
-import {Nil} from "../../../utils/types";
-import { CreateIdeaMilestoneNetworkDto } from './createIdeaMilestoneNetworkDto'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ArrayMinSize, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
+import { Type } from 'class-transformer'
+import { Nil } from '../../../utils/types'
+import { CreateIdeaMilestoneNetworkDto } from './create-idea-milestone-network.dto'
 import { IsValidAddress } from '../../../utils/address/address.validator'
 
 export class CreateIdeaMilestoneDto {
     @ApiProperty({
-        description: 'Subject of the milestone'
+        description: 'Subject of the milestone',
     })
     @IsNotEmpty()
     @IsString()
     subject: string
 
     @ApiPropertyOptional({
-        description: 'Blockchain address of the idea milestone beneficiary'
+        description: 'Blockchain address of the idea milestone beneficiary',
     })
     @IsOptional()
     @IsValidAddress()
@@ -22,7 +22,7 @@ export class CreateIdeaMilestoneDto {
 
     @ApiPropertyOptional({
         description: 'Date of start of the milestone',
-        type: Date
+        type: Date,
     })
     @IsOptional()
     // https://github.com/typestack/class-validator/issues/407
@@ -31,7 +31,7 @@ export class CreateIdeaMilestoneDto {
 
     @ApiPropertyOptional({
         description: 'Date of end of the milestone',
-        type: Date
+        type: Date,
     })
     @IsOptional()
     // https://github.com/typestack/class-validator/issues/407
@@ -39,7 +39,7 @@ export class CreateIdeaMilestoneDto {
     dateTo: Nil<Date>
 
     @ApiPropertyOptional({
-        description: 'Description of the milestone'
+        description: 'Description of the milestone',
     })
     @IsOptional()
     @IsString()
@@ -47,7 +47,7 @@ export class CreateIdeaMilestoneDto {
 
     @ApiProperty({
         description: 'Networks of the milestone',
-        type: [CreateIdeaMilestoneNetworkDto]
+        type: [CreateIdeaMilestoneNetworkDto],
     })
     @Type(() => CreateIdeaMilestoneNetworkDto)
     @IsNotEmpty()
@@ -61,7 +61,7 @@ export class CreateIdeaMilestoneDto {
         beneficiary: Nil<string>,
         dateFrom: Nil<Date>,
         dateTo: Nil<Date>,
-        description: Nil<string>
+        description: Nil<string>,
     ) {
         this.subject = subject
         this.networks = networks

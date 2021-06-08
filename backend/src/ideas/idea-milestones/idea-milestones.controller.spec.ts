@@ -9,12 +9,12 @@ import {
 import { beforeSetupFullApp, cleanDatabase, request } from '../../utils/spec.helpers'
 import { Idea } from '../entities/idea.entity'
 import { IdeasService } from '../ideas.service'
-import { IdeaStatus } from '../ideaStatus'
+import { IdeaStatus } from '../idea-status'
 import { createIdea, createIdeaMilestone, createSessionData } from '../spec.helpers'
-import { CreateIdeaMilestoneDto } from './dto/createIdeaMilestoneDto'
-import { IdeaMilestoneDto } from './dto/ideaMilestoneDto'
-import { IdeaMilestone } from './entities/idea.milestone.entity'
-import { IdeaMilestonesService } from './idea.milestones.service'
+import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
+import { IdeaMilestoneDto } from './dto/idea-milestone.dto'
+import { IdeaMilestone } from './entities/idea-milestone.entity'
+import { IdeaMilestonesService } from './idea-milestones.service'
 
 const baseUrl = (ideaId: string) => `/api/v1/ideas/${ideaId}/milestones`
 

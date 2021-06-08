@@ -1,11 +1,11 @@
-import {Body, HttpCode, HttpStatus, Param, Post, UseGuards} from '@nestjs/common'
-import {ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags} from '@nestjs/swagger'
-import {SessionGuard} from '../../auth/session/guard/session.guard'
-import {ReqSession, SessionData} from '../../auth/session/session.decorator'
-import {ControllerApiVersion} from "../../utils/ControllerApiVersion";
-import {IdeaNetworkDto} from '../dto/ideaNetwork.dto'
-import {CreateIdeaProposalDto} from './dto/createIdeaProposal.dto'
-import {IdeaProposalsService} from './idea.proposals.service'
+import { Body, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common'
+import { ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags } from '@nestjs/swagger'
+import { SessionGuard } from '../../auth/session/guard/session.guard'
+import { ReqSession, SessionData } from '../../auth/session/session.decorator'
+import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
+import { IdeaNetworkDto } from '../dto/idea-network.dto'
+import { CreateIdeaProposalDto } from './dto/createIdeaProposal.dto'
+import { IdeaProposalsService } from './idea.proposals.service'
 
 @ControllerApiVersion('/ideas/:id/proposals', ['v1'])
 @ApiTags('ideas.proposals')

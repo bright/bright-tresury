@@ -12,8 +12,8 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../.
 import { Idea } from '../entities/idea.entity'
 import { createIdea } from '../spec.helpers'
 import { IdeasService } from '../ideas.service'
-import { IdeaStatus } from '../ideaStatus'
-import { IdeaNetwork } from '../entities/ideaNetwork.entity'
+import { IdeaStatus } from '../idea-status'
+import { IdeaNetwork } from '../entities/idea-network.entity'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',

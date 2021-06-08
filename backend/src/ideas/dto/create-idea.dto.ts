@@ -11,9 +11,9 @@ import {
     ValidateNested,
 } from 'class-validator'
 import { ideaRestrictions } from '../entities/idea.entity'
-import { IdeaStatus } from '../ideaStatus'
+import { IdeaStatus } from '../idea-status'
 import { Type } from 'class-transformer'
-import { CreateIdeaNetworkDto } from './createIdeaNetwork.dto'
+import { CreateIdeaNetworkDto } from './create-idea-network.dto'
 import { IsValidAddress } from '../../utils/address/address.validator'
 
 const AllowedIdeaStatuses = [IdeaStatus.Draft, IdeaStatus.Active]

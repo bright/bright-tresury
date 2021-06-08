@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IdeaMilestone } from '../entities/idea.milestone.entity'
-import { IdeaMilestoneNetworkDto } from './ideaMilestoneNetworkDto'
+import { IdeaMilestone } from '../entities/idea-milestone.entity'
+import { IdeaMilestoneNetworkDto } from './idea-milestone-network.dto'
 import { Nil } from '../../../utils/types'
-import { IdeaMilestoneStatus } from '../ideaMilestoneStatus'
+import { IdeaMilestoneStatus } from '../idea-milestone-status'
 
 export class IdeaMilestoneDto {
     @ApiProperty({
