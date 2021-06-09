@@ -24,7 +24,7 @@ const TransactionError = ({ error, onOk, title, subtitle }: TransactionErrorProp
                 subtitle ||
                 t([
                     `substrate.error.transaction.subtitle.${errorCode}`,
-                    error?.message ?? 'substrate.error.transaction.subtitle.unspecific',
+                    'substrate.error.transaction.subtitle.unspecific',
                 ])
             }
             buttons={

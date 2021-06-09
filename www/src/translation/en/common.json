@@ -397,9 +397,8 @@
             "transaction": {
                 "title": "Transaction failed",
                 "subtitle": {
-                    "unspecific": "Something went wrong, you may try again later",
-                    "1002": "Something went wrong, you may try again later",
-                    "1010": "Please check if you have enough funds to conduct the transaction"
+                    "1010": "Please check if you have enough funds to conduct the transaction",
+                    "unspecific": "Something went wrong, you may try again later"
                 }
             },
             "api": {
