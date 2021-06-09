@@ -12,6 +12,7 @@ const useStyles = makeStyles(() =>
             flexWrap: 'wrap',
             marginBottom: '24px',
             whiteSpace: 'pre-wrap',
+            width: '100%',
         },
     }),
 )

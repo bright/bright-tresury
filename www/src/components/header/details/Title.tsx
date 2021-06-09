@@ -4,10 +4,12 @@ import React from 'react'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            width: '100%',
             marginTop: '24px',
             marginRight: '.5em',
             fontSize: 18,
             flexBasis: '100%',
+            textOverflow: 'ellipsis',
         },
     }),
 )
