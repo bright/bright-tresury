@@ -39,6 +39,7 @@
         "signIn": "Sign In",
         "showAccountMenu": "Account menu",
         "network": {
+            "polkadotLogoAlt": "Polkadot logo",
             "development": "Development"
         },
         "account": {

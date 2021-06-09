@@ -30,7 +30,7 @@ const NetworkPicker = () => {
 
     return (
         <div className={classes.root}>
-            <img src={polkadotLogoSrc} alt={'Polkadot logo'} className={classes.image} />
+            <img src={polkadotLogoSrc} alt={t('topBar.network.polkadotLogoAlt')} className={classes.image} />
             <div className={classes.text}>{t('topBar.network.development')}</div>
         </div>
     )
