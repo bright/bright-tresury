@@ -7,8 +7,8 @@ import AccountInfo from './account/AccountInfo'
 import NetworkPicker from './NetworkPicker'
 import SignInButton from './SignInButton'
 
-export const tabletTopBarHeight = '77px'
-export const desktopTopBarHeight = '68px'
+export const TABLET_TOP_BAR_HEIGHT = '77px'
+export const DESKTOP_TOP_BAR_HEIGHT = '68px'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,9 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
             top: '0',
             overflow: 'hidden',
             width: '100%',
-            height: desktopTopBarHeight,
+            height: DESKTOP_TOP_BAR_HEIGHT,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                height: tabletTopBarHeight,
+                height: TABLET_TOP_BAR_HEIGHT,
             },
             padding: '0 36px',
             backgroundColor: config.NETWORK_COLOR,
@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const TopBar: React.FC = () => {
+const TopBar = () => {
     const classes = useStyles()
     const { isUserSignedIn } = useAuth()
 

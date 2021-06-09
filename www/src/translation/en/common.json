@@ -38,6 +38,9 @@
     "topBar": {
         "signIn": "Sign In",
         "showAccountMenu": "Account menu",
+        "network": {
+            "development": "Development"
+        },
         "account": {
             "emailVerificationNeeded": "Email verification needed",
             "account": "Account",

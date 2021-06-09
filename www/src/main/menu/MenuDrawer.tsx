@@ -9,23 +9,23 @@ import expandMenu from '../../assets/expand_menu.svg'
 import collapseMenu from '../../assets/collapse_menu.svg'
 import { IconButton } from '../../components/button/IconButton'
 import MenuAppInfo from './MenuAppInfo'
-import { desktopTopBarHeight, tabletTopBarHeight } from '../top-bar/TopBar'
+import { DESKTOP_TOP_BAR_HEIGHT, TABLET_TOP_BAR_HEIGHT } from '../top-bar/TopBar'
 
 const useStyles = makeStyles((theme: Theme) => {
     const drawerWidth = 250
     const miniDrawerWidth = 84
     return createStyles({
         root: {
-            marginTop: desktopTopBarHeight,
+            marginTop: DESKTOP_TOP_BAR_HEIGHT,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginTop: tabletTopBarHeight,
+                marginTop: TABLET_TOP_BAR_HEIGHT,
             },
             background: theme.palette.background.default,
         },
         paper: {
-            paddingBottom: desktopTopBarHeight,
+            paddingBottom: DESKTOP_TOP_BAR_HEIGHT,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                paddingBottom: tabletTopBarHeight,
+                paddingBottom: TABLET_TOP_BAR_HEIGHT,
             },
         },
         drawerIcon: {

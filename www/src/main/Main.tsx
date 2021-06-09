@@ -2,16 +2,16 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 
 import { breakpoints } from '../theme/theme'
-import TopBar, { desktopTopBarHeight, tabletTopBarHeight } from './top-bar/TopBar'
+import TopBar, { DESKTOP_TOP_BAR_HEIGHT, TABLET_TOP_BAR_HEIGHT } from './top-bar/TopBar'
 import Menu from './menu/Menu'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         dashboard: {
             minHeight: '100%',
-            marginTop: desktopTopBarHeight,
+            marginTop: DESKTOP_TOP_BAR_HEIGHT,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginTop: tabletTopBarHeight,
+                marginTop: TABLET_TOP_BAR_HEIGHT,
             },
             display: 'flex',
             flexDirection: 'row',
