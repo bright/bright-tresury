@@ -11,8 +11,9 @@ const useStyles = makeStyles(() =>
             flexDirection: 'row',
             flexWrap: 'wrap',
             marginBottom: '24px',
+            marginRight: '32px',
             whiteSpace: 'pre-wrap',
-            width: '100%',
+            width: '40%',
         },
     }),
 )

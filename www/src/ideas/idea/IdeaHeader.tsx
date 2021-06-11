@@ -54,7 +54,6 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 2,
-                alignSelf: 'flex-end',
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 position: 'fixed',
