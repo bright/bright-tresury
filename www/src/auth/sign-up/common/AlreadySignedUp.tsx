@@ -2,7 +2,7 @@ import { Trans } from 'react-i18next'
 import { Typography } from '@material-ui/core'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import RouterLink from "../../../components/link/RouterLink";
+import RouterLink from '../../../components/link/RouterLink'
 import { ROUTE_SIGNIN_EMAIL, ROUTE_SIGNIN_WEB3 } from '../../../routes/routes'
 import { SignOption } from '../../sign-components/SignOption'
 
@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => {
         login: {
             textAlign: 'center',
             fontSize: '14px',
-            marginTop: '.5em',
+            marginTop: '3.5em',
         },
     }
 })
@@ -38,7 +38,7 @@ const AlreadySignedUp = ({ signOption }: AlreadySignedUpProps) => {
                 <Trans
                     id="privacy-notice"
                     i18nKey="auth.signUp.logInLabel"
-                    components={{ a: <RouterLink to={getRoute()} replace={true}/> }}
+                    components={{ a: <RouterLink to={getRoute()} replace={true} /> }}
                 />
             }
         </Typography>
