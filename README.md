@@ -11,6 +11,15 @@ This repo contains:
 -   frontend
     -   React frontend application available on [http://localhost:3000/](http://localhost:3000/)
 
+## Testing env
+
+We have a testing environment set up. You can register and play with the app:
+
+-   the front end app: www.testing.treasury.brightinventions.pl
+-   the backend api: www.testing.treasury.brightinventions.pl:3000
+-   the backend api documentation: www.testing.treasury.brightinventions.pl:3000/api/documentation
+-   the Polkadot node (in development mode): ws://52.57.233.92:9944 (only via ws, no wss available). To access it with Polkadot JS Apps, you need to run an instance by yourself. [Here](https://github.com/polkadot-js/apps#docker) is an instruction how to run it in Docker.
+
 ## Development
 
 To run backend and frontend in development mode see the corresponding readme files.
