@@ -52,9 +52,6 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.up(breakpoints.mobile)]: {
                 alignSelf: 'flex-end',
             },
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                order: 2,
-            },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 position: 'fixed',
                 padding: 16,
