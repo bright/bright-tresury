@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { LoadingWrapper } from '../components/loading/LoadingWrapper'
+import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useGetProposals } from './proposals.api'
 import config from '../config'
 import { useLocation } from 'react-router-dom'

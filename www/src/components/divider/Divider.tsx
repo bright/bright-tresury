@@ -1,6 +1,10 @@
-import React from 'react'
-import { Divider as MaterialDivider, DividerProps } from '@material-ui/core'
+import React, { PropsWithChildren } from 'react'
+import { Divider as MaterialDivider, DividerProps as MaterialDividerProps } from '@material-ui/core'
 
-export const Divider: React.FC<DividerProps> = ({ children, ...props }) => {
+export type DividerProps = PropsWithChildren<MaterialDividerProps>
+
+const Divider = ({ children, ...props }: DividerProps) => {
     return <MaterialDivider {...props} />
 }
+
+export default Divider

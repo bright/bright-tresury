@@ -2,7 +2,7 @@ import { Meta, Story } from '@storybook/react/types-6-0'
 import i18next from 'i18next'
 import React from 'react'
 import { Trans } from 'react-i18next'
-import { Modal } from '../../components/modal/Modal'
+import Modal from '../../components/modal/Modal'
 import TransactionError, { TransactionErrorProps } from './TransactionError'
 
 export default {

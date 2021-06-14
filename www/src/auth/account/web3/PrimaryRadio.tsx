@@ -3,9 +3,10 @@ import React from 'react'
 import { FormControlLabel } from '@material-ui/core'
 import { Radio } from '../../../components/radio/Radio'
 
-export const PrimaryRadio: React.FC = () => {
+const PrimaryRadio = () => {
     const { t } = useTranslation()
     return (
         <FormControlLabel value="isPrimary" name="isPrimary" control={<Radio />} label={t('account.web3.isPrimary')} />
     )
 }
+export default PrimaryRadio

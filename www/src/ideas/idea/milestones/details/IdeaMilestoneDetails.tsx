@@ -3,8 +3,8 @@ import { IdeaMilestoneForm } from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'
-import { FormFooterButton } from '../../../../components/form/footer/FormFooterButton'
-import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
+import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
+import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 
 interface Props {
     idea: IdeaDto

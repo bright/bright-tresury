@@ -1,15 +1,15 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FormFooterButton } from '../../components/form/footer/FormFooterButton'
+import FormFooterButton from '../../components/form/footer/FormFooterButton'
 import Container from '../../components/form/Container'
 import config from '../../config'
 import IdeaForm from '../form/IdeaForm'
 import { useCreateIdea } from '../ideas.api'
-import { FormFooterErrorBox } from '../../components/form/footer/FormFooterErrorBox'
+import FormFooterErrorBox from '../../components/form/footer/FormFooterErrorBox'
 import { useHistory } from 'react-router'
 import { ROUTE_IDEAS } from '../../routes/routes'
 import { IdeaDto, IdeaStatus } from '../ideas.dto'
-import { FormFooterButtonsContainer } from '../../components/form/footer/FormFooterButtonsContainer'
+import FormFooterButtonsContainer from '../../components/form/footer/FormFooterButtonsContainer'
 import { createEmptyIdea } from '../utils/ideas.utils'
 
 export interface IdeaCreateProps {

@@ -16,8 +16,10 @@ export interface ErrorProps {
     text: string
 }
 
-export const Error = ({ text }: ErrorProps) => {
+const Error = ({ text }: ErrorProps) => {
     const classes = useStyles()
 
     return <p className={classes.root}>{text}</p>
 }
+
+export default Error

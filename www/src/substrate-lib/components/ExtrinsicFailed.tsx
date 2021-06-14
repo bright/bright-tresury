@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import cautionImg from '../../assets/caution.svg'
-import { Button } from '../../components/button/Button'
+import Button from '../../components/button/Button'
 import { ExtrinsicError } from './SubmittingTransaction'
 import TransactionModal from './TransactionModal'
 

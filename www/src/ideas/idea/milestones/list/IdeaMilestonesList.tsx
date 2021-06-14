@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { useTurnIdeaMilestoneIntoProposal } from '../idea.milestones.api'
 import { IdeaMilestoneDetailsModal } from '../details/IdeaMilestoneDetailsModal'
-import { Grid } from '../../../../components/grid/Grid'
+import Grid from '../../../../components/grid/Grid'
 import { IdeaMilestoneCard } from './IdeaMilestoneCard'
 import { mobileHeaderListHorizontalMargin } from '../../../../components/header/list/HeaderListContainer'
 import { TurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalModal'

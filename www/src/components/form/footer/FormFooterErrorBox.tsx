@@ -30,7 +30,7 @@ interface OwnProps {
 
 export type FormFooterErrorBoxProps = OwnProps & TypographyProps
 
-export const FormFooterErrorBox: React.FC<FormFooterErrorBoxProps> = ({ error, className, ...props }) => {
+const FormFooterErrorBox = ({ error, className, ...props }: FormFooterErrorBoxProps) => {
     const classes = useStyles()
 
     return (
@@ -39,3 +39,5 @@ export const FormFooterErrorBox: React.FC<FormFooterErrorBoxProps> = ({ error, c
         </Typography>
     )
 }
+
+export default FormFooterErrorBox

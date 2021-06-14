@@ -7,12 +7,12 @@ import Container from '../../../components/form/Container'
 import IdeaForm from '../../form/IdeaForm'
 import { IDEA_QUERY_KEY_BASE, useGetIdea, usePatchIdea, useTurnIdeaIntoProposal } from '../../ideas.api'
 import { ExtrinsicDetails, SubmitProposalModal } from '../../SubmitProposalModal'
-import { FormFooterButton } from '../../../components/form/footer/FormFooterButton'
+import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import { useModal } from '../../../components/modal/useModal'
 import { IdeaDto, IdeaStatus, TurnIdeaIntoProposalDto } from '../../ideas.dto'
 import { useQueryClient } from 'react-query'
-import { FormFooterErrorBox } from '../../../components/form/footer/FormFooterErrorBox'
-import { FormFooterButtonsContainer } from '../../../components/form/footer/FormFooterButtonsContainer'
+import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
+import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 
 export const TurnIdeaIntoProposal = () => {
     const { t } = useTranslation()

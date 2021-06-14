@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { breakpoints } from '../../../theme/theme'
-import { Button, ButtonProps } from '../../button/Button'
+import Button, { ButtonProps } from '../../button/Button'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,8 +12,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
+export type FormFooterButtonProps = PropsWithChildren<ButtonProps>
 
-export const FormFooterButton = ({ children, ...props }: ButtonProps) => {
+const FormFooterButton = ({ children, ...props }: FormFooterButtonProps) => {
     const classes = useStyles()
     return (
         <Button className={classes.root} color="primary" {...props}>
@@ -21,3 +22,5 @@ export const FormFooterButton = ({ children, ...props }: ButtonProps) => {
         </Button>
     )
 }
+
+export default FormFooterButton

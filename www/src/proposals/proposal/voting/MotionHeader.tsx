@@ -1,5 +1,5 @@
 import React from 'react'
-import { CardHeader } from '../../../components/card/components/CardHeader'
+import CardHeader from '../../../components/card/components/CardHeader'
 import ayeIcon from '../../../assets/aye.svg'
 import nayIcon from '../../../assets/nay.svg'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'

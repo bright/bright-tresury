@@ -1,8 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import clsx from 'clsx'
-import { HeaderTabs } from '../HeaderTabs'
+import HeaderTabs from '../HeaderTabs'
 import { ClassNameProps } from '../../props/className.props'
 import { mobileHeaderListHorizontalMargin } from './HeaderListContainer'
 
@@ -18,8 +18,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-
-export const HeaderListTabs: React.FC<ClassNameProps> = ({ className, children }) => {
+export type HeaderListTabsProps = ClassNameProps & PropsWithChildren<{}>
+const HeaderListTabs = ({ className, children }: HeaderListTabsProps) => {
     const classes = useStyles()
     return <HeaderTabs className={clsx(classes.root, className)}>{children}</HeaderTabs>
 }
+export default HeaderListTabs

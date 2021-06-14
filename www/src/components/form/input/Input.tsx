@@ -2,8 +2,8 @@ import FormGroup from '@material-ui/core/FormGroup'
 import { FieldHookConfig, useField } from 'formik'
 import React from 'react'
 import { Label } from '../../text/Label'
-import { ErrorLabel } from './ErrorLabel'
-import { TextField, TextFieldProps } from './TextField'
+import ErrorLabel from './ErrorLabel'
+import TextField, { TextFieldProps } from './TextField'
 import { TextFieldColorScheme } from './textFieldStyles'
 
 interface OwnProps {
@@ -14,13 +14,13 @@ interface OwnProps {
 
 export type InputProps = OwnProps & Omit<TextFieldProps, 'label'> & FieldHookConfig<string>
 
-export const Input: React.FC<InputProps> = ({
+const Input = ({
     label,
     endAdornment,
     name = '',
     textFieldColorScheme = TextFieldColorScheme.Light,
     ...props
-}) => {
+}: InputProps) => {
     const [field, meta] = useField(name)
     const hasError: boolean = meta.touched && Boolean(meta.error)
 
@@ -38,3 +38,5 @@ export const Input: React.FC<InputProps> = ({
         </FormGroup>
     )
 }
+
+export default Input

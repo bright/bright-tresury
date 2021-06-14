@@ -14,11 +14,11 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface LoaderProps {
+export interface OwnProps {
     text: string
 }
-
-export const Loader = ({ text }: LoaderProps) => {
+export type LoaderProps = OwnProps
+const Loader = ({ text }: LoaderProps) => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
@@ -27,3 +27,4 @@ export const Loader = ({ text }: LoaderProps) => {
         </div>
     )
 }
+export default Loader

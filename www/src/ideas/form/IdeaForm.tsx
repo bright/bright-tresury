@@ -3,12 +3,12 @@ import { Formik } from 'formik'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
-import { Button } from '../../components/button/Button'
+import Button from '../../components/button/Button'
 import IdeaFormFields from './IdeaFormFields'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
 import { IdeaDto } from '../ideas.dto'
-import { FormFooter } from '../../components/form/footer/FormFooter'
+import FormFooter from '../../components/form/footer/FormFooter'
 
 const useStyles = makeStyles(() =>
     createStyles({

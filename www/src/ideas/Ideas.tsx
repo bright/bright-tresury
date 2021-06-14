@@ -6,7 +6,7 @@ import config from '../config'
 import { filterIdeas } from './list/filterIdeas'
 import IdeasHeader from './IdeasHeader'
 import IdeasList from './list/IdeasList'
-import { LoadingWrapper } from '../components/loading/LoadingWrapper'
+import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
 

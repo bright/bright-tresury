@@ -7,7 +7,9 @@ interface OwnProps {
     redirectTo: string
 }
 
-export const LinkCard = ({ redirectTo, children, ...props }: PropsWithChildren<OwnProps & PaperProps>) => {
+export type LinkCardProps = PropsWithChildren<OwnProps & PaperProps>
+
+const LinkCard = ({ redirectTo, children, ...props }: LinkCardProps) => {
     const classes = useCardStyles()
 
     return (
@@ -18,3 +20,5 @@ export const LinkCard = ({ redirectTo, children, ...props }: PropsWithChildren<O
         </Paper>
     )
 }
+
+export default LinkCard

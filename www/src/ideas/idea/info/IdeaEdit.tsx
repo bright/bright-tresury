@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { FormFooterButton } from '../../../components/form/footer/FormFooterButton'
+import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import IdeaForm from '../../form/IdeaForm'
 import { usePatchIdea } from '../../ideas.api'
 import { useHistory } from 'react-router'
 import { ROUTE_IDEAS } from '../../../routes/routes'
 import { IdeaDto, IdeaStatus } from '../../ideas.dto'
-import { FormFooterErrorBox } from '../../../components/form/footer/FormFooterErrorBox'
-import { FormFooterButtonsContainer } from '../../../components/form/footer/FormFooterButtonsContainer'
+import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
+import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 
 export interface IdeaEditProps {
     idea: IdeaDto

@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -13,8 +13,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-
-export const Title: React.FC = ({ children }) => {
+interface OwnProps {}
+export type TitleProps = PropsWithChildren<OwnProps>
+const Title = ({ children }: TitleProps) => {
     const classes = useStyles()
     return <div className={classes.root}>{children}</div>
 }
+export default Title

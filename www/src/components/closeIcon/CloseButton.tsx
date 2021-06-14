@@ -1,6 +1,6 @@
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { IconButton } from '../button/IconButton'
+import IconButton from '../button/IconButton'
 import crossSvg from '../../assets/cross.svg'
 import { ClassNameProps } from '../props/className.props'
 import clsx from 'clsx'
@@ -27,4 +27,3 @@ const CloseButton = ({ onClose, className = '' }: CloseButtonProps) => {
 }
 
 export default CloseButton
-

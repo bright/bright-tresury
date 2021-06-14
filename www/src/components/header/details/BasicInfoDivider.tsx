@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
 import React from 'react'
-import { Divider } from '../../divider/Divider'
+import Divider from '../../divider/Divider'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -14,8 +14,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-
-export const BasicInfoDivider: React.FC = ({ children }) => {
+interface OwnProps {}
+export type BasicInfoDividerProps = OwnProps
+const BasicInfoDivider = ({}: BasicInfoDividerProps) => {
     const classes = useStyles()
     return <Divider className={classes.root} orientation="vertical" />
 }
+export default BasicInfoDivider

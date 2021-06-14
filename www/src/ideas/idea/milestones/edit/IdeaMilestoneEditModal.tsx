@@ -1,12 +1,12 @@
 import React from 'react'
-import { Modal } from '../../../../components/modal/Modal'
+import Modal from '../../../../components/modal/Modal'
 import { IdeaMilestoneEdit } from './IdeaMilestoneEdit'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneModalHeader } from '../components/IdeaMilestoneModalHeader'
 import { useTurnIdeaMilestoneIntoProposal } from '../turnIntoProposal/useTurnIdeaMilestoneIntoProposal'
-import { Button } from '../../../../components/button/Button'
+import Button from '../../../../components/button/Button'
 
 interface Props {
     open: boolean

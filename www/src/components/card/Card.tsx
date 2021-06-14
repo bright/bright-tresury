@@ -2,7 +2,9 @@ import React, { PropsWithChildren } from 'react'
 import { Paper, PaperProps } from '@material-ui/core'
 import { useCardStyles } from './cardStyles'
 
-export const Card = ({ children, ...props }: PropsWithChildren<PaperProps>) => {
+export type CardProps = PropsWithChildren<PaperProps>
+
+const Card = ({ children, ...props }: CardProps) => {
     const classes = useCardStyles()
 
     return (
@@ -11,3 +13,4 @@ export const Card = ({ children, ...props }: PropsWithChildren<PaperProps>) => {
         </Paper>
     )
 }
+export default Card

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles(() =>
@@ -13,8 +13,10 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export const CardHeader: React.FC = ({ children }) => {
+const CardHeader = ({ children }: PropsWithChildren<{}>) => {
     const classes = useStyles()
 
     return <div className={classes.root}>{children}</div>
 }
+
+export default CardHeader

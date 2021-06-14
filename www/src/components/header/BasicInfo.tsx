@@ -1,5 +1,5 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -17,8 +17,10 @@ const useStyles = makeStyles(() =>
         },
     }),
 )
-
-export const BasicInfo: React.FC = ({ children }) => {
+interface OwnProps {}
+export type BasicInfoProps = PropsWithChildren<OwnProps>
+const BasicInfo = ({ children }: BasicInfoProps) => {
     const classes = useStyles()
     return <div className={classes.root}>{children}</div>
 }
+export default BasicInfo

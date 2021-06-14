@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from '../../../../components/modal/Modal'
+import Modal from '../../../../components/modal/Modal'
 import { IdeaMilestoneDetails } from './IdeaMilestoneDetails'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'

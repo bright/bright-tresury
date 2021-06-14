@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input } from '../../../../../components/form/input/Input'
+import Input from '../../../../../components/form/input/Input'
 import config from '../../../../../config'
 import { TextFieldColorScheme } from '../../../../../components/form/input/textFieldStyles'
 import { useTranslation } from 'react-i18next'

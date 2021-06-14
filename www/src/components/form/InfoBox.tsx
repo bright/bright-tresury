@@ -32,7 +32,7 @@ interface OwnProps {
 
 export type InfoBoxProps = OwnProps & TypographyProps
 
-export const InfoBox: React.FC<InfoBoxProps> = ({ message, level = 'info', className, ...props }) => {
+const InfoBox = ({ message, level = 'info', className, ...props }: InfoBoxProps) => {
     const classes = useStyles()
 
     return (
@@ -44,3 +44,5 @@ export const InfoBox: React.FC<InfoBoxProps> = ({ message, level = 'info', class
         </Typography>
     )
 }
+
+export default InfoBox

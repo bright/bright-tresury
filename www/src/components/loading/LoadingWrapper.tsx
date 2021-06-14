@@ -1,20 +1,15 @@
 import React, { PropsWithChildren } from 'react'
-import { Loader } from './Loader'
-import { Error } from '../error/Error'
+import Loader from './Loader'
+import Error from '../error/Error'
 import { QueryStatus } from 'react-query'
 
-export interface LoadingWrapperProps {
+interface OwnProps {
     status: QueryStatus
     errorText: string
     loadingText: string
 }
-
-export const LoadingWrapper = ({
-    status,
-    errorText,
-    loadingText,
-    children,
-}: PropsWithChildren<LoadingWrapperProps>) => {
+export type LoadingWrapperProps = PropsWithChildren<OwnProps>
+const LoadingWrapper = ({ status, errorText, loadingText, children }: LoadingWrapperProps) => {
     switch (status) {
         case 'idle':
             return null
@@ -28,3 +23,4 @@ export const LoadingWrapper = ({
             return null
     }
 }
+export default LoadingWrapper

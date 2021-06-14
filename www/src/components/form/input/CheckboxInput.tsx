@@ -11,7 +11,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import checkboxCheckedIcon from '../../../assets/checkbox_checked.svg'
 import checkboxEmptyIcon from '../../../assets/checkbox_empty.svg'
-import { ErrorLabel } from './ErrorLabel'
+import ErrorLabel from './ErrorLabel'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,7 +43,7 @@ interface OwnProps {
 
 export type CheckboxInputProps = OwnProps & CheckboxProps & FieldHookConfig<any>
 
-export const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, ...props }) => {
+export const CheckboxInput = ({ label, ...props }: CheckboxInputProps) => {
     const classes = useStyles()
     const checkboxClasses = useCheckboxStyles()
     const { t } = useTranslation()
@@ -73,3 +73,5 @@ export const CheckboxInput: React.FC<CheckboxInputProps> = ({ label, ...props })
         </FormControl>
     )
 }
+
+export default CheckboxInput

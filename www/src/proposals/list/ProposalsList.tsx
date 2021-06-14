@@ -1,7 +1,7 @@
 import React from 'react'
 import ProposalCard from './ProposalCard'
 import { ProposalDto } from '../proposals.dto'
-import { Grid } from '../../components/grid/Grid'
+import Grid from '../../components/grid/Grid'
 
 export interface ProposalsListProps {
     proposals: ProposalDto[]

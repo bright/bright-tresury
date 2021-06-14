@@ -1,4 +1,4 @@
-import { Link, LinkProps } from '../../../components/link/Link'
+import Link, { LinkProps } from '../../../components/link/Link'
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles } from '@material-ui/core'

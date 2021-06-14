@@ -42,13 +42,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface AmountProps {
+export interface AmountProps {
     amount: number
     currency: string
     label?: string
 }
 
-export const Amount: React.FC<AmountProps> = ({ amount, currency, label, ...props }) => {
+const Amount = ({ amount, currency, label, ...props }: AmountProps) => {
     const classes = useStyles()
     return (
         <div {...props} className={classes.root}>
@@ -59,3 +59,4 @@ export const Amount: React.FC<AmountProps> = ({ amount, currency, label, ...prop
         </div>
     )
 }
+export default Amount

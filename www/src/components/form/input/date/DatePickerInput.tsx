@@ -4,10 +4,10 @@ import { MuiPickersUtilsProvider, DatePicker as MaterialDatePicker } from '@mate
 import { Label } from '../../../text/Label'
 import FormGroup from '@material-ui/core/FormGroup'
 import DateFnsUtils from '@date-io/date-fns'
-import { ErrorLabel } from '../ErrorLabel'
+import ErrorLabel from '../ErrorLabel'
 import { TextFieldColorScheme, useTextFieldStyles } from '../textFieldStyles'
 
-interface Props {
+export interface DatePickerInputProps {
     name: string
     label?: string | JSX.Element
     placeholder?: string
@@ -15,12 +15,12 @@ interface Props {
     textFieldColorScheme?: TextFieldColorScheme
 }
 
-export const DatePickerInput = ({
+const DatePickerInput = ({
     name,
     label,
     textFieldColorScheme = TextFieldColorScheme.Light,
     ...props
-}: Props) => {
+}: DatePickerInputProps) => {
     const classes = useTextFieldStyles({ colorScheme: textFieldColorScheme })()
 
     const [field, meta, helpers] = useField(name)
@@ -51,3 +51,5 @@ export const DatePickerInput = ({
         </FormGroup>
     )
 }
+
+export default DatePickerInput

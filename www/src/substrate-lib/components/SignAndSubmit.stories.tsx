@@ -1,8 +1,8 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 import React from 'react'
 import { Trans } from 'react-i18next'
-import { Strong } from '../../components/info/Info'
-import { Modal } from '../../components/modal/Modal'
+import Strong from '../../components/strong/Strong'
+import Modal from '../../components/modal/Modal'
 import SignAndSubmit, { Props } from './SignAndSubmit'
 
 export default {

@@ -1,6 +1,6 @@
 import styled from '@material-ui/core/styles/styled'
 
-export const FormFooter = styled('div')(() => ({
+const FormFooter = styled('div')(() => ({
     display: 'flex',
     flexDirection: 'column',
     gap: '1em',
@@ -8,3 +8,5 @@ export const FormFooter = styled('div')(() => ({
     justifyContent: 'center',
     marginTop: '40px',
 }))
+
+export default FormFooter

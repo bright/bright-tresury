@@ -19,10 +19,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
+interface OwnProps {}
+export type ModalProps = OwnProps & MaterialDialogProps
 
-export type Props = MaterialDialogProps
-
-export const Modal = ({ children, ...props }: Props) => {
+const Modal = ({ children, ...props }: ModalProps) => {
     const classes = useStyles()
 
     return (
@@ -31,3 +31,4 @@ export const Modal = ({ children, ...props }: Props) => {
         </Dialog>
     )
 }
+export default Modal

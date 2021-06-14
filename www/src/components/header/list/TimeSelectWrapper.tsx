@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { ClassNameProps } from '../../props/className.props'
 import clsx from 'clsx'
 import { headerListHorizontalMargin, mobileHeaderListHorizontalMargin } from './HeaderListContainer'
@@ -29,8 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-
-export const TimeSelectWrapper: React.FC<ClassNameProps> = ({ className, children }) => {
+export type TimeSelectWrapperProps = ClassNameProps & PropsWithChildren<{}>
+const TimeSelectWrapper = ({ className, children }: TimeSelectWrapperProps) => {
     const classes = useStyles()
     return <div className={clsx(classes.root, className)}>{children}</div>
 }
+export default TimeSelectWrapper

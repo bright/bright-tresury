@@ -1,6 +1,7 @@
 import { styled } from '@material-ui/core'
-import { Link } from './Link'
+import Link from './Link'
 
-export const UnderlinedLink = styled(Link)(() => ({
+const UnderlinedLink = styled(Link)(() => ({
     textDecoration: 'underline',
 }))
+export default UnderlinedLink

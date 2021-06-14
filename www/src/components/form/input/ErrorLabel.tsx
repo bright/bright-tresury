@@ -20,7 +20,7 @@ interface OwnProps {
 
 export type ErrorLabelProps = OwnProps & TypographyProps
 
-export const ErrorLabel: React.FC<ErrorLabelProps> = ({ touched, errorMessage, className, ...props }) => {
+const ErrorLabel = ({ touched, errorMessage, className, ...props }: ErrorLabelProps) => {
     const classes = useStyles()
 
     const error = formikErrorToString(errorMessage)
@@ -31,3 +31,4 @@ export const ErrorLabel: React.FC<ErrorLabelProps> = ({ touched, errorMessage, c
         </Typography>
     ) : null
 }
+export default ErrorLabel

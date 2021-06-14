@@ -22,11 +22,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     value: number
 }
-
-export const NetworkValue: React.FC<Props> = ({ value }) => {
+export type NetworkValueProps = OwnProps
+const NetworkValue = ({ value }: NetworkValueProps) => {
     const classes = useStyles()
     return (
         <p className={classes.root}>
@@ -34,3 +34,4 @@ export const NetworkValue: React.FC<Props> = ({ value }) => {
         </p>
     )
 }
+export default NetworkValue

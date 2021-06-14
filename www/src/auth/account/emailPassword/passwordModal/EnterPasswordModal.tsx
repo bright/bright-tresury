@@ -1,8 +1,8 @@
 import React from 'react'
-import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
-import { Modal } from '../../../../components/modal/Modal'
+import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
+import Modal from '../../../../components/modal/Modal'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../../components/button/Button'
+import Button from '../../../../components/button/Button'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
 import * as Yup from 'yup'
@@ -33,13 +33,13 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+export interface EnterPasswordModalProps {
     open: boolean
     onClose: () => void
     onConfirm: (password: string) => void
 }
 
-export const EnterPasswordModal = ({ open, onClose, onConfirm }: Props) => {
+const EnterPasswordModal = ({ open, onClose, onConfirm }: EnterPasswordModalProps) => {
     const { t } = useTranslation()
     const classes = useStyles()
 
@@ -94,3 +94,4 @@ export const EnterPasswordModal = ({ open, onClose, onConfirm }: Props) => {
         </Modal>
     )
 }
+export default EnterPasswordModal

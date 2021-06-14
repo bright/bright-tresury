@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import failedImg from '../../assets/failed.svg'
-import { Button } from '../../components/button/Button'
+import Button from '../../components/button/Button'
 import TransactionModal from './TransactionModal'
 
 export interface TransactionErrorProps {

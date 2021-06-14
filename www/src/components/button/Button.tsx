@@ -29,12 +29,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
+export type ButtonVariant = 'contained' | 'outlined' | 'text'
+
 interface OwnProps {
     variant?: ButtonVariant
 }
+
 export type ButtonProps = OwnProps & MaterialButtonProps
 
-export const Button: React.FC<ButtonProps> = ({ children, variant, ...props }) => {
+const Button = ({ children, variant, ...props }: ButtonProps) => {
     const classes = useStyles()
     return (
         <MaterialButton {...props} classes={classes} variant={variant ?? 'contained'}>
@@ -43,4 +46,4 @@ export const Button: React.FC<ButtonProps> = ({ children, variant, ...props }) =
     )
 }
 
-export type ButtonVariant = 'contained' | 'outlined' | 'text'
+export default Button

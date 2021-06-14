@@ -1,7 +1,7 @@
 import React from 'react'
 import { Trans } from 'react-i18next'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Strong } from '../../components/info/Info'
+import Strong from '../../components/strong/Strong'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

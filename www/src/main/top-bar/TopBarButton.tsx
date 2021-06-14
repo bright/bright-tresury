@@ -1,5 +1,4 @@
-import styled from "@material-ui/core/styles/styled";
-import React from 'react';
+import styled from '@material-ui/core/styles/styled'
 
 const TopBarButton = styled('div')(() => ({
     height: '30px',
@@ -14,4 +13,3 @@ const TopBarButton = styled('div')(() => ({
 }))
 
 export default TopBarButton
-

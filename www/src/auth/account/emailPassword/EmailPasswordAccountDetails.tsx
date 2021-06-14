@@ -1,7 +1,7 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../components/button/Button'
+import Button from '../../../components/button/Button'
 import { useAuth } from '../../AuthContext'
 import DisabledFormField from './components/DisabledFormField'
 import EmailNotVerifiedError from './components/EmailNotVerifiedError'

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Divider } from '../../../components/divider/Divider'
+import Divider from '../../../components/divider/Divider'
 import MotionHeader from './MotionHeader'
 import MotionDetails from './MotionDetails'
 import { Paper, Theme } from '@material-ui/core'

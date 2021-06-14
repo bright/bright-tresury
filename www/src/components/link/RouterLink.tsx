@@ -1,8 +1,8 @@
 import { createStyles, Link as MaterialLink } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import React, {PropsWithChildren} from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Link as ReactRouterLink } from 'react-router-dom'
-import { Strong } from '../info/Info'
+import Strong from '../strong/Strong'
 
 const useStyles = makeStyles(() =>
     createStyles({

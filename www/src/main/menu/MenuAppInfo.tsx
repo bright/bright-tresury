@@ -4,7 +4,7 @@ import { createStyles, Theme } from '@material-ui/core'
 import menuDrawing from '../../assets/menu_drawing.svg'
 import treasuryLabeledLogo from '../../assets/treasury_labeled_logo.svg'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../components/button/Button'
+import Button from '../../components/button/Button'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

@@ -1,6 +1,6 @@
 import { Meta, Story } from '@storybook/react/types-6-0'
 import React from 'react'
-import { Modal } from '../../components/modal/Modal'
+import Modal from '../../components/modal/Modal'
 import SubstrateLoading, { Props } from './SubstrateLoading'
 
 export default {

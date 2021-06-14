@@ -1,4 +1,4 @@
-import { CardDetails } from '../../../components/card/components/CardDetails'
+import CardDetails from '../../../components/card/components/CardDetails'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'

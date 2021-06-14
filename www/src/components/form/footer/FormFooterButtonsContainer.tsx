@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
 
@@ -21,8 +21,10 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export const FormFooterButtonsContainer: React.FC = ({ children }) => {
+const FormFooterButtonsContainer = ({ children }: PropsWithChildren<{}>) => {
     const classes = useStyles()
 
     return <div className={classes.root}>{children}</div>
 }
+
+export default FormFooterButtonsContainer

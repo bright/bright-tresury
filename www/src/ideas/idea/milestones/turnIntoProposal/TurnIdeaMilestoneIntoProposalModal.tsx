@@ -1,15 +1,15 @@
 import React from 'react'
 import { IDEA_MILESTONES_QUERY_KEY_BASE, usePatchIdeaMilestone } from '../idea.milestones.api'
 import { IdeaMilestoneDto, PatchIdeaMilestoneDto } from '../idea.milestones.dto'
-import { Modal } from '../../../../components/modal/Modal'
+import Modal from '../../../../components/modal/Modal'
 import { Trans, useTranslation } from 'react-i18next'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
-import { FormFooterButton } from '../../../../components/form/footer/FormFooterButton'
-import { FormFooterErrorBox } from '../../../../components/form/footer/FormFooterErrorBox'
+import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
+import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
 import { useQueryClient } from 'react-query'
-import { FormFooterButtonsContainer } from '../../../../components/form/footer/FormFooterButtonsContainer'
+import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 
 const useStyles = makeStyles(
     createStyles({

@@ -3,7 +3,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 import makeStyles from '@material-ui/core/styles/makeStyles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../components/button/Button'
+import Button from '../../components/button/Button'
 import { breakpoints } from '../../theme/theme'
 import TransactionModal from './TransactionModal'
 

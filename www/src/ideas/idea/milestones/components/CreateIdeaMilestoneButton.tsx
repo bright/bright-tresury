@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '../../../../components/button/Button'
+import Button from '../../../../components/button/Button'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../../theme/theme'
 import { mobileHeaderListHorizontalMargin } from '../../../../components/header/list/HeaderListContainer'

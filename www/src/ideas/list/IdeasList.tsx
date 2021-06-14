@@ -1,7 +1,7 @@
 import React from 'react'
 import IdeaCard from './IdeaCard'
 import { IdeaDto } from '../ideas.dto'
-import { Grid } from '../../components/grid/Grid'
+import Grid from '../../components/grid/Grid'
 
 export interface IdeasListProps {
     ideas: IdeaDto[]

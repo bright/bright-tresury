@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { Grid as MaterialGrid } from '@material-ui/core'
 
-export const GridItem: React.FC = ({ children }) => {
+const GridItem = ({ children }: PropsWithChildren<{}>) => {
     return (
         <MaterialGrid item={true} xs={12} md={6}>
             {children}
         </MaterialGrid>
     )
 }
+export default GridItem

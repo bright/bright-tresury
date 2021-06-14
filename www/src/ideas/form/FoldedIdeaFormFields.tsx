@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Input } from '../../components/form/input/Input'
+import Input from '../../components/form/input/Input'
 import config from '../../config'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'

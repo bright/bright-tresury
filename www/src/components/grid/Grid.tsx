@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid as MaterialGrid } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
-import { GridItem } from './GridItem'
+import GridItem from './GridItem'
 
 const DEFAULT_HORIZONTAL_PADDING = '32px'
 const DEFAULT_MOBILE_HORIZONTAL_PADDING = '18px'
@@ -24,16 +24,16 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => {
     })
 })
 
-interface GridProps<T> {
+interface OwnProps<T> {
     items: T[]
     renderItem: (item: T) => JSX.Element
     horizontalPadding?: string
     mobileHorizontalPadding?: string
 }
 
-export type IGrid<T = any> = React.FC<GridProps<T>>
+export type GridProps<T = any> = React.FC<OwnProps<T>>
 
-export const Grid: IGrid = ({
+const Grid: GridProps = ({
     items,
     renderItem,
     horizontalPadding = DEFAULT_HORIZONTAL_PADDING,
@@ -52,3 +52,4 @@ export const Grid: IGrid = ({
         </MaterialGrid>
     )
 }
+export default Grid

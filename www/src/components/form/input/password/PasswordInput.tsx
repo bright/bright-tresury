@@ -5,9 +5,9 @@ import React, { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import hidePasswordIcon from '../../../../assets/hide_password.svg'
 import showPasswordIcon from '../../../../assets/show_password.svg'
-import { TextField } from '../TextField'
-import { PasswordLabel } from './PasswordLabel'
-import { ValidationRuleLabel } from './ValidationRuleLabel'
+import TextField from '../TextField'
+import PasswordLabel from './PasswordLabel'
+import ValidationRuleLabel from './ValidationRuleLabel'
 
 interface OwnProps {
     label?: string

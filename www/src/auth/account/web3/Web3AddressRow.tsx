@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 })
 
-interface OwnProps {
+export interface Web3AddressRowProps {
     onPrimaryChange?: (checked: boolean) => void
     isPrimary: boolean
     primaryDisabled?: boolean
@@ -59,13 +59,13 @@ interface OwnProps {
     linkComponent: string | JSX.Element
 }
 
-export const Web3AddressRow = ({
+const Web3AddressRow = ({
     addressComponent,
     linkComponent,
     isPrimary,
     primaryDisabled = false,
     onPrimaryChange,
-}: OwnProps) => {
+}: Web3AddressRowProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -87,3 +87,4 @@ export const Web3AddressRow = ({
         </div>
     )
 }
+export default Web3AddressRow

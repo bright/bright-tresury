@@ -7,7 +7,7 @@ import { WithWidthProps } from '@material-ui/core/withWidth/withWidth'
 import MenuItemsList from './MenuItemsList'
 import expandMenu from '../../assets/expand_menu.svg'
 import collapseMenu from '../../assets/collapse_menu.svg'
-import { IconButton } from '../../components/button/IconButton'
+import IconButton from '../../components/button/IconButton'
 import MenuAppInfo from './MenuAppInfo'
 import { DESKTOP_TOP_BAR_HEIGHT, TABLET_TOP_BAR_HEIGHT } from '../top-bar/TopBar'
 

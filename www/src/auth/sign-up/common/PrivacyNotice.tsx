@@ -1,7 +1,7 @@
 import { Trans } from 'react-i18next'
 import { Label } from '../../../components/text/Label'
 import React from 'react'
-import { UnderlinedLink } from '../../../components/link/UnderlinedLink'
+import UnderlinedLink from '../../../components/link/UnderlinedLink'
 
 export const PrivacyNotice: React.FC = () => {
     return (

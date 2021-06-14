@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, ButtonProps } from '../../../components/button/Button'
+import Button, { ButtonProps } from '../../../components/button/Button'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 

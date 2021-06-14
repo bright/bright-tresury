@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { ClassNameProps } from '../../props/className.props'
 import clsx from 'clsx'
 
@@ -19,8 +19,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
+export type PaperFilterBackgroundProps = ClassNameProps & PropsWithChildren<{}>
 
-export const PaperFilterBackground: React.FC<ClassNameProps> = ({ className, children }) => {
+const PaperFilterBackground = ({ className, children }: PaperFilterBackgroundProps) => {
     const classes = useStyles()
     return <div className={clsx(classes.root, className)}>{children}</div>
 }
+export default PaperFilterBackground

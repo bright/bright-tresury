@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next'
-import { Button } from '../../../components/button/Button'
+import Button from '../../../components/button/Button'
 import React from 'react'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import { useHistory } from 'react-router'

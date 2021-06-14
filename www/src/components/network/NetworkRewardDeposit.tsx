@@ -2,7 +2,7 @@ import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
 import { useTranslation } from 'react-i18next'
-import { Amount } from '../amount/Amount'
+import Amount from '../amount/Amount'
 import config from '../../config'
 import { calculateBondValue } from '../../networks/bondUtil'
 
@@ -25,12 +25,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     rewardValue: number
     bondValue?: number
 }
-
-export const NetworkRewardDeposit: React.FC<Props> = ({ rewardValue, bondValue }) => {
+export type NetworkRewardDepositProps = OwnProps
+const NetworkRewardDeposit = ({ rewardValue, bondValue }: NetworkRewardDepositProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -56,3 +56,4 @@ export const NetworkRewardDeposit: React.FC<Props> = ({ rewardValue, bondValue }
         </div>
     )
 }
+export default NetworkRewardDeposit

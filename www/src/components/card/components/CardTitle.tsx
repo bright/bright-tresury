@@ -30,11 +30,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+export interface CardTitleProps {
     title?: string
 }
 
-export const CardTitle = ({ title }: Props) => {
+const CardTitle = ({ title }: CardTitleProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -48,3 +48,5 @@ export const CardTitle = ({ title }: Props) => {
         </p>
     )
 }
+
+export default CardTitle

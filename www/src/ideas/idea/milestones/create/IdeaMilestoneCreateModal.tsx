@@ -1,5 +1,5 @@
 import React from 'react'
-import { Modal } from '../../../../components/modal/Modal'
+import Modal from '../../../../components/modal/Modal'
 import { IdeaMilestoneCreate } from './IdeaMilestoneCreate'
 import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'

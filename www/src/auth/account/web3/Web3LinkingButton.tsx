@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
-import { Button, ButtonProps } from '../../../components/button/Button'
+import Button, { ButtonProps } from '../../../components/button/Button'
 
 const useStyles = makeStyles((theme: Theme) => {
     return {
@@ -21,9 +21,9 @@ interface OwnProps {
     disabled: boolean
 }
 
-type Props = OwnProps & ButtonProps
+export type Web3LinkingButtonProps = OwnProps & ButtonProps
 
-export const Web3LinkingButton = ({ label, ...props }: Props) => {
+const Web3LinkingButton = ({ label, ...props }: Web3LinkingButtonProps) => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
@@ -33,3 +33,4 @@ export const Web3LinkingButton = ({ label, ...props }: Props) => {
         </div>
     )
 }
+export default Web3LinkingButton

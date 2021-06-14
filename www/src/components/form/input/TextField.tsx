@@ -13,11 +13,7 @@ interface OwnProps {
 
 export type TextFieldProps = OwnProps & MaterialTextFieldProps
 
-export const TextField: React.FC<TextFieldProps> = ({
-    endAdornment,
-    colorScheme = TextFieldColorScheme.Light,
-    ...props
-}) => {
+const TextField = ({ endAdornment, colorScheme = TextFieldColorScheme.Light, ...props }: TextFieldProps) => {
     const classes = useTextFieldStyles({ colorScheme })()
 
     return (
@@ -32,3 +28,5 @@ export const TextField: React.FC<TextFieldProps> = ({
         />
     )
 }
+
+export default TextField

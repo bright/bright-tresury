@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Button, ButtonProps } from '../../components/button/Button'
+import Button, { ButtonProps } from '../../components/button/Button'
 import { useSendVerifyEmail } from './verifyEmail.api'
 
 export type SendVerifyEmailButtonProps = Omit<ButtonProps, 'children'>

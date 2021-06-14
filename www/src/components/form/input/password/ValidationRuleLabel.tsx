@@ -35,7 +35,7 @@ export interface ValidationRuleLabelProps {
     error?: string | string[]
 }
 
-export const ValidationRuleLabel: React.FC<ValidationRuleLabelProps> = ({ message, error }) => {
+const ValidationRuleLabel = ({ message, error }: ValidationRuleLabelProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -54,3 +54,5 @@ export const ValidationRuleLabel: React.FC<ValidationRuleLabelProps> = ({ messag
         </div>
     )
 }
+
+export default ValidationRuleLabel
