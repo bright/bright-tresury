@@ -108,7 +108,7 @@ const Resources = {
     ParametersKmsKey: 'ParametersKmsKey',
     AppApiParametersAccessPolicy: 'AppApiParametersAccessPolicy',
 
-    RootAwsAccountId: '339594496974',
+    RootAwsAccountId: '265126396833',
 
     AppTaskRole: 'AppTaskRole',
     AppTaskExecutionRole: 'AppTaskExecutionRole',
@@ -315,10 +315,10 @@ export default cloudform({
                 ARN: '',
             },
             qa: {
-                ARN: 'arn:aws:acm:eu-central-1:339594496974:certificate/c029b55b-16b1-4df2-b2d6-eb6648aca97b',
+                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/2c1526f9-9f90-4d75-91c9-6d44178f531d`,
             },
             stage: {
-                ARN: 'arn:aws:acm:eu-central-1:339594496974:certificate/5b31829b-fec3-4324-87e9-6660a57008cc',
+                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/f6dc8c53-2cda-434e-b52a-2d3f6df313d6`,
             },
         },
     },
@@ -633,7 +633,7 @@ export default cloudform({
         }).dependsOn(Resources.VPC),
 
         [Resources.UploadsBucket]: new S3.Bucket({
-            BucketName: Fn.Join('-', [ProjectName, 'uploads', DeployEnv]),
+            BucketName: Fn.Join('-', [ProjectName, 'uploads', DeployEnv, Resources.RootAwsAccountId]),
         }),
 
         [Resources.AppApiS3AccessPolicy]: new IAM.ManagedPolicy({
@@ -649,8 +649,23 @@ export default cloudform({
                         Effect: 'Allow',
                         Action: 's3:*',
                         Resource: [
-                            Fn.Join('', ['arn:aws:s3:::', ProjectName, '-uploads-', DeployEnv]),
-                            Fn.Join('', ['arn:aws:s3:::', ProjectName, '-uploads-', DeployEnv, '/*']),
+                            Fn.Join('', [
+                                'arn:aws:s3:::',
+                                ProjectName,
+                                '-uploads-',
+                                DeployEnv,
+                                '-',
+                                Resources.RootAwsAccountId,
+                            ]),
+                            Fn.Join('', [
+                                'arn:aws:s3:::',
+                                ProjectName,
+                                '-uploads-',
+                                DeployEnv,
+                                '-',
+                                Resources.RootAwsAccountId,
+                                '/*',
+                            ]),
                         ],
                     },
                 ],
@@ -709,8 +724,8 @@ export default cloudform({
                         Effect: 'Allow',
                         Principal: {
                             AWS: [
-                                Fn.Join(':', ['arn:aws:iam:', Resources.RootAwsAccountId, 'root']),
-                                Fn.Join(':', ['arn:aws:iam:', Resources.RootAwsAccountId, 'user/treasury']),
+                                `arn:aws:iam::${Resources.RootAwsAccountId}:root`,
+                                `arn:aws:iam::${Resources.RootAwsAccountId}:user/treasury`,
                             ],
                         },
                         Action: 'kms:*',

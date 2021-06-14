@@ -11,7 +11,7 @@ set -eux
 
 pushd ${PROJECT_DIR}
 
-aws_bucket_name="${PROJECT_NAME}-deployments"
+aws_bucket_name="${PROJECT_NAME}-deployments-265126396833"
 
 npm i --prefix deploy
 npm run --prefix deploy generate-aws-template
@@ -32,7 +32,7 @@ if [[ ${stack_exists} =~ "[]" ]]; then
       --disable-rollback \
       --capabilities CAPABILITY_IAM \
       --debug \
-      --template-url https://treasury-deployments.s3.eu-central-1.amazonaws.com/aws-${DEPLOY_ENV}.template \
+      --template-url https://treasury-deployments-265126396833.s3.eu-central-1.amazonaws.com/aws-${DEPLOY_ENV}.template \
       --parameters ${deploy_params} 2>&1)
 
     exit_code=$?
@@ -51,7 +51,7 @@ else
     result=$(aws cloudformation update-stack --stack-name ${stack_name} \
       --capabilities CAPABILITY_IAM \
       --debug \
-      --template-url https://treasury-deployments.s3.eu-central-1.amazonaws.com/aws-${DEPLOY_ENV}.template \
+      --template-url https://treasury-deployments-265126396833.s3.eu-central-1.amazonaws.com/aws-${DEPLOY_ENV}.template \
       --parameters ${deploy_params} 2>&1)
 
     exit_code=$?
