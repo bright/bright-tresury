@@ -12,7 +12,7 @@ import { IdeaMilestonesService } from './idea-milestones.service'
 import { Repository } from 'typeorm'
 import { getRepositoryToken } from '@nestjs/typeorm'
 
-describe(`/api/v1/ideas`, () => {
+describe(`IdeaMilestonesService`, () => {
     const app = beforeSetupFullApp()
 
     const getIdeasService = () => app.get().get(IdeasService)
@@ -322,7 +322,7 @@ describe(`/api/v1/ideas`, () => {
             expect(foundIdeaMilestone).toBeDefined()
         })
 
-        it('should add auto generated ordinal number', async () => {
+        it('should add positive ordinal number', async () => {
             const createdIdeaMilestone = await getIdeaMilestonesService().create(
                 idea.id,
                 minimalCreateIdeaMilestoneDto,
@@ -331,6 +331,7 @@ describe(`/api/v1/ideas`, () => {
             const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionData)
 
             expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
+            expect(foundIdeaMilestone.ordinalNumber).toBeGreaterThan(0)
         })
 
         it('should auto increment ordinal number', async () => {

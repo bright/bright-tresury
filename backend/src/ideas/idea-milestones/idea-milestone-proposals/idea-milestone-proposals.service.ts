@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+import { IdeaMilestonesRepository } from '../idea-milestones.repository'
 import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -19,8 +20,8 @@ export class IdeaMilestoneProposalsService {
     constructor(
         @InjectRepository(Idea)
         private readonly ideaRepository: Repository<Idea>,
-        @InjectRepository(IdeaMilestone)
-        private readonly ideaMilestoneRepository: Repository<IdeaMilestone>,
+        @InjectRepository(IdeaMilestonesRepository)
+        private readonly ideaMilestoneRepository: IdeaMilestonesRepository,
         @InjectRepository(IdeaMilestoneNetwork)
         private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
         private readonly ideasService: IdeasService,

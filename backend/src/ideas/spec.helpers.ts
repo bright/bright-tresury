@@ -6,6 +6,7 @@ import { User } from '../users/user.entity'
 import { beforeSetupFullApp } from '../utils/spec.helpers'
 import { CreateIdeaDto } from './dto/create-idea.dto'
 import { Idea } from './entities/idea.entity'
+import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { IdeasService } from './ideas.service'
 import { IdeaStatus } from './idea-status'
 import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
@@ -41,10 +42,10 @@ export async function createIdeaMilestone(
 
 export async function createIdeaMilestoneByEntity(
     ideaMilestone: IdeaMilestone,
-    ideaMilestoneRepository?: Repository<IdeaMilestone>,
+    ideaMilestoneRepository?: IdeaMilestonesRepository,
 ): Promise<IdeaMilestone> {
-    const repository: Repository<IdeaMilestone> =
-        ideaMilestoneRepository ?? beforeSetupFullApp().get().get(getRepositoryToken(IdeaMilestone))
+    const repository: IdeaMilestonesRepository =
+        ideaMilestoneRepository ?? beforeSetupFullApp().get().get(IdeaMilestonesRepository)
     return await repository.save(ideaMilestone)
 }
 

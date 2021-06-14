@@ -10,12 +10,13 @@ import { UpdateIdeaMilestoneDto } from './dto/update-idea-milestone.dto'
 import { IdeaMilestone } from './entities/idea-milestone.entity'
 import { IdeaMilestoneStatus } from './idea-milestone-status'
 import { CreateIdeaMilestoneNetworkDto } from './dto/create-idea-milestone-network.dto'
+import { IdeaMilestonesRepository } from './idea-milestones.repository'
 
 @Injectable()
 export class IdeaMilestonesService {
     constructor(
-        @InjectRepository(IdeaMilestone)
-        private readonly ideaMilestoneRepository: Repository<IdeaMilestone>,
+        @InjectRepository(IdeaMilestonesRepository)
+        private readonly ideaMilestoneRepository: IdeaMilestonesRepository,
         @InjectRepository(IdeaMilestoneNetwork)
         private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
         private readonly ideasService: IdeasService,

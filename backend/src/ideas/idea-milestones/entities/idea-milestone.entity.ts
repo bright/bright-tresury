@@ -12,9 +12,11 @@ export class IdeaMilestone extends BaseEntity {
     @ManyToOne(() => Idea, (idea) => idea.milestones)
     idea: Idea
 
-    @Column({ type: 'integer', generated: 'increment' })
-    @Generated('increment')
-    ordinalNumber!: number
+    @Column({ nullable: false, type: 'text' })
+    ideaId!: string
+
+    @Column({ type: 'integer' })
+    ordinalNumber: number
 
     @Column({
         type: 'enum',
@@ -51,10 +53,10 @@ export class IdeaMilestone extends BaseEntity {
         subject: string,
         status: IdeaMilestoneStatus,
         networks: IdeaMilestoneNetwork[],
-        beneficiary: Nil<string>,
-        dateFrom: Nil<Date>,
-        dateTo: Nil<Date>,
-        description: Nil<string>,
+        beneficiary?: Nil<string>,
+        dateFrom?: Nil<Date>,
+        dateTo?: Nil<Date>,
+        description?: Nil<string>,
     ) {
         super()
         this.idea = idea
@@ -65,6 +67,7 @@ export class IdeaMilestone extends BaseEntity {
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         this.description = description
+        this.ordinalNumber = 0
     }
 
     canTurnIntoProposalOrThrow = () => {

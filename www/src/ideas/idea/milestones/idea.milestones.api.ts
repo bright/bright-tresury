@@ -15,8 +15,10 @@ const getIdeaMilestonesApiBasePath = (ideaId: string) => {
 
 // GET ALL
 
-function getIdeaMilestones(ideaId: string) {
-    return apiGet<IdeaMilestoneDto[]>(getIdeaMilestonesApiBasePath(ideaId))
+async function getIdeaMilestones(ideaId: string) {
+    const result = await apiGet<IdeaMilestoneDto[]>(getIdeaMilestonesApiBasePath(ideaId))
+    result.sort((a, b) => a.ordinalNumber - b.ordinalNumber)
+    return result
 }
 
 export const IDEA_MILESTONES_QUERY_KEY_BASE = 'ideaMilestones'

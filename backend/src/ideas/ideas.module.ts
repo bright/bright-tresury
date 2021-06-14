@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { SessionModule } from '../auth/session/session.module'
 import { ExtrinsicsModule } from '../extrinsics/extrinsics.module'
+import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { IdeaProposalsController } from './idea-proposals/idea-proposals.controller'
 import { IdeaProposalsService } from './idea-proposals/idea-proposals.service'
 import { IdeasController } from './ideas.controller'
@@ -9,7 +10,6 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { Idea } from './entities/idea.entity'
 import { IdeasService } from './ideas.service'
 import { IdeaNetwork } from './entities/idea-network.entity'
-import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
 import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-network.entity'
 import { IdeaMilestonesController } from './idea-milestones/idea-milestones.controller'
 import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
@@ -25,7 +25,7 @@ import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milesto
         BlockchainModule,
         TypeOrmModule.forFeature([Idea]),
         TypeOrmModule.forFeature([IdeaNetwork]),
-        TypeOrmModule.forFeature([IdeaMilestone]),
+        TypeOrmModule.forFeature([IdeaMilestonesRepository]),
         TypeOrmModule.forFeature([IdeaMilestoneNetwork]),
     ],
     providers: [IdeasService, IdeaProposalsService, IdeaMilestonesService, IdeaMilestoneProposalsService],
