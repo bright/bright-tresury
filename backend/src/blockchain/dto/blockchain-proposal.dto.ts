@@ -43,8 +43,11 @@ export function toBlockchainProposal(
         proposalIndex: id.toNumber(),
         proposer: toBlockchainAccountInfo(proposerAddress, identities.get(proposerAddress)),
         beneficiary: toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress)),
-        value: transformBalance(proposal.value, 15),
-        bond: transformBalance(proposal.bond, 15),
+        /*
+        TODO We should get the decimals from the chain info or config files. This should be handled when adding multiple networks support.
+         */
+        value: transformBalance(proposal.value, 12),
+        bond: transformBalance(proposal.bond, 12),
         motions: council.map((motion) => toBlockchainProposalMotion(motion, identities, toBlockchainProposalMotionEnd)),
         status,
     })

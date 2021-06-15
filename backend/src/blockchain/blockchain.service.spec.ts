@@ -169,7 +169,7 @@ describe(`Blockchain service`, () => {
             const setIdentityExtrinsic = api.tx.identity.setIdentity({ display: { Raw: 'Alice' } })
             await signAndSend(setIdentityExtrinsic, aliceKeypair)
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
-            const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(18)), bobAddress)
+            const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(15)), bobAddress)
             await signAndSend(extrinsic, aliceKeypair)
             const proposals = await service().getProposals()
             expect(proposals.length).toBeGreaterThan(0)
