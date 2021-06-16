@@ -1,6 +1,7 @@
 version: '3'
 services:
     database:
+        container_name: database
         build:
             context: ./database
         ports:
@@ -11,12 +12,16 @@ services:
             test: pg_isready -U postgres; do sleep 1; done
         restart: unless-stopped
     substrate:
+        container_name: substrate
         image: parity/polkadot:v0.8.30
         ports:
             - '9944:9944'
         command: --rpc-external --ws-external --dev
+        volumes:
+            - ${PROJECT_DIR:-../}/deploy/polkadot-data:/polkadot
         restart: unless-stopped
     authorization:
+        container_name: authorization
         ports:
             - '3567:3567'
         image: supertokens/supertokens-postgresql:3.3
@@ -30,6 +35,7 @@ services:
             - POSTGRESQL_DATABASE_NAME=treasury_authorization
         restart: unless-stopped
     authorization-test:
+        container_name: authorization-test
         ports:
             - '3568:3567'
         image: supertokens/supertokens-postgresql:3.3

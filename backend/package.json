@@ -15,7 +15,6 @@
         "test:ci": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand --detectOpenHandles",
         "auth:core:dev": "sh authorization.core.development.sh",
         "auth:core:test": "sh authorization.core.test.sh",
-        "database:docker": "sh database.development.sh",
         "main": "npx --node-options $NODE_DEBUG_OPTION -- ts-node --files src/main.ts",
         "main:dist": "node $NODE_DEBUG_OPTION dist/src/main.js --max-old-space-size=450",
         "database-migrate-and-main": "yarn run database:migrate && yarn run main:dist",

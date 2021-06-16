@@ -30,6 +30,8 @@ services:
         ports:
             - '9944:9944'
         command: --rpc-external --ws-external --dev
+        volumes:
+            - ${PROJECT_DIR:-../}/deploy/polkadot-data:/polkadot
         restart: unless-stopped
     authorization:
         ports:
