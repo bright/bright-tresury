@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const MenuAppInfo: React.FC<{}> = () => {
+const MenuAppInfo = () => {
     const classes = useStyles()
     const { t } = useTranslation()
 

@@ -12,12 +12,12 @@ import Title from '../../components/header/details/Title'
 import FlexBreakLine from '../../components/header/FlexBreakLine'
 import HeaderTabs from '../../components/header/HeaderTabs'
 import NetworkRewardDeposit from '../../components/network/NetworkRewardDeposit'
-import { OptionalTitle } from '../../components/text/OptionalTitle'
+import OptionalTitle from '../../components/text/OptionalTitle'
 import { ROUTE_TURN_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
 import { IdeaStatusIndicator } from './status/IdeaStatusIndicator'
-import { OrdinalNumber } from '../../components/ordinalNumber/OrdinalNumber'
+import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 import { IdeaDto, IdeaStatus } from '../ideas.dto'
 import CloseButton from '../../components/closeIcon/CloseButton'
 
@@ -73,10 +73,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface IdeaHeaderProps {
+export interface OwnProps {
     idea: IdeaDto
     canEdit: boolean
 }
+
+export type IdeaHeaderProps = OwnProps
 
 const IdeaHeader = ({ idea, canEdit }: IdeaHeaderProps) => {
     const classes = useStyles()

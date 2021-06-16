@@ -3,14 +3,14 @@ import React from 'react'
 import { Trans } from 'react-i18next'
 import Strong from '../../components/strong/Strong'
 import Modal from '../../components/modal/Modal'
-import SignAndSubmit, { Props } from './SignAndSubmit'
+import SignAndSubmit, { SignAndSubmitProps } from './SignAndSubmit'
 
 export default {
     title: 'Sign And Submit',
     component: SignAndSubmit,
 } as Meta
 
-const Template: Story<Props> = (args) => (
+const Template: Story<SignAndSubmitProps> = (args) => (
     <Modal open={true}>
         <SignAndSubmit {...args} />
     </Modal>

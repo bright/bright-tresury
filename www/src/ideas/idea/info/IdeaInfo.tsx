@@ -4,10 +4,12 @@ import IdeaEdit from './IdeaEdit'
 import { IdeaDto } from '../../ideas.dto'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
-export interface IdeaInfoProps {
+export interface OwnProps {
     idea: IdeaDto
     canEdit: boolean
 }
+
+export type IdeaInfoProps = OwnProps
 
 const IdeaInfo = ({ idea, canEdit }: IdeaInfoProps) => {
     const classes = useSuccessfullyLoadedItemStyles()

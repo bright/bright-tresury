@@ -42,9 +42,11 @@ export interface ToggleEntry {
     path: string
 }
 
-export interface ToggleButtonProps {
+interface OwnProps {
     entry: ToggleEntry
 }
+
+export type ToggleButtonProps = OwnProps
 
 const ToggleButton = ({ entry }: ToggleButtonProps) => {
     const classes = useStyles()

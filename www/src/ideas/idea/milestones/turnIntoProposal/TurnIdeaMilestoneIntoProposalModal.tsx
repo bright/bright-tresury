@@ -4,7 +4,7 @@ import { IdeaMilestoneDto, PatchIdeaMilestoneDto } from '../idea.milestones.dto'
 import Modal from '../../../../components/modal/Modal'
 import { Trans, useTranslation } from 'react-i18next'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
+import IdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
 import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
 import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
@@ -24,7 +24,7 @@ const useStyles = makeStyles(
     }),
 )
 
-interface Props {
+interface OwnProps {
     open: boolean
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
@@ -32,13 +32,15 @@ interface Props {
     onSuccessfulPatch: (ideaMilestone: IdeaMilestoneDto) => void
 }
 
-export const TurnIdeaMilestoneIntoProposalModal = ({
+export type TurnIdeaMilestoneIntoProposalModalProps = OwnProps
+
+const TurnIdeaMilestoneIntoProposalModal = ({
     open,
     idea,
     ideaMilestone,
     onClose,
     onSuccessfulPatch,
-}: Props) => {
+}: TurnIdeaMilestoneIntoProposalModalProps) => {
     const classes = useStyles()
 
     const { t } = useTranslation()
@@ -112,3 +114,5 @@ export const TurnIdeaMilestoneIntoProposalModal = ({
         </Modal>
     )
 }
+
+export default TurnIdeaMilestoneIntoProposalModal

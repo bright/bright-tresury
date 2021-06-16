@@ -1,11 +1,11 @@
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import { createStyles, Hidden } from '@material-ui/core'
 import React from 'react'
-import { Tabs } from '../../components/tabs/Tabs'
+import Tabs from '../../components/tabs/Tabs'
 import { useTranslation } from 'react-i18next'
 import { breakpoints } from '../../theme/theme'
 import { ROUTE_IDEAS } from '../../routes/routes'
-import { NavSelect } from '../../components/select/NavSelect'
+import NavSelect from '../../components/select/NavSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,11 +31,13 @@ export enum IdeaFilter {
 export const IdeaFilterSearchParamName = 'filter'
 export const IdeaDefaultFilter = IdeaFilter.All
 
-interface Props {
+interface OwnProps {
     filter: IdeaFilter
 }
 
-const IdeaStatusFilters: React.FC<Props> = ({ filter }) => {
+export type IdeaStatusFilters = OwnProps
+
+const IdeaStatusFilters = ({ filter }: IdeaStatusFilters) => {
     const classes = useStyles()
     const { t } = useTranslation()
 

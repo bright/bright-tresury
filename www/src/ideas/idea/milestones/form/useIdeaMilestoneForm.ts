@@ -5,12 +5,14 @@ import { IdeaMilestoneFormValues } from './IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
 import { isValidAddressOrEmpty } from '../../../../util/addressValidator'
 
-interface Props {
+interface OwnProps {
     idea: IdeaDto
     ideaMilestone?: IdeaMilestoneDto
 }
 
-export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
+export type useIdeaMilestoneFormProps = OwnProps
+
+const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps) => {
     const { t } = useTranslation()
 
     const validationSchema = Yup.object().shape({
@@ -93,3 +95,5 @@ export const useIdeaMilestoneForm = ({ idea, ideaMilestone }: Props) => {
         onSubmitFallback,
     }
 }
+
+export default useIdeaMilestoneForm

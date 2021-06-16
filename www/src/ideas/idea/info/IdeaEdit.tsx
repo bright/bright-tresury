@@ -9,9 +9,11 @@ import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 
-export interface IdeaEditProps {
+export interface OwnProps {
     idea: IdeaDto
 }
+
+export type IdeaEditProps = OwnProps
 
 const IdeaEdit = ({ idea }: IdeaEditProps) => {
     const { t } = useTranslation()

@@ -1,12 +1,14 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-export interface NoIdeaMilestonesInfoProps {
+export interface OwnProps {
     canEdit: boolean
     displayWithinIdeaSubTab: boolean
 }
 
-export const NoIdeaMilestonesInfo = ({ canEdit, displayWithinIdeaSubTab }: NoIdeaMilestonesInfoProps) => {
+export type NoIdeaMilestonesInfoProps = OwnProps
+
+const NoIdeaMilestonesInfo = ({ canEdit, displayWithinIdeaSubTab }: NoIdeaMilestonesInfoProps) => {
     const { t } = useTranslation()
 
     if (canEdit && displayWithinIdeaSubTab) {
@@ -23,3 +25,5 @@ export const NoIdeaMilestonesInfo = ({ canEdit, displayWithinIdeaSubTab }: NoIde
 
     return <p>{t('idea.milestones.noIdeaMilestones.outsideIdeaSubTab.cannotEdit')}</p>
 }
+
+export default NoIdeaMilestonesInfo

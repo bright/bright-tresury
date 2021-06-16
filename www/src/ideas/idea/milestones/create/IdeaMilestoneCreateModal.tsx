@@ -1,17 +1,19 @@
 import React from 'react'
 import Modal from '../../../../components/modal/Modal'
-import { IdeaMilestoneCreate } from './IdeaMilestoneCreate'
+import IdeaMilestoneCreate from './IdeaMilestoneCreate'
 import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneModalHeader } from '../components/IdeaMilestoneModalHeader'
 
-interface Props {
+interface OwnProps {
     open: boolean
     idea: IdeaDto
     onClose: () => void
 }
 
-export const IdeaMilestoneCreateModal = ({ open, idea, onClose }: Props) => {
+export type IdeaMilestoneCreateModalProps = OwnProps
+
+const IdeaMilestoneCreateModal = ({ open, idea, onClose }: IdeaMilestoneCreateModalProps) => {
     const { t } = useTranslation()
 
     return (
@@ -25,3 +27,5 @@ export const IdeaMilestoneCreateModal = ({ open, idea, onClose }: Props) => {
         </Modal>
     )
 }
+
+export default IdeaMilestoneCreateModal

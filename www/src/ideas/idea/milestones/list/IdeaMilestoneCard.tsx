@@ -5,14 +5,14 @@ import { createStyles } from '@material-ui/core'
 import Divider from '../../../../components/divider/Divider'
 import NetworkValue from '../../../../components/network/NetworkValue'
 import { IdeaMilestoneDescription } from './IdeaMilestoneDescription'
-import { IdeaMilestoneDateRange } from './IdeaMilestoneDateRange'
+import IdeaMilestoneDateRange from './IdeaMilestoneDateRange'
 import Card from '../../../../components/card/Card'
 import CardDetails from '../../../../components/card/components/CardDetails'
 import CardTitle from '../../../../components/card/components/CardTitle'
 import { useTranslation } from 'react-i18next'
 import CardHeader from '../../../../components/card/components/CardHeader'
-import { OrdinalNumber } from '../../../../components/ordinalNumber/OrdinalNumber'
-import { IdeaMilestoneStatusIndicator } from '../status/IdeaMilestoneStatusIndicator'
+import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
+import IdeaMilestoneStatusIndicator from '../status/IdeaMilestoneStatusIndicator'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -35,12 +35,14 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     ideaMilestone: IdeaMilestoneDto
     onClick: (ideaMilestone: IdeaMilestoneDto) => void
 }
 
-export const IdeaMilestoneCard = ({ ideaMilestone, onClick }: Props) => {
+export type IdeaMilestoneCardProps = OwnProps
+
+const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -74,3 +76,5 @@ export const IdeaMilestoneCard = ({ ideaMilestone, onClick }: Props) => {
         </Card>
     )
 }
+
+export default IdeaMilestoneCard

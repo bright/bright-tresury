@@ -1,13 +1,15 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { ProposalStatus } from '../proposals.dto'
-import { Status } from '../../components/status/Status'
+import Status from '../../components/status/Status'
 
-interface Props {
+interface OwnProps {
     status: ProposalStatus
 }
 
-export const ProposalStatusIndicator = ({ status }: Props) => {
+export type ProposalStatusIndicatorProps = OwnProps
+
+const ProposalStatusIndicator = ({ status }: ProposalStatusIndicatorProps) => {
     const { t } = useTranslation()
 
     const getStatusTranslationKey = (): string => {
@@ -42,3 +44,5 @@ export const ProposalStatusIndicator = ({ status }: Props) => {
 
     return <Status label={t(getStatusTranslationKey())} color={getStatusColor()} />
 }
+
+export default ProposalStatusIndicator

@@ -1,5 +1,5 @@
 import React from 'react'
-import { IdeaMilestoneForm, IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
+import IdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
 import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
 import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
@@ -9,13 +9,15 @@ import { CreateIdeaMilestoneDto } from '../idea.milestones.dto'
 import { useQueryClient } from 'react-query'
 import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 
-interface Props {
+interface OwnProps {
     idea: IdeaDto
     onCancel: () => void
     onSuccess: () => void
 }
 
-export const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: Props) => {
+export type IdeaMilestoneCreate = OwnProps
+
+const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: IdeaMilestoneCreate) => {
     const { t } = useTranslation()
 
     const { mutateAsync, isError } = useCreateIdeaMilestone()
@@ -56,3 +58,5 @@ export const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: Props) => {
         </>
     )
 }
+
+export default IdeaMilestoneCreate

@@ -2,11 +2,11 @@ import React, { PropsWithChildren } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
-import { IdeaMilestoneFormFields } from './fields/IdeaMilestoneFormFields'
+import IdeaMilestoneFormFields from './fields/IdeaMilestoneFormFields'
 import { Nil } from '../../../../util/types'
 import { IdeaDto } from '../../../ideas.dto'
-import { useIdeaMilestoneForm } from './useIdeaMilestoneForm'
-import { IdeaMilestoneFoldedFormFields } from './fields/IdeaMilestoneFoldedFormFields'
+import useIdeaMilestoneForm from './useIdeaMilestoneForm'
+import IdeaMilestoneFoldedFormFields from './fields/IdeaMilestoneFoldedFormFields'
 import FormFooter from '../../../../components/form/footer/FormFooter'
 
 const useStyles = makeStyles(() =>
@@ -27,7 +27,7 @@ export interface IdeaMilestoneFormValues {
     networks: IdeaMilestoneNetworkDto[]
 }
 
-interface Props {
+interface OwnProps {
     idea: IdeaDto
     ideaMilestone?: IdeaMilestoneDto
     readonly: boolean
@@ -36,7 +36,9 @@ interface Props {
     onSubmit?: (values: IdeaMilestoneFormValues) => void
 }
 
-export const IdeaMilestoneForm = ({
+export type IdeaMilestoneFormProps = OwnProps
+
+const IdeaMilestoneForm = ({
     idea,
     ideaMilestone,
     readonly,
@@ -44,7 +46,7 @@ export const IdeaMilestoneForm = ({
     extendedValidation = false,
     onSubmit,
     children,
-}: PropsWithChildren<Props>) => {
+}: PropsWithChildren<IdeaMilestoneFormProps>) => {
     const classes = useStyles()
 
     const { initialValues, validationSchema, extendedValidationSchema, onSubmitFallback } = useIdeaMilestoneForm({
@@ -72,3 +74,5 @@ export const IdeaMilestoneForm = ({
         </Formik>
     )
 }
+
+export default IdeaMilestoneForm

@@ -3,9 +3,11 @@ import ProposalCard from './ProposalCard'
 import { ProposalDto } from '../proposals.dto'
 import Grid from '../../components/grid/Grid'
 
-export interface ProposalsListProps {
+export interface OwnProps {
     proposals: ProposalDto[]
 }
+
+export type ProposalsListProps = OwnProps
 
 const ProposalsList = ({ proposals }: ProposalsListProps) => {
     const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal} />

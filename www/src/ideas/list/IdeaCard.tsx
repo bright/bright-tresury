@@ -12,13 +12,15 @@ import NetworkValue from '../../components/network/NetworkValue'
 import CardHeader from '../../components/card/components/CardHeader'
 import CardDetails from '../../components/card/components/CardDetails'
 import CardTitle from '../../components/card/components/CardTitle'
-import { OrdinalNumber } from '../../components/ordinalNumber/OrdinalNumber'
+import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 
-export interface PropsIdeaCard {
+export interface OwnProps {
     idea: IdeaDto
 }
 
-const IdeaCard = ({ idea: { id, ordinalNumber, status, title, networks, beneficiary } }: PropsIdeaCard) => {
+export type IdeaCardProps = OwnProps
+
+const IdeaCard = ({ idea: { id, ordinalNumber, status, title, networks, beneficiary } }: IdeaCardProps) => {
     const { t } = useTranslation()
 
     return (

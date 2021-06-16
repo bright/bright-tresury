@@ -16,7 +16,7 @@ const useStyles = makeStyles(() =>
 
 export type RadioProps = MaterialRadioProps
 
-export const Radio = ({ ...props }: RadioProps) => {
+const Radio = ({ ...props }: RadioProps) => {
     const { t } = useTranslation()
     const classes = useStyles()
     return (
@@ -28,3 +28,5 @@ export const Radio = ({ ...props }: RadioProps) => {
         />
     )
 }
+
+export default Radio

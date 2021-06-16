@@ -12,11 +12,13 @@ import { IdeaDto, IdeaStatus } from '../ideas.dto'
 import FormFooterButtonsContainer from '../../components/form/footer/FormFooterButtonsContainer'
 import { createEmptyIdea } from '../utils/ideas.utils'
 
-export interface IdeaCreateProps {
+interface OwnProps {
     network: string
 }
 
-export const IdeaCreate = ({ network = config.NETWORK_NAME }: IdeaCreateProps) => {
+export type IdeaCreateProps = OwnProps
+
+const IdeaCreate = ({ network = config.NETWORK_NAME }: IdeaCreateProps) => {
     const { t } = useTranslation()
     const [idea] = useState(createEmptyIdea(network))
     const [activate, setActivate] = useState(false)
@@ -56,3 +58,5 @@ export const IdeaCreate = ({ network = config.NETWORK_NAME }: IdeaCreateProps) =
         </Container>
     )
 }
+
+export default IdeaCreate

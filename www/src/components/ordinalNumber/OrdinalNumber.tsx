@@ -14,12 +14,14 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     prefix: string
     ordinalNumber: number
 }
 
-export const OrdinalNumber = ({ prefix, ordinalNumber }: Props) => {
+export type OrdinalNumberProps = OwnProps
+
+const OrdinalNumber = ({ prefix, ordinalNumber }: OrdinalNumberProps) => {
     const classes = useStyles()
 
     return (
@@ -29,3 +31,5 @@ export const OrdinalNumber = ({ prefix, ordinalNumber }: Props) => {
         </div>
     )
 }
+
+export default OrdinalNumber

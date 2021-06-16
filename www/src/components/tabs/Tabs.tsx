@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStyles } from '@material-ui/core'
 import { makeStyles, Theme } from '@material-ui/core/styles'
-import { TabLabel } from './TabLabel'
+import TabLabel from './TabLabel'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,11 +20,13 @@ export interface TabEntry {
     isDefault?: boolean
 }
 
-interface Props {
+interface OwnProps {
     values: TabEntry[]
 }
 
-export const Tabs: React.FC<Props> = ({ values }) => {
+export type TabsProps = OwnProps
+
+const Tabs = ({ values }: TabsProps) => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
@@ -36,3 +38,5 @@ export const Tabs: React.FC<Props> = ({ values }) => {
         </div>
     )
 }
+
+export default Tabs

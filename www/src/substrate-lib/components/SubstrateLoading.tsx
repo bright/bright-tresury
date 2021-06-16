@@ -21,11 +21,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface Props {
+interface OwnProps {
     onOk: () => void
 }
 
-const SubstrateLoading: React.FC<Props> = ({ onOk }) => {
+export type SubstrateLoadingProps = OwnProps
+
+const SubstrateLoading = ({ onOk }: SubstrateLoadingProps) => {
     const { t } = useTranslation()
     const classes = useStyles()
     return (

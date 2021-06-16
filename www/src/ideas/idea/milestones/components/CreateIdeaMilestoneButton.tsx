@@ -17,12 +17,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     text: string
     onClick: () => void
 }
 
-export const CreateIdeaMilestoneButton = ({ text, onClick }: Props) => {
+export type CreateIdeaMilestoneButtonProps = OwnProps
+
+const CreateIdeaMilestoneButton = ({ text, onClick }: CreateIdeaMilestoneButtonProps) => {
     const classes = useStyles()
 
     return (
@@ -31,3 +33,5 @@ export const CreateIdeaMilestoneButton = ({ text, onClick }: Props) => {
         </Button>
     )
 }
+
+export default CreateIdeaMilestoneButton

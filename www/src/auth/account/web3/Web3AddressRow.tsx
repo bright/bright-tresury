@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
 import React from 'react'
-import { Radio } from '../../../components/radio/Radio'
+import Radio from '../../../components/radio/Radio'
 import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) => {

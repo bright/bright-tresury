@@ -11,7 +11,7 @@ export interface ExtrinsicDetails {
     lastBlockHash: string
 }
 
-interface Props {
+interface OwnProps {
     open: boolean
     onClose: () => void
     onTurn: (extrinsicDetails: ExtrinsicDetails) => void
@@ -20,7 +20,9 @@ interface Props {
     beneficiary: string
 }
 
-export const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary }: Props) => {
+export type SubmitProposalModalProps = OwnProps
+
+const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary }: SubmitProposalModalProps) => {
     const { t } = useTranslation()
 
     const history = useHistory()
@@ -85,3 +87,5 @@ export const SubmitProposalModal = ({ open, onClose, onTurn, title, value, benef
         </Modal>
     )
 }
+
+export default SubmitProposalModal

@@ -10,9 +10,11 @@ import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
 
-export interface IdeasProps {
+export interface OwnProps {
     network: string
 }
+
+export type IdeasProps = OwnProps
 
 const Ideas = ({ network = config.NETWORK_NAME }: IdeasProps) => {
     const { t } = useTranslation()

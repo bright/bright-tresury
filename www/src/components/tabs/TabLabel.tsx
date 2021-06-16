@@ -32,14 +32,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     label: string
     path: string
     svg?: string
     isDefault?: boolean
 }
 
-export const TabLabel: React.FC<Props> = ({ label, svg, path, isDefault }) => {
+export type TabLabelProps = OwnProps
+
+const TabLabel = ({ label, svg, path, isDefault }: TabLabelProps) => {
     const classes = useStyles()
 
     return (
@@ -48,12 +50,12 @@ export const TabLabel: React.FC<Props> = ({ label, svg, path, isDefault }) => {
                 className={classes.root}
                 to={path}
                 replace={true}
-            isActive={(match, location: Location) => {
-                const isActiveByDefault = isDefault === true &&
-                    `${location.pathname}${location.search}` === location.pathname
-                return `${location.pathname}${location.search}` === path ? true : isActiveByDefault
-            }}
-            activeClassName={classes.selected}
+                isActive={(match, location: Location) => {
+                    const isActiveByDefault =
+                        isDefault === true && `${location.pathname}${location.search}` === location.pathname
+                    return `${location.pathname}${location.search}` === path ? true : isActiveByDefault
+                }}
+                activeClassName={classes.selected}
             >
                 {svg ? <img className={classes.labelIcon} src={svg} alt={''} /> : null}
                 {label}
@@ -61,3 +63,5 @@ export const TabLabel: React.FC<Props> = ({ label, svg, path, isDefault }) => {
         </ButtonBase>
     )
 }
+
+export default TabLabel

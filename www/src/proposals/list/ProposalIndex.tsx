@@ -12,11 +12,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     proposalIndex: number
 }
 
-export const ProposalIndex = ({ proposalIndex }: Props) => {
+export type ProposalIndexProps = OwnProps
+
+const ProposalIndex = ({ proposalIndex }: ProposalIndexProps) => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
@@ -30,3 +32,5 @@ export const ProposalIndex = ({ proposalIndex }: Props) => {
         </div>
     )
 }
+
+export default ProposalIndex

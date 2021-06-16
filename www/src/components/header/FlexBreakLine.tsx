@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 interface OwnProps {}
 export type FlexBreakLineProps = ClassNameProps & PropsWithChildren<OwnProps>
-const FlexBreakLine: React.FC<ClassNameProps> = ({ className, children }: FlexBreakLineProps) => {
+const FlexBreakLine = ({ className, children }: FlexBreakLineProps) => {
     const classes = useStyles()
     return <div className={clsx(classes.root, className)}>{children}</div>
 }

@@ -56,11 +56,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     filter: IdeaFilter
 }
 
-const IdeasHeader: React.FC<Props> = ({ filter }) => {
+export type IdeasHeaderProps = OwnProps
+
+const IdeasHeader = ({ filter }: IdeasHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()

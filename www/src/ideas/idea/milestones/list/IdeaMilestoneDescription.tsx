@@ -1,5 +1,5 @@
 import React from 'react'
-import { Placeholder } from '../../../../components/text/Placeholder'
+import Placeholder from '../../../../components/text/Placeholder'
 import { Nil } from '../../../../util/types'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'

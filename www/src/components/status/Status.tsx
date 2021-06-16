@@ -23,12 +23,14 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface StatusProps {
+interface OwnProps {
     label: string
     color: string
 }
 
-export const Status: React.FC<StatusProps> = ({ label, color }) => {
+export type StatusProps = OwnProps
+
+const Status = ({ label, color }: StatusProps) => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
@@ -37,3 +39,5 @@ export const Status: React.FC<StatusProps> = ({ label, color }) => {
         </div>
     )
 }
+
+export default Status

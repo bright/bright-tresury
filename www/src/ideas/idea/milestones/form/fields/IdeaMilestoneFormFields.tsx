@@ -11,12 +11,14 @@ import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsSt
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
-interface Props {
+interface OwnProps {
     values: IdeaMilestoneFormValues
     readonly: boolean
 }
 
-export const IdeaMilestoneFormFields = ({ values, readonly }: Props) => {
+export type IdeaMilestoneFormFieldsProps = OwnProps
+
+const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsProps) => {
     const classes = useIdeaMilestoneFormFieldsStyles()
     const { t } = useTranslation()
 
@@ -79,3 +81,5 @@ export const IdeaMilestoneFormFields = ({ values, readonly }: Props) => {
         </div>
     )
 }
+
+export default IdeaMilestoneFormFields

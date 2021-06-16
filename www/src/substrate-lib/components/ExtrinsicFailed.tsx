@@ -5,10 +5,12 @@ import Button from '../../components/button/Button'
 import { ExtrinsicError } from './SubmittingTransaction'
 import TransactionModal from './TransactionModal'
 
-export interface ExtrinsicFailedProps {
+interface OwnProps {
     error: ExtrinsicError
     onOk: () => void
 }
+
+export type ExtrinsicFailedProps = OwnProps
 
 const ExtrinsicFailed = ({ error, onOk }: ExtrinsicFailedProps) => {
     const { t } = useTranslation()

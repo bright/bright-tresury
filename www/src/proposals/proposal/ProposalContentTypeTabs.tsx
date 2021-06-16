@@ -1,5 +1,5 @@
 import React from 'react'
-import { TabEntry, Tabs } from '../../components/tabs/Tabs'
+import Tabs, { TabEntry } from '../../components/tabs/Tabs'
 import { useTranslation } from 'react-i18next'
 import infoIcon from '../../assets/info.svg'
 import milestonesIcon from '../../assets/milestones.svg'

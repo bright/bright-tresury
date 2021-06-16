@@ -46,9 +46,11 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 })
 
-export interface ProposalsHeaderProps {
+export interface OwnProps {
     filter: ProposalFilter
 }
+
+export type ProposalsHeaderProps = OwnProps
 
 const ProposalsHeader = ({ filter }: ProposalsHeaderProps) => {
     const classes = useStyles()

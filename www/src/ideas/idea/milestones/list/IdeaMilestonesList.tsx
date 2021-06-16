@@ -2,23 +2,25 @@ import React, { useCallback, useState } from 'react'
 import { useTurnIdeaMilestoneIntoProposal } from '../idea.milestones.api'
 import { IdeaMilestoneDetailsModal } from '../details/IdeaMilestoneDetailsModal'
 import Grid from '../../../../components/grid/Grid'
-import { IdeaMilestoneCard } from './IdeaMilestoneCard'
+import IdeaMilestoneCard from './IdeaMilestoneCard'
 import { mobileHeaderListHorizontalMargin } from '../../../../components/header/list/HeaderListContainer'
-import { TurnIdeaMilestoneIntoProposalModal } from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalModal'
+import TurnIdeaMilestoneIntoProposalModal from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalModal'
 import { useModal } from '../../../../components/modal/useModal'
-import { ExtrinsicDetails, SubmitProposalModal } from '../../../SubmitProposalModal'
+import SubmitProposalModal, { ExtrinsicDetails } from '../../../SubmitProposalModal'
 import { useTranslation } from 'react-i18next'
-import { IdeaMilestoneEditModal } from '../edit/IdeaMilestoneEditModal'
+import IdeaMilestoneEditModal from '../edit/IdeaMilestoneEditModal'
 import { IdeaDto } from '../../../ideas.dto'
 import { IdeaMilestoneDto, TurnIdeaMilestoneIntoProposalDto } from '../idea.milestones.dto'
 
-interface Props {
+interface OwnProps {
     idea: IdeaDto
     ideaMilestones: IdeaMilestoneDto[]
     canEdit: boolean
 }
 
-export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => {
+export type IdeaMilestoneListProps = OwnProps
+
+const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: IdeaMilestoneListProps) => {
     const { t } = useTranslation()
 
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
@@ -140,3 +142,5 @@ export const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: Props) => 
         </>
     )
 }
+
+export default IdeaMilestonesList

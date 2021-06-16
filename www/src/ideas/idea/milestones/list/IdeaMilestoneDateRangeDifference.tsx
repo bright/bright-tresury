@@ -10,11 +10,13 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     differenceBetweenDatesInDays: number
 }
 
-export const IdeaMilestoneDateRangeDifference = ({ differenceBetweenDatesInDays }: Props) => {
+export type IdeaMilestoneDateRangeDifferenceProps = OwnProps
+
+const IdeaMilestoneDateRangeDifference = ({ differenceBetweenDatesInDays }: IdeaMilestoneDateRangeDifferenceProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -32,3 +34,5 @@ export const IdeaMilestoneDateRangeDifference = ({ differenceBetweenDatesInDays 
         </div>
     )
 }
+
+export default IdeaMilestoneDateRangeDifference

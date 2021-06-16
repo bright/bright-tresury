@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Status } from '../../../components/status/Status'
+import Status from '../../../components/status/Status'
 import { theme } from '../../../theme/theme'
 import { IdeaStatus } from '../../ideas.dto'
 

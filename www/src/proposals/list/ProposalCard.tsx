@@ -6,9 +6,9 @@ import { makeStyles } from '@material-ui/core/styles'
 import { createStyles } from '@material-ui/core'
 import { useTranslation } from 'react-i18next'
 import { ProposalDto } from '../proposals.dto'
-import { ProposalStatusIndicator } from '../status/ProposalStatusIndicator'
+import ProposalStatusIndicator from '../status/ProposalStatusIndicator'
 import { ProposalContentType } from '../proposal/ProposalContentTypeTabs'
-import { ProposalIndex } from './ProposalIndex'
+import ProposalIndex from './ProposalIndex'
 import NetworkCard from '../../components/network/NetworkCard'
 import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import NetworkValue from '../../components/network/NetworkValue'
@@ -26,9 +26,11 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface ProposalCardProps {
+interface OwnProps {
     proposal: ProposalDto
 }
+
+export type ProposalCardProps = OwnProps
 
 const ProposalCard = ({
     proposal: { proposalIndex, status, title, value, beneficiary, proposer },

@@ -38,25 +38,27 @@ export interface ToggleEntry {
     path: string
 }
 
-export interface SingleToggleButtonProps {
+interface OwnProps {
     entry: ToggleEntry
     isActive: (entry: ToggleEntry, location: Location) => boolean
 }
 
+export type SingleToggleButtonProps = OwnProps
+
 const SingleToggleButton = ({ entry, isActive }: SingleToggleButtonProps) => {
     const classes = useStyles()
     return (
-        <NavLink to={entry.path}
-                    isActive={(match, location: Location) => isActive(entry, location)}
-                    className={classes.inactive}
-                    activeClassName={classes.active}>
-        <MaterialToggleButton
-            classes={classes}
-            value={entry.label}>
-            {entry.label}
-        </MaterialToggleButton>
-    </NavLink>
+        <NavLink
+            to={entry.path}
+            isActive={(match, location: Location) => isActive(entry, location)}
+            className={classes.inactive}
+            activeClassName={classes.active}
+        >
+            <MaterialToggleButton classes={classes} value={entry.label}>
+                {entry.label}
+            </MaterialToggleButton>
+        </NavLink>
     )
-};
+}
 
 export default SingleToggleButton

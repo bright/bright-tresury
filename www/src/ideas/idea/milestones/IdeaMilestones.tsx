@@ -1,22 +1,24 @@
 import React from 'react'
 import { useGetIdeaMilestones } from './idea.milestones.api'
-import { NoIdeaMilestonesInfo } from './components/NoIdeaMilestonesInfo'
-import { IdeaMilestoneCreateModal } from './create/IdeaMilestoneCreateModal'
+import NoIdeaMilestonesInfo from './components/NoIdeaMilestonesInfo'
+import IdeaMilestoneCreateModal from './create/IdeaMilestoneCreateModal'
 import { IdeaDto } from '../../ideas.dto'
-import { IdeaMilestonesList } from './list/IdeaMilestonesList'
+import IdeaMilestonesList from './list/IdeaMilestonesList'
 import LoadingWrapper from '../../../components/loading/LoadingWrapper'
-import { CreateIdeaMilestoneButton } from './components/CreateIdeaMilestoneButton'
+import CreateIdeaMilestoneButton from './components/CreateIdeaMilestoneButton'
 import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
-export interface IdeaMilestonesProps {
+export interface OwnProps {
     idea: IdeaDto
     canEdit: boolean
     displayWithinIdeaSubTab: boolean
 }
 
-export const IdeaMilestones = ({ idea, canEdit, displayWithinIdeaSubTab }: IdeaMilestonesProps) => {
+export type IdeaMilestonesProps = OwnProps
+
+const IdeaMilestones = ({ idea, canEdit, displayWithinIdeaSubTab }: IdeaMilestonesProps) => {
     const { t } = useTranslation()
 
     const classes = useSuccessfullyLoadedItemStyles()
@@ -53,3 +55,5 @@ export const IdeaMilestones = ({ idea, canEdit, displayWithinIdeaSubTab }: IdeaM
         </LoadingWrapper>
     )
 }
+
+export default IdeaMilestones

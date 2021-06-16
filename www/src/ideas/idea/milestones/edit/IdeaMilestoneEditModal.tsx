@@ -1,6 +1,6 @@
 import React from 'react'
 import Modal from '../../../../components/modal/Modal'
-import { IdeaMilestoneEdit } from './IdeaMilestoneEdit'
+import IdeaMilestoneEdit from './IdeaMilestoneEdit'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'
@@ -8,7 +8,7 @@ import { IdeaMilestoneModalHeader } from '../components/IdeaMilestoneModalHeader
 import { useTurnIdeaMilestoneIntoProposal } from '../turnIntoProposal/useTurnIdeaMilestoneIntoProposal'
 import Button from '../../../../components/button/Button'
 
-interface Props {
+interface OwnProps {
     open: boolean
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
@@ -16,7 +16,15 @@ interface Props {
     onTurnIntoProposalClick: (ideaMilestone: IdeaMilestoneDto) => void
 }
 
-export const IdeaMilestoneEditModal = ({ open, idea, ideaMilestone, onClose, onTurnIntoProposalClick }: Props) => {
+export type IdeaMilestoneEditModalProps = OwnProps
+
+const IdeaMilestoneEditModal = ({
+    open,
+    idea,
+    ideaMilestone,
+    onClose,
+    onTurnIntoProposalClick,
+}: IdeaMilestoneEditModalProps) => {
     const { t } = useTranslation()
 
     const { canTurnIntoProposal } = useTurnIdeaMilestoneIntoProposal(idea, ideaMilestone)
@@ -37,3 +45,5 @@ export const IdeaMilestoneEditModal = ({ open, idea, ideaMilestone, onClose, onT
         </Modal>
     )
 }
+
+export default IdeaMilestoneEditModal

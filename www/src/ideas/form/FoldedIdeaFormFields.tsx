@@ -24,9 +24,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface FoldedIdeaFormFieldsProps {
+interface OwnProps {
     values: IdeaDto
 }
+
+export type FoldedIdeaFormFieldsProps = OwnProps
 
 const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
     const classes = useStyles()

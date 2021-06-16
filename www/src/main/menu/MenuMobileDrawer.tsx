@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const MenuMobileDrawer: React.FC<{}> = () => {
+const MenuMobileDrawer = () => {
     const classes = useStyles()
     const { t } = useTranslation()
     const location = useLocation()

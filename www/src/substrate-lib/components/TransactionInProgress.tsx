@@ -7,12 +7,14 @@ import { Stepper } from '../../components/stepper/Stepper'
 import { Status } from './SubmittingTransaction'
 import TransactionModal from './TransactionModal'
 
-export interface Props {
+interface OwnProps {
     status?: Status
     event?: any
     onOk: () => void
     eventDescription?: string
 }
+
+export type TransactionInProgressProps = OwnProps
 
 enum Steps {
     READY,
@@ -22,7 +24,7 @@ enum Steps {
     FINISHED,
 }
 
-const TransactionInProgress: React.FC<Props> = ({ status, onOk, event, eventDescription }) => {
+const TransactionInProgress = ({ status, onOk, event, eventDescription }: TransactionInProgressProps) => {
     const { t } = useTranslation()
 
     const [activeStep, setActiveStep] = useState(-1)

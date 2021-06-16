@@ -18,9 +18,11 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface ProposalsProps {
+export interface OwnProps {
     network: string
 }
+
+export type ProposalsProps = OwnProps
 
 const Proposals = ({ network = config.NETWORK_NAME }: ProposalsProps) => {
     const classes = useStyles()

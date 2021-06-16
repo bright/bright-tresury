@@ -1,18 +1,20 @@
 import React from 'react'
-import { IdeaMilestoneForm } from '../form/IdeaMilestoneForm'
+import IdeaMilestoneForm from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'
 import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 
-interface Props {
+interface OwnProps {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
     onCancel: () => void
 }
 
-export const IdeaMilestoneDetails = ({ idea, ideaMilestone, onCancel }: Props) => {
+export type IdeaMilestoneDetailsProps = OwnProps
+
+const IdeaMilestoneDetails = ({ idea, ideaMilestone, onCancel }: IdeaMilestoneDetailsProps) => {
     const { t } = useTranslation()
 
     return (
@@ -25,3 +27,5 @@ export const IdeaMilestoneDetails = ({ idea, ideaMilestone, onCancel }: Props) =
         </IdeaMilestoneForm>
     )
 }
+
+export default IdeaMilestoneDetails

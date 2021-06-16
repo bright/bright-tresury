@@ -4,7 +4,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/button/Button'
 import Input from '../../components/form/input/Input'
-import { FormSelect } from '../../components/select/FormSelect'
+import FormSelect from '../../components/select/FormSelect'
 import config from '../../config'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
@@ -28,9 +28,11 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 const MAX_LINKS = 10
 
-export interface IdeaFormFieldsProps {
+interface OwnProps {
     values: IdeaDto
 }
+
+export type IdeaFormFieldsProps = OwnProps
 
 const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
     const classes = useStyles()

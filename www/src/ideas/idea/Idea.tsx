@@ -5,13 +5,13 @@ import { IdeaContentType } from './IdeaContentTypeTabs'
 import { Route, Switch, useRouteMatch } from 'react-router-dom'
 import IdeaInfo from './info/IdeaInfo'
 import { IdeaDiscussion } from './discussion/IdeaDiscussion'
-import { IdeaMilestones } from './milestones/IdeaMilestones'
+import IdeaMilestones from './milestones/IdeaMilestones'
 import LoadingWrapper from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import { useIdea } from './useIdea'
 
-export const Idea = () => {
+const Idea = () => {
     const classes = useSuccessfullyLoadedItemStyles()
 
     const { t } = useTranslation()
@@ -50,3 +50,5 @@ export const Idea = () => {
         </LoadingWrapper>
     )
 }
+
+export default Idea

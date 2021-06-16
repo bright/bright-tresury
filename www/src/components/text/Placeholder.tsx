@@ -11,12 +11,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     value: string
     className?: string
 }
 
-export const Placeholder: React.FC<Props> = ({ value, className }) => {
+export type PlaceHolderProps = OwnProps
+
+const Placeholder = ({ value, className }: PlaceHolderProps) => {
     const classes = useStyles()
     return <div className={className ?? classes.default}>{value}</div>
 }
+
+export default Placeholder

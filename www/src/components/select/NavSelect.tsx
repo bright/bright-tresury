@@ -1,5 +1,5 @@
 import React from 'react'
-import { ISelect, Select } from './Select'
+import Select, { SelectProps } from './Select'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import { createStyles } from '@material-ui/core'
 import { NavLink } from 'react-router-dom'
@@ -20,7 +20,9 @@ export interface NavSelectOption {
     isDefault?: boolean
 }
 
-export const NavSelect: ISelect<NavSelectOption> = ({ ...props }) => {
+export type NavSelectProps = SelectProps<NavSelectOption>
+
+const NavSelect = ({ ...props }: NavSelectProps) => {
     const classes = useStyles()
     return (
         <Select
@@ -33,3 +35,5 @@ export const NavSelect: ISelect<NavSelectOption> = ({ ...props }) => {
         />
     )
 }
+
+export default NavSelect

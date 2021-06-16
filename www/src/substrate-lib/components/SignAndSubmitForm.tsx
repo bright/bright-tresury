@@ -7,7 +7,7 @@ import config from '../../config'
 import { InputParam, TxAttrs } from './SubmittingTransaction'
 import { Account } from '../accounts/AccountsContext'
 import { useAccounts } from '../accounts/useAccounts'
-import { AccountSelect } from '../../components/select/AccountSelect'
+import AccountSelect from '../../components/select/AccountSelect'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -34,17 +34,19 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface Props {
+interface OwnProps {
     txAttrs: TxAttrs
     onCancel: () => void
     onSubmit: (address: string) => void
 }
 
+export type SignAndSubmitFormProps = OwnProps
+
 interface Values {
     account: Account
 }
 
-const SignAndSubmitForm: React.FC<Props> = ({ txAttrs, onCancel, onSubmit }) => {
+const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { accounts } = useAccounts()

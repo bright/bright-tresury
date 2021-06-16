@@ -1,5 +1,5 @@
 import React from 'react'
-import SignAndSubmitForm, { Props as SignAndSubmitFormProps } from './SignAndSubmitForm'
+import SignAndSubmitForm, { SignAndSubmitFormProps } from './SignAndSubmitForm'
 import TransactionModal from './TransactionModal'
 
 export interface OwnProps {
@@ -7,9 +7,9 @@ export interface OwnProps {
     instruction: string | JSX.Element
 }
 
-export type Props = OwnProps & SignAndSubmitFormProps
+export type SignAndSubmitProps = OwnProps & SignAndSubmitFormProps
 
-const SignAndSubmit: React.FC<Props> = ({ title, instruction, ...props }) => {
+const SignAndSubmit = ({ title, instruction, ...props }: SignAndSubmitProps) => {
     return (
         <TransactionModal title={title} instruction={instruction}>
             <SignAndSubmitForm {...props} />

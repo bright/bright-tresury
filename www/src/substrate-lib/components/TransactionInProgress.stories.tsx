@@ -1,14 +1,14 @@
 import React from 'react'
 import { Story, Meta } from '@storybook/react/types-6-0'
 import Modal from '../../components/modal/Modal'
-import TransactionInProgress, { Props } from './TransactionInProgress'
+import TransactionInProgress, { TransactionInProgressProps } from './TransactionInProgress'
 
 export default {
     title: 'Transaction In Progress',
     component: TransactionInProgress,
 } as Meta
 
-const Template: Story<Props> = (args) => (
+const Template: Story<TransactionInProgressProps> = (args) => (
     <Modal open={true}>
         <TransactionInProgress {...args} />
     </Modal>

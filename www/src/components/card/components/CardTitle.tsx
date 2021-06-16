@@ -2,7 +2,7 @@ import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { breakpoints } from '../../../theme/theme'
-import { Placeholder } from '../../text/Placeholder'
+import Placeholder from '../../text/Placeholder'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

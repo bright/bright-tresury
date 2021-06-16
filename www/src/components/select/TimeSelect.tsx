@@ -1,4 +1,4 @@
-import { Select } from './Select'
+import Select from './Select'
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'

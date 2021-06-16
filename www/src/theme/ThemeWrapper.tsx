@@ -4,7 +4,7 @@ import { theme } from './theme'
 
 const muiTheme = createMuiTheme(theme)
 
-export const ThemeWrapper: React.FC = ({ children }) => {
+const ThemeWrapper: React.FC = ({ children }) => {
     return (
         <ThemeProvider theme={muiTheme}>
             <CssBaseline />
@@ -12,3 +12,5 @@ export const ThemeWrapper: React.FC = ({ children }) => {
         </ThemeProvider>
     )
 }
+
+export default ThemeWrapper

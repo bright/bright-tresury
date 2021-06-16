@@ -25,7 +25,9 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     value: number
 }
+
 export type NetworkValueProps = OwnProps
+
 const NetworkValue = ({ value }: NetworkValueProps) => {
     const classes = useStyles()
     return (

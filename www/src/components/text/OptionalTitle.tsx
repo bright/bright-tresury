@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
-import { Placeholder } from '../text/Placeholder'
+import Placeholder from '../text/Placeholder'
 import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -25,11 +25,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     title?: string
 }
 
-export const OptionalTitle: React.FC<Props> = ({ title }) => {
+export type OptionalTitleProps = OwnProps
+
+const OptionalTitle = ({ title }: OptionalTitleProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -41,3 +43,5 @@ export const OptionalTitle: React.FC<Props> = ({ title }) => {
         </div>
     )
 }
+
+export default OptionalTitle

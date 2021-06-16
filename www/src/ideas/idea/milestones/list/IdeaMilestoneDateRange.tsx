@@ -3,7 +3,7 @@ import { Nil } from '../../../../util/types'
 import { differenceInDays, format } from 'date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles, Theme } from '@material-ui/core'
-import { IdeaMilestoneDateRangeDifference } from './IdeaMilestoneDateRangeDifference'
+import IdeaMilestoneDateRangeDifference from './IdeaMilestoneDateRangeDifference'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,12 +27,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const DIFFERENCE_IN_DAYS_WHEN_ONLY_ONE_DATE_SPECIFIED: number = 1
 
-interface Props {
+interface OwnProps {
     dateFrom: Nil<Date>
     dateTo: Nil<Date>
 }
 
-export const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: Props) => {
+export type IdeaMilestoneDateRangeProps = OwnProps
+
+const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: IdeaMilestoneDateRangeProps) => {
     const classes = useStyles()
 
     if (dateFrom && dateTo) {
@@ -69,3 +71,5 @@ export const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: Props) => {
 
     return null
 }
+
+export default IdeaMilestoneDateRange

@@ -5,7 +5,7 @@ import Identicon from '../../../components/identicon/Identicon'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Link from '../../../components/link/Link'
 import { breakpoints } from '../../../theme/theme'
-import { Placeholder } from '../../../components/text/Placeholder'
+import Placeholder from '../../../components/text/Placeholder'
 import { IdeaDto } from '../../ideas.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -59,9 +59,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface IdeaDetailsProps {
+interface OwnProps {
     idea: IdeaDto
 }
+
+export type IdeaDetailsProps = OwnProps
 
 const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
     const classes = useStyles()

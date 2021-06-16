@@ -48,7 +48,7 @@ export interface InputParam {
     type?: string
 }
 
-export interface Props {
+interface OwnProps {
     onClose: () => void
     onSuccess?: () => void
     txAttrs: TxAttrs
@@ -57,14 +57,16 @@ export interface Props {
     instruction: string | JSX.Element
 }
 
-const SubmittingTransaction: React.FC<Props> = ({
+export type SubmittingTransactionProps = OwnProps
+
+const SubmittingTransaction = ({
     onClose,
     onSuccess,
     txAttrs,
     setExtrinsicDetails,
     title,
     instruction,
-}) => {
+}: SubmittingTransactionProps) => {
     const { t } = useTranslation()
     const [result, setResult] = useState<Result | undefined>()
     const [error, setError] = useState<any>()

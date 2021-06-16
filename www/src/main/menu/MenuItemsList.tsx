@@ -81,11 +81,13 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 })
 
-interface Props {
+interface OwnProps {
     onSelected?: () => void
 }
 
-const MenuItemsList: React.FC<Props> = ({ onSelected }) => {
+export type MenuItemsListProps = OwnProps
+
+const MenuItemsList = ({ onSelected }: MenuItemsListProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 

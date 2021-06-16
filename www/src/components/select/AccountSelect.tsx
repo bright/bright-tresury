@@ -1,7 +1,6 @@
 import React from 'react'
 import { Account } from '../../substrate-lib/accounts/AccountsContext'
-import { FormSelect } from './FormSelect'
-import { ISelect } from './Select'
+import FormSelect from './FormSelect'
 import { useTranslation } from 'react-i18next'
 import { Theme } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -15,8 +14,6 @@ const useStyles = makeStyles((theme: Theme) => {
     }
 })
 
-const TypedSelect = FormSelect as ISelect<Account>
-
 export const EMPTY_ACCOUNT = {
     name: i18next.t('substrate.form.selectAccount'),
     address: '',
@@ -27,12 +24,14 @@ interface OwnProps {
     accounts: Account[]
 }
 
-export const AccountSelect: React.FC<OwnProps> = ({ accounts, showLabel = true }) => {
+export type AccountSelectProps = OwnProps
+
+const AccountSelect = ({ accounts, showLabel = true }: AccountSelectProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
     return (
-        <TypedSelect
+        <FormSelect
             className={classes.root}
             variant={'outlined'}
             name="account"
@@ -44,3 +43,5 @@ export const AccountSelect: React.FC<OwnProps> = ({ accounts, showLabel = true }
         />
     )
 }
+
+export default AccountSelect

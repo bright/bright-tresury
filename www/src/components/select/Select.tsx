@@ -27,7 +27,7 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface SelectProps<T> {
+interface OwnProps<T> {
     value?: T
     options: T[]
     label?: string
@@ -35,9 +35,9 @@ interface SelectProps<T> {
     renderOption?: (value: T) => string | JSX.Element
 }
 
-export type ISelect<T = any> = React.FC<SelectProps<T> & MaterialSelectProps>
+export type SelectProps<T = any> = OwnProps<T> & MaterialSelectProps
 
-export const Select: ISelect = ({ inputProps, value, renderOption, options, label, placeholder, ...props }) => {
+const Select = ({ inputProps, value, renderOption, options, label, placeholder, ...props }: SelectProps) => {
     const classes = useStyles()
     return (
         <FormGroup>
@@ -65,3 +65,5 @@ export const Select: ISelect = ({ inputProps, value, renderOption, options, labe
         </FormGroup>
     )
 }
+
+export default Select
