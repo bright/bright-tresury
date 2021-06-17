@@ -3,7 +3,7 @@
     "websiteUrl": "https://testing.treasury.brightinventions.pl",
     "port": 3000,
     "blockchain": {
-        "nodeUrl": "ws://treasury-substrate-stage:9944"
+        "nodeUrl": "ws://treasury-substrate-qa:9944"
     },
     "auth": {
         "coreUrl": "http://treasury-auth-qa:3567",
