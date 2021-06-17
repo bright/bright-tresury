@@ -1,6 +1,6 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
-import React, { useState } from 'react'
+import React, { PropsWithChildren, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import Button from '../../components/button/Button'
@@ -24,14 +24,16 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface Props {
+export interface OwnProps {
     idea: IdeaDto
     onSubmit: (idea: IdeaDto) => void
     extendedValidation?: boolean
     foldable?: boolean
 }
 
-const IdeaForm: React.FC<Props> = ({ idea, onSubmit, extendedValidation, foldable, children }) => {
+export type IdeaFormProps = PropsWithChildren<OwnProps>
+
+const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: IdeaFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const [folded, setFolded] = useState(!!foldable)

@@ -1,10 +1,14 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core'
 import { theme } from './theme'
 
 const muiTheme = createMuiTheme(theme)
 
-const ThemeWrapper: React.FC = ({ children }) => {
+interface OwnProps {}
+
+export type ThemeWrapperProps = PropsWithChildren<OwnProps>
+
+const ThemeWrapper = ({ children }: ThemeWrapperProps) => {
     return (
         <ThemeProvider theme={muiTheme}>
             <CssBaseline />

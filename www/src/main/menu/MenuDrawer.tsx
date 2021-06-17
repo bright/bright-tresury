@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react'
+import React, { PropsWithChildren, useMemo, useState } from 'react'
 import clsx from 'clsx'
 import { createStyles, Drawer, isWidthDown, Theme, withWidth } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
@@ -49,7 +49,9 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 })
 
-const MenuDrawer: React.FC<WithWidthProps> = ({ width }) => {
+export type MenuDrawerProps = WithWidthProps
+
+const MenuDrawer = ({ width }: MenuDrawerProps) => {
     const classes = useStyles()
     const isTabletOrMobile = useMemo(() => isWidthDown(breakpoints.tablet, width!), [width])
     const [open, setOpen] = useState(!isTabletOrMobile)

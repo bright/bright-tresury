@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 
 import { breakpoints } from '../theme/theme'
 import TopBar, { DESKTOP_TOP_BAR_HEIGHT, TABLET_TOP_BAR_HEIGHT } from './top-bar/TopBar'
@@ -27,7 +27,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const Main: React.FC = ({ children }) => {
+interface OwnProps {}
+
+export type MainProps = PropsWithChildren<OwnProps>
+
+const Main = ({ children }: MainProps) => {
     const classes = useStyles()
 
     return (

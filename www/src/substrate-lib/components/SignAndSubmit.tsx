@@ -2,7 +2,7 @@ import React from 'react'
 import SignAndSubmitForm, { SignAndSubmitFormProps } from './SignAndSubmitForm'
 import TransactionModal from './TransactionModal'
 
-export interface OwnProps {
+interface OwnProps {
     title: string
     instruction: string | JSX.Element
 }

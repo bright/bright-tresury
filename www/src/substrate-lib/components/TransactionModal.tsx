@@ -1,6 +1,6 @@
 import { Box, createStyles } from '@material-ui/core'
 import makeStyles from '@material-ui/core/styles/makeStyles'
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import Info from '../../components/info/Info'
 
 const useStyles = makeStyles(
@@ -14,7 +14,7 @@ const useStyles = makeStyles(
     }),
 )
 
-export interface Props {
+interface OwnProps {
     title?: string
     subtitle?: string | Element | JSX.Element
     instruction?: string | Element | JSX.Element
@@ -22,7 +22,9 @@ export interface Props {
     buttons?: JSX.Element
 }
 
-const TransactionModal: React.FC<Props> = ({ title, subtitle, instruction, imgSrc, buttons, children }) => {
+export type TransactionModalProps = PropsWithChildren<OwnProps>
+
+const TransactionModal = ({ title, subtitle, instruction, imgSrc, buttons, children }: TransactionModalProps) => {
     const classes = useStyles()
     return (
         <Box display="flex" flexDirection="column" alignItems="center" height="100%">

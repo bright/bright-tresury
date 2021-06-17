@@ -1,5 +1,5 @@
 import { Keyring } from '@polkadot/ui-keyring'
-import React, { Dispatch, useReducer } from 'react'
+import React, { Dispatch, PropsWithChildren, useReducer } from 'react'
 
 export interface Account {
     name: string
@@ -38,7 +38,11 @@ const reducer = (state: State, action: Action): State => {
 
 const AccountsContext = React.createContext<[State, Dispatch<Action> | undefined]>([INIT_STATE, undefined])
 
-const AccountsContextProvider: React.FC = ({ children }) => {
+interface OwnProps {}
+
+export type AccountsContextProviderProps = PropsWithChildren<OwnProps>
+
+const AccountsContextProvider = ({ children }: AccountsContextProviderProps) => {
     const initState = {
         keyring: undefined,
         keyringState: undefined,
