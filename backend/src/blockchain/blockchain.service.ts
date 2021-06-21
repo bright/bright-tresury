@@ -35,10 +35,12 @@ export class BlockchainService implements OnModuleDestroy {
     }
 
     async listenForExtrinsic(extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) {
+        logger.info(`Listening for extrinsic with hash ${extrinsicHash}...`)
         let blocksCount = 0
 
         this.unsub = await this.polkadotApi.rpc.chain.subscribeFinalizedHeads(async (header: Header) => {
             blocksCount++
+            logger.info(`Checking block ${header.hash.toString()}.`)
             const signedBlock = await this.polkadotApi.rpc.chain.getBlock(header.hash)
             // TODO fix types!
             // @ts-ignore
@@ -46,9 +48,11 @@ export class BlockchainService implements OnModuleDestroy {
                 (ex) => ex.hash.toString() === extrinsicHash,
             )
             if (extrinsic) {
+                logger.info(`Block with extrinsic ${extrinsicHash} found.`)
                 const events = ((await this.polkadotApi.query.system.events.at(
                     header.hash,
                 )) as unknown) as EventRecord[]
+                logger.info(`All extrinsic events.`, events)
                 await this.callUnsub()
 
                 const applyExtrinsicEvents = events
@@ -67,6 +71,8 @@ export class BlockchainService implements OnModuleDestroy {
                         } as ExtrinsicEvent
                     })
 
+                logger.info(`Apply extrinsic events.`, applyExtrinsicEvents)
+
                 const method = extrinsic.method.toJSON() as { args?: unknown }
                 const args = method?.args ?? {}
 
@@ -76,12 +82,15 @@ export class BlockchainService implements OnModuleDestroy {
                     data: args,
                 } as UpdateExtrinsicDto
 
+                logger.info(`Data extracted, calling the callback function...`, result)
+
                 await cb(result)
             }
 
             // stop listening to blocks after some time - we assume the block might not be found
             // TODO set the threshold to some reasonable value
             if (blocksCount >= 50) {
+                logger.error(`Extrinsic ${extrinsicHash} not found within 50 blocks`)
                 await this.callUnsub()
             }
         })

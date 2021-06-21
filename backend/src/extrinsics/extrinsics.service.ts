@@ -2,10 +2,13 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
+import { getLogger } from '../logging.module'
 import { CreateExtrinsicDto } from './dto/createExtrinsic.dto'
 import { UpdateExtrinsicDto } from './dto/updateExtrinsic.dto'
 import { Extrinsic, ExtrinsicStatuses } from './extrinsic.entity'
 import { ExtrinsicEvent } from './extrinsicEvent'
+
+const logger = getLogger()
 
 @Injectable()
 export class ExtrinsicsService {
@@ -22,6 +25,7 @@ export class ExtrinsicsService {
         createExtrinsicDto: CreateExtrinsicDto,
         extractEvents?: (events: ExtrinsicEvent[]) => Promise<void>,
     ): Promise<Extrinsic> {
+        logger.info(`Save extrinsic to listen for`, createExtrinsicDto)
         const extrinsic = await this.create(createExtrinsicDto)
 
         const callback = async (updateExtrinsicDto: UpdateExtrinsicDto) => {

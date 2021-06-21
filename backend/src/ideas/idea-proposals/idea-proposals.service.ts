@@ -4,12 +4,15 @@ import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../../extrinsics/extrinsics.service'
+import { getLogger } from '../../logging.module'
 import { CreateIdeaProposalDto } from './dto/create-idea-proposal.dto'
 import { IdeasService } from '../ideas.service'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { Idea } from '../entities/idea.entity'
 import { IdeaStatus } from '../idea-status'
 import { IdeaNetwork } from '../entities/idea-network.entity'
+
+const logger = getLogger()
 
 @Injectable()
 export class IdeaProposalsService {
@@ -28,6 +31,7 @@ export class IdeaProposalsService {
         { ideaNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaProposalDto,
         sessionData: SessionData,
     ): Promise<IdeaNetwork> {
+        logger.info(`Start turning idea ${ideaId} into a proposal.`)
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.canEditOrThrow(sessionData.user)
@@ -71,11 +75,15 @@ export class IdeaProposalsService {
         validIdeaNetwork: IdeaNetwork,
         blockchainProposalIndex: number,
     ): Promise<void> {
+        logger.info(`Set idea ${validIdea.id} status to turned_into_proposal.`)
         await this.ideaRepository.save({
             ...validIdea,
             status: IdeaStatus.TurnedIntoProposal,
         })
 
+        logger.info(
+            `Set blockchainProposalIndex to ${blockchainProposalIndex} for the idea network ${validIdeaNetwork.id}.`,
+        )
         await this.ideaNetworkRepository.save({
             ...validIdeaNetwork,
             blockchainProposalId: blockchainProposalIndex,
