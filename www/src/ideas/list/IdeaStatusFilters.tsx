@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { breakpoints } from '../../theme/theme'
 import { ROUTE_IDEAS } from '../../routes/routes'
 import NavSelect from '../../components/select/NavSelect'
+import { useAuth } from '../../auth/AuthContext'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,6 +19,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
+
+const getFilterValues = (isUserSignedIn: boolean): IdeaFilter[] => {
+    const filterValues = Object.values(IdeaFilter)
+    return isUserSignedIn ? filterValues : filterValues.filter((value) => value !== IdeaFilter.Mine)
+}
 
 export enum IdeaFilter {
     All = 'all',
@@ -40,6 +46,7 @@ export type IdeaStatusFilters = OwnProps
 const IdeaStatusFilters = ({ selectedFilter }: IdeaStatusFilters) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const { isUserSignedIn } = useAuth()
 
     const getTranslation = (ideaFilter: IdeaFilter): string => {
         switch (ideaFilter) {
@@ -58,7 +65,7 @@ const IdeaStatusFilters = ({ selectedFilter }: IdeaStatusFilters) => {
         }
     }
 
-    const filterValues = Object.values(IdeaFilter)
+    const filterValues = getFilterValues(isUserSignedIn)
 
     const getFilterOption = (filter: IdeaFilter) => {
         return {

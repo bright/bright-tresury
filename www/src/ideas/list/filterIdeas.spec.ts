@@ -68,6 +68,18 @@ describe('filter ideas', () => {
 
             expect(filterIdeas(ideas, IdeaFilter.Mine, otherUser)).toStrictEqual([])
         })
+
+        it('should not return ideas when user is undefined', () => {
+            const ideas = [
+                createIdea(IdeaStatus.Draft, user),
+                createIdea(IdeaStatus.Active, user),
+                createIdea(IdeaStatus.TurnedIntoProposal, user),
+                createIdea(IdeaStatus.TurnedIntoProposalByMilestone, user),
+                createIdea(IdeaStatus.Closed, user),
+            ]
+
+            expect(filterIdeas(ideas, IdeaFilter.Mine, undefined)).toStrictEqual([])
+        })
     })
 
     describe(`filter by ${IdeaFilter.Draft}`, () => {

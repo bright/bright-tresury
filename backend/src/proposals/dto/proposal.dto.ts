@@ -68,6 +68,9 @@ export class ProposalDto {
     })
     ideaMilestoneId?: string
 
+    @ApiPropertyOptional({ description: 'Id of an owner who created the idea' })
+    ownerId?: string
+
     constructor({
         proposalIndex,
         proposer,
@@ -81,6 +84,7 @@ export class ProposalDto {
         isCreatedFromIdeaMilestone,
         ideaId,
         ideaMilestoneId,
+        ownerId,
     }: BlockchainProposalWithDomainDetails) {
         this.proposalIndex = proposalIndex
         this.proposer = proposer
@@ -103,5 +107,6 @@ export class ProposalDto {
         this.isCreatedFromIdeaMilestone = isCreatedFromIdeaMilestone
         this.ideaId = ideaId
         this.ideaMilestoneId = ideaMilestoneId
+        this.ownerId = ownerId
     }
 }

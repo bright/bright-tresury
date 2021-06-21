@@ -13,6 +13,7 @@ export type BlockchainProposalWithDomainDetails = BlockchainProposal & {
     isCreatedFromIdeaMilestone: boolean
     ideaId?: string
     ideaMilestoneId?: string
+    ownerId?: string
 }
 
 @Injectable()
@@ -47,6 +48,7 @@ export class ProposalsService {
                     ideaId: idea?.id ?? ideaMilestone?.idea.id,
                     ideaMilestoneId: ideaMilestone?.id,
                     title: idea?.title ?? ideaMilestone?.subject,
+                    ownerId: idea?.ownerId,
                 }
             })
         } catch (err) {

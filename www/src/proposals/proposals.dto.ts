@@ -22,6 +22,7 @@ export interface ProposalDto {
     ideaId?: string
     ideaMilestoneId?: string
     motions: ProposalMotion[]
+    ownerId: string
 }
 
 export interface ProposalMotion {

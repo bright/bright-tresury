@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { breakpoints } from '../../theme/theme'
 import { ROUTE_PROPOSALS } from '../../routes/routes'
 import NavSelect from '../../components/select/NavSelect'
+import { useAuth } from '../../auth/AuthContext'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -19,8 +20,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
+const getFilterValues = (isUserSignedIn: boolean): ProposalFilter[] => {
+    const filterValues = Object.values(ProposalFilter)
+    return isUserSignedIn ? filterValues : filterValues.filter((value) => value !== ProposalFilter.Mine)
+}
+
 export enum ProposalFilter {
     All = 'all',
+    Mine = 'mine',
     Submitted = 'submitted',
     Approved = 'approved',
     Rejected = 'rejected',
@@ -39,11 +46,14 @@ export type ProposalStatusFiltersProps = OwnProps
 const ProposalStatusFilters = ({ selectedFilter }: ProposalStatusFiltersProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const { isUserSignedIn } = useAuth()
 
     const getTranslation = (proposalFilter: ProposalFilter): string => {
         switch (proposalFilter) {
             case ProposalFilter.All:
                 return t('proposal.list.filters.all')
+            case ProposalFilter.Mine:
+                return t('proposal.list.filters.mine')
             case ProposalFilter.Submitted:
                 return t('proposal.list.filters.submitted')
             case ProposalFilter.Approved:
@@ -55,7 +65,7 @@ const ProposalStatusFilters = ({ selectedFilter }: ProposalStatusFiltersProps) =
         }
     }
 
-    const filterValues = Object.values(ProposalFilter)
+    const filterValues = getFilterValues(isUserSignedIn)
 
     const getFilterOption = (filter: ProposalFilter) => {
         return {

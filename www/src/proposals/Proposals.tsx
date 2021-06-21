@@ -9,6 +9,7 @@ import { ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName } 
 import { filterProposals } from './list/filterProposals'
 import { useTranslation } from 'react-i18next'
 import ProposalsHeader from './ProposalsHeader'
+import { useAuth } from '../auth/AuthContext'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -29,6 +30,8 @@ const Proposals = ({ network = config.NETWORK_NAME }: ProposalsProps) => {
 
     const { t } = useTranslation()
 
+    const { user } = useAuth()
+
     const location = useLocation()
 
     const { status, data: proposals } = useGetProposals(network)
@@ -39,7 +42,7 @@ const Proposals = ({ network = config.NETWORK_NAME }: ProposalsProps) => {
     }, [location.search])
 
     const filteredProposals = useMemo(() => {
-        return proposals ? filterProposals(proposals, selectedFilter) : []
+        return proposals ? filterProposals(proposals, selectedFilter, user) : []
     }, [selectedFilter, proposals])
 
     return (

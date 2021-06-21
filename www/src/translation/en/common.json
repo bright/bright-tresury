@@ -364,6 +364,7 @@
             },
             "filters": {
                 "all": "All",
+                "mine": "Mine",
                 "submitted": "Submitted",
                 "approved": "Approved",
                 "rejected": "Rejected",
