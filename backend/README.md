@@ -124,9 +124,8 @@ If you run your local node you may encounter "Unexpected epoch change" error. Th
 
 We are using SuperTokens as authorization core.
 
-The core is running on a docker container. It needs to connect to our database for
-development purposes. If you don't run PostgreSQL in docker container you need to modify postgres configuration,
-so SuperTokens server connects to your PostgreSQL instance.
+The core is running on a docker container. The auth core uses its own database, but needs to connect to the database server
+instance. If you don't run PostgreSQL server in docker container you need to modify the configuration, so SuperTokens server connects to your PostgreSQL instance.
 
 1. Edit your PostgreSQL config file named `pg_hba.conf` by adding the following line:
 
