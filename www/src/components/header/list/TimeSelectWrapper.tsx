@@ -29,7 +29,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-export type TimeSelectWrapperProps = ClassNameProps & PropsWithChildren<{}>
+
+interface OwnProps {}
+
+export type TimeSelectWrapperProps = ClassNameProps & PropsWithChildren<OwnProps>
+
 const TimeSelectWrapper = ({ className, children }: TimeSelectWrapperProps) => {
     const classes = useStyles()
     return <div className={clsx(classes.root, className)}>{children}</div>

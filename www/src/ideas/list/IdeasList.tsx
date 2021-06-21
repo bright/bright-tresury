@@ -3,7 +3,7 @@ import IdeaCard from './IdeaCard'
 import { IdeaDto } from '../ideas.dto'
 import Grid from '../../components/grid/Grid'
 
-export interface OwnProps {
+interface OwnProps {
     ideas: IdeaDto[]
 }
 

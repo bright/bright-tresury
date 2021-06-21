@@ -9,7 +9,7 @@ import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 
-export interface OwnProps {
+interface OwnProps {
     idea: IdeaDto
 }
 

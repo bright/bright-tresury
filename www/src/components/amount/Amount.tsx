@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles, Theme } from '@material-ui/core'
 import { formatNumber } from '../../util/numberUtil'
@@ -42,11 +42,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface AmountProps {
+interface OwnProps {
     amount: number
     currency: string
     label?: string
 }
+
+export type AmountProps = PropsWithChildren<OwnProps>
 
 const Amount = ({ amount, currency, label, ...props }: AmountProps) => {
     const classes = useStyles()

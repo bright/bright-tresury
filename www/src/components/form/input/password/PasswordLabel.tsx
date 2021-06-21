@@ -17,12 +17,14 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface PasswordLabelProps {
+interface OwnProps {
     label: string
     icon: string
     iconDescription: string
     onClick: () => void
 }
+
+export type PasswordLabelProps = OwnProps
 
 const PasswordLabel = ({ label, icon, iconDescription, onClick }: PasswordLabelProps) => {
     const classes = useStyles()

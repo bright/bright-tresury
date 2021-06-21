@@ -13,7 +13,11 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-const CardHeader = ({ children }: PropsWithChildren<{}>) => {
+interface OwnProps {}
+
+export type CardDetailsProps = PropsWithChildren<OwnProps>
+
+const CardHeader = ({ children }: CardDetailsProps) => {
     const classes = useStyles()
 
     return <div className={classes.root}>{children}</div>

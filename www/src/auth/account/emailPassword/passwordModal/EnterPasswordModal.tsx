@@ -33,11 +33,13 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface EnterPasswordModalProps {
+interface OwnProps {
     open: boolean
     onClose: () => void
     onConfirm: (password: string) => void
 }
+
+export type EnterPasswordModalProps = OwnProps
 
 const EnterPasswordModal = ({ open, onClose, onConfirm }: EnterPasswordModalProps) => {
     const { t } = useTranslation()

@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
-export interface OwnProps {
+interface OwnProps {
     idea: IdeaDto
     canEdit: boolean
     displayWithinIdeaSubTab: boolean

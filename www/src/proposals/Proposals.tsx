@@ -18,7 +18,7 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface OwnProps {
+interface OwnProps {
     network: string
 }
 

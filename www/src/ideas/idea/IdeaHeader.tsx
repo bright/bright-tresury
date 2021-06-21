@@ -73,7 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface OwnProps {
+interface OwnProps {
     idea: IdeaDto
     canEdit: boolean
 }

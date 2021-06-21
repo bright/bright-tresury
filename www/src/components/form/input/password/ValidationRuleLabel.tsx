@@ -30,10 +30,12 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface ValidationRuleLabelProps {
+interface OwnProps {
     message: string
     error?: string | string[]
 }
+
+export type ValidationRuleLabelProps = OwnProps
 
 const ValidationRuleLabel = ({ message, error }: ValidationRuleLabelProps) => {
     const classes = useStyles()

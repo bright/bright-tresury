@@ -30,9 +30,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface CardTitleProps {
+interface OwnProps {
     title?: string
 }
+
+export type CardTitleProps = OwnProps
 
 const CardTitle = ({ title }: CardTitleProps) => {
     const classes = useStyles()

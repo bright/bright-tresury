@@ -19,7 +19,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const CardDetails = ({ children }: PropsWithChildren<{}>) => {
+interface OwnProps {}
+
+export type CardDetailsProps = PropsWithChildren<OwnProps>
+
+const CardDetails = ({ children }: CardDetailsProps) => {
     const classes = useStyles()
 
     return <div className={classes.root}>{children}</div>

@@ -46,7 +46,7 @@ const useStyles = makeStyles((theme: Theme) => {
     })
 })
 
-export interface OwnProps {
+interface OwnProps {
     filter: ProposalFilter
 }
 

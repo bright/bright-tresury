@@ -4,7 +4,7 @@ import IdeaEdit from './IdeaEdit'
 import { IdeaDto } from '../../ideas.dto'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 
-export interface OwnProps {
+interface OwnProps {
     idea: IdeaDto
     canEdit: boolean
 }

@@ -21,7 +21,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const FormFooterButtonsContainer = ({ children }: PropsWithChildren<{}>) => {
+interface OwnProps {}
+
+export type FormFooterButtonsContainerProps = PropsWithChildren<OwnProps>
+
+const FormFooterButtonsContainer = ({ children }: FormFooterButtonsContainerProps) => {
     const classes = useStyles()
 
     return <div className={classes.root}>{children}</div>

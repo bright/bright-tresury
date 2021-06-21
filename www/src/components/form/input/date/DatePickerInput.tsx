@@ -7,13 +7,15 @@ import DateFnsUtils from '@date-io/date-fns'
 import ErrorLabel from '../ErrorLabel'
 import { TextFieldColorScheme, useTextFieldStyles } from '../textFieldStyles'
 
-export interface DatePickerInputProps {
+interface OwnProps {
     name: string
     label?: string | JSX.Element
     placeholder?: string
     disabled: boolean
     textFieldColorScheme?: TextFieldColorScheme
 }
+
+export type DatePickerInputProps = OwnProps
 
 const DatePickerInput = ({
     name,

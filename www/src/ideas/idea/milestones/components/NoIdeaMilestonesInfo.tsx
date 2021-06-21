@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-export interface OwnProps {
+interface OwnProps {
     canEdit: boolean
     displayWithinIdeaSubTab: boolean
 }

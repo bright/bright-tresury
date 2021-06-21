@@ -36,7 +36,7 @@ interface OwnProps {
     onSubmit?: (values: IdeaMilestoneFormValues) => void
 }
 
-export type IdeaMilestoneFormProps = OwnProps
+export type IdeaMilestoneFormProps = PropsWithChildren<OwnProps>
 
 const IdeaMilestoneForm = ({
     idea,
@@ -46,7 +46,7 @@ const IdeaMilestoneForm = ({
     extendedValidation = false,
     onSubmit,
     children,
-}: PropsWithChildren<IdeaMilestoneFormProps>) => {
+}: IdeaMilestoneFormProps) => {
     const classes = useStyles()
 
     const { initialValues, validationSchema, extendedValidationSchema, onSubmitFallback } = useIdeaMilestoneForm({

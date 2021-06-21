@@ -24,7 +24,7 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface OwnProps {
+interface OwnProps {
     idea: IdeaDto
     onSubmit: (idea: IdeaDto) => void
     extendedValidation?: boolean

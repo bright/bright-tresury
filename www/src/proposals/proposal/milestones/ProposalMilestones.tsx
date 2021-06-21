@@ -2,7 +2,7 @@ import React from 'react'
 import IdeaMilestones from '../../../ideas/idea/milestones/IdeaMilestones'
 import { useIdea } from '../../../ideas/idea/useIdea'
 
-export interface OwnProps {
+interface OwnProps {
     ideaId: string
 }
 

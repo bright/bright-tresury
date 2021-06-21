@@ -14,7 +14,7 @@ import CardDetails from '../../components/card/components/CardDetails'
 import CardTitle from '../../components/card/components/CardTitle'
 import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 
-export interface OwnProps {
+interface OwnProps {
     idea: IdeaDto
 }
 
