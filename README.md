@@ -7,28 +7,27 @@ This repo contains:
 -   backend
     -   database which keeps contextual data
     -   event listener to track on-chain updates
-    -   REST API with [documentation](http://localhost:3001/api/documentation/)
--   frontend
-    -   React frontend application available on [http://localhost:3000/](http://localhost:3000/)
-    
+    -   REST API with documentation
+    -   React frontend application available on
+
 ## Testing env
 
 We have a testing environment set up. You can register and play with the app:
 
--   the front end app: www.testing.treasury.brightinventions.pl
--   the backend api: www.testing.treasury.brightinventions.pl:3000
--   the backend api documentation: www.testing.treasury.brightinventions.pl:3000/api/documentation
--   the Polkadot node (in development mode): ws://52.57.233.92:9944 (only via ws, no wss available). To access it with Polkadot JS Apps, you need to run an instance by yourself. [Here](https://github.com/polkadot-js/apps#docker) is an instruction how to run it in Docker.
+-   the front end app: [https://testing.treasury.brightinventions.pl/](https://testing.treasury.brightinventions.pl/)
+-   the backend api: [https://testing.treasury.brightinventions.pl/api/health](https://testing.treasury.brightinventions.pl/api/health)
+-   the backend api documentation: [https://testing.treasury.brightinventions.pl/api/documentation/](https://testing.treasury.brightinventions.pl/api/documentation/)
+-   the Polkadot node (in development mode): wss://testing.treasury.brightinventions.pl:9944. You can access it with Polkadot JS Apps [https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Ftesting.treasury.brightinventions.pl%3A9944#/council](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Ftesting.treasury.brightinventions.pl%3A9944#/council).
 
 ## Running
 
-In order to run standalone treasury app, open terminal and do:
+In order to run a standalone treasury app, open terminal and do:
 
 -   `cd deploy`
 -   `docker-compose --file docker-compose.development-docker.yml up`
 
-This will run frontend and backend together with postgres database, authentication:core and local dev polkadot node in docker containers.
-After the booting process is finished, open your web browser and go to [http://localhost:3001/](http://localhost:3001/)
+This will run the frontend and the backend together with PostgreSQL database, authentication core and a local Polkadot node (in development mode) in docker containers.
+After the booting process is finished, open your web browser and go to [http://localhost:3001/](http://localhost:3001/).
 
 ## Development
 
