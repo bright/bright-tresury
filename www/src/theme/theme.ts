@@ -39,6 +39,9 @@ export const theme = {
             turnedIntoProposalByMilestone: '#2FD3AE',
             closed: '#1B1D1C',
         },
+        network: {
+            main: '#0E65F2',
+        },
     },
 }
 
@@ -46,4 +49,14 @@ export const breakpoints = {
     mobile: 'xs' as Breakpoint,
     tablet: 'sm' as Breakpoint,
     desktop: 'md' as Breakpoint,
+}
+
+declare module '@material-ui/core/styles/createPalette' {
+    interface Palette {
+        network: Palette['primary']
+    }
+
+    interface PaletteOptions {
+        network: PaletteOptions['primary']
+    }
 }

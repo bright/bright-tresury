@@ -1,10 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useAuth } from '../../auth/AuthContext'
-import config from '../../config/index'
 import { breakpoints } from '../../theme/theme'
 import AccountInfo from './account/AccountInfo'
-import NetworkPicker from './NetworkPicker'
+import NetworkPicker from './network/NetworkPicker'
 import SignInButton from './SignInButton'
 
 export const TABLET_TOP_BAR_HEIGHT = '77px'
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 height: TABLET_TOP_BAR_HEIGHT,
             },
             padding: '0 36px',
-            backgroundColor: config.NETWORK_COLOR,
+            backgroundColor: theme.palette.network.main,
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',

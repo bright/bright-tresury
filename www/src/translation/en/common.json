@@ -35,12 +35,16 @@
             }
         }
     },
+    "networks": {
+        "loading": "Loading networks...",
+        "error": "Something went wrong. Please try again later."
+    },
     "topBar": {
         "signIn": "Sign In",
         "showAccountMenu": "Account menu",
         "network": {
-            "polkadotLogoAlt": "Polkadot logo",
-            "development": "Development"
+            "logo": "Network logo",
+            "moreNetworks": "Show more networks"
         },
         "account": {
             "emailVerificationNeeded": "Email verification needed",

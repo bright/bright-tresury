@@ -13,6 +13,7 @@ import TurnIdeaIntoProposal from './ideas/idea/turnIntoProposal/TurnIdeaIntoProp
 import Idea from './ideas/idea/Idea'
 import Ideas from './ideas/Ideas'
 import Main from './main/Main'
+import NetworksContextProvider from './networks/NetworksContext'
 import Proposal from './proposals/proposal/Proposal'
 import Proposals from './proposals/Proposals'
 import { PrivateRoute } from './routes/PrivateRoute'
@@ -117,15 +118,17 @@ function App() {
     console.log('front-end hello')
     return (
         <QueryClientProvider client={queryClient}>
-            <AuthContextProvider>
-                <SubstrateContextProvider>
-                    <AccountsContextProvider>
-                        <ThemeWrapper>
-                            <AppRoutes />
-                        </ThemeWrapper>
-                    </AccountsContextProvider>
-                </SubstrateContextProvider>
-            </AuthContextProvider>
+            <ThemeWrapper>
+                <NetworksContextProvider>
+                    <AuthContextProvider>
+                        <SubstrateContextProvider>
+                            <AccountsContextProvider>
+                                <AppRoutes />
+                            </AccountsContextProvider>
+                        </SubstrateContextProvider>
+                    </AuthContextProvider>
+                </NetworksContextProvider>
+            </ThemeWrapper>
         </QueryClientProvider>
     )
 }
