@@ -1,18 +1,25 @@
 import { Divider } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import arrowSvg from '../../../assets/account_menu_arrow.svg'
 import { useAuth } from '../../../auth/AuthContext'
 import IconButton from '../../../components/button/IconButton'
-import { ROUTE_ACCOUNT } from '../../../routes/routes'
+import { ROUTE_ACCOUNT, ROUTE_IDEAS, ROUTE_PROPOSALS } from '../../../routes/routes'
 import { useMenu } from '../useMenu'
 import AccountImage from './AccountImage'
 import EmailVerifyErrorMenuItem from './EmailVerifyErrorMenuItem'
 import MenuItem from './MenuItem'
 import SignOutMenuItem from './SignOutMenuItem'
+import { IdeaFilter, IdeaFilterSearchParamName } from '../../../ideas/list/IdeaStatusFilters'
+import { useGetIdeas } from '../../../ideas/ideas.api'
+import config from '../../../config'
+import { filterIdeas } from '../../../ideas/list/filterIdeas'
+import { useGetProposals } from '../../../proposals/proposals.api'
+import { filterProposals } from '../../../proposals/list/filterProposals'
+import { ProposalFilter } from '../../../proposals/list/ProposalStatusFilters'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -22,16 +29,38 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-const AccountInfo = () => {
+const AccountInfo = ({ network = config.NETWORK_NAME }) => {
     const { t } = useTranslation()
     const classes = useStyles()
     const history = useHistory()
     const { user } = useAuth()
+    const { data: ideas } = useGetIdeas(network)
+    const { data: proposals } = useGetProposals(network)
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 
+    const numberOfMineIdeas = useMemo(() => {
+        const mineIdeas = ideas ? filterIdeas(ideas, IdeaFilter.Mine, user) : []
+        return mineIdeas.length
+    }, [ideas, user])
+
+    const numberOfMineProposals = useMemo(() => {
+        const mineProposals = proposals ? filterProposals(proposals, ProposalFilter.Mine) : []
+        return mineProposals.length
+    }, [proposals, user])
+
     const goToAccount = () => {
         history.push(ROUTE_ACCOUNT)
+        handleClose()
+    }
+
+    const goToMineIdeas = () => {
+        history.push(`${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${IdeaFilter.Mine}`)
+        handleClose()
+    }
+
+    const goToMineProposals = () => {
+        history.push(`${ROUTE_PROPOSALS}?${IdeaFilterSearchParamName}=${ProposalFilter.Mine}`)
         handleClose()
     }
 
@@ -55,6 +84,12 @@ const AccountInfo = () => {
                     </>
                 ) : null}
                 <MenuItem onClick={goToAccount}>{t('topBar.account.account')}</MenuItem>
+                <MenuItem onClick={goToMineIdeas}>
+                    {t('topBar.account.yourIdeas')} ({numberOfMineIdeas})
+                </MenuItem>
+                <MenuItem onClick={goToMineProposals}>
+                    {t('topBar.account.yourProposals')} ({numberOfMineProposals})
+                </MenuItem>
                 <Divider />
                 <SignOutMenuItem />
             </Menu>

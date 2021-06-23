@@ -53,7 +53,9 @@
         "account": {
             "emailVerificationNeeded": "Email verification needed",
             "account": "Account",
-            "signOut": "Log out"
+            "signOut": "Log out",
+            "yourIdeas": "Your Ideas",
+            "yourProposals": "Your Proposals"
         }
     },
     "menu": {
