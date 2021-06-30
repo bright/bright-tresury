@@ -2,9 +2,33 @@
     "apiUrl": "https://treasury.brightinventions.pl:3000",
     "websiteUrl": "https://treasury.brightinventions.pl",
     "port": 3000,
-    "blockchain": {
-        "nodeUrl": "ws://treasury-substrate-production:9944"
-    },
+    "blockchain": [
+        {
+            "id": "polkadot",
+            "name": "Polkadot",
+            "url": "wss://rpc.polkadot.io",
+            "bond": {
+                "minValue": 1000,
+                "percentage": 5
+            },
+            "currency": "DOT",
+            "decimals": 12,
+            "color": "#E6007A",
+            "isDefault": true
+        },
+        {
+            "id": "kusama",
+            "name": "Kusama",
+            "url": "wss://kusama-rpc.polkadot.io",
+            "bond": {
+                "minValue": 1000,
+                "percentage": 5
+            },
+            "currency": "KSM",
+            "decimals": 15,
+            "color": "#000000"
+        }
+    ],
     "auth": {
         "coreUrl": "http://treasury-auth-production:3567",
         "cookieSecure": true

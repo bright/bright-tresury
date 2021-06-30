@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { SwaggerModule } from '@nestjs/swagger'
 import { join } from 'path'
 import { createApp } from './app.module'
-import { AppConfig } from './config/config'
+import { AppConfig } from './config/config.module'
 import { getLogger } from './logging.module'
 import { generateSwaggerDocument } from './swagger'
 

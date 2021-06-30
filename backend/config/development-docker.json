@@ -12,7 +12,20 @@
     "authorizationDatabase": {
         "host": "database"
     },
-    "blockchain": {
-        "nodeUrl": "ws://substrate:9944"
-    }
+    "blockchain": [
+        {
+            "id": "development",
+            "name": "Development",
+            "url": "ws://substrate:9944",
+            "developmentKeyring": true,
+            "bond": {
+                "minValue": 1000,
+                "percentage": 5
+            },
+            "currency": "UNIT",
+            "decimals": 12,
+            "color": "#0E65F2",
+            "isDefault": true
+        }
+    ]
 }

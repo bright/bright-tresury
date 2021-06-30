@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { Connection } from 'typeorm'
-import { ConfigModule } from './config/config'
+import { ConfigModule } from './config/config.module'
 import { DatabaseModule } from './database/database.module'
 import { getLogger, NestLoggerAdapter } from './logging.module'
 

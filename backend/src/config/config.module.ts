@@ -16,7 +16,10 @@ import { getLogger } from '../logging.module'
 import { AsyncFactoryProvider, propertyOfProvider } from '../utils/dependency.injection'
 import { BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken } from '../blockchain/blockchain.config'
 import { stringFormat } from './formats/string.format'
+import { notEmptyArrayFormat } from './formats/not-empty-array.format'
 import { AuthConfig, authConfigSchema, AuthConfigToken } from '../auth/auth.config'
+import { ConfigController } from './config.controller'
+import { ConfigService } from './config.service'
 
 interface EnvConfig {
     deployEnv: 'production' | 'development' | 'development-local' | 'stage' | 'qa' | 'test' | 'test-local'
@@ -30,7 +33,7 @@ export type AppConfig = EnvConfig & {
     database: DatabaseConfig
     authorizationDatabase: DatabaseConfig
     aws: AWSConfig
-    blockchain: BlockchainConfig
+    blockchain: BlockchainConfig[]
     auth: AuthConfig
     emails: EmailsConfig
 }
@@ -78,7 +81,23 @@ const configSchema = convict<AppConfig>({
     database: databaseConfigSchema,
     authorizationDatabase: databaseConfigSchema,
     aws: awsConfigSchema,
-    blockchain: blockchainConfigSchema,
+    blockchain: {
+        format: (blockchainConfigList: BlockchainConfig[]) => {
+            notEmptyArrayFormat(blockchainConfigList)
+            // For more information on how to validate and use default values see:
+            // validate: https://github.com/mozilla/node-convict/issues/238
+            // defaults: https://github.com/mozilla/node-convict/issues/367
+            const parsedBlockchainConfigList = []
+            for (const blockchainConfig of blockchainConfigList) {
+                parsedBlockchainConfigList.push(
+                    convict(blockchainConfigSchema).load(blockchainConfig).validate().getProperties(),
+                )
+            }
+            configSchema.set('blockchain', parsedBlockchainConfigList)
+        },
+        default: [],
+        children: blockchainConfigSchema,
+    },
     auth: authConfigSchema,
     emails: emailsConfigSchema,
 })
@@ -134,11 +153,13 @@ const providers: Provider[] = [
     blockchainConfigProvider,
     authConfigProvider,
     emailsConfigProvider,
+    ConfigService,
 ]
 
 // @Global() // if we don't have to import config module everywhere
 @Module({
     providers,
+    controllers: [ConfigController],
     exports: providers,
 })
 export class ConfigModule {}

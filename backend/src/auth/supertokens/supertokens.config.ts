@@ -1,5 +1,5 @@
 import supertokens from 'supertokens-node'
-import { AppConfig } from '../../config/config'
+import { AppConfig } from '../../config/config.module'
 import { getRecipeList } from './supertokens.recipeList'
 import { baseApiPath } from '../../main'
 import { SuperTokensService } from './supertokens.service'

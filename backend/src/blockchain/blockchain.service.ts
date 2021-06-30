@@ -12,7 +12,6 @@ import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { getProposers, getBeneficiaries, getVoters } from './utils'
 import BN from 'bn.js'
 import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
-
 const logger = getLogger()
 
 @Injectable()

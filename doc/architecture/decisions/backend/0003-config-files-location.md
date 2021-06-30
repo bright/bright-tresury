@@ -12,7 +12,7 @@ We use many config files for config schemas. We use it to separate abstraction o
 
 ## Decision
 
-Config files should contain a config token. This token should be used in the main src/config/config.ts file for
+Config files should contain a config token. This token should be used in the main src/config/config.module.ts file for
 obtaining a provider.
 We should always add a provider for new config schemas.
 
@@ -22,4 +22,4 @@ E.g.: if config file contains database configuration, please place it next to da
 ## Consequences
 
 Config schemas would be spread all over the project, but anytime we want to see all of its components we can see
-the list of the providers and a general `AppConfig` schema placed in src/config/config.ts file.
+the list of the providers and a general `AppConfig` schema placed in src/config/config.module.ts file.

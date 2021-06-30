@@ -1,6 +1,6 @@
 import { Module, OnModuleDestroy } from '@nestjs/common'
 import { ApiPromise, WsProvider } from '@polkadot/api'
-import { ConfigModule } from '../config/config'
+import { ConfigModule } from '../config/config.module'
 import { getLogger } from '../logging.module'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain.config'
 import { BlockchainService } from './blockchain.service'
@@ -28,12 +28,12 @@ const onDisconnectedHandler = (error: any) => {
 
 const polkadotApiFactory = {
     provide: 'PolkadotApi',
-    useFactory: async (blockchainConfig: BlockchainConfig) => {
+    useFactory: async (blockchainsConfig: BlockchainConfig[]) => {
         if (polkadotApiInstance === null || polkadotApiInstance === undefined) {
-            wsProvider = new WsProvider(blockchainConfig.nodeUrl)
+            wsProvider = new WsProvider(blockchainsConfig[0].url)
 
-            logger.info(`Connecting to substrate node at ${blockchainConfig.nodeUrl}...`)
-            polkadotApiInstance = new ApiPromise({ provider: wsProvider, types: blockchainConfig.types })
+            logger.info(`Connecting to substrate node at ${blockchainsConfig[0].url}...`)
+            polkadotApiInstance = new ApiPromise({ provider: wsProvider, types: blockchainsConfig[0].types })
 
             onConnectedHandler = () => {
                 logger.info(`Connected to substrate node`)

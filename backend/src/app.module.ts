@@ -1,7 +1,6 @@
 import { INestApplication, MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { timeout } from 'rxjs/operators'
-import { ConfigModule } from './config/config'
+import { ConfigModule } from './config/config.module'
 import { DatabaseModule } from './database/database.module'
 import { LoggingModule, NestLoggerAdapter } from './logging.module'
 import { IdeasModule } from './ideas/ideas.module'
