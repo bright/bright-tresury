@@ -1,10 +1,9 @@
 import { ApiPromise } from '@polkadot/api'
 import { DefinitionRpcExt } from '@polkadot/types/types'
-import React, { Dispatch, useReducer } from 'react'
+import React, { Dispatch, PropsWithChildren, useReducer } from 'react'
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc'
+import { useNetworks } from '../../networks/useNetworks'
 import config from '../../config'
-
-console.log(`Connected socket: ${config.PROVIDER_SOCKET}`)
 
 type State = {
     socket: string
@@ -13,11 +12,6 @@ type State = {
     api?: ApiPromise
     apiError?: any
     apiState?: ApiState
-}
-
-type Props = {
-    socket?: string
-    types?: any
 }
 
 type Action =
@@ -59,11 +53,15 @@ const reducer = (state: State, action: Action): State => {
 
 const SubstrateContext = React.createContext<[State, Dispatch<Action> | undefined]>([INIT_STATE, undefined])
 
-const SubstrateContextProvider: React.FC<Props> = ({ children, socket, types }) => {
+interface OwnProps {}
+export type SubstrateContextProviderProps = PropsWithChildren<OwnProps>
+
+const SubstrateContextProvider = ({ children }: SubstrateContextProviderProps) => {
+    const { network } = useNetworks()
     const initState = {
-        ...INIT_STATE,
-        socket: socket ?? INIT_STATE.socket,
-        types: types ?? INIT_STATE.types,
+        jsonrpc: { ...jsonrpc, ...network.rpc },
+        socket: network.url,
+        types: network.customTypes,
     } as State
 
     const [state, dispatch] = useReducer(reducer, initState)

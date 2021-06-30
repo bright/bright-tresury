@@ -13,6 +13,7 @@ export const useSubstrate = () => {
             return
         }
 
+        console.log(`Connecting to ${socket} with types:`, types)
         const provider = new WsProvider(socket)
         const _api = new ApiPromise({ provider, types, rpc: jsonrpc })
 

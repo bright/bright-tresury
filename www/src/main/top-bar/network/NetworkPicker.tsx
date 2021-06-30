@@ -5,9 +5,9 @@ import React from 'react'
 import { Network } from '../../../networks/networks.dto'
 import { useNetworks } from '../../../networks/useNetworks'
 import MenuItem from '../account/MenuItem'
+import { useMenu } from '../useMenu'
 import NetworkButton from './NetworkButton'
 import NetworkName from './NetworkName'
-import { useMenu } from '../useMenu'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -60,7 +60,7 @@ const NetworkPicker = () => {
                             onNetworkChange(network)
                         }}
                     >
-                        <NetworkName isMenuItem network={network} />
+                        <NetworkName variant={'light'} network={network} />
                     </MenuItem>
                 ))}
             </Menu>

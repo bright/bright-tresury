@@ -32,7 +32,7 @@ const TransactionInProgress = ({ status, onOk, event, eventDescription }: Transa
     useEffect(() => {
         if (!status) {
             setActiveStep(Steps.READY)
-        } else if (status.isFinalized) {
+        } else if (status.isFinalized || status.isInBlock) {
             setActiveStep(Steps.FINISHED)
         } else if (event) {
             setActiveStep(Steps.FINALIZED)

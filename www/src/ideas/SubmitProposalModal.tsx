@@ -14,7 +14,7 @@ export interface ExtrinsicDetails {
 interface OwnProps {
     open: boolean
     onClose: () => void
-    onTurn: (extrinsicDetails: ExtrinsicDetails) => void
+    onTurn: (extrinsicDetails: ExtrinsicDetails) => Promise<void>
     title: string
     value: number
     beneficiary: string
@@ -26,18 +26,6 @@ const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary 
     const { t } = useTranslation()
 
     const history = useHistory()
-
-    const [extrinsicDetails, setExtrinsicDetails] = useState<ExtrinsicDetails | undefined>(undefined)
-
-    const turn = useCallback(() => {
-        if (extrinsicDetails) {
-            onTurn(extrinsicDetails)
-        }
-    }, [extrinsicDetails, onTurn])
-
-    useEffect(() => {
-        turn()
-    }, [turn])
 
     const goToProposals = () => {
         history.push(ROUTE_PROPOSALS)
@@ -82,7 +70,7 @@ const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary 
                         },
                     ],
                 }}
-                setExtrinsicDetails={setExtrinsicDetails}
+                onTransactionSigned={onTurn}
             />
         </Modal>
     )

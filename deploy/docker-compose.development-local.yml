@@ -13,7 +13,7 @@ services:
         restart: unless-stopped
     substrate:
         container_name: substrate
-        image: parity/polkadot:v0.8.30
+        image: parity/polkadot:v0.9.7
         ports:
             - '9944:9944'
         command: --rpc-external --ws-external --dev

@@ -1,6 +1,4 @@
 import { SubmittableResult } from '@polkadot/api'
-import { DispatchError } from '@polkadot/types/interfaces'
-import { EventMetadataLatest } from '@polkadot/types/interfaces/metadata'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import config from '../../config'
@@ -17,7 +15,7 @@ import { useSubstrate } from '../api/useSubstrate'
 
 export interface Result {
     status: Status
-    event?: EventMetadataLatest
+    event?: any
     error?: ExtrinsicError
 }
 
@@ -52,7 +50,7 @@ interface OwnProps {
     onClose: () => void
     onSuccess?: () => void
     txAttrs: TxAttrs
-    setExtrinsicDetails: (data: { extrinsicHash: string; lastBlockHash: string }) => void
+    onTransactionSigned: (data: { extrinsicHash: string; lastBlockHash: string }) => Promise<void>
     title: string
     instruction: string | JSX.Element
 }
@@ -63,7 +61,7 @@ const SubmittingTransaction = ({
     onClose,
     onSuccess,
     txAttrs,
-    setExtrinsicDetails,
+    onTransactionSigned,
     title,
     instruction,
 }: SubmittingTransactionProps) => {
@@ -76,22 +74,10 @@ const SubmittingTransaction = ({
 
     const { keyring, keyringState, accounts } = useAccounts()
 
-    const txResHandler = (result: SubmittableResult) => {
-        const txResult = { status: result.status } as Result
+    const txResHandler = ({ status, events, dispatchError }: SubmittableResult) => {
+        const txResult = { status } as Result
 
-        const applyExtrinsicEvent = result.events.find(
-            ({ phase, event }) =>
-                phase.isApplyExtrinsic && event.section === txAttrs.palletRpc && event.method === txAttrs.eventMethod,
-        )
-        if (applyExtrinsicEvent) {
-            txResult.event = applyExtrinsicEvent.event.meta
-        }
-
-        const extrinsicFailedEvent = result.events.find(
-            ({ event: { section, method } }) => section === 'system' && method === 'ExtrinsicFailed',
-        )
-        if (extrinsicFailedEvent) {
-            const dispatchError = extrinsicFailedEvent.event.data[0] as DispatchError
+        if (dispatchError) {
             if (dispatchError.isModule && api) {
                 const decoded = api.registry.findMetaError(dispatchError.asModule)
                 const { documentation, name, section } = decoded
@@ -100,6 +86,15 @@ const SubmittingTransaction = ({
                 txResult.error = { description: dispatchError.toString() }
             }
         }
+
+        const applyExtrinsicEvent = events.find(
+            ({ phase, event }) =>
+                phase.isApplyExtrinsic && event.section === txAttrs.palletRpc && event.method === txAttrs.eventMethod,
+        )
+        if (applyExtrinsicEvent) {
+            txResult.event = applyExtrinsicEvent.event.meta
+        }
+
         setResult(txResult)
     }
 
@@ -133,7 +128,10 @@ const SubmittingTransaction = ({
         await txExecute.signAsync(fromAcct)
 
         const signedBlock = await api.rpc.chain.getBlock()
-        setExtrinsicDetails({ extrinsicHash: txExecute.hash.toString(), lastBlockHash: signedBlock.hash.toString() })
+        await onTransactionSigned({
+            extrinsicHash: txExecute.hash.toString(),
+            lastBlockHash: signedBlock.hash.toString(),
+        })
 
         // send the transaction
         await txExecute.send(txResHandler).catch(txErrHandler)

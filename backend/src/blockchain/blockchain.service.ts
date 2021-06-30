@@ -37,9 +37,9 @@ export class BlockchainService implements OnModuleDestroy {
         logger.info(`Listening for extrinsic with hash ${extrinsicHash}...`)
         let blocksCount = 0
 
-        this.unsub = await this.polkadotApi.rpc.chain.subscribeFinalizedHeads(async (header: Header) => {
+        this.unsub = await this.polkadotApi.rpc.chain.subscribeNewHeads(async (header: Header) => {
             blocksCount++
-            logger.info(`Checking block ${header.hash.toString()}.`)
+            logger.info(`Checking block ${header.hash.toString()} No ${header.number}.`)
             const signedBlock = await this.polkadotApi.rpc.chain.getBlock(header.hash)
             // TODO fix types!
             // @ts-ignore

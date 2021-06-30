@@ -880,7 +880,7 @@ export default cloudform({
                     Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
                     Cpu: 100,
                     Essential: true,
-                    Image: 'parity/polkadot:v0.8.30',
+                    Image: 'parity/polkadot:v0.9.7',
                     Command: ['--rpc-external', '--ws-external', '--dev'],
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {

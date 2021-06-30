@@ -3,7 +3,8 @@ import { Formik } from 'formik'
 import React, { createRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/button/Button'
-import config from '../../config'
+import NetworkName from '../../main/top-bar/network/NetworkName'
+import { useNetworks } from '../../networks/useNetworks'
 import { InputParam, TxAttrs } from './SubmittingTransaction'
 import { Account } from '../accounts/AccountsContext'
 import { useAccounts } from '../accounts/useAccounts'
@@ -23,6 +24,10 @@ const useStyles = makeStyles(() =>
         },
         networkTitle: {
             textAlign: 'center',
+        },
+        networkName: {
+            marginTop: '16px',
+            marginBottom: '24px',
         },
         buttons: {
             paddingTop: 42,
@@ -50,6 +55,7 @@ const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormPro
     const classes = useStyles()
     const { t } = useTranslation()
     const { accounts } = useAccounts()
+    const { network } = useNetworks()
 
     const emptyAccount = {
         name: t('substrate.form.selectAccount'),
@@ -99,7 +105,7 @@ const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormPro
                 {({ values, handleSubmit }) => (
                     <div className={classes.formContainer}>
                         <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
-                        <p className={classes.networkTitle}>{config.NETWORK_NAME}</p>
+                        <NetworkName className={classes.networkName} network={network} variant={'dark'} />
                         <form autoComplete="off" onSubmit={handleSubmit} className={classes.formContainer}>
                             <AccountSelect accounts={accounts} />
                             <div className={classes.buttons}>

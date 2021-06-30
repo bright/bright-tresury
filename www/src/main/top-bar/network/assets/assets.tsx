@@ -1,3 +1,4 @@
+import { NetworkNameVariant } from '../NetworkName'
 import polkadotLight from './polkadot_light.svg'
 import polkadotDark from './polkadot_dark.svg'
 import kusamaLight from './kusama_light.svg'
@@ -18,12 +19,7 @@ const KusamaLogos = {
     dark: kusamaDark,
 } as Logos
 
-export enum NetworkLogoVariant {
-    Dark = 'dark',
-    Light = 'light',
-}
-
-export function getNetworkLogo(variant: NetworkLogoVariant, id: string): string | undefined {
+export function getNetworkLogo(variant: NetworkNameVariant, id: string): string | undefined {
     switch (id) {
         case 'polkadot':
             return PolkadotLogos[variant]

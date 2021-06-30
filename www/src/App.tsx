@@ -2,6 +2,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import i18next from 'i18next'
 import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
+import NetworksContextProvider from './networks/NetworksContext'
 import Route from './routes/Route'
 import './App.css'
 import Account from './auth/account/Account'
@@ -14,7 +15,6 @@ import TurnIdeaIntoProposal from './ideas/idea/turnIntoProposal/TurnIdeaIntoProp
 import Idea from './ideas/idea/Idea'
 import Ideas from './ideas/Ideas'
 import Main from './main/Main'
-import NetworksContextProvider from './networks/NetworksContext'
 import Proposal from './proposals/proposal/Proposal'
 import Proposals from './proposals/Proposals'
 import PrivateRoute from './routes/PrivateRoute'
@@ -60,70 +60,46 @@ const useStyles = makeStyles(() =>
 const queryClient = new QueryClient()
 
 function AppRoutes() {
-    const classes = useStyles()
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
 
     return (
-        <div className={classes.root}>
-            <Router>
-                <NetworksContextProvider>
-                    <ThemeWrapper>
-                        <Main>
-                            <Switch>
-                                <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp} />
-                                <PublicOnlyRoute exact={false} path={ROUTE_SIGNIN} component={SignIn} />
-                                <PrivateRoute
-                                    requireVerified={false}
-                                    exact={true}
-                                    path={ROUTE_SIGNUP_WEB3_SUCCESS}
-                                    component={Web3SignUpSuccess}
-                                />
-                                <PrivateRoute
-                                    requireVerified={false}
-                                    exact={true}
-                                    path={ROUTE_SIGNUP_EMAIL_SUCCESS}
-                                    component={EmailSignUpSuccess}
-                                />
-                                <Route exact={true} path={ROUTE_EMAIL_NOT_VERIFIED} component={EmailNotVerified} />
-                                <Route exact={true} path={ROUTE_VERIFY_EMAIL} component={VerifyEmail} />
-                                <Route exact={true} path={ROUTE_ROOT} component={Stats} />
-                                <Route exact={true} path={ROUTE_STATS} component={Stats} />
-                                <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
-                                <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal} />
-                                <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
-                                <PrivateRoute
-                                    exact={true}
-                                    path={ROUTE_NEW_IDEA}
-                                    component={IdeaCreate}
-                                    requireVerified={true}
-                                />
-                                <PrivateRoute
-                                    exact={true}
-                                    path={ROUTE_TURN_IDEA}
-                                    component={TurnIdeaIntoProposal}
-                                    requireVerified={true}
-                                />
-                                <PrivateRoute
-                                    exact={true}
-                                    path={ROUTE_EDIT_IDEA}
-                                    component={Idea}
-                                    requireVerified={true}
-                                />
-                                <Route exact={false} path={ROUTE_IDEA} component={Idea} />
-                                <PrivateRoute
-                                    exact={false}
-                                    path={ROUTE_ACCOUNT}
-                                    component={Account}
-                                    requireVerified={false}
-                                />
-                            </Switch>
-                        </Main>
-                    </ThemeWrapper>
-                </NetworksContextProvider>
-            </Router>
-        </div>
+        <Main>
+            <Switch>
+                <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp} />
+                <PublicOnlyRoute exact={false} path={ROUTE_SIGNIN} component={SignIn} />
+                <PrivateRoute
+                    requireVerified={false}
+                    exact={true}
+                    path={ROUTE_SIGNUP_WEB3_SUCCESS}
+                    component={Web3SignUpSuccess}
+                />
+                <PrivateRoute
+                    requireVerified={false}
+                    exact={true}
+                    path={ROUTE_SIGNUP_EMAIL_SUCCESS}
+                    component={EmailSignUpSuccess}
+                />
+                <Route exact={true} path={ROUTE_EMAIL_NOT_VERIFIED} component={EmailNotVerified} />
+                <Route exact={true} path={ROUTE_VERIFY_EMAIL} component={VerifyEmail} />
+                <Route exact={true} path={ROUTE_ROOT} component={Stats} />
+                <Route exact={true} path={ROUTE_STATS} component={Stats} />
+                <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
+                <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal} />
+                <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
+                <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate} requireVerified={true} />
+                <PrivateRoute
+                    exact={true}
+                    path={ROUTE_TURN_IDEA}
+                    component={TurnIdeaIntoProposal}
+                    requireVerified={true}
+                />
+                <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea} requireVerified={true} />
+                <Route exact={false} path={ROUTE_IDEA} component={Idea} />
+                <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
+            </Switch>
+        </Main>
     )
 }
 
@@ -131,14 +107,23 @@ initializeSupertokens()
 
 function App() {
     console.log('front-end hello')
+    const classes = useStyles()
     return (
         <QueryClientProvider client={queryClient}>
             <AuthContextProvider>
-                <SubstrateContextProvider>
-                    <AccountsContextProvider>
-                        <AppRoutes />
-                    </AccountsContextProvider>
-                </SubstrateContextProvider>
+                <div className={classes.root}>
+                    <Router>
+                        <NetworksContextProvider>
+                            <ThemeWrapper>
+                                <SubstrateContextProvider>
+                                    <AccountsContextProvider>
+                                        <AppRoutes />
+                                    </AccountsContextProvider>
+                                </SubstrateContextProvider>
+                            </ThemeWrapper>
+                        </NetworksContextProvider>
+                    </Router>
+                </div>
             </AuthContextProvider>
         </QueryClientProvider>
     )
