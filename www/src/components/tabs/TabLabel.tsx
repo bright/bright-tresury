@@ -2,6 +2,7 @@ import React from 'react'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import { ButtonBase, createStyles } from '@material-ui/core'
 import { NavLink } from 'react-router-dom'
+import { IdeaFilterSearchParamName } from '../../ideas/list/IdeaStatusFilters'
 import { breakpoints } from '../../theme/theme'
 import { Location } from 'history'
 
@@ -34,6 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     label: string
+    filterName: string
     path: string
     svg?: string
     isDefault?: boolean
@@ -41,7 +43,7 @@ interface OwnProps {
 
 export type TabLabelProps = OwnProps
 
-const TabLabel = ({ label, svg, path, isDefault }: TabLabelProps) => {
+const TabLabel = ({ label, filterName, svg, path, isDefault }: TabLabelProps) => {
     const classes = useStyles()
 
     return (
@@ -51,9 +53,15 @@ const TabLabel = ({ label, svg, path, isDefault }: TabLabelProps) => {
                 to={path}
                 replace={true}
                 isActive={(match, location: Location) => {
-                    const isActiveByDefault =
-                        isDefault === true && `${location.pathname}${location.search}` === location.pathname
-                    return `${location.pathname}${location.search}` === path ? true : isActiveByDefault
+                    const searchParamFilter = new URLSearchParams(location.search).get(IdeaFilterSearchParamName)
+                    if (searchParamFilter === filterName) {
+                        return true
+                    }
+                    if (!searchParamFilter && isDefault) {
+                        // if no search param and the button is default
+                        return true
+                    }
+                    return false
                 }}
                 activeClassName={classes.selected}
             >

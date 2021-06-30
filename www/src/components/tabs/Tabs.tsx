@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
 export interface TabEntry {
     label: string
     path: string
+    filterName: string
     svg?: string
     isDefault?: boolean
 }
@@ -31,8 +32,15 @@ const Tabs = ({ values }: TabsProps) => {
     return (
         <div className={classes.root}>
             {values
-                ? values.map(({ label, path, svg, isDefault }) => (
-                      <TabLabel key={label} isDefault={isDefault} label={label} svg={svg} path={path} />
+                ? values.map(({ label, path, svg, isDefault, filterName }) => (
+                      <TabLabel
+                          key={label}
+                          isDefault={isDefault}
+                          label={label}
+                          svg={svg}
+                          path={path}
+                          filterName={filterName}
+                      />
                   ))
                 : null}
         </div>

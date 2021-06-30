@@ -32,17 +32,17 @@ const NetworkPicker = () => {
     const classes = useStyles()
     const menuClasses = useMenuStyles()
 
-    const { networks, selectedNetwork, selectNetwork } = useNetworks()
+    const { networks, network, selectNetwork } = useNetworks()
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 
-    const onNetworkChange = (network: Network) => {
-        selectNetwork(network)
+    const onNetworkChange = (newNetwork: Network) => {
+        selectNetwork(newNetwork.id)
         handleClose()
     }
 
     return (
         <div className={classes.root}>
-            <NetworkButton onClick={handleOpen} network={selectedNetwork} />
+            <NetworkButton onClick={handleOpen} network={network} />
             <Menu
                 classes={menuClasses}
                 id="simple-menu"
@@ -55,6 +55,7 @@ const NetworkPicker = () => {
             >
                 {networks.map((network) => (
                     <MenuItem
+                        key={network.id}
                         onClick={() => {
                             onNetworkChange(network)
                         }}

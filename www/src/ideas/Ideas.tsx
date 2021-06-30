@@ -29,18 +29,18 @@ const Ideas = ({ network = config.NETWORK_NAME }: IdeasProps) => {
         refetch()
     }, [user])
 
-    const filter = useMemo(() => {
+    const selectedFilter = useMemo(() => {
         const filterParam = new URLSearchParams(search).get(IdeaFilterSearchParamName)
         return filterParam ? (filterParam as IdeaFilter) : IdeaDefaultFilter
     }, [search])
 
     const filteredIdeas = useMemo(() => {
-        return ideas ? filterIdeas(ideas, filter, user) : []
-    }, [ideas, filter, user])
+        return ideas ? filterIdeas(ideas, selectedFilter, user) : []
+    }, [ideas, selectedFilter, user])
 
     return (
         <div>
-            <IdeasHeader filter={filter} />
+            <IdeasHeader selectedFilter={selectedFilter} />
             <LoadingWrapper
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingIdeas')}

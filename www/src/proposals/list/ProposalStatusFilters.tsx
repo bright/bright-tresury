@@ -31,12 +31,12 @@ export const ProposalFilterSearchParamName = 'filter'
 export const ProposalDefaultFilter = ProposalFilter.All
 
 interface OwnProps {
-    filter: ProposalFilter
+    selectedFilter: ProposalFilter
 }
 
 export type ProposalStatusFiltersProps = OwnProps
 
-const ProposalStatusFilters = ({ filter }: ProposalStatusFiltersProps) => {
+const ProposalStatusFilters = ({ selectedFilter }: ProposalStatusFiltersProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -61,6 +61,7 @@ const ProposalStatusFilters = ({ filter }: ProposalStatusFiltersProps) => {
         return {
             isDefault: filter === ProposalDefaultFilter,
             label: getTranslation(filter),
+            filterName: filter,
             path: `${ROUTE_PROPOSALS}?${ProposalFilterSearchParamName}=${filter}`,
         } as TabEntry
     }
@@ -69,7 +70,7 @@ const ProposalStatusFilters = ({ filter }: ProposalStatusFiltersProps) => {
     /**
      * Current tab entry is forced, because there should be always some filter specified.
      */
-    const currentFilterOption = filterOptions.find((entry) => entry.label === getTranslation(filter))!
+    const currentFilterOption = filterOptions.find((entry) => entry.label === getTranslation(selectedFilter))!
 
     return (
         <div>

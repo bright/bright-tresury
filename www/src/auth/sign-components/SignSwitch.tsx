@@ -1,7 +1,8 @@
 import React from 'react'
-import { Redirect, Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Redirect, Switch, useRouteMatch } from 'react-router-dom'
 import { SignOption } from './SignOption'
 import { RouteComponentProps } from 'react-router'
+import Route from '../../routes/Route'
 
 type RouteComponent = React.ComponentType<RouteComponentProps<any>> | React.ComponentType<any>
 

@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { breakpoints } from '../../theme/theme'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles<Theme, ButtonStyleProps>((theme: Theme) =>
     createStyles({
         root: {
             textTransform: 'none',
@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 padding: '.6em 2em',
             },
+            backgroundColor: ({ backgroundColor }) => backgroundColor,
         },
         text: {
             paddingLeft: 0,
@@ -35,10 +36,14 @@ interface OwnProps {
     variant?: ButtonVariant
 }
 
-export type ButtonProps = OwnProps & MaterialButtonProps
+interface ButtonStyleProps {
+    backgroundColor?: string
+}
 
-const Button = ({ children, variant, ...props }: ButtonProps) => {
-    const classes = useStyles()
+export type ButtonProps = OwnProps & MaterialButtonProps & ButtonStyleProps
+
+const Button = ({ children, variant, backgroundColor, ...props }: ButtonProps) => {
+    const classes = useStyles({ backgroundColor })
     return (
         <MaterialButton {...props} classes={classes} variant={variant ?? 'contained'}>
             {children}

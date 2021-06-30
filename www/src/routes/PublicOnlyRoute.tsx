@@ -1,6 +1,7 @@
 import React from 'react'
-import { Redirect, Route, RouteProps } from 'react-router-dom'
+import { Redirect, RouteProps } from 'react-router-dom'
 import { useAuth } from '../auth/AuthContext'
+import Route from './Route'
 import { ROUTE_ROOT } from './routes'
 
 interface OwnProps {

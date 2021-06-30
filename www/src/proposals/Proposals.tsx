@@ -33,18 +33,18 @@ const Proposals = ({ network = config.NETWORK_NAME }: ProposalsProps) => {
 
     const { status, data: proposals } = useGetProposals(network)
 
-    const filter = useMemo(() => {
+    const selectedFilter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)
         return filterParam ? (filterParam as ProposalFilter) : ProposalDefaultFilter
     }, [location.search])
 
     const filteredProposals = useMemo(() => {
-        return proposals ? filterProposals(proposals, filter) : []
-    }, [filter, proposals])
+        return proposals ? filterProposals(proposals, selectedFilter) : []
+    }, [selectedFilter, proposals])
 
     return (
         <div className={classes.root}>
-            <ProposalsHeader filter={filter} />
+            <ProposalsHeader selectedFilter={selectedFilter} />
             <LoadingWrapper
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingProposals')}

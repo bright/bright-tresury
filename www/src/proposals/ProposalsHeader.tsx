@@ -47,12 +47,12 @@ const useStyles = makeStyles((theme: Theme) => {
 })
 
 interface OwnProps {
-    filter: ProposalFilter
+    selectedFilter: ProposalFilter
 }
 
 export type ProposalsHeaderProps = OwnProps
 
-const ProposalsHeader = ({ filter }: ProposalsHeaderProps) => {
+const ProposalsHeader = ({ selectedFilter }: ProposalsHeaderProps) => {
     const classes = useStyles()
 
     return (
@@ -75,7 +75,7 @@ const ProposalsHeader = ({ filter }: ProposalsHeaderProps) => {
             <PaperFilterBackground className={classes.paperBackground} />
 
             <HeaderListTabs className={classes.statusFilters}>
-                <ProposalStatusFilters filter={filter} />
+                <ProposalStatusFilters selectedFilter={selectedFilter} />
             </HeaderListTabs>
         </HeaderListContainer>
     )

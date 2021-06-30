@@ -1,5 +1,6 @@
 import React from 'react'
-import { Route, Switch, useRouteMatch } from 'react-router-dom'
+import { Switch, useRouteMatch } from 'react-router-dom'
+import Route from '../../routes/Route'
 import ProposalInfo from './info/ProposalInfo'
 import { ProposalContentType } from './ProposalContentTypeTabs'
 import ProposalMilestones from './milestones/ProposalMilestones'

@@ -36,8 +36,12 @@
         }
     },
     "networks": {
-        "loading": "Loading networks...",
-        "error": "Something went wrong. Please try again later."
+        "loading": "Loading...",
+        "error": "Something went wrong. Please try again later.",
+        "networkNotFound": {
+            "title": "Sorry, the net you would like to log in to is not available in Treasury App yet",
+            "subtitle": "Please, select the available net"
+        }
     },
     "topBar": {
         "signIn": "Sign In",

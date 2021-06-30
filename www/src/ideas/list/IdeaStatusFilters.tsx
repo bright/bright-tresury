@@ -32,12 +32,12 @@ export const IdeaFilterSearchParamName = 'filter'
 export const IdeaDefaultFilter = IdeaFilter.All
 
 interface OwnProps {
-    filter: IdeaFilter
+    selectedFilter: IdeaFilter
 }
 
 export type IdeaStatusFilters = OwnProps
 
-const IdeaStatusFilters = ({ filter }: IdeaStatusFilters) => {
+const IdeaStatusFilters = ({ selectedFilter }: IdeaStatusFilters) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -65,6 +65,7 @@ const IdeaStatusFilters = ({ filter }: IdeaStatusFilters) => {
             isDefault: filter === IdeaDefaultFilter,
             label: getTranslation(filter),
             path: `${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${filter}`,
+            filterName: filter,
         }
     }
     const filterOptions = filterValues.map((filter: IdeaFilter) => getFilterOption(filter))
@@ -72,7 +73,7 @@ const IdeaStatusFilters = ({ filter }: IdeaStatusFilters) => {
     /**
      * Current tab entry is forced, because there should be always some filter specified.
      */
-    const currentFilterOption = filterOptions.find((entry) => entry.label === getTranslation(filter))!
+    const currentFilterOption = filterOptions.find((entry) => entry.label === getTranslation(selectedFilter))!
 
     return (
         <div>

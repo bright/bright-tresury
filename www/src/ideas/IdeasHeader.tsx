@@ -57,12 +57,12 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    filter: IdeaFilter
+    selectedFilter: IdeaFilter
 }
 
 export type IdeasHeaderProps = OwnProps
 
-const IdeasHeader = ({ filter }: IdeasHeaderProps) => {
+const IdeasHeader = ({ selectedFilter }: IdeasHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
@@ -84,7 +84,7 @@ const IdeasHeader = ({ filter }: IdeasHeaderProps) => {
             </TimeSelectWrapper>
             <PaperFilterBackground className={classes.paperBackground} />
             <HeaderListTabs className={classes.statusFilters}>
-                <IdeaStatusFilters filter={filter} />
+                <IdeaStatusFilters selectedFilter={selectedFilter} />
             </HeaderListTabs>
         </HeaderListContainer>
     )

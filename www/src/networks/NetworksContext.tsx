@@ -1,15 +1,18 @@
-import React, { PropsWithChildren, useEffect, useState } from 'react'
+import React, { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useHistory, useLocation } from 'react-router-dom'
 import Error from '../components/error/Error'
 import Loader from '../components/loading/Loader'
-import { useTheme } from '../theme/ThemeWrapper'
+import NetworkNotFound from './NetworkNotFound'
 import { useGetNetworks } from './networks.api'
 import { Network } from './networks.dto'
 
+export const NETWORK_ID_SEARCH_PARAM_NAME = 'networkId'
+
 interface State {
     networks: Network[]
-    selectedNetwork: Network
-    selectNetwork: (network: Network) => void
+    network: Network
+    selectNetwork: (networkId: string) => void
 }
 
 export const NetworksContext = React.createContext<State | undefined>(undefined)
@@ -20,25 +23,37 @@ export type NetworksContextProviderProps = PropsWithChildren<OwnProps>
 
 const NetworksContextProvider = ({ children }: NetworksContextProviderProps) => {
     const { t } = useTranslation()
-    const [network, setNetwork] = useState<Network | undefined>()
     const { isError, isLoading, data: networks } = useGetNetworks()
-    const { setNetworkColor } = useTheme()
+    const [isRedirecting, setIsRedirecting] = useState(false)
+    const [networkId, setNetworkId] = useState<string | undefined>()
+    const history = useHistory()
+    const { pathname, search } = useLocation()
 
-    const selectNetwork = (network: Network) => {
-        setNetwork(network)
-        setNetworkColor(network.color)
+    const redirect = (networkId: string) => {
+        // We set the `isRedirecting` param to hide the app while redirecting
+        setIsRedirecting(true)
+
+        const newSearch = new URLSearchParams(search)
+        newSearch.set(NETWORK_ID_SEARCH_PARAM_NAME, networkId)
+
+        history.push({
+            pathname: pathname,
+            search: newSearch.toString(),
+        })
+        // We need to reload the page once the network is changed, because there is no way to clean the keyring. We need to initialise it again.
+        window.location.reload()
     }
 
     useEffect(() => {
-        if (networks && networks.length > 0) {
-            const defaultNetwork = networks.find((n) => n.isDefault) || networks[0]
-            selectNetwork(defaultNetwork)
-        } else {
-            setNetwork(undefined)
+        if (networks) {
+            const networkIdParam = new URLSearchParams(search).get(NETWORK_ID_SEARCH_PARAM_NAME)
+            setNetworkId(networkIdParam ?? networks[0]?.id ?? '')
         }
     }, [networks])
 
-    if (isLoading) {
+    const network = useMemo(() => networks?.find((n) => n.id === networkId), [networks, networkId])
+
+    if (isLoading || isRedirecting || networkId === undefined) {
         return <Loader text={t('networks.loading')} />
     }
 
@@ -47,12 +62,11 @@ const NetworksContextProvider = ({ children }: NetworksContextProviderProps) => 
     }
 
     if (!network) {
-        // TODO Show proper error screen
-        return <p>No such network</p>
+        return <NetworkNotFound networks={networks} selectNetwork={redirect} />
     }
 
     return (
-        <NetworksContext.Provider value={{ networks, selectedNetwork: network, selectNetwork }}>
+        <NetworksContext.Provider value={{ networks, network: network, selectNetwork: redirect }}>
             {children}
         </NetworksContext.Provider>
     )

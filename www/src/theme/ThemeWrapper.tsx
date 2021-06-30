@@ -1,5 +1,6 @@
-import React, { useState, PropsWithChildren } from 'react'
+import React, { useState, PropsWithChildren, useEffect } from 'react'
 import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core'
+import { useNetworks } from '../networks/useNetworks'
 import { theme } from './theme'
 
 const muiTheme = createMuiTheme(theme)
@@ -10,14 +11,14 @@ interface State {
 
 export const ThemeContext = React.createContext<State | undefined>(undefined)
 
-
-
 interface OwnProps {}
 
 export type ThemeWrapperProps = PropsWithChildren<OwnProps>
 
 const ThemeWrapper = ({ children }: ThemeWrapperProps) => {
     const [theme, setTheme] = useState(muiTheme)
+
+    const { network } = useNetworks()
 
     const setNetworkColor = (color: string) => {
         const newTheme = createMuiTheme({
@@ -31,6 +32,10 @@ const ThemeWrapper = ({ children }: ThemeWrapperProps) => {
         })
         setTheme(newTheme)
     }
+
+    useEffect(() => {
+        setNetworkColor(network.color)
+    }, [network])
 
     return (
         <ThemeContext.Provider value={{ setNetworkColor }}>
