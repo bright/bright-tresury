@@ -1,6 +1,12 @@
 import { useCallback, useContext, useEffect } from 'react'
-import { web3Accounts, web3Enable } from '@polkadot/extension-dapp'
-import { keyring as polkadotKeyring } from '@polkadot/ui-keyring'
+import {
+    isWeb3Injected as polkadotIsWeb3Injected,
+    web3Accounts,
+    web3Enable,
+    web3EnablePromise,
+} from '@polkadot/extension-dapp'
+import { keyring as newKeyring } from '@polkadot/ui-keyring'
+import { useNetworks } from '../../networks/useNetworks'
 import { AccountsContext } from './AccountsContext'
 import { Account } from './AccountsContext'
 import config from '../../config'
@@ -9,33 +15,46 @@ export function useAccounts() {
     const [state, dispatch] = useContext(AccountsContext)
 
     const { keyring, keyringState, accounts } = state
+    const { network } = useNetworks()
 
     const loadAccounts = useCallback(async () => {
-        if (keyringState || dispatch === undefined) {
+        if (keyringState || !dispatch) {
             return
         }
 
         try {
-            await web3Enable(config.APP_NAME)
+            const enable = await web3EnablePromise
+            if (!enable) {
+                await web3Enable(config.APP_NAME)
+            }
 
-            let allAccounts = await web3Accounts()
-
+            let allAccounts = await web3Accounts({ ss58Format: network.ss58Format })
             allAccounts = allAccounts.map(({ address, meta }) => ({
                 address,
                 meta: { ...meta, name: `${meta.name} (${meta.source})` },
             }))
 
-            polkadotKeyring.loadAll({ isDevelopment: config.DEVELOPMENT_KEYRING }, allAccounts)
+            newKeyring.setSS58Format(network.ss58Format)
+            newKeyring.loadAll(
+                {
+                    isDevelopment: network.developmentKeyring,
+                    ss58Format: network.ss58Format,
+                },
+                allAccounts,
+            )
 
-            const keyringAccounts = polkadotKeyring.getAccounts().map((account) => {
+            const keyringAccounts = newKeyring.getAccounts().map((account) => {
+                const baseEncodedAddress = newKeyring.encodeAddress(account.address, 42)
                 return {
-                    name: account.meta?.name || '',
+                    name: account.meta.name || '',
                     address: account.address,
                     source: account.meta.source,
+                    allowedInNetwork: !account.meta.genesisHash || account.meta.genesisHash === network.genesisHash,
+                    baseEncodedAddress,
                 } as Account
             })
 
-            dispatch({ type: 'SET_KEYRING', keyring: polkadotKeyring, accounts: keyringAccounts })
+            dispatch({ type: 'SET_KEYRING', keyring: newKeyring, accounts: keyringAccounts })
         } catch (e) {
             console.error(e)
             dispatch({ type: 'KEYRING_ERROR' })
@@ -50,5 +69,6 @@ export function useAccounts() {
         keyring,
         keyringState,
         accounts,
+        isWeb3Injected: polkadotIsWeb3Injected,
     }
 }

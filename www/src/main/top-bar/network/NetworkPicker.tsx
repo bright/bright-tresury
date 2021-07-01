@@ -60,7 +60,7 @@ const NetworkPicker = () => {
                             onNetworkChange(network)
                         }}
                     >
-                        <NetworkName variant={'light'} network={network} />
+                        <NetworkName variant={'dark'} network={network} />
                     </MenuItem>
                 ))}
             </Menu>

@@ -24,7 +24,9 @@ export const useSubstrate = () => {
             // `ready` event is not emitted upon reconnection. So we check explicitly here.
             _api.isReady.then((_api) => dispatch({ type: 'CONNECT_SUCCESS' }))
         })
-        _api.on('ready', () => dispatch({ type: 'CONNECT_SUCCESS' }))
+        _api.on('ready', () => {
+            dispatch({ type: 'CONNECT_SUCCESS' })
+        })
         _api.on('error', (err) => dispatch({ type: 'CONNECT_ERROR', apiError: err }))
     }, [api, socket, jsonrpc, types, dispatch])
 

@@ -37,7 +37,6 @@ export interface Web3AccountFormProps {
 const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { accounts } = useAccounts()
     const { user, refreshJwt } = useAuth()
     const passwordModal = useModal()
     const [selectedAccount, setSelectedAccount] = useState<Account>()
@@ -94,7 +93,7 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
                         <Web3AddressRow
                             isPrimary={isFirstAddress}
                             primaryDisabled={true}
-                            addressComponent={<AccountSelect showLabel={false} accounts={accounts} />}
+                            addressComponent={<AccountSelect showLabel={false} />}
                             linkComponent={
                                 <Web3LinkingButton
                                     label={t('account.web3.link')}

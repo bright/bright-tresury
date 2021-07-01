@@ -92,7 +92,7 @@ const Web3SignUp = () => {
                         </SignComponentWrapper>
                     ) : null}
                     <SignComponentWrapper>
-                        <AccountSelect accounts={accounts} />
+                        <AccountSelect />
                     </SignComponentWrapper>
                     <SignComponentWrapper>
                         <UserAgreementCheckbox />

@@ -54,7 +54,6 @@ interface Values {
 const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { accounts } = useAccounts()
     const { network } = useNetworks()
 
     const emptyAccount = {
@@ -107,7 +106,7 @@ const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormPro
                         <p className={classes.networkTitle}>{t('substrate.form.networkHeader')}</p>
                         <NetworkName className={classes.networkName} network={network} variant={'dark'} />
                         <form autoComplete="off" onSubmit={handleSubmit} className={classes.formContainer}>
-                            <AccountSelect accounts={accounts} />
+                            <AccountSelect showOnlyAllowedInNetwork />
                             <div className={classes.buttons}>
                                 <Button variant={'text'} color="primary" type="button" onClick={onCancel}>
                                     {t('substrate.form.cancel')}

@@ -5,6 +5,8 @@ export interface Account {
     name: string
     address: string
     source: string
+    allowedInNetwork: boolean
+    baseEncodedAddress: string
 }
 
 type State = {

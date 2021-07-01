@@ -33,7 +33,7 @@ export async function handleWeb3Sign(
         throw new Error('Signer was not available')
     }
 
-    const startSignUpResponse = await startCall({ address: account.address, details })
+    const startSignUpResponse = await startCall({ address: account.baseEncodedAddress, details })
 
     const signMessage = startSignUpResponse?.signMessage
 
@@ -42,13 +42,13 @@ export async function handleWeb3Sign(
     }
 
     const { signature } = await signRaw({
-        address: account.address,
+        address: account.baseEncodedAddress,
         data: stringToHex(signMessage),
         type: 'bytes',
     })
 
     return await confirmCall({
-        address: account.address,
+        address: account.baseEncodedAddress,
         signature,
         details,
     })

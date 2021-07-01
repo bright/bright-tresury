@@ -1,4 +1,3 @@
-import { isWeb3Injected } from '@polkadot/extension-dapp'
 import { AxiosError } from 'axios'
 import { Formik } from 'formik'
 import React, { useRef } from 'react'
@@ -26,12 +25,12 @@ export interface Web3SignInValues {
 const Web3SignIn = () => {
     const { t } = useTranslation()
 
-    const { accounts } = useAccounts()
     const formikRef = useRef<any>()
     const history = useHistory()
 
     const { setIsUserSignedIn } = useAuth()
     const { mutateAsync, isLoading, isError, error } = useWeb3SignIn()
+    const { isWeb3Injected } = useAccounts()
 
     const onSubmit = async (values: Web3SignInValues) => {
         await mutateAsync(values, {
@@ -76,7 +75,7 @@ const Web3SignIn = () => {
                         </SignComponentWrapper>
                     ) : null}
                     <SignComponentWrapper>
-                        <AccountSelect accounts={accounts} />
+                        <AccountSelect />
                     </SignComponentWrapper>
                     <SignInButton disabled={isLoading} />
                     <NotSignedUpYet signOption={SignOption.Web3} />

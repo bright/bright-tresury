@@ -1,5 +1,6 @@
 import React from 'react'
 import { Account } from '../../substrate-lib/accounts/AccountsContext'
+import { useAccounts } from '../../substrate-lib/accounts/useAccounts'
 import FormSelect from './FormSelect'
 import { useTranslation } from 'react-i18next'
 import { Theme } from '@material-ui/core'
@@ -21,14 +22,19 @@ export const EMPTY_ACCOUNT = {
 
 interface OwnProps {
     showLabel?: boolean
-    accounts: Account[]
+    showOnlyAllowedInNetwork?: boolean
 }
 
 export type AccountSelectProps = OwnProps
 
-const AccountSelect = ({ accounts, showLabel = true }: AccountSelectProps) => {
+const AccountSelect = ({ showLabel = true, showOnlyAllowedInNetwork = false }: AccountSelectProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+
+    const { accounts } = useAccounts()
+    const filteredAccounts = showOnlyAllowedInNetwork
+        ? accounts.filter(({ allowedInNetwork }: Account) => allowedInNetwork)
+        : accounts
 
     return (
         <FormSelect
@@ -36,7 +42,7 @@ const AccountSelect = ({ accounts, showLabel = true }: AccountSelectProps) => {
             variant={'outlined'}
             name="account"
             label={showLabel === true ? t('substrate.form.selectAccount') : undefined}
-            options={[EMPTY_ACCOUNT, ...accounts]}
+            options={[EMPTY_ACCOUNT, ...filteredAccounts]}
             renderOption={(value: Account) => {
                 return value.name ?? value.address
             }}

@@ -5,6 +5,8 @@ export interface Network {
     name: string
     url: string
     customTypes: unknown
+    ss58Format: number
+    genesisHash: string
     rpc: Record<string, Record<string, DefinitionRpcExt>>
     developmentKeyring: boolean
     bond: {
