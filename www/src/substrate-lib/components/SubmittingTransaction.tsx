@@ -1,7 +1,7 @@
 import { SubmittableResult } from '@polkadot/api'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import config from '../../config'
+import { useNetworks } from '../../networks/useNetworks'
 import { ApiState } from '../api/SubstrateContext'
 import ExtrinsicFailed from './ExtrinsicFailed'
 import SignAndSubmit from './SignAndSubmit'
@@ -73,6 +73,7 @@ const SubmittingTransaction = ({
     const { api, apiState } = useSubstrate()
 
     const { keyring, keyringState, accounts } = useAccounts()
+    const { network } = useNetworks()
 
     const txResHandler = ({ status, events, dispatchError }: SubmittableResult) => {
         const txResult = { status } as Result
@@ -147,7 +148,7 @@ const SubmittingTransaction = ({
             <TransactionError
                 onOk={onClose}
                 title={t('substrate.error.api.title')}
-                subtitle={t('substrate.error.api.subtitle', { networkName: config.NETWORK_NAME })}
+                subtitle={t('substrate.error.api.subtitle', { networkName: network.name })}
             />
         )
     } else if (apiState !== ApiState.READY) {
@@ -183,7 +184,7 @@ const SubmittingTransaction = ({
             <TransactionError
                 error={error}
                 onOk={onClose}
-                title={t('substrate.error.transaction.title', { networkName: config.NETWORK_NAME })}
+                title={t('substrate.error.transaction.title', { networkName: network.name })}
             />
         )
     } else {

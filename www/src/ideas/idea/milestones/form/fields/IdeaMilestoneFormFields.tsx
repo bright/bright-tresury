@@ -1,11 +1,11 @@
 import React from 'react'
 import Input from '../../../../../components/form/input/Input'
-import config from '../../../../../config'
 import DatePickerInput from '../../../../../components/form/input/date/DatePickerInput'
 import { Label } from '../../../../../components/text/Label'
 import { FormGroup } from '@material-ui/core'
 import { TextFieldColorScheme } from '../../../../../components/form/input/textFieldStyles'
 import { useTranslation } from 'react-i18next'
+import { useNetworks } from '../../../../../networks/useNetworks'
 import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
 import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
 
@@ -21,6 +21,9 @@ export type IdeaMilestoneFormFieldsProps = OwnProps
 const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsProps) => {
     const classes = useIdeaMilestoneFormFieldsStyles()
     const { t } = useTranslation()
+    const {
+        network: { currency },
+    } = useNetworks()
 
     return (
         <div className={classes.root}>
@@ -62,7 +65,7 @@ const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsPr
                         type={`number`}
                         label={t(`${translationKeyPrefix}.budget`)}
                         key={idx}
-                        endAdornment={config.NETWORK_CURRENCY}
+                        endAdornment={currency}
                         textFieldColorScheme={TextFieldColorScheme.Dark}
                         className={classes.narrowField}
                         disabled={readonly}

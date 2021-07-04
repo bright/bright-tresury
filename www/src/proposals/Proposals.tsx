@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import LoadingWrapper from '../components/loading/LoadingWrapper'
+import { useNetworks } from '../networks/useNetworks'
 import { useGetProposals } from './proposals.api'
-import config from '../config'
 import { useLocation } from 'react-router-dom'
 import ProposalsList from './list/ProposalsList'
 import { ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName } from './list/ProposalStatusFilters'
@@ -19,13 +19,7 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface OwnProps {
-    network: string
-}
-
-export type ProposalsProps = OwnProps
-
-const Proposals = ({ network = config.NETWORK_NAME }: ProposalsProps) => {
+const Proposals = () => {
     const classes = useStyles()
 
     const { t } = useTranslation()
@@ -34,7 +28,8 @@ const Proposals = ({ network = config.NETWORK_NAME }: ProposalsProps) => {
 
     const location = useLocation()
 
-    const { status, data: proposals } = useGetProposals(network)
+    const { network } = useNetworks()
+    const { status, data: proposals } = useGetProposals(network.id)
 
     const selectedFilter = useMemo(() => {
         const filterParam = new URLSearchParams(location.search).get(ProposalFilterSearchParamName)

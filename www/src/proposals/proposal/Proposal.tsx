@@ -1,5 +1,6 @@
 import React from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
+import { useNetworks } from '../../networks/useNetworks'
 import Route from '../../routes/Route'
 import ProposalInfo from './info/ProposalInfo'
 import { ProposalContentType } from './ProposalContentTypeTabs'
@@ -7,7 +8,6 @@ import ProposalMilestones from './milestones/ProposalMilestones'
 import ProposalDiscussion from './discussion/ProposalDiscussion'
 import ProposalVoting from './voting/ProposalVoting'
 import { useParams } from 'react-router'
-import config from '../../config'
 import { useGetProposal } from '../proposals.api'
 import LoadingWrapper from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
@@ -22,8 +22,9 @@ const Proposal = () => {
     let { path } = useRouteMatch()
 
     let { proposalIndex } = useParams<{ proposalIndex: string }>()
+    const { network } = useNetworks()
 
-    const { status, data: proposal } = useGetProposal(proposalIndex, config.NETWORK_NAME)
+    const { status, data: proposal } = useGetProposal(proposalIndex, network.id)
 
     return (
         <LoadingWrapper

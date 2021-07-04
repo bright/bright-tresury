@@ -3,7 +3,6 @@ import { DefinitionRpcExt } from '@polkadot/types/types'
 import React, { Dispatch, PropsWithChildren, useReducer } from 'react'
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc'
 import { useNetworks } from '../../networks/useNetworks'
-import config from '../../config'
 
 type State = {
     socket: string
@@ -20,11 +19,7 @@ type Action =
     | { type: 'CONNECT_SUCCESS' }
     | { type: 'CONNECT_ERROR'; apiError: any }
 
-const INIT_STATE = {
-    socket: config.PROVIDER_SOCKET,
-    jsonrpc: { ...jsonrpc, ...config.RPC },
-    types: config.CUSTOM_TYPES,
-} as State
+const INIT_STATE = {} as State
 
 export enum ApiState {
     CONNECTING = 'CONNECTING',

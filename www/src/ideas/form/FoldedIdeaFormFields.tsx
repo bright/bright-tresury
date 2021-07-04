@@ -2,7 +2,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Input from '../../components/form/input/Input'
-import config from '../../config'
+import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
 
@@ -33,6 +33,9 @@ export type FoldedIdeaFormFieldsProps = OwnProps
 const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const {
+        network: { currency },
+    } = useNetworks()
     return (
         <>
             <div className={classes.inputField}>
@@ -53,7 +56,7 @@ const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
                             type={`number`}
                             label={t('idea.details.reward')}
                             placeholder={t('idea.details.reward')}
-                            endAdornment={config.NETWORK_CURRENCY}
+                            endAdornment={currency}
                         />
                     </div>
                 )

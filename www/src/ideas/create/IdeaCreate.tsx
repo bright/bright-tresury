@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import FormFooterButton from '../../components/form/footer/FormFooterButton'
 import Container from '../../components/form/Container'
-import config from '../../config'
+import { useNetworks } from '../../networks/useNetworks'
 import IdeaForm from '../form/IdeaForm'
 import { useCreateIdea } from '../ideas.api'
 import FormFooterErrorBox from '../../components/form/footer/FormFooterErrorBox'
@@ -12,15 +12,11 @@ import { IdeaDto, IdeaStatus } from '../ideas.dto'
 import FormFooterButtonsContainer from '../../components/form/footer/FormFooterButtonsContainer'
 import { createEmptyIdea } from '../utils/ideas.utils'
 
-interface OwnProps {
-    network: string
-}
-
-export type IdeaCreateProps = OwnProps
-
-const IdeaCreate = ({ network = config.NETWORK_NAME }: IdeaCreateProps) => {
+const IdeaCreate = () => {
     const { t } = useTranslation()
-    const [idea] = useState(createEmptyIdea(network))
+    const { network } = useNetworks()
+
+    const [idea] = useState(createEmptyIdea(network.id))
     const [activate, setActivate] = useState(false)
 
     const history = useHistory()

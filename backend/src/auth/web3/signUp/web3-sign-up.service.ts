@@ -13,10 +13,10 @@ import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
 import { UsersService } from '../../../users/users.service'
 import { isValidAddress } from '../../../utils/address/address.validator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { SignMessageService } from '../signMessage/sign-message.service'
 import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
 import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
-import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 
 @Injectable()
 export class Web3SignUpService {
@@ -34,7 +34,7 @@ export class Web3SignUpService {
         return this.signMessageService.start(dto, this.cacheKey)
     }
 
-    async confirm(dto: ConfirmWeb3SignUpRequestDto, res: Response): Promise<void> {
+    async confirm(dto: ConfirmSignMessageRequestDto, res: Response): Promise<void> {
         await this.validateAddress(dto.address)
         await this.signMessageService.confirm(dto, this.cacheKey)
         await this.createWeb3User(dto.address, res)

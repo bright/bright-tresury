@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
+import { useNetworks } from '../networks/useNetworks'
 import { useGetIdeas } from './ideas.api'
 import { IdeaDefaultFilter, IdeaFilter, IdeaFilterSearchParamName } from './list/IdeaStatusFilters'
-import config from '../config'
 import { filterIdeas } from './list/filterIdeas'
 import IdeasHeader from './IdeasHeader'
 import IdeasList from './list/IdeasList'
@@ -10,20 +10,16 @@ import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
 
-export interface OwnProps {
-    network: string
-}
-
-export type IdeasProps = OwnProps
-
-const Ideas = ({ network = config.NETWORK_NAME }: IdeasProps) => {
+const Ideas = () => {
     const { t } = useTranslation()
 
     const { search } = useLocation()
 
     const { user } = useAuth()
 
-    const { status, data: ideas, refetch } = useGetIdeas(network)
+    const { network } = useNetworks()
+
+    const { status, data: ideas, refetch } = useGetIdeas(network.id)
 
     useEffect(() => {
         refetch()

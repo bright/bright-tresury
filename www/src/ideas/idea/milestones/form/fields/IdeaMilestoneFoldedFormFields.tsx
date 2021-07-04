@@ -1,8 +1,8 @@
 import React from 'react'
 import Input from '../../../../../components/form/input/Input'
-import config from '../../../../../config'
 import { TextFieldColorScheme } from '../../../../../components/form/input/textFieldStyles'
 import { useTranslation } from 'react-i18next'
+import { useNetworks } from '../../../../../networks/useNetworks'
 import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
 import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
 
@@ -18,6 +18,9 @@ export type IdeaMilestoneFoldedFormFieldsProps = OwnProps
 const IdeaMilestoneFoldedFormFields = ({ values, readonly }: IdeaMilestoneFoldedFormFieldsProps) => {
     const classes = useIdeaMilestoneFormFieldsStyles()
     const { t } = useTranslation()
+    const {
+        network: { currency },
+    } = useNetworks()
 
     return (
         <div className={classes.root}>
@@ -35,7 +38,7 @@ const IdeaMilestoneFoldedFormFields = ({ values, readonly }: IdeaMilestoneFolded
                         type={`number`}
                         label={t(`${translationKeyPrefix}.budget`)}
                         key={idx}
-                        endAdornment={config.NETWORK_CURRENCY}
+                        endAdornment={currency}
                         textFieldColorScheme={TextFieldColorScheme.Dark}
                         className={classes.narrowField}
                         disabled={readonly}

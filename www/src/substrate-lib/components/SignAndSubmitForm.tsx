@@ -7,7 +7,6 @@ import NetworkName from '../../main/top-bar/network/NetworkName'
 import { useNetworks } from '../../networks/useNetworks'
 import { InputParam, TxAttrs } from './SubmittingTransaction'
 import { Account } from '../accounts/AccountsContext'
-import { useAccounts } from '../accounts/useAccounts'
 import AccountSelect from '../../components/select/AccountSelect'
 
 const useStyles = makeStyles(() =>
@@ -28,6 +27,7 @@ const useStyles = makeStyles(() =>
         networkName: {
             marginTop: '16px',
             marginBottom: '24px',
+            textAlign: 'center',
         },
         buttons: {
             paddingTop: 42,

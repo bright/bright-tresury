@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import Button from '../../components/button/Button'
 import Input from '../../components/form/input/Input'
 import FormSelect from '../../components/select/FormSelect'
-import config from '../../config'
+import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
 
@@ -37,6 +37,9 @@ export type IdeaFormFieldsProps = OwnProps
 const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const {
+        network: { currency },
+    } = useNetworks()
 
     return (
         <>
@@ -77,7 +80,7 @@ const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
                             type={`number`}
                             label={t('idea.details.reward')}
                             placeholder={t('idea.details.reward')}
-                            endAdornment={config.NETWORK_CURRENCY}
+                            endAdornment={currency}
                         />
                     </div>
                 )

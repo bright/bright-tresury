@@ -1,9 +1,9 @@
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
 import { useTranslation } from 'react-i18next'
 import Amount from '../amount/Amount'
-import config from '../../config'
 import { calculateBondValue } from '../../networks/bondUtil'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -33,10 +33,13 @@ export type NetworkRewardDepositProps = OwnProps
 const NetworkRewardDeposit = ({ rewardValue, bondValue }: NetworkRewardDepositProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const { network } = useNetworks()
 
     let resolvedBondValue
     if (!bondValue) {
-        resolvedBondValue = rewardValue ? calculateBondValue(rewardValue) : 0
+        resolvedBondValue = rewardValue
+            ? calculateBondValue(rewardValue, network.bond.percentage, network.bond.minValue)
+            : 0
     } else {
         resolvedBondValue = bondValue
     }
@@ -44,14 +47,10 @@ const NetworkRewardDeposit = ({ rewardValue, bondValue }: NetworkRewardDepositPr
     return (
         <div className={classes.root}>
             <div className={classes.reward}>
-                <Amount amount={rewardValue} currency={config.NETWORK_CURRENCY} label={t('idea.content.info.reward')} />
+                <Amount amount={rewardValue} currency={network.currency} label={t('idea.content.info.reward')} />
             </div>
             <div className={classes.deposit}>
-                <Amount
-                    amount={resolvedBondValue}
-                    currency={config.NETWORK_CURRENCY}
-                    label={t('idea.content.info.deposit')}
-                />
+                <Amount amount={resolvedBondValue} currency={network.currency} label={t('idea.content.info.deposit')} />
             </div>
         </div>
     )

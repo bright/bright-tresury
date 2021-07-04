@@ -2,7 +2,6 @@ import React, { HTMLAttributes, PropsWithChildren } from 'react'
 import { createStyles, Theme } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import Card from '../card/Card'
-import config from '../../config/index'
 import LinkCard from '../card/LinkCard'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,11 +19,10 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    network?: string
     redirectTo?: string
 }
 export type NetworkCardProps = PropsWithChildren<OwnProps & HTMLAttributes<HTMLDivElement>>
-const NetworkCard = ({ children, network = config.NETWORK_NAME, redirectTo, ...props }: NetworkCardProps) => {
+const NetworkCard = ({ children, redirectTo, ...props }: NetworkCardProps) => {
     const classes = useStyles()
 
     const cardContent = (

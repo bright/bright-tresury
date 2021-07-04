@@ -5,7 +5,7 @@ import { v4 as uuid } from 'uuid'
 import { CreateWeb3UserDto } from '../../users/dto/create-web3-user.dto'
 import { SuperTokensService } from '../supertokens/supertokens.service'
 import { Response } from 'express'
-import { ConfirmWeb3SignUpRequestDto } from './signUp/dto/confirm-web3-sign-up-request.dto'
+import { ConfirmSignMessageRequestDto } from './signMessage/confirm-sign-message-request.dto'
 import { SignatureValidator } from './signMessage/signature.validator'
 import { Web3SignUpService } from './signUp/web3-sign-up.service'
 import { Web3SignInService } from './signIn/web3-sign-in.service'
@@ -52,7 +52,7 @@ describe(`Auth Web3 Service`, () => {
                 {
                     signature: uuid(),
                     address: bobAddress,
-                } as ConfirmWeb3SignUpRequestDto,
+                } as ConfirmSignMessageRequestDto,
                 {} as Response,
             )
             expect(createSessionSpy.mock.calls.length).toBe(initialCallsCount + 1)
@@ -60,9 +60,8 @@ describe(`Auth Web3 Service`, () => {
             await getSignUpService().confirm(
                 {
                     signature: uuid(),
-                    details: { network },
                     address: charlieAddress,
-                } as ConfirmWeb3SignUpRequestDto,
+                } as ConfirmSignMessageRequestDto,
                 {} as Response,
             )
             const charlieUser = await getUsersService().findOneByWeb3Address(charlieAddress)

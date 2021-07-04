@@ -2,8 +2,8 @@ import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common'
 import { ApiBadRequestResponse, ApiConflictResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { Web3SignUpService } from './web3-sign-up.service'
-import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
 import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
 import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
 
@@ -37,7 +37,7 @@ export class Web3SignUpController {
     @ApiConflictResponse({
         description: 'Requested address already exists',
     })
-    async confirmSignUp(@Body() confirmRequest: ConfirmWeb3SignUpRequestDto, @Res() res: Response) {
+    async confirmSignUp(@Body() confirmRequest: ConfirmSignMessageRequestDto, @Res() res: Response) {
         await this.web3SignUpService.confirm(confirmRequest, res)
         res.status(HttpStatus.OK).send()
     }
