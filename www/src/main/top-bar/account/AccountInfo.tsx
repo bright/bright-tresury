@@ -7,6 +7,7 @@ import { useHistory } from 'react-router-dom'
 import arrowSvg from '../../../assets/account_menu_arrow.svg'
 import { useAuth } from '../../../auth/AuthContext'
 import IconButton from '../../../components/button/IconButton'
+import { useNetworks } from '../../../networks/useNetworks'
 import { ROUTE_ACCOUNT, ROUTE_IDEAS, ROUTE_PROPOSALS } from '../../../routes/routes'
 import { useMenu } from '../useMenu'
 import AccountImage from './AccountImage'
@@ -15,7 +16,6 @@ import MenuItem from './MenuItem'
 import SignOutMenuItem from './SignOutMenuItem'
 import { IdeaFilter, IdeaFilterSearchParamName } from '../../../ideas/list/IdeaStatusFilters'
 import { useGetIdeas } from '../../../ideas/ideas.api'
-import config from '../../../config'
 import { filterIdeas } from '../../../ideas/list/filterIdeas'
 import { useGetProposals } from '../../../proposals/proposals.api'
 import { filterProposals } from '../../../proposals/list/filterProposals'
@@ -29,13 +29,14 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-const AccountInfo = ({ network = config.NETWORK_NAME }) => {
+const AccountInfo = () => {
     const { t } = useTranslation()
     const classes = useStyles()
     const history = useHistory()
     const { user } = useAuth()
-    const { data: ideas } = useGetIdeas(network)
-    const { data: proposals } = useGetProposals(network)
+    const { network } = useNetworks()
+    const { data: ideas } = useGetIdeas(network.id)
+    const { data: proposals } = useGetProposals(network.id)
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 

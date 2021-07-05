@@ -2,7 +2,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { breakpoints } from '../../theme/theme'
 import { ellipseTextInTheMiddle } from '../../util/stringUtil'
-import  Identicon  from './Identicon'
+import Identicon from './Identicon'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({

@@ -1,4 +1,5 @@
 import { SubmittableResult } from '@polkadot/api'
+import { EventMetadataLatest } from '@polkadot/types/interfaces'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNetworks } from '../../networks/useNetworks'
@@ -15,7 +16,7 @@ import { useSubstrate } from '../api/useSubstrate'
 
 export interface Result {
     status: Status
-    event?: any
+    event?: EventMetadataLatest
     error?: ExtrinsicError
 }
 
@@ -114,13 +115,7 @@ const SubmittingTransaction = ({
             return
         }
 
-        // TODO should be set as general properties
-        const chainInfo = await api.registry.getChainProperties()
-        const tokenDecimals = chainInfo?.tokenDecimals.unwrapOr(undefined)?.toString()
-        const parsedTokenDecimals = tokenDecimals ? parseInt(tokenDecimals) : NaN
-        const decimals = !isNaN(parsedTokenDecimals) ? parsedTokenDecimals : 12
-
-        const transformed = transformParams(inputParams, decimals)
+        const transformed = transformParams(inputParams ?? [], network.decimals)
 
         // transformed can be empty parameters
         const txExecute = transformed ? api.tx[palletRpc][callable](...transformed) : api.tx[palletRpc][callable]()

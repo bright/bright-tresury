@@ -61,7 +61,7 @@ const Web3AccountDetails = () => {
                         key={address.address}
                         onPrimaryChange={(checked) => onPrimaryChange(checked, address)}
                         isPrimary={address.isPrimary}
-                        addressComponent={<AddressInfo address={address.address} />}
+                        addressComponent={<AddressInfo address={address.encodedAddress} />}
                         linkComponent={
                             address.isPrimary ? (
                                 ''

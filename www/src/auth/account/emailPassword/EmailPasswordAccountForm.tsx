@@ -26,7 +26,7 @@ const EmailPasswordAccountForm = () => {
         if (!address) {
             return Promise.reject(Error(t('account.emailPassword.addressNotFound')))
         }
-        const account = accounts.find((account) => account.address === address.address)
+        const account = accounts.find((account) => account.address === address.encodedAddress)
         if (!account) {
             return Promise.reject(Error(t('account.emailPassword.accountNotFound')))
         }

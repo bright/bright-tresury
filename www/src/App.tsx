@@ -110,10 +110,10 @@ function App() {
     const classes = useStyles()
     return (
         <QueryClientProvider client={queryClient}>
-            <AuthContextProvider>
-                <div className={classes.root}>
-                    <Router>
-                        <NetworksContextProvider>
+            <div className={classes.root}>
+                <Router>
+                    <NetworksContextProvider>
+                        <AuthContextProvider>
                             <ThemeWrapper>
                                 <SubstrateContextProvider>
                                     <AccountsContextProvider>
@@ -121,10 +121,10 @@ function App() {
                                     </AccountsContextProvider>
                                 </SubstrateContextProvider>
                             </ThemeWrapper>
-                        </NetworksContextProvider>
-                    </Router>
-                </div>
-            </AuthContextProvider>
+                        </AuthContextProvider>
+                    </NetworksContextProvider>
+                </Router>
+            </div>
         </QueryClientProvider>
     )
 }

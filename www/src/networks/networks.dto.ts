@@ -17,4 +17,5 @@ export interface Network {
     decimals: number
     color: string
     isDefault: boolean
+    isLiveNetwork: boolean
 }

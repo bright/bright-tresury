@@ -5,13 +5,20 @@ import {
     web3Enable,
     web3EnablePromise,
 } from '@polkadot/extension-dapp'
-import { keyring as newKeyring } from '@polkadot/ui-keyring'
+import { Keyring, keyring as newKeyring } from '@polkadot/ui-keyring'
 import { useNetworks } from '../../networks/useNetworks'
-import { AccountsContext } from './AccountsContext'
+import { AccountsContext, KeyringState } from './AccountsContext'
 import { Account } from './AccountsContext'
 import config from '../../config'
 
-export function useAccounts() {
+export interface UseAccountsResult {
+    keyring: Keyring | undefined
+    keyringState: KeyringState | undefined
+    accounts: Account[]
+    isWeb3Injected: boolean
+}
+
+export function useAccounts(): UseAccountsResult {
     const [state, dispatch] = useContext(AccountsContext)
 
     const { keyring, keyringState, accounts } = state

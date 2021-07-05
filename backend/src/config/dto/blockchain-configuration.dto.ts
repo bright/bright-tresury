@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { BlockchainConfig } from '../../blockchain/blockchain.config'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({
@@ -28,6 +29,12 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Should we use development accounts when using this configuration' })
     developmentKeyring: boolean
 
+    @ApiProperty({ description: 'ss58 format' })
+    ss58Format: number
+
+    @ApiProperty({ description: 'Genesis Hash of the blockchain' })
+    genesisHash: string
+
     @ApiProperty({
         description: 'Bond values used when we submit new proposal. Supported properties: minValue and percentage',
     })
@@ -48,6 +55,9 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Should this network be used as default' })
     isDefault: boolean
 
+    @ApiProperty({ description: 'Is this a live network or a development one' })
+    isLiveNetwork: boolean
+
     constructor({
         id,
         name,
@@ -55,22 +65,28 @@ export class BlockchainConfigurationDto {
         types,
         rpc,
         developmentKeyring,
+        ss58Format,
+        genesisHash,
         bond,
         currency,
         decimals,
         color,
         isDefault,
-    }: BlockchainConfigurationDto) {
+        isLiveNetwork,
+    }: BlockchainConfig) {
         this.id = id
         this.name = name
         this.url = url
         this.types = types
         this.rpc = rpc
         this.developmentKeyring = developmentKeyring
+        this.ss58Format = ss58Format
+        this.genesisHash = genesisHash
         this.bond = bond
         this.currency = currency
         this.decimals = decimals
         this.color = color
         this.isDefault = isDefault
+        this.isLiveNetwork = isLiveNetwork
     }
 }

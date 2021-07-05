@@ -8,6 +8,7 @@ import { useNetworks } from '../../networks/useNetworks'
 import { InputParam, TxAttrs } from './SubmittingTransaction'
 import { Account } from '../accounts/AccountsContext'
 import AccountSelect from '../../components/select/AccountSelect'
+import config from '../../config'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -91,6 +92,12 @@ const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormPro
 
     const contextRef = createRef<HTMLDivElement>()
 
+    /*
+        We do not want anybody to be able to submit transactions to live networks from environments other than production (like staging, testing, development).
+        We want to prevent from accidentally submitting transaction and loosing real founds
+         */
+    const isLiveNetworkOnNonProductionEnv = network.isLiveNetwork && config.env !== 'production'
+
     return (
         <div ref={contextRef} className={classes.root}>
             <Formik
@@ -114,7 +121,9 @@ const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormPro
                                 <Button
                                     color="primary"
                                     type="submit"
-                                    disabled={!allParamsFilled() || !values.account.address}
+                                    disabled={
+                                        !allParamsFilled() || !values.account.address || isLiveNetworkOnNonProductionEnv
+                                    }
                                 >
                                     {t('substrate.form.signAndSubmit')}
                                 </Button>

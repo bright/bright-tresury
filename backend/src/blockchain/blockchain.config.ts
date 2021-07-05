@@ -1,4 +1,6 @@
 import { Schema } from 'convict'
+import { booleanFormat } from '../config/formats/boolean.format'
+import { numberFormat } from '../config/formats/number.format'
 import { stringFormat } from '../config/formats/string.format'
 import { objectFormat } from '../config/formats/object.format'
 
@@ -11,6 +13,8 @@ export interface BlockchainConfig {
     types: any
     rpc: any
     developmentKeyring: boolean
+    ss58Format: number
+    genesisHash: string
     bond: {
         minValue: number
         percentage: number
@@ -19,6 +23,7 @@ export interface BlockchainConfig {
     decimals: number
     color: string
     isDefault: boolean
+    isLiveNetwork: boolean
 }
 
 export const blockchainConfigSchema: Schema<BlockchainConfig> = {
@@ -40,10 +45,7 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     types: {
         doc:
             'Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.',
-        default: {
-            Address: 'MultiAddress',
-            LookupSource: 'MultiAddress',
-        },
+        default: {},
         format: objectFormat,
     },
     rpc: {
@@ -53,6 +55,17 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     developmentKeyring: {
         doc: 'Should we use development keyring',
         default: false,
+        format: booleanFormat,
+    },
+    ss58Format: {
+        doc: 'ss58 format',
+        default: 42,
+        format: numberFormat,
+    },
+    genesisHash: {
+        doc: 'Genesis Hash of the blockchain',
+        default: '',
+        format: stringFormat,
     },
     bond: {
         doc: 'Proposal bond information used by this blockchain',
@@ -61,17 +74,26 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     currency: {
         doc: 'Currency ticker used',
         default: 'UNIT',
+        format: stringFormat,
     },
     decimals: {
         doc: 'Decimal precision',
         default: 12,
+        format: numberFormat,
     },
     color: {
         doc: 'Theme color that is used in frontend for this configuration',
         default: '#0E65F2',
+        format: stringFormat,
     },
     isDefault: {
         doc: 'Should this network be used as default',
         default: false,
+        format: booleanFormat,
+    },
+    isLiveNetwork: {
+        doc: 'Is this a live network or a development one',
+        default: false,
+        format: booleanFormat,
     },
 }

@@ -9,5 +9,5 @@ function getNetworks() {
 }
 
 export const useGetNetworks = (options?: UseQueryOptions<Network[]>) => {
-    return useQuery<Network[]>(['networks'], () => getNetworks(), options)
+    return useQuery<Network[]>(['networks'], () => getNetworks(), { ...options, refetchOnWindowFocus: false })
 }

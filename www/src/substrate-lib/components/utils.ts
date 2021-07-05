@@ -38,12 +38,10 @@ export const getFromAcct = async (
     return fromAcct
 }
 
-export const transformParams = (inputParams?: InputParam[], tokenDecimals?: number): any[] => {
-    const trimmedParams = inputParams
-        ? inputParams.map((inputParam: InputParam) => {
-              return { ...inputParam, value: inputParam.value.trim() }
-          })
-        : []
+export const transformParams = (inputParams: InputParam[], tokenDecimals: number): any[] => {
+    const trimmedParams = inputParams.map((inputParam: InputParam) => {
+        return { ...inputParam, value: inputParam.value.trim() }
+    })
 
     return trimmedParams.reduce((memo: any[], { type = 'string', value }) => {
         if (value == null || value === '') {
@@ -65,7 +63,7 @@ export const transformParams = (inputParams?: InputParam[], tokenDecimals?: numb
 
         // Deal with a single value
         if (isNumType(type)) {
-            const decimals = new BN(tokenDecimals ?? 15)
+            const decimals = new BN(tokenDecimals)
             const indexOfDecimalPoint = value.indexOf('.')
 
             if (indexOfDecimalPoint >= 0) {

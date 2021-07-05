@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
+import { encodeAddress } from '@polkadot/util-crypto'
+import { useNetworks } from '../networks/useNetworks'
 
 export interface AuthContextState {
     user?: AuthContextUser
@@ -25,6 +27,7 @@ export interface AuthContextUser {
 export interface Web3Address {
     address: string
     isPrimary: boolean
+    encodedAddress: string
 }
 
 export const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
@@ -32,6 +35,7 @@ export const AuthContext = React.createContext<AuthContextState | undefined>(und
 const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const [user, setUser] = useState<AuthContextUser | undefined>()
     const [isUserSignedIn, setIsUserSignedIn] = useState(Session.doesSessionExist)
+    const { network } = useNetworks()
 
     const refreshJwt = () => {
         if (isUserSignedIn) {
@@ -40,6 +44,12 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
                     ...payload,
                     isWeb3: payload.web3Addresses && payload.web3Addresses.length > 0,
                     isEmailPassword: !!payload.email,
+                    web3Addresses: payload.web3Addresses.map((web3Address) => {
+                        return {
+                            ...web3Address,
+                            encodedAddress: encodeAddress(web3Address.address, network.ss58Format),
+                        }
+                    }),
                 })
             })
         } else {
