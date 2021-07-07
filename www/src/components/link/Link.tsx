@@ -5,7 +5,7 @@ interface OwnProps {}
 export type LinkProps = OwnProps & MaterialLinkProps
 const Link = ({ children, href, ...props }: LinkProps) => {
     return (
-        <MaterialLink color="inherit" {...props} href={href} target="_blank" rel="noopener">
+        <MaterialLink color="inherit" {...props} href={href}>
             {children ?? href}
         </MaterialLink>
     )
