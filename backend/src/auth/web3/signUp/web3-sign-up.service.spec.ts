@@ -6,7 +6,7 @@ import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { beforeSetupFullApp } from '../../../utils/spec.helpers'
 import { getAuthUser } from '../../supertokens/specHelpers/supertokens.database.spec.helper'
 import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
-import { ConfirmWeb3SignUpRequestDto } from './dto/confirm-web3-sign-up-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { SignatureValidator } from '../signMessage/signature.validator'
 import { Web3SignUpService } from './web3-sign-up.service'
 import { cleanDatabases } from '../web3.spec.helper'
@@ -55,9 +55,8 @@ describe(`Web3 Sign Up Service`, () => {
             await getService().confirm(
                 {
                     signature: uuid(),
-                    details: { network },
                     address: bobAddress,
-                } as ConfirmWeb3SignUpRequestDto,
+                } as ConfirmSignMessageRequestDto,
                 {} as Response,
             )
 
@@ -73,9 +72,8 @@ describe(`Web3 Sign Up Service`, () => {
                 getService().confirm(
                     {
                         signature: uuid(),
-                        details: { network },
                         address: aliceAddress,
-                    } as ConfirmWeb3SignUpRequestDto,
+                    } as ConfirmSignMessageRequestDto,
                     {} as Response,
                 ),
             ).rejects.toThrow(BadRequestException)
@@ -87,9 +85,8 @@ describe(`Web3 Sign Up Service`, () => {
                 getService().confirm(
                     {
                         signature: uuid(),
-                        details: { network },
                         address: bobAddress,
-                    } as ConfirmWeb3SignUpRequestDto,
+                    } as ConfirmSignMessageRequestDto,
                     {} as Response,
                 ),
             ).rejects.toThrow(BadRequestException)

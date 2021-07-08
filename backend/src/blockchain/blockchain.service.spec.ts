@@ -46,46 +46,48 @@ describe(`Blockchain service`, () => {
 
             // start listening for the extrinsic
             await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
-                expect(result).toBeDefined()
-                expect(result!.blockHash).toBe(expectedBlockHash)
-                expect(result!.events).toContainEqual({
-                    section: 'treasury',
-                    method: 'Proposed',
-                    data: [
-                        {
-                            name: 'ProposalIndex',
-                            value: `${expectedProposalId}`,
+                // we want to wait a moment so that the expectedProposalId and expectedBlockHash gets set
+                setTimeout(() => {
+                    expect(result).toBeDefined()
+                    expect(result!.blockHash).toBe(expectedBlockHash)
+                    expect(result!.events).toContainEqual({
+                        section: 'treasury',
+                        method: 'Proposed',
+                        data: [
+                            {
+                                name: 'ProposalIndex',
+                                value: `${expectedProposalId}`,
+                            },
+                        ],
+                    })
+                    expect(result!.events).toContainEqual({
+                        section: 'balances',
+                        method: 'Reserved',
+                        data: [
+                            {
+                                name: 'AccountId',
+                                value: aliceAddress,
+                            },
+                            {
+                                name: 'Balance',
+                                value: '1000000000000',
+                            },
+                        ],
+                    })
+                    expect(result!.data).toStrictEqual({
+                        value: 10,
+                        beneficiary: {
+                            id: bobAddress,
                         },
-                    ],
-                })
-                expect(result!.events).toContainEqual({
-                    section: 'balances',
-                    method: 'Reserved',
-                    data: [
-                        {
-                            name: 'AccountId',
-                            value: aliceAddress,
-                        },
-                        {
-                            name: 'Balance',
-                            value: '1000000000000',
-                        },
-                    ],
-                })
-                expect(result!.data).toStrictEqual({
-                    value: 10,
-                    beneficiary: {
-                        id: bobAddress,
-                    },
-                })
-                done()
+                    })
+                    done()
+                }, 500)
             })
 
             // send the extrinsic
-            await extrinsic.send((result: any) => {
-                if (result.isFinalized) {
-                    // TODO fix types
-                    expectedBlockHash = result.status.asFinalized.toString()
+            await extrinsic.send((result: SubmittableResult) => {
+                if (result.isInBlock) {
+                    expectedBlockHash = result.status.asInBlock.toString()
                     const event = result.events.find(
                         ({ event: e }: { event: any }) => e.section === 'treasury' && e.method === 'Proposed',
                     )
@@ -95,8 +97,6 @@ describe(`Blockchain service`, () => {
         }, 60000)
 
         it('should start listening and find successful extrinsic with exceptions', async (done) => {
-            let expectedBlockHash = ''
-
             // create and sign extrinsic which will fail as only ApproveOrigin can call this extrinsic
             const extrinsic = api.tx.treasury.rejectProposal(0)
             await extrinsic.signAsync(aliceKeypair)
@@ -104,7 +104,6 @@ describe(`Blockchain service`, () => {
             // start listening for the extrinsic
             await service().listenForExtrinsic(extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
                 expect(result).toBeDefined()
-                expect(result!.blockHash).toBe(expectedBlockHash)
                 const errorEvent = result!.events.find((e) => e.section === 'system' && e.method === 'ExtrinsicFailed')
                 expect(errorEvent).toBeDefined()
                 expect(errorEvent!.data).toContainEqual({
@@ -115,11 +114,7 @@ describe(`Blockchain service`, () => {
             })
 
             // send the extrinsic
-            await extrinsic.send((result: SubmittableResult) => {
-                if (result.isFinalized) {
-                    expectedBlockHash = result.status.asFinalized.toString()
-                }
-            })
+            await extrinsic.send()
         }, 60000)
     })
 
@@ -129,7 +124,7 @@ describe(`Blockchain service`, () => {
     ): Promise<SubmittableResult> =>
         new Promise((resolve) => {
             extrinsic.signAndSend(keyringPair, (result: SubmittableResult) => {
-                if (result.isFinalized) {
+                if (result.isFinalized || result.isInBlock) {
                     resolve(result)
                 }
             })
