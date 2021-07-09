@@ -14,11 +14,11 @@ import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { CreateIdeaDto } from '../ideas/dto/create-idea.dto'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { CreateIdeaMilestoneDto } from '../ideas/idea-milestones/dto/create-idea-milestone.dto'
-import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
 import { createIdea, createIdeaMilestone } from '../ideas/spec.helpers'
 import { getLogger } from '../logging.module'
 import { NETWORKS } from '../utils/spec.helpers'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
+import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
 
 const makeMotion = (
     hash: string,

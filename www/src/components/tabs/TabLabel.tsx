@@ -39,11 +39,12 @@ interface OwnProps {
     path: string
     svg?: string
     isDefault?: boolean
+    searchParamName?: string
 }
 
 export type TabLabelProps = OwnProps
 
-const TabLabel = ({ label, filterName, svg, path, isDefault }: TabLabelProps) => {
+const TabLabel = ({ label, filterName, svg, path, isDefault, searchParamName }: TabLabelProps) => {
     const classes = useStyles()
 
     return (
@@ -53,7 +54,9 @@ const TabLabel = ({ label, filterName, svg, path, isDefault }: TabLabelProps) =>
                 to={path}
                 replace={true}
                 isActive={(match, location: Location) => {
-                    const searchParamFilter = new URLSearchParams(location.search).get(IdeaFilterSearchParamName)
+                    const searchParamFilter = searchParamName
+                        ? new URLSearchParams(location.search).get(searchParamName)
+                        : undefined
                     if (searchParamFilter === filterName) {
                         return true
                     }

@@ -488,6 +488,24 @@
             "describeMilestone": "Describe the Milestone"
         }
     },
+    "stats": {
+        "filters": {
+            "proposals": "Proposals",
+            "bounty": "Bounty",
+            "ideas": "Ideas",
+            "tips": "Tips"
+        },
+        "names": {
+            "proposalsSubmitted": "Proposals Submitted",
+            "proposalsApproved": "Proposals Approved",
+            "proposalsRejected": "Proposals Rejected",
+            "spendPeriod": "Spend Period",
+            "timeLeft": "Time Left",
+            "leftOfSpendingPeriod": "Left of Spending Period",
+            "available": "Available",
+            "nextBurn": "Next Burn"
+        }
+    },
     "substrate": {
         "form": {
             "networkHeader": "Please, select your account in:",
@@ -546,6 +564,7 @@
         "errorOccurredWhileLoadingIdea": "An error occurred while loading idea.",
         "errorOccurredWhileLoadingProposal": "An error occurred while loading proposal.",
         "errorOccurredWhileLoadingProposalMilestones": "An error occurred while loading proposal milestones.",
+        "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
         "somethingWentWrong": "Ooops... Something went wrong."
     },
     "loading": {
@@ -555,6 +574,7 @@
         "proposals": "We're loading the proposals. It may take a moment. Bear with us.",
         "proposal": "We're loading the proposal. It may take a moment. Bear with us.",
         "proposalMilestones": "We're loading the proposal milestones. It may take a moment. Bear with us.",
-        "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us."
+        "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us.",
+        "stats": "We're loading the statistics. It may take a moment. Bear with us."
     }
 }

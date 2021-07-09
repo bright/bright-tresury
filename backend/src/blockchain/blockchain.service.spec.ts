@@ -184,4 +184,46 @@ describe(`Blockchain service`, () => {
             expect(lastProposal.value).toBe(1000)
         }, 60000)
     })
+    describe('getStats', () => {
+        it('should call getProposalsCount method', async () => {
+            const getProposalsCountSpy = jest.spyOn(service(), 'getProposalsCount')
+            await service().getStats(NETWORKS.POLKADOT)
+            expect(getProposalsCountSpy).toHaveBeenCalled()
+        }, 60000)
+        it('should call getSpendPeriodCalculations method', async () => {
+            const getSpendPeriodCalculationsSpy = jest.spyOn(service(), 'getSpendPeriodCalculations')
+            await service().getStats(NETWORKS.POLKADOT)
+            expect(getSpendPeriodCalculationsSpy).toHaveBeenCalled()
+        }, 60000)
+        it('should call getBudget method', async () => {
+            const getBudgetSpy = jest.spyOn(service(), 'getBudget')
+            await service().getStats(NETWORKS.POLKADOT)
+            expect(getBudgetSpy).toHaveBeenCalled()
+        }, 60000)
+    })
+    describe('getProposalsCount', () => {
+        it('should return number of proposals submitted, approved and rejected', async () => {
+            const { submitted, approved, rejected } = await service().getProposalsCount(NETWORKS.KUSAMA)
+            expect(typeof submitted).toBe('number')
+            expect(typeof approved).toBe('number')
+            expect(typeof rejected).toBe('number')
+        }, 60000)
+    })
+    describe('getSpendPeriodCalculations', () => {
+        it('should return spendPeriod, timeLeft and leftOfSpendingPeriod', async () => {
+            const { spendPeriod, timeLeft, leftOfSpendingPeriod } = await service().getSpendPeriodCalculations(
+                NETWORKS.KUSAMA,
+            )
+            expect(typeof spendPeriod).toBe('object')
+            expect(typeof timeLeft).toBe('object')
+            expect(typeof leftOfSpendingPeriod).toBe('number')
+        }, 60000)
+    })
+    describe('getBudget', () => {
+        it('should return availableBalance, nextFoundsBurn', async () => {
+            const { availableBalance, nextFoundsBurn } = await service().getBudget(NETWORKS.KUSAMA)
+            expect(typeof availableBalance).toBe('string')
+            expect(typeof nextFoundsBurn).toBe('string')
+        }, 60000)
+    })
 })

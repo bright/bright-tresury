@@ -1,5 +1,5 @@
 export const ROUTE_ROOT = '/'
-// region Stats
+// region stats
 export const ROUTE_STATS = '/stats'
 // endregion
 // region Ideas

@@ -51,7 +51,7 @@ const IdeaContentTypeTabs = () => {
 
     return (
         <div>
-            <Tabs values={tabEntries} />
+            <Tabs searchParamName={tabEntries[0].path} values={tabEntries} />
         </div>
     )
 }

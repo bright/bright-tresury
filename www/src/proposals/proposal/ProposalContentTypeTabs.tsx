@@ -15,11 +15,14 @@ export enum ProposalContentType {
     Voting = 'voting',
 }
 
-interface Props {
+interface OwnProps {
     proposal: ProposalDto
+    searchParamName: string
 }
 
-export const ProposalContentTypeTabs = ({ proposal }: Props) => {
+export type ProposalContentTypeTabsProps = OwnProps
+
+export const ProposalContentTypeTabs = ({ proposal, searchParamName }: ProposalContentTypeTabsProps) => {
     const { t } = useTranslation()
 
     let { url } = useRouteMatch()
@@ -68,7 +71,7 @@ export const ProposalContentTypeTabs = ({ proposal }: Props) => {
 
     return (
         <div>
-            <Tabs values={tabEntries} />
+            <Tabs searchParamName={searchParamName} values={tabEntries} />
         </div>
     )
 }

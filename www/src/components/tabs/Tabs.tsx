@@ -23,11 +23,12 @@ export interface TabEntry {
 
 interface OwnProps {
     values: TabEntry[]
+    searchParamName?: string
 }
 
 export type TabsProps = OwnProps
 
-const Tabs = ({ values }: TabsProps) => {
+const Tabs = ({ values, searchParamName }: TabsProps) => {
     const classes = useStyles()
     return (
         <div className={classes.root}>
@@ -40,6 +41,7 @@ const Tabs = ({ values }: TabsProps) => {
                           svg={svg}
                           path={path}
                           filterName={filterName}
+                          searchParamName={searchParamName}
                       />
                   ))
                 : null}

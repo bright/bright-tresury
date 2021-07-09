@@ -9,17 +9,27 @@ import { getLogger } from '../logging.module'
 import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import { getProposers, getBeneficiaries, getVoters } from './utils'
+import { getProposers, getBeneficiaries, getVoters, transformBalance } from './utils'
 import BN from 'bn.js'
 import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
 import { BlockchainsConnections } from './blockchain.module'
+import { AccountId } from '@polkadot/types/interfaces/runtime'
+import { BN_MILLION, BN_ZERO, u8aConcat } from '@polkadot/util'
+import { StatsDto } from '../stats/stats.dto'
+import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
+import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calculations.dto'
+import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
+import { BlockchainConfig, BlockchainConfigToken } from './blockchain.config'
+
 const logger = getLogger()
 
 @Injectable()
 export class BlockchainService implements OnModuleDestroy {
     private unsub?: () => void
-
-    constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections) {}
+    constructor(
+        @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
+        @Inject(BlockchainConfigToken) private readonly blockchainConfig: BlockchainConfig[],
+    ) {}
 
     getApi(networkId: string): ApiPromise {
         logger.info(`possible network ids: ${Object.keys(this.blockchainsConnections)} searching for ${networkId}`)
@@ -59,7 +69,7 @@ export class BlockchainService implements OnModuleDestroy {
             )
             if (extrinsic) {
                 logger.info(`Block with extrinsic ${extrinsicHash} found.`)
-                const events = ((await api.query.system.events.at(header.hash)) as unknown) as EventRecord[]
+                const events = (await api.query.system.events.at(header.hash)) as unknown as EventRecord[]
                 logger.info(`All extrinsic events.`, events)
                 await this.callUnsub()
 
@@ -118,16 +128,8 @@ export class BlockchainService implements OnModuleDestroy {
         currentBlockNumber: BlockNumber,
         futureBlockNumber: BlockNumber,
     ): BlockchainProposalMotionEnd {
-        const DEFAULT_BLOCK_TIME = 6000 // 6s - Source: https://wiki.polkadot.network/docs/en/faq#what-is-the-block-time-of-the-relay-chain
-        const { babe, difficulty, timestamp } = this.getApi(networkId).consts
-        const blockTime =
-            babe?.expectedBlockTime ??
-            difficulty?.targetBlockTime ??
-            timestamp?.minimumPeriod.muln(2) ??
-            new BN(DEFAULT_BLOCK_TIME)
         const remainingBlocks = futureBlockNumber.sub(currentBlockNumber)
-        const remainingMilliseconds = blockTime.mul(remainingBlocks).toNumber()
-        const timeLeft = extractTime(Math.abs(remainingMilliseconds))
+        const timeLeft = this.blocksToTime(networkId, remainingBlocks)
         return new BlockchainProposalMotionEnd({
             endBlock: futureBlockNumber.toNumber(),
             remainingBlocks: remainingBlocks.toNumber(),
@@ -209,5 +211,125 @@ export class BlockchainService implements OnModuleDestroy {
         logger.info('Event not found')
 
         return
+    }
+
+    async getStats(networkId: string): Promise<StatsDto> {
+        const [proposalsCount, spendPeriodCalculations, budget] = await Promise.all([
+            this.getProposalsCount(networkId),
+            this.getSpendPeriodCalculations(networkId),
+            this.getBudget(networkId),
+        ])
+        const { submitted, approved, rejected } = proposalsCount
+        const { spendPeriod, timeLeft, leftOfSpendingPeriod } = spendPeriodCalculations
+        const { availableBalance, nextFoundsBurn } = budget
+
+        return {
+            submitted,
+            approved,
+            rejected,
+            spendPeriod,
+            timeLeft,
+            leftOfSpendingPeriod,
+            availableBalance,
+            nextFoundsBurn,
+        }
+    }
+
+    async getProposalsCount(networkId: string): Promise<GetProposalsCountDto> {
+        const { proposals, approvals } = await this.getApi(networkId).derive.treasury.proposals()
+        const rejectedObject = await this.getApi(networkId).events.treasury.Rejected.meta.args
+        const submitted = proposals.length
+        const approved = approvals.length
+        const rejected = rejectedObject.length
+
+        return {
+            submitted,
+            approved,
+            rejected,
+        }
+    }
+
+    async getSpendPeriodCalculations(networkId: string): Promise<GetSpendPeriodCalculationsDto> {
+        const spendPeriodAsObject = await this.getApi(networkId).consts.treasury.spendPeriod
+        const spendPeriodAsNumber = spendPeriodAsObject.toNumber()
+        const spendPeriod = this.blocksToTime(networkId, spendPeriodAsObject)
+
+        const bestNumber = await this.getApi(networkId).derive.chain.bestNumber()
+        const numberOfUsedBlocks = bestNumber.mod(spendPeriodAsObject)
+        const blocksLeft = spendPeriodAsObject.sub(numberOfUsedBlocks)
+        const blocksLeftAsNumber = blocksLeft.toNumber()
+        const timeLeft = this.blocksToTime(networkId, blocksLeft)
+
+        const leftOfSpendingPeriodAsString = ((100 * blocksLeftAsNumber) / spendPeriodAsNumber).toFixed()
+        const leftOfSpendingPeriod = Number(leftOfSpendingPeriodAsString)
+
+        return {
+            spendPeriod,
+            timeLeft,
+            leftOfSpendingPeriod,
+        }
+    }
+
+    getBlockTime(networkId: string) {
+        const DEFAULT_TIME = new BN(6000) // 6s - Source: https://wiki.polkadot.network/docs/en/faq#what-is-the-block-time-of-the-relay-chain
+        const api = this.getApi(networkId)
+
+        return (
+            api.consts.babe?.expectedBlockTime ||
+            api.consts.difficulty?.targetBlockTime ||
+            api.consts.timestamp?.minimumPeriod.muln(2) ||
+            DEFAULT_TIME
+        )
+    }
+
+    blocksToTime(networkName: string, numberOfBlocks: BN): BlockchainTimeLeft {
+        const milliseconds = numberOfBlocks.mul(this.getBlockTime(networkName)).toNumber()
+        return extractTime(Math.abs(milliseconds))
+    }
+
+    async getBudget(networkId: string) {
+        const EMPTY_U8A_32 = new Uint8Array(32)
+
+        const treasuryAccount = u8aConcat(
+            'modl',
+            this.getApi(networkId).consts.treasury && this.getApi(networkId).consts.treasury.palletId
+                ? this.getApi(networkId).consts.treasury.palletId.toU8a(true)
+                : 'py/trsry',
+            EMPTY_U8A_32,
+        ).subarray(0, 32) as AccountId
+
+        const treasuryBalance = await this.getApi(networkId).derive.balances?.account(treasuryAccount)
+
+        const burn =
+            treasuryBalance.freeBalance.gt(BN_ZERO) && !this.getApi(networkId).consts.treasury.burn.isZero()
+                ? this.getApi(networkId).consts.treasury.burn.mul(treasuryBalance.freeBalance).div(BN_MILLION)
+                : BN_ZERO
+        const burnUnit = transformBalance(burn, this.getDecimals(networkId)).toFixed(4)
+        const nextFoundsBurn = burnUnit.toString()
+
+        const treasuryAvailableBalance = treasuryBalance.freeBalance.gt(BN_ZERO)
+            ? treasuryBalance.freeBalance
+            : undefined
+
+        const treasuryAvailableBalanceUnit = treasuryAvailableBalance
+            ? transformBalance(treasuryAvailableBalance, this.getDecimals(networkId)).toFixed(4)
+            : ''
+
+        const availableBalance = treasuryAvailableBalanceUnit.toString()
+
+        return {
+            availableBalance,
+            nextFoundsBurn,
+        }
+    }
+
+    getDecimals(networkId: string): number {
+        const filter = (item: BlockchainConfig) => {
+            return item.id === networkId
+        }
+        const config = this.blockchainConfig.filter(filter) // find
+        const decimals = config[0].decimals
+
+        return decimals
     }
 }

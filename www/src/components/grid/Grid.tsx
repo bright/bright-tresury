@@ -1,5 +1,5 @@
-import React from 'react'
-import { Grid as MaterialGrid } from '@material-ui/core'
+import React, { Children, PropsWithChildren } from 'react'
+import { Grid as MaterialGrid, GridProps as MaterialGridProps } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
 import GridItem from './GridItem'
@@ -25,29 +25,41 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => {
 })
 
 interface OwnProps<T> {
-    items: T[]
-    renderItem: (item: T) => JSX.Element
+    items?: T[]
+    renderItem?: (item: T) => JSX.Element
     horizontalPadding?: string
     mobileHorizontalPadding?: string
 }
 
-export type GridProps<T = any> = React.FC<OwnProps<T>>
+export type GridProps<T = any> = PropsWithChildren<OwnProps<T>> & MaterialGridProps
 
-const Grid: GridProps = ({
+const Grid = ({
     items,
     renderItem,
     horizontalPadding = DEFAULT_HORIZONTAL_PADDING,
     mobileHorizontalPadding = DEFAULT_MOBILE_HORIZONTAL_PADDING,
-}) => {
+    xs,
+    md,
+    children,
+    ...props
+}: GridProps) => {
     const classes = useStyles({
         horizontalPadding,
         mobileHorizontalPadding,
     })
-
     return (
         <MaterialGrid container spacing={2} className={classes.root}>
-            {items.map((item, index: number) => (
-                <GridItem key={index}>{renderItem(item)}</GridItem>
+            {children
+                ? Children.map(Children.toArray(children), (child, index) => (
+                      <GridItem key={index} xs={xs || 12} md={md || 6} {...props}>
+                          {child}
+                      </GridItem>
+                  ))
+                : null}
+            {items?.map((item, index: number) => (
+                <GridItem key={index} xs={xs || 12} md={md || 6} {...props}>
+                    {renderItem ? renderItem(item) : null}
+                </GridItem>
             ))}
         </MaterialGrid>
     )

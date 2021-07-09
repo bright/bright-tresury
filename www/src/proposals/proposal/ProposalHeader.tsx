@@ -49,11 +49,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     proposal: ProposalDto
+    searchParamName: string
 }
 
 export type ProposalHeaderProps = OwnProps
 
-const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
+const ProposalHeader = ({ proposal, searchParamName }: ProposalHeaderProps) => {
     const classes = useStyles()
     const history = useHistory()
 
@@ -83,7 +84,7 @@ const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
             <FlexBreakLine className={classes.flexBreakLine} />
 
             <HeaderTabs className={classes.contentTypeTabs}>
-                <ProposalContentTypeTabs proposal={proposal} />
+                <ProposalContentTypeTabs searchParamName={searchParamName} proposal={proposal} />
             </HeaderTabs>
         </HeaderContainer>
     )

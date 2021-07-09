@@ -7,7 +7,7 @@ import { UpdateIdeaProposalDetailsDto } from '../../idea-proposal-details/dto/up
 import { getLogger } from '../../logging.module'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ProposalsParam } from '../proposals.param'
-import { ProposalsQuery } from '../proposals.query'
+import { NetworkNameQuery } from '../../utils/network-name.query'
 import { ProposalDetailsService } from './proposal-details.service'
 
 const logger = getLogger()
@@ -28,7 +28,7 @@ export class ProposalDetailsController {
     @UseGuards(SessionGuard)
     async update(
         @Param() { proposalIndex }: ProposalsParam,
-        @Query() { network }: ProposalsQuery,
+        @Query() { network }: NetworkNameQuery,
         @Body() dto: UpdateIdeaProposalDetailsDto,
         @ReqSession() session: SessionData,
     ): Promise<IdeaProposalDetailsDto> {

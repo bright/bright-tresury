@@ -1,10 +1,10 @@
 import { Get, Param, Query } from '@nestjs/common'
 import { ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumberString, Validate } from 'class-validator'
+import { IsNotEmpty, IsNumberString } from 'class-validator'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
-import { IsValidNetworkConstraint } from '../../utils/network.validator'
 import { ProposalMilestoneDto } from './dto/proposal-milestone.dto'
 import { ProposalMilestonesService } from './proposal-milestones.service'
+import { NetworkNameQuery } from '../../utils/network-name.query'
 
 class GetProposalMilestonesParams {
     @ApiProperty({
@@ -13,15 +13,6 @@ class GetProposalMilestonesParams {
     @IsNumberString()
     @IsNotEmpty()
     proposalIndex!: string
-}
-
-class GetProposalsQuery {
-    @ApiProperty({
-        description: 'Network name',
-    })
-    @IsNotEmpty()
-    @Validate(IsValidNetworkConstraint)
-    network!: string
 }
 
 @ControllerApiVersion('/proposals/:proposalIndex/milestones', ['v1'])
@@ -39,7 +30,7 @@ export class ProposalMilestonesController {
     })
     async getAll(
         @Param() { proposalIndex }: GetProposalMilestonesParams,
-        @Query() { network }: GetProposalsQuery,
+        @Query() { network }: NetworkNameQuery,
     ): Promise<ProposalMilestoneDto[]> {
         const milestones = await this.proposalMilestonesService.find(Number(proposalIndex), network)
         return milestones.map((milestone) => new ProposalMilestoneDto(milestone))

@@ -41,9 +41,9 @@ interface OwnProps {
     selectedFilter: IdeaFilter
 }
 
-export type IdeaStatusFilters = OwnProps
+export type IdeaStatusFiltersProps = OwnProps
 
-const IdeaStatusFilters = ({ selectedFilter }: IdeaStatusFilters) => {
+const IdeaStatusFilters = ({ selectedFilter }: IdeaStatusFiltersProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { isUserSignedIn } = useAuth()
@@ -85,7 +85,7 @@ const IdeaStatusFilters = ({ selectedFilter }: IdeaStatusFilters) => {
     return (
         <div>
             <Hidden only={breakpoints.mobile}>
-                <Tabs values={filterOptions} />
+                <Tabs searchParamName={IdeaFilterSearchParamName} values={filterOptions} />
             </Hidden>
             <NavSelect className={classes.filterSelect} value={currentFilterOption} options={filterOptions} />
         </div>

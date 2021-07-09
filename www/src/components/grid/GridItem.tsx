@@ -1,13 +1,13 @@
 import React, { PropsWithChildren } from 'react'
-import { Grid as MaterialGrid } from '@material-ui/core'
+import { Grid as MaterialGrid, GridProps as MaterialGridProps } from '@material-ui/core'
 
 interface OwnProps {}
 
-export type GridItemProps = PropsWithChildren<OwnProps>
+export type GridItemProps = PropsWithChildren<OwnProps> & MaterialGridProps
 
-const GridItem = ({ children }: GridItemProps) => {
+const GridItem = ({ children, ...props }: GridItemProps) => {
     return (
-        <MaterialGrid item={true} xs={12} md={6}>
+        <MaterialGrid item={true} {...props}>
             {children}
         </MaterialGrid>
     )

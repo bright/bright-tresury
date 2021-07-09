@@ -85,7 +85,7 @@ const ProposalStatusFilters = ({ selectedFilter }: ProposalStatusFiltersProps) =
     return (
         <div>
             <Hidden only={breakpoints.mobile}>
-                <Tabs values={filterOptions} />
+                <Tabs searchParamName={ProposalFilterSearchParamName} values={filterOptions} />
             </Hidden>
             <NavSelect className={classes.filterSelect} value={currentFilterOption} options={filterOptions} />
         </div>
