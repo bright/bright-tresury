@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 import { SessionModule } from '../auth/session/session.module'
 import { ExtrinsicsModule } from '../extrinsics/extrinsics.module'
+import { IdeaProposalDetailsModule } from '../idea-proposal-details/idea-proposal-details.module'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { IdeaProposalsController } from './idea-proposals/idea-proposals.controller'
 import { IdeaProposalsService } from './idea-proposals/idea-proposals.service'
@@ -23,6 +24,7 @@ import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milesto
         ExtrinsicsModule,
         SessionModule,
         BlockchainModule,
+        IdeaProposalDetailsModule,
         TypeOrmModule.forFeature([Idea]),
         TypeOrmModule.forFeature([IdeaNetwork]),
         TypeOrmModule.forFeature([IdeaMilestonesRepository]),

@@ -47,7 +47,7 @@ export class ProposalsService {
                     isCreatedFromIdeaMilestone: ideaMilestone !== undefined,
                     ideaId: idea?.id ?? ideaMilestone?.idea.id,
                     ideaMilestoneId: ideaMilestone?.id,
-                    title: idea?.title ?? ideaMilestone?.subject,
+                    title: idea?.details.title ?? ideaMilestone?.subject,
                     ownerId: idea?.ownerId,
                 }
             })
@@ -77,7 +77,7 @@ export class ProposalsService {
             isCreatedFromIdeaMilestone: ideaMilestone !== undefined,
             ideaId: idea?.id ?? ideaMilestone?.idea.id,
             ideaMilestoneId: ideaMilestone?.id,
-            title: idea?.title ?? ideaMilestone?.subject,
+            title: idea?.details.title ?? ideaMilestone?.subject,
         }
     }
 }

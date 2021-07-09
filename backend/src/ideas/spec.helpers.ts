@@ -19,10 +19,9 @@ export async function createIdea(
     ideasService?: IdeasService,
 ): Promise<Idea> {
     const defaultIdea: CreateIdeaDto = {
-        title: 'title',
+        details: { title: 'title', content: '' },
         networks: [],
         beneficiary: undefined,
-        content: '',
         status: IdeaStatus.Active,
     }
     const service: IdeasService = ideasService ?? beforeSetupFullApp().get().get(IdeasService)

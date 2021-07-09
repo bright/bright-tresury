@@ -43,7 +43,7 @@ describe(`/api/v1/proposals`, () => {
 
         idea = await createIdea(
             {
-                title: 'ideaTitle',
+                details: { title: 'ideaTitle' },
                 beneficiary: uuid(),
                 networks: [{ name: 'localhost', value: 10 }],
             },
@@ -55,7 +55,7 @@ describe(`/api/v1/proposals`, () => {
 
         otherIdea = await createIdea(
             {
-                title: 'otherIdeaTitle',
+                details: { title: 'otherIdeaTitle' },
                 beneficiary: uuid(),
                 networks: [{ name: 'localhost', value: 10 }],
             },

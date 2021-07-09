@@ -30,7 +30,7 @@ describe(`IdeasService`, () => {
         it('should return ideas', async (done) => {
             await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Active,
                 },
@@ -38,7 +38,7 @@ describe(`IdeasService`, () => {
             )
             await getService().create(
                 {
-                    title: 'Test title 2',
+                    details: { title: 'Test title 2' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.TurnedIntoProposal,
                 },
@@ -53,7 +53,7 @@ describe(`IdeasService`, () => {
         it('should return polkadot ideas', async (done) => {
             await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Active,
                 },
@@ -61,7 +61,7 @@ describe(`IdeasService`, () => {
             )
             await getService().create(
                 {
-                    title: 'Test title 2',
+                    details: { title: 'Test title 2' },
                     networks: [{ name: 'polkadot', value: 10 }],
                     status: IdeaStatus.Active,
                 },
@@ -69,7 +69,7 @@ describe(`IdeasService`, () => {
             )
             await getService().create(
                 {
-                    title: 'Test title 2',
+                    details: { title: 'Test title 2' },
                     networks: [{ name: 'polkadot', value: 10 }],
                     status: IdeaStatus.Active,
                 },
@@ -84,7 +84,7 @@ describe(`IdeasService`, () => {
         it('should return own draft ideas', async (done) => {
             await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Draft,
                 },
@@ -99,7 +99,7 @@ describe(`IdeasService`, () => {
         it('should not return other draft ideas', async (done) => {
             await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Draft,
                 },
@@ -114,7 +114,7 @@ describe(`IdeasService`, () => {
         it('should not return draft ideas with no user', async (done) => {
             await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Draft,
                 },
@@ -132,7 +132,7 @@ describe(`IdeasService`, () => {
         it('should return ideas for given proposalIds and network', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                 },
                 sessionData,
@@ -144,14 +144,14 @@ describe(`IdeasService`, () => {
 
             expect(result.size).toBe(1)
             expect(result.get(0)?.id).toBe(idea.id)
-            expect(result.get(0)?.title).toBe('Test title 1')
+            expect(result.get(0)?.details.title).toBe('Test title 1')
             done()
         })
 
         it('should not return ideas for other network', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'other_network', value: 10 }],
                 },
                 sessionData,
@@ -168,7 +168,7 @@ describe(`IdeasService`, () => {
         it('should not return ideas for other proposalIds', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                 },
                 sessionData,
@@ -187,22 +187,21 @@ describe(`IdeasService`, () => {
         it('should return an existing idea', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title', content: 'content' },
                     networks: [
                         { name: 'kusama', value: 15 },
                         { name: 'polkadot', value: 14 },
                     ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    content: 'content',
                 },
                 sessionData,
             )
 
             const savedIdea = (await getService().findOne(idea.id, sessionData))!
 
-            expect(savedIdea.title).toBe('Test title')
+            expect(savedIdea.details.title).toBe('Test title')
             expect(savedIdea.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(savedIdea.content).toBe('content')
+            expect(savedIdea.details.content).toBe('content')
             expect(savedIdea.networks).toBeDefined()
             expect(savedIdea.networks!.length).toBe(2)
             expect(savedIdea.networks!.find((n: IdeaNetwork) => n.name === 'kusama')).toBeDefined()
@@ -218,7 +217,7 @@ describe(`IdeasService`, () => {
         it('should return own draft idea', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Draft,
                 },
@@ -233,7 +232,7 @@ describe(`IdeasService`, () => {
         it('should not return other draft idea', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Draft,
                 },
@@ -246,7 +245,7 @@ describe(`IdeasService`, () => {
         it('should not return draft idea with no user', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title 1',
+                    details: { title: 'Test title 1' },
                     networks: [{ name: 'kusama', value: 10 }],
                     status: IdeaStatus.Draft,
                 },
@@ -262,7 +261,7 @@ describe(`IdeasService`, () => {
         it('should create and save idea with owner', async () => {
             const createdIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 1 } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
@@ -275,7 +274,7 @@ describe(`IdeasService`, () => {
         it('should create and save idea with default idea status', async () => {
             const createdIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 1 } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
@@ -287,7 +286,7 @@ describe(`IdeasService`, () => {
         it('should create and save idea with draft status', async () => {
             const createdIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 1 } as IdeaNetworkDto],
                     status: IdeaStatus.Draft,
                 } as CreateIdeaDto,
@@ -300,7 +299,7 @@ describe(`IdeasService`, () => {
         it('should create and save idea with active status', async () => {
             const createdIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 1 } as IdeaNetworkDto],
                     status: IdeaStatus.Active,
                 } as CreateIdeaDto,
@@ -313,7 +312,7 @@ describe(`IdeasService`, () => {
         it('should add auto generated ordinal number', async () => {
             const createdIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 1 } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
@@ -325,14 +324,14 @@ describe(`IdeasService`, () => {
         it('should auto increment ordinal number', async () => {
             const createdFirstIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 1 } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
             const createdSecondIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 1 } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
@@ -343,36 +342,38 @@ describe(`IdeasService`, () => {
         it('should create and save idea with all valid data', async (done) => {
             const createdIdea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: {
+                        title: 'Test title',
+                        content: 'Test content',
+                        field: 'Test field',
+                        contact: 'Test contact',
+                        portfolio: 'Test portfolio',
+                        links: ['Test link'],
+                    },
                     networks: [{ name: 'kusama', value: 10 }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    content: 'Test content',
-                    field: 'Test field',
-                    contact: 'Test contact',
-                    portfolio: 'Test portfolio',
-                    links: ['Test link'],
                 },
                 sessionData,
             )
             const savedIdea = await getService().findOne(createdIdea.id, sessionData)
-            expect(savedIdea.title).toBe('Test title')
             expect(savedIdea.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(savedIdea.content).toBe('Test content')
-            expect(savedIdea.field).toBe('Test field')
-            expect(savedIdea.contact).toBe('Test contact')
-            expect(savedIdea.portfolio).toBe('Test portfolio')
-            expect(savedIdea.links).toEqual(JSON.stringify(['Test link']))
+            expect(savedIdea.details.title).toBe('Test title')
+            expect(savedIdea.details.content).toBe('Test content')
+            expect(savedIdea.details.field).toBe('Test field')
+            expect(savedIdea.details.contact).toBe('Test contact')
+            expect(savedIdea.details.portfolio).toBe('Test portfolio')
+            expect(savedIdea.details.links).toEqual(JSON.stringify(['Test link']))
             done()
         })
 
         it('should create and save idea with networks', async (done) => {
             const createdIdea = await getService().create(
-                { title: 'Test title', networks: [{ name: 'kusama', value: 10 }] },
+                { details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 10 }] },
                 sessionData,
             )
             const savedIdea = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea).toBeDefined()
-            expect(savedIdea.title).toBe('Test title')
+            expect(savedIdea.details.title).toBe('Test title')
             expect(savedIdea.networks!.length).toBe(1)
             expect(savedIdea.networks![0].name).toBe('kusama')
             expect(savedIdea.networks![0].value).toBe('10.000000000000000')
@@ -381,47 +382,10 @@ describe(`IdeasService`, () => {
     })
 
     describe('update', () => {
-        it('should update and save idea with updated title', async () => {
-            const idea = await getService().create(
-                { title: 'Test title', networks: [{ name: 'kusama', value: 44 }] },
-                sessionData,
-            )
-            const updatedIdea = await getService().update({ title: 'Test title updated' }, idea.id, sessionData)
-            expect(updatedIdea.title).toBe('Test title updated')
-        })
-        it('should update and save idea with updated title and not updated other properties', async () => {
-            const idea = await getService().create(
-                {
-                    title: 'Test title',
-                    networks: [{ name: 'kusama', value: 44 }],
-                    portfolio: 'Test portfolio',
-                },
-                sessionData,
-            )
-            await getService().update({ title: 'Test title updated' }, idea.id, sessionData)
-            const savedIdea = await getService().findOne(idea.id, sessionData)
-            expect(savedIdea.title).toBe('Test title updated')
-            expect(savedIdea.networks[0].name).toBe('kusama')
-            expect(savedIdea.networks[0].value).toBe('44.000000000000000')
-            expect(savedIdea.portfolio).toBe('Test portfolio')
-        })
-        it('should update and save idea with updated links', async () => {
-            const idea = await getService().create(
-                {
-                    title: 'Test title',
-                    networks: [{ name: 'kusama', value: 44 }],
-                    links: ['Test link'],
-                },
-                sessionData,
-            )
-            await getService().update({ links: ['New Link'] }, idea.id, sessionData)
-            const savedIdea = await getService().findOne(idea.id, sessionData)
-            expect(savedIdea.links).toBe(JSON.stringify(['New Link']))
-        })
         it('should update and save idea with updated networks', async () => {
             const idea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 44 }],
                 },
                 sessionData,
@@ -444,7 +408,7 @@ describe(`IdeasService`, () => {
         it('should update and save idea with updated status', async () => {
             const idea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 44 }],
                 },
                 sessionData,
@@ -457,7 +421,7 @@ describe(`IdeasService`, () => {
         it('should throw forbidden exception when trying to update not own idea', async (done) => {
             const idea = await getService().create(
                 {
-                    title: 'Test title',
+                    details: { title: 'Test title' },
                     networks: [{ name: 'kusama', value: 44 }],
                     status: IdeaStatus.Active,
                 },
@@ -476,7 +440,7 @@ describe(`IdeasService`, () => {
     describe('delete', () => {
         it('should delete idea', async (done) => {
             const createdIdea = await getService().create(
-                { title: 'Test title', networks: [{ name: 'kusama', value: 42 }] },
+                { details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 42 }] },
                 sessionData,
             )
             await getService().delete(createdIdea.id, sessionData)
@@ -489,7 +453,11 @@ describe(`IdeasService`, () => {
         })
         it('should throw forbidden exception when trying to delete not own idea', async (done) => {
             const createdIdea = await getService().create(
-                { title: 'Test title', networks: [{ name: 'kusama', value: 42 }], status: IdeaStatus.Active },
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: 'kusama', value: 42 }],
+                    status: IdeaStatus.Active,
+                },
                 sessionData,
             )
 

@@ -2,34 +2,17 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { Column, Entity, Generated, ManyToOne, OneToMany } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { BaseEntity } from '../../database/base.entity'
+import { IdeaProposalDetail } from '../../idea-proposal-details/idea-proposal-detail.entity'
 import { User } from '../../users/user.entity'
 import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity'
 import { DefaultIdeaStatus, IdeaStatus } from '../idea-status'
 import { IdeaNetwork } from './idea-network.entity'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
 
-export const ideaRestrictions = {
-    field: {
-        maxLength: 255,
-    },
-}
-
 @Entity('ideas')
 export class Idea extends BaseEntity {
-    @Column({ nullable: false })
-    title: string
-
-    @Column({ nullable: true, type: 'text' })
-    content?: string
-
     @Column({ nullable: true, type: 'text' })
     beneficiary?: string
-
-    @Column({
-        nullable: true,
-        type: 'text',
-    })
-    field?: string
 
     @OneToMany(() => IdeaNetwork, (network) => network.idea, {
         cascade: true,
@@ -37,15 +20,6 @@ export class Idea extends BaseEntity {
         onUpdate: 'CASCADE',
     })
     networks: IdeaNetwork[]
-
-    @Column({ nullable: true, type: 'text' })
-    contact?: string
-
-    @Column({ nullable: true, type: 'text' })
-    portfolio?: string
-
-    @Column({ nullable: true, type: 'text' })
-    links?: string
 
     @Column({ nullable: false, type: 'integer', generated: 'increment' })
     @Generated('increment')
@@ -72,31 +46,24 @@ export class Idea extends BaseEntity {
     })
     milestones?: IdeaMilestone[]
 
+    @ManyToOne(() => IdeaProposalDetail)
+    details: IdeaProposalDetail
+
     constructor(
-        title: string,
         networks: IdeaNetwork[],
         status: IdeaStatus,
         owner: User,
+        details: IdeaProposalDetail,
         beneficiary?: string,
-        content?: string,
-        field?: string,
-        contact?: string,
-        portfolio?: string,
-        links?: string,
         id?: string,
     ) {
         super()
-        this.title = title
         this.networks = networks
         this.status = status
         this.beneficiary = beneficiary
-        this.content = content
-        this.field = field
-        this.contact = contact
-        this.portfolio = portfolio
-        this.links = links
         this.id = id ?? uuid()
         this.owner = owner
+        this.details = details
     }
 
     canEdit = (user: User) => {

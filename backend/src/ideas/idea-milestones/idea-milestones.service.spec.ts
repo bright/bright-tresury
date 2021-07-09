@@ -35,7 +35,6 @@ describe(`IdeaMilestonesService`, () => {
 
         idea = await createIdea(
             {
-                title: 'ideaTitle',
                 networks: [{ name: 'polkadot', value: 100 }],
             },
             sessionData,
@@ -72,10 +71,7 @@ describe(`IdeaMilestonesService`, () => {
         })
 
         it('should return idea milestones only for the given idea', async () => {
-            const anotherIdea = await createIdea(
-                { title: 'anotherIdeaTitle', networks: [{ name: 'polkadot', value: 100 }] },
-                sessionData,
-            )
+            const anotherIdea = await createIdea({ networks: [{ name: 'polkadot', value: 100 }] }, sessionData)
 
             await getIdeaMilestonesService().create(
                 idea.id,
@@ -110,7 +106,7 @@ describe(`IdeaMilestonesService`, () => {
 
         it('should return idea milestones for draft idea for owner', async () => {
             const draftIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
                 sessionData,
             )
             await getIdeaMilestonesService().create(
@@ -132,7 +128,7 @@ describe(`IdeaMilestonesService`, () => {
 
         it('should throw not found for draft idea for not owner', async () => {
             const draftIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
                 sessionData,
             )
 
@@ -182,7 +178,7 @@ describe(`IdeaMilestonesService`, () => {
 
         it('should return idea milestone for draft idea for owner', async () => {
             const draftIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
                 sessionData,
             )
             const milestone = await getIdeaMilestonesService().create(
@@ -204,7 +200,7 @@ describe(`IdeaMilestonesService`, () => {
 
         it('should throw not found for draft idea for not owner', async () => {
             const draftIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
                 sessionData,
             )
 

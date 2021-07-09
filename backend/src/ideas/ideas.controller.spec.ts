@@ -7,6 +7,8 @@ import {
     SessionHandler,
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers'
+import { IdeaNetworkDto } from './dto/idea-network.dto'
+import { IdeaDto } from './dto/idea.dto'
 import { Idea } from './entities/idea.entity'
 import { IdeaNetwork } from './entities/idea-network.entity'
 import { IdeasService } from './ideas.service'
@@ -33,23 +35,23 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return ideas', async (done) => {
-            await createIdea({ title: 'Test title' }, sessionHandler.sessionData)
+            await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
 
             const result = await request(app()).get(baseUrl)
 
             expect(result.body.length).toBe(1)
-            expect(result.body[0].title).toBe('Test title')
+            expect(result.body[0].details.title).toBe('Test title')
             done()
         })
 
         it('should return ideas for selected network', async (done) => {
             await createIdea(
-                { title: 'Test title1', networks: [{ name: 'kusama', value: 15 }] },
+                { details: { title: 'Test title1' }, networks: [{ name: 'kusama', value: 15 }] },
                 sessionHandler.sessionData,
             )
             await createIdea(
                 {
-                    title: 'Test title2',
+                    details: { title: 'Test title2' },
                     networks: [
                         { name: 'polkadot', value: 4 },
                         { name: 'kusama', value: 20 },
@@ -58,7 +60,7 @@ describe(`/api/v1/ideas`, () => {
                 sessionHandler.sessionData,
             )
             await createIdea(
-                { title: 'Test title3', networks: [{ name: 'polkadot', value: 11 }] },
+                { details: { title: 'Test title3' }, networks: [{ name: 'polkadot', value: 11 }] },
                 sessionHandler.sessionData,
             )
 
@@ -66,12 +68,12 @@ describe(`/api/v1/ideas`, () => {
 
             expect(result.body.length).toBe(2)
 
-            const body = result.body as Idea[]
-            const actualIdea1 = body.find((idea: Idea) => idea.title === 'Test title1')
+            const body = result.body as IdeaDto[]
+            const actualIdea1 = body.find((idea: IdeaDto) => idea.details.title === 'Test title1')
             expect(actualIdea1).toBeDefined()
             expect(actualIdea1!.networks[0].name).toBe('kusama')
 
-            const actualIdea2 = body.find((idea: Idea) => idea.title === 'Test title2')
+            const actualIdea2 = body.find((idea: IdeaDto) => idea.details.title === 'Test title2')
             expect(actualIdea2).toBeDefined()
             expect(actualIdea2!.networks[0].name).toBe('kusama')
             done()
@@ -79,7 +81,11 @@ describe(`/api/v1/ideas`, () => {
 
         it('should not return draft ideas for anonymous user', async (done) => {
             await createIdea(
-                { title: 'Test title1', networks: [{ name: 'kusama', value: 15 }], status: IdeaStatus.Draft },
+                {
+                    details: { title: 'Test title1' },
+                    networks: [{ name: 'kusama', value: 15 }],
+                    status: IdeaStatus.Draft,
+                },
                 sessionHandler.sessionData,
             )
 
@@ -92,7 +98,11 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return draft ideas of a logged in user', async (done) => {
             await createIdea(
-                { title: 'Test title1', networks: [{ name: 'kusama', value: 15 }], status: IdeaStatus.Draft },
+                {
+                    details: { title: 'Test title1' },
+                    networks: [{ name: 'kusama', value: 15 }],
+                    status: IdeaStatus.Draft,
+                },
                 sessionHandler.sessionData,
             )
 
@@ -100,14 +110,14 @@ describe(`/api/v1/ideas`, () => {
 
             expect(result.body.length).toBe(1)
 
-            const body = result.body as Idea[]
+            const body = result.body as IdeaDto[]
             expect(body[0].status).toBe('draft')
             done()
         })
 
         it('should not return draft ideas of other users', async (done) => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            await createIdea({ title: 'Test title', status: IdeaStatus.Draft }, otherUser)
+            await createIdea({ details: { title: 'Test title' }, status: IdeaStatus.Draft }, otherUser)
 
             const result = await sessionHandler.authorizeRequest(request(app()).get(baseUrl))
 
@@ -117,12 +127,12 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return active ideas of other users', async (done) => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const idea = await createIdea({ title: 'Test title', status: IdeaStatus.Active }, otherUser)
+            const idea = await createIdea({ details: { title: 'Test title' }, status: IdeaStatus.Active }, otherUser)
 
             const result = await sessionHandler.authorizeRequest(request(app()).get(baseUrl))
 
             expect(result.body.length).toBe(1)
-            const body = result.body as Idea[]
+            const body = result.body as IdeaDto[]
             expect(body[0].id).toBe(idea.id)
             expect(body[0].status).toBe('active')
             done()
@@ -133,27 +143,32 @@ describe(`/api/v1/ideas`, () => {
         it('should return an existing idea', async (done) => {
             const idea = await createIdea(
                 {
-                    title: 'Test title',
+                    details: {
+                        title: 'Test title',
+                        content: 'content',
+                        contact: 'contact',
+                        field: 'field',
+                        links: ['http://example.com'],
+                        portfolio: 'portfolio',
+                    },
                     networks: [
                         { name: 'kusama', value: 241 },
                         { name: 'polkadot', value: 12 },
                     ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    content: 'content',
                 },
                 sessionHandler.sessionData,
             )
 
             const result = await request(app()).get(`${baseUrl}/${idea.id}`)
 
-            const body = result.body as Idea
-            expect(body.title).toBe('Test title')
+            const body = result.body as IdeaDto
+            expect(body.details).toBe(idea.details)
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body.content).toBe('content')
             expect(body.networks).toBeDefined()
             expect(body.networks!.length).toBe(2)
-            expect(body.networks!.find((n: IdeaNetwork) => n.name === 'kusama')).toBeDefined()
-            expect(body.networks!.find((n: IdeaNetwork) => n.name === 'polkadot')).toBeDefined()
+            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === 'kusama')).toBeDefined()
+            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === 'polkadot')).toBeDefined()
             done()
         })
 
@@ -163,19 +178,19 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return not found for draft idea for anonymous user', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const idea = await createIdea({ title: 'Test title', status: IdeaStatus.Draft }, otherUser)
+            const idea = await createIdea({ details: { title: 'Test title' }, status: IdeaStatus.Draft }, otherUser)
             return request(app()).get(`${baseUrl}/${idea.id}`).expect(404)
         })
 
         it('should return not found for draft idea of other user', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const idea = await createIdea({ title: 'Test title', status: IdeaStatus.Draft }, otherUser)
+            const idea = await createIdea({ details: { title: 'Test title' }, status: IdeaStatus.Draft }, otherUser)
             return sessionHandler.authorizeRequest(request(app()).get(`${baseUrl}/${idea.id}`)).expect(404)
         })
 
         it('should return active idea of other user', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const idea = await createIdea({ title: 'Test title', status: IdeaStatus.Active }, otherUser)
+            const idea = await createIdea({ details: { title: 'Test title' }, status: IdeaStatus.Active }, otherUser)
             const result = await sessionHandler
                 .authorizeRequest(request(app()).get(`${baseUrl}/${idea.id}`))
                 .expect(200)
@@ -185,7 +200,10 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return draft idea of a logged in user', async () => {
-            const idea = await createIdea({ title: 'Test title', status: IdeaStatus.Draft }, sessionHandler.sessionData)
+            const idea = await createIdea(
+                { details: { title: 'Test title' }, status: IdeaStatus.Draft },
+                sessionHandler.sessionData,
+            )
             const result = await sessionHandler
                 .authorizeRequest(request(app()).get(`${baseUrl}/${idea.id}`))
                 .expect(200)
@@ -205,20 +223,28 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: 'Test title', networks: [{ name: 'kusama', value: 3 }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 3 }] }),
                 )
                 .expect(201)
         })
 
         it('should return bad request if no networks', () => {
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title: 'Test title', networks: null }))
+                .authorizeRequest(
+                    request(app())
+                        .post(baseUrl)
+                        .send({ details: { title: 'Test title' }, networks: null }),
+                )
                 .expect(400)
         })
 
         it('should return bad request if empty networks', () => {
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title: 'Test title', networks: [] }))
+                .authorizeRequest(
+                    request(app())
+                        .post(baseUrl)
+                        .send({ details: { title: 'Test title' }, networks: [] }),
+                )
                 .expect(400)
         })
 
@@ -227,7 +253,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: 'Test title', networks: [{ name: 'kusama', value: null }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: null }] }),
                 )
                 .expect(400)
         })
@@ -237,7 +263,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: 'Test title', networks: [{ name: null, value: 5 }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: null, value: 5 }] }),
                 )
                 .expect(400)
         })
@@ -247,7 +273,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: 'Test title', networks: [{ name: null }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: null }] }),
                 )
                 .expect(400)
         })
@@ -257,7 +283,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: 'Test title', networks: [{ name: 'polkadot', value: -1 }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: 'polkadot', value: -1 }] }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })
@@ -267,7 +293,10 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: 'Test title', networks: [{ name: 'kusama', value: 2 }], links: 'link' }),
+                        .send({
+                            details: { title: 'Test title', links: 'link' },
+                            networks: [{ name: 'kusama', value: 2 }],
+                        }),
                 )
                 .expect(400)
         })
@@ -278,9 +307,11 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            title: 'Test title',
+                            details: {
+                                title: 'Test title',
+                                links: 'https://somelink.com',
+                            },
                             networks: [{ name: 'kusama', value: 2 }],
-                            links: 'https://somelink.com',
                         }),
                 )
                 .expect(400)
@@ -291,7 +322,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: '', networks: [{ name: 'kusama', value: 2 }] }),
+                        .send({ details: { title: '' }, networks: [{ name: 'kusama', value: 2 }] }),
                 )
                 .expect(400)
         })
@@ -303,7 +334,9 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            title: 'Test title',
+                            details: {
+                                title: 'Test title',
+                            },
                             networks: [{ name: 'kusama', value: 2 }],
                             beneficiary,
                         }),
@@ -318,7 +351,9 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            title: 'Test title',
+                            details: {
+                                title: 'Test title',
+                            },
                             networks: [{ name: 'kusama', value: 2 }],
                             beneficiary,
                         }),
@@ -333,7 +368,9 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            title: 'Test title',
+                            details: {
+                                title: 'Test title',
+                            },
                             networks: [{ name: 'kusama', value: 2 }],
                             beneficiary,
                         }),
@@ -347,14 +384,16 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            title: 'Test title',
+                            details: {
+                                title: 'Test title',
+                                content: 'Test content',
+                                field: 'Test field',
+                                contact: 'Test contact',
+                                portfolio: 'Test portfolio',
+                                links: ['Test link'],
+                            },
                             networks: [{ name: 'kusama', value: 10 }],
                             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                            content: 'Test content',
-                            field: 'Test field',
-                            contact: 'Test contact',
-                            portfolio: 'Test portfolio',
-                            links: ['Test link'],
                         }),
                 )
                 .expect(201)
@@ -365,28 +404,30 @@ describe(`/api/v1/ideas`, () => {
                 request(app())
                     .post(baseUrl)
                     .send({
-                        title: 'Test title',
+                        details: {
+                            title: 'Test title',
+                            content: 'Test content',
+                            field: 'Test field',
+                            contact: 'Test contact',
+                            portfolio: 'Test portfolio',
+                            links: ['Test link'],
+                        },
                         networks: [{ name: 'kusama', value: 10 }],
                         beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                        content: 'Test content',
-                        field: 'Test field',
-                        contact: 'Test contact',
-                        portfolio: 'Test portfolio',
-                        links: ['Test link'],
                     }),
             )
 
             const body = response.body
             expect(uuidValidate(body.id)).toBe(true)
-            expect(body.title).toBe('Test title')
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body.content).toBe('Test content')
             expect(body.networks!.length).toBe(1)
             expect(body.networks[0].name).toBe('kusama')
             expect(body.networks[0].value).toBe(10)
-            expect(body.contact).toBe('Test contact')
-            expect(body.portfolio).toBe('Test portfolio')
-            expect(body.links).toStrictEqual(['Test link'])
+            expect(body.details.title).toBe('Test title')
+            expect(body.details.content).toBe('Test content')
+            expect(body.details.contact).toBe('Test contact')
+            expect(body.details.portfolio).toBe('Test portfolio')
+            expect(body.details.links).toStrictEqual(['Test link'])
             expect(body.ordinalNumber).toBeDefined()
             expect(body.status).toBe(DefaultIdeaStatus)
             done()
@@ -396,13 +437,13 @@ describe(`/api/v1/ideas`, () => {
             const result = await sessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl)
-                    .send({ title: 'Test title', networks: [{ name: 'kusama', value: 10 }] }),
+                    .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 10 }] }),
             )
 
             const ideasService = app.get().get(IdeasService)
             const actual = await ideasService.findOne(result.body.id, sessionHandler.sessionData)
             expect(actual).toBeDefined()
-            expect(actual!.title).toBe('Test title')
+            expect(actual!.details.title).toBe('Test title')
             expect(actual!.networks!.length).toBe(1)
             expect(actual!.networks![0].name).toBe('kusama')
             expect(Number(actual!.networks![0].value)).toBe(10)
@@ -412,7 +453,7 @@ describe(`/api/v1/ideas`, () => {
         it('should return forbidden for not authorized request', () => {
             return request(app())
                 .post(baseUrl)
-                .send({ title: 'Test title', networks: [{ name: 'kusama', value: 3 }] })
+                .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 3 }] })
                 .expect(HttpStatus.FORBIDDEN)
         })
 
@@ -426,7 +467,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ title: 'Test title', networks: [{ name: 'kusama', value: 3 }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 3 }] }),
                 )
                 .expect(HttpStatus.FORBIDDEN)
             done()
@@ -437,7 +478,7 @@ describe(`/api/v1/ideas`, () => {
             const networks = [{ name: 'kusama', value: 3 }]
             const links = ['', 'Test Link']
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
@@ -446,7 +487,7 @@ describe(`/api/v1/ideas`, () => {
             const networks = [{ name: 'kusama', value: 3 }]
             const links = [undefined, 'Test Link']
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
@@ -455,7 +496,7 @@ describe(`/api/v1/ideas`, () => {
             const networks = [{ name: 'kusama', value: 3 }]
             const links = [null, 'Test Link']
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
@@ -464,7 +505,7 @@ describe(`/api/v1/ideas`, () => {
             const networks = [{ name: 'kusama', value: 3 }]
             const links = [123, 'Test Link']
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
@@ -474,7 +515,7 @@ describe(`/api/v1/ideas`, () => {
             const networks = [{ name: 'kusama', value: 3 }]
             const links = [link, 'Test Link']
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
@@ -483,35 +524,50 @@ describe(`/api/v1/ideas`, () => {
             const title = ''
             const networks = [{ name: 'kusama', value: 3 }]
             return sessionHandler
-                .authorizeRequest(request(app()).post(baseUrl).send({ title, networks, links }))
+                .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
     })
 
     describe('PATCH', () => {
         it('should return status ok for minimal patch data', async (done) => {
-            const idea = await createIdea({ title: 'Test title' }, sessionHandler.sessionData)
+            const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
             await sessionHandler
-                .authorizeRequest(request(app()).patch(`${baseUrl}/${idea.id}`).send({ title: 'Test title 2' }))
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl}/${idea.id}`)
+                        .send({ details: { title: 'Test title 2' } }),
+                )
                 .expect(200)
             done()
         })
         it('should return not found if wrong id', () => {
             return sessionHandler
-                .authorizeRequest(request(app()).patch(`${baseUrl}/${uuid()}`).send({ title: 'Test title 2' }))
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl}/${uuid()}`)
+                        .send({ details: { title: 'Test title 2' } }),
+                )
                 .expect(404)
         })
         it('should patch title', async (done) => {
-            const idea = await createIdea({ title: 'Test title' }, sessionHandler.sessionData)
+            const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
             const response = await sessionHandler
-                .authorizeRequest(request(app()).patch(`${baseUrl}/${idea.id}`).send({ title: 'Test title 2' }))
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl}/${idea.id}`)
+                        .send({ details: { title: 'Test title 2' } }),
+                )
                 .expect(200)
             expect(response.body.title).toBe('Test title 2')
             done()
         })
         it('should patch network', async (done) => {
             const idea = await createIdea(
-                { title: 'Test title', networks: [{ name: 'kusama', value: 13 }] },
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: 'kusama', value: 13 }],
+                },
                 sessionHandler.sessionData,
             )
             const response = await sessionHandler
@@ -535,9 +591,11 @@ describe(`/api/v1/ideas`, () => {
         it('should patch links', async (done) => {
             const idea = await createIdea(
                 {
-                    title: 'Test title',
+                    details: {
+                        title: 'Test title',
+                        links: ['The link'],
+                    },
                     networks: [{ name: 'kusama', value: 13 }],
-                    links: ['The link'],
                 },
                 sessionHandler.sessionData,
             )
@@ -546,7 +604,7 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .patch(`${baseUrl}/${idea.id}`)
                         .send({
-                            links: ['patched link'],
+                            details: { links: ['patched link'] },
                         }),
                 )
                 .expect(200)
@@ -556,9 +614,11 @@ describe(`/api/v1/ideas`, () => {
         it('should return bad request if links are not array', async (done) => {
             const idea = await createIdea(
                 {
-                    title: 'Test title',
+                    details: {
+                        title: 'Test title',
+                        links: ['The link'],
+                    },
                     networks: [{ name: 'kusama', value: 13 }],
-                    links: ['The link'],
                 },
                 sessionHandler.sessionData,
             )
@@ -574,7 +634,9 @@ describe(`/api/v1/ideas`, () => {
         it('should patch idea status', async (done) => {
             const idea = await createIdea(
                 {
-                    title: 'Test title',
+                    details: {
+                        title: 'Test title',
+                    },
                     networks: [{ name: 'kusama', value: 13 }],
                 },
                 sessionHandler.sessionData,
@@ -592,7 +654,9 @@ describe(`/api/v1/ideas`, () => {
         it('should return bad request if idea status is unknown', async (done) => {
             const idea = await createIdea(
                 {
-                    title: 'Test title',
+                    details: {
+                        title: 'Test title',
+                    },
                     networks: [{ name: 'kusama', value: 13 }],
                 },
                 sessionHandler.sessionData,
@@ -609,20 +673,26 @@ describe(`/api/v1/ideas`, () => {
         it('should keep previous data for not patched properties', async (done) => {
             const idea = await createIdea(
                 {
-                    title: 'Test title',
+                    details: {
+                        title: 'Test title',
+                        content: 'Test content',
+                    },
                     networks: [{ name: 'kusama', value: 10 }],
                     beneficiary: 'abcd-1234',
-                    content: 'Test content',
                 },
                 sessionHandler.sessionData,
             )
             const response = await sessionHandler
-                .authorizeRequest(request(app()).patch(`${baseUrl}/${idea.id}`).send({ title: 'Test title 2' }))
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl}/${idea.id}`)
+                        .send({ details: { title: 'Test title 2' } }),
+                )
                 .expect(200)
             const body = response.body
-            expect(body.title).not.toBe('Test title')
+            expect(body.details.title).not.toBe('Test title')
             expect(body.beneficiary).toBe('abcd-1234')
-            expect(body.content).toBe('Test content')
+            expect(body.details.content).toBe('Test content')
             expect(body.networks[0].name).toBe('kusama')
             done()
         })
@@ -653,19 +723,23 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return forbidden for not authorized request', async (done) => {
-            const idea = await createIdea({ title: 'Test title' }, sessionHandler.sessionData)
+            const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
             await request(app())
                 .patch(`${baseUrl}/${idea.id}`)
-                .send({ title: 'Test title 2' })
+                .send({ details: { title: 'Test title 2' } })
                 .expect(HttpStatus.FORBIDDEN)
             done()
         })
 
         it('should return forbidden for idea created by other user', async (done) => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const idea = await createIdea({ title: 'Test title' }, otherUser)
+            const idea = await createIdea({ details: { title: 'Test title' } }, otherUser)
             await sessionHandler
-                .authorizeRequest(request(app()).patch(`${baseUrl}/${idea.id}`).send({ title: 'Test title 2' }))
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl}/${idea.id}`)
+                        .send({ details: { title: 'Test title 2' } }),
+                )
                 .expect(HttpStatus.FORBIDDEN)
             done()
         })
@@ -676,23 +750,30 @@ describe(`/api/v1/ideas`, () => {
                 'not.verified@example.com',
                 'not-verified',
             )
-            const idea = await createIdea({ title: 'Test title' }, sessionHandlerNotVerified.sessionData)
+            const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandlerNotVerified.sessionData)
             await sessionHandlerNotVerified
-                .authorizeRequest(request(app()).patch(`${baseUrl}/${idea.id}`).send({ title: 'Test title 2' }))
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl}/${idea.id}`)
+                        .send({ details: { title: 'Test title 2' } }),
+                )
                 .expect(HttpStatus.FORBIDDEN)
             done()
         })
     })
     describe('DELETE', () => {
         it('should delete idea', async (done) => {
-            const idea = await createIdea({ title: 'Test title' }, sessionHandler.sessionData)
+            const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
             await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`)).expect(200)
             await sessionHandler.authorizeRequest(request(app()).get(`${baseUrl}/${idea.id}`)).expect(404)
             done()
         })
         it('should delete idea with networks', async (done) => {
             const idea = await createIdea(
-                { title: 'Test title', networks: [{ name: 'polkadot', value: 47 }] },
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: 'polkadot', value: 47 }],
+                },
                 sessionHandler.sessionData,
             )
             await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`)).expect(200)
@@ -707,7 +788,7 @@ describe(`/api/v1/ideas`, () => {
         })
 
         it('should return forbidden for not authorized request', async (done) => {
-            const idea = await createIdea({ title: 'Test title' }, sessionHandler.sessionData)
+            const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
             await request(app()).delete(`${baseUrl}/${idea.id}`).expect(HttpStatus.FORBIDDEN)
             done()
         })
@@ -718,7 +799,7 @@ describe(`/api/v1/ideas`, () => {
                 'not.verified@example.com',
                 'not-verified',
             )
-            const idea = await createIdea({ title: 'Test title' }, sessionHandlerNotVerified.sessionData)
+            const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandlerNotVerified.sessionData)
             await sessionHandlerNotVerified
                 .authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`))
                 .expect(HttpStatus.FORBIDDEN)
@@ -727,7 +808,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return forbidden for idea created by other user', async (done) => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const idea = await createIdea({ title: 'Test title' }, otherUser)
+            const idea = await createIdea({ details: { title: 'Test title' } }, otherUser)
             await sessionHandler
                 .authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`))
                 .expect(HttpStatus.FORBIDDEN)

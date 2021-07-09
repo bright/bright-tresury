@@ -2,10 +2,10 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Brackets, In, Not, Repository } from 'typeorm'
 import { SessionData } from '../auth/session/session.decorator'
+import { IdeaProposalDetailsService } from '../idea-proposal-details/idea-proposal-details.service'
 import { getLogger } from '../logging.module'
 import { CreateIdeaDto } from './dto/create-idea.dto'
 import { CreateIdeaNetworkDto } from './dto/create-idea-network.dto'
-import { IdeaNetworkDto } from './dto/idea-network.dto'
 import { UpdateIdeaDto } from './dto/update-idea.dto'
 import { Idea } from './entities/idea.entity'
 import { IdeaNetwork } from './entities/idea-network.entity'
@@ -20,6 +20,7 @@ export class IdeasService {
         private readonly ideaRepository: Repository<Idea>,
         @InjectRepository(IdeaNetwork)
         private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
+        private readonly detailsService: IdeaProposalDetailsService,
     ) {}
 
     async find(networkName?: string, sessionData?: SessionData): Promise<Idea[]> {
@@ -92,37 +93,33 @@ export class IdeasService {
 
         currentIdea.canEditOrThrow(sessionData.user)
 
-        await this.ideaRepository.save({
-            ...currentIdea,
-            ...updateIdea,
-            networks: updateIdea.networks
-                ? updateIdea.networks.map((updatedNetwork: CreateIdeaNetworkDto) => {
-                      const existingNetwork = currentIdea.networks.find(
-                          (currentIdeaNetwork: IdeaNetworkDto) => currentIdeaNetwork.id === updatedNetwork.id,
-                      )
-                      return {
-                          ...existingNetwork,
-                          ...updatedNetwork,
-                      }
-                  })
-                : currentIdea.networks,
-            links: updateIdea.links ? JSON.stringify(updateIdea.links) : currentIdea.links,
-        })
+        // await this.ideaRepository.save({
+        //     ...currentIdea,
+        //     ...updateIdea,
+        //     networks: updateIdea.networks
+        //         ? updateIdea.networks.map((updatedNetwork: CreateIdeaNetworkDto) => {
+        //               const existingNetwork = currentIdea.networks.find(
+        //                   (currentIdeaNetwork: IdeaNetworkDto) => currentIdeaNetwork.id === updatedNetwork.id,
+        //               )
+        //               return {
+        //                   ...existingNetwork,
+        //                   ...updatedNetwork,
+        //               }
+        //           })
+        //         : currentIdea.networks,
+        //     links: updateIdea.links ? JSON.stringify(updateIdea.links) : currentIdea.links,
+        // })
         return (await this.ideaRepository.findOne(id, { relations: ['networks'] }))!
     }
 
     async create(createIdeaDto: CreateIdeaDto, sessionData: SessionData): Promise<Idea> {
+        const details = await this.detailsService.create(createIdeaDto.details)
         const idea = new Idea(
-            createIdeaDto.title,
             createIdeaDto.networks.map((network: CreateIdeaNetworkDto) => new IdeaNetwork(network.name, network.value)),
             createIdeaDto.status ?? DefaultIdeaStatus,
             sessionData.user,
+            details,
             createIdeaDto.beneficiary,
-            createIdeaDto.content,
-            createIdeaDto.field,
-            createIdeaDto.contact,
-            createIdeaDto.portfolio,
-            JSON.stringify(createIdeaDto.links),
         )
         const createdIdea = await this.ideaRepository.save(idea)
         return (await this.ideaRepository.findOne(createdIdea.id, { relations: ['networks'] }))!

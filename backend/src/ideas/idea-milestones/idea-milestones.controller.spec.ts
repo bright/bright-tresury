@@ -39,7 +39,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
         sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
-        idea = await createIdea({ title: 'ideaTitle' }, sessionHandler.sessionData, getIdeasService())
+        idea = await createIdea({ details: { title: 'ideaTitle' } }, sessionHandler.sessionData, getIdeasService())
     })
 
     describe('GET', () => {
@@ -85,11 +85,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 getIdeaMilestonesService(),
             )
 
-            const anotherIdea = await createIdea(
-                { title: 'anotherIdeaTitle' },
-                sessionHandler.sessionData,
-                getIdeasService(),
-            )
+            const anotherIdea = await createIdea({}, sessionHandler.sessionData, getIdeasService())
             await createIdeaMilestone(
                 anotherIdea.id,
                 new CreateIdeaMilestoneDto('anotherIdeaMilestoneSubject', [], null, null, null, null),
@@ -137,7 +133,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
         it('should return milestones of a draft idea of a logged in user', async () => {
             const draftIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
                 sessionHandler.sessionData,
             )
             await getIdeaMilestonesService().create(draftIdea.id, milestoneDto, sessionHandler.sessionData)
@@ -152,7 +148,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return not found for a draft idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
             const draftIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
                 otherUser,
             )
             await getIdeaMilestonesService().create(draftIdea.id, milestoneDto, otherUser)
@@ -213,7 +209,6 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it(`should return ${HttpStatus.NOT_FOUND} for idea milestone which belongs to idea with ${IdeaStatus.Draft} status for anonymous user`, async () => {
             const ideaWithDraftStatus = await createIdea(
                 {
-                    title: 'ideaTitle',
                     status: IdeaStatus.Draft,
                 },
                 sessionHandler.sessionData,
@@ -237,7 +232,6 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             })
             const ideaWithDraftStatus = await createIdea(
                 {
-                    title: 'ideaTitle',
                     status: IdeaStatus.Draft,
                 },
                 otherUser,
@@ -258,7 +252,6 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it(`should return idea milestone which belongs to idea with ${IdeaStatus.Draft} status for owner`, async () => {
             const ideaWithDraftStatus = await createIdea(
                 {
-                    title: 'ideaTitle',
                     status: IdeaStatus.Draft,
                 },
                 sessionHandler.sessionData,
@@ -287,7 +280,6 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             })
             const ideaWithActiveStatus = await createIdea(
                 {
-                    title: 'ideaTitle',
                     status: IdeaStatus.Active,
                 },
                 otherUser,
@@ -593,10 +585,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
         it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const otherIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }] },
-                otherUser,
-            )
+            const otherIdea = await createIdea({ networks: [{ name: 'polkadot', value: 100 }] }, otherUser)
             await sessionHandler
                 .authorizeRequest(
                     request(app())
@@ -795,7 +784,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
             const draftIdea = await createIdea(
-                { title: 'draftIdeaTitle', networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: 'polkadot', value: 100 }], status: IdeaStatus.Draft },
                 otherUser,
             )
             const milestone = await createIdeaMilestone(draftIdea.id, milestoneDto, otherUser)
