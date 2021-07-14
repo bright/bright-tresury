@@ -7,8 +7,8 @@ import { objectFormat } from '../config/formats/object.format'
 export const BlockchainConfigToken = 'BlockchainConfig'
 
 export interface BlockchainConfig {
-    id: 'development' | 'polkadot' | 'kusama'
-    name: 'Development' | 'Polkadot' | 'Kusama'
+    id: string
+    name: string
     url: string
     types: any
     rpc: any
@@ -29,13 +29,13 @@ export interface BlockchainConfig {
 export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     id: {
         doc: 'Id of the blockchain',
-        default: 'development',
-        format: ['development', 'polkadot', 'kusama'],
+        default: 'development-polkadot',
+        format: stringFormat,
     },
     name: {
         doc: 'Name of the blockchain',
-        default: 'Development',
-        format: ['Development', 'Polkadot', 'Kusama'],
+        default: 'Development Polkadot',
+        format: stringFormat,
     },
     url: {
         doc: 'Url used to connect to Substrate node',

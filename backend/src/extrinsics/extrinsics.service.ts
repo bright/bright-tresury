@@ -22,6 +22,7 @@ export class ExtrinsicsService {
     }
 
     async listenForExtrinsic(
+        networkId: string,
         createExtrinsicDto: CreateExtrinsicDto,
         extractEvents?: (events: ExtrinsicEvent[]) => Promise<void>,
     ): Promise<Extrinsic> {
@@ -34,7 +35,7 @@ export class ExtrinsicsService {
             }
             await this.update(extrinsic.id, updateExtrinsicDto)
         }
-        await this.blockchainService.listenForExtrinsic(createExtrinsicDto.extrinsicHash, callback)
+        await this.blockchainService.listenForExtrinsic(networkId, createExtrinsicDto.extrinsicHash, callback)
 
         return extrinsic
     }

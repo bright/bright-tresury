@@ -4,57 +4,69 @@ import { ConfigModule } from '../config/config.module'
 import { getLogger } from '../logging.module'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain.config'
 import { BlockchainService } from './blockchain.service'
+import { Api } from 'aws-sdk/clients/apigatewayv2'
+import { ApiInterfaceEvents } from '@polkadot/api/types'
 
 const logger = getLogger()
+export interface BlockchainsConnections {
+    [key: string]: BlockchainConnection
+}
+interface BlockchainConnection {
+    apiPromise: ApiPromise
+    wsProvider: WsProvider
+}
+const blockchainsConnections: BlockchainsConnections = {}
 
-let polkadotApiInstance: null | ApiPromise
-let wsProvider: null | WsProvider
-
-let onConnectedHandler = () => {
-    logger.info(`Connected`)
+const onReadyHandler = (id: string) => {
+    logger.info(`${id} ApiPromise ready`)
 }
 
-const onReadyHandler = () => {
-    logger.info(`ApiPromise ready`)
+const onErrorHandler = (id: string, error: any) => {
+    logger.warn(`Cannot connect to ${id} substrate node with error ${error}`)
 }
 
-const onErrorHandler = (error: any) => {
-    logger.warn(`Cannot connect to substrate node with error ${error}`)
+const onDisconnectedHandler = (id: string, error: any) => {
+    logger.warn(`Disconnected from ${id} substrate node`)
+}
+const onConnectedHandler = (id: string) => {
+    logger.info(`Connected to ${id} substrate node`)
+    blockchainsConnections[id].apiPromise?.isReady.then(onReadyHandler.bind(null, id))
 }
 
-const onDisconnectedHandler = (error: any) => {
-    logger.warn(`Disconnected from substrate node`)
+const attachedHandlers: { apiPromise: ApiPromise; type: ApiInterfaceEvents; handler: any }[] = []
+const attachEventHandler = (apiPromise: ApiPromise, type: ApiInterfaceEvents, handler: any) => {
+    apiPromise.on(type, handler)
+    attachedHandlers.push({ apiPromise, type, handler })
 }
-
+const removeAllEventHandlers = () => {
+    for (const { apiPromise, type, handler } of attachedHandlers) {
+        apiPromise.off(type, handler)
+    }
+}
 const polkadotApiFactory = {
     provide: 'PolkadotApi',
     useFactory: async (blockchainsConfig: BlockchainConfig[]) => {
-        if (polkadotApiInstance === null || polkadotApiInstance === undefined) {
-            wsProvider = new WsProvider(blockchainsConfig[0].url)
+        for (const blockchainConfig of blockchainsConfig) {
+            const { id, url, types } = blockchainConfig
+            if (!blockchainsConnections[blockchainConfig.id]) {
+                logger.info(`Connecting to ${id} substrate node at ${url}...`)
+                const wsProvider = new WsProvider(url)
+                const apiPromise = new ApiPromise({ provider: wsProvider, types })
+                blockchainsConnections[id] = { apiPromise, wsProvider }
+                attachEventHandler(apiPromise, 'connected', onConnectedHandler.bind(null, id))
+                attachEventHandler(apiPromise, 'ready', onReadyHandler.bind(null, id))
+                attachEventHandler(apiPromise, 'error', onErrorHandler.bind(null, id))
+                attachEventHandler(apiPromise, 'disconnected', onDisconnectedHandler.bind(null, id))
 
-            logger.info(`Connecting to substrate node at ${blockchainsConfig[0].url}...`)
-            polkadotApiInstance = new ApiPromise({ provider: wsProvider, types: blockchainsConfig[0].types })
-
-            onConnectedHandler = () => {
-                logger.info(`Connected to substrate node`)
-                polkadotApiInstance?.isReady.then(() => {
-                    logger.info(`ApiPromise ready`)
-                })
-            }
-
-            polkadotApiInstance.on('connected', onConnectedHandler)
-            polkadotApiInstance.on('ready', onReadyHandler)
-            polkadotApiInstance.on('error', onErrorHandler)
-            polkadotApiInstance.on('disconnected', onDisconnectedHandler)
-
-            try {
-                await polkadotApiInstance.isReadyOrError
-            } catch (err) {
-                logger.error(err)
-                logger.error(`Error when connecting to substrate node`)
+                try {
+                    await apiPromise.isReadyOrError
+                } catch (err) {
+                    logger.error(err)
+                    logger.error(`Error when connecting to ${id} substrate node`)
+                }
             }
         }
-        return polkadotApiInstance
+        return blockchainsConnections
     },
     inject: [BlockchainConfigToken],
 }
@@ -66,15 +78,13 @@ const polkadotApiFactory = {
 })
 export class PolkadotApiModule implements OnModuleDestroy {
     async onModuleDestroy() {
-        logger.info('Polkadot module destroy')
-        polkadotApiInstance?.off('connected', onConnectedHandler)
-        polkadotApiInstance?.off('ready', onReadyHandler)
-        polkadotApiInstance?.off('error', onErrorHandler)
-        polkadotApiInstance?.off('disconnected', onDisconnectedHandler)
-        await polkadotApiInstance?.disconnect()
-        logger.info('Api disconnected')
-        await wsProvider?.disconnect
-        logger.info('Ws disconnected')
+        logger.info('PolkadotApi module destroy')
+        removeAllEventHandlers()
+        logger.info('Removed all blockchains events listeners')
+        await Promise.all(Object.values(blockchainsConnections).map(({ apiPromise }) => apiPromise.disconnect()))
+        logger.info('All APIs disconnected')
+        await Promise.all(Object.values(blockchainsConnections).map(({ wsProvider }) => wsProvider.disconnect))
+        logger.info('All WebSocket(WS) Providers disconnected')
     }
 }
 

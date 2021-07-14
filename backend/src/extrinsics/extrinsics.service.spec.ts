@@ -10,8 +10,13 @@ import { ExtrinsicsModule } from './extrinsics.module'
 import { ExtrinsicsService } from './extrinsics.service'
 
 describe('ExtrinsicsService', () => {
+    const NETWORK_ID = 'development'
     const blockchainService = {
-        listenForExtrinsic: (extrinsicDto: CreateExtrinsicDto, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => {}) => {
+        listenForExtrinsic: (
+            networkId: string,
+            extrinsicDto: CreateExtrinsicDto,
+            cb: (updateExtrinsicDto: UpdateExtrinsicDto) => {},
+        ) => {
             cb({
                 blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
                 events: [
@@ -133,12 +138,12 @@ describe('ExtrinsicsService', () => {
         it('should run create extrinsic', async () => {
             const spy = jest.spyOn(service(), 'create')
 
-            await service().listenForExtrinsic(createExtrinsicDto)
+            await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
             expect(spy).toHaveBeenCalled()
         })
 
         it('should return created extrinsic', async () => {
-            const actual = await service().listenForExtrinsic(createExtrinsicDto)
+            const actual = await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
             expect(actual).toBeDefined()
             expect(actual.extrinsicHash).toBe(createExtrinsicDto.extrinsicHash)
             expect(actual.lastBlockHash).toBe(createExtrinsicDto.lastBlockHash)
@@ -148,14 +153,14 @@ describe('ExtrinsicsService', () => {
         it('should run blockchain service listener', async () => {
             const spy = jest.spyOn(blockchainService, 'listenForExtrinsic')
 
-            await service().listenForExtrinsic(createExtrinsicDto)
+            await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
             expect(spy).toHaveBeenCalled()
         })
 
         it('should run update extrinsic if extrinsic found', async () => {
             const spy = jest.spyOn(service(), 'update')
 
-            await service().listenForExtrinsic(createExtrinsicDto)
+            await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
             expect(spy).toHaveBeenCalled()
         })
     })

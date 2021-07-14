@@ -88,7 +88,11 @@ describe('IdeaMilestoneProposalsService', () => {
 
         beforeEach(async () => {
             jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementationOnce(
-                async (extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) => {
+                async (
+                    networkId: string,
+                    extrinsicHash: string,
+                    cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>,
+                ) => {
                     await cb(updateExtrinsicDto)
                 },
             )

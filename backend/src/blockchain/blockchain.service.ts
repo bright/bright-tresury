@@ -12,16 +12,23 @@ import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { getProposers, getBeneficiaries, getVoters } from './utils'
 import BN from 'bn.js'
 import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
+import { BlockchainsConnections } from './blockchain.module'
+import { Nil } from '../utils/types'
 const logger = getLogger()
 
 @Injectable()
 export class BlockchainService implements OnModuleDestroy {
     private unsub?: () => void
 
-    constructor(@Inject('PolkadotApi') private readonly polkadotApi: ApiPromise) {}
+    constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections) {}
 
-    async getApi(): Promise<ApiPromise> {
-        return this.polkadotApi
+    getApi(networkId: string): ApiPromise {
+        // console.trace();
+        logger.info(`possible network ids: ${Object.keys(this.blockchainsConnections)} searching for ${networkId}`)
+        if (Object.keys(this.blockchainsConnections).indexOf(networkId) === -1) {
+            throw new Error(`Unrecognized network id: ${networkId}`)
+        }
+        return this.blockchainsConnections[networkId].apiPromise
     }
 
     async onModuleDestroy() {
@@ -33,14 +40,18 @@ export class BlockchainService implements OnModuleDestroy {
         this.unsub = undefined
     }
 
-    async listenForExtrinsic(extrinsicHash: string, cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>) {
+    async listenForExtrinsic(
+        networkId: string,
+        extrinsicHash: string,
+        cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>,
+    ) {
         logger.info(`Listening for extrinsic with hash ${extrinsicHash}...`)
         let blocksCount = 0
-
-        this.unsub = await this.polkadotApi.rpc.chain.subscribeNewHeads(async (header: Header) => {
+        const api = this.getApi(networkId)
+        this.unsub = await api.rpc.chain.subscribeNewHeads(async (header: Header) => {
             blocksCount++
             logger.info(`Checking block ${header.hash.toString()} No ${header.number}.`)
-            const signedBlock = await this.polkadotApi.rpc.chain.getBlock(header.hash)
+            const signedBlock = await api.rpc.chain.getBlock(header.hash)
             // TODO fix types!
             // @ts-ignore
             const extrinsic: Extrinsic | undefined = signedBlock.block.extrinsics.find(
@@ -48,9 +59,7 @@ export class BlockchainService implements OnModuleDestroy {
             )
             if (extrinsic) {
                 logger.info(`Block with extrinsic ${extrinsicHash} found.`)
-                const events = ((await this.polkadotApi.query.system.events.at(
-                    header.hash,
-                )) as unknown) as EventRecord[]
+                const events = ((await api.query.system.events.at(header.hash)) as unknown) as EventRecord[]
                 logger.info(`All extrinsic events.`, events)
                 await this.callUnsub()
 
@@ -95,18 +104,22 @@ export class BlockchainService implements OnModuleDestroy {
         })
     }
 
-    async getIdentities(addresses: string[]): Promise<Map<string, DeriveAccountRegistration>> {
+    async getIdentities(networkId: string, addresses: string[]): Promise<Map<string, DeriveAccountRegistration>> {
         logger.info('Getting identities from blockchain')
         const identities = new Map<string, DeriveAccountRegistration>()
         for (const address of addresses) {
-            identities.set(address, await this.polkadotApi.derive.accounts.identity(address))
+            identities.set(address, await this.getApi(networkId).derive.accounts.identity(address))
         }
         return identities
     }
 
-    getRemainingTime(currentBlockNumber: BlockNumber, futureBlockNumber: BlockNumber): BlockchainProposalMotionEnd {
+    getRemainingTime(
+        networkId: string,
+        currentBlockNumber: BlockNumber,
+        futureBlockNumber: BlockNumber,
+    ): BlockchainProposalMotionEnd {
         const DEFAULT_BLOCK_TIME = 6000 // 6s - Source: https://wiki.polkadot.network/docs/en/faq#what-is-the-block-time-of-the-relay-chain
-        const { babe, difficulty, timestamp } = this.polkadotApi.consts
+        const { babe, difficulty, timestamp } = this.getApi(networkId).consts
         const blockTime =
             babe?.expectedBlockTime ??
             difficulty?.targetBlockTime ??
@@ -122,9 +135,10 @@ export class BlockchainService implements OnModuleDestroy {
         })
     }
 
-    async getProposals(): Promise<BlockchainProposal[]> {
-        logger.info('Getting proposals from blockchain...')
-        const { proposals, proposalCount, approvals } = await this.polkadotApi.derive.treasury.proposals()
+    async getProposals(networkId: string): Promise<BlockchainProposal[]> {
+        logger.info(`Getting proposals from blockchain for networkId: ${networkId}`)
+        const api = this.getApi(networkId)
+        const { proposals, proposalCount, approvals } = await api.derive.treasury.proposals()
 
         const proposalCountNumber = proposalCount.toNumber()
         logger.info(`ProposalCount is ${proposalCountNumber}.`)
@@ -145,12 +159,12 @@ export class BlockchainService implements OnModuleDestroy {
                 ...getVoters(approvals),
             ].map((accountId) => accountId.toHuman()),
         )
-        const identities = await this.getIdentities(Array.from(addresses))
+        const identities = await this.getIdentities(networkId, Array.from(addresses))
 
         // make a function that will compute remaining voting time
-        const currentBlockNumber = await this.polkadotApi.derive.chain.bestNumber()
+        const currentBlockNumber = await api.derive.chain.bestNumber()
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd =>
-            this.getRemainingTime(currentBlockNumber, endBlock)
+            this.getRemainingTime(networkId, currentBlockNumber, endBlock)
 
         return [
             ...proposals.map((derivedProposal) =>

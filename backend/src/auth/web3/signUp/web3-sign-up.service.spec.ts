@@ -6,10 +6,10 @@ import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { beforeSetupFullApp } from '../../../utils/spec.helpers'
 import { getAuthUser } from '../../supertokens/specHelpers/supertokens.database.spec.helper'
 import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { SignatureValidator } from '../signMessage/signature.validator'
 import { Web3SignUpService } from './web3-sign-up.service'
 import { cleanDatabases } from '../web3.spec.helper'
+import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 
 describe(`Web3 Sign Up Service`, () => {
     const app = beforeSetupFullApp()

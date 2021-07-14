@@ -4,15 +4,13 @@ import { BlockchainConfig } from '../../blockchain/blockchain.config'
 export class BlockchainConfigurationDto {
     @ApiProperty({
         description: 'Id of the supported blockchain',
-        enum: ['development', 'polkadot', 'kusama'],
     })
-    id: 'development' | 'polkadot' | 'kusama'
+    id: string
 
     @ApiProperty({
         description: 'Name of the supported blockchain',
-        enum: ['Development', 'Polkadot', 'Kusama'],
     })
-    name: 'Development' | 'Polkadot' | 'Kusama'
+    name: string
 
     @ApiProperty({ description: 'Url pointing to the blockchain node' })
     url: string

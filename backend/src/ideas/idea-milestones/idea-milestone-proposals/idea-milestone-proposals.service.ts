@@ -70,6 +70,7 @@ export class IdeaMilestoneProposalsService {
         }
 
         ideaMilestoneNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic(
+            ideaMilestoneNetworkId,
             {
                 extrinsicHash,
                 lastBlockHash,

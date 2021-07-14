@@ -57,6 +57,7 @@ export class IdeaProposalsService {
         }
 
         ideaNetwork.extrinsic = await this.extrinsicsService.listenForExtrinsic(
+            ideaNetworkId,
             {
                 extrinsicHash,
                 lastBlockHash,

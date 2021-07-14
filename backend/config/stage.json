@@ -6,7 +6,7 @@
         {
             "id": "development",
             "name": "Development",
-            "url": "ws://treasury-substrate-stage:9944",
+            "url": "wss://stage.treasury.brightinventions.pl:9944",
             "developmentKeyring": true,
             "ss58Format": 42,
             "genesisHash": "",

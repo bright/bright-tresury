@@ -5,6 +5,8 @@ import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { ProposalDto } from './dto/proposal.dto'
 import { ProposalsService } from './proposals.service'
 
+import { getLogger } from '../logging.module'
+const logger = getLogger()
 class GetProposalsQuery {
     @ApiProperty({
         description: 'Network name',
@@ -33,6 +35,7 @@ export class ProposalsController {
         type: [ProposalDto],
     })
     async getProposals(@Query() { network }: GetProposalsQuery): Promise<ProposalDto[]> {
+        logger.info(`getting proposals for network: ${network}`)
         const proposals = await this.proposalsService.find(network)
         return proposals.map((proposal) => new ProposalDto(proposal))
     }

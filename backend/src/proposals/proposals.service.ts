@@ -24,9 +24,9 @@ export class ProposalsService {
         private readonly ideaMilestoneService: IdeaMilestonesService,
     ) {}
 
-    async find(networkName: string): Promise<BlockchainProposalWithDomainDetails[]> {
+    async find(networkId: string): Promise<BlockchainProposalWithDomainDetails[]> {
         try {
-            const proposals = await this.blockchainService.getProposals()
+            const proposals = await this.blockchainService.getProposals(networkId)
 
             if (proposals.length === 0) {
                 return []
@@ -34,8 +34,8 @@ export class ProposalsService {
 
             const indexes = proposals.map(({ proposalIndex }: BlockchainProposal) => proposalIndex)
 
-            const ideas = await this.ideasService.findByProposalIds(indexes, networkName)
-            const ideaMilestones = await this.ideaMilestoneService.findByProposalIds(indexes, networkName)
+            const ideas = await this.ideasService.findByProposalIds(indexes, networkId)
+            const ideaMilestones = await this.ideaMilestoneService.findByProposalIds(indexes, networkId)
 
             return proposals.map((proposal: BlockchainProposal) => {
                 const idea = ideas.get(proposal.proposalIndex)
@@ -57,16 +57,16 @@ export class ProposalsService {
         }
     }
 
-    async findOne(proposalId: number, networkName: string): Promise<BlockchainProposalWithDomainDetails> {
-        const proposals = await this.blockchainService.getProposals()
+    async findOne(proposalId: number, networkId: string): Promise<BlockchainProposalWithDomainDetails> {
+        const proposals = await this.blockchainService.getProposals(networkId)
 
         const proposal = proposals.find(({ proposalIndex }: BlockchainProposal) => proposalIndex === proposalId)
         if (!proposal) {
             throw new NotFoundException('Proposal with the given id in the given network not found')
         }
 
-        const ideas = await this.ideasService.findByProposalIds([proposal.proposalIndex], networkName)
-        const ideaMilestones = await this.ideaMilestoneService.findByProposalIds([proposal.proposalIndex], networkName)
+        const ideas = await this.ideasService.findByProposalIds([proposal.proposalIndex], networkId)
+        const ideaMilestones = await this.ideaMilestoneService.findByProposalIds([proposal.proposalIndex], networkId)
 
         const idea = ideas.get(proposal.proposalIndex)
         const ideaMilestone = ideaMilestones.get(proposal.proposalIndex)
