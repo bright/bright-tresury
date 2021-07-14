@@ -20,7 +20,7 @@ describe(`Blockchain service`, () => {
     let aliceKeypair: KeyringPair
     const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
     const bobAddress = '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3'
-    const NETWORK_ID = 'development'
+    const NETWORK_ID = 'development-polkadot'
     const module = beforeAllSetup(
         async () =>
             await Test.createTestingModule({
@@ -49,44 +49,48 @@ describe(`Blockchain service`, () => {
             const findTreasuryProposedEvent = (events: EventRecord[]) =>
                 events.find(({ event: { section, method } }) => section === 'treasury' && method === 'Proposed')
             // start listening for the extrinsic
-            await service().listenForExtrinsic(NETWORK_ID, extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
-                const submittableResult = (await extrinsicSendPromise) as SubmittableResult
-                const treasuryProposedEvent = findTreasuryProposedEvent(submittableResult.events)
-                const expectedProposalId = Number(treasuryProposedEvent?.event.data[0])
+            await service().listenForExtrinsic(
+                NETWORK_ID,
+                extrinsic.hash.toString(),
+                async (result: UpdateExtrinsicDto) => {
+                    const submittableResult = (await extrinsicSendPromise) as SubmittableResult
+                    const treasuryProposedEvent = findTreasuryProposedEvent(submittableResult.events)
+                    const expectedProposalId = Number(treasuryProposedEvent?.event.data[0])
 
-                expect(result).toBeDefined()
-                expect(result!.events).toContainEqual({
-                    section: 'treasury',
-                    method: 'Proposed',
-                    data: [
-                        {
-                            name: 'ProposalIndex',
-                            value: `${expectedProposalId}`,
+                    expect(result).toBeDefined()
+                    expect(result!.events).toContainEqual({
+                        section: 'treasury',
+                        method: 'Proposed',
+                        data: [
+                            {
+                                name: 'ProposalIndex',
+                                value: `${expectedProposalId}`,
+                            },
+                        ],
+                    })
+                    expect(result!.events).toContainEqual({
+                        section: 'balances',
+                        method: 'Reserved',
+                        data: [
+                            {
+                                name: 'AccountId',
+                                value: aliceAddress,
+                            },
+                            {
+                                name: 'Balance',
+                                value: '1000000000000',
+                            },
+                        ],
+                    })
+                    expect(result!.data).toStrictEqual({
+                        value: 10,
+                        beneficiary: {
+                            id: bobAddress,
                         },
-                    ],
-                })
-                expect(result!.events).toContainEqual({
-                    section: 'balances',
-                    method: 'Reserved',
-                    data: [
-                        {
-                            name: 'AccountId',
-                            value: aliceAddress,
-                        },
-                        {
-                            name: 'Balance',
-                            value: '1000000000000',
-                        },
-                    ],
-                })
-                expect(result!.data).toStrictEqual({
-                    value: 10,
-                    beneficiary: {
-                        id: bobAddress,
-                    },
-                })
-                done()
-            })
+                    })
+                    done()
+                },
+            )
         }, 60000)
 
         it('should start listening and find successful extrinsic with exceptions', async (done) => {
@@ -100,25 +104,32 @@ describe(`Blockchain service`, () => {
                 ),
             )
             // start listening for the extrinsic
-            await service().listenForExtrinsic(NETWORK_ID, extrinsic.hash.toString(), async (result: UpdateExtrinsicDto) => {
-                const submittableResult = (await extrinsicSendPromise) as SubmittableResult
-                const expectedBlockHash = submittableResult.status.asInBlock.toString()
-                expect(result).toBeDefined()
-                expect(result!.blockHash).toBe(expectedBlockHash)
-                const errorEvent = result!.events.find(
-                    (e) => e.section === 'system' && e.method === 'ExtrinsicFailed',
-                )
-                expect(errorEvent).toBeDefined()
-                expect(errorEvent!.data).toContainEqual({
-                    name: 'DispatchError',
-                    value: 'BadOrigin',
-                })
-                done()
-            })
+            await service().listenForExtrinsic(
+                NETWORK_ID,
+                extrinsic.hash.toString(),
+                async (result: UpdateExtrinsicDto) => {
+                    const submittableResult = (await extrinsicSendPromise) as SubmittableResult
+                    const expectedBlockHash = submittableResult.status.asInBlock.toString()
+                    expect(result).toBeDefined()
+                    expect(result!.blockHash).toBe(expectedBlockHash)
+                    const errorEvent = result!.events.find(
+                        (e) => e.section === 'system' && e.method === 'ExtrinsicFailed',
+                    )
+                    expect(errorEvent).toBeDefined()
+                    expect(errorEvent!.data).toContainEqual({
+                        name: 'DispatchError',
+                        value: 'BadOrigin',
+                    })
+                    done()
+                },
+            )
         }, 60000)
     })
 
-    const signAndSend = (extrinsic: SubmittableExtrinsic<ApiTypes>, keyringPair: KeyringPair): Promise<SubmittableResult> =>
+    const signAndSend = (
+        extrinsic: SubmittableExtrinsic<ApiTypes>,
+        keyringPair: KeyringPair,
+    ): Promise<SubmittableResult> =>
         new Promise((resolve, reject) =>
             extrinsic.signAndSend(keyringPair, (result: SubmittableResult) =>
                 result.isError ? reject(result) : result.isCompleted ? resolve(result) : undefined,
@@ -132,11 +143,11 @@ describe(`Blockchain service`, () => {
             const displayRaw = randomString()
             const extrinsic = api.tx.identity.setIdentity({ display: { Raw: displayRaw } })
             await signAndSend(extrinsic, aliceKeypair)
-            const identities = await service().getIdentities('development', [aliceAddress])
+            const identities = await service().getIdentities('development-polkadot', [aliceAddress])
             expect(identities.get(aliceAddress)?.display).toBe(displayRaw)
         }, 60000)
         it('should not fail when no identity in blockchain', async () => {
-            const identities = await service().getIdentities('development', [bobAddress])
+            const identities = await service().getIdentities('development-polkadot', [bobAddress])
             const bobIdentity = identities.get(bobAddress)
             expect(bobIdentity).toBeDefined()
             expect(bobIdentity!.display).toBeUndefined()
@@ -146,7 +157,11 @@ describe(`Blockchain service`, () => {
         it('should correctly calculate remaining time', async () => {
             const currentBlockNumber = await api.derive.chain.bestNumber()
             const futureBlockNumber = currentBlockNumber.add(new BN(1))
-            const remainingTime = service().getRemainingTime('development', currentBlockNumber, futureBlockNumber)
+            const remainingTime = service().getRemainingTime(
+                'development-polkadot',
+                currentBlockNumber,
+                futureBlockNumber,
+            )
 
             expect(remainingTime.endBlock).toBe(futureBlockNumber.toNumber())
             expect(remainingTime.remainingBlocks).toBe(1)
@@ -161,7 +176,7 @@ describe(`Blockchain service`, () => {
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
             const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(15)), bobAddress)
             await signAndSend(extrinsic, aliceKeypair)
-            const proposals = await service().getProposals('development')
+            const proposals = await service().getProposals('development-polkadot')
             expect(proposals.length).toBeGreaterThan(0)
             const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
             expect(lastProposal.proposalIndex).toBe(nextProposalIndex)

@@ -10,7 +10,7 @@ import { ExtrinsicsModule } from './extrinsics.module'
 import { ExtrinsicsService } from './extrinsics.service'
 
 describe('ExtrinsicsService', () => {
-    const NETWORK_ID = 'development'
+    const NETWORK_ID = 'development-polkadot'
     const blockchainService = {
         listenForExtrinsic: (
             networkId: string,
@@ -54,10 +54,12 @@ describe('ExtrinsicsService', () => {
                 .useValue(blockchainService)
                 .compile(),
     )
+    const blockchainConfig: any = beforeAllSetup(() => module().resolve(BlockchainService))
 
     const service = beforeAllSetup(() => module().get<ExtrinsicsService>(ExtrinsicsService))
     const repository = beforeAllSetup(() => module().get<Repository<Extrinsic>>(getRepositoryToken(Extrinsic)))
-
+    // const NETWORK_ID_2 = beforeAllSetup( () => module().get<BlockchainConfig[]>(BlockchainConfigToken))
+    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!',NETWORK_ID_2)
     beforeEach(async () => {
         await cleanDatabase()
     })

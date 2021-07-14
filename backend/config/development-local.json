@@ -21,7 +21,7 @@
                 "minValue": 1000,
                 "percentage": 5
             },
-            "currency": "DDOT",
+            "currency": "UNIT",
             "decimals": 12,
             "color": "#0E65F2",
             "isDefault": true
@@ -36,7 +36,7 @@
                 "minValue": 1000,
                 "percentage": 5
             },
-            "currency": "DKSM",
+            "currency": "UNIT",
             "developmentKeyring": true,
             "decimals": 15,
             "color": "#707070",

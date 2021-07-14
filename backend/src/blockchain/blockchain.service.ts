@@ -13,7 +13,6 @@ import { getProposers, getBeneficiaries, getVoters } from './utils'
 import BN from 'bn.js'
 import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
 import { BlockchainsConnections } from './blockchain.module'
-import { Nil } from '../utils/types'
 const logger = getLogger()
 
 @Injectable()
