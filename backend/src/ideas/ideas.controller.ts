@@ -86,7 +86,6 @@ export class IdeasController {
     })
     @Post()
     @UseGuards(SessionGuard)
-    // TODO: add validation for networks
     async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionData): Promise<IdeaDto> {
         logger.info(`Updating idea...`, createIdeaDto)
         const idea = await this.ideasService.create(createIdeaDto, session)
@@ -105,7 +104,6 @@ export class IdeasController {
     })
     @Patch(':id')
     @UseGuards(SessionGuard)
-    // TODO: add validation for networks
     async updateIdea(
         @Body() updateIdeaDto: UpdateIdeaDto,
         @Param('id') id: string,

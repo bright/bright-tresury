@@ -43,6 +43,13 @@ const removeAllEventHandlers = () => {
         apiPromise.off(type, handler)
     }
 }
+
+const attachPolkadotApiEventHandlers = (apiPromise: ApiPromise, id: string) => {
+    attachEventHandler(apiPromise, 'connected', onConnectedHandler.bind(null, id))
+    attachEventHandler(apiPromise, 'ready', onConnectedHandler.bind(null, id))
+    attachEventHandler(apiPromise, 'error', onConnectedHandler.bind(null, id))
+    attachEventHandler(apiPromise, 'disconnected', onConnectedHandler.bind(null, id))
+}
 const polkadotApiFactory = {
     provide: 'PolkadotApi',
     useFactory: async (blockchainsConfig: BlockchainConfig[]) => {
@@ -53,11 +60,7 @@ const polkadotApiFactory = {
                 const wsProvider = new WsProvider(url)
                 const apiPromise = new ApiPromise({ provider: wsProvider, types })
                 blockchainsConnections[id] = { apiPromise, wsProvider }
-                attachEventHandler(apiPromise, 'connected', onConnectedHandler.bind(null, id))
-                attachEventHandler(apiPromise, 'ready', onReadyHandler.bind(null, id))
-                attachEventHandler(apiPromise, 'error', onErrorHandler.bind(null, id))
-                attachEventHandler(apiPromise, 'disconnected', onDisconnectedHandler.bind(null, id))
-
+                attachPolkadotApiEventHandlers(apiPromise, id)
                 try {
                     await apiPromise.isReadyOrError
                 } catch (err) {

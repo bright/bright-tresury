@@ -167,6 +167,6 @@ export const cleanDatabase = async () => {
     }
 }
 export const NETWORKS = {
-    KUSAMA: 'development-kusama',
-    POLKADOT: 'development-polkadot',
+    KUSAMA: 'development-2',
+    POLKADOT: 'development-1',
 }

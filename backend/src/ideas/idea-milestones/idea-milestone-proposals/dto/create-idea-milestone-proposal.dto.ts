@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, Validate } from 'class-validator'
-import { IsValidNetworkConstraint } from '../../../../utils/network.validator'
+import { IsNotEmpty } from 'class-validator'
 
 export class CreateIdeaMilestoneProposalDto {
     @ApiProperty({ description: 'Id of idea milestone network', required: true })

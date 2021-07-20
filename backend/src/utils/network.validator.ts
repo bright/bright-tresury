@@ -1,10 +1,4 @@
-import {
-    registerDecorator,
-    ValidationArguments,
-    ValidationOptions,
-    ValidatorConstraint,
-    ValidatorConstraintInterface,
-} from 'class-validator'
+import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator'
 import { BlockchainConfig, BlockchainConfigToken } from '../blockchain/blockchain.config'
 import { Inject, Injectable } from '@nestjs/common'
 

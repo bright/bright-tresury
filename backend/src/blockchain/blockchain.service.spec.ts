@@ -3,7 +3,7 @@ import { Keyring, SubmittableResult } from '@polkadot/api'
 import ApiPromise from '@polkadot/api/promise'
 import { KeyringPair } from '@polkadot/keyring/types'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
-import { beforeAllSetup } from '../utils/spec.helpers'
+import { beforeAllSetup, NETWORKS } from '../utils/spec.helpers'
 import { BlockchainModule } from './blockchain.module'
 import BN from 'bn.js'
 import { BlockchainService } from './blockchain.service'
@@ -20,7 +20,6 @@ describe(`Blockchain service`, () => {
     let aliceKeypair: KeyringPair
     const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
     const bobAddress = '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3'
-    const NETWORK_ID = 'development-polkadot'
     const module = beforeAllSetup(
         async () =>
             await Test.createTestingModule({
@@ -31,13 +30,14 @@ describe(`Blockchain service`, () => {
     const service = beforeAllSetup(() => module().get<BlockchainService>(BlockchainService))
 
     beforeEach(async () => {
-        api = await service().getApi(NETWORK_ID)
+        api = await service().getApi(NETWORKS.POLKADOT)
         keyring = new Keyring({ type: 'sr25519' })
         aliceKeypair = keyring.addFromUri('//Alice', { name: 'Alice default' })
     })
 
     describe('findExtrinsic', () => {
         it('should start listening and find proposeSpend extrinsic with events', async (done) => {
+            // FIXME: if this starts to fail please examine race condition between extrinsicSendPromise and service().listenForExtrinsic
             // create and sign extrinsic
             const extrinsic = api.tx.treasury.proposeSpend(10, bobAddress)
             await extrinsic.signAsync(aliceKeypair)
@@ -50,7 +50,7 @@ describe(`Blockchain service`, () => {
                 events.find(({ event: { section, method } }) => section === 'treasury' && method === 'Proposed')
             // start listening for the extrinsic
             await service().listenForExtrinsic(
-                NETWORK_ID,
+                NETWORKS.POLKADOT,
                 extrinsic.hash.toString(),
                 async (result: UpdateExtrinsicDto) => {
                     const submittableResult = (await extrinsicSendPromise) as SubmittableResult
@@ -94,6 +94,7 @@ describe(`Blockchain service`, () => {
         }, 60000)
 
         it('should start listening and find successful extrinsic with exceptions', async (done) => {
+            // FIXME: if this starts to fail please examine race condition between extrinsicSendPromise and service().listenForExtrinsic
             // create and sign extrinsic which will fail as only ApproveOrigin can call this extrinsic
             const extrinsic = api.tx.treasury.rejectProposal(0)
             await extrinsic.signAsync(aliceKeypair)
@@ -105,7 +106,7 @@ describe(`Blockchain service`, () => {
             )
             // start listening for the extrinsic
             await service().listenForExtrinsic(
-                NETWORK_ID,
+                NETWORKS.POLKADOT,
                 extrinsic.hash.toString(),
                 async (result: UpdateExtrinsicDto) => {
                     const submittableResult = (await extrinsicSendPromise) as SubmittableResult
@@ -143,11 +144,11 @@ describe(`Blockchain service`, () => {
             const displayRaw = randomString()
             const extrinsic = api.tx.identity.setIdentity({ display: { Raw: displayRaw } })
             await signAndSend(extrinsic, aliceKeypair)
-            const identities = await service().getIdentities('development-polkadot', [aliceAddress])
+            const identities = await service().getIdentities(NETWORKS.POLKADOT, [aliceAddress])
             expect(identities.get(aliceAddress)?.display).toBe(displayRaw)
         }, 60000)
         it('should not fail when no identity in blockchain', async () => {
-            const identities = await service().getIdentities('development-polkadot', [bobAddress])
+            const identities = await service().getIdentities(NETWORKS.POLKADOT, [bobAddress])
             const bobIdentity = identities.get(bobAddress)
             expect(bobIdentity).toBeDefined()
             expect(bobIdentity!.display).toBeUndefined()
@@ -157,11 +158,7 @@ describe(`Blockchain service`, () => {
         it('should correctly calculate remaining time', async () => {
             const currentBlockNumber = await api.derive.chain.bestNumber()
             const futureBlockNumber = currentBlockNumber.add(new BN(1))
-            const remainingTime = service().getRemainingTime(
-                'development-polkadot',
-                currentBlockNumber,
-                futureBlockNumber,
-            )
+            const remainingTime = service().getRemainingTime(NETWORKS.POLKADOT, currentBlockNumber, futureBlockNumber)
 
             expect(remainingTime.endBlock).toBe(futureBlockNumber.toNumber())
             expect(remainingTime.remainingBlocks).toBe(1)
@@ -176,7 +173,7 @@ describe(`Blockchain service`, () => {
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
             const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(15)), bobAddress)
             await signAndSend(extrinsic, aliceKeypair)
-            const proposals = await service().getProposals('development-polkadot')
+            const proposals = await service().getProposals(NETWORKS.POLKADOT)
             expect(proposals.length).toBeGreaterThan(0)
             const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
             expect(lastProposal.proposalIndex).toBe(nextProposalIndex)

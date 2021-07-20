@@ -15,8 +15,8 @@
     },
     "blockchain": [
         {
-            "id": "development-polkadot",
-            "name": "Development Polkadot",
+            "id": "development-1",
+            "name": "Development 1",
             "url": "ws://local-development-polkadot-1:9944",
             "developmentKeyring": true,
             "ss58Format": 42,
@@ -31,10 +31,10 @@
             "isDefault": true
         },
         {
-            "id": "development-kusama",
-            "name": "Development Kusama",
+            "id": "development-2",
+            "name": "Development 2",
             "url": "ws://local-development-polkadot-2:9955",
-            "ss58Format": 2,
+            "ss58Format": 42,
             "genesisHash": "",
             "bond": {
                 "minValue": 1000,
@@ -42,7 +42,7 @@
             },
             "currency": "UNIT",
             "developmentKeyring": true,
-            "decimals": 15,
+            "decimals": 12,
             "color": "#707070",
             "isLiveNetwork": false
         }

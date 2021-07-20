@@ -29,12 +29,12 @@ export interface BlockchainConfig {
 export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     id: {
         doc: 'Id of the blockchain',
-        default: 'development-polkadot',
+        default: 'development-1',
         format: stringFormat,
     },
     name: {
         doc: 'Name of the blockchain',
-        default: 'Development Polkadot',
+        default: 'Development 1',
         format: stringFormat,
     },
     url: {

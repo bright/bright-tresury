@@ -4,8 +4,8 @@
     "port": 3000,
     "blockchain": [
         {
-            "id": "development-polkadot",
-            "name": "Development Polkadot",
+            "id": "development-2",
+            "name": "Development 2",
             "url": "wss://testing.treasury.brightinventions.pl:9944",
             "developmentKeyring": true,
             "ss58Format": 42,
@@ -20,8 +20,8 @@
             "isDefault": true
         },
         {
-            "id": "development-kusama",
-            "name": "Development Kusama",
+            "id": "development-1",
+            "name": "Development 1",
             "url": "wss://stage.treasury.brightinventions.pl:9944",
             "developmentKeyring": true,
             "ss58Format": 42,
@@ -33,7 +33,7 @@
             "currency": "UNIT",
             "decimals": 12,
             "color": "#707070",
-            "isDefault": true
+            "isDefault": false
         },
         {
             "id": "polkadot",
