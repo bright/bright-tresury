@@ -6,7 +6,7 @@ import {
     createUserSessionHandlerWithVerifiedEmail,
     SessionHandler,
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
-import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers'
+import { beforeSetupFullApp, cleanDatabase, request, NETWORKS } from '../utils/spec.helpers'
 import { IdeaNetworkDto } from './dto/idea-network.dto'
 import { IdeaDto } from './dto/idea.dto'
 import { Idea } from './entities/idea.entity'
@@ -46,36 +46,36 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return ideas for selected network', async (done) => {
             await createIdea(
-                { details: { title: 'Test title1' }, networks: [{ name: 'kusama', value: 15 }] },
+                { details: { title: 'Test title1' }, networks: [{ name: NETWORKS.KUSAMA, value: 15 }] },
                 sessionHandler.sessionData,
             )
             await createIdea(
                 {
                     details: { title: 'Test title2' },
                     networks: [
-                        { name: 'polkadot', value: 4 },
-                        { name: 'kusama', value: 20 },
+                        { name: NETWORKS.POLKADOT, value: 4 },
+                        { name: NETWORKS.KUSAMA, value: 20 },
                     ],
                 },
                 sessionHandler.sessionData,
             )
             await createIdea(
-                { details: { title: 'Test title3' }, networks: [{ name: 'polkadot', value: 11 }] },
+                { details: { title: 'Test title3' }, networks: [{ name: NETWORKS.POLKADOT, value: 11 }] },
                 sessionHandler.sessionData,
             )
 
-            const result = await request(app()).get(`${baseUrl}?network=kusama`)
+            const result = await request(app()).get(`${baseUrl}?network=${NETWORKS.KUSAMA}`)
 
             expect(result.body.length).toBe(2)
 
             const body = result.body as IdeaDto[]
             const actualIdea1 = body.find((idea: IdeaDto) => idea.details.title === 'Test title1')
             expect(actualIdea1).toBeDefined()
-            expect(actualIdea1!.networks[0].name).toBe('kusama')
+            expect(actualIdea1!.networks[0].name).toBe(NETWORKS.KUSAMA)
 
             const actualIdea2 = body.find((idea: IdeaDto) => idea.details.title === 'Test title2')
             expect(actualIdea2).toBeDefined()
-            expect(actualIdea2!.networks[0].name).toBe('kusama')
+            expect(actualIdea2!.networks[0].name).toBe(NETWORKS.KUSAMA)
             done()
         })
 
@@ -83,7 +83,7 @@ describe(`/api/v1/ideas`, () => {
             await createIdea(
                 {
                     details: { title: 'Test title1' },
-                    networks: [{ name: 'kusama', value: 15 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 15 }],
                     status: IdeaStatus.Draft,
                 },
                 sessionHandler.sessionData,
@@ -100,7 +100,7 @@ describe(`/api/v1/ideas`, () => {
             await createIdea(
                 {
                     details: { title: 'Test title1' },
-                    networks: [{ name: 'kusama', value: 15 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 15 }],
                     status: IdeaStatus.Draft,
                 },
                 sessionHandler.sessionData,
@@ -152,8 +152,8 @@ describe(`/api/v1/ideas`, () => {
                         portfolio: 'portfolio',
                     },
                     networks: [
-                        { name: 'kusama', value: 241 },
-                        { name: 'polkadot', value: 12 },
+                        { name: NETWORKS.KUSAMA, value: 241 },
+                        { name: NETWORKS.POLKADOT, value: 12 },
                     ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 },
@@ -167,8 +167,8 @@ describe(`/api/v1/ideas`, () => {
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.networks).toBeDefined()
             expect(body.networks!.length).toBe(2)
-            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === 'kusama')).toBeDefined()
-            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === 'polkadot')).toBeDefined()
+            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === NETWORKS.KUSAMA)).toBeDefined()
+            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === NETWORKS.POLKADOT)).toBeDefined()
             done()
         })
 
@@ -223,7 +223,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 3 }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] }),
                 )
                 .expect(201)
         })
@@ -253,7 +253,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: null }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: null }] }),
                 )
                 .expect(400)
         })
@@ -283,7 +283,17 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: 'Test title' }, networks: [{ name: 'polkadot', value: -1 }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.POLKADOT, value: -1 }] }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} if network has a value not included in configuration`, () => {
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .post(baseUrl)
+                        .send({ details: { title: 'Test title'}, networks: [{ name: 'bad-network-name', value: -1 }] }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })
@@ -295,7 +305,7 @@ describe(`/api/v1/ideas`, () => {
                         .post(baseUrl)
                         .send({
                             details: { title: 'Test title', links: 'link' },
-                            networks: [{ name: 'kusama', value: 2 }],
+                            networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                         }),
                 )
                 .expect(400)
@@ -311,7 +321,7 @@ describe(`/api/v1/ideas`, () => {
                                 title: 'Test title',
                                 links: 'https://somelink.com',
                             },
-                            networks: [{ name: 'kusama', value: 2 }],
+                            networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                         }),
                 )
                 .expect(400)
@@ -322,7 +332,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: '' }, networks: [{ name: 'kusama', value: 2 }] }),
+                        .send({ details: { title: '' }, networks: [{ name: NETWORKS.KUSAMA, value: 2 }] }),
                 )
                 .expect(400)
         })
@@ -334,10 +344,8 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            details: {
-                                title: 'Test title',
-                            },
-                            networks: [{ name: 'kusama', value: 2 }],
+                            details: { title: 'Test title' },
+                            networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                             beneficiary,
                         }),
                 )
@@ -351,10 +359,8 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            details: {
-                                title: 'Test title',
-                            },
-                            networks: [{ name: 'kusama', value: 2 }],
+                            details: { title: 'Test title' },
+                            networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                             beneficiary,
                         }),
                 )
@@ -368,10 +374,8 @@ describe(`/api/v1/ideas`, () => {
                     request(app())
                         .post(baseUrl)
                         .send({
-                            details: {
-                                title: 'Test title',
-                            },
-                            networks: [{ name: 'kusama', value: 2 }],
+                            details: { title: 'Test title' },
+                            networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                             beneficiary,
                         }),
                 )
@@ -392,7 +396,7 @@ describe(`/api/v1/ideas`, () => {
                                 portfolio: 'Test portfolio',
                                 links: ['Test link'],
                             },
-                            networks: [{ name: 'kusama', value: 10 }],
+                            networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
                             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                         }),
                 )
@@ -412,8 +416,8 @@ describe(`/api/v1/ideas`, () => {
                             portfolio: 'Test portfolio',
                             links: ['Test link'],
                         },
-                        networks: [{ name: 'kusama', value: 10 }],
-                        beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                        networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                        beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
                     }),
             )
 
@@ -421,7 +425,7 @@ describe(`/api/v1/ideas`, () => {
             expect(uuidValidate(body.id)).toBe(true)
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.networks!.length).toBe(1)
-            expect(body.networks[0].name).toBe('kusama')
+            expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
             expect(body.networks[0].value).toBe(10)
             expect(body.details.title).toBe('Test title')
             expect(body.details.content).toBe('Test content')
@@ -437,7 +441,7 @@ describe(`/api/v1/ideas`, () => {
             const result = await sessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl)
-                    .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 10 }] }),
+                    .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 10 }] })
             )
 
             const ideasService = app.get().get(IdeasService)
@@ -445,7 +449,7 @@ describe(`/api/v1/ideas`, () => {
             expect(actual).toBeDefined()
             expect(actual!.details.title).toBe('Test title')
             expect(actual!.networks!.length).toBe(1)
-            expect(actual!.networks![0].name).toBe('kusama')
+            expect(actual!.networks![0].name).toBe(NETWORKS.KUSAMA)
             expect(Number(actual!.networks![0].value)).toBe(10)
             done()
         })
@@ -453,7 +457,7 @@ describe(`/api/v1/ideas`, () => {
         it('should return forbidden for not authorized request', () => {
             return request(app())
                 .post(baseUrl)
-                .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 3 }] })
+                .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] })
                 .expect(HttpStatus.FORBIDDEN)
         })
 
@@ -467,7 +471,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: 'Test title' }, networks: [{ name: 'kusama', value: 3 }] }),
+                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] })
                 )
                 .expect(HttpStatus.FORBIDDEN)
             done()
@@ -475,7 +479,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should not save the idea with empty string in links array', () => {
             const title = ''
-            const networks = [{ name: 'kusama', value: 3 }]
+            const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = ['', 'Test Link']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
@@ -484,7 +488,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should not save the idea with undefined value in links array', () => {
             const title = ''
-            const networks = [{ name: 'kusama', value: 3 }]
+            const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = [undefined, 'Test Link']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
@@ -493,7 +497,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should not save the idea with null value in links array', () => {
             const title = ''
-            const networks = [{ name: 'kusama', value: 3 }]
+            const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = [null, 'Test Link']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
@@ -502,7 +506,7 @@ describe(`/api/v1/ideas`, () => {
 
         it('should not save the idea with numbers in links array', () => {
             const title = ''
-            const networks = [{ name: 'kusama', value: 3 }]
+            const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = [123, 'Test Link']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
@@ -512,7 +516,7 @@ describe(`/api/v1/ideas`, () => {
         it('should not save the idea with too long links (length over 1000) in links array', () => {
             const link = `https://${'x'.repeat(1000)}.com`
             const title = ''
-            const networks = [{ name: 'kusama', value: 3 }]
+            const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = [link, 'Test Link']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
@@ -522,7 +526,7 @@ describe(`/api/v1/ideas`, () => {
         it('should not save the idea with too many links (more than 10) in links array', () => {
             const links = new Array(11).map((_, index) => `https://${index}.com`)
             const title = ''
-            const networks = [{ name: 'kusama', value: 3 }]
+            const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
@@ -566,9 +570,9 @@ describe(`/api/v1/ideas`, () => {
             const idea = await createIdea(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: 'kusama', value: 13 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
                 },
-                sessionHandler.sessionData,
+                sessionHandler.sessionData
             )
             const response = await sessionHandler
                 .authorizeRequest(
@@ -596,9 +600,9 @@ describe(`/api/v1/ideas`, () => {
                         title: 'Test title',
                         links: ['The link'],
                     },
-                    networks: [{ name: 'kusama', value: 13 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }]
                 },
-                sessionHandler.sessionData,
+                sessionHandler.sessionData
             )
             await sessionHandler
                 .authorizeRequest(
@@ -610,6 +614,25 @@ describe(`/api/v1/ideas`, () => {
                             },
                         }),
                 )
+                .expect(200)
+            expect(response.body.links[0]).toBe('patched link')
+            done()
+        })
+        it('should return bad request if links are not array', async (done) => {
+            const idea = await createIdea(
+                {
+                    title: 'Test title',
+                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
+                    links: ['The link'],
+                },
+                sessionHandler.sessionData,
+            )
+            await sessionHandler
+                .authorizeRequest(
+                    request(app()).patch(`${baseUrl}/${idea.id}`).send({
+                        links: 'Updated link',
+                    }),
+                )
                 .expect(400)
             done()
         })
@@ -620,9 +643,9 @@ describe(`/api/v1/ideas`, () => {
                     details: {
                         title: 'Test title',
                     },
-                    networks: [{ name: 'kusama', value: 13 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
                 },
-                sessionHandler.sessionData,
+                sessionHandler.sessionData
             )
             const response = await sessionHandler
                 .authorizeRequest(
@@ -641,7 +664,7 @@ describe(`/api/v1/ideas`, () => {
                     details: {
                         title: 'Test title',
                     },
-                    networks: [{ name: 'kusama', value: 13 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }]
                 },
                 sessionHandler.sessionData,
             )
@@ -662,7 +685,7 @@ describe(`/api/v1/ideas`, () => {
                         title: 'Test title',
                         content: 'Test content',
                     },
-                    networks: [{ name: 'kusama', value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
                     beneficiary: 'abcd-1234',
                 },
                 sessionHandler.sessionData,
@@ -678,7 +701,7 @@ describe(`/api/v1/ideas`, () => {
             expect(body.details.title).not.toBe('Test title')
             expect(body.beneficiary).toBe('abcd-1234')
             expect(body.details.content).toBe('Test content')
-            expect(body.networks[0].name).toBe('kusama')
+            expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
             done()
         })
         it('should not patch ordinal number', async (done) => {
@@ -757,7 +780,7 @@ describe(`/api/v1/ideas`, () => {
             const idea = await createIdea(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: 'polkadot', value: 47 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 47 }],
                 },
                 sessionHandler.sessionData,
             )

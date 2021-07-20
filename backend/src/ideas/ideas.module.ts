@@ -17,6 +17,8 @@ import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service
 import { BlockchainModule } from '../blockchain/blockchain.module'
 import { IdeaMilestoneProposalsService } from './idea-milestones/idea-milestone-proposals/idea-milestone-proposals.service'
 import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milestone-proposals/idea-milestone-proposals.controller'
+import { ConfigModule } from '../config/config.module'
+import { IsValidNetworkConstraint } from '../utils/network.validator'
 
 @Module({
     imports: [
@@ -25,12 +27,19 @@ import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milesto
         SessionModule,
         BlockchainModule,
         IdeaProposalDetailsModule,
+        ConfigModule,
         TypeOrmModule.forFeature([Idea]),
         TypeOrmModule.forFeature([IdeaNetwork]),
         TypeOrmModule.forFeature([IdeaMilestonesRepository]),
         TypeOrmModule.forFeature([IdeaMilestoneNetwork]),
     ],
-    providers: [IdeasService, IdeaProposalsService, IdeaMilestonesService, IdeaMilestoneProposalsService],
+    providers: [
+        IdeasService,
+        IdeaProposalsService,
+        IdeaMilestonesService,
+        IdeaMilestoneProposalsService,
+        IsValidNetworkConstraint,
+    ],
     controllers: [IdeasController, IdeaProposalsController, IdeaMilestonesController, IdeaMilestoneProposalsController],
     exports: [IdeasService, IdeaMilestonesService],
 })

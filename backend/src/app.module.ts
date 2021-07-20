@@ -18,6 +18,7 @@ import { SuperTokensService } from './auth/supertokens/supertokens.service'
 import { EmailsModule } from './emails/emails.module'
 import { CachingModule } from './cache/cache.module'
 import { IdeaProposalDetailsModule } from './idea-proposal-details/idea-proposal-details.module'
+import { useContainer } from 'class-validator'
 
 @Module({
     imports: [
@@ -63,6 +64,7 @@ export function configureGlobalServices(app: INestApplication) {
             whitelist: true,
         }),
     )
+    useContainer(app.select(AppModule), { fallbackOnErrors: true })
 }
 
 export async function createApp() {

@@ -1,4 +1,4 @@
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../../../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
 import {
     createUserSessionHandler,
     createUserSessionHandlerWithVerifiedEmail,
@@ -50,7 +50,7 @@ const createIdeaMilestoneDto = (
 ) =>
     new CreateIdeaMilestoneDto(
         'ideaMilestoneSubject',
-        [{ name: 'polkadot', value: networkValue }],
+        [{ name: NETWORKS.POLKADOT, value: networkValue }],
         beneficiary,
         null,
         null,
@@ -125,7 +125,6 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                 'other@example.com',
                 'other',
             )
-
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -244,7 +243,7 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
                     idea,
                     'subject',
                     IdeaMilestoneStatus.TurnedIntoProposal,
-                    [new IdeaMilestoneNetwork('polkadot', 100)],
+                    [new IdeaMilestoneNetwork(NETWORKS.POLKADOT, 100)],
                     '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     null,
                     null,
@@ -328,7 +327,7 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
 
             const body = result.body as IdeaMilestoneNetworkDto
 
-            expect(body.name).toBe('polkadot')
+            expect(body.name).toBe(NETWORKS.POLKADOT)
             expect(body.value).toBe(100)
             expect(body.extrinsic).toBeDefined()
             expect(body.extrinsic!.extrinsicHash).toBe(

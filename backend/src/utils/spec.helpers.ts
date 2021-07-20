@@ -13,6 +13,7 @@ import { tryClose } from './closeable'
 import './responseMatching'
 import { responseMatchers } from './responseMatchingHelpers'
 import { TypeOrmAuthorizationModule } from '../database/authorization/authorization.database.module'
+import { useContainer } from 'class-validator'
 
 if (!process.env.DEPLOY_ENV) {
     process.env.DEPLOY_ENV = 'test'
@@ -126,6 +127,7 @@ export const beforeSetupFullApp = memoize(
 
         return beforeAllSetup(async () => {
             app = await createTestingApp([AppModule, TypeOrmAuthorizationModule], ...customize)
+            // useContainer(app.select(AppModule), { fallbackOnErrors: true });
             return app
         })
     },
@@ -163,4 +165,8 @@ export const cleanDatabase = async () => {
         // tslint:disable-next-line:no-console
         console.error(e)
     }
+}
+export const NETWORKS = {
+    KUSAMA: 'development-kusama',
+    POLKADOT: 'development-polkadot',
 }

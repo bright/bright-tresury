@@ -8,7 +8,7 @@ import {
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../extrinsics/dto/updateExtrinsic.dto'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
 import { Idea } from '../entities/idea.entity'
 import { createIdea } from '../spec.helpers'
 import { IdeasService } from '../ideas.service'
@@ -79,7 +79,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
             idea = await createIdea(
                 {
                     beneficiary: uuid(),
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),
@@ -133,7 +133,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
             const ideaWithEmptyBeneficiaryAddress = await createIdea(
                 {
                     beneficiary: '',
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),
@@ -153,7 +153,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
                 {
                     beneficiary: uuid(),
                     status: IdeaStatus.TurnedIntoProposal,
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),
@@ -173,7 +173,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
                 {
                     beneficiary: uuid(),
                     status: IdeaStatus.TurnedIntoProposalByMilestone,
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),
@@ -198,7 +198,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
             const ideaWithZeroNetworkValue = await createIdea(
                 {
                     beneficiary: uuid(),
-                    networks: [{ name: 'polkadot', value: 0 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 0 }],
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),
@@ -228,7 +228,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
 
             const body = result.body as IdeaNetwork
 
-            expect(body.name).toBe('polkadot')
+            expect(body.name).toBe(NETWORKS.POLKADOT)
             expect(body.value).toBe(100)
             expect(body.extrinsic).toBeDefined()
             expect(body.extrinsic!.extrinsicHash).toBe(

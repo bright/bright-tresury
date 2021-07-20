@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min, Validate } from 'class-validator'
 import { ExtrinsicDto, toExtrinsicDto } from '../../../extrinsics/dto/extrinsic.dto'
+import { IsValidNetworkConstraint } from '../../../utils/network.validator'
 
 export class IdeaMilestoneNetworkDto {
     @ApiProperty({
@@ -16,6 +17,7 @@ export class IdeaMilestoneNetworkDto {
     })
     @IsNotEmpty()
     @IsString()
+    @Validate(IsValidNetworkConstraint)
     name: string
 
     @ApiProperty({

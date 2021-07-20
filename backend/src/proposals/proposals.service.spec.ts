@@ -3,7 +3,7 @@ import { Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { BlockchainProposalWithDomainDetails, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
 import { Idea } from '../ideas/entities/idea.entity'
@@ -45,7 +45,7 @@ describe('ProposalsService', () => {
             {
                 details: { title: 'ideaTitle' },
                 beneficiary: uuid(),
-                networks: [{ name: 'localhost', value: 10 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             },
             sessionData,
         )
@@ -57,7 +57,7 @@ describe('ProposalsService', () => {
             {
                 details: { title: 'otherIdeaTitle' },
                 beneficiary: uuid(),
-                networks: [{ name: 'localhost', value: 10 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             },
             sessionData,
         )
@@ -66,7 +66,7 @@ describe('ProposalsService', () => {
             otherIdea.id,
             new CreateIdeaMilestoneDto(
                 'ideaMilestoneSubject',
-                [{ name: 'localhost', value: 100 }],
+                [{ name: NETWORKS.POLKADOT, value: 100 }],
                 uuid(),
                 null,
                 null,
@@ -81,7 +81,7 @@ describe('ProposalsService', () => {
 
     describe('find', () => {
         it('should return proposals', async () => {
-            const proposals = await proposalsService().find('localhost')
+            const proposals = await proposalsService().find(NETWORKS.POLKADOT)
             expect(proposals.length).toBe(3)
 
             const proposal1 = proposals.find(
@@ -136,7 +136,7 @@ describe('ProposalsService', () => {
 
     describe('findOne', () => {
         it('should return proposal details', async () => {
-            const proposal = await proposalsService().findOne(0, 'localhost')
+            const proposal = await proposalsService().findOne(0, NETWORKS.POLKADOT)
 
             expect(proposal).toBeDefined()
             expect(proposal.proposalIndex).toBe(0)
@@ -148,7 +148,7 @@ describe('ProposalsService', () => {
         })
 
         it('should return idea details for proposal created from idea', async () => {
-            const proposal = await proposalsService().findOne(0, 'localhost')
+            const proposal = await proposalsService().findOne(0, NETWORKS.POLKADOT)
 
             expect(proposal.title).toBe('ideaTitle')
             expect(proposal.isCreatedFromIdea).toBe(true)
@@ -156,7 +156,7 @@ describe('ProposalsService', () => {
         })
 
         it('should not return idea details for proposal created from idea and wrong network name', async () => {
-            const proposal = await proposalsService().findOne(0, 'otherNetwork')
+            const proposal = await proposalsService().findOne(0, NETWORKS.KUSAMA)
 
             expect(proposal.title).toBeUndefined()
             expect(proposal.isCreatedFromIdea).toBe(false)
@@ -164,7 +164,7 @@ describe('ProposalsService', () => {
         })
 
         it('should return idea milestone details for proposal created from idea milestone', async () => {
-            const proposal = await proposalsService().findOne(1, 'localhost')
+            const proposal = await proposalsService().findOne(1, NETWORKS.POLKADOT)
 
             expect(proposal.title).toBe('ideaMilestoneSubject')
             expect(proposal.isCreatedFromIdeaMilestone).toBe(true)
@@ -173,7 +173,7 @@ describe('ProposalsService', () => {
         })
 
         it('should not return idea milestone details for proposal created from idea milestone and wrong network name', async () => {
-            const proposal = await proposalsService().findOne(1, 'otherNetwork')
+            const proposal = await proposalsService().findOne(1, NETWORKS.KUSAMA)
 
             expect(proposal.title).toBeUndefined()
             expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
@@ -182,7 +182,7 @@ describe('ProposalsService', () => {
         })
 
         it('should not return idea nor idea milestone details for proposal created externally', async () => {
-            const proposal = await proposalsService().findOne(3, 'localhost')
+            const proposal = await proposalsService().findOne(3, NETWORKS.POLKADOT)
 
             expect(proposal.title).toBeUndefined()
             expect(proposal.isCreatedFromIdea).toBe(false)
@@ -192,7 +192,7 @@ describe('ProposalsService', () => {
         })
 
         it('should throw not found exception for not existing proposal', async () => {
-            await expect(proposalsService().findOne(100, 'localhost')).rejects.toThrow(NotFoundException)
+            await expect(proposalsService().findOne(100, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)
         })
     })
 })

@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { beforeAllSetup, cleanDatabase } from '../utils/spec.helpers'
+import { beforeAllSetup, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { CreateExtrinsicDto } from './dto/createExtrinsic.dto'
 import { UpdateExtrinsicDto } from './dto/updateExtrinsic.dto'
 import { Extrinsic, ExtrinsicStatuses } from './extrinsic.entity'
@@ -10,7 +10,6 @@ import { ExtrinsicsModule } from './extrinsics.module'
 import { ExtrinsicsService } from './extrinsics.service'
 
 describe('ExtrinsicsService', () => {
-    const NETWORK_ID = 'development-polkadot'
     const blockchainService = {
         listenForExtrinsic: (
             networkId: string,
@@ -58,8 +57,7 @@ describe('ExtrinsicsService', () => {
 
     const service = beforeAllSetup(() => module().get<ExtrinsicsService>(ExtrinsicsService))
     const repository = beforeAllSetup(() => module().get<Repository<Extrinsic>>(getRepositoryToken(Extrinsic)))
-    // const NETWORK_ID_2 = beforeAllSetup( () => module().get<BlockchainConfig[]>(BlockchainConfigToken))
-    // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!',NETWORK_ID_2)
+
     beforeEach(async () => {
         await cleanDatabase()
     })
@@ -140,12 +138,12 @@ describe('ExtrinsicsService', () => {
         it('should run create extrinsic', async () => {
             const spy = jest.spyOn(service(), 'create')
 
-            await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
+            await service().listenForExtrinsic(NETWORKS.POLKADOT, createExtrinsicDto)
             expect(spy).toHaveBeenCalled()
         })
 
         it('should return created extrinsic', async () => {
-            const actual = await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
+            const actual = await service().listenForExtrinsic(NETWORKS.POLKADOT, createExtrinsicDto)
             expect(actual).toBeDefined()
             expect(actual.extrinsicHash).toBe(createExtrinsicDto.extrinsicHash)
             expect(actual.lastBlockHash).toBe(createExtrinsicDto.lastBlockHash)
@@ -155,14 +153,14 @@ describe('ExtrinsicsService', () => {
         it('should run blockchain service listener', async () => {
             const spy = jest.spyOn(blockchainService, 'listenForExtrinsic')
 
-            await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
+            await service().listenForExtrinsic(NETWORKS.POLKADOT, createExtrinsicDto)
             expect(spy).toHaveBeenCalled()
         })
 
         it('should run update extrinsic if extrinsic found', async () => {
             const spy = jest.spyOn(service(), 'update')
 
-            await service().listenForExtrinsic(NETWORK_ID, createExtrinsicDto)
+            await service().listenForExtrinsic(NETWORKS.POLKADOT, createExtrinsicDto)
             expect(spy).toHaveBeenCalled()
         })
     })

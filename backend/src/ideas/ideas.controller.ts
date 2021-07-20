@@ -19,7 +19,7 @@ import {
     ApiPropertyOptional,
     ApiTags,
 } from '@nestjs/swagger'
-import { IsOptional } from 'class-validator'
+import { IsOptional, Validate } from 'class-validator'
 import { validate as uuidValidate } from 'uuid'
 import { SessionGuard } from '../auth/session/guard/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
@@ -29,10 +29,12 @@ import { CreateIdeaDto } from './dto/create-idea.dto'
 import { IdeaDto } from './dto/idea.dto'
 import { UpdateIdeaDto } from './dto/update-idea.dto'
 import { IdeasService } from './ideas.service'
+import { IsValidNetworkConstraint } from '../utils/network.validator'
 
 class GetIdeasQuery {
     @ApiPropertyOptional()
     @IsOptional()
+    @Validate(IsValidNetworkConstraint)
     network?: string
 }
 
@@ -84,6 +86,7 @@ export class IdeasController {
     })
     @Post()
     @UseGuards(SessionGuard)
+    // TODO: add validation for networks
     async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionData): Promise<IdeaDto> {
         logger.info(`Updating idea...`, createIdeaDto)
         const idea = await this.ideasService.create(createIdeaDto, session)
@@ -102,6 +105,7 @@ export class IdeasController {
     })
     @Patch(':id')
     @UseGuards(SessionGuard)
+    // TODO: add validation for networks
     async updateIdea(
         @Body() updateIdeaDto: UpdateIdeaDto,
         @Param('id') id: string,

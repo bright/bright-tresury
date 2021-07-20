@@ -3,7 +3,7 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { Idea } from '../ideas/entities/idea.entity'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { ProposalDto } from './dto/proposal.dto'
 import { mockedBlockchainService } from './spec.helpers'
 import { HttpStatus } from '@nestjs/common'
@@ -45,28 +45,25 @@ describe(`/api/v1/proposals`, () => {
             {
                 details: { title: 'ideaTitle' },
                 beneficiary: uuid(),
-                networks: [{ name: 'localhost', value: 10 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             },
             sessionData,
         )
-
         idea.networks[0].blockchainProposalId = 0
         await ideaNetworkRepository().save(idea.networks[0])
-
         otherIdea = await createIdea(
             {
                 details: { title: 'otherIdeaTitle' },
                 beneficiary: uuid(),
-                networks: [{ name: 'localhost', value: 10 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             },
             sessionData,
         )
-
         ideaMilestone = await createIdeaMilestone(
             otherIdea.id,
             new CreateIdeaMilestoneDto(
                 'ideaMilestoneSubject',
-                [{ name: 'localhost', value: 100 }],
+                [{ name: NETWORKS.POLKADOT, value: 100 }],
                 uuid(),
                 null,
                 null,
@@ -74,14 +71,13 @@ describe(`/api/v1/proposals`, () => {
             ),
             sessionData,
         )
-
         ideaMilestone.networks[0].blockchainProposalId = 1
         await ideaMilestoneNetworkRepository().save(ideaMilestone.networks[0])
     })
 
     describe('GET /?network=networkName', () => {
         it(`should return ${HttpStatus.OK} for given network name`, () => {
-            return request(app()).get(`${baseUrl}?network=localhost`).expect(HttpStatus.OK)
+            return request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.OK)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not given network name`, () => {
@@ -89,7 +85,7 @@ describe(`/api/v1/proposals`, () => {
         })
 
         it('should return proposals for given network', async () => {
-            const result = await request(app()).get(`${baseUrl}?network=localhost`)
+            const result = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
 
             const body = result.body as ProposalDto[]
 
@@ -170,7 +166,7 @@ describe(`/api/v1/proposals`, () => {
 
     describe('GET /:proposalIndex?network=:networkName', () => {
         it(`should return ${HttpStatus.OK} for given proposal index and network name`, () => {
-            return request(app()).get(`${baseUrl}/0?network=localhost`).expect(HttpStatus.OK)
+            return request(app()).get(`${baseUrl}/0?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.OK)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not given network name`, () => {
@@ -178,15 +174,17 @@ describe(`/api/v1/proposals`, () => {
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not valid proposal index`, () => {
-            return request(app()).get(`${baseUrl}/not-a-number?network=localhost`).expect(HttpStatus.BAD_REQUEST)
+            return request(app())
+                .get(`${baseUrl}/not-a-number?network=${NETWORKS.POLKADOT}`)
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.NOT_FOUND} for proposal index which does not exist`, () => {
-            return request(app()).get(`${baseUrl}/123?network=localhost`).expect(HttpStatus.NOT_FOUND)
+            return request(app()).get(`${baseUrl}/123?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.NOT_FOUND)
         })
 
         it('should return proposal with idea details for proposal created from idea', async () => {
-            const result = await request(app()).get(`${baseUrl}/0?network=localhost`)
+            const result = await request(app()).get(`${baseUrl}/0?network=${NETWORKS.POLKADOT}`)
 
             const body = result.body as ProposalDto
             expect(body.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
@@ -210,7 +208,7 @@ describe(`/api/v1/proposals`, () => {
         })
 
         it('should return proposal with idea milestone details for proposal created from idea milestone', async () => {
-            const result = await request(app()).get(`${baseUrl}/1?network=localhost`)
+            const result = await request(app()).get(`${baseUrl}/1?network=${NETWORKS.POLKADOT}`)
 
             const body = result.body as ProposalDto
 
@@ -236,7 +234,7 @@ describe(`/api/v1/proposals`, () => {
         })
 
         it('should return proposal without idea nor idea milestone details for proposal created externally', async () => {
-            const result = await request(app()).get(`${baseUrl}/3?network=localhost`)
+            const result = await request(app()).get(`${baseUrl}/3?network=${NETWORKS.POLKADOT}`)
 
             const body = result.body as ProposalDto
 

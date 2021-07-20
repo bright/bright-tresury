@@ -1,17 +1,19 @@
 import { Get, Param, Query } from '@nestjs/common'
 import { ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumberString } from 'class-validator'
+import { IsNotEmpty, IsNumberString, Validate } from 'class-validator'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { ProposalDto } from './dto/proposal.dto'
 import { ProposalsService } from './proposals.service'
 
 import { getLogger } from '../logging.module'
+import { IsValidNetworkConstraint } from '../utils/network.validator'
 const logger = getLogger()
 class GetProposalsQuery {
     @ApiProperty({
         description: 'Network name',
     })
     @IsNotEmpty()
+    @Validate(IsValidNetworkConstraint)
     network!: string
 }
 

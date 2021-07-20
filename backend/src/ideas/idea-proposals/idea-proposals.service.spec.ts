@@ -6,7 +6,7 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
 import { IdeaNetwork } from '../entities/idea-network.entity'
 import { IdeasService } from '../ideas.service'
@@ -58,7 +58,7 @@ describe('IdeaProposalsService', () => {
         idea = await createIdea(
             {
                 beneficiary: uuid(),
-                networks: [{ name: 'polkadot', value: 100 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
             },
             sessionData,
             ideasService(),
