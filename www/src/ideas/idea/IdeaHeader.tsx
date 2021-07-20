@@ -113,7 +113,7 @@ const IdeaHeader = ({ idea, canEdit }: IdeaHeaderProps) => {
                     <IdeaStatusIndicator status={idea.status} />
                 </Status>
                 <Title>
-                    <OptionalTitle title={idea.title} />
+                    <OptionalTitle title={idea.details.title} />
                 </Title>
             </BasicInfo>
             <NetworkValues className={classes.networkValues}>

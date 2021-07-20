@@ -69,7 +69,10 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
-    const nonEmptyLinks = useMemo(() => (idea.links ? idea.links.filter((link: string) => !!link) : []), [idea.links])
+    const nonEmptyLinks = useMemo(
+        () => (idea.details.links ? idea.details.links.filter((link: string) => !!link) : []),
+        [idea.details.links],
+    )
 
     return (
         <div>
@@ -86,24 +89,26 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.field')} />
-                <div className={classes.text}>{idea.field || <Placeholder value={t('idea.details.field')} />}</div>
+                <div className={classes.text}>
+                    {idea.details.field || <Placeholder value={t('idea.details.field')} />}
+                </div>
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.content')} />
                 <div className={classes.longText}>
-                    {idea.content || <Placeholder value={t('idea.details.content')} />}
+                    {idea.details.content || <Placeholder value={t('idea.details.content')} />}
                 </div>
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.contact')} />
                 <div className={classes.longText}>
-                    {idea.contact || <Placeholder value={t('idea.details.contact')} />}
+                    {idea.details.contact || <Placeholder value={t('idea.details.contact')} />}
                 </div>
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.portfolio')} />
                 <div className={classes.longText}>
-                    {idea.portfolio || <Placeholder value={t('idea.details.portfolio')} />}
+                    {idea.details.portfolio || <Placeholder value={t('idea.details.portfolio')} />}
                 </div>
             </div>
             <div className={classes.spacing}>

@@ -7,14 +7,16 @@ export function doesIdeaBelongToUser(idea: IdeaDto, user?: AuthContextUser) {
 
 export function createEmptyIdea(network: string): IdeaDto {
     return {
-        title: '',
         beneficiary: '',
-        field: '',
-        content: '',
         networks: [{ name: network, value: 0 } as IdeaNetworkDto],
-        contact: '',
-        portfolio: '',
-        links: [''],
         status: IdeaStatus.Draft,
+        details: {
+            title: '',
+            field: '',
+            content: '',
+            portfolio: '',
+            links: [''],
+            contact: '',
+        },
     } as IdeaDto
 }

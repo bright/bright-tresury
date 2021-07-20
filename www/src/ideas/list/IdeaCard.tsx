@@ -20,7 +20,16 @@ interface OwnProps {
 
 export type IdeaCardProps = OwnProps
 
-const IdeaCard = ({ idea: { id, ordinalNumber, status, title, networks, beneficiary } }: IdeaCardProps) => {
+const IdeaCard = ({
+    idea: {
+        id,
+        ordinalNumber,
+        status,
+        details: { title },
+        networks,
+        beneficiary,
+    },
+}: IdeaCardProps) => {
     const { t } = useTranslation()
 
     return (

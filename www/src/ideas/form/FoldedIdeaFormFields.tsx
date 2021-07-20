@@ -4,7 +4,8 @@ import { useTranslation } from 'react-i18next'
 import Input from '../../components/form/input/Input'
 import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
-import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
+import { IdeaNetworkDto } from '../ideas.dto'
+import { IdeaFormValues } from './IdeaForm'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,7 +26,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    values: IdeaDto
+    values: IdeaFormValues
 }
 
 export type FoldedIdeaFormFieldsProps = OwnProps

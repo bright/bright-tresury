@@ -7,7 +7,7 @@ import Button from '../../components/button/Button'
 import IdeaFormFields from './IdeaFormFields'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
-import { IdeaDto } from '../ideas.dto'
+import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
 import FormFooter from '../../components/form/footer/FormFooter'
 
 const useStyles = makeStyles(() =>
@@ -32,6 +32,26 @@ interface OwnProps {
 }
 
 export type IdeaFormProps = PropsWithChildren<OwnProps>
+
+export interface IdeaFormValues {
+    beneficiary: string
+    networks: IdeaNetworkDto[]
+    title: string
+    field?: string
+    content: string
+    contact?: string
+    portfolio?: string
+    links?: string[]
+}
+
+const toFormValues = (idea: IdeaDto): IdeaFormValues => {
+    return {
+        beneficiary: idea.beneficiary,
+        networks: idea.networks,
+        ...idea.details,
+        links: idea.details.links && idea.details.links.length > 0 ? idea.details.links : [''],
+    }
+}
 
 const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: IdeaFormProps) => {
     const classes = useStyles()
@@ -66,20 +86,25 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
 
     const noEmptyLinks = (links: string[] | undefined) => links?.filter((link: string) => Boolean(link))
 
-    //FIXME: Find a better way to validate/process data(currently only links) just before submit. Current way is a bit 'hack-ish'
-    const onFormikSubmit = (formIdea: IdeaDto) =>
+    const onFormikSubmit = (formIdea: IdeaFormValues) =>
         onSubmit({
-            ...formIdea,
-            links: noEmptyLinks(formIdea.links),
+            ...idea,
+            beneficiary: formIdea.beneficiary,
+            networks: formIdea.networks,
+            details: {
+                title: formIdea.title,
+                contact: formIdea.contact,
+                content: formIdea.content,
+                field: formIdea.field,
+                portfolio: formIdea.portfolio,
+                links: noEmptyLinks(formIdea.links),
+            },
         })
 
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={{
-                ...idea,
-                links: idea.links && idea.links.length > 0 ? idea.links : [''],
-            }}
+            initialValues={toFormValues(idea)}
             validationSchema={extendedValidation ? validationSchema.concat(extendedValidationSchema) : validationSchema}
             onSubmit={onFormikSubmit}
         >

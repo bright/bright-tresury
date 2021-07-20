@@ -15,5 +15,5 @@ const Template: Story<IdeaDetailsProps> = (args) => <IdeaDetails {...args} />
 const emptyIdea = createEmptyIdea('localhost')
 export const Default = Template.bind({})
 Default.args = {
-    idea: { ...emptyIdea, links: ['http://bright.dev'] },
+    idea: { ...emptyIdea, details: { ...emptyIdea.details, links: ['http://bright.dev'] } },
 }

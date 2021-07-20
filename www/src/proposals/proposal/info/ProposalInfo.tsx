@@ -91,14 +91,18 @@ const ProposalInfo = ({
             <div className={classes.spacing}>
                 <Label label={t('proposal.content.info.fieldOfIdea')} />
                 <div className={classes.text}>
-                    {idea?.field ? idea.field : <Placeholder value={t('proposal.content.info.fieldOfIdea')} />}
+                    {idea?.details.field ? (
+                        idea.details.field
+                    ) : (
+                        <Placeholder value={t('proposal.content.info.fieldOfIdea')} />
+                    )}
                 </div>
             </div>
 
             <div className={classes.spacing}>
                 <Label label={t('proposal.content.info.reasonForIdea')} />
                 <div className={classes.longText}>
-                    {idea ? idea.content : <Placeholder value={t('proposal.content.info.reasonForIdea')} />}
+                    {idea ? idea.details.content : <Placeholder value={t('proposal.content.info.reasonForIdea')} />}
                 </div>
             </div>
 

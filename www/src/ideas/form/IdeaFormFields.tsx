@@ -7,7 +7,8 @@ import Input from '../../components/form/input/Input'
 import FormSelect from '../../components/select/FormSelect'
 import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
-import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
+import { IdeaNetworkDto } from '../ideas.dto'
+import { IdeaFormValues } from './IdeaForm'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,7 +30,7 @@ const useStyles = makeStyles((theme: Theme) =>
 const MAX_LINKS = 10
 
 interface OwnProps {
-    values: IdeaDto
+    values: IdeaFormValues
 }
 
 export type IdeaFormFieldsProps = OwnProps

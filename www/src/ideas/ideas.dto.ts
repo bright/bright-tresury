@@ -1,16 +1,13 @@
+import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
+
 export interface IdeaDto {
     id: string
     ordinalNumber: number
-    title: string
     beneficiary: string
-    field?: string
-    content: string
     networks: IdeaNetworkDto[]
-    contact?: string
-    portfolio?: string
-    links?: string[]
     status: IdeaStatus
     ownerId: string
+    details: IdeaProposalDetailsDto
 }
 
 export interface IdeaNetworkDto {

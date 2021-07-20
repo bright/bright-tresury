@@ -30,6 +30,7 @@ export class IdeasService {
                 ? await this.ideaRepository
                       .createQueryBuilder('idea')
                       .leftJoinAndSelect('idea.networks', 'network')
+                      .leftJoinAndSelect('idea.details', 'details')
                       .where('network.name = :networkName', { networkName })
                       .andWhere(
                           new Brackets((qb) => {
