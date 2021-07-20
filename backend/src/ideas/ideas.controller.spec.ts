@@ -163,7 +163,7 @@ describe(`/api/v1/ideas`, () => {
             const result = await request(app()).get(`${baseUrl}/${idea.id}`)
 
             const body = result.body as IdeaDto
-            expect(body.details).toBe(idea.details)
+            expect(body.details.title).toBe(idea.details.title)
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.networks).toBeDefined()
             expect(body.networks!.length).toBe(2)
@@ -559,7 +559,7 @@ describe(`/api/v1/ideas`, () => {
                         .send({ details: { title: 'Test title 2' } }),
                 )
                 .expect(200)
-            expect(response.body.title).toBe('Test title 2')
+            expect(response.body.details.title).toBe('Test title 2')
             done()
         })
         it('should patch network', async (done) => {
@@ -588,29 +588,7 @@ describe(`/api/v1/ideas`, () => {
             expect(response.body.networks[0].value).toBe(33)
             done()
         })
-        it('should patch links', async (done) => {
-            const idea = await createIdea(
-                {
-                    details: {
-                        title: 'Test title',
-                        links: ['The link'],
-                    },
-                    networks: [{ name: 'kusama', value: 13 }],
-                },
-                sessionHandler.sessionData,
-            )
-            const response = await sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .patch(`${baseUrl}/${idea.id}`)
-                        .send({
-                            details: { links: ['patched link'] },
-                        }),
-                )
-                .expect(200)
-            expect(response.body.links[0]).toBe('patched link')
-            done()
-        })
+
         it('should return bad request if links are not array', async (done) => {
             const idea = await createIdea(
                 {
@@ -624,13 +602,18 @@ describe(`/api/v1/ideas`, () => {
             )
             await sessionHandler
                 .authorizeRequest(
-                    request(app()).patch(`${baseUrl}/${idea.id}`).send({
-                        links: 'Updated link',
-                    }),
+                    request(app())
+                        .patch(`${baseUrl}/${idea.id}`)
+                        .send({
+                            details: {
+                                links: 'Updated link',
+                            },
+                        }),
                 )
                 .expect(400)
             done()
         })
+
         it('should patch idea status', async (done) => {
             const idea = await createIdea(
                 {
@@ -651,6 +634,7 @@ describe(`/api/v1/ideas`, () => {
             expect(response.body.status).toBe(IdeaStatus.Active)
             done()
         })
+
         it('should return bad request if idea status is unknown', async (done) => {
             const idea = await createIdea(
                 {
@@ -670,6 +654,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(400)
             done()
         })
+
         it('should keep previous data for not patched properties', async (done) => {
             const idea = await createIdea(
                 {

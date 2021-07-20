@@ -23,6 +23,7 @@ import { IsOptional } from 'class-validator'
 import { validate as uuidValidate } from 'uuid'
 import { SessionGuard } from '../auth/session/guard/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
+import { getLogger } from '../logging.module'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { CreateIdeaDto } from './dto/create-idea.dto'
 import { IdeaDto } from './dto/idea.dto'
@@ -34,6 +35,8 @@ class GetIdeasQuery {
     @IsOptional()
     network?: string
 }
+
+const logger = getLogger()
 
 @ControllerApiVersion('/ideas', ['v1'])
 @ApiTags('ideas')
@@ -82,6 +85,7 @@ export class IdeasController {
     @Post()
     @UseGuards(SessionGuard)
     async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionData): Promise<IdeaDto> {
+        logger.info(`Updating idea...`, createIdeaDto)
         const idea = await this.ideasService.create(createIdeaDto, session)
         return new IdeaDto(idea)
     }
@@ -103,6 +107,7 @@ export class IdeasController {
         @Param('id') id: string,
         @ReqSession() session: SessionData,
     ): Promise<IdeaDto> {
+        logger.info(`Updating idea ${id}...`, updateIdeaDto)
         const idea = await this.ideasService.update(updateIdeaDto, id, session)
         return new IdeaDto(idea)
     }
@@ -117,6 +122,7 @@ export class IdeasController {
     @Delete(':id')
     @UseGuards(SessionGuard)
     async delete(@Param('id') id: string, @ReqSession() session: SessionData) {
+        logger.info(`Deleting idea ${id}...`)
         await this.ideasService.delete(id, session)
     }
 }
