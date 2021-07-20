@@ -46,7 +46,7 @@ export class Idea extends BaseEntity {
     })
     milestones?: IdeaMilestone[]
 
-    @ManyToOne(() => IdeaProposalDetail)
+    @ManyToOne(() => IdeaProposalDetail, { eager: true })
     details: IdeaProposalDetail
 
     constructor(

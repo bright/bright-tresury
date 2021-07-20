@@ -26,7 +26,7 @@ describe('IdeaProposalDetailsService', () => {
     })
 
     describe('create', () => {
-        it('should create and save details with all valid data', async (done) => {
+        it('should create details with all valid data', async (done) => {
             const createdDetails = await getService().create({
                 title: 'Test title',
                 content: 'Test content',
@@ -46,31 +46,73 @@ describe('IdeaProposalDetailsService', () => {
         })
     }),
         describe('update', () => {
-            //     it('should update and return details with updated title', async () => {
-            //         const details = await getService().create({ title: 'Test title' })
-            //         const updatedDetails = await getService().update({ title: 'Test title updated' })
-            //         expect(updatedDetails.title).toBe('Test title updated')
-            //     })
-            //
-            //     it('should update and save details with updated title and not updated other properties', async () => {
-            //         const details = await getService().create({
-            //             title: 'Test title',
-            //             portfolio: 'Test portfolio',
-            //         })
-            //         await getService().update({ title: 'Test title updated' }, details.id)
-            //
-            //         const savedDetails = (await getRepository().findOne(details.id))!
-            //         expect(savedDetails.title).toBe('Test title updated')
-            //         expect(savedDetails.portfolio).toBe('Test portfolio')
-            //     })
-            //     it('should update and save idea with updated links', async () => {
-            //         const details = await getService().create({
-            //             title: 'title',
-            //             links: ['Test link'],
-            //         })
-            //         await getService().update({ details: { links: ['New Link'] } }, idea.id, sessionData)
-            //         const savedIdea = await getService().findOne(idea.id, sessionData)
-            //         expect(savedIdea.details.links).toBe(JSON.stringify(['New Link']))
-            //     })
+            it('should return updated details', async () => {
+                const details = await getService().create({ title: 'Test title' })
+
+                const updatedDetails = (await getService().update(
+                    {
+                        title: 'Test title updated',
+                        content: 'content updated',
+                        field: 'field updated',
+                        contact: 'contact updated',
+                        portfolio: 'portfolio updated',
+                    },
+                    details,
+                ))!
+
+                expect(updatedDetails.title).toBe('Test title updated')
+                expect(updatedDetails.content).toBe('content updated')
+                expect(updatedDetails.field).toBe('field updated')
+                expect(updatedDetails.contact).toBe('contact updated')
+                expect(updatedDetails.portfolio).toBe('portfolio updated')
+            })
+
+            it('should save updated details', async () => {
+                const details = await getService().create({
+                    title: 'Test title',
+                })
+
+                await getService().update(
+                    {
+                        title: 'Test title updated',
+                        content: 'content updated',
+                        field: 'field updated',
+                        contact: 'contact updated',
+                        portfolio: 'portfolio updated',
+                    },
+                    details,
+                )
+
+                const savedDetails = (await getRepository().findOne(details.id))!
+                expect(savedDetails.title).toBe('Test title updated')
+                expect(savedDetails.content).toBe('content updated')
+                expect(savedDetails.field).toBe('field updated')
+                expect(savedDetails.contact).toBe('contact updated')
+                expect(savedDetails.portfolio).toBe('portfolio updated')
+            })
+
+            it('should save details with updated title and not updated other properties', async () => {
+                const details = await getService().create({
+                    title: 'Test title',
+                    portfolio: 'Test portfolio',
+                })
+
+                await getService().update({ title: 'Test title updated' }, details)
+
+                const savedDetails = (await getRepository().findOne(details.id))!
+                expect(savedDetails.title).toBe('Test title updated')
+                expect(savedDetails.portfolio).toBe('Test portfolio')
+            })
+            it('should update and save idea with updated links', async () => {
+                const details = await getService().create({
+                    title: 'title',
+                    links: ['Test link'],
+                })
+
+                await getService().update({ links: ['New Link'] }, details)
+
+                const savedDetails = (await getRepository().findOne(details.id))!
+                expect(savedDetails.links).toBe(JSON.stringify(['New Link']))
+            })
         })
 })
