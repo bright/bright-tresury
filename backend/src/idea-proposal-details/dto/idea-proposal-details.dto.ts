@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IdeaProposalDetail, ideaProposalDetailRestrictions } from '../idea-proposal-detail.entity'
+import { IdeaProposalDetails, ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
 
-export class IdeaProposalDetailDto {
+export class IdeaProposalDetailsDto {
     @ApiProperty({
         description: 'Description of the idea',
     })
@@ -14,7 +14,7 @@ export class IdeaProposalDetailDto {
 
     @ApiPropertyOptional({
         description: 'Field of the idea',
-        maxLength: ideaProposalDetailRestrictions.field.maxLength,
+        maxLength: ideaProposalDetailsRestrictions.field.maxLength,
     })
     field?: string
 
@@ -34,7 +34,7 @@ export class IdeaProposalDetailDto {
     })
     links?: string[]
 
-    constructor({ title, content, field, contact, portfolio, links }: IdeaProposalDetail) {
+    constructor({ title, content, field, contact, portfolio, links }: IdeaProposalDetails) {
         this.title = title
         this.content = content
         this.field = field

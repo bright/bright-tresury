@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { Column, Entity, Generated, ManyToOne, OneToMany } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { BaseEntity } from '../../database/base.entity'
-import { IdeaProposalDetail } from '../../idea-proposal-details/idea-proposal-detail.entity'
+import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { User } from '../../users/user.entity'
 import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity'
 import { DefaultIdeaStatus, IdeaStatus } from '../idea-status'
@@ -46,14 +46,14 @@ export class Idea extends BaseEntity {
     })
     milestones?: IdeaMilestone[]
 
-    @ManyToOne(() => IdeaProposalDetail, { eager: true })
-    details: IdeaProposalDetail
+    @ManyToOne(() => IdeaProposalDetails, { eager: true })
+    details: IdeaProposalDetails
 
     constructor(
         networks: IdeaNetwork[],
         status: IdeaStatus,
         owner: User,
-        details: IdeaProposalDetail,
+        details: IdeaProposalDetails,
         beneficiary?: string,
         id?: string,
     ) {

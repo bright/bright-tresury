@@ -1,14 +1,14 @@
 import { Column, Entity } from 'typeorm'
 import { BaseEntity } from '../database/base.entity'
 
-export const ideaProposalDetailRestrictions = {
+export const ideaProposalDetailsRestrictions = {
     field: {
         maxLength: 255,
     },
 }
 
 @Entity('idea_proposal_details')
-export class IdeaProposalDetail extends BaseEntity {
+export class IdeaProposalDetails extends BaseEntity {
     @Column({ nullable: false })
     title: string
 

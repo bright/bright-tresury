@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { DatabaseModule } from '../database/database.module'
-import { IdeaProposalDetail } from './idea-proposal-detail.entity'
+import { IdeaProposalDetails } from './idea-proposal-details.entity'
 import { IdeaProposalDetailsService } from './idea-proposal-details.service'
 
 @Module({
-    imports: [DatabaseModule, TypeOrmModule.forFeature([IdeaProposalDetail])],
+    imports: [DatabaseModule, TypeOrmModule.forFeature([IdeaProposalDetails])],
     providers: [IdeaProposalDetailsService],
     exports: [IdeaProposalDetailsService],
 })

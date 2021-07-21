@@ -4,14 +4,14 @@ import { SessionData } from '../auth/session/session.decorator'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
-import { IdeaProposalDetail } from './idea-proposal-detail.entity'
+import { IdeaProposalDetails } from './idea-proposal-details.entity'
 import { IdeaProposalDetailsService } from './idea-proposal-details.service'
 
 describe('IdeaProposalDetailsService', () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(IdeaProposalDetailsService)
     const getRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaProposalDetail>>(getRepositoryToken(IdeaProposalDetail)),
+        app().get<Repository<IdeaProposalDetails>>(getRepositoryToken(IdeaProposalDetails)),
     )
 
     let sessionData: SessionData

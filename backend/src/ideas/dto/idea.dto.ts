@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IdeaProposalDetailDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
+import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
 import { Idea } from '../entities/idea.entity'
 import { IdeaMilestoneDto } from '../idea-milestones/dto/idea-milestone.dto'
 import { IdeaStatus } from '../idea-status'
@@ -47,9 +47,9 @@ export class IdeaDto {
 
     @ApiProperty({
         description: 'Details of the idea',
-        type: [IdeaProposalDetailDto],
+        type: [IdeaProposalDetailsDto],
     })
-    details: IdeaProposalDetailDto
+    details: IdeaProposalDetailsDto
 
     constructor({ id, status, networks, ordinalNumber, ownerId, beneficiary, details }: Idea) {
         this.id = id
@@ -58,6 +58,6 @@ export class IdeaDto {
         this.ordinalNumber = ordinalNumber
         this.ownerId = ownerId
         this.beneficiary = beneficiary
-        this.details = new IdeaProposalDetailDto(details)
+        this.details = new IdeaProposalDetailsDto(details)
     }
 }

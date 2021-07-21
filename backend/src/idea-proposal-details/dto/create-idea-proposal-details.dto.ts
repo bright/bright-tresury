@@ -9,7 +9,7 @@ import {
     Length,
     MaxLength,
 } from 'class-validator'
-import { ideaProposalDetailRestrictions } from '../idea-proposal-detail.entity'
+import { ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
 
 export class CreateIdeaProposalDetailsDto {
     @ApiProperty({ description: 'Title' })
@@ -24,9 +24,9 @@ export class CreateIdeaProposalDetailsDto {
 
     @ApiPropertyOptional({
         description: 'Field',
-        maxLength: ideaProposalDetailRestrictions.field.maxLength,
+        maxLength: ideaProposalDetailsRestrictions.field.maxLength,
     })
-    @MaxLength(ideaProposalDetailRestrictions.field.maxLength)
+    @MaxLength(ideaProposalDetailsRestrictions.field.maxLength)
     @IsOptional()
     field?: string
 

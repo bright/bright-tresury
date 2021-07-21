@@ -3,16 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { CreateIdeaProposalDetailsDto } from './dto/create-idea-proposal-details.dto'
 import { UpdateIdeaProposalDetailsDto } from './dto/update-idea-proposal-details.dto'
-import { IdeaProposalDetail } from './idea-proposal-detail.entity'
+import { IdeaProposalDetails } from './idea-proposal-details.entity'
 
 @Injectable()
 export class IdeaProposalDetailsService {
     constructor(
-        @InjectRepository(IdeaProposalDetail)
-        private readonly detailsRepository: Repository<IdeaProposalDetail>,
+        @InjectRepository(IdeaProposalDetails)
+        private readonly detailsRepository: Repository<IdeaProposalDetails>,
     ) {}
-    async create(dto: CreateIdeaProposalDetailsDto): Promise<IdeaProposalDetail> {
-        const details = new IdeaProposalDetail(
+    async create(dto: CreateIdeaProposalDetailsDto): Promise<IdeaProposalDetails> {
+        const details = new IdeaProposalDetails(
             dto.title,
             dto.content,
             dto.field,
@@ -23,7 +23,7 @@ export class IdeaProposalDetailsService {
         return this.detailsRepository.save(details)
     }
 
-    async update(dto: UpdateIdeaProposalDetailsDto, details: IdeaProposalDetail): Promise<IdeaProposalDetail> {
+    async update(dto: UpdateIdeaProposalDetailsDto, details: IdeaProposalDetails): Promise<IdeaProposalDetails> {
         await this.detailsRepository.save({
             ...details,
             ...dto,
