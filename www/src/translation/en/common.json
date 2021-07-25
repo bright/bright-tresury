@@ -340,7 +340,15 @@
         },
         "introduceTitle": "Introduce Idea",
         "editTitle": "Edit Idea",
-        "introduce": "+ Introduce Idea"
+        "introduce": "+ Introduce Idea",
+        "discussion": {
+            "copyLink": "Copy Link",
+            "commentAlso": "Comment also on",
+            "enterCommentPlaceholder": "Leave your comment here",
+            "cancelComment": "Cancel",
+            "sendComment": "Send",
+            "commentedTimestampTitle": " | commented"
+        }
     },
     "proposal": {
         "content": {
