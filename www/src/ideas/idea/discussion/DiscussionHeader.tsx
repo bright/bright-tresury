@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import Link from '../../../components/link/Link'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,17 +36,18 @@ export type DiscussionTopRowProps = OwnProps
 
 const DiscussionHeader = ({}: DiscussionTopRowProps) => {
     const styles = useStyles()
+    const { t } = useTranslation()
     return (
         <div className={styles.topRow}>
             <div className={styles.copyLinkSection}>
                 <Link className={`${styles.link} ${styles.whiteBackground}`}>
                     http://localhost:3000/ideas/5f88079b-b412-48ed-9b2c-9443496c3c91/discussion
                 </Link>
-                <Link className={styles.link}>copy link</Link>
+                <Link className={styles.link}>{t('idea.discussion.copyLink')}</Link>
             </div>
 
             <div>
-                Comment also on
+                {t('idea.discussion.commentAlso')}
                 <Link className={styles.link}>Polkassembly</Link>
                 <span className={styles.divider}>|</span>
                 <Link className={styles.link}>Element</Link>

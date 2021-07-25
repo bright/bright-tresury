@@ -5,6 +5,8 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import CancelSendButtonsComponent from './CancelSendButtonComponent'
 import { Collapse, TextareaAutosize } from '@material-ui/core'
 import clsx from 'clsx'
+import { IdeaCommentDto } from './IdeaComment.dto'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: '8px',
         },
         blueBorder: {
+            border: '4px solid red',
             '&:focus': {
                 border: '1px solid blue',
             },
@@ -25,39 +28,40 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface OwnProps {}
+interface OwnProps {
+    onSendClick: (commentContent: string) => Promise<void>
+}
 export type EnterCommentComponentProps = OwnProps
 
-const EnterCommentComponent = ({}: EnterCommentComponentProps) => {
+const EnterCommentComponent = ({ onSendClick }: EnterCommentComponentProps) => {
     const styles = useStyles()
     const [focus, setFocus] = useState(false)
-    const [comment, setComment] = useState('')
+    const [commentContent, setCommentContent] = useState('')
     const testFieldStyles = useTextFieldStyles({ colorScheme: TextFieldColorScheme.Light })()
-    const onSendClick = () => {
-        console.log('should send:', comment)
-    }
-
+    const { t } = useTranslation()
     return (
         <div className={clsx(styles.enterCommentRow, styles.whiteBackground)}>
             <TextareaAutosize
                 onFocus={() => setFocus(true)}
                 onBlur={() => setFocus(false)}
-                onChange={(event) => setComment(event.target.value)}
-                value={comment}
+                onChange={(event) => setCommentContent(event.target.value)}
+                value={commentContent}
                 rowsMin={2}
                 rowsMax={5}
-                className={clsx(testFieldStyles.input, styles.blueBorder)}
+                className={clsx(testFieldStyles.input)}
                 style={{ width: '100%', resize: 'none' }}
-                placeholder="Leave your comment here"
+                placeholder={t('idea.discussion.enterCommentPlaceholder')}
             />
 
-            <Collapse in={!!(focus || comment)}>
+            <Collapse in={!!(focus || commentContent)}>
                 <CancelSendButtonsComponent
                     onCancelClick={() => {
                         setFocus(false)
-                        setComment('')
+                        setCommentContent('')
                     }}
-                    onSendClick={onSendClick}
+                    onSendClick={() => {
+                        onSendClick(commentContent).then(() => setCommentContent(''))
+                    }}
                 />
             </Collapse>
         </div>

@@ -3,6 +3,7 @@ import thumbsDownIcon from '../../../assets/thumbs_down.svg'
 import linkIcon from '../../../assets/link.svg'
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -72,8 +73,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     comment: {
-        authorThumb: string
-        author: string
+        userId: string
+        username: string
         timestamp: number
         thumbsUpCount: number
         thumbsDownCount: number
@@ -83,10 +84,11 @@ interface OwnProps {
 }
 export type CommentComponentProps = OwnProps
 const CommentComponent = ({
-    comment: { authorThumb, author, timestamp, thumbsUpCount, thumbsDownCount, content },
+    comment: { userId, username, timestamp, thumbsUpCount, thumbsDownCount, content },
     key,
 }: CommentComponentProps) => {
     const styles = useStyles()
+    const { t } = useTranslation()
     const formatAge = (timestamp: number) => {
         const ageMs = Date.now() - timestamp
         return `${Math.floor(ageMs / (1000 * 60))} min ago`
@@ -95,9 +97,11 @@ const CommentComponent = ({
         <div key={`comment_${key}`} className={`${styles.comment} ${styles.whiteBackground}`}>
             <div className={styles.commentHeader}>
                 <div className={styles.commentHeaderLeft}>
-                    <div className={styles.commentHeaderAuthorIcon}>{authorThumb}</div>
-                    <div className={styles.commentHeaderAuthor}>{author}</div>
-                    <div className={styles.commentHeaderCommentAge}> | commented {formatAge(timestamp)}</div>
+                    <div className={styles.commentHeaderAuthorIcon}>{username[0]}</div>
+                    <div className={styles.commentHeaderAuthor}>{username}</div>
+                    <div className={styles.commentHeaderCommentAge}>
+                        {t('idea.discussion.commentedTimestampTitle')} {formatAge(timestamp)}
+                    </div>
                 </div>
                 <div className={styles.commentHeaderRight}>
                     <div className={styles.commentHeaderThumbsUp}>

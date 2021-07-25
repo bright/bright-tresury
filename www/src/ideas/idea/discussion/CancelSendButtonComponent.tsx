@@ -1,6 +1,7 @@
 import React from 'react'
 import { Button } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { useTranslation } from 'react-i18next'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -16,11 +17,12 @@ interface OwnProps {
 export type CancelSendButtonComponentProps = OwnProps
 const CancelSendButtonsComponent = ({ onCancelClick, onSendClick }: CancelSendButtonComponentProps) => {
     const styles = useStyles()
+    const { t } = useTranslation()
     return (
         <div className={styles.root}>
-            <Button onClick={onCancelClick}>Cancel</Button>
+            <Button onClick={onCancelClick}>{t('idea.discussion.cancelComment')}</Button>
             <Button variant="contained" color="primary" onClick={onSendClick}>
-                Send
+                {t('idea.discussion.sendComment')}
             </Button>
         </div>
     )
