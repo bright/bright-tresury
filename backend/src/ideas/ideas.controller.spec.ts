@@ -293,7 +293,10 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: 'Test title'}, networks: [{ name: 'bad-network-name', value: -1 }] }),
+                        .send({
+                            details: { title: 'Test title' },
+                            networks: [{ name: 'bad-network-name', value: -1 }],
+                        }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })
@@ -308,7 +311,7 @@ describe(`/api/v1/ideas`, () => {
                             networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                         }),
                 )
-                .expect(400)
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it('should return bad request if links are strings array', () => {
@@ -324,7 +327,7 @@ describe(`/api/v1/ideas`, () => {
                             networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                         }),
                 )
-                .expect(400)
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it('should return bad request for empty title', () => {
@@ -334,7 +337,7 @@ describe(`/api/v1/ideas`, () => {
                         .post(baseUrl)
                         .send({ details: { title: '' }, networks: [{ name: NETWORKS.KUSAMA, value: 2 }] }),
                 )
-                .expect(400)
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it('should return bad request for wrong beneficiary', () => {
@@ -349,7 +352,7 @@ describe(`/api/v1/ideas`, () => {
                             beneficiary,
                         }),
                 )
-                .expect(400)
+                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it('should return created for empty beneficiary', () => {
@@ -417,7 +420,7 @@ describe(`/api/v1/ideas`, () => {
                             links: ['Test link'],
                         },
                         networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
-                        beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
+                        beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     }),
             )
 
@@ -441,7 +444,7 @@ describe(`/api/v1/ideas`, () => {
             const result = await sessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl)
-                    .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 10 }] })
+                    .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 10 }] }),
             )
 
             const ideasService = app.get().get(IdeasService)
@@ -471,7 +474,7 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] })
+                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] }),
                 )
                 .expect(HttpStatus.FORBIDDEN)
             done()
@@ -572,7 +575,7 @@ describe(`/api/v1/ideas`, () => {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
                 },
-                sessionHandler.sessionData
+                sessionHandler.sessionData,
             )
             const response = await sessionHandler
                 .authorizeRequest(
@@ -600,9 +603,9 @@ describe(`/api/v1/ideas`, () => {
                         title: 'Test title',
                         links: ['The link'],
                     },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }]
+                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
                 },
-                sessionHandler.sessionData
+                sessionHandler.sessionData,
             )
             await sessionHandler
                 .authorizeRequest(
@@ -614,26 +617,7 @@ describe(`/api/v1/ideas`, () => {
                             },
                         }),
                 )
-                .expect(200)
-            expect(response.body.links[0]).toBe('patched link')
-            done()
-        })
-        it('should return bad request if links are not array', async (done) => {
-            const idea = await createIdea(
-                {
-                    title: 'Test title',
-                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
-                    links: ['The link'],
-                },
-                sessionHandler.sessionData,
-            )
-            await sessionHandler
-                .authorizeRequest(
-                    request(app()).patch(`${baseUrl}/${idea.id}`).send({
-                        links: 'Updated link',
-                    }),
-                )
-                .expect(400)
+                .expect(HttpStatus.BAD_REQUEST)
             done()
         })
 
@@ -645,7 +629,7 @@ describe(`/api/v1/ideas`, () => {
                     },
                     networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
                 },
-                sessionHandler.sessionData
+                sessionHandler.sessionData,
             )
             const response = await sessionHandler
                 .authorizeRequest(
@@ -653,7 +637,7 @@ describe(`/api/v1/ideas`, () => {
                         status: IdeaStatus.Active,
                     }),
                 )
-                .expect(200)
+                .expect(HttpStatus.OK)
             expect(response.body.status).toBe(IdeaStatus.Active)
             done()
         })
@@ -664,7 +648,7 @@ describe(`/api/v1/ideas`, () => {
                     details: {
                         title: 'Test title',
                     },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }]
+                    networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
                 },
                 sessionHandler.sessionData,
             )
@@ -674,7 +658,7 @@ describe(`/api/v1/ideas`, () => {
                         status: 'unknown_idea_status',
                     }),
                 )
-                .expect(400)
+                .expect(HttpStatus.BAD_REQUEST)
             done()
         })
 
@@ -696,7 +680,7 @@ describe(`/api/v1/ideas`, () => {
                         .patch(`${baseUrl}/${idea.id}`)
                         .send({ details: { title: 'Test title 2' } }),
                 )
-                .expect(200)
+                .expect(HttpStatus.OK)
             const body = response.body
             expect(body.details.title).not.toBe('Test title')
             expect(body.beneficiary).toBe('abcd-1234')
@@ -709,7 +693,7 @@ describe(`/api/v1/ideas`, () => {
             const ordinalNumber = idea.ordinalNumber + 13
             const response = await sessionHandler
                 .authorizeRequest(request(app()).patch(`${baseUrl}/${idea.id}`).send({ ordinalNumber }))
-                .expect(200)
+                .expect(HttpStatus.OK)
             expect(response.body.ordinalNumber).not.toBe(ordinalNumber)
             done()
         })
@@ -719,7 +703,7 @@ describe(`/api/v1/ideas`, () => {
             const ordinalNumber = idea.ordinalNumber + 13
             await sessionHandler
                 .authorizeRequest(request(app()).patch(`${baseUrl}/${idea.id}`).send({ ordinalNumber }))
-                .expect(200)
+                .expect(HttpStatus.OK)
             expect(spyOnPatchIdea).toHaveBeenCalledWith(
                 {},
                 idea.id,
@@ -772,7 +756,7 @@ describe(`/api/v1/ideas`, () => {
     describe('DELETE', () => {
         it('should delete idea', async (done) => {
             const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
-            await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`)).expect(200)
+            await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`)).expect(HttpStatus.OK)
             await sessionHandler.authorizeRequest(request(app()).get(`${baseUrl}/${idea.id}`)).expect(404)
             done()
         })
@@ -784,14 +768,16 @@ describe(`/api/v1/ideas`, () => {
                 },
                 sessionHandler.sessionData,
             )
-            await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`)).expect(200)
-            await sessionHandler.authorizeRequest(request(app()).get(`${baseUrl}/${idea.id}`)).expect(404)
+            await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/${idea.id}`)).expect(HttpStatus.OK)
+            await sessionHandler
+                .authorizeRequest(request(app()).get(`${baseUrl}/${idea.id}`))
+                .expect(HttpStatus.NOT_FOUND)
             done()
         })
         it('should return not found if wrong id', (done) => {
             sessionHandler
                 .authorizeRequest(request(app()).delete(`${baseUrl}/${uuid()}`))
-                .expect(404)
+                .expect(HttpStatus.NOT_FOUND)
                 .end(done)
         })
 
