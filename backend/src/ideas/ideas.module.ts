@@ -2,8 +2,8 @@ import { Module } from '@nestjs/common'
 import { SessionModule } from '../auth/session/session.module'
 import { ExtrinsicsModule } from '../extrinsics/extrinsics.module'
 import { IdeaProposalDetailsModule } from '../idea-proposal-details/idea-proposal-details.module'
+import { ProposalsModule } from '../proposals/proposals.module'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
-import { IdeaProposalsController } from './idea-proposals/idea-proposals.controller'
 import { IdeaProposalsService } from './idea-proposals/idea-proposals.service'
 import { IdeasController } from './ideas.controller'
 import { DatabaseModule } from '../database/database.module'
@@ -28,10 +28,8 @@ import { IsValidNetworkConstraint } from '../utils/network.validator'
         BlockchainModule,
         IdeaProposalDetailsModule,
         ConfigModule,
-        TypeOrmModule.forFeature([Idea]),
-        TypeOrmModule.forFeature([IdeaNetwork]),
-        TypeOrmModule.forFeature([IdeaMilestonesRepository]),
-        TypeOrmModule.forFeature([IdeaMilestoneNetwork]),
+        ProposalsModule,
+        TypeOrmModule.forFeature([Idea, IdeaNetwork, IdeaMilestonesRepository, IdeaMilestoneNetwork]),
     ],
     providers: [
         IdeasService,
@@ -40,7 +38,7 @@ import { IsValidNetworkConstraint } from '../utils/network.validator'
         IdeaMilestoneProposalsService,
         IsValidNetworkConstraint,
     ],
-    controllers: [IdeasController, IdeaProposalsController, IdeaMilestonesController, IdeaMilestoneProposalsController],
+    controllers: [IdeasController, IdeaMilestonesController, IdeaMilestoneProposalsController],
     exports: [IdeasService, IdeaMilestonesService],
 })
 export class IdeasModule {}

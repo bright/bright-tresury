@@ -58,7 +58,7 @@ export class IdeasService {
         return idea
     }
 
-    async findOneByNetworkId(networkId: string, sessionData: SessionData): Promise<Idea> {
+    async findOneIdeaNetworkWithIdea(networkId: string, sessionData: SessionData): Promise<IdeaNetwork> {
         const ideaNetwork = await this.ideaNetworkRepository.findOne(networkId, { relations: ['idea'] })
         if (!ideaNetwork) {
             throw new NotFoundException(`There is no idea network with id ${networkId}`)
@@ -67,7 +67,7 @@ export class IdeasService {
             throw new NotFoundException(`There is no idea for network with id: ${networkId}`)
         }
         ideaNetwork.idea.canGetOrThrow(sessionData.user)
-        return ideaNetwork.idea
+        return ideaNetwork
     }
 
     async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, Idea>> {

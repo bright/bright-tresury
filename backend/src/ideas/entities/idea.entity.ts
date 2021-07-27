@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
-import { Column, Entity, Generated, ManyToOne, OneToMany } from 'typeorm'
+import { Column, Entity, Generated, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
@@ -46,7 +46,8 @@ export class Idea extends BaseEntity {
     })
     milestones?: IdeaMilestone[]
 
-    @ManyToOne(() => IdeaProposalDetails, { eager: true })
+    @OneToOne(() => IdeaProposalDetails, { eager: true })
+    @JoinColumn()
     details: IdeaProposalDetails
 
     constructor(

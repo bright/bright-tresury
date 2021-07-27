@@ -1,4 +1,15 @@
+import { INestApplication } from '@nestjs/common'
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { v4 as uuid } from 'uuid'
+import { createUserSessionHandlerWithVerifiedEmail } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
+import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
+import { CreateIdeaDto } from '../ideas/dto/create-idea.dto'
+import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
+import { CreateIdeaMilestoneDto } from '../ideas/idea-milestones/dto/create-idea-milestone.dto'
+import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { createIdea, createIdeaMilestone } from '../ideas/spec.helpers'
 import { getLogger } from '../logging.module'
 import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info.dto'
 import { BlockchainProposalMotion } from '../blockchain/dto/blockchain-proposal-motion.dto'
@@ -21,6 +32,26 @@ const makeMotion = (
 })
 
 export const mockedBlockchainService = {
+    listenForExtrinsic: async (
+        extrinsicHash: string,
+        cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>,
+    ) => {
+        await cb({
+            blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
+            events: [
+                {
+                    section: 'treasury',
+                    method: 'Proposed',
+                    data: [
+                        {
+                            name: 'ProposalIndex',
+                            value: '3',
+                        },
+                    ],
+                },
+            ],
+        } as UpdateExtrinsicDto)
+    },
     getProposals: async () => {
         getLogger().info('Mock implementation of getProposals')
         return [
@@ -53,4 +84,53 @@ export const mockedBlockchainService = {
             },
         ] as BlockchainProposal[]
     },
+}
+
+export const setUpValues = async (
+    app: INestApplication,
+    ideaDto?: Partial<CreateIdeaDto>,
+    milestoneDto?: Partial<CreateIdeaMilestoneDto>,
+) => {
+    const ideaNetworkRepository = app.get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork))
+
+    const ideaMilestoneNetworkRepository = app.get<Repository<IdeaMilestoneNetwork>>(
+        getRepositoryToken(IdeaMilestoneNetwork),
+    )
+    const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app)
+    const otherSessionHandler = await createUserSessionHandlerWithVerifiedEmail(app, 'other@example.com', 'other')
+
+    const idea = await createIdea(
+        {
+            details: { title: 'ideaTitle' },
+            beneficiary: uuid(),
+            networks: [{ name: 'localhost', value: 10 }],
+            ...ideaDto,
+        },
+        sessionHandler.sessionData,
+    )
+
+    idea.networks[0].blockchainProposalId = 0
+    await ideaNetworkRepository.save(idea.networks[0])
+
+    const ideaNetwork = (await ideaNetworkRepository.findOne(idea.networks[0].id, { relations: ['idea'] }))!
+
+    const otherIdea = await createIdea(
+        {
+            details: { title: 'otherIdeaTitle' },
+            beneficiary: uuid(),
+            networks: [{ name: 'localhost', value: 10 }],
+        },
+        otherSessionHandler.sessionData,
+    )
+
+    const ideaMilestone = await createIdeaMilestone(
+        otherIdea.id,
+        { networks: [{ name: 'localhost', value: 100 }], ...milestoneDto },
+        otherSessionHandler.sessionData,
+    )
+
+    ideaMilestone.networks[0].blockchainProposalId = 1
+    await ideaMilestoneNetworkRepository.save(ideaMilestone.networks[0])
+
+    return { sessionHandler, idea, otherIdea, ideaMilestone, ideaNetwork }
 }

@@ -30,13 +30,21 @@ export async function createIdea(
 
 export async function createIdeaMilestone(
     ideaId: string,
-    createIdeaMilestoneDto: CreateIdeaMilestoneDto,
+    createIdeaMilestoneDto: Partial<CreateIdeaMilestoneDto>,
     sessionData: SessionData,
     ideaMilestonesService?: IdeaMilestonesService,
 ): Promise<IdeaMilestone> {
+    const defaultMilestone: CreateIdeaMilestoneDto = {
+        subject: 'ideaMilestoneSubject',
+        networks: [],
+        dateFrom: null,
+        dateTo: null,
+        description: 'description',
+        beneficiary: undefined,
+    }
     const service: IdeaMilestonesService =
         ideaMilestonesService ?? beforeSetupFullApp().get().get(IdeaMilestonesService)
-    return await service.create(ideaId, createIdeaMilestoneDto, sessionData)
+    return await service.create(ideaId, { ...defaultMilestone, ...createIdeaMilestoneDto }, sessionData)
 }
 
 export async function createIdeaMilestoneByEntity(

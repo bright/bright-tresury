@@ -11,15 +11,9 @@ export class IdeaProposalDetailsService {
         @InjectRepository(IdeaProposalDetails)
         private readonly detailsRepository: Repository<IdeaProposalDetails>,
     ) {}
+
     async create(dto: CreateIdeaProposalDetailsDto): Promise<IdeaProposalDetails> {
-        const details = new IdeaProposalDetails(
-            dto.title,
-            dto.content,
-            dto.field,
-            dto.contact,
-            dto.portfolio,
-            JSON.stringify(dto.links),
-        )
+        const details = await this.detailsRepository.create({ ...dto, links: JSON.stringify(dto.links) })
         return this.detailsRepository.save(details)
     }
 

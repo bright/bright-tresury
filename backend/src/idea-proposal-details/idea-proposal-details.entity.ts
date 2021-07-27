@@ -10,7 +10,7 @@ export const ideaProposalDetailsRestrictions = {
 @Entity('idea_proposal_details')
 export class IdeaProposalDetails extends BaseEntity {
     @Column({ nullable: false })
-    title: string
+    title!: string
 
     @Column({ nullable: true, type: 'text' })
     content?: string
@@ -29,14 +29,4 @@ export class IdeaProposalDetails extends BaseEntity {
 
     @Column({ nullable: true, type: 'text' })
     links?: string
-
-    constructor(title: string, content?: string, field?: string, contact?: string, portfolio?: string, links?: string) {
-        super()
-        this.title = title
-        this.content = content
-        this.field = field
-        this.contact = contact
-        this.portfolio = portfolio
-        this.links = links
-    }
 }

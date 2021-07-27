@@ -5,6 +5,7 @@ import { SessionData } from '../../auth/session/session.decorator'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../../extrinsics/extrinsics.service'
 import { getLogger } from '../../logging.module'
+import { ProposalsService } from '../../proposals/proposals.service'
 import { CreateIdeaProposalDto } from './dto/create-idea-proposal.dto'
 import { IdeasService } from '../ideas.service'
 import { BlockchainService } from '../../blockchain/blockchain.service'
@@ -24,6 +25,7 @@ export class IdeaProposalsService {
         private readonly extrinsicsService: ExtrinsicsService,
         private readonly ideasService: IdeasService,
         private readonly blockchainService: BlockchainService,
+        private readonly proposalsService: ProposalsService,
     ) {}
 
     async createProposal(
@@ -53,6 +55,7 @@ export class IdeaProposalsService {
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaIntoProposal(idea, ideaNetwork, blockchainProposalIndex)
+                await this.proposalsService.create(ideaNetwork, idea, blockchainProposalIndex)
             }
         }
 
