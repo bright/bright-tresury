@@ -4,7 +4,7 @@ import { Repository } from 'typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
-import { Proposal } from './proposal.entity'
+import { Proposal } from './entities/proposal.entity'
 import { BlockchainProposalWithDomainDetails, ProposalsService } from './proposals.service'
 import { mockedBlockchainService, setUpValues } from './spec.helpers'
 

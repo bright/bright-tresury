@@ -111,7 +111,7 @@ const ProposalInfo = ({
                     <Label label={t('proposal.content.info.description')} />
                     <div className={classes.longText}>
                         {ideaMilestone ? (
-                            ideaMilestone.description
+                            ideaMilestone.details.description
                         ) : (
                             <Placeholder value={t('proposal.content.info.description')} />
                         )}

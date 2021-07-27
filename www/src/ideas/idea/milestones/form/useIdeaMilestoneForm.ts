@@ -68,21 +68,11 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
         }
     }
 
-    const valuesFromDto = ({
-        subject,
-        beneficiary,
-        dateFrom,
-        dateTo,
-        description,
-        networks,
-    }: IdeaMilestoneDto): IdeaMilestoneFormValues => {
+    const valuesFromDto = ({ beneficiary, networks, details }: IdeaMilestoneDto): IdeaMilestoneFormValues => {
         return {
-            subject,
             beneficiary,
-            dateFrom,
-            dateTo,
-            description,
             networks,
+            ...details,
         }
     }
 

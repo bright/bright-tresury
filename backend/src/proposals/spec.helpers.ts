@@ -33,6 +33,7 @@ const makeMotion = (
 
 export const mockedBlockchainService = {
     listenForExtrinsic: async (
+        netowkrId: string,
         extrinsicHash: string,
         cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>,
     ) => {

@@ -5,7 +5,7 @@ import {
     SessionHandler,
 } from '../../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
-import { createIdea, createIdeaMilestone, createIdeaMilestoneByEntity } from '../../spec.helpers'
+import { createIdea, createIdeaMilestone, saveIdeaMilestone } from '../../spec.helpers'
 import { v4 as uuid } from 'uuid'
 import { HttpStatus } from '@nestjs/common'
 import { IdeasService } from '../../ideas.service'
@@ -47,16 +47,15 @@ const createIdeaMilestoneProposalDto = (ideaMilestoneNetworkId: string) => {
 const createIdeaMilestoneDto = (
     networkValue: number = 100,
     beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-) =>
-    new CreateIdeaMilestoneDto(
-        'ideaMilestoneSubject',
-        [{ name: NETWORKS.POLKADOT, value: networkValue }],
+) => {
+    return {
+        networks: [{ name: NETWORKS.POLKADOT, value: networkValue }],
         beneficiary,
-        null,
-        null,
-        'ideaMilestoneDescription',
-    )
-
+        details: {
+            subject: 'subject',
+        },
+    }
+}
 const baseUrl = (ideaId: string, ideaMilestoneId: string) =>
     `/api/v1/ideas/${ideaId}/milestones/${ideaMilestoneId}/proposals`
 
@@ -238,18 +237,14 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
-            const ideaMilestone = await createIdeaMilestoneByEntity(
-                new IdeaMilestone(
-                    idea,
-                    'subject',
-                    IdeaMilestoneStatus.TurnedIntoProposal,
-                    [new IdeaMilestoneNetwork(NETWORKS.POLKADOT, 100)],
-                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    null,
-                    null,
-                    null,
-                ),
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(100, '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'),
+                verifiedUserSessionHandler.sessionData,
+                ideaMilestonesService(),
             )
+            ideaMilestone.status = IdeaMilestoneStatus.TurnedIntoProposal
+            await saveIdeaMilestone(ideaMilestone)
 
             return verifiedUserSessionHandler
                 .authorizeRequest(

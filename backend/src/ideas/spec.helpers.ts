@@ -35,11 +35,8 @@ export async function createIdeaMilestone(
     ideaMilestonesService?: IdeaMilestonesService,
 ): Promise<IdeaMilestone> {
     const defaultMilestone: CreateIdeaMilestoneDto = {
-        subject: 'ideaMilestoneSubject',
+        details: { subject: 'ideaMilestoneSubject', dateFrom: null, dateTo: null, description: 'description' },
         networks: [],
-        dateFrom: null,
-        dateTo: null,
-        description: 'description',
         beneficiary: undefined,
     }
     const service: IdeaMilestonesService =
@@ -47,7 +44,7 @@ export async function createIdeaMilestone(
     return await service.create(ideaId, { ...defaultMilestone, ...createIdeaMilestoneDto }, sessionData)
 }
 
-export async function createIdeaMilestoneByEntity(
+export async function saveIdeaMilestone(
     ideaMilestone: IdeaMilestone,
     ideaMilestoneRepository?: IdeaMilestonesRepository,
 ): Promise<IdeaMilestone> {

@@ -56,21 +56,24 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
                     />
                     <div className={classes.headerStatusAndDateRange}>
                         <IdeaMilestoneStatusIndicator status={ideaMilestone.status} />
-                        <IdeaMilestoneDateRange dateFrom={ideaMilestone.dateFrom} dateTo={ideaMilestone.dateTo} />
+                        <IdeaMilestoneDateRange
+                            dateFrom={ideaMilestone.details.dateFrom}
+                            dateTo={ideaMilestone.details.dateTo}
+                        />
                     </div>
                 </CardHeader>
 
                 <Divider />
 
                 <CardDetails>
-                    <CardTitle title={ideaMilestone.subject} />
+                    <CardTitle title={ideaMilestone.details.subject} />
                     {ideaMilestone.networks && ideaMilestone.networks.length > 0 ? (
                         <NetworkValue value={ideaMilestone.networks[0].value} />
                     ) : null}
                 </CardDetails>
 
                 <div className={classes.description}>
-                    <IdeaMilestoneDescription description={ideaMilestone.description} />
+                    <IdeaMilestoneDescription description={ideaMilestone.details.description} />
                 </div>
             </div>
         </Card>

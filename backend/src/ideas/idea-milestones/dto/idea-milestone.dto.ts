@@ -1,4 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { IdeaProposalDetailsDto } from '../../../idea-proposal-details/dto/idea-proposal-details.dto'
+import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
 import { IdeaMilestone } from '../entities/idea-milestone.entity'
 import { IdeaMilestoneNetworkDto } from './idea-milestone-network.dto'
 import { Nil } from '../../../utils/types'
@@ -15,32 +17,10 @@ export class IdeaMilestoneDto {
     })
     ordinalNumber: number
 
-    @ApiProperty({
-        description: 'Subject of the milestone',
-    })
-    subject: string
-
     @ApiPropertyOptional({
         description: 'Blockchain address of the idea milestone beneficiary',
     })
     beneficiary: Nil<string>
-
-    @ApiPropertyOptional({
-        description: 'Date of start of the milestone',
-        type: Date,
-    })
-    dateFrom: Nil<Date>
-
-    @ApiPropertyOptional({
-        description: 'Date of end of the milestone',
-        type: Date,
-    })
-    dateTo: Nil<Date>
-
-    @ApiPropertyOptional({
-        description: 'Description of the milestone',
-    })
-    description: Nil<string>
 
     @ApiProperty({
         description: 'Networks of the milestone',
@@ -54,25 +34,18 @@ export class IdeaMilestoneDto {
     })
     status: IdeaMilestoneStatus
 
-    constructor({
-        id,
-        ordinalNumber,
-        subject,
-        status,
-        networks,
-        beneficiary,
-        dateFrom,
-        dateTo,
-        description,
-    }: IdeaMilestone) {
+    @ApiProperty({
+        description: 'Details of the milestone',
+        type: [MilestoneDetails],
+    })
+    details: MilestoneDetails
+
+    constructor({ id, ordinalNumber, status, networks, beneficiary, details }: IdeaMilestone) {
         this.id = id
         this.ordinalNumber = ordinalNumber
-        this.subject = subject
         this.status = status
         this.networks = networks.map((network) => new IdeaMilestoneNetworkDto(network))
         this.beneficiary = beneficiary
-        this.dateFrom = dateFrom
-        this.dateTo = dateTo
-        this.description = description
+        this.details = details
     }
 }

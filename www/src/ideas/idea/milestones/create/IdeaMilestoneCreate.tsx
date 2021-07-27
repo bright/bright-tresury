@@ -24,13 +24,20 @@ const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: IdeaMilestoneCreate)
 
     const queryClient = useQueryClient()
 
-    const submit = async (ideaMilestoneFormValues: IdeaMilestoneFormValues) => {
-        const createIdeaMilestoneDto: CreateIdeaMilestoneDto = {
-            ...ideaMilestoneFormValues,
+    const submit = async (values: IdeaMilestoneFormValues) => {
+        const dto: CreateIdeaMilestoneDto = {
+            beneficiary: values.beneficiary,
+            networks: values.networks,
+            details: {
+                subject: values.subject,
+                description: values.description,
+                dateFrom: values.dateFrom,
+                dateTo: values.dateTo,
+            },
         }
 
         await mutateAsync(
-            { ideaId: idea.id, data: createIdeaMilestoneDto },
+            { ideaId: idea.id, data: dto },
             {
                 onSuccess: async () => {
                     await queryClient.refetchQueries([IDEA_MILESTONES_QUERY_KEY_BASE, idea.id])

@@ -26,14 +26,12 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
     let idea: Idea
     let sessionHandler: SessionHandler
 
-    const milestoneDto = new CreateIdeaMilestoneDto(
-        'subject',
-        [{ name: NETWORKS.POLKADOT, value: 100 }],
-        null,
-        null,
-        null,
-        null,
-    )
+    const milestoneDto = {
+        networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+        details: {
+            subject: 'subject',
+        },
+    }
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -64,7 +62,11 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return idea milestones', async () => {
             await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null, null),
+                {
+                    details: {
+                        subject: 'ideaMilestoneSubject',
+                    },
+                },
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -74,13 +76,13 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const body = result.body as IdeaMilestoneDto[]
 
             expect(body.length).toBe(1)
-            expect(body[0].subject).toBe('ideaMilestoneSubject')
+            expect(body[0].details.subject).toBe('ideaMilestoneSubject')
         })
 
         it('should return milestones only of the given idea', async () => {
-            await createIdeaMilestone(
+            const ideaMilestone = await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto('ideaMilestoneSubject', [], null, null, null, null),
+                milestoneDto,
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -88,7 +90,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const anotherIdea = await createIdea({}, sessionHandler.sessionData, getIdeasService())
             await createIdeaMilestone(
                 anotherIdea.id,
-                new CreateIdeaMilestoneDto('anotherIdeaMilestoneSubject', [], null, null, null, null),
+                milestoneDto,
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -98,20 +100,22 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const body = result.body as IdeaMilestoneDto[]
 
             expect(body.length).toBe(1)
-            expect(body[0].subject).toBe('ideaMilestoneSubject')
+            expect(body[0].id).toBe(ideaMilestone.id)
         })
 
         it('should return milestones containing correct data', async () => {
             await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto(
-                    'ideaMilestoneSubject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    new Date(2021, 3, 20),
-                    new Date(2021, 3, 21),
-                    'ideaMilestoneDescription',
-                ),
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                    details: {
+                        subject: 'ideaMilestoneSubject',
+                        dateFrom: new Date(2021, 3, 20),
+                        dateTo: new Date(2021, 3, 21),
+                        description: 'ideaMilestoneDescription',
+                    },
+                },
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -121,14 +125,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const body = result.body as IdeaMilestoneDto[]
 
             expect(body.length).toBe(1)
-            expect(body[0].subject).toBe('ideaMilestoneSubject')
+            expect(body[0].details.subject).toBe('ideaMilestoneSubject')
             expect(body[0].networks.length).toBe(1)
             expect(body[0].networks[0].name).toBe(NETWORKS.POLKADOT)
             expect(body[0].networks[0].value).toBe(100)
             expect(body[0].beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body[0].dateFrom).toBe('2021-04-20')
-            expect(body[0].dateTo).toBe('2021-04-21')
-            expect(body[0].description).toBe('ideaMilestoneDescription')
+            expect(body[0].details.dateFrom).toBe('2021-04-20')
+            expect(body[0].details.dateTo).toBe('2021-04-21')
+            expect(body[0].details.description).toBe('ideaMilestoneDescription')
         })
 
         it('should return milestones of a draft idea of a logged in user', async () => {
@@ -142,7 +146,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(result.body.length).toBe(1)
 
             const body = result.body as IdeaMilestone[]
-            expect(body[0].subject).toBe(milestoneDto.subject)
+            expect(body[0].details.subject).toBe(milestoneDto.details.subject)
         })
 
         it('should return not found for a draft idea of other users', async () => {
@@ -162,14 +166,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it(`should return ${HttpStatus.OK} for existing idea milestone`, async () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto(
-                    'subject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    null,
-                    null,
-                    null,
-                    null,
-                ),
+                milestoneDto,
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -187,14 +184,16 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return idea milestone with all correct data', async () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto(
-                    'subject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    new Date(2021, 5, 20),
-                    new Date(2021, 5, 21),
-                    'description',
-                ),
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                    details: {
+                        subject: 'subject',
+                        dateFrom: new Date(2021, 5, 20),
+                        dateTo: new Date(2021, 5, 21),
+                        description: 'description',
+                    },
+                },
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -203,14 +202,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
             const body = result.body as IdeaMilestoneDto
 
-            expect(body.subject).toBe('subject')
+            expect(body.details.subject).toBe('subject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
             expect(body.networks[0].value).toBe(100)
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body.dateFrom).toBe('2021-06-20')
-            expect(body.dateTo).toBe('2021-06-21')
-            expect(body.description).toBe('description')
+            expect(body.details.dateFrom).toBe('2021-06-20')
+            expect(body.details.dateTo).toBe('2021-06-21')
+            expect(body.details.description).toBe('description')
         })
 
         it(`should return ${HttpStatus.NOT_FOUND} for idea milestone which belongs to idea with ${IdeaStatus.Draft} status for anonymous user`, async () => {
@@ -223,14 +222,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             )
             const ideaMilestone = await createIdeaMilestone(
                 ideaWithDraftStatus.id,
-                new CreateIdeaMilestoneDto(
-                    'subject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    null,
-                    null,
-                    null,
-                    null,
-                ),
+                milestoneDto,
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -253,14 +245,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             )
             const ideaMilestone = await createIdeaMilestone(
                 ideaWithDraftStatus.id,
-                new CreateIdeaMilestoneDto(
-                    'subject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    null,
-                    null,
-                    null,
-                    null,
-                ),
+                milestoneDto,
                 otherUser,
                 getIdeaMilestonesService(),
             )
@@ -280,14 +265,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             )
             const ideaMilestone = await createIdeaMilestone(
                 ideaWithDraftStatus.id,
-                new CreateIdeaMilestoneDto(
-                    'subject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    null,
-                    null,
-                    null,
-                    null,
-                ),
+                milestoneDto,
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -315,14 +293,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             )
             const ideaMilestone = await createIdeaMilestone(
                 ideaWithActiveStatus.id,
-                new CreateIdeaMilestoneDto(
-                    'subject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    null,
-                    null,
-                    null,
-                    null,
-                ),
+                milestoneDto,
                 otherUser,
                 getIdeaMilestonesService(),
             )
@@ -561,11 +532,13 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
+                            details: {
+                                subject: 'ideaMilestoneSubject',
+                                dateFrom: null,
+                                dateTo: null,
+                                description: null,
+                            },
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
                         }),
                 )
                 .expect(HttpStatus.CREATED)
@@ -577,12 +550,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
+                            details: {
+                                subject: 'ideaMilestoneSubject',
+                                dateFrom: '2021-04-20',
+                                dateTo: '2021-04-21',
+                                description: 'ideaDescription',
+                            },
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                            dateFrom: '2021-04-20',
-                            dateTo: '2021-04-21',
-                            description: 'ideaDescription',
                         }),
                 )
                 .expect(HttpStatus.CREATED)
@@ -594,12 +569,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
+                            details: {
+                                subject: 'ideaMilestoneSubject',
+                                dateFrom: '2021-04-20',
+                                dateTo: '2021-04-21',
+                                description: 'ideaDescription',
+                            },
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                            dateFrom: '2021-04-20',
-                            dateTo: '2021-04-21',
-                            description: 'ideaDescription',
                         }),
                 )
                 .expect(HttpStatus.CREATED)
@@ -608,14 +585,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
             expect(uuidValidate(body.id)).toBe(true)
             expect(body.ordinalNumber).toBeDefined()
-            expect(body.subject).toBe('ideaMilestoneSubject')
+            expect(body.details.subject).toBe('ideaMilestoneSubject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
             expect(body.networks[0].value).toBe(10)
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body.dateFrom).toBe('2021-04-20')
-            expect(body.dateTo).toBe('2021-04-21')
-            expect(body.description).toBe('ideaDescription')
+            expect(body.details.dateFrom).toBe('2021-04-20')
+            expect(body.details.dateTo).toBe('2021-04-21')
+            expect(body.details.description).toBe('ideaDescription')
         })
 
         it('should return forbidden for an idea of other users', async () => {
@@ -629,7 +606,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(otherIdea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
+                            details: { subject: 'ideaMilestoneSubject' },
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                         }),
                 )
@@ -667,14 +644,16 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         beforeEach(async () => {
             ideaMilestone = await createIdeaMilestone(
                 idea.id,
-                new CreateIdeaMilestoneDto(
-                    'ideaMilestoneSubject',
-                    [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    new Date(2021, 3, 20),
-                    new Date(2021, 3, 21),
-                    'ideaMilestoneDescription',
-                ),
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                    details: {
+                        subject: 'ideaMilestoneSubject',
+                        dateFrom: new Date(2021, 3, 20),
+                        dateTo: new Date(2021, 3, 21),
+                        description: 'ideaMilestoneDescription',
+                    },
+                },
                 sessionHandler.sessionData,
                 getIdeaMilestonesService(),
             )
@@ -698,14 +677,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
-                            subject: 'notEmptySubject',
+                            details: { subject: 'notEmptySubject' },
                         }),
                 )
                 .expect(HttpStatus.OK)
 
             const body = response.body as IdeaMilestoneDto
 
-            expect(body.subject).toBe('notEmptySubject')
+            expect(body.details.subject).toBe('notEmptySubject')
         })
 
         it(`should patch networks correctly`, async () => {
@@ -753,14 +732,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
-                            dateFrom: '2021-04-19',
+                            details: { dateFrom: '2021-04-19' },
                         }),
                 )
                 .expect(HttpStatus.OK)
 
             const body = response.body as IdeaMilestoneDto
 
-            expect(body.dateFrom).toBe('2021-04-19')
+            expect(body.details.dateFrom).toBe('2021-04-19')
         })
 
         it(`should patch dateTo correctly`, async () => {
@@ -769,14 +748,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
-                            dateTo: '2021-04-22',
+                            details: { dateTo: '2021-04-22' },
                         }),
                 )
                 .expect(HttpStatus.OK)
 
             const body = response.body as IdeaMilestoneDto
 
-            expect(body.dateTo).toBe('2021-04-22')
+            expect(body.details.dateTo).toBe('2021-04-22')
         })
 
         it(`should patch description correctly`, async () => {
@@ -785,14 +764,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
-                            description: 'newDescription',
+                            details: { description: 'newDescription' },
                         }),
                 )
                 .expect(HttpStatus.OK)
 
             const body = response.body as IdeaMilestoneDto
 
-            expect(body.description).toBe('newDescription')
+            expect(body.details.description).toBe('newDescription')
         })
 
         it(`should not change data which was not patched`, async () => {
@@ -801,7 +780,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
-                            subject: 'newSubject',
+                            details: { subject: 'newSubject' },
                         }),
                 )
                 .expect(HttpStatus.OK)
@@ -809,14 +788,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const body = response.body as IdeaMilestoneDto
 
             expect(body.ordinalNumber).toBe(ideaMilestone.ordinalNumber)
-            expect(body.subject).toBe('newSubject')
+            expect(body.details.subject).toBe('newSubject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
             expect(body.networks[0].value).toBe(100)
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body.dateFrom).toBe('2021-04-20')
-            expect(body.dateTo).toBe('2021-04-21')
-            expect(body.description).toBe('ideaMilestoneDescription')
+            expect(body.details.dateFrom).toBe('2021-04-20')
+            expect(body.details.dateTo).toBe('2021-04-21')
+            expect(body.details.description).toBe('ideaMilestoneDescription')
         })
 
         it('should return forbidden for an idea of other users', async () => {

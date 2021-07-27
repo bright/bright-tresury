@@ -1,6 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
+import { IdeaFormValues } from '../../../form/IdeaForm'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
 import IdeaMilestoneFormFields from './fields/IdeaMilestoneFormFields'
 import { Nil } from '../../../../util/types'
@@ -20,10 +21,10 @@ const useStyles = makeStyles(() =>
 
 export interface IdeaMilestoneFormValues {
     subject: string
-    beneficiary: Nil<string>
     dateFrom: Nil<Date>
     dateTo: Nil<Date>
     description: Nil<string>
+    beneficiary: Nil<string>
     networks: IdeaMilestoneNetworkDto[]
 }
 

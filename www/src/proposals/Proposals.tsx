@@ -38,7 +38,7 @@ const Proposals = () => {
 
     const filteredProposals = useMemo(() => {
         return proposals ? filterProposals(proposals, selectedFilter, user) : []
-    }, [selectedFilter, proposals])
+    }, [selectedFilter, proposals, user])
 
     return (
         <div className={classes.root}>

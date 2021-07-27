@@ -18,6 +18,7 @@ import { SuperTokensService } from './auth/supertokens/supertokens.service'
 import { EmailsModule } from './emails/emails.module'
 import { CachingModule } from './cache/cache.module'
 import { IdeaProposalDetailsModule } from './idea-proposal-details/idea-proposal-details.module'
+import { MilestoneDetailsModule } from './milestone-details/milestone-details.module'
 import { useContainer } from 'class-validator'
 
 @Module({
@@ -33,6 +34,7 @@ import { useContainer } from 'class-validator'
         EmailsModule,
         CachingModule,
         IdeaProposalDetailsModule,
+        MilestoneDetailsModule,
     ],
     exports: [],
     controllers: [AppController],

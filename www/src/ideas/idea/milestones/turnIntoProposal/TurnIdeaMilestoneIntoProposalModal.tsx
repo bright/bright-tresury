@@ -81,7 +81,7 @@ const TurnIdeaMilestoneIntoProposalModal = ({
                     <Trans
                         i18nKey="idea.milestones.turnIntoProposal.areYouSureYouWantToTurnIdeaMilestoneIntoProposal"
                         values={{
-                            ideaMilestoneSubject: ideaMilestone.subject,
+                            ideaMilestoneSubject: ideaMilestone.details.subject,
                         }}
                     />
                 </h2>

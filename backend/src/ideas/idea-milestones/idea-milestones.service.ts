@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { isBefore } from 'date-fns'
 import { In, Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
+import { MilestoneDetailsService } from '../../milestone-details/milestone-details.service'
 import { IdeasService } from '../ideas.service'
 import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
 import { IdeaMilestoneNetwork } from './entities/idea-milestone-network.entity'
@@ -20,13 +21,11 @@ export class IdeaMilestonesService {
         @InjectRepository(IdeaMilestoneNetwork)
         private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
         private readonly ideasService: IdeasService,
+        private readonly detailsService: MilestoneDetailsService,
     ) {}
 
     async find(ideaId: string, sessionData: SessionData): Promise<IdeaMilestone[]> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
-        if (!idea) {
-            throw new NotFoundException('Idea with the given id not found')
-        }
         return await this.ideaMilestoneRepository.find({
             where: { idea },
             relations: ['networks'],
@@ -64,37 +63,28 @@ export class IdeaMilestonesService {
         return result
     }
 
-    async create(
-        ideaId: string,
-        { subject, beneficiary, dateFrom, dateTo, description, networks }: CreateIdeaMilestoneDto,
-        sessionData: SessionData,
-    ): Promise<IdeaMilestone> {
+    async create(ideaId: string, dto: CreateIdeaMilestoneDto, sessionData: SessionData): Promise<IdeaMilestone> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.canEditOrThrow(sessionData.user)
 
-        if (dateFrom && dateTo && isBefore(new Date(dateTo), new Date(dateFrom))) {
-            throw new BadRequestException('End date of the milestone cannot be prior to the start date')
-        }
+        const details = await this.detailsService.create(dto.details)
 
-        const savedIdeaMilestone = await this.ideaMilestoneRepository.save(
-            new IdeaMilestone(
-                idea,
-                subject,
-                IdeaMilestoneStatus.Active,
-                networks.map(({ name, value }: CreateIdeaMilestoneNetworkDto) => new IdeaMilestoneNetwork(name, value)),
-                beneficiary,
-                dateFrom,
-                dateTo,
-                description,
+        const milestone = await this.ideaMilestoneRepository.create({
+            ...dto,
+            idea,
+            details,
+            networks: dto.networks.map(
+                ({ name, value }: CreateIdeaMilestoneNetworkDto) => new IdeaMilestoneNetwork(name, value),
             ),
-        )
+        })
+        const savedIdeaMilestone = await this.ideaMilestoneRepository.save(milestone)
         return (await this.ideaMilestoneRepository.findOne(savedIdeaMilestone.id, { relations: ['networks'] }))!
     }
 
     async update(
         ideaMilestoneId: string,
-        updateIdeaMilestoneDto: UpdateIdeaMilestoneDto,
+        dto: UpdateIdeaMilestoneDto,
         sessionData: SessionData,
     ): Promise<IdeaMilestone> {
         const currentIdeaMilestone = await this.ideaMilestoneRepository.findOne(ideaMilestoneId, {
@@ -107,16 +97,9 @@ export class IdeaMilestonesService {
 
         currentIdeaMilestone.idea.canEditOrThrow(sessionData.user)
 
-        const dateFrom = updateIdeaMilestoneDto.dateFrom ?? currentIdeaMilestone.dateFrom
-        const dateTo = updateIdeaMilestoneDto.dateTo ?? currentIdeaMilestone.dateTo
-
-        if (dateFrom && dateTo && isBefore(new Date(dateTo), new Date(dateFrom))) {
-            throw new BadRequestException('End date of the milestone cannot be prior to the start date')
-        }
-
         const updatedNetworks =
-            updateIdeaMilestoneDto.networks &&
-            updateIdeaMilestoneDto.networks.map((updatedNetwork: CreateIdeaMilestoneNetworkDto) => {
+            dto.networks &&
+            dto.networks.map((updatedNetwork: CreateIdeaMilestoneNetworkDto) => {
                 const existingNetwork = currentIdeaMilestone.networks.find(
                     (currentIdeaMilestoneNetwork: IdeaMilestoneNetwork) =>
                         currentIdeaMilestoneNetwork.id === updatedNetwork.id,
@@ -132,12 +115,16 @@ export class IdeaMilestonesService {
                 })
             })
 
+        const updatedDetails =
+            dto.details && (await this.detailsService.update(dto.details, currentIdeaMilestone.details))
+
         await this.ideaMilestoneRepository.save({
             ...currentIdeaMilestone,
-            ...updateIdeaMilestoneDto,
+            ...dto,
             networks: updatedNetworks ?? currentIdeaMilestone.networks,
+            details: updatedDetails ?? currentIdeaMilestone.details,
         })
 
-        return (await this.ideaMilestoneRepository.findOne(currentIdeaMilestone.id, { relations: ['networks'] }))!
+        return (await this.ideaMilestoneRepository.findOne(currentIdeaMilestone!.id, { relations: ['networks'] }))!
     }
 }

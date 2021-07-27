@@ -61,14 +61,13 @@ describe(`/api/v1/proposals`, () => {
         )
         ideaMilestone = await createIdeaMilestone(
             otherIdea.id,
-            new CreateIdeaMilestoneDto(
-                'ideaMilestoneSubject',
-                [{ name: NETWORKS.POLKADOT, value: 100 }],
-                uuid(),
-                null,
-                null,
-                'description',
-            ),
+            {
+                networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                details: {
+                    subject: 'ideaMilestoneSubject',
+                    description: 'description',
+                },
+            },
             sessionData,
         )
         ideaMilestone.networks[0].blockchainProposalId = 1

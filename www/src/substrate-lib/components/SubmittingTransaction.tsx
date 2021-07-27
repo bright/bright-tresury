@@ -124,13 +124,16 @@ const SubmittingTransaction = ({
         await txExecute.signAsync(fromAcct)
 
         const signedBlock = await api.rpc.chain.getBlock()
-        await onTransactionSigned({
-            extrinsicHash: txExecute.hash.toString(),
-            lastBlockHash: signedBlock.hash.toString(),
-        })
-
-        // send the transaction
-        await txExecute.send(txResHandler).catch(txErrHandler)
+        try {
+            await onTransactionSigned({
+                extrinsicHash: txExecute.hash.toString(),
+                lastBlockHash: signedBlock.hash.toString(),
+            })
+            // send the transaction
+            await txExecute.send(txResHandler).catch(txErrHandler)
+        } catch (error) {
+            setError(error)
+        }
     }
 
     const onSubmit = async (address: string) => {

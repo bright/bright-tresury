@@ -1,3 +1,4 @@
+import { MilestoneDetailsDto } from '../../../milestone-details/milestone-details.dto'
 import { Nil } from '../../../util/types'
 
 export enum IdeaMilestoneStatus {
@@ -8,13 +9,10 @@ export enum IdeaMilestoneStatus {
 export interface IdeaMilestoneDto {
     id: string
     ordinalNumber: number
-    subject: string
     status: IdeaMilestoneStatus
     beneficiary: Nil<string>
-    dateFrom: Nil<Date>
-    dateTo: Nil<Date>
-    description: Nil<string>
     networks: IdeaMilestoneNetworkDto[]
+    details: MilestoneDetailsDto
 }
 
 export interface IdeaMilestoneNetworkDto {

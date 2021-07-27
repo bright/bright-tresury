@@ -1,23 +1,22 @@
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
-import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
-import { createIdea, createIdeaMilestone, createIdeaMilestoneByEntity, createSessionData } from '../../spec.helpers'
-import { IdeasService } from '../../ideas.service'
-import { v4 as uuid } from 'uuid'
-import { CreateIdeaMilestoneDto } from '../dto/create-idea-milestone.dto'
-import { IdeaMilestonesService } from '../idea-milestones.service'
-import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { v4 as uuid } from 'uuid'
 import { SessionData } from '../../../auth/session/session.decorator'
-import { IdeaStatus } from '../../idea-status'
-import { IdeaMilestoneStatus } from '../idea-milestone-status'
-import { Idea } from '../../entities/idea.entity'
+import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
-import { Repository } from 'typeorm'
-import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
-import { getRepositoryToken } from '@nestjs/typeorm'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
+import { Idea } from '../../entities/idea.entity'
+import { IdeaStatus } from '../../idea-status'
+import { IdeasService } from '../../ideas.service'
+import { createIdea, createIdeaMilestone, createSessionData, saveIdeaMilestone } from '../../spec.helpers'
+import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
 import { IdeaMilestone } from '../entities/idea-milestone.entity'
+import { IdeaMilestoneStatus } from '../idea-milestone-status'
+import { IdeaMilestonesService } from '../idea-milestones.service'
+import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
 import { IdeaMilestoneProposalsService } from './idea-milestone-proposals.service'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
@@ -37,17 +36,17 @@ const updateExtrinsicDto: UpdateExtrinsicDto = {
 } as UpdateExtrinsicDto
 
 const createIdeaMilestoneDto = (
-    ideaMilestoneNetworkValue: number = 100,
+    networkValue: number = 100,
     beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-) =>
-    new CreateIdeaMilestoneDto(
-        'subject',
-        [{ name: 'polkadot', value: ideaMilestoneNetworkValue }],
+) => {
+    return {
+        networks: [{ name: 'polkadot', value: networkValue }],
         beneficiary,
-        null,
-        null,
-        null,
-    )
+        details: {
+            subject: 'subject',
+        },
+    }
+}
 
 describe('IdeaMilestoneProposalsService', () => {
     const app = beforeSetupFullApp()
@@ -219,18 +218,14 @@ describe('IdeaMilestoneProposalsService', () => {
         })
 
         it(`should return bad request exception for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
-            const ideaMilestone = await createIdeaMilestoneByEntity(
-                new IdeaMilestone(
-                    idea,
-                    'subject',
-                    IdeaMilestoneStatus.TurnedIntoProposal,
-                    [new IdeaMilestoneNetwork('polkadot', 100)],
-                    '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                    null,
-                    null,
-                    null,
-                ),
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(100, ''),
+                sessionData,
+                ideaMilestonesService(),
             )
+            ideaMilestone.status = IdeaMilestoneStatus.TurnedIntoProposal
+            await saveIdeaMilestone(ideaMilestone)
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 

@@ -1,9 +1,9 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
-import { BaseEntity } from '../database/base.entity'
-import { IdeaProposalDetails } from '../idea-proposal-details/idea-proposal-details.entity'
-import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
-import { User } from '../users/user.entity'
-import { Nil } from '../utils/types'
+import { BaseEntity } from '../../database/base.entity'
+import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
+import { IdeaNetwork } from '../../ideas/entities/idea-network.entity'
+import { User } from '../../users/user.entity'
+import { Nil } from '../../utils/types'
 
 @Entity('proposals')
 export class Proposal extends BaseEntity {

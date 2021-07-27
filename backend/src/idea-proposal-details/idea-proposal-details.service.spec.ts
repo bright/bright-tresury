@@ -1,8 +1,6 @@
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { SessionData } from '../auth/session/session.decorator'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
-import { createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
 import { IdeaProposalDetails } from './idea-proposal-details.entity'
 import { IdeaProposalDetailsService } from './idea-proposal-details.service'
@@ -14,15 +12,9 @@ describe('IdeaProposalDetailsService', () => {
         app().get<Repository<IdeaProposalDetails>>(getRepositoryToken(IdeaProposalDetails)),
     )
 
-    let sessionData: SessionData
-    let otherSessionData: SessionData
-
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
-
-        sessionData = await createSessionData()
-        otherSessionData = await createSessionData({ username: 'other', email: 'other@example.com' })
     })
 
     describe('create', () => {

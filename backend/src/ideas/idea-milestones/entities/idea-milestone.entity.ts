@@ -1,5 +1,7 @@
 import { BaseEntity } from '../../../database/base.entity'
-import { Column, Entity, Generated, ManyToOne, OneToMany } from 'typeorm'
+import { Column, Entity, Generated, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
+import { IdeaProposalDetails } from '../../../idea-proposal-details/idea-proposal-details.entity'
+import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
 import { IdeaMilestoneNetwork } from './idea-milestone-network.entity'
 import { Idea } from '../../entities/idea.entity'
 import { Nil } from '../../../utils/types'
@@ -26,17 +28,8 @@ export class IdeaMilestone extends BaseEntity {
     })
     status: IdeaMilestoneStatus
 
-    @Column({ type: 'text' })
-    subject: string
-
     @Column({ nullable: true, type: 'text' })
     beneficiary: Nil<string>
-
-    @Column({ nullable: true, type: 'date' })
-    dateFrom: Nil<Date>
-
-    @Column({ nullable: true, type: 'date' })
-    dateTo: Nil<Date>
 
     @OneToMany(() => IdeaMilestoneNetwork, (ideaMilestoneNetwork) => ideaMilestoneNetwork.ideaMilestone, {
         cascade: true,
@@ -45,29 +38,24 @@ export class IdeaMilestone extends BaseEntity {
     })
     networks: IdeaMilestoneNetwork[]
 
-    @Column({ nullable: true, type: 'text' })
-    description: Nil<string>
+    @OneToOne(() => MilestoneDetails, { eager: true })
+    @JoinColumn()
+    details: MilestoneDetails
 
     constructor(
         idea: Idea,
-        subject: string,
         status: IdeaMilestoneStatus,
         networks: IdeaMilestoneNetwork[],
+        details: MilestoneDetails,
         beneficiary?: Nil<string>,
-        dateFrom?: Nil<Date>,
-        dateTo?: Nil<Date>,
-        description?: Nil<string>,
     ) {
         super()
         this.idea = idea
-        this.subject = subject
         this.status = status
         this.networks = networks
         this.beneficiary = beneficiary
-        this.dateFrom = dateFrom
-        this.dateTo = dateTo
-        this.description = description
         this.ordinalNumber = 0
+        this.details = details
     }
 
     canTurnIntoProposalOrThrow = () => {

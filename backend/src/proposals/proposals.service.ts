@@ -9,7 +9,7 @@ import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { Idea } from '../ideas/entities/idea.entity'
 import { getLogger } from '../logging.module'
 import { Nil } from '../utils/types'
-import { Proposal } from './proposal.entity'
+import { Proposal } from './entities/proposal.entity'
 
 const logger = getLogger()
 
