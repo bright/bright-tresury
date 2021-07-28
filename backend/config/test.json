@@ -33,7 +33,7 @@
         {
             "id": "development-2",
             "name": "Development 2",
-            "url": "ws://local-development-polkadot-2:9955",
+            "url": "ws://local-development-polkadot-2:9944",
             "ss58Format": 42,
             "genesisHash": "",
             "bond": {
