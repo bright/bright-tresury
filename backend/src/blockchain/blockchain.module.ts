@@ -84,9 +84,17 @@ export class PolkadotApiModule implements OnModuleDestroy {
         logger.info('PolkadotApi module destroy')
         removeAllEventHandlers()
         logger.info('Removed all blockchains events listeners')
-        await Promise.all(Object.values(blockchainsConnections).map(({ apiPromise }) => apiPromise.disconnect()))
+        await Promise.all(
+            Object.values(blockchainsConnections).map(({ apiPromise }) =>
+                apiPromise.isConnected ? apiPromise.disconnect() : Promise.resolve(null),
+            ),
+        )
         logger.info('All APIs disconnected')
-        await Promise.all(Object.values(blockchainsConnections).map(({ wsProvider }) => wsProvider.disconnect))
+        await Promise.all(
+            Object.values(blockchainsConnections).map(({ wsProvider }) =>
+                wsProvider.isConnected ? wsProvider.disconnect : Promise.resolve(null),
+            ),
+        )
         logger.info('All WebSocket(WS) Providers disconnected')
     }
 }
