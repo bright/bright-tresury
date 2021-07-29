@@ -1,6 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { BlockchainProposalStatus } from '../../blockchain/dto/blockchain-proposal.dto'
 import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
+import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
+import { Nil } from '../../utils/types'
 import { BlockchainProposalWithDomainDetails } from '../proposals.service'
 import { BlockchainProposalMotion } from '../../blockchain/dto/blockchain-proposal-motion.dto'
 
@@ -39,11 +41,6 @@ export class ProposalDto {
     })
     status: ProposalStatus
 
-    @ApiPropertyOptional({
-        description: 'Title of a corresponding idea or subject of a corresponding idea milestone',
-    })
-    title?: string
-
     @ApiProperty({
         description: 'Flag that indicates that proposal was created from idea',
     })
@@ -61,30 +58,29 @@ export class ProposalDto {
     motions: BlockchainProposalMotion[]
 
     @ApiPropertyOptional({ description: 'Id of a corresponding idea' })
-    ideaId?: string
+    ideaId?: Nil<string>
 
     @ApiPropertyOptional({
         description: 'Id of a corresponding idea milestone',
     })
-    ideaMilestoneId?: string
+    ideaMilestoneId?: Nil<string>
 
     @ApiPropertyOptional({ description: 'Id of an owner who created the idea' })
-    ownerId?: string
+    ownerId?: Nil<string>
+
+    @ApiPropertyOptional({
+        description: 'Contextual details of the proposal',
+        type: IdeaProposalDetailsDto,
+    })
+    details?: IdeaProposalDetailsDto
 
     constructor({
-        proposalIndex,
-        proposer,
-        beneficiary,
-        value,
-        bond,
-        motions,
-        status,
-        title,
+        blockchain: { proposalIndex, proposer, beneficiary, value, bond, motions, status },
+        entity,
         isCreatedFromIdea,
         isCreatedFromIdeaMilestone,
         ideaId,
         ideaMilestoneId,
-        ownerId,
     }: BlockchainProposalWithDomainDetails) {
         this.proposalIndex = proposalIndex
         this.proposer = proposer
@@ -102,11 +98,11 @@ export class ProposalDto {
                 break
         }
 
-        this.title = title
+        this.details = entity ? new IdeaProposalDetailsDto(entity.details) : undefined
         this.isCreatedFromIdea = isCreatedFromIdea
         this.isCreatedFromIdeaMilestone = isCreatedFromIdeaMilestone
         this.ideaId = ideaId
         this.ideaMilestoneId = ideaMilestoneId
-        this.ownerId = ownerId
+        this.ownerId = entity?.ownerId
     }
 }

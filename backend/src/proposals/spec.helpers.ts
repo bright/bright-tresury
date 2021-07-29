@@ -98,7 +98,6 @@ export const setUpValues = async (
         getRepositoryToken(IdeaMilestoneNetwork),
     )
     const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app)
-    const otherSessionHandler = await createUserSessionHandlerWithVerifiedEmail(app, 'other@example.com', 'other')
 
     const idea = await createIdea(
         {
@@ -115,23 +114,34 @@ export const setUpValues = async (
 
     const ideaNetwork = (await ideaNetworkRepository.findOne(idea.networks[0].id, { relations: ['idea'] }))!
 
-    const otherIdea = await createIdea(
+    const ideaWithMilestone = await createIdea(
         {
-            details: { title: 'otherIdeaTitle' },
+            details: { title: 'ideaWithMilestoneTitle' },
             beneficiary: uuid(),
             networks: [{ name: 'localhost', value: 10 }],
         },
-        otherSessionHandler.sessionData,
+        sessionHandler.sessionData,
     )
 
     const ideaMilestone = await createIdeaMilestone(
-        otherIdea.id,
-        { networks: [{ name: 'localhost', value: 100 }], ...milestoneDto },
-        otherSessionHandler.sessionData,
+        ideaWithMilestone.id,
+        {
+            networks: [{ name: 'localhost', value: 100 }],
+            ...milestoneDto,
+            details: { subject: 'milestoneSubject', ...milestoneDto?.details },
+        },
+        sessionHandler.sessionData,
     )
 
     ideaMilestone.networks[0].blockchainProposalId = 1
     await ideaMilestoneNetworkRepository.save(ideaMilestone.networks[0])
 
-    return { sessionHandler, idea, otherIdea, ideaMilestone, ideaNetwork }
+    return {
+        sessionHandler,
+        idea,
+        ideaNetwork,
+        ideaWithMilestone,
+        ideaMilestone,
+        ideaMilestoneNetwork: ideaMilestone.networks[0],
+    }
 }

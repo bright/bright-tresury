@@ -7,19 +7,21 @@ import { IdeaProposalDetailsDto } from '../idea-proposal-details/dto/idea-propos
 import { IdeaProposalDetailsService } from '../idea-proposal-details/idea-proposal-details.service'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { Idea } from '../ideas/entities/idea.entity'
+import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.entity'
 import { getLogger } from '../logging.module'
 import { Nil } from '../utils/types'
 import { Proposal } from './entities/proposal.entity'
 
 const logger = getLogger()
 
-export type BlockchainProposalWithDomainDetails = BlockchainProposal & {
-    title?: string
+export type BlockchainProposalWithDomainDetails = {
+    blockchain: BlockchainProposal
+    entity: Nil<Proposal>
     isCreatedFromIdea: boolean
     isCreatedFromIdeaMilestone: boolean
-    ideaId?: string
-    ideaMilestoneId?: string
-    ownerId?: string
+    ideaId: Nil<string>
+    ideaMilestoneId: Nil<string>
 }
 
 @Injectable()
@@ -43,7 +45,13 @@ export class ProposalsService {
 
             const proposals = await this.proposalsRepository.find({
                 where: { blockchainProposalId: In(indexes), networkId: networkId },
-                relations: ['ideaNetwork', 'ideaNetwork.idea'],
+                relations: [
+                    'ideaNetwork',
+                    'ideaNetwork.idea',
+                    'ideaMilestoneNetwork',
+                    'ideaMilestoneNetwork.ideaMilestone',
+                    'ideaMilestoneNetwork.ideaMilestone.idea',
+                ],
             })
 
             return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
@@ -68,7 +76,13 @@ export class ProposalsService {
 
         const proposal = await this.proposalsRepository.findOne({
             where: { blockchainProposalId, networkId },
-            relations: ['ideaNetwork', 'ideaNetwork.idea'],
+            relations: [
+                'ideaNetwork',
+                'ideaNetwork.idea',
+                'ideaMilestoneNetwork',
+                'ideaMilestoneNetwork.ideaMilestone',
+                'ideaMilestoneNetwork.ideaMilestone.idea',
+            ],
         })
 
         return this.mergeProposal(blockchainProposal, proposal)
@@ -76,27 +90,42 @@ export class ProposalsService {
 
     mergeProposal(
         blockchainProposal: BlockchainProposal,
-        proposal: Nil<Proposal>,
+        proposalEntity: Nil<Proposal>,
     ): BlockchainProposalWithDomainDetails {
+        const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
+        const idea = proposalEntity?.ideaNetwork?.idea ?? milestone?.idea
         return {
-            ...blockchainProposal,
-            isCreatedFromIdea: true, // idea !== undefined,
-            isCreatedFromIdeaMilestone: false, // ideaMilestone !== undefined,
-            ideaId: proposal?.ideaNetwork?.idea?.id, // ?? ideaMilestone?.idea.id,
-            // ideaMilestoneId: ideaMilestone?.id,
-            title: proposal?.details.title, // ?? ideaMilestone?.subject,
-            ownerId: proposal?.ownerId,
+            blockchain: blockchainProposal,
+            entity: proposalEntity,
+            isCreatedFromIdea: !!idea && !milestone,
+            isCreatedFromIdeaMilestone: !!milestone,
+            ideaId: idea?.id,
+            ideaMilestoneId: milestone?.id,
         }
     }
 
-    async create(ideaNetwork: IdeaNetwork, idea: Idea, blockchainProposalId: number): Promise<Proposal> {
-        const details = await this.ideaProposalDetailsService.create(new IdeaProposalDetailsDto(idea.details))
+    async create(idea: Idea, blockchainProposalId: number, network: IdeaNetwork): Promise<Proposal>
+    async create(
+        idea: Idea,
+        blockchainProposalId: number,
+        network: IdeaMilestoneNetwork,
+        ideaMilestone: IdeaMilestone,
+    ): Promise<Proposal>
+    async create(
+        idea: Idea,
+        blockchainProposalId: number,
+        network: IdeaNetwork | IdeaMilestoneNetwork,
+        ideaMilestone?: IdeaMilestone,
+    ): Promise<Proposal> {
+        const detailsDto = new IdeaProposalDetailsDto(idea.details, ideaMilestone?.details)
+        const details = await this.ideaProposalDetailsService.create(detailsDto)
 
         const proposal = this.proposalsRepository.create({
             ownerId: idea.ownerId,
             details,
-            networkId: ideaNetwork.name,
-            ideaNetwork,
+            networkId: network.name,
+            ideaNetwork: ideaMilestone ? null : network,
+            ideaMilestoneNetwork: ideaMilestone ? network : null,
             blockchainProposalId,
         })
         return this.proposalsRepository.save(proposal)

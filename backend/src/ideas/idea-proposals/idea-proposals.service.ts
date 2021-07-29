@@ -55,7 +55,7 @@ export class IdeaProposalsService {
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaIntoProposal(idea, ideaNetwork, blockchainProposalIndex)
-                await this.proposalsService.create(ideaNetwork, idea, blockchainProposalIndex)
+                await this.proposalsService.create(idea, blockchainProposalIndex, ideaNetwork)
             }
         }
 

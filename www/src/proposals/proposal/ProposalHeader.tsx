@@ -72,7 +72,7 @@ const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
                     <ProposalStatusIndicator status={proposal.status} />
                 </Status>
                 <Title>
-                    <OptionalTitle title={proposal.title} />
+                    <OptionalTitle title={proposal.details?.title} />
                 </Title>
             </BasicInfo>
 

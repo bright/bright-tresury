@@ -1,17 +1,17 @@
+import { HttpStatus } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { v4 as uuid } from 'uuid'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { Idea } from '../ideas/entities/idea.entity'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
+import { Idea } from '../ideas/entities/idea.entity'
+import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { ProposalDto } from './dto/proposal.dto'
+import { ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
-import { HttpStatus } from '@nestjs/common'
-import { v4 as uuid } from 'uuid'
-import { CreateIdeaMilestoneDto } from '../ideas/idea-milestones/dto/create-idea-milestone.dto'
-import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
-import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.entity'
-import { Repository } from 'typeorm'
 
 const baseUrl = '/api/v1/proposals'
 
@@ -19,7 +19,7 @@ describe(`/api/v1/proposals`, () => {
     const app = beforeSetupFullApp()
 
     let idea: Idea
-    let otherIdea: Idea
+    let ideaWithMilestone: Idea
     let ideaMilestone: IdeaMilestone
 
     const ideaNetworkRepository = beforeAllSetup(() =>
@@ -29,6 +29,8 @@ describe(`/api/v1/proposals`, () => {
     const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
         app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork)),
     )
+
+    const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
 
     beforeAll(() => {
         jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
@@ -41,9 +43,16 @@ describe(`/api/v1/proposals`, () => {
 
         const sessionData = await createSessionData()
 
+        const details = {
+            content: 'content',
+            contact: 'contact',
+            portfolio: 'portfolio',
+            field: 'field',
+            links: ['link'],
+        }
         idea = await createIdea(
             {
-                details: { title: 'ideaTitle' },
+                details: { ...details, title: 'ideaTitle' },
                 beneficiary: uuid(),
                 networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             },
@@ -51,16 +60,18 @@ describe(`/api/v1/proposals`, () => {
         )
         idea.networks[0].blockchainProposalId = 0
         await ideaNetworkRepository().save(idea.networks[0])
-        otherIdea = await createIdea(
+        await proposalsService().create(idea, 0, idea.networks[0])
+
+        ideaWithMilestone = await createIdea(
             {
-                details: { title: 'otherIdeaTitle' },
+                details: { ...details, title: 'ideaWithMilestoneTitle' },
                 beneficiary: uuid(),
                 networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             },
             sessionData,
         )
         ideaMilestone = await createIdeaMilestone(
-            otherIdea.id,
+            ideaWithMilestone.id,
             {
                 networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 details: {
@@ -72,6 +83,7 @@ describe(`/api/v1/proposals`, () => {
         )
         ideaMilestone.networks[0].blockchainProposalId = 1
         await ideaMilestoneNetworkRepository().save(ideaMilestone.networks[0])
+        await proposalsService().create(ideaWithMilestone, 1, ideaMilestone.networks[0], ideaMilestone)
     })
 
     describe('GET /?network=networkName', () => {
@@ -98,7 +110,7 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal1!.bond).toBe(0.001)
             expect(proposal1!.value).toBe(0.00000000000001)
             expect(proposal1!.status).toBe('submitted')
-            expect(proposal1!.title).toBe('ideaTitle')
+            expect(proposal1!.details).toBeDefined()
             expect(proposal1!.isCreatedFromIdea).toBe(true)
             expect(proposal1!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal1!.ideaId).toBe(idea.id)
@@ -122,10 +134,10 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal2!.bond).toBe(40)
             expect(proposal2!.value).toBe(2000)
             expect(proposal2!.status).toBe('submitted')
-            expect(proposal2!.title).toBe('ideaMilestoneSubject')
+            expect(proposal1!.details).toBeDefined()
             expect(proposal2!.isCreatedFromIdea).toBe(false)
             expect(proposal2!.isCreatedFromIdeaMilestone).toBe(true)
-            expect(proposal2!.ideaId).toBe(otherIdea.id)
+            expect(proposal2!.ideaId).toBe(ideaWithMilestone.id)
             expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
             expect(proposal2!.motions).toBeDefined()
             expect(proposal2!.motions[0]).toEqual({
@@ -145,7 +157,7 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal3!.bond).toBe(20)
             expect(proposal3!.value).toBe(1000)
             expect(proposal3!.status).toBe('approved')
-            expect(proposal3!.title).toBeUndefined()
+            expect(proposal3!.details).toBeUndefined()
             expect(proposal3!.isCreatedFromIdea).toBe(false)
             expect(proposal3!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal3!.ideaId).toBeUndefined()
@@ -182,7 +194,7 @@ describe(`/api/v1/proposals`, () => {
             return request(app()).get(`${baseUrl}/123?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.NOT_FOUND)
         })
 
-        it('should return proposal with idea details for proposal created from idea', async () => {
+        it('should return details for proposal created from idea', async () => {
             const result = await request(app()).get(`${baseUrl}/0?network=${NETWORKS.POLKADOT}`)
 
             const body = result.body as ProposalDto
@@ -191,9 +203,6 @@ describe(`/api/v1/proposals`, () => {
             expect(body.bond).toBe(0.001)
             expect(body.value).toBe(0.00000000000001)
             expect(body.status).toBe('submitted')
-            expect(body.title).toBe('ideaTitle')
-            expect(body.isCreatedFromIdea).toBe(true)
-            expect(body.ideaId).toBe(idea.id)
             expect(body.motions).toBeDefined()
             expect(body.motions[0]).toEqual({
                 hash: 'hash_0_0',
@@ -204,9 +213,22 @@ describe(`/api/v1/proposals`, () => {
                 threshold: 2,
                 motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
+
+            expect(body.isCreatedFromIdea).toBe(true)
+            expect(body.isCreatedFromIdeaMilestone).toBe(false)
+            expect(body.ideaId).toBe(idea.id)
+            expect(body.ideaMilestoneId).toBeUndefined()
+            expect(body.ownerId).toBe(idea.ownerId)
+
+            expect(body.details!.title).toBe('ideaTitle')
+            expect(body.details!.content).toBe('content')
+            expect(body.details!.contact).toBe('contact')
+            expect(body.details!.portfolio).toBe('portfolio')
+            expect(body.details!.field).toBe('field')
+            expect(body.details!.links).toStrictEqual(['link'])
         })
 
-        it('should return proposal with idea milestone details for proposal created from idea milestone', async () => {
+        it('should return details for proposal created from idea milestone', async () => {
             const result = await request(app()).get(`${baseUrl}/1?network=${NETWORKS.POLKADOT}`)
 
             const body = result.body as ProposalDto
@@ -216,10 +238,6 @@ describe(`/api/v1/proposals`, () => {
             expect(body.bond).toBe(40)
             expect(body.value).toBe(2000)
             expect(body.status).toBe('submitted')
-            expect(body.title).toBe('ideaMilestoneSubject')
-            expect(body.isCreatedFromIdeaMilestone).toBe(true)
-            expect(body.ideaId).toBe(otherIdea.id)
-            expect(body.ideaMilestoneId).toBe(ideaMilestone.id)
             expect(body.motions).toBeDefined()
             expect(body.motions[0]).toEqual({
                 hash: 'hash_1_0',
@@ -230,9 +248,22 @@ describe(`/api/v1/proposals`, () => {
                 threshold: 2,
                 motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
+
+            expect(body.ideaId).toBe(ideaWithMilestone.id)
+            expect(body.ideaMilestoneId).toBe(ideaMilestone.id)
+            expect(body.isCreatedFromIdea).toBe(false)
+            expect(body.isCreatedFromIdeaMilestone).toBe(true)
+            expect(body.ownerId).toBe(ideaWithMilestone.ownerId)
+
+            expect(body.details!.title).toBe('ideaWithMilestoneTitle - ideaMilestoneSubject')
+            expect(body.details!.content).toBe('content\ndescription')
+            expect(body.details!.contact).toBe('contact')
+            expect(body.details!.portfolio).toBe('portfolio')
+            expect(body.details!.field).toBe('field')
+            expect(body.details!.links).toStrictEqual(['link'])
         })
 
-        it('should return proposal without idea nor idea milestone details for proposal created externally', async () => {
+        it('should return details for proposal created externally', async () => {
             const result = await request(app()).get(`${baseUrl}/3?network=${NETWORKS.POLKADOT}`)
 
             const body = result.body as ProposalDto
@@ -242,11 +273,6 @@ describe(`/api/v1/proposals`, () => {
             expect(body.bond).toBe(20)
             expect(body.value).toBe(1000)
             expect(body.status).toBe('approved')
-            expect(body.title).toBeUndefined()
-            expect(body.isCreatedFromIdea).toBe(false)
-            expect(body.isCreatedFromIdeaMilestone).toBe(false)
-            expect(body.ideaId).toBeUndefined()
-            expect(body.ideaMilestoneId).toBeUndefined()
             expect(body.motions).toBeDefined()
             expect(body.motions[0]).toEqual({
                 hash: 'hash_3_0',
@@ -257,6 +283,14 @@ describe(`/api/v1/proposals`, () => {
                 threshold: 2,
                 motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
+
+            expect(body.isCreatedFromIdea).toBe(false)
+            expect(body.isCreatedFromIdeaMilestone).toBe(false)
+            expect(body.ideaId).toBeUndefined()
+            expect(body.ideaMilestoneId).toBeUndefined()
+            expect(body.ownerId).toBeUndefined()
+
+            expect(body.details).toBeUndefined()
         })
     })
 })

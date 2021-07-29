@@ -7,6 +7,7 @@ import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelper
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
+import { ProposalsService } from '../../../proposals/proposals.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
 import { Idea } from '../../entities/idea.entity'
 import { IdeaStatus } from '../../idea-status'
@@ -56,6 +57,7 @@ describe('IdeaMilestoneProposalsService', () => {
     const ideaMilestoneProposalsService = beforeAllSetup(() =>
         app().get<IdeaMilestoneProposalsService>(IdeaMilestoneProposalsService),
     )
+    const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
 
     const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
@@ -362,6 +364,34 @@ describe('IdeaMilestoneProposalsService', () => {
             expect(turnIdeaMilestoneIntoProposalSpy).toHaveBeenCalled()
         })
 
+        it('should call call create proposal entity if blockchainProposalIndex was found', async () => {
+            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+                (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
+                    return 3
+                },
+            )
+
+            const proposalCreateSpy = jest.spyOn(proposalsService(), 'create')
+
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(),
+                sessionData,
+                ideaMilestonesService(),
+            )
+
+            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
+
+            await ideaMilestoneProposalsService().createProposal(
+                idea.id,
+                ideaMilestone.id,
+                createIdeaMilestoneProposalDto,
+                sessionData,
+            )
+
+            expect(proposalCreateSpy).toHaveBeenCalled()
+        })
+
         it('should not call turnIdeaMilestoneIntoProposal if blockchainProposalIndex was not found', async () => {
             jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
@@ -391,6 +421,34 @@ describe('IdeaMilestoneProposalsService', () => {
             )
 
             expect(turnIdeaMilestoneIntoProposalSpy).not.toHaveBeenCalled()
+        })
+
+        it('should not call create proposal entity if blockchainProposalIndex was not found', async () => {
+            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+                (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
+                    return undefined
+                },
+            )
+
+            const proposalCreateSpy = jest.spyOn(proposalsService(), 'create')
+
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(),
+                sessionData,
+                ideaMilestonesService(),
+            )
+
+            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
+
+            await ideaMilestoneProposalsService().createProposal(
+                idea.id,
+                ideaMilestone.id,
+                createIdeaMilestoneProposalDto,
+                sessionData,
+            )
+
+            expect(proposalCreateSpy).not.toHaveBeenCalled()
         })
 
         it('should return idea milestone network with extrinsic assigned', async () => {

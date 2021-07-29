@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
+import { ProposalsService } from '../../../proposals/proposals.service'
 import { IdeaMilestonesRepository } from '../idea-milestones.repository'
 import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
@@ -28,6 +29,7 @@ export class IdeaMilestoneProposalsService {
         private readonly ideaMilestonesService: IdeaMilestonesService,
         private readonly extrinsicsService: ExtrinsicsService,
         private readonly blockchainService: BlockchainService,
+        private readonly proposalsService: ProposalsService,
     ) {}
 
     async createProposal(
@@ -66,6 +68,7 @@ export class IdeaMilestoneProposalsService {
                     ideaMilestoneNetwork,
                     blockchainProposalIndex,
                 )
+                await this.proposalsService.create(idea, blockchainProposalIndex, ideaMilestoneNetwork, ideaMilestone)
             }
         }
 
