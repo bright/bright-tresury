@@ -35,8 +35,6 @@ services:
         ports:
             - '9944:9944'
         command: --rpc-external --ws-external --dev
-        volumes:
-            - ${PROJECT_DIR:-../}/deploy/local-development-polkadot-1-data:/polkadot
         restart: unless-stopped
     local-development-polkadot-2:
         container_name: local-development-polkadot-2
@@ -44,8 +42,6 @@ services:
         ports:
             - '9955:9944'
         command: --rpc-external --ws-external --dev
-        volumes:
-            - ${PROJECT_DIR:-../}/deploy/local-development-polkadot-2-data:/polkadot
         restart: unless-stopped
     authorization:
         ports:
