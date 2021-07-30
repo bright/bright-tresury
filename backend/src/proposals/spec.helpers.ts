@@ -14,6 +14,7 @@ import { getLogger } from '../logging.module'
 import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info.dto'
 import { BlockchainProposalMotion } from '../blockchain/dto/blockchain-proposal-motion.dto'
 import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
+import { NETWORKS } from '../utils/spec.helpers'
 
 const makeMotion = (
     hash: string,
@@ -103,7 +104,7 @@ export const setUpValues = async (
         {
             details: { title: 'ideaTitle' },
             beneficiary: uuid(),
-            networks: [{ name: 'localhost', value: 10 }],
+            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             ...ideaDto,
         },
         sessionHandler.sessionData,
@@ -118,7 +119,7 @@ export const setUpValues = async (
         {
             details: { title: 'ideaWithMilestoneTitle' },
             beneficiary: uuid(),
-            networks: [{ name: 'localhost', value: 10 }],
+            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
         },
         sessionHandler.sessionData,
     )
@@ -126,7 +127,7 @@ export const setUpValues = async (
     const ideaMilestone = await createIdeaMilestone(
         ideaWithMilestone.id,
         {
-            networks: [{ name: 'localhost', value: 100 }],
+            networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
             ...milestoneDto,
             details: { subject: 'milestoneSubject', ...milestoneDto?.details },
         },

@@ -40,8 +40,8 @@ describe('ProposalsService', () => {
             const { ideaWithMilestone, idea, ideaMilestone, ideaMilestoneNetwork, ideaNetwork } = await setUpValues(
                 app(),
             )
-            await proposalsService().create(ideaWithMilestone, 1, ideaMilestoneNetwork, ideaMilestone)
             await proposalsService().create(idea, 0, ideaNetwork)
+            await proposalsService().create(ideaWithMilestone, 1, ideaMilestoneNetwork, ideaMilestone)
 
             const proposals = await proposalsService().find(NETWORKS.POLKADOT)
             expect(proposals.length).toBe(3)
@@ -135,6 +135,16 @@ describe('ProposalsService', () => {
             expect(result.entity!.blockchainProposalId).toBe(0)
         })
 
+        it('should not return proposal with wrong network name', async () => {
+            const proposal = await proposalsService().findOne(0, NETWORKS.KUSAMA)
+
+            expect(proposal.entity).toBeUndefined()
+            expect(proposal.isCreatedFromIdea).toBe(false)
+            expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
+            expect(proposal.ideaId).toBeUndefined()
+            expect(proposal.ideaMilestoneId).toBeUndefined()
+        })
+
         it('should return idea details for proposal created from idea', async () => {
             const { idea, ideaNetwork } = await setUpValues(app())
             await proposalsService().create(idea, 0, ideaNetwork)
@@ -147,48 +157,27 @@ describe('ProposalsService', () => {
             expect(proposal.ideaMilestoneId).toBeUndefined()
         })
 
-        it('should not return proposal with wrong network name', async () => {
-            const proposal = await proposalsService().findOne(0, NETWORKS.POLKADOT)
-
-            expect(proposal.entity).toBeUndefined()
-            expect(proposal.isCreatedFromIdea).toBe(false)
-            expect(proposal.ideaId).toBeUndefined()
-        })
-
         it('should return idea milestone details for proposal created from idea milestone', async () => {
             const { ideaWithMilestone, ideaMilestone, ideaMilestoneNetwork } = await setUpValues(app())
             await proposalsService().create(ideaWithMilestone, 1, ideaMilestoneNetwork, ideaMilestone)
 
             const proposal = await proposalsService().findOne(1, NETWORKS.POLKADOT)
 
-        // it('should return idea milestone details for proposal created from idea milestone', async () => {
-        //     const { otherIdea, ideaMilestone } = await setUpValues(app())
-        //     const proposal = await proposalsService().findOne(1, NETWORKS.POLKADOT)
-        //
-        //     expect(proposal.title).toBe('ideaMilestoneSubject')
-        //     expect(proposal.isCreatedFromIdeaMilestone).toBe(true)
-        //     expect(proposal.ideaId).toBe(otherIdea.id)
-        //     expect(proposal.ideaMilestoneId).toBe(ideaMilestone.id)
-        // })
-        //
-        // it('should not return idea milestone details for proposal created from idea milestone and wrong network name', async () => {
-        //     const proposal = await proposalsService().findOne(1, 'otherNetwork')
-        //
-        //     expect(proposal.title).toBeUndefined()
-        //     expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
-        //     expect(proposal.ideaId).toBeUndefined()
-        //     expect(proposal.ideaMilestoneId).toBeUndefined()
-        // })
-        //
-        // it('should not return idea nor idea milestone details for proposal created externally', async () => {
-        //     const proposal = await proposalsService().findOne(3, NETWORKS.POLKADOT)
-        //
-        //     expect(proposal.title).toBeUndefined()
-        //     expect(proposal.isCreatedFromIdea).toBe(false)
-        //     expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
-        //     expect(proposal.ideaId).toBeUndefined()
-        //     expect(proposal.ideaMilestoneId).toBeUndefined()
-        // })
+            expect(proposal.isCreatedFromIdea).toBe(false)
+            expect(proposal.isCreatedFromIdeaMilestone).toBe(true)
+            expect(proposal.ideaId).toBe(ideaWithMilestone.id)
+            expect(proposal.ideaMilestoneId).toBe(ideaMilestone.id)
+        })
+
+        it('should not return idea nor idea milestone details for proposal created externally', async () => {
+            const proposal = await proposalsService().findOne(3, NETWORKS.POLKADOT)
+
+            expect(proposal.entity).toBeUndefined()
+            expect(proposal.isCreatedFromIdea).toBe(false)
+            expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
+            expect(proposal.ideaId).toBeUndefined()
+            expect(proposal.ideaMilestoneId).toBeUndefined()
+        })
 
         it('should throw not found exception for not existing proposal', async () => {
             await expect(proposalsService().findOne(100, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)

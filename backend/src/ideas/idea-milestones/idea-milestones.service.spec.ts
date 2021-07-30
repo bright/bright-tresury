@@ -1,17 +1,17 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
+import { ForbiddenException, NotFoundException } from '@nestjs/common'
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../../auth/session/session.decorator'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { Idea } from '../entities/idea.entity'
-import { IdeasService } from '../ideas.service'
 import { IdeaStatus } from '../idea-status'
+import { IdeasService } from '../ideas.service'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
 import { IdeaMilestoneNetwork } from './entities/idea-milestone-network.entity'
 import { IdeaMilestonesService } from './idea-milestones.service'
-import { Repository } from 'typeorm'
-import { getRepositoryToken } from '@nestjs/typeorm'
 
 const minimalCreateIdeaMilestoneDto = {
     details: { subject: 'ideaMilestoneSubject' },
@@ -40,11 +40,7 @@ describe(`IdeaMilestonesService`, () => {
         sessionData = await createSessionData()
         otherSessionData = await createSessionData({ username: 'other', email: 'other@example.com' })
 
-        idea = await createIdea(
-            { networks: [{ name: NETWORKS.POLKADOT, value: 100 }] },
-            sessionData,
-            getIdeasService()
-        )
+        idea = await createIdea({ networks: [{ name: NETWORKS.POLKADOT, value: 100 }] }, sessionData, getIdeasService())
     })
 
     describe('find', () => {
@@ -72,10 +68,7 @@ describe(`IdeaMilestonesService`, () => {
         })
 
         it('should return idea milestones only for the given idea', async () => {
-            const anotherIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: 100 }] },
-                sessionData,
-            )
+            const anotherIdea = await createIdea({ networks: [{ name: NETWORKS.POLKADOT, value: 100 }] }, sessionData)
 
             await getIdeaMilestonesService().create(
                 idea.id,
@@ -121,7 +114,7 @@ describe(`IdeaMilestonesService`, () => {
         it('should throw not found for draft idea for not owner', async () => {
             const draftIdea = await createIdea(
                 { networks: [{ name: NETWORKS.POLKADOT, value: 100 }], status: IdeaStatus.Draft },
-                sessionData
+                sessionData,
             )
 
             await expect(getIdeaMilestonesService().findOne(draftIdea.id, otherSessionData)).rejects.toThrow(
@@ -177,7 +170,7 @@ describe(`IdeaMilestonesService`, () => {
         it('should return idea milestone for draft idea for owner', async () => {
             const draftIdea = await createIdea(
                 { networks: [{ name: NETWORKS.POLKADOT, value: 100 }], status: IdeaStatus.Draft },
-                sessionData
+                sessionData,
             )
             const milestone = await getIdeaMilestonesService().create(
                 draftIdea.id,
@@ -196,7 +189,7 @@ describe(`IdeaMilestonesService`, () => {
             const draftIdea = await createIdea(
                 {
                     networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
-                    status: IdeaStatus.Draft
+                    status: IdeaStatus.Draft,
                 },
                 sessionData,
             )
@@ -314,7 +307,7 @@ describe(`IdeaMilestonesService`, () => {
                         dateTo: new Date(2021, 3, 21),
                         description: 'ideaMilestoneDescription',
                     },
-                    networks: [{ name: NETWORKS.POLKADOT', value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 },
                 sessionData,

@@ -7,6 +7,7 @@ import Link from '../components/link/Link'
 import { breakpoints } from '../theme/theme'
 import Placeholder from '../components/text/Placeholder'
 import { IdeaProposalDetailsDto } from './idea-proposal-details.dto'
+import LongText from './LongText'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -18,23 +19,6 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 fontSize: '16px',
-            },
-        },
-        longText: {
-            padding: '20px',
-            backgroundColor: theme.palette.background.default,
-            borderRadius: '8px',
-            fontSize: '16px',
-            fontWeight: 400,
-            width: '70%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '100%',
-                padding: '16px',
-                fontSize: '18px',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: '10px',
-                fontSize: '14px',
             },
         },
         spacing: {
@@ -89,25 +73,21 @@ const IdeaProposalDetails = ({ beneficiary, details }: IdeaProposalDetailsProps)
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.field')} />
-                <div className={classes.text}>{details?.field || <Placeholder value={t('idea.details.field')} />}</div>
+                <text className={classes.text}>
+                    {details?.field || <Placeholder value={t('idea.details.field')} />}
+                </text>
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.content')} />
-                <div className={classes.longText}>
-                    {details?.content || <Placeholder value={t('idea.details.content')} />}
-                </div>
+                <LongText text={details?.content} placeholder={t('idea.details.content')} />
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.contact')} />
-                <div className={classes.longText}>
-                    {details?.contact || <Placeholder value={t('idea.details.contact')} />}
-                </div>
+                <LongText text={details?.contact} placeholder={t('idea.details.contact')} />
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.portfolio')} />
-                <div className={classes.longText}>
-                    {details?.portfolio || <Placeholder value={t('idea.details.portfolio')} />}
-                </div>
+                <LongText text={details?.portfolio} placeholder={t('idea.details.portfolio')} />
             </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.links')} />

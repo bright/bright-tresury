@@ -44,7 +44,7 @@ export class ProposalsService {
             const indexes = blockchainProposals.map(({ proposalIndex }: BlockchainProposal) => proposalIndex)
 
             const proposals = await this.proposalsRepository.find({
-                where: { blockchainProposalId: In(indexes), networkId: networkId },
+                where: { blockchainProposalId: In(indexes), networkId },
                 relations: [
                     'ideaNetwork',
                     'ideaNetwork.idea',
