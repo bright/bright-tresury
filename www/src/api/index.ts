@@ -14,7 +14,6 @@ export function apiGet<T>(url: string) {
 }
 
 export function apiPost<T>(url: string, data?: any) {
-    console.log('apiPost, data:', data)
     return api.post<T>(url, data).then((response) => response.data)
 }
 

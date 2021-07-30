@@ -20,8 +20,10 @@ export class IdeaCommentsController {
     private COMMENTS = [
         {
             id: 'comment_1',
-            userId: 'Sasha_Moshito_id',
-            username: 'Sasha_Moshito',
+            author: {
+                userId: 'Sasha_Moshito_id',
+                username: 'Sasha_Moshito',
+            },
             timestamp: Date.now() - 1000 * 60 * 2,
             thumbsUpCount: 4,
             thumbsDownCount: 2,
@@ -30,8 +32,10 @@ export class IdeaCommentsController {
         },
         {
             id: 'comment_2',
-            userId: 'Farah_id',
-            username: 'Farah',
+            author: {
+                userId: 'Farah_id',
+                username: 'Farah',
+            },
             timestamp: Date.now() - 1000 * 60 * 12,
             thumbsUpCount: 1,
             thumbsDownCount: 0,
@@ -74,8 +78,11 @@ export class IdeaCommentsController {
         @ReqSession() session: SessionData,
     ): Promise<IdeaCommentDto> {
         this.COMMENTS.push({
-            userId: session.user.id,
-            username: session.user.username || session.user.email,
+            author: {
+                userId: session.user.id,
+                username: session.user.isEmailPasswordEnabled ? session.user.username : null,
+                web3address: session.user?.web3Addresses?.find((web3address) => web3address.isPrimary)?.address,
+            },
             timestamp: Date.now(),
             thumbsUpCount: Math.floor(Math.random() * 100),
             thumbsDownCount: Math.floor(Math.random() * 100),

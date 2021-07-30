@@ -1,8 +1,6 @@
 import { apiGet, apiPost, apiPatch } from '../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { IdeaDto, TurnIdeaIntoProposalDto } from './ideas.dto'
-import { IdeaCommentDto } from './idea/discussion/IdeaComment.dto'
-import { IDEA_MILESTONE_QUERY_KEY_BASE } from './idea/milestones/idea.milestones.api'
 
 export const IDEAS_API_PATH = '/ideas'
 

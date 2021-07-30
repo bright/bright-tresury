@@ -203,7 +203,25 @@
             "emailSendingError": "An error occurred when sending email, please try again later"
         }
     },
+    "copy": "Copy",
+    "copied": "Copied !",
+    "ago": "ago",
+    "discussion": {
+        "commentAlso": "Comment also on ",
+        "enterCommentPlaceholder": "Leave your comment here",
+        "commentedTimestampTitle": "commented",
+        "inOrderToComment": "In order to comment, please ",
+        "logIn": "log in",
+        "cancelComment": "Cancel",
+        "sendComment": "Send",
+        "sendCommentError": "Could not save the comment",
+        "noComments": "There are no comments yet. Be the first to start the discussion.",
+        "thumbsUpAlt": "Thumbs Up",
+        "thumbsDownAlt": "Thumbs Down"
+    },
+
     "idea": {
+        "copyLink": "Copy Link",
         "ordinalNumberPrefix": "Idea - ",
         "details": {
             "title": "Title",
@@ -322,15 +340,7 @@
         },
         "introduceTitle": "Introduce Idea",
         "editTitle": "Edit Idea",
-        "introduce": "+ Introduce Idea",
-        "discussion": {
-            "copyLink": "Copy Link",
-            "commentAlso": "Comment also on",
-            "enterCommentPlaceholder": "Leave your comment here",
-            "cancelComment": "Cancel",
-            "sendComment": "Send",
-            "commentedTimestampTitle": " | commented"
-        }
+        "introduce": "+ Introduce Idea"
     },
     "proposal": {
         "content": {

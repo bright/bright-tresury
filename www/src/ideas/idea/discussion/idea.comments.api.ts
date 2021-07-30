@@ -1,6 +1,6 @@
 import { apiGet, apiPost } from '../../../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { IdeaCommentDto, CreateIdeaCommentDto } from './IdeaComment.dto'
+import { IdeaCommentDto, CreateIdeaCommentDto } from './idea.comment.dto'
 import { IDEAS_API_PATH } from '../../ideas.api'
 
 const getIdeaCommentsApiBasePath = (ideaId: string) => {
@@ -29,7 +29,6 @@ export interface CreateIdeaCommentParams {
 }
 
 function createIdeaComment({ ideaId, data }: CreateIdeaCommentParams) {
-    console.log('data:', data)
     return apiPost<IdeaCommentDto>(`${getIdeaCommentsApiBasePath(ideaId)}`, data)
 }
 
