@@ -36,8 +36,8 @@ export class Proposal extends BaseEntity {
     @Column({ nullable: false, type: 'text' })
     networkId: string
 
-    @Column({ nullable: true, type: 'integer' })
-    blockchainProposalId: number | null
+    @Column({ nullable: false, type: 'integer' })
+    blockchainProposalId: number
 
     @OneToMany(() => ProposalMilestone, (milestone) => milestone.proposal, {
         cascade: true,
@@ -52,7 +52,7 @@ export class Proposal extends BaseEntity {
         ideaNetwork: IdeaNetwork,
         ideaMilestoneNetwork: IdeaMilestoneNetwork,
         networkId: string,
-        blockchainProposalId: number | null,
+        blockchainProposalId: number,
     ) {
         super()
         this.networkId = networkId

@@ -136,16 +136,6 @@ describe('ProposalsService', () => {
             expect(result.entity!.blockchainProposalId).toBe(0)
         })
 
-        it('should not return proposal with wrong network name', async () => {
-            const proposal = await proposalsService().findOne(0, NETWORKS.KUSAMA)
-
-            expect(proposal.entity).toBeUndefined()
-            expect(proposal.isCreatedFromIdea).toBe(false)
-            expect(proposal.isCreatedFromIdeaMilestone).toBe(false)
-            expect(proposal.ideaId).toBeUndefined()
-            expect(proposal.ideaMilestoneId).toBeUndefined()
-        })
-
         it('should return idea details for proposal created from idea', async () => {
             const { idea, ideaNetwork } = await setUpValues(app())
             await proposalsService().createFromIdea(idea, 0, ideaNetwork)
@@ -182,6 +172,10 @@ describe('ProposalsService', () => {
 
         it('should throw not found exception for not existing proposal', async () => {
             await expect(proposalsService().findOne(100, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)
+        })
+
+        it('should throw not found for proposal with wrong network name', async () => {
+            await expect(proposalsService().findOne(0, NETWORKS.KUSAMA)).rejects.toThrow(NotFoundException)
         })
     })
 

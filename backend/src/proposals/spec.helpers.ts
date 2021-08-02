@@ -55,8 +55,11 @@ export const mockedBlockchainService = {
             ],
         } as UpdateExtrinsicDto)
     },
-    getProposals: async () => {
+    getProposals: async (networkId: string) => {
         getLogger().info('Mock implementation of getProposals')
+        if (networkId !== NETWORKS.POLKADOT) {
+            return []
+        }
         return [
             {
                 proposalIndex: 0,
