@@ -9,7 +9,8 @@ import {
     Length,
     MaxLength,
 } from 'class-validator'
-import { ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
+import { MilestoneDetails } from '../../milestone-details/entities/milestone-details.entity'
+import { IdeaProposalDetails, ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
 
 export class CreateIdeaProposalDetailsDto {
     @ApiProperty({ description: 'Title' })
@@ -53,4 +54,27 @@ export class CreateIdeaProposalDetailsDto {
     @IsString({ each: true })
     @Length(1, 1000, { each: true })
     links?: string[]
+
+    constructor(
+        { title, content, field, contact, portfolio, links }: IdeaProposalDetails,
+        milestoneDetails?: MilestoneDetails,
+    ) {
+        this.title = title
+        this.content = content
+        this.field = field
+        this.contact = contact
+        this.portfolio = portfolio
+        this.links = links ? (JSON.parse(links) as string[]) : undefined
+
+        if (milestoneDetails) {
+            const { subject, dateFrom, dateTo, description } = milestoneDetails
+            this.title += ` - ${subject}`
+            if (dateFrom && dateTo) {
+                this.content += `\n${dateFrom} - ${dateTo}`
+            }
+            if (description) {
+                this.content += `\n${description}`
+            }
+        }
+    }
 }

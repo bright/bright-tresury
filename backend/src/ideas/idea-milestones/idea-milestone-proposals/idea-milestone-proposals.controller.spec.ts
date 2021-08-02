@@ -1,24 +1,21 @@
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
+import { HttpStatus } from '@nestjs/common'
+import { v4 as uuid } from 'uuid'
+import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import {
     createUserSessionHandler,
     createUserSessionHandlerWithVerifiedEmail,
     SessionHandler,
 } from '../../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
-import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
-import { createIdea, createIdeaMilestone, saveIdeaMilestone } from '../../spec.helpers'
-import { v4 as uuid } from 'uuid'
-import { HttpStatus } from '@nestjs/common'
-import { IdeasService } from '../../ideas.service'
-import { IdeaMilestonesService } from '../idea-milestones.service'
-import { CreateIdeaMilestoneDto } from '../dto/create-idea-milestone.dto'
-import { IdeaStatus } from '../../idea-status'
-import { IdeaMilestoneStatus } from '../idea-milestone-status'
-import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
-import { Idea } from '../../entities/idea.entity'
-import { IdeaMilestone } from '../entities/idea-milestone.entity'
-import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
-import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { BlockchainService } from '../../../blockchain/blockchain.service'
+import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
+import { Idea } from '../../entities/idea.entity'
+import { IdeaStatus } from '../../idea-status'
+import { IdeasService } from '../../ideas.service'
+import { createIdea, createIdeaMilestone, saveIdeaMilestone } from '../../spec.helpers'
+import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
+import { IdeaMilestoneStatus } from '../idea-milestone-status'
+import { IdeaMilestonesService } from '../idea-milestones.service'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',

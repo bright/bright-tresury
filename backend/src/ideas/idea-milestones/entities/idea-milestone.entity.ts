@@ -1,6 +1,5 @@
 import { BaseEntity } from '../../../database/base.entity'
-import { Column, Entity, Generated, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
-import { IdeaProposalDetails } from '../../../idea-proposal-details/idea-proposal-details.entity'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
 import { IdeaMilestoneNetwork } from './idea-milestone-network.entity'
 import { Idea } from '../../entities/idea.entity'

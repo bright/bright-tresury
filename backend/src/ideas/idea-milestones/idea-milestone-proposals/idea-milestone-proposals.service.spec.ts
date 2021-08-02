@@ -371,7 +371,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 },
             )
 
-            const proposalCreateSpy = jest.spyOn(proposalsService(), 'create')
+            const proposalCreateSpy = jest.spyOn(proposalsService(), 'createFromMilestone')
 
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
@@ -430,7 +430,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 },
             )
 
-            const proposalCreateSpy = jest.spyOn(proposalsService(), 'create')
+            const proposalCreateSpy = jest.spyOn(proposalsService(), 'createFromMilestone')
 
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,

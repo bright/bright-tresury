@@ -15,6 +15,7 @@ import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info
 import { BlockchainProposalMotion } from '../blockchain/dto/blockchain-proposal-motion.dto'
 import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
 import { NETWORKS } from '../utils/spec.helpers'
+import { IdeaWithMilestones } from './proposals.service'
 
 const makeMotion = (
     hash: string,
@@ -95,9 +96,6 @@ export const setUpValues = async (
 ) => {
     const ideaNetworkRepository = app.get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork))
 
-    const ideaMilestoneNetworkRepository = app.get<Repository<IdeaMilestoneNetwork>>(
-        getRepositoryToken(IdeaMilestoneNetwork),
-    )
     const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app)
 
     const idea = await createIdea(
@@ -109,13 +107,11 @@ export const setUpValues = async (
         },
         sessionHandler.sessionData,
     )
-
-    idea.networks[0].blockchainProposalId = 0
-    await ideaNetworkRepository.save(idea.networks[0])
+    idea.milestones = []
 
     const ideaNetwork = (await ideaNetworkRepository.findOne(idea.networks[0].id, { relations: ['idea'] }))!
 
-    const ideaWithMilestone = await createIdea(
+    const ideaWithMilestones = await createIdea(
         {
             details: { title: 'ideaWithMilestoneTitle' },
             beneficiary: uuid(),
@@ -125,7 +121,7 @@ export const setUpValues = async (
     )
 
     const ideaMilestone = await createIdeaMilestone(
-        ideaWithMilestone.id,
+        ideaWithMilestones.id,
         {
             networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
             ...milestoneDto,
@@ -133,15 +129,14 @@ export const setUpValues = async (
         },
         sessionHandler.sessionData,
     )
-
-    ideaMilestone.networks[0].blockchainProposalId = 1
-    await ideaMilestoneNetworkRepository.save(ideaMilestone.networks[0])
+    ideaWithMilestones.milestones = [ideaMilestone]
 
     return {
         sessionHandler,
-        idea,
+        idea: idea as IdeaWithMilestones,
         ideaNetwork,
-        ideaWithMilestone,
+        ideaWithMilestones: ideaWithMilestones as IdeaWithMilestones,
+        ideaWithMilestoneNetwork: ideaWithMilestones.networks[0],
         ideaMilestone,
         ideaMilestoneNetwork: ideaMilestone.networks[0],
     }

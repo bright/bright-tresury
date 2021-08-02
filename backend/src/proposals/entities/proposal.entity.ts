@@ -1,10 +1,11 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { IdeaNetwork } from '../../ideas/entities/idea-network.entity'
 import { IdeaMilestoneNetwork } from '../../ideas/idea-milestones/entities/idea-milestone-network.entity'
 import { User } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
+import { ProposalMilestone } from '../proposal-milestones/entities/proposal-milestone.entity'
 
 @Entity('proposals')
 export class Proposal extends BaseEntity {
@@ -37,6 +38,13 @@ export class Proposal extends BaseEntity {
 
     @Column({ nullable: true, type: 'integer' })
     blockchainProposalId: number | null
+
+    @OneToMany(() => ProposalMilestone, (milestone) => milestone.proposal, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    milestones?: ProposalMilestone[]
 
     constructor(
         owner: User,

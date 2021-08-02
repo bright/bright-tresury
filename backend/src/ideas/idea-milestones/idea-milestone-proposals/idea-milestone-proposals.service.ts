@@ -68,7 +68,12 @@ export class IdeaMilestoneProposalsService {
                     ideaMilestoneNetwork,
                     blockchainProposalIndex,
                 )
-                await this.proposalsService.create(idea, blockchainProposalIndex, ideaMilestoneNetwork, ideaMilestone)
+                await this.proposalsService.createFromMilestone(
+                    idea,
+                    blockchainProposalIndex,
+                    ideaMilestoneNetwork,
+                    ideaMilestone,
+                )
             }
         }
 

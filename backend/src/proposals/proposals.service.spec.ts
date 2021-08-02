@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { IdeaProposalDetails } from '../idea-proposal-details/idea-proposal-details.entity'
+import { createIdeaMilestone } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { Proposal } from './entities/proposal.entity'
 import { ProposalsService } from './proposals.service'
@@ -37,11 +38,11 @@ describe('ProposalsService', () => {
 
     describe('find', () => {
         it('should return proposals', async () => {
-            const { ideaWithMilestone, idea, ideaMilestone, ideaMilestoneNetwork, ideaNetwork } = await setUpValues(
+            const { ideaWithMilestones, idea, ideaMilestone, ideaMilestoneNetwork, ideaNetwork } = await setUpValues(
                 app(),
             )
-            await proposalsService().create(idea, 0, ideaNetwork)
-            await proposalsService().create(ideaWithMilestone, 1, ideaMilestoneNetwork, ideaMilestone)
+            await proposalsService().createFromIdea(idea, 0, ideaNetwork)
+            await proposalsService().createFromMilestone(ideaWithMilestones, 1, ideaMilestoneNetwork, ideaMilestone)
 
             const proposals = await proposalsService().find(NETWORKS.POLKADOT)
             expect(proposals.length).toBe(3)
@@ -72,7 +73,7 @@ describe('ProposalsService', () => {
             expect(proposal2!.entity!.details.title).toBe('ideaWithMilestoneTitle - milestoneSubject')
             expect(proposal2!.isCreatedFromIdea).toBe(false)
             expect(proposal2!.isCreatedFromIdeaMilestone).toBe(true)
-            expect(proposal2!.ideaId).toBe(ideaWithMilestone.id)
+            expect(proposal2!.ideaId).toBe(ideaWithMilestones.id)
             expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
 
             const proposal3 = proposals.find(({ blockchain: { proposalIndex } }) => proposalIndex === 3)
@@ -147,7 +148,7 @@ describe('ProposalsService', () => {
 
         it('should return idea details for proposal created from idea', async () => {
             const { idea, ideaNetwork } = await setUpValues(app())
-            await proposalsService().create(idea, 0, ideaNetwork)
+            await proposalsService().createFromIdea(idea, 0, ideaNetwork)
 
             const proposal = await proposalsService().findOne(0, NETWORKS.POLKADOT)
 
@@ -158,14 +159,14 @@ describe('ProposalsService', () => {
         })
 
         it('should return idea milestone details for proposal created from idea milestone', async () => {
-            const { ideaWithMilestone, ideaMilestone, ideaMilestoneNetwork } = await setUpValues(app())
-            await proposalsService().create(ideaWithMilestone, 1, ideaMilestoneNetwork, ideaMilestone)
+            const { ideaWithMilestones, ideaMilestone, ideaMilestoneNetwork } = await setUpValues(app())
+            await proposalsService().createFromMilestone(ideaWithMilestones, 1, ideaMilestoneNetwork, ideaMilestone)
 
             const proposal = await proposalsService().findOne(1, NETWORKS.POLKADOT)
 
             expect(proposal.isCreatedFromIdea).toBe(false)
             expect(proposal.isCreatedFromIdeaMilestone).toBe(true)
-            expect(proposal.ideaId).toBe(ideaWithMilestone.id)
+            expect(proposal.ideaId).toBe(ideaWithMilestones.id)
             expect(proposal.ideaMilestoneId).toBe(ideaMilestone.id)
         })
 
@@ -197,7 +198,7 @@ describe('ProposalsService', () => {
                 },
             })
 
-            await proposalsService().create(idea, 3, ideaNetwork)
+            await proposalsService().createFromIdea(idea, 3, ideaNetwork)
 
             const savedProposal = await proposalsRepository().findOne({ ideaNetworkId: ideaNetwork.id })
 
@@ -214,7 +215,7 @@ describe('ProposalsService', () => {
         it('should create proposal entity and save ownerId, ideaNetworkId and networkId', async () => {
             const { ideaNetwork, idea } = await setUpValues(app())
 
-            await proposalsService().create(idea, 3, ideaNetwork)
+            await proposalsService().createFromIdea(idea, 3, ideaNetwork)
 
             const savedProposal = await proposalsRepository().findOne({ ideaNetworkId: ideaNetwork.id })
 
@@ -227,12 +228,60 @@ describe('ProposalsService', () => {
         it('should create proposal entity and save blockchainProposalId', async () => {
             const { ideaNetwork, idea } = await setUpValues(app())
 
-            await proposalsService().create(idea, 3, ideaNetwork)
+            await proposalsService().createFromIdea(idea, 3, ideaNetwork)
 
             const savedProposal = await proposalsRepository().findOne({ ideaNetworkId: ideaNetwork.id })
 
             expect(savedProposal).toBeDefined()
             expect(savedProposal!.blockchainProposalId).toBe(3)
+        })
+
+        it('should create proposal milestones and copy details', async () => {
+            const { ideaWithMilestones, ideaWithMilestoneNetwork, sessionHandler } = await setUpValues(
+                app(),
+                {},
+                {
+                    details: {
+                        subject: 'subject',
+                        description: 'description',
+                        dateFrom: new Date(2021, 3, 20),
+                        dateTo: new Date(2021, 3, 21),
+                    },
+                },
+            )
+            const secondMilestone = await createIdeaMilestone(
+                ideaWithMilestones.id,
+                {
+                    networks: [{ name: 'localhost', value: 100 }],
+                    details: { subject: 'subject1' },
+                },
+                sessionHandler.sessionData,
+            )
+            ideaWithMilestones.milestones.push(secondMilestone)
+
+            await proposalsService().createFromIdea(ideaWithMilestones, 3, ideaWithMilestoneNetwork)
+
+            const savedProposal = await proposalsRepository().findOne({
+                where: { ideaNetworkId: ideaWithMilestoneNetwork.id },
+                relations: ['milestones'],
+            })
+
+            expect(savedProposal!.milestones).toBeDefined()
+            expect(savedProposal!.milestones!.length).toBe(2)
+
+            const savedMilestone1 = savedProposal!.milestones![0]
+            expect(savedMilestone1.ordinalNumber).toBe(1)
+            expect(savedMilestone1.details.subject).toBe('subject')
+            expect(savedMilestone1.details.description).toBe('description')
+            expect(savedMilestone1.details.dateFrom).toBe('2021-04-20')
+            expect(savedMilestone1.details.dateTo).toBe('2021-04-21')
+
+            const savedMilestone2 = savedProposal!.milestones![1]
+            expect(savedMilestone2.ordinalNumber).toBe(2)
+            expect(savedMilestone2.details.subject).toBe('subject1')
+            expect(savedMilestone2.details.description).toBe(null)
+            expect(savedMilestone2.details.dateFrom).toBe(null)
+            expect(savedMilestone2.details.dateTo).toBe(null)
         })
 
         it('should return proposal entity', async () => {
@@ -242,7 +291,7 @@ describe('ProposalsService', () => {
                 sessionHandler: { sessionData },
             } = await setUpValues(app())
 
-            const proposal = await proposalsService().create(idea, 3, ideaNetwork)
+            const proposal = await proposalsService().createFromIdea(idea, 3, ideaNetwork)
 
             expect(proposal).toBeDefined()
             expect(proposal!.ownerId).toBe(sessionData.user.id)
@@ -277,7 +326,7 @@ describe('ProposalsService', () => {
                 },
             )
 
-            await proposalsService().create(idea, 3, ideaMilestoneNetwork, ideaMilestone)
+            await proposalsService().createFromMilestone(idea, 3, ideaMilestoneNetwork, ideaMilestone)
 
             const savedProposal = await proposalsRepository().findOne({
                 ideaMilestoneNetworkId: ideaMilestoneNetwork.id,
@@ -296,7 +345,7 @@ describe('ProposalsService', () => {
         it('should create proposal entity and save ownerId, ideaMilestoneNetworkId and networkId', async () => {
             const { ideaMilestoneNetwork, idea, ideaMilestone } = await setUpValues(app())
 
-            await proposalsService().create(idea, 3, ideaMilestoneNetwork, ideaMilestone)
+            await proposalsService().createFromMilestone(idea, 3, ideaMilestoneNetwork, ideaMilestone)
 
             const savedProposal = await proposalsRepository().findOne({
                 ideaMilestoneNetworkId: ideaMilestoneNetwork.id,
@@ -310,9 +359,9 @@ describe('ProposalsService', () => {
         })
 
         it('should create proposal entity and save blockchainProposalId', async () => {
-            const { ideaMilestoneNetwork, ideaWithMilestone, ideaMilestone } = await setUpValues(app())
+            const { ideaMilestoneNetwork, ideaWithMilestones, ideaMilestone } = await setUpValues(app())
 
-            await proposalsService().create(ideaWithMilestone, 3, ideaMilestoneNetwork, ideaMilestone)
+            await proposalsService().createFromMilestone(ideaWithMilestones, 3, ideaMilestoneNetwork, ideaMilestone)
 
             const savedProposal = await proposalsRepository().findOne({
                 ideaMilestoneNetworkId: ideaMilestoneNetwork.id,
@@ -325,12 +374,17 @@ describe('ProposalsService', () => {
         it('should return proposal entity', async () => {
             const {
                 ideaMilestoneNetwork,
-                ideaWithMilestone,
+                ideaWithMilestones,
                 ideaMilestone,
                 sessionHandler: { sessionData },
             } = await setUpValues(app())
 
-            const proposal = await proposalsService().create(ideaWithMilestone, 3, ideaMilestoneNetwork, ideaMilestone)
+            const proposal = await proposalsService().createFromMilestone(
+                ideaWithMilestones,
+                3,
+                ideaMilestoneNetwork,
+                ideaMilestone,
+            )
 
             expect(proposal).toBeDefined()
             expect(proposal!.ownerId).toBe(sessionData.user.id)

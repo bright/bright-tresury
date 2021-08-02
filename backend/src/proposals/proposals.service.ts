@@ -3,15 +3,17 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
-import { IdeaProposalDetailsDto } from '../idea-proposal-details/dto/idea-proposal-details.dto'
+import { CreateIdeaProposalDetailsDto } from '../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { IdeaProposalDetailsService } from '../idea-proposal-details/idea-proposal-details.service'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { Idea } from '../ideas/entities/idea.entity'
 import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
 import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.entity'
 import { getLogger } from '../logging.module'
+import { MilestoneDetailsService } from '../milestone-details/milestone-details.service'
 import { Nil } from '../utils/types'
 import { Proposal } from './entities/proposal.entity'
+import { ProposalMilestone } from './proposal-milestones/entities/proposal-milestone.entity'
 
 const logger = getLogger()
 
@@ -24,6 +26,10 @@ export type BlockchainProposalWithDomainDetails = {
     ideaMilestoneId: Nil<string>
 }
 
+export interface IdeaWithMilestones extends Idea {
+    milestones: IdeaMilestone[]
+}
+
 @Injectable()
 export class ProposalsService {
     constructor(
@@ -31,6 +37,9 @@ export class ProposalsService {
         @InjectRepository(Proposal)
         private readonly proposalsRepository: Repository<Proposal>,
         private readonly ideaProposalDetailsService: IdeaProposalDetailsService,
+        private readonly milestoneDetailsService: MilestoneDetailsService,
+        @InjectRepository(ProposalMilestone)
+        private readonly proposalMilestonesRepository: Repository<ProposalMilestone>,
     ) {}
 
     async find(networkId: string): Promise<BlockchainProposalWithDomainDetails[]> {
@@ -104,30 +113,62 @@ export class ProposalsService {
         }
     }
 
-    async create(idea: Idea, blockchainProposalId: number, network: IdeaNetwork): Promise<Proposal>
-    async create(
+    async createFromIdea(
+        ideaWithMilestones: IdeaWithMilestones,
+        blockchainProposalId: number,
+        network: IdeaNetwork,
+    ): Promise<Proposal> {
+        const detailsDto = new CreateIdeaProposalDetailsDto(ideaWithMilestones.details)
+        const details = await this.ideaProposalDetailsService.create(detailsDto)
+
+        const proposal = this.proposalsRepository.create({
+            ownerId: ideaWithMilestones.ownerId,
+            details,
+            networkId: network.name,
+            ideaNetwork: network,
+            blockchainProposalId,
+        })
+        const savedProposal = await this.proposalsRepository.save(proposal)
+
+        savedProposal.milestones = await this.assignMilestones(ideaWithMilestones.milestones, proposal)
+        return savedProposal
+    }
+
+    async createFromMilestone(
         idea: Idea,
         blockchainProposalId: number,
         network: IdeaMilestoneNetwork,
         ideaMilestone: IdeaMilestone,
-    ): Promise<Proposal>
-    async create(
-        idea: Idea,
-        blockchainProposalId: number,
-        network: IdeaNetwork | IdeaMilestoneNetwork,
-        ideaMilestone?: IdeaMilestone,
     ): Promise<Proposal> {
-        const detailsDto = new IdeaProposalDetailsDto(idea.details, ideaMilestone?.details)
+        const detailsDto = new CreateIdeaProposalDetailsDto(idea.details, ideaMilestone.details)
         const details = await this.ideaProposalDetailsService.create(detailsDto)
 
         const proposal = this.proposalsRepository.create({
             ownerId: idea.ownerId,
             details,
             networkId: network.name,
-            ideaNetwork: ideaMilestone ? null : network,
-            ideaMilestoneNetwork: ideaMilestone ? network : null,
+            ideaMilestoneNetwork: network,
             blockchainProposalId,
         })
         return this.proposalsRepository.save(proposal)
+    }
+
+    private async assignMilestones(ideaMilestones: IdeaMilestone[], proposal: Proposal): Promise<ProposalMilestone[]> {
+        return await Promise.all(
+            ideaMilestones.map(async (ideaMilestone) => {
+                const details = await this.milestoneDetailsService.create({
+                    subject: ideaMilestone.details.subject,
+                    dateTo: ideaMilestone.details.dateTo,
+                    dateFrom: ideaMilestone.details.dateFrom,
+                    description: ideaMilestone.details.description,
+                })
+                const proposalMilestone = await this.proposalMilestonesRepository.create({
+                    ordinalNumber: ideaMilestone.ordinalNumber,
+                    details,
+                    proposal,
+                })
+                return await this.proposalMilestonesRepository.save(proposalMilestone)
+            }),
+        )
     }
 }

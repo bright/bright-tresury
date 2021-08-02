@@ -10,7 +10,7 @@ import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { ProposalDto } from './dto/proposal.dto'
-import { ProposalsService } from './proposals.service'
+import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
 
 const baseUrl = '/api/v1/proposals'
@@ -59,8 +59,9 @@ describe(`/api/v1/proposals`, () => {
             sessionData,
         )
         idea.networks[0].blockchainProposalId = 0
+        idea.milestones = []
         await ideaNetworkRepository().save(idea.networks[0])
-        await proposalsService().create(idea, 0, idea.networks[0])
+        await proposalsService().createFromIdea(idea as IdeaWithMilestones, 0, idea.networks[0])
 
         ideaWithMilestone = await createIdea(
             {
@@ -83,7 +84,7 @@ describe(`/api/v1/proposals`, () => {
         )
         ideaMilestone.networks[0].blockchainProposalId = 1
         await ideaMilestoneNetworkRepository().save(ideaMilestone.networks[0])
-        await proposalsService().create(ideaWithMilestone, 1, ideaMilestone.networks[0], ideaMilestone)
+        await proposalsService().createFromMilestone(ideaWithMilestone, 1, ideaMilestone.networks[0], ideaMilestone)
     })
 
     describe('GET /?network=networkName', () => {
