@@ -24,15 +24,22 @@ const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: IdeaMilestoneCreate)
 
     const queryClient = useQueryClient()
 
-    const submit = async (values: IdeaMilestoneFormValues) => {
+    const submit = async ({
+        beneficiary,
+        networks,
+        subject,
+        description,
+        dateFrom,
+        dateTo,
+    }: IdeaMilestoneFormValues) => {
         const dto: CreateIdeaMilestoneDto = {
-            beneficiary: values.beneficiary,
-            networks: values.networks,
+            beneficiary,
+            networks,
             details: {
-                subject: values.subject,
-                description: values.description,
-                dateFrom: values.dateFrom,
-                dateTo: values.dateTo,
+                subject,
+                description,
+                dateFrom,
+                dateTo,
             },
         }
 

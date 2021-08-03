@@ -45,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) =>
         proposer: {
             display: 'flex',
             alignItems: 'center',
+            marginBottom: '28px',
         },
         accountValue: {
             marginLeft: '.5em',
@@ -70,12 +71,9 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary, details } }: Proposal
             <div className={classes.proposer}>
                 <>
                     <Identicon address={proposer.address} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>
-                        {ellipseTextInTheMiddle(proposer.address)}
-                    </div>
+                    <div className={`${classes.accountValue} ${classes.text}`}>{proposer.address}</div>
                 </>
             </div>
-
             <IdeaProposalDetails beneficiary={beneficiary.address} details={details} />
         </div>
     )
