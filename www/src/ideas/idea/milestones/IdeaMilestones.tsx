@@ -13,12 +13,11 @@ import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/use
 interface OwnProps {
     idea: IdeaDto
     canEdit: boolean
-    displayWithinIdeaSubTab: boolean
 }
 
 export type IdeaMilestonesProps = OwnProps
 
-const IdeaMilestones = ({ idea, canEdit, displayWithinIdeaSubTab }: IdeaMilestonesProps) => {
+const IdeaMilestones = ({ idea, canEdit }: IdeaMilestonesProps) => {
     const { t } = useTranslation()
 
     const classes = useSuccessfullyLoadedItemStyles()
@@ -35,20 +34,14 @@ const IdeaMilestones = ({ idea, canEdit, displayWithinIdeaSubTab }: IdeaMileston
         >
             {ideaMilestones ? (
                 <div className={classes.content}>
-                    {ideaMilestones.length === 0 ? (
-                        <NoIdeaMilestonesInfo canEdit={canEdit} displayWithinIdeaSubTab={displayWithinIdeaSubTab} />
-                    ) : null}
-                    {canEdit && displayWithinIdeaSubTab ? (
+                    {ideaMilestones.length === 0 ? <NoIdeaMilestonesInfo canEdit={canEdit} /> : null}
+                    {canEdit ? (
                         <CreateIdeaMilestoneButton
                             text={t('idea.milestones.createMilestone')}
                             onClick={createModal.open}
                         />
                     ) : null}
-                    <IdeaMilestonesList
-                        idea={idea}
-                        ideaMilestones={ideaMilestones}
-                        canEdit={canEdit && displayWithinIdeaSubTab}
-                    />
+                    <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} canEdit={canEdit} />
                     <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />
                 </div>
             ) : null}

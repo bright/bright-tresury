@@ -1,5 +1,5 @@
-import React, { PropsWithChildren } from 'react'
 import { Paper, PaperProps } from '@material-ui/core'
+import React, { PropsWithChildren } from 'react'
 import { useCardStyles } from './cardStyles'
 
 export type CardProps = PropsWithChildren<PaperProps>
@@ -9,7 +9,7 @@ const Card = ({ children, ...props }: CardProps) => {
 
     return (
         <Paper {...props} className={classes.root}>
-            {children}
+            <div className={classes.content}>{children}</div>
         </Paper>
     )
 }

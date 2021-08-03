@@ -4,7 +4,7 @@ import IdeaMilestoneDetails from './IdeaMilestoneDetails'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'
-import { IdeaMilestoneModalHeader } from '../components/IdeaMilestoneModalHeader'
+import { MilestoneModalHeader } from '../../../../milestone-details/components/milestone-modal/MilestoneModalHeader'
 
 interface Props {
     open: boolean
@@ -19,11 +19,11 @@ export const IdeaMilestoneDetailsModal = ({ open, idea, ideaMilestone, onClose }
     return (
         <Modal open={open} onClose={onClose} aria-labelledby="modal-title" fullWidth={true} maxWidth={'md'}>
             <>
-                <IdeaMilestoneModalHeader>
+                <MilestoneModalHeader>
                     <h2 id="modal-title">
                         {t('idea.milestones.modal.milestone')} - <b>{ideaMilestone.ordinalNumber}</b>
                     </h2>
-                </IdeaMilestoneModalHeader>
+                </MilestoneModalHeader>
                 <IdeaMilestoneDetails idea={idea} ideaMilestone={ideaMilestone} onCancel={onClose} />
             </>
         </Modal>

@@ -1,7 +1,9 @@
 import React from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthContext'
 import { useNetworks } from '../../networks/useNetworks'
 import Route from '../../routes/Route'
+import { isProposalMadeByUser } from '../list/filterProposals'
 import ProposalInfo from './info/ProposalInfo'
 import { ProposalContentType } from './ProposalContentTypeTabs'
 import ProposalMilestones from './milestones/ProposalMilestones'
@@ -26,6 +28,10 @@ const Proposal = () => {
 
     const { status, data: proposal } = useGetProposal(proposalIndex, network.id)
 
+    const { user } = useAuth()
+
+    const canEdit = proposal ? isProposalMadeByUser(proposal, user) : false
+
     return (
         <LoadingWrapper
             status={status}
@@ -44,7 +50,7 @@ const Proposal = () => {
                         </Route>
                         {proposal.isCreatedFromIdea && proposal.ideaId ? (
                             <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
-                                <ProposalMilestones ideaId={proposal.ideaId} />
+                                <ProposalMilestones proposalIndex={proposal.proposalIndex} canEdit={canEdit} />
                             </Route>
                         ) : null}
                         <Route exact={true} path={`${path}/${ProposalContentType.Discussion}`}>

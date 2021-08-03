@@ -4,7 +4,7 @@ import IdeaMilestoneEdit from './IdeaMilestoneEdit'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'
-import { IdeaMilestoneModalHeader } from '../components/IdeaMilestoneModalHeader'
+import { MilestoneModalHeader } from '../../../../milestone-details/components/milestone-modal/MilestoneModalHeader'
 import { useTurnIdeaMilestoneIntoProposal } from '../turnIntoProposal/useTurnIdeaMilestoneIntoProposal'
 import Button from '../../../../components/button/Button'
 
@@ -32,14 +32,14 @@ const IdeaMilestoneEditModal = ({
     return (
         <Modal open={open} onClose={onClose} aria-labelledby="modal-title" fullWidth={true} maxWidth={'md'}>
             <>
-                <IdeaMilestoneModalHeader>
+                <MilestoneModalHeader>
                     <h2 id="modal-title">{t('idea.milestones.modal.editMilestone')}</h2>
                     {canTurnIntoProposal ? (
                         <Button color="primary" onClick={() => onTurnIntoProposalClick(ideaMilestone)}>
                             {t('idea.details.header.turnIntoProposal')}
                         </Button>
                     ) : null}
-                </IdeaMilestoneModalHeader>
+                </MilestoneModalHeader>
                 <IdeaMilestoneEdit idea={idea} ideaMilestone={ideaMilestone} onCancel={onClose} onSuccess={onClose} />
             </>
         </Modal>

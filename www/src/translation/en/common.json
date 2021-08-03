@@ -279,14 +279,8 @@
             "createMilestone": "+ Create Milestone",
             "ordinalNumberPrefix": "Milestone - ",
             "noIdeaMilestones": {
-                "withinIdeaSubTab": {
-                    "canEdit": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better",
-                    "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab"
-                },
-                "outsideIdeaSubTab": {
-                    "canEdit": "Please navigate to ideas and add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better",
-                    "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab"
-                }
+                "canEdit": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better.",
+                "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab."
             },
             "modal": {
                 "milestone": "Milestone",
@@ -382,6 +376,42 @@
                 "body2": "to make sure that no aspect of the topic has slipped away from you or the community",
                 "visitDiscussions": "Visit discussions"
             }
+        },
+        "milestones": {
+            "createMilestone": "+ Create Milestone",
+            "ordinalNumberPrefix": "Milestone - ",
+            "noMilestones": {
+                "canEdit": "Please add milestones for this proposal, milestones will allow our community appreciate the proposal more and understand it better.",
+                "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab."
+            },
+            "modal": {
+                "milestone": "Milestone",
+                "createMilestone": "Create Milestone",
+                "editMilestone": "Edit Milestone",
+                "form": {
+                    "emptyFieldError": "This field cannot be empty",
+                    "endDatePriorToStartDateError": "End date can't be prior to the start date",
+                    "yourMilestone": "Your Milestone",
+                    "subject": "Subject",
+                    "date": "Date",
+                    "selectFrom": "Select From",
+                    "selectTo": "Select To",
+                    "description": "Description",
+                    "describeMilestone": "Describe the Milestone",
+                    "apiCallErrorMessage": "Something went wrong. Try again.",
+                    "buttons": {
+                        "cancel": "Cancel",
+                        "create": "Create",
+                        "save": "Save",
+                        "submit": "Submit"
+                    }
+                }
+            },
+            "list": {
+                "card": {
+                    "noDescriptionProvided": "No description provided"
+                }
+            }
         }
     },
     "substrate": {
@@ -441,6 +471,7 @@
         "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
         "errorOccurredWhileLoadingIdea": "An error occurred while loading idea.",
         "errorOccurredWhileLoadingProposal": "An error occurred while loading proposal.",
+        "errorOccurredWhileLoadingProposalMilestones": "An error occurred while loading proposal milestones.",
         "somethingWentWrong": "Ooops... Something went wrong."
     },
     "loading": {
@@ -449,6 +480,7 @@
         "ideaMilestones": "We're loading the idea milestones. It may take a moment. Bear with us.",
         "proposals": "We're loading the proposals. It may take a moment. Bear with us.",
         "proposal": "We're loading the proposal. It may take a moment. Bear with us.",
+        "proposalMilestones": "We're loading the proposal milestones. It may take a moment. Bear with us.",
         "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us."
     }
 }

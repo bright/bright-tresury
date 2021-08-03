@@ -18,5 +18,9 @@ export const useCardStyles = makeStyles((theme: Theme) =>
             textDecoration: 'none',
             color: theme.palette.text.primary,
         },
+        content: {
+            margin: '0 20px 0 24px',
+            cursor: 'pointer',
+        },
     }),
 )

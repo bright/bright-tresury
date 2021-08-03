@@ -1,14 +1,11 @@
 import React, { HTMLAttributes, PropsWithChildren } from 'react'
 import { createStyles, Theme } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import Card from '../card/Card'
+import { useCardStyles } from '../card/cardStyles'
 import LinkCard from '../card/LinkCard'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        cardContent: {
-            margin: '0 20px 0 24px',
-        },
         networkAccentLine: {
             backgroundColor: theme.palette.network.main,
             height: '100%',
@@ -19,28 +16,19 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    redirectTo?: string
+    redirectTo: string
 }
 export type NetworkCardProps = PropsWithChildren<OwnProps & HTMLAttributes<HTMLDivElement>>
 const NetworkCard = ({ children, redirectTo, ...props }: NetworkCardProps) => {
     const classes = useStyles()
-
-    const cardContent = (
-        <>
-            <div className={classes.networkAccentLine} />
-            <div className={classes.cardContent}>{children}</div>
-        </>
-    )
+    const cardClasses = useCardStyles()
 
     return (
         <>
-            {redirectTo ? (
-                <LinkCard {...props} redirectTo={redirectTo}>
-                    {cardContent}
-                </LinkCard>
-            ) : (
-                <Card {...props}>{cardContent}</Card>
-            )}
+            <LinkCard {...props} redirectTo={redirectTo}>
+                <div className={classes.networkAccentLine} />
+                <div className={cardClasses.content}>{children}</div>
+            </LinkCard>
         </>
     )
 }

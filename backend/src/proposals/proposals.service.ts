@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
-import { CreateIdeaProposalDetailsDto } from '../idea-proposal-details/dto/create-idea-proposal-details.dto'
+import { toCreateIdeaProposalDetailsDto } from '../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { IdeaProposalDetailsService } from '../idea-proposal-details/idea-proposal-details.service'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { Idea } from '../ideas/entities/idea.entity'
@@ -118,7 +118,7 @@ export class ProposalsService {
         blockchainProposalId: number,
         network: IdeaNetwork,
     ): Promise<Proposal> {
-        const detailsDto = new CreateIdeaProposalDetailsDto(ideaWithMilestones.details)
+        const detailsDto = toCreateIdeaProposalDetailsDto(ideaWithMilestones.details)
         const details = await this.ideaProposalDetailsService.create(detailsDto)
 
         const proposal = this.proposalsRepository.create({
@@ -140,7 +140,7 @@ export class ProposalsService {
         network: IdeaMilestoneNetwork,
         ideaMilestone: IdeaMilestone,
     ): Promise<Proposal> {
-        const detailsDto = new CreateIdeaProposalDetailsDto(idea.details, ideaMilestone.details)
+        const detailsDto = toCreateIdeaProposalDetailsDto(idea.details, ideaMilestone.details)
         const details = await this.ideaProposalDetailsService.create(detailsDto)
 
         const proposal = this.proposalsRepository.create({

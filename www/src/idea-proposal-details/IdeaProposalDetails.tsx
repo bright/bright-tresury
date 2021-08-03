@@ -8,6 +8,7 @@ import { breakpoints } from '../theme/theme'
 import Placeholder from '../components/text/Placeholder'
 import { IdeaProposalDetailsDto } from './idea-proposal-details.dto'
 import LongText from './LongText'
+import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -65,7 +66,7 @@ const IdeaProposalDetails = ({ beneficiary, details }: IdeaProposalDetailsProps)
                 {beneficiary ? (
                     <>
                         <Identicon address={beneficiary} />
-                        <div className={`${classes.accountValue} ${classes.text}`}>{beneficiary}</div>
+                        <div className={clsx(classes.accountValue, classes.text)}>{beneficiary}</div>
                     </>
                 ) : (
                     <Placeholder value={t('idea.details.beneficiary')} />

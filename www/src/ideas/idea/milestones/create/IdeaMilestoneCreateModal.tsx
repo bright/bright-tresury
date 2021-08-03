@@ -3,7 +3,7 @@ import Modal from '../../../../components/modal/Modal'
 import IdeaMilestoneCreate from './IdeaMilestoneCreate'
 import { IdeaDto } from '../../../ideas.dto'
 import { useTranslation } from 'react-i18next'
-import { IdeaMilestoneModalHeader } from '../components/IdeaMilestoneModalHeader'
+import { MilestoneModalHeader } from '../../../../milestone-details/components/milestone-modal/MilestoneModalHeader'
 
 interface OwnProps {
     open: boolean
@@ -19,9 +19,9 @@ const IdeaMilestoneCreateModal = ({ open, idea, onClose }: IdeaMilestoneCreateMo
     return (
         <Modal open={open} onClose={onClose} aria-labelledby="modal-title" fullWidth={true} maxWidth={'md'}>
             <>
-                <IdeaMilestoneModalHeader>
+                <MilestoneModalHeader>
                     <h2 id="modal-title">{t('idea.milestones.modal.createMilestone')}</h2>
-                </IdeaMilestoneModalHeader>
+                </MilestoneModalHeader>
                 <IdeaMilestoneCreate idea={idea} onCancel={onClose} onSuccess={onClose} />
             </>
         </Modal>

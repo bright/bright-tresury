@@ -1,9 +1,9 @@
 import React from 'react'
-import { Nil } from '../../../../util/types'
+import { Nil } from '../../../util/types'
 import { differenceInDays, format } from 'date-fns'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles, Theme } from '@material-ui/core'
-import IdeaMilestoneDateRangeDifference from './IdeaMilestoneDateRangeDifference'
+import MilestoneDateRangeDifference from './MilestoneDateRangeDifference'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -34,7 +34,7 @@ interface OwnProps {
 
 export type IdeaMilestoneDateRangeProps = OwnProps
 
-const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: IdeaMilestoneDateRangeProps) => {
+const MilestoneDateRange = ({ dateFrom, dateTo }: IdeaMilestoneDateRangeProps) => {
     const classes = useStyles()
 
     if (dateFrom && dateTo) {
@@ -46,7 +46,7 @@ const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: IdeaMilestoneDateRangeProp
                 </span>
                 <span className={classes.separator}>|</span>
                 <span className={classes.difference}>
-                    <IdeaMilestoneDateRangeDifference differenceBetweenDatesInDays={difference} />
+                    <MilestoneDateRangeDifference differenceBetweenDatesInDays={difference} />
                 </span>
             </div>
         )
@@ -61,7 +61,7 @@ const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: IdeaMilestoneDateRangeProp
                 </span>
                 <span className={classes.separator}>|</span>
                 <span className={classes.difference}>
-                    <IdeaMilestoneDateRangeDifference
+                    <MilestoneDateRangeDifference
                         differenceBetweenDatesInDays={DIFFERENCE_IN_DAYS_WHEN_ONLY_ONE_DATE_SPECIFIED}
                     />
                 </span>
@@ -72,4 +72,4 @@ const IdeaMilestoneDateRange = ({ dateFrom, dateTo }: IdeaMilestoneDateRangeProp
     return null
 }
 
-export default IdeaMilestoneDateRange
+export default MilestoneDateRange

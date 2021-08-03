@@ -15,9 +15,9 @@ interface OwnProps {
     onSuccess: () => void
 }
 
-export type IdeaMilestoneCreate = OwnProps
+export type IdeaMilestoneCreateProps = OwnProps
 
-const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: IdeaMilestoneCreate) => {
+const IdeaMilestoneCreate = ({ idea, onCancel, onSuccess }: IdeaMilestoneCreateProps) => {
     const { t } = useTranslation()
 
     const { mutateAsync, isError } = useCreateIdeaMilestone()

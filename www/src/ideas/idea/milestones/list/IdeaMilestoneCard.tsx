@@ -4,8 +4,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import { createStyles } from '@material-ui/core'
 import Divider from '../../../../components/divider/Divider'
 import NetworkValue from '../../../../components/network/NetworkValue'
-import { IdeaMilestoneDescription } from './IdeaMilestoneDescription'
-import IdeaMilestoneDateRange from './IdeaMilestoneDateRange'
+import MilestoneDescription from '../../../../milestone-details/components/milestone-card/MilestoneDescription'
+import MilestoneDateRange from '../../../../milestone-details/components/milestone-card/MilestoneDateRange'
 import Card from '../../../../components/card/Card'
 import CardDetails from '../../../../components/card/components/CardDetails'
 import CardTitle from '../../../../components/card/components/CardTitle'
@@ -48,33 +48,34 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
 
     return (
         <Card onClick={() => onClick(ideaMilestone)}>
-            <div className={classes.cardContent}>
-                <CardHeader>
-                    <OrdinalNumber
-                        prefix={t('idea.milestones.ordinalNumberPrefix')}
-                        ordinalNumber={ideaMilestone.ordinalNumber}
+            <CardHeader>
+                <OrdinalNumber
+                    prefix={t('idea.milestones.ordinalNumberPrefix')}
+                    ordinalNumber={ideaMilestone.ordinalNumber}
+                />
+                <div className={classes.headerStatusAndDateRange}>
+                    <IdeaMilestoneStatusIndicator status={ideaMilestone.status} />
+                    <MilestoneDateRange
+                        dateFrom={ideaMilestone.details.dateFrom}
+                        dateTo={ideaMilestone.details.dateTo}
                     />
-                    <div className={classes.headerStatusAndDateRange}>
-                        <IdeaMilestoneStatusIndicator status={ideaMilestone.status} />
-                        <IdeaMilestoneDateRange
-                            dateFrom={ideaMilestone.details.dateFrom}
-                            dateTo={ideaMilestone.details.dateTo}
-                        />
-                    </div>
-                </CardHeader>
-
-                <Divider />
-
-                <CardDetails>
-                    <CardTitle title={ideaMilestone.details.subject} />
-                    {ideaMilestone.networks && ideaMilestone.networks.length > 0 ? (
-                        <NetworkValue value={ideaMilestone.networks[0].value} />
-                    ) : null}
-                </CardDetails>
-
-                <div className={classes.description}>
-                    <IdeaMilestoneDescription description={ideaMilestone.details.description} />
                 </div>
+            </CardHeader>
+
+            <Divider />
+
+            <CardDetails>
+                <CardTitle title={ideaMilestone.details.subject} />
+                {ideaMilestone.networks && ideaMilestone.networks.length > 0 ? (
+                    <NetworkValue value={ideaMilestone.networks[0].value} />
+                ) : null}
+            </CardDetails>
+
+            <div className={classes.description}>
+                <MilestoneDescription
+                    description={ideaMilestone.details.description}
+                    placeholder={t('idea.milestones.list.card.noDescriptionProvided')}
+                />
             </div>
         </Card>
     )

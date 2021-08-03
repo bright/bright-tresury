@@ -16,7 +16,7 @@ interface OwnProps {
 
 export type IdeaMilestoneDateRangeDifferenceProps = OwnProps
 
-const IdeaMilestoneDateRangeDifference = ({ differenceBetweenDatesInDays }: IdeaMilestoneDateRangeDifferenceProps) => {
+const MilestoneDateRangeDifference = ({ differenceBetweenDatesInDays }: IdeaMilestoneDateRangeDifferenceProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -35,4 +35,4 @@ const IdeaMilestoneDateRangeDifference = ({ differenceBetweenDatesInDays }: Idea
     )
 }
 
-export default IdeaMilestoneDateRangeDifference
+export default MilestoneDateRangeDifference

@@ -54,27 +54,29 @@ export class CreateIdeaProposalDetailsDto {
     @IsString({ each: true })
     @Length(1, 1000, { each: true })
     links?: string[]
+}
 
-    constructor(
-        { title, content, field, contact, portfolio, links }: IdeaProposalDetails,
-        milestoneDetails?: MilestoneDetails,
-    ) {
-        this.title = title
-        this.content = content
-        this.field = field
-        this.contact = contact
-        this.portfolio = portfolio
-        this.links = links ? (JSON.parse(links) as string[]) : undefined
+export function toCreateIdeaProposalDetailsDto(
+    { title, content, field, contact, portfolio, links }: IdeaProposalDetails,
+    milestoneDetails?: MilestoneDetails,
+): CreateIdeaProposalDetailsDto {
+    const dto = new CreateIdeaProposalDetailsDto()
+    dto.title = title
+    dto.content = content
+    dto.field = field
+    dto.contact = contact
+    dto.portfolio = portfolio
+    dto.links = links ? (JSON.parse(links) as string[]) : undefined
 
-        if (milestoneDetails) {
-            const { subject, dateFrom, dateTo, description } = milestoneDetails
-            this.title += ` - ${subject}`
-            if (dateFrom && dateTo) {
-                this.content += `\n${dateFrom} - ${dateTo}`
-            }
-            if (description) {
-                this.content += `\n${description}`
-            }
+    if (milestoneDetails) {
+        const { subject, dateFrom, dateTo, description } = milestoneDetails
+        dto.title += ` - ${subject}`
+        if (dateFrom && dateTo) {
+            dto.content += `\n${dateFrom} - ${dateTo}`
+        }
+        if (description) {
+            dto.content += `\n${description}`
         }
     }
+    return dto
 }

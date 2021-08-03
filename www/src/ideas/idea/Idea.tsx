@@ -40,7 +40,7 @@ const Idea = () => {
                             <IdeaInfo idea={idea} canEdit={canEdit} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
-                            <IdeaMilestones idea={idea} canEdit={canEdit} displayWithinIdeaSubTab={true} />
+                            <IdeaMilestones idea={idea} canEdit={canEdit} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
                             <IdeaDiscussion />

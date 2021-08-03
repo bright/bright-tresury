@@ -1,6 +1,6 @@
 import React from 'react'
-import Placeholder from '../../../../components/text/Placeholder'
-import { Nil } from '../../../../util/types'
+import Placeholder from '../../../components/text/Placeholder'
+import { Nil } from '../../../util/types'
 import { useTranslation } from 'react-i18next'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles, Theme } from '@material-ui/core'
@@ -24,11 +24,14 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface Props {
+interface OwnProps {
     description: Nil<string>
+    placeholder: string
 }
 
-export const IdeaMilestoneDescription = ({ description }: Props) => {
+export type MilestoneDescriptionProps = OwnProps
+
+const MilestoneDescription = ({ description, placeholder }: MilestoneDescriptionProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -37,11 +40,10 @@ export const IdeaMilestoneDescription = ({ description }: Props) => {
             {description ? (
                 <div className={classes.description}>{description}</div>
             ) : (
-                <Placeholder
-                    className={classes.descriptionPlaceholder}
-                    value={t('idea.milestones.list.card.noDescriptionProvided')}
-                />
+                <Placeholder className={classes.descriptionPlaceholder} value={placeholder} />
             )}
         </div>
     )
 }
+
+export default MilestoneDescription
