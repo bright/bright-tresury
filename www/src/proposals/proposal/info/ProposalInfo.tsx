@@ -7,7 +7,6 @@ import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/use
 import { Label } from '../../../components/text/Label'
 import IdeaProposalDetails from '../../../idea-proposal-details/IdeaProposalDetails'
 import { breakpoints } from '../../../theme/theme'
-import { ellipseTextInTheMiddle } from '../../../util/stringUtil'
 import { ProposalDto } from '../../proposals.dto'
 
 const useStyles = makeStyles((theme: Theme) =>

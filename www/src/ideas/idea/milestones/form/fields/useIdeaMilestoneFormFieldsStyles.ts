@@ -15,10 +15,5 @@ export const useIdeaMilestoneFormFieldsStyles = makeStyles((theme: Theme) =>
                 width: '100%',
             },
         },
-        dateRangeField: {
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '20px',
-        },
     }),
 )

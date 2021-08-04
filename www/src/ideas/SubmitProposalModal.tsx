@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import Strong from '../components/strong/Strong'
-import Modal from '../components/modal/Modal'
-import SubmittingTransaction from '../substrate-lib/components/SubmittingTransaction'
-import { ROUTE_PROPOSALS } from '../routes/routes'
 import { useHistory } from 'react-router-dom'
+import Modal from '../components/modal/Modal'
+import Strong from '../components/strong/Strong'
+import { ROUTE_PROPOSALS } from '../routes/routes'
+import SubmittingTransaction from '../substrate-lib/components/SubmittingTransaction'
 
 export interface ExtrinsicDetails {
     extrinsicHash: string

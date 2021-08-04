@@ -291,16 +291,8 @@
                     "wrongBeneficiaryAddressError": "Wrong beneficiary address",
                     "nonZeroFieldError": "The value must be greater than zero",
                     "valueCannotBeLessThanZero": "The value cannot be less than zero",
-                    "endDatePriorToStartDateError": "End date can't be prior to the start date",
-                    "yourMilestone": "Your Milestone",
-                    "subject": "Subject",
                     "beneficiary": "Beneficiary",
-                    "date": "Date",
-                    "selectFrom": "Select From",
-                    "selectTo": "Select To",
                     "budget": "Budget",
-                    "description": "Description",
-                    "describeMilestone": "Describe the Milestone",
                     "apiCallErrorMessage": "Something went wrong. Try again.",
                     "buttons": {
                         "cancel": "Cancel",
@@ -389,15 +381,6 @@
                 "createMilestone": "Create Milestone",
                 "editMilestone": "Edit Milestone",
                 "form": {
-                    "emptyFieldError": "This field cannot be empty",
-                    "endDatePriorToStartDateError": "End date can't be prior to the start date",
-                    "yourMilestone": "Your Milestone",
-                    "subject": "Subject",
-                    "date": "Date",
-                    "selectFrom": "Select From",
-                    "selectTo": "Select To",
-                    "description": "Description",
-                    "describeMilestone": "Describe the Milestone",
                     "apiCallErrorMessage": "Something went wrong. Try again.",
                     "buttons": {
                         "cancel": "Cancel",
@@ -412,6 +395,19 @@
                     "noDescriptionProvided": "No description provided"
                 }
             }
+        }
+    },
+    "milestoneDetails": {
+        "form": {
+            "emptyFieldError": "This field cannot be empty",
+            "endDatePriorToStartDateError": "End date can't be prior to the start date",
+            "subject": "Subject",
+            "yourMilestone": "Your Milestone",
+            "date": "Date",
+            "selectFrom": "Select From",
+            "selectTo": "Select To",
+            "description": "Description",
+            "describeMilestone": "Describe the Milestone"
         }
     },
     "substrate": {

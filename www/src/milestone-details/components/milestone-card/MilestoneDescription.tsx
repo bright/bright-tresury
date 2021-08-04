@@ -1,9 +1,8 @@
+import { createStyles, Theme } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import Placeholder from '../../../components/text/Placeholder'
 import { Nil } from '../../../util/types'
-import { useTranslation } from 'react-i18next'
-import { makeStyles } from '@material-ui/core/styles'
-import { createStyles, Theme } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,7 +32,6 @@ export type MilestoneDescriptionProps = OwnProps
 
 const MilestoneDescription = ({ description, placeholder }: MilestoneDescriptionProps) => {
     const classes = useStyles()
-    const { t } = useTranslation()
 
     return (
         <div className={classes.root}>

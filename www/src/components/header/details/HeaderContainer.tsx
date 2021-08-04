@@ -1,7 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { breakpoints } from '../../../theme/theme'
 import React, { PropsWithChildren } from 'react'
-import { ClassNameProps } from '../../props/className.props'
+import { breakpoints } from '../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

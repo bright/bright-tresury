@@ -1,14 +1,13 @@
-import React, { PropsWithChildren } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
-import { IdeaFormValues } from '../../../form/IdeaForm'
-import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
-import IdeaMilestoneFormFields from './fields/IdeaMilestoneFormFields'
+import React, { PropsWithChildren } from 'react'
+import FormFooter from '../../../../components/form/footer/FormFooter'
 import { Nil } from '../../../../util/types'
 import { IdeaDto } from '../../../ideas.dto'
-import useIdeaMilestoneForm from './useIdeaMilestoneForm'
+import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
 import IdeaMilestoneFoldedFormFields from './fields/IdeaMilestoneFoldedFormFields'
-import FormFooter from '../../../../components/form/footer/FormFooter'
+import IdeaMilestoneFormFields from './fields/IdeaMilestoneFormFields'
+import useIdeaMilestoneForm from './useIdeaMilestoneForm'
 
 const useStyles = makeStyles(() =>
     createStyles({

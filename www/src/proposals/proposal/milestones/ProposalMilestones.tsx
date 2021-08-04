@@ -29,7 +29,7 @@ const ProposalMilestones = ({ proposalIndex, canEdit }: ProposalMilestonesProps)
             {milestones ? (
                 <div className={classes.content}>
                     {milestones.length === 0 ? <NoProposalMilestonesInfo canEdit={canEdit} /> : null}
-                    <ProposalMilestonesList milestones={milestones} />
+                    <ProposalMilestonesList milestones={milestones} canEdit={canEdit} />
                 </div>
             ) : null}
         </LoadingWrapper>

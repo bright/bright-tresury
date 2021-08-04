@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
+import useMilestoneDetailsForm from '../../../../milestone-details/useMilestoneDetailsForm'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
 import { IdeaMilestoneFormValues } from './IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
@@ -15,22 +16,16 @@ export type useIdeaMilestoneFormProps = OwnProps
 const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps) => {
     const { t } = useTranslation()
 
+    const { validationSchema: detailsValidationSchema, initialValues: detailsInitialValues } = useMilestoneDetailsForm({
+        details: ideaMilestone?.details,
+    })
+
     const validationSchema = Yup.object().shape({
-        subject: Yup.string().required(t('idea.milestones.modal.form.emptyFieldError')),
         beneficiary: Yup.string().test(
             'validate-address',
             t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
             isValidAddressOrEmpty,
         ),
-        dateFrom: Yup.date()
-            // Date is transformed because in form date is like "yyyy-mm-dd" but we need the full date obj to correctly proceed validation
-            .transform((value) => (value ? new Date(value) : value))
-            .nullable(),
-        dateTo: Yup.date()
-            // Date is transformed because in form date is like "yyyy-mm-dd" but we need the full date obj to correctly proceed validation
-            .transform((value) => (value ? new Date(value) : value))
-            .nullable()
-            .min(Yup.ref('dateFrom'), t('idea.milestones.modal.form.endDatePriorToStartDateError')),
         networks: Yup.array().of(
             Yup.object().shape({
                 value: Yup.number().min(0, t('idea.milestones.modal.form.valueCannotBeLessThanZero')),
@@ -59,20 +54,17 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
 
     const emptyValues = (idea: IdeaDto): IdeaMilestoneFormValues => {
         return {
-            subject: '',
             beneficiary: idea.beneficiary,
-            dateFrom: null,
-            dateTo: null,
-            description: '',
             networks: [{ name: idea.networks[0].name, value: 0 } as IdeaMilestoneNetworkDto],
+            ...detailsInitialValues,
         }
     }
 
-    const valuesFromDto = ({ beneficiary, networks, details }: IdeaMilestoneDto): IdeaMilestoneFormValues => {
+    const valuesFromDto = ({ beneficiary, networks }: IdeaMilestoneDto): IdeaMilestoneFormValues => {
         return {
             beneficiary,
             networks,
-            ...details,
+            ...detailsInitialValues,
         }
     }
 
@@ -80,7 +72,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
 
     return {
         initialValues,
-        validationSchema,
+        validationSchema: validationSchema.concat(detailsValidationSchema),
         extendedValidationSchema,
         onSubmitFallback,
     }

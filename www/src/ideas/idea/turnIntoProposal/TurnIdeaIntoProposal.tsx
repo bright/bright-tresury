@@ -63,7 +63,7 @@ const TurnIdeaIntoProposal = () => {
                 await turnMutateAsync({ ideaId: idea.id!, data: turnIdeaIntoProposalDto })
             }
         },
-        [idea],
+        [idea, turnMutateAsync],
     )
 
     if (ideaAlreadyTurnedIntoProposal) {

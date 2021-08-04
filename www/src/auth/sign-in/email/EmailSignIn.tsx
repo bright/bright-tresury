@@ -54,7 +54,7 @@ const EmailSignIn = () => {
         return typedError?.message === 'WRONG_CREDENTIALS_ERROR'
             ? t('auth.errors.wrongCredentialsError')
             : t('auth.errors.generalError')
-    }, [error])
+    }, [error, isError, t])
 
     const validationSchema = Yup.object().shape({
         email: Yup.string().required(t('auth.signIn.emailSignIn.emptyFieldError')),

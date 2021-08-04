@@ -9,18 +9,22 @@ import ProposalMilestoneCard from './ProposalMilestoneCard'
 
 interface OwnProps {
     milestones: ProposalMilestoneDto[]
+    canEdit: boolean
 }
 
 export type ProposalMilestonesProps = OwnProps
 
-const ProposalMilestonesList = ({ milestones }: ProposalMilestonesProps) => {
+const ProposalMilestonesList = ({ milestones, canEdit }: ProposalMilestonesProps) => {
     const [selectedMilestone, setSelectedMilestone] = useState<ProposalMilestoneDto | undefined>()
 
     const { visible, open, close } = useModal()
 
     const renderCard = (milestone: ProposalMilestoneDto) => {
-        setSelectedMilestone(milestone)
-        return <ProposalMilestoneCard milestone={milestone} onClick={open} />
+        const onClick = () => {
+            setSelectedMilestone(milestone)
+            open()
+        }
+        return <ProposalMilestoneCard milestone={milestone} onClick={onClick} />
     }
 
     return (
@@ -33,7 +37,7 @@ const ProposalMilestonesList = ({ milestones }: ProposalMilestonesProps) => {
             />
             {selectedMilestone ? (
                 <Modal open={visible} onClose={close} aria-labelledby="modal-title" fullWidth={true} maxWidth={'md'}>
-                    <ProposalMilestoneDetails milestone={selectedMilestone} onCancel={close} />
+                    <ProposalMilestoneDetails canEdit={canEdit} milestone={selectedMilestone} onCancel={close} />
                 </Modal>
             ) : null}
         </>

@@ -1,6 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import Placeholder from '../components/text/Placeholder'
 import { breakpoints } from '../theme/theme'
 import { Nil } from '../util/types'
@@ -39,7 +38,6 @@ export type LongTextProps = OwnProps
 
 const LongText = ({ text, placeholder }: LongTextProps) => {
     const classes = useStyles()
-    const { t } = useTranslation()
 
     return (
         <>

@@ -1,10 +1,10 @@
 import React from 'react'
-import Input from '../../../../../components/form/input/Input'
-import DatePickerInput from '../../../../../components/form/input/date/DatePickerInput'
-import { Label } from '../../../../../components/text/Label'
-import { FormGroup } from '@material-ui/core'
-import { TextFieldColorScheme } from '../../../../../components/form/input/textFieldStyles'
 import { useTranslation } from 'react-i18next'
+import Input from '../../../../../components/form/input/Input'
+import { TextFieldColorScheme } from '../../../../../components/form/input/textFieldStyles'
+import DateRangeInput from '../../../../../milestone-details/components/form/DateRangeInput'
+import DescriptionInput from '../../../../../milestone-details/components/form/DescriptionInput'
+import SubjectInput from '../../../../../milestone-details/components/form/SubjectInput'
 import { useNetworks } from '../../../../../networks/useNetworks'
 import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
 import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
@@ -27,13 +27,7 @@ const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsPr
 
     return (
         <div className={classes.root}>
-            <Input
-                name="subject"
-                label={t(`${translationKeyPrefix}.subject`)}
-                placeholder={t(`${translationKeyPrefix}.yourMilestone`)}
-                disabled={readonly}
-                textFieldColorScheme={TextFieldColorScheme.Dark}
-            />
+            <SubjectInput readonly={readonly} />
             <Input
                 name="beneficiary"
                 label={t(`${translationKeyPrefix}.beneficiary`)}
@@ -41,23 +35,7 @@ const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsPr
                 disabled={readonly}
                 textFieldColorScheme={TextFieldColorScheme.Dark}
             />
-            <FormGroup className={classes.narrowField}>
-                <Label label={t(`${translationKeyPrefix}.date`)} />
-                <div className={classes.dateRangeField}>
-                    <DatePickerInput
-                        name={'dateFrom'}
-                        placeholder={t(`${translationKeyPrefix}.selectFrom`)}
-                        disabled={readonly}
-                        textFieldColorScheme={TextFieldColorScheme.Dark}
-                    />
-                    <DatePickerInput
-                        name={'dateTo'}
-                        placeholder={t(`${translationKeyPrefix}.selectTo`)}
-                        disabled={readonly}
-                        textFieldColorScheme={TextFieldColorScheme.Dark}
-                    />
-                </div>
-            </FormGroup>
+            <DateRangeInput readonly={readonly} />
             {values.networks.map((network, idx) => {
                 return (
                     <Input
@@ -72,15 +50,7 @@ const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsPr
                     />
                 )
             })}
-            <Input
-                name="description"
-                label={t(`${translationKeyPrefix}.description`)}
-                placeholder={t(`${translationKeyPrefix}.describeMilestone`)}
-                disabled={readonly}
-                rows={4}
-                multiline={true}
-                textFieldColorScheme={TextFieldColorScheme.Dark}
-            />
+            <DescriptionInput readonly={readonly} />
         </div>
     )
 }

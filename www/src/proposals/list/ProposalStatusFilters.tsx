@@ -20,11 +20,6 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const getFilterValues = (isUserSignedIn: boolean): ProposalFilter[] => {
-    const filterValues = Object.values(ProposalFilter)
-    return isUserSignedIn ? filterValues : filterValues.filter((value) => value !== ProposalFilter.Mine)
-}
-
 export enum ProposalFilter {
     All = 'all',
     Mine = 'mine',
@@ -32,6 +27,11 @@ export enum ProposalFilter {
     Approved = 'approved',
     Rejected = 'rejected',
     Rewarded = 'rewarded',
+}
+
+const getFilterValues = (isUserSignedIn: boolean): ProposalFilter[] => {
+    const filterValues = Object.values(ProposalFilter)
+    return isUserSignedIn ? filterValues : filterValues.filter((value) => value !== ProposalFilter.Mine)
 }
 
 export const ProposalFilterSearchParamName = 'filter'

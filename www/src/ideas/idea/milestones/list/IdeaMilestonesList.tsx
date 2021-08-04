@@ -84,7 +84,7 @@ const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: IdeaMilestoneList
                 })
             }
         },
-        [idea.id, ideaMilestoneToBeTurnedIntoProposal],
+        [idea.id, ideaMilestoneToBeTurnedIntoProposal, mutateAsync],
     )
 
     const renderIdeaMilestoneCard = (ideaMilestone: IdeaMilestoneDto) => {

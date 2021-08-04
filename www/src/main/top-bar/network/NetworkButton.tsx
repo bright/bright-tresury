@@ -1,4 +1,4 @@
-import { Button as MaterialButton, createStyles, Theme } from '@material-ui/core'
+import { Button as MaterialButton, createStyles } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
