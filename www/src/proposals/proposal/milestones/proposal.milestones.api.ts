@@ -39,7 +39,7 @@ function getProposalMilestone(proposalIndex: number, milestoneId: string) {
     return apiGet<ProposalMilestoneDto>(`${getApiBasePath(proposalIndex)}/${milestoneId}`)
 }
 
-export const PROPOSAL_MILESTONE_QUERY_KEY_BASE = 'PROPOSALMilestone'
+export const PROPOSAL_MILESTONE_QUERY_KEY_BASE = 'proposalMilestone'
 
 export const useGetIdeaMilestone = (
     proposalIndex: number,

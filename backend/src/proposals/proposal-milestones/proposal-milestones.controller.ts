@@ -1,7 +1,6 @@
 import { Get, Param, Query } from '@nestjs/common'
 import { ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiProperty, ApiTags } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumberString, Validate } from 'class-validator'
-import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { IsValidNetworkConstraint } from '../../utils/network.validator'
 import { ProposalMilestoneDto } from './dto/proposal-milestone.dto'
@@ -61,7 +60,6 @@ export class ProposalMilestonesController {
     async getOne(
         @Param() { proposalIndex }: GetProposalMilestonesParams,
         @Param('milestoneId') milestoneId: string,
-        @ReqSession() session: SessionData,
     ): Promise<ProposalMilestoneDto> {
         const milestone = await this.proposalMilestonesService.findOne(milestoneId, Number(proposalIndex))
         return new ProposalMilestoneDto(milestone)
