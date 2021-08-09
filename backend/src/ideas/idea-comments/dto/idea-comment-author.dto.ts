@@ -12,6 +12,7 @@ export class IdeaCommentAuthorDto {
     web3address?: string
     @ApiProperty({ description: 'True if user signed up with email&password, False if web3 account was used' })
     isEmailPasswordEnabled: boolean
+
     constructor(author: Nil<User>) {
         if (!author) throw new InternalServerErrorException('Author is not defined')
         this.userId = author.id
