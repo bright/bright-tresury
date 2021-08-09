@@ -22,7 +22,6 @@ export class BlockchainService implements OnModuleDestroy {
     constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections) {}
 
     getApi(networkId: string): ApiPromise {
-        // console.trace();
         logger.info(`possible network ids: ${Object.keys(this.blockchainsConnections)} searching for ${networkId}`)
         if (Object.keys(this.blockchainsConnections).indexOf(networkId) === -1) {
             throw new Error(`Unrecognized network id: ${networkId}`)
@@ -47,6 +46,8 @@ export class BlockchainService implements OnModuleDestroy {
         logger.info(`Listening for extrinsic with hash ${extrinsicHash}...`)
         let blocksCount = 0
         const api = this.getApi(networkId)
+        // TODO: Inspect the "overload" ts-lint issue
+        // @ts-ignore
         this.unsub = await api.rpc.chain.subscribeNewHeads(async (header: Header) => {
             blocksCount++
             logger.info(`Checking block ${header.hash.toString()} No ${header.number}.`)

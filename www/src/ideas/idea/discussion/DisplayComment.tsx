@@ -66,17 +66,14 @@ interface OwnProps {
     comment: IdeaCommentDto
 }
 export type DisplayCommentProps = OwnProps
-const DisplayComment = ({
-    comment: { author, timestamp, thumbsUpCount, thumbsDownCount, content },
-}: DisplayCommentProps) => {
+const DisplayComment = ({ comment: { author, createdAt, thumbsUp, thumbsDown, content } }: DisplayCommentProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const formatAge = (timestamp: number) => {
         const ageMs = Date.now() - timestamp
+        if (ageMs < 60 * 1000) return t('lessThanMinuteAgo')
         return `${timeToString(extractTime(ageMs), t)} ${t('ago')}`
     }
-    // TODO: if logged in with blockchain show username as blockchain address, use polkadot avatar
-    // TODO: otherwise use username from signup/signin process
 
     return (
         <div className={classes.root}>
@@ -84,20 +81,20 @@ const DisplayComment = ({
                 <div className={classes.headerLeft}>
                     <CommentAuthorImage author={author} />
                     <div className={classes.author}>
-                        {author.username || ellipseTextInTheMiddle(author.web3address!)}
+                        {author.isEmailPasswordEnabled ? author.username : ellipseTextInTheMiddle(author.web3address!)}
                     </div>
                     <SmallVerticalDivider className={classes.grayDivider} />
                     <div className={classes.age}>
-                        {t('discussion.commentedTimestampTitle')} {formatAge(timestamp)}
+                        {t('discussion.commentedTimestampTitle')} {formatAge(createdAt)}
                     </div>
                 </div>
                 {/* TODO: code below is a feature to be implemented */}
                 {/*<div className={styles.headerRight}>*/}
                 {/*    <div className={styles.commentHeaderThumb}>*/}
-                {/*        <img src={thumbsUpIcon} alt={t('discussion.thumbsUpAlt')} /> {thumbsUpCount}*/}
+                {/*        <img src={thumbsUpIcon} alt={t('discussion.thumbsUpAlt')} /> {thumbsUp}*/}
                 {/*    </div>*/}
                 {/*    <div className={styles.commentHeaderThumb}>*/}
-                {/*        <img className={styles.rotate180} src={thumbsDownIcon} alt={t('discussion.thumbsDownAlt')'} /> {thumbsDownCount}*/}
+                {/*        <img className={styles.rotate180} src={thumbsDownIcon} alt={t('discussion.thumbsDownAlt')'} /> {thumbsDown}*/}
                 {/*    </div>*/}
                 {/*    <div className={styles.commentHeaderLink}>*/}
                 {/*        <img src={linkIcon} alt={''} />*/}

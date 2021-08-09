@@ -22,6 +22,8 @@ import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milesto
 import { ConfigModule } from '../config/config.module'
 import { IsValidNetworkConstraint } from '../utils/network.validator'
 import { IdeaCommentsController } from './idea-comments/idea-comments.controller'
+import { IdeaComment } from './idea-comments/entities/idea-comment.entity'
+import { IdeaCommentsService } from './idea-comments/idea-comments.service'
 
 @Module({
     imports: [
@@ -33,9 +35,9 @@ import { IdeaCommentsController } from './idea-comments/idea-comments.controller
         MilestoneDetailsModule,
         ConfigModule,
         ProposalsModule,
-        TypeOrmModule.forFeature([Idea, IdeaNetwork, IdeaMilestonesRepository, IdeaMilestoneNetwork]),
+        TypeOrmModule.forFeature([Idea, IdeaNetwork, IdeaMilestonesRepository, IdeaMilestoneNetwork, IdeaComment]),
     ],
-    providers: [IdeasService, IdeaProposalsService, IdeaMilestonesService, IdeaMilestoneProposalsService, IsValidNetworkConstraint],
+    providers: [IdeasService, IdeaProposalsService, IdeaMilestonesService, IdeaMilestoneProposalsService, IsValidNetworkConstraint, IdeaCommentsService],
     controllers: [IdeasController, IdeaMilestonesController, IdeaMilestoneProposalsController, IdeaProposalsController, IdeaCommentsController],
     exports: [IdeasService, IdeaMilestonesService],
 })

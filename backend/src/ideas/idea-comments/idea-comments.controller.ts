@@ -1,48 +1,21 @@
-import { Body, Get, Param, Post, UseGuards } from '@nestjs/common'
-import {
-    ApiBadRequestResponse,
-    ApiCreatedResponse,
-    ApiNotFoundResponse,
-    ApiOkResponse,
-    ApiParam,
-    ApiTags,
-} from '@nestjs/swagger'
+import { Body, Get, Inject, Param, Post, UseGuards } from '@nestjs/common'
+import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 
 import { SessionGuard } from '../../auth/session/guard/session.guard'
-import { IdeaCommentDto } from './idea-comment.dto'
-import { CreateIdeaCommentDto } from './create-idea-comment.dto'
+import { IdeaCommentDto } from './dto/idea-comment.dto'
+import { CreateIdeaCommentDto } from './dto/create-idea-comment.dto'
+import { IdeaCommentsService } from './idea-comments.service'
 
 @ControllerApiVersion('/ideas/:ideaId/comments', ['v1'])
 @ApiTags('ideas.comments')
 export class IdeaCommentsController {
-    private COMMENTS = [
-        {
-            id: 'comment_1',
-            author: {
-                userId: 'Sasha_Moshito_id',
-                username: 'Sasha_Moshito',
-            },
-            timestamp: Date.now() - 1000 * 60 * 2,
-            thumbsUpCount: 4,
-            thumbsDownCount: 2,
-            content:
-                'Dear Farah, thank you for asking. I think the idea is brilliant, however needs some clarification. Please let me know if you have someone who will help you in developing the project? What are the threads if the project is not developed well?',
-        },
-        {
-            id: 'comment_2',
-            author: {
-                userId: 'Farah_id',
-                username: 'Farah',
-            },
-            timestamp: Date.now() - 1000 * 60 * 12,
-            thumbsUpCount: 1,
-            thumbsDownCount: 0,
-            content:
-                '@Sasha_Moshito could you please look at my idea for the proposal and let me know it is worth doing it and if it is an interesting topic to develop?',
-        },
-    ] as IdeaCommentDto[]
+    constructor(
+        @Inject(IdeaCommentsService)
+        private readonly ideaCommentsService: IdeaCommentsService,
+    ) {}
+
     @Get()
     @ApiParam({
         name: 'ideaId',
@@ -55,8 +28,9 @@ export class IdeaCommentsController {
     @ApiNotFoundResponse({
         description: 'Idea with the given id not found.',
     })
-    async getComments(@Param('ideaId') ideaId: string, @ReqSession() session: SessionData): Promise<any[]> {
-        return this.COMMENTS
+    async getComments(@Param('ideaId') ideaId: string): Promise<IdeaCommentDto[]> {
+        const ideaComments = await this.ideaCommentsService.findAll(ideaId)
+        return ideaComments.map((ideaComment) => new IdeaCommentDto(ideaComment))
     }
 
     @Post()
@@ -65,7 +39,7 @@ export class IdeaCommentsController {
         description: 'Idea id',
     })
     @ApiCreatedResponse({
-        description: 'New comment created.',
+        description: 'New idea comment created.',
         type: IdeaCommentDto,
     })
     @ApiNotFoundResponse({
@@ -77,17 +51,7 @@ export class IdeaCommentsController {
         @Body() createIdeaCommentDto: CreateIdeaCommentDto,
         @ReqSession() session: SessionData,
     ): Promise<IdeaCommentDto> {
-        this.COMMENTS.push({
-            author: {
-                userId: session.user.id,
-                username: session.user.isEmailPasswordEnabled ? session.user.username : null,
-                web3address: session.user?.web3Addresses?.find((web3address) => web3address.isPrimary)?.address,
-            },
-            timestamp: Date.now(),
-            thumbsUpCount: Math.floor(Math.random() * 100),
-            thumbsDownCount: Math.floor(Math.random() * 100),
-            content: createIdeaCommentDto.content,
-        } as IdeaCommentDto)
-        return this.COMMENTS[this.COMMENTS.length - 1]
+        const ideaComment = await this.ideaCommentsService.create(ideaId, session.user, createIdeaCommentDto)
+        return new IdeaCommentDto(ideaComment)
     }
 }

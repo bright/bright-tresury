@@ -8,6 +8,7 @@ import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity
 import { DefaultIdeaStatus, IdeaStatus } from '../idea-status'
 import { IdeaNetwork } from './idea-network.entity'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
+import { IdeaComment } from '../idea-comments/entities/idea-comment.entity'
 
 @Entity('ideas')
 export class Idea extends BaseEntity {
@@ -50,11 +51,19 @@ export class Idea extends BaseEntity {
     @JoinColumn()
     details: IdeaProposalDetails
 
+    @OneToMany(() => IdeaComment, (ideaComment) => ideaComment.idea, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    comments: IdeaComment[]
+
     constructor(
         networks: IdeaNetwork[],
         status: IdeaStatus,
         owner: User,
         details: IdeaProposalDetails,
+        comments: IdeaComment[],
         beneficiary?: string,
         id?: string,
     ) {
@@ -65,6 +74,7 @@ export class Idea extends BaseEntity {
         this.id = id ?? uuid()
         this.owner = owner
         this.details = details
+        this.comments = comments
     }
 
     canEdit = (user: User) => {

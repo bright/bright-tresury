@@ -126,6 +126,7 @@ export class IdeasService {
             createIdeaDto.status ?? DefaultIdeaStatus,
             sessionData.user,
             details,
+            [],
             createIdeaDto.beneficiary,
         )
 

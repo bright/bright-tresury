@@ -1,4 +1,6 @@
-export function getInitials(name?: string): string {
+import { Nil } from '../../util/types'
+
+export function getInitials(name: Nil<string>): string {
     if (!name) {
         return ''
     }

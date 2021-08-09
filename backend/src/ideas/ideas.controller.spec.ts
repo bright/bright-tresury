@@ -9,8 +9,6 @@ import {
 import { beforeSetupFullApp, cleanDatabase, request, NETWORKS } from '../utils/spec.helpers'
 import { IdeaNetworkDto } from './dto/idea-network.dto'
 import { IdeaDto } from './dto/idea.dto'
-import { Idea } from './entities/idea.entity'
-import { IdeaNetwork } from './entities/idea-network.entity'
 import { IdeasService } from './ideas.service'
 import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
 import { createIdea, createSessionData } from './spec.helpers'

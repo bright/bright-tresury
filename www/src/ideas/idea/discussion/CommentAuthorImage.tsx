@@ -32,11 +32,11 @@ interface OwnProps {
 export type CommentAuthorImageProps = OwnProps
 
 const CommentAuthorImage = ({ author }: CommentAuthorImageProps) => {
-    const { username, web3address } = author
+    const { username, web3address, isEmailPasswordEnabled } = author
     const classes = useStyles()
     return (
         <div>
-            {username ? (
+            {isEmailPasswordEnabled ? (
                 <Avatar username={username} className={clsx(classes.root, classes.avatar)} />
             ) : (
                 <div className={clsx(classes.root, classes.identicon)}>

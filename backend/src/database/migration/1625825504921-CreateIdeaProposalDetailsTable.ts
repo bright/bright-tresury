@@ -1,6 +1,4 @@
 import { MigrationInterface, QueryRunner } from 'typeorm'
-import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
-import { Idea } from '../../ideas/entities/idea.entity'
 
 export class CreateIdeaProposalDetailsTable1625825504921 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<any> {

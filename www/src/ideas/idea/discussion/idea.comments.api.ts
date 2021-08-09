@@ -11,7 +11,7 @@ const getIdeaCommentsApiBasePath = (ideaId: string) => {
 
 async function getIdeaComments(ideaId: string): Promise<IdeaCommentDto[]> {
     const result = await apiGet<IdeaCommentDto[]>(getIdeaCommentsApiBasePath(ideaId))
-    result.sort((a, b) => b.timestamp - a.timestamp)
+    result.sort((a, b) => b.createdAt - a.createdAt)
     return result
 }
 

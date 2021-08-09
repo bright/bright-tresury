@@ -206,6 +206,7 @@
     "copy": "Copy",
     "copied": "Copied !",
     "ago": "ago",
+    "lessThanMinuteAgo": "less than a minute ago",
     "discussion": {
         "commentAlso": "Comment also on ",
         "enterCommentPlaceholder": "Leave your comment here",
