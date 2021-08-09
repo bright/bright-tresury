@@ -17,10 +17,11 @@ const useStyles = makeStyles((theme: Theme) =>
             overflow: 'hidden',
             width: '100%',
             height: DESKTOP_TOP_BAR_HEIGHT,
+            padding: '0 36px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 height: TABLET_TOP_BAR_HEIGHT,
+                padding: '0 20px',
             },
-            padding: '0 36px',
             backgroundColor: theme.palette.network.main,
             display: 'flex',
             justifyContent: 'space-between',

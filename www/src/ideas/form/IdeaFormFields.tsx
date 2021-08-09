@@ -5,10 +5,9 @@ import { useTranslation } from 'react-i18next'
 import Button from '../../components/button/Button'
 import Input from '../../components/form/input/Input'
 import FormSelect from '../../components/select/FormSelect'
-import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
-import { IdeaNetworkDto } from '../ideas.dto'
 import { IdeaFormValues } from './IdeaForm'
+import NetworksInput from './networks/NetworksInput'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,9 +37,6 @@ export type IdeaFormFieldsProps = OwnProps
 const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const {
-        network: { currency },
-    } = useNetworks()
 
     return (
         <>
@@ -54,6 +50,7 @@ const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
                     label={t('idea.details.beneficiary')}
                 />
             </div>
+            <NetworksInput ideaNetworks={values.networks} />
             <div className={`${classes.inputField} ${classes.smallField}`}>
                 <FormSelect
                     className={classes.fieldSelect}
@@ -73,19 +70,7 @@ const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
                     placeholder={t('idea.details.content')}
                 />
             </div>
-            {values.networks.map((network: IdeaNetworkDto, index) => {
-                return (
-                    <div className={`${classes.inputField} ${classes.smallField}`} key={index}>
-                        <Input
-                            name={`networks[${index}].value`}
-                            type={`number`}
-                            label={t('idea.details.reward')}
-                            placeholder={t('idea.details.reward')}
-                            endAdornment={currency}
-                        />
-                    </div>
-                )
-            })}
+
             <div className={classes.inputField}>
                 <Input
                     name="contact"

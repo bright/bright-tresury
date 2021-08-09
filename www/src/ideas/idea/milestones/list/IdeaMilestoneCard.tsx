@@ -6,7 +6,7 @@ import Divider from '../../../../components/divider/Divider'
 import NetworkValue from '../../../../components/network/NetworkValue'
 import MilestoneDescription from '../../../../milestone-details/components/milestone-card/MilestoneDescription'
 import MilestoneDateRange from '../../../../milestone-details/components/milestone-card/MilestoneDateRange'
-import Card from '../../../../components/card/Card'
+import ButtonCard from '../../../../components/card/ButtonCard'
 import CardDetails from '../../../../components/card/components/CardDetails'
 import CardTitle from '../../../../components/card/components/CardTitle'
 import { useTranslation } from 'react-i18next'
@@ -47,7 +47,7 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
     const { t } = useTranslation()
 
     return (
-        <Card onClick={() => onClick(ideaMilestone)}>
+        <ButtonCard onClick={() => onClick(ideaMilestone)}>
             <CardHeader>
                 <OrdinalNumber
                     prefix={t('idea.milestones.ordinalNumberPrefix')}
@@ -77,7 +77,7 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
                     placeholder={t('idea.milestones.list.card.noDescriptionProvided')}
                 />
             </div>
-        </Card>
+        </ButtonCard>
     )
 }
 

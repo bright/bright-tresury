@@ -4,8 +4,8 @@ import { useTranslation } from 'react-i18next'
 import Input from '../../components/form/input/Input'
 import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
-import { IdeaNetworkDto } from '../ideas.dto'
 import { IdeaFormValues } from './IdeaForm'
+import NetworkInput from './networks/NetworkInput'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,10 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 width: '100%',
             },
-        },
-        fieldSelect: {
-            backgroundColor: theme.palette.background.default,
-            fontWeight: 500,
         },
     }),
 )
@@ -34,9 +30,15 @@ export type FoldedIdeaFormFieldsProps = OwnProps
 const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const {
-        network: { currency },
-    } = useNetworks()
+
+    const { network } = useNetworks()
+
+    const ideaNetworkIndex = values.networks.findIndex((n) => n.name === network.id)
+
+    if (ideaNetworkIndex < 0) {
+        return <></>
+    }
+
     return (
         <>
             <div className={classes.inputField}>
@@ -49,19 +51,7 @@ const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
                     label={t('idea.details.beneficiary')}
                 />
             </div>
-            {values.networks.map((network: IdeaNetworkDto, index: number) => {
-                return (
-                    <div className={`${classes.inputField} ${classes.smallField}`} key={network.name}>
-                        <Input
-                            name={`networks[${index}].value`}
-                            type={`number`}
-                            label={t('idea.details.reward')}
-                            placeholder={t('idea.details.reward')}
-                            endAdornment={currency}
-                        />
-                    </div>
-                )
-            })}
+            <NetworkInput index={ideaNetworkIndex} ideaNetwork={values.networks[ideaNetworkIndex]} />
         </>
     )
 }

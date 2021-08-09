@@ -5,10 +5,6 @@ export const useCardStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             backgroundColor: theme.palette.background.default,
-            '&:hover': {
-                transform: 'scale(1.01)',
-            },
-            transition: 'transform 0.2s',
             width: '100%',
             position: 'relative',
             overflow: 'hidden',
@@ -20,7 +16,13 @@ export const useCardStyles = makeStyles((theme: Theme) =>
         },
         content: {
             margin: '0 20px 0 24px',
+        },
+        transformOnHover: {
             cursor: 'pointer',
+            '&:hover': {
+                transform: 'scale(1.01)',
+            },
+            transition: 'transform 0.2s',
         },
     }),
 )

@@ -2,7 +2,7 @@ import { createStyles } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Card from '../../../../components/card/Card'
+import ButtonCard from '../../../../components/card/Card'
 import CardDetails from '../../../../components/card/components/CardDetails'
 import CardHeader from '../../../../components/card/components/CardHeader'
 import CardTitle from '../../../../components/card/components/CardTitle'
@@ -41,7 +41,7 @@ const ProposalMilestoneCard = ({ milestone, onClick }: ProposalMilestoneCardProp
     const { t } = useTranslation()
 
     return (
-        <Card onClick={() => onClick(milestone)}>
+        <ButtonCard onClick={() => onClick(milestone)}>
             <CardHeader>
                 <OrdinalNumber
                     prefix={t('idea.milestones.ordinalNumberPrefix')}
@@ -64,7 +64,7 @@ const ProposalMilestoneCard = ({ milestone, onClick }: ProposalMilestoneCardProp
                     placeholder={t('proposal.milestones.list.card.noDescriptionProvided')}
                 />
             </div>
-        </Card>
+        </ButtonCard>
     )
 }
 

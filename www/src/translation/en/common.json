@@ -25,7 +25,8 @@
         "radioBox": {
             "empty": "Empty radio box icon",
             "checked": "Checked radio box icon"
-        }
+        },
+        "informationIcon": "Information icon"
     },
     "form": {
         "inputs": {
@@ -231,7 +232,6 @@
             "content": "Reason of Proposal",
             "contact": "Proposer's information",
             "portfolio": "Portfolio",
-            "reward": "Reward",
             "links": "Links",
             "form": {
                 "linkPlaceholder": "Add external link to your proposal here",
@@ -243,7 +243,20 @@
                 "valueCannotBeLessThanZero": "The value cannot be less than zero",
                 "wrongBeneficiaryError": "Wrong beneficiary address",
                 "showAll": "Show all information",
-                "showLess": "Show less information"
+                "showLess": "Show less information",
+                "networks": {
+                    "reward": "Reward",
+                    "bond": {
+                        "name": "Bond",
+                        "min": "The minimum amount that will be bonded",
+                        "percentage": "The on-chain percentage for the treasury is {{percentage}}%"
+                    },
+                    "additionalNet": "+ Additional Net",
+                    "additionalNets": "Additional Nets",
+                    "allNetsAdded": "All nets have been added",
+                    "net": "Net",
+                    "remove": "Remove Net"
+                }
             },
             "header": {
                 "turnIntoProposal": "Convert to Proposal"

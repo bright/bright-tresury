@@ -108,9 +108,13 @@ export class IdeasService {
                       const existingNetwork = currentIdea.networks.find(
                           (currentIdeaNetwork: IdeaNetworkDto) => currentIdeaNetwork.id === updatedNetwork.id,
                       )
-                      return {
-                          ...existingNetwork,
-                          ...updatedNetwork,
+                      if (existingNetwork) {
+                          return {
+                              ...existingNetwork,
+                              ...updatedNetwork,
+                          }
+                      } else {
+                          return new IdeaNetwork(updatedNetwork.name, updatedNetwork.value)
                       }
                   })
                 : currentIdea.networks,

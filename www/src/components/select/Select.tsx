@@ -8,6 +8,7 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
+import { TextFieldStylesProps, useTextFieldStyles } from '../form/input/textFieldStyles'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -18,11 +19,6 @@ const useStyles = makeStyles(() =>
             marginBottom: '1em',
             color: '#1B1D1C',
             fontSize: '0.75em',
-        },
-        select: {
-            fontSize: '0.875em',
-            padding: '1em',
-            fontWeight: 500,
         },
     }),
 )
@@ -35,10 +31,20 @@ interface OwnProps<T> {
     renderOption?: (value: T) => string | JSX.Element
 }
 
-export type SelectProps<T = any> = OwnProps<T> & MaterialSelectProps
+export type SelectProps<T = any> = OwnProps<T> & MaterialSelectProps & TextFieldStylesProps
 
-const Select = ({ inputProps, value, renderOption, options, label, placeholder, ...props }: SelectProps) => {
+const Select = ({
+    inputProps,
+    value,
+    renderOption,
+    options,
+    label,
+    placeholder,
+    colorScheme,
+    ...props
+}: SelectProps) => {
     const classes = useStyles()
+    const textFieldClasses = useTextFieldStyles({ colorScheme })()
     return (
         <FormGroup>
             {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
@@ -48,7 +54,8 @@ const Select = ({ inputProps, value, renderOption, options, label, placeholder, 
                 disableUnderline={true}
                 inputProps={{
                     classes: {
-                        select: classes.select,
+                        select: textFieldClasses.input,
+                        root: textFieldClasses.root,
                     },
                     ...inputProps,
                 }}

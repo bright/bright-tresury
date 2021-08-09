@@ -5,40 +5,43 @@ export enum TextFieldColorScheme {
     Dark = 'dark',
 }
 
-interface StylesProps {
-    colorScheme: TextFieldColorScheme
+export interface TextFieldStylesProps {
+    colorScheme?: TextFieldColorScheme
 }
 
-export const useTextFieldStyles = (props: StylesProps) =>
+export const useTextFieldStyles = ({ colorScheme = TextFieldColorScheme.Light }: TextFieldStylesProps) =>
     makeStyles<Theme>((theme) =>
         createStyles({
             root: {
                 backgroundColor:
-                    props.colorScheme === TextFieldColorScheme.Light
+                    colorScheme === TextFieldColorScheme.Light
                         ? theme.palette.background.default
                         : theme.palette.background.paper,
                 padding: '0',
+                borderColor: theme.palette.background.paper,
+                borderStyle: 'solid',
+                borderWidth: '1px',
+                borderRadius: 0,
             },
             input: {
                 backgroundColor:
-                    props.colorScheme === TextFieldColorScheme.Light
+                    colorScheme === TextFieldColorScheme.Light
                         ? theme.palette.background.default
                         : theme.palette.background.paper,
-                borderColor:
-                    props.colorScheme === TextFieldColorScheme.Light
-                        ? theme.palette.background.default
-                        : theme.palette.background.paper,
+                borderColor: theme.palette.background.paper,
                 borderStyle: 'solid',
-                borderWidth: '1px',
+                borderRightWidth: '1px',
                 fontSize: '14px',
                 padding: '1em',
                 fontWeight: 500,
             },
             adornedEnd: {
-                paddingRight: '1.5em',
+                borderRadius: 0,
+                paddingRight: '1em',
             },
             error: {
                 '& input': {
+                    borderWidth: '1px',
                     borderColor: theme.palette.error.main,
                 },
             },
