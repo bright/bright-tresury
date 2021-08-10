@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNetworks } from '../../networks/useNetworks'
 import { IdeaDto } from '../ideas.dto'
 import { generatePath } from 'react-router-dom'
 import { ROUTE_IDEA } from '../../routes/routes'
@@ -26,14 +27,22 @@ const IdeaCard = ({
         ordinalNumber,
         status,
         details: { title },
-        networks,
+        networks: ideaNetworks,
         beneficiary,
     },
 }: IdeaCardProps) => {
     const { t } = useTranslation()
+    const { networks: contextNetworks } = useNetworks()
+
+    const networks = contextNetworks.filter((contextNetwork) =>
+        ideaNetworks.find((ideaNetwork) => ideaNetwork.name === contextNetwork.id),
+    )
 
     return (
-        <NetworkCard redirectTo={`${generatePath(ROUTE_IDEA, { ideaId: id })}/${IdeaContentType.Info}`}>
+        <NetworkCard
+            redirectTo={`${generatePath(ROUTE_IDEA, { ideaId: id })}/${IdeaContentType.Info}`}
+            networks={networks}
+        >
             <CardHeader>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={ordinalNumber} />
                 <IdeaStatusIndicator status={status} />
@@ -43,7 +52,7 @@ const IdeaCard = ({
 
             <CardDetails>
                 <CardTitle title={title} />
-                {networks.length > 0 ? <NetworkValue value={networks[0].value} /> : null}
+                {ideaNetworks.length > 0 ? <NetworkValue value={ideaNetworks[0].value} /> : null}
             </CardDetails>
 
             <Divider />

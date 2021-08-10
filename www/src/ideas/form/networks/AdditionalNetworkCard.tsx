@@ -81,7 +81,7 @@ const AdditionalNetworkCard = ({
     }
 
     return (
-        <NetworkCard className={classes.card} cardNetwork={selectedNetwork}>
+        <NetworkCard className={classes.card} networks={[selectedNetwork]}>
             <div className={classes.content}>
                 <div className={classes.contentLeft}>
                     <div className={classes.smallField}>

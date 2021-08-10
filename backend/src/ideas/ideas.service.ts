@@ -29,9 +29,9 @@ export class IdeasService {
             return networkName
                 ? await this.ideaRepository
                       .createQueryBuilder('idea')
-                      .leftJoinAndSelect('idea.networks', 'network')
+                      .leftJoinAndSelect('idea.networks', 'networkToQuery')
                       .leftJoinAndSelect('idea.details', 'details')
-                      .where('network.name = :networkName', { networkName })
+                      .where('networkToQuery.name = :networkName', { networkName })
                       .andWhere(
                           new Brackets((qb) => {
                               qb.where('idea.status != :draftStatus', {
@@ -39,6 +39,7 @@ export class IdeasService {
                               }).orWhere('idea.ownerId = :ownerId', { ownerId: sessionData?.user.id })
                           }),
                       )
+                      .leftJoinAndSelect('idea.networks', 'network')
                       .getMany()
                 : await this.ideaRepository.find({
                       where: [{ status: Not(IdeaStatus.Draft) }, { ownerId: sessionData?.user.id }],

@@ -7,30 +7,38 @@ import Card from '../card/Card'
 import { useCardStyles } from '../card/cardStyles'
 import LinkCard from '../card/LinkCard'
 
-const useStyles = ({ color }: { color: string }) =>
-    makeStyles(() =>
-        createStyles({
+const useStyles = ({ colors }: { colors: string[] }) =>
+    makeStyles(() => {
+        const percentage = Math.ceil(100 / colors.length)
+        const gradientColors = colors
+            .map((c, index) => `${c} ${index * percentage}% ${(index + 1) * percentage}%`)
+            .join(', ')
+        let background =
+            colors.length === 1
+                ? { backgroundColor: colors[0] }
+                : { backgroundImage: `linear-gradient(${gradientColors})` }
+        return createStyles({
             networkAccentLine: {
-                backgroundColor: color,
                 height: '100%',
                 width: '4px',
                 position: 'absolute',
+                ...background,
             },
-        }),
-    )
+        })
+    })
 
 interface OwnProps {
     redirectTo?: string
-    cardNetwork?: Network
+    networks?: Network[]
 }
 
 export type NetworkCardProps = PropsWithChildren<OwnProps & HTMLAttributes<HTMLDivElement>>
-const NetworkCard = ({ children, redirectTo, cardNetwork, ...props }: NetworkCardProps) => {
+const NetworkCard = ({ children, redirectTo, networks, ...props }: NetworkCardProps) => {
     const { network: contextNetwork } = useNetworks()
 
-    const color = cardNetwork?.color ?? contextNetwork.color
+    const colors = networks?.map((n) => n.color) ?? [contextNetwork.color]
 
-    const classes = useStyles({ color })()
+    const classes = useStyles({ colors })()
     const cardClasses = useCardStyles()
 
     const cardContent = (
