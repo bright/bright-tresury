@@ -34,41 +34,46 @@ const NetworksInput = ({ currentNetwork, otherNetworks }: NetworksInputProps) =>
     )
 
     return (
-        <FieldArray
-            name={'networks'}
-            render={(arrayHelpers) => (
-                <>
-                    <NetworkInput
-                        className={classes.inputField}
-                        inputName={'currentNetwork.value'}
-                        ideaNetwork={currentNetwork}
-                    />
-                    <div className={classes.inputField}>
-                        {otherNetworks.length > 1 ? (
-                            <>
-                                <Label label={t('idea.details.form.networks.additionalNets')} />
-                                {otherNetworks.map((ideaNetwork, index) => (
-                                    <AdditionalNetworkCard
-                                        key={ideaNetwork.name}
-                                        availableNetworks={availableNetworks}
-                                        ideaNetwork={ideaNetwork}
-                                        index={index}
-                                        removeNetwork={() => {
-                                            arrayHelpers.remove(index)
-                                        }}
-                                    />
-                                ))}
-                                )
-                            </>
-                        ) : null}
-                    </div>
-                    <AddNetworkButton
-                        availableNetworks={availableNetworks}
-                        onClick={() => arrayHelpers.push({ name: availableNetworks[0].id, value: 0 })}
-                    />
-                </>
-            )}
-        />
+        <>
+            <NetworkInput
+                className={classes.inputField}
+                inputName={'currentNetwork.value'}
+                ideaNetwork={currentNetwork}
+            />
+            <FieldArray
+                name={'otherNetworks'}
+                render={(arrayHelpers) => (
+                    <>
+                        <div className={classes.inputField}>
+                            {otherNetworks.length ? (
+                                <>
+                                    <Label label={t('idea.details.form.networks.additionalNets')} />
+                                    {otherNetworks.map((ideaNetwork, index) => {
+                                        const ideaNetworkNetwork = networks.find((n) => n.id === ideaNetwork.name)!
+                                        const currentAvailableNetworks = [ideaNetworkNetwork].concat(availableNetworks)
+                                        return (
+                                            <AdditionalNetworkCard
+                                                key={ideaNetwork.name}
+                                                availableNetworks={currentAvailableNetworks}
+                                                ideaNetwork={ideaNetwork}
+                                                index={index}
+                                                removeNetwork={() => {
+                                                    arrayHelpers.remove(index)
+                                                }}
+                                            />
+                                        )
+                                    })}
+                                </>
+                            ) : null}
+                        </div>
+                        <AddNetworkButton
+                            availableNetworks={availableNetworks}
+                            onClick={() => arrayHelpers.push({ name: availableNetworks[0].id, value: 0 })}
+                        />
+                    </>
+                )}
+            />
+        </>
     )
 }
 
