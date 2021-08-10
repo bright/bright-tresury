@@ -4,6 +4,7 @@ import { useParams } from 'react-router'
 import { useHistory } from 'react-router-dom'
 import { useAuth } from '../../../auth/AuthContext'
 import Container from '../../../components/form/Container'
+import { useNetworks } from '../../../networks/useNetworks'
 import IdeaForm from '../../form/IdeaForm'
 import { IDEA_QUERY_KEY_BASE, useGetIdea, usePatchIdea, useTurnIdeaIntoProposal } from '../../ideas.api'
 import SubmitProposalModal, { ExtrinsicDetails } from '../../SubmitProposalModal'
@@ -52,11 +53,14 @@ const TurnIdeaIntoProposal = () => {
         })
     }
 
+    const { network } = useNetworks()
+    const ideaNetwork = idea?.networks.find((n) => n.name === network.id)
+
     const onTurn = useCallback(
         async ({ extrinsicHash, lastBlockHash }: ExtrinsicDetails) => {
-            if (idea) {
+            if (idea && ideaNetwork) {
                 const turnIdeaIntoProposalDto: TurnIdeaIntoProposalDto = {
-                    ideaNetworkId: idea.networks[0].id!,
+                    ideaNetworkId: ideaNetwork.id!,
                     extrinsicHash,
                     lastBlockHash,
                 }
@@ -72,6 +76,10 @@ const TurnIdeaIntoProposal = () => {
 
     if (ideaBelongsToAnotherUser) {
         return <Container title={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />
+    }
+
+    if (!ideaNetwork) {
+        return <Container title={t('idea.turnIntoProposal.noIdeaNetworkForCurrentNetwork')} />
     }
 
     return (
@@ -96,7 +104,7 @@ const TurnIdeaIntoProposal = () => {
                         onClose={submitProposalModal.close}
                         onTurn={onTurn}
                         title={t('idea.details.submitProposalModal.title')}
-                        value={idea.networks[0].value}
+                        value={ideaNetwork.value}
                         beneficiary={idea.beneficiary}
                     />
                 </>

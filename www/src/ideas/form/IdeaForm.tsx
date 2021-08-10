@@ -4,11 +4,13 @@ import React, { PropsWithChildren, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import Button from '../../components/button/Button'
-import IdeaFormFields from './IdeaFormFields'
-import FoldedIdeaFormFields from './FoldedIdeaFormFields'
+import FormFooter from '../../components/form/footer/FormFooter'
+import { Network } from '../../networks/networks.dto'
+import { useNetworks } from '../../networks/useNetworks'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
 import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
-import FormFooter from '../../components/form/footer/FormFooter'
+import FoldedIdeaFormFields from './FoldedIdeaFormFields'
+import IdeaFormFields from './IdeaFormFields'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -35,7 +37,8 @@ export type IdeaFormProps = PropsWithChildren<OwnProps>
 
 export interface IdeaFormValues {
     beneficiary: string
-    networks: IdeaNetworkDto[]
+    currentNetwork: IdeaNetworkDto
+    otherNetworks: IdeaNetworkDto[]
     title: string
     field?: string
     content: string
@@ -44,10 +47,11 @@ export interface IdeaFormValues {
     links?: string[]
 }
 
-const toFormValues = (idea: IdeaDto): IdeaFormValues => {
+const toFormValues = (idea: IdeaDto, contextNetwork: Network): IdeaFormValues => {
     return {
         beneficiary: idea.beneficiary,
-        networks: idea.networks,
+        currentNetwork: idea.networks.find((n) => n.name === contextNetwork.id)!,
+        otherNetworks: idea.networks.filter((n) => n.name !== contextNetwork.id),
         ...idea.details,
         links: idea.details.links && idea.details.links.length > 0 ? idea.details.links : [''],
     }
@@ -57,17 +61,21 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     const classes = useStyles()
     const { t } = useTranslation()
     const [folded, setFolded] = useState(!!foldable)
+    const { network: contextNetwork } = useNetworks()
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('idea.details.form.emptyFieldError')),
         beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
             return isValidAddressOrEmpty(address)
         }),
-        networks: Yup.array().of(
+        otherNetworks: Yup.array().of(
             Yup.object().shape({
                 value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
             }),
         ),
+        currentNetwork: Yup.object().shape({
+            value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
+        }),
         links: Yup.array().of(
             Yup.string().url(t('idea.details.form.badLinkError')).max(1000, t('idea.details.form.linkTooLong')),
         ),
@@ -75,13 +83,11 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
 
     const extendedValidationSchema = Yup.object().shape({
         beneficiary: Yup.string().required(t('idea.details.form.emptyFieldError')),
-        networks: Yup.array().of(
-            Yup.object().shape({
-                value: Yup.number()
-                    .required(t('idea.details.form.emptyFieldError'))
-                    .moreThan(0, t('idea.details.form.nonZeroFieldError')),
-            }),
-        ),
+        currentNetwork: Yup.object().shape({
+            value: Yup.number()
+                .required(t('idea.details.form.emptyFieldError'))
+                .moreThan(0, t('idea.details.form.nonZeroFieldError')),
+        }),
     })
 
     const noEmptyLinks = (links: string[] | undefined) => links?.filter((link: string) => Boolean(link))
@@ -90,7 +96,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
         onSubmit({
             ...idea,
             beneficiary: formIdea.beneficiary,
-            networks: formIdea.networks,
+            networks: formIdea.otherNetworks.concat(formIdea.currentNetwork),
             details: {
                 title: formIdea.title,
                 contact: formIdea.contact,
@@ -104,7 +110,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={toFormValues(idea)}
+            initialValues={toFormValues(idea, contextNetwork)}
             validationSchema={extendedValidation ? validationSchema.concat(extendedValidationSchema) : validationSchema}
             onSubmit={onFormikSubmit}
         >

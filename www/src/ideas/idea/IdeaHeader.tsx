@@ -13,6 +13,7 @@ import FlexBreakLine from '../../components/header/FlexBreakLine'
 import HeaderTabs from '../../components/header/HeaderTabs'
 import NetworkRewardDeposit from '../../components/network/NetworkRewardDeposit'
 import OptionalTitle from '../../components/text/OptionalTitle'
+import { useNetworks } from '../../networks/useNetworks'
 import { ROUTE_TURN_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
@@ -101,7 +102,11 @@ const IdeaHeader = ({ idea, canEdit }: IdeaHeaderProps) => {
         [idea, canEdit],
     )
 
-    const networkValue = idea.networks && idea.networks.length > 0 ? idea.networks[0].value : 0
+    const { network: currentNetwork } = useNetworks()
+    const networkValue = useMemo(() => {
+        const currentIdeaNetwork = idea.networks?.find((n) => n.name === currentNetwork.id)
+        return currentIdeaNetwork?.value ?? 0
+    }, [idea.networks, currentNetwork])
 
     return (
         <HeaderContainer>

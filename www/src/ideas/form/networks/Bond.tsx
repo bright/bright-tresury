@@ -50,7 +50,7 @@ const Bond = ({ ideaNetwork, className }: BondProps) => {
     const bond = calculateBondValue(ideaNetwork.value, selectedNetwork.bond.percentage, selectedNetwork.bond.minValue)
 
     const tipLabel =
-        bond == selectedNetwork.bond.minValue ? (
+        bond === selectedNetwork.bond.minValue ? (
             t('idea.details.form.networks.bond.min')
         ) : (
             <Trans

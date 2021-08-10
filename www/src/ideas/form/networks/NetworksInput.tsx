@@ -18,18 +18,20 @@ const useStyles = makeStyles(() =>
 )
 
 interface OwnProps {
-    ideaNetworks: IdeaNetworkDto[]
+    currentNetwork: IdeaNetworkDto
+    otherNetworks: IdeaNetworkDto[]
 }
 
 export type NetworksInputProps = OwnProps
 
-const NetworksInput = ({ ideaNetworks }: NetworksInputProps) => {
+const NetworksInput = ({ currentNetwork, otherNetworks }: NetworksInputProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { network, networks } = useNetworks()
+    const { networks } = useNetworks()
 
-    const currentNetworkIndex = ideaNetworks.findIndex((n) => n.name === network.id)
-    const availableNetworks = networks.filter((n) => !ideaNetworks.find((ideaNetwork) => ideaNetwork.name === n.id))
+    const availableNetworks = networks.filter(
+        (n) => currentNetwork.name !== n.id && !otherNetworks.find((ideaNetwork) => ideaNetwork.name === n.id),
+    )
 
     return (
         <FieldArray
@@ -38,26 +40,25 @@ const NetworksInput = ({ ideaNetworks }: NetworksInputProps) => {
                 <>
                     <NetworkInput
                         className={classes.inputField}
-                        index={currentNetworkIndex}
-                        ideaNetwork={ideaNetworks[currentNetworkIndex]}
+                        inputName={'currentNetwork.value'}
+                        ideaNetwork={currentNetwork}
                     />
                     <div className={classes.inputField}>
-                        {ideaNetworks.length > 1 ? (
+                        {otherNetworks.length > 1 ? (
                             <>
                                 <Label label={t('idea.details.form.networks.additionalNets')} />
-                                {ideaNetworks.map((ideaNetwork, index) => {
-                                    return index !== currentNetworkIndex ? (
-                                        <AdditionalNetworkCard
-                                            key={ideaNetwork.name}
-                                            availableNetworks={availableNetworks}
-                                            ideaNetwork={ideaNetwork}
-                                            index={index}
-                                            removeNetwork={() => {
-                                                arrayHelpers.remove(index)
-                                            }}
-                                        />
-                                    ) : null
-                                })}
+                                {otherNetworks.map((ideaNetwork, index) => (
+                                    <AdditionalNetworkCard
+                                        key={ideaNetwork.name}
+                                        availableNetworks={availableNetworks}
+                                        ideaNetwork={ideaNetwork}
+                                        index={index}
+                                        removeNetwork={() => {
+                                            arrayHelpers.remove(index)
+                                        }}
+                                    />
+                                ))}
+                                )
                             </>
                         ) : null}
                     </div>

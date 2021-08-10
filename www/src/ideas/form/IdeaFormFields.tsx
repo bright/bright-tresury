@@ -50,7 +50,7 @@ const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
                     label={t('idea.details.beneficiary')}
                 />
             </div>
-            <NetworksInput ideaNetworks={values.networks} />
+            <NetworksInput currentNetwork={values.currentNetwork} otherNetworks={values.otherNetworks} />
             <div className={`${classes.inputField} ${classes.smallField}`}>
                 <FormSelect
                     className={classes.fieldSelect}

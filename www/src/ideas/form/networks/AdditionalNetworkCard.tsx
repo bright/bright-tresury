@@ -89,12 +89,16 @@ const AdditionalNetworkCard = ({
                             renderOption={(option) => networks.find((n) => n.id === option)?.name ?? option}
                             renderValue={(value) => networks.find((n) => n.id === value)?.name ?? ''}
                             className={classes.select}
-                            name={`networks[${index}].name`}
+                            name={`otherNetworks[${index}].name`}
                             label={t('idea.details.form.networks.net')}
                             options={availableNetworks.map((n) => n.id)}
                         />
                     </div>
-                    <NetworkInput className={classes.inputField} index={index} ideaNetwork={ideaNetwork} />
+                    <NetworkInput
+                        className={classes.inputField}
+                        inputName={`otherNetworks[${index}].value`}
+                        ideaNetwork={ideaNetwork}
+                    />
                 </div>
                 <Button className={classes.removeButton} variant={'text'} onClick={removeNetwork}>
                     {t('idea.details.form.networks.remove')}

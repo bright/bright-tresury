@@ -56,7 +56,7 @@ const IdeaProposalDetails = ({ beneficiary, details }: IdeaProposalDetailsProps)
     const { t } = useTranslation()
 
     const nonEmptyLinks = useMemo(() => (details?.links ? details.links.filter((link: string) => !!link) : []), [
-        details?.links,
+        details,
     ])
 
     return (

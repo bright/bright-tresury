@@ -32,13 +32,13 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    index: number
+    inputName: string
     ideaNetwork: IdeaNetworkDto
 }
 
 export type NetworkInputProps = OwnProps & ClassNameProps
 
-const NetworkInput = ({ index, ideaNetwork, className }: NetworkInputProps) => {
+const NetworkInput = ({ inputName, ideaNetwork, className }: NetworkInputProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { networks } = useNetworks()
@@ -49,7 +49,7 @@ const NetworkInput = ({ index, ideaNetwork, className }: NetworkInputProps) => {
         <div className={clsx(classes.root, className)}>
             <Input
                 className={classes.value}
-                name={`networks[${index}].value`}
+                name={inputName}
                 type={`number`}
                 label={t('idea.details.form.networks.reward')}
                 placeholder={t('idea.details.form.networks.reward')}
