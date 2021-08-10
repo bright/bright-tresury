@@ -233,6 +233,8 @@
             "contact": "Proposer's information",
             "portfolio": "Portfolio",
             "links": "Links",
+            "additionalNets": "Additional Nets",
+            "net": "Net",
             "form": {
                 "linkPlaceholder": "Add external link to your proposal here",
                 "addLink": "+ Add Link",
@@ -252,7 +254,6 @@
                         "percentage": "The on-chain percentage for the treasury is {{percentage}}%"
                     },
                     "additionalNet": "+ Additional Net",
-                    "additionalNets": "Additional Nets",
                     "allNetsAdded": "All nets have been added",
                     "net": "Net",
                     "remove": "Remove Net"
@@ -373,6 +374,7 @@
             "votingLabel": "Voting",
             "info": {
                 "proposer": "Proposer",
+                "beneficiary": "Beneficiary",
                 "fieldOfIdea": "Field of idea",
                 "reasonForIdea": "Reason for idea",
                 "description": "Description"

@@ -1,22 +1,19 @@
+import FormGroup from '@material-ui/core/FormGroup'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Button from '../../../components/button/Button'
+import TextField from '../../../components/form/input/TextField'
 import NetworkCard from '../../../components/network/NetworkCard'
-import FormSelect from '../../../components/select/FormSelect'
-import { Network } from '../../../networks/networks.dto'
+import { Label } from '../../../components/text/Label'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
+import NetworkInput from '../../form/networks/NetworkInput'
 import { IdeaNetworkDto } from '../../ideas.dto'
-import NetworkInput from './NetworkInput'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
             marginBottom: '2em',
-        },
-        inputField: {
-            marginTop: '2em',
         },
         smallField: {
             width: '50%',
@@ -41,31 +38,16 @@ const useStyles = makeStyles((theme: Theme) =>
         contentLeft: {
             flexGrow: 1,
         },
-        removeButton: {
-            alignSelf: 'flex-start',
-            color: theme.palette.warning.main,
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                alignSelf: 'flex-end',
-            },
-        },
     }),
 )
 
 interface OwnProps {
     ideaNetwork: IdeaNetworkDto
-    index: number
-    availableNetworks: Network[]
-    removeNetwork: () => void
 }
 
 export type AdditionalNetworkCardProps = OwnProps
 
-const AdditionalNetworkCard = ({
-    ideaNetwork,
-    index,
-    availableNetworks,
-    removeNetwork,
-}: AdditionalNetworkCardProps) => {
+const AdditionalNetworkDetailsCard = ({ ideaNetwork }: AdditionalNetworkCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { networks } = useNetworks()
@@ -80,27 +62,15 @@ const AdditionalNetworkCard = ({
         <NetworkCard className={classes.card} networks={[selectedNetwork]}>
             <div className={classes.content}>
                 <div className={classes.contentLeft}>
-                    <div className={classes.smallField}>
-                        <FormSelect
-                            renderOption={(option) => networks.find((n) => n.id === option)?.name ?? option}
-                            renderValue={(value) => networks.find((n) => n.id === value)?.name ?? ''}
-                            name={`otherNetworks[${index}].name`}
-                            label={t('idea.details.form.networks.net')}
-                            options={availableNetworks.map((n) => n.id)}
-                        />
-                    </div>
-                    <NetworkInput
-                        className={classes.inputField}
-                        inputName={`otherNetworks[${index}].value`}
-                        ideaNetwork={ideaNetwork}
-                    />
+                    <FormGroup className={classes.smallField}>
+                        <Label label={t('idea.details.net')} />
+                        <TextField value={selectedNetwork.name} disabled={true} />
+                    </FormGroup>
+                    <NetworkInput ideaNetwork={ideaNetwork} readonly={true} />
                 </div>
-                <Button className={classes.removeButton} variant={'text'} onClick={removeNetwork}>
-                    {t('idea.details.form.networks.remove')}
-                </Button>
             </div>
         </NetworkCard>
     )
 }
 
-export default AdditionalNetworkCard
+export default AdditionalNetworkDetailsCard

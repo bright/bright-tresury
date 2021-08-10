@@ -1,14 +1,12 @@
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Label } from '../components/text/Label'
-import Identicon from '../components/identicon/Identicon'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import Link from '../components/link/Link'
-import { breakpoints } from '../theme/theme'
+import { Label } from '../components/text/Label'
 import Placeholder from '../components/text/Placeholder'
+import { breakpoints } from '../theme/theme'
 import { IdeaProposalDetailsDto } from './idea-proposal-details.dto'
 import LongText from './LongText'
-import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,13 +23,6 @@ const useStyles = makeStyles((theme: Theme) =>
         spacing: {
             marginTop: '2em',
         },
-        beneficiary: {
-            display: 'flex',
-            alignItems: 'center',
-        },
-        accountValue: {
-            marginLeft: '.5em',
-        },
         linkSpacing: {
             marginTop: '.7em',
         },
@@ -45,13 +36,12 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    beneficiary: string
     details?: IdeaProposalDetailsDto
 }
 
 export type IdeaProposalDetailsProps = OwnProps
 
-const IdeaProposalDetails = ({ beneficiary, details }: IdeaProposalDetailsProps) => {
+const IdeaProposalDetails = ({ details }: IdeaProposalDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -61,17 +51,6 @@ const IdeaProposalDetails = ({ beneficiary, details }: IdeaProposalDetailsProps)
 
     return (
         <div>
-            <Label label={t('idea.details.beneficiary')} />
-            <div className={classes.beneficiary}>
-                {beneficiary ? (
-                    <>
-                        <Identicon address={beneficiary} />
-                        <div className={clsx(classes.accountValue, classes.text)}>{beneficiary}</div>
-                    </>
-                ) : (
-                    <Placeholder value={t('idea.details.beneficiary')} />
-                )}
-            </div>
             <div className={classes.spacing}>
                 <Label label={t('idea.details.field')} />
                 <text className={classes.text}>

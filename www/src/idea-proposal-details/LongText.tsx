@@ -15,16 +15,6 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: '8px',
             fontSize: '16px',
             fontWeight: 400,
-            width: '70%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '100%',
-                padding: '16px',
-                fontSize: '18px',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: '10px',
-                fontSize: '14px',
-            },
         },
     }),
 )

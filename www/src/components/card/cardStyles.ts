@@ -9,6 +9,7 @@ export const useCardStyles = makeStyles((theme: Theme) =>
             position: 'relative',
             overflow: 'hidden',
             borderRadius: '8px',
+            boxShadow: 'none',
         },
         link: {
             textDecoration: 'none',

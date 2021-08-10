@@ -1,5 +1,6 @@
 import { Theme } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Identicon from '../../../components/identicon/Identicon'
@@ -70,10 +71,21 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary, details } }: Proposal
             <div className={classes.proposer}>
                 <>
                     <Identicon address={proposer.address} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>{proposer.address}</div>
+                    <div className={`${classes.accountValue} ${classes.text}`}>
+                        {proposer.display ?? proposer.address}
+                    </div>
                 </>
             </div>
-            <IdeaProposalDetails beneficiary={beneficiary.address} details={details} />
+            <Label label={t('proposal.content.info.beneficiary')} />
+            <div className={classes.proposer}>
+                <>
+                    <Identicon address={beneficiary.address} />
+                    <div className={clsx(classes.accountValue, classes.text)}>
+                        {beneficiary.display ?? beneficiary.address}
+                    </div>
+                </>
+            </div>
+            <IdeaProposalDetails details={details} />
         </div>
     )
 }

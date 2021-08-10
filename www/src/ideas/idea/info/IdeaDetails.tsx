@@ -1,6 +1,52 @@
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import React from 'react'
+import { useTranslation } from 'react-i18next'
+import Identicon from '../../../components/identicon/Identicon'
+import { Label } from '../../../components/text/Label'
+import Placeholder from '../../../components/text/Placeholder'
 import IdeaProposalDetails from '../../../idea-proposal-details/IdeaProposalDetails'
+import { useNetworks } from '../../../networks/useNetworks'
+import { breakpoints } from '../../../theme/theme'
 import { IdeaDto } from '../../ideas.dto'
+import AdditionalNetworkDetailsCard from './AdditionalNetworkDetailsCard'
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        text: {
+            fontSize: '14px',
+            fontWeight: 500,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '18px',
+            },
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                fontSize: '16px',
+            },
+        },
+        beneficiary: {
+            display: 'flex',
+            alignItems: 'center',
+        },
+        accountValue: {
+            marginLeft: '.5em',
+        },
+        details: {
+            width: '70%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                width: '100%',
+                padding: '16px',
+                fontSize: '18px',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                padding: '10px',
+                fontSize: '14px',
+            },
+        },
+        spacing: {
+            marginTop: '2em',
+        },
+    }),
+)
 
 interface OwnProps {
     idea: IdeaDto
@@ -9,7 +55,34 @@ interface OwnProps {
 export type IdeaDetailsProps = OwnProps
 
 const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
-    return <IdeaProposalDetails beneficiary={idea.beneficiary} details={idea.details} />
+    const classes = useStyles()
+    const { t } = useTranslation()
+    const { network } = useNetworks()
+
+    const additionalNetworks = idea.networks.filter((n) => n.name !== network.id)
+
+    return (
+        <>
+            <Label label={t('idea.details.beneficiary')} />
+            <div className={classes.beneficiary}>
+                {idea.beneficiary ? (
+                    <>
+                        <Identicon address={idea.beneficiary} />
+                        <div className={clsx(classes.accountValue, classes.text)}>{idea.beneficiary}</div>
+                    </>
+                ) : (
+                    <Placeholder value={t('idea.details.beneficiary')} />
+                )}
+            </div>
+            <div className={classes.details}>
+                <IdeaProposalDetails details={idea.details} />
+                <Label label={t('idea.details.additionalNets')} className={classes.spacing} />
+                {additionalNetworks.map((additionalNetwork) => (
+                    <AdditionalNetworkDetailsCard ideaNetwork={additionalNetwork} />
+                ))}
+            </div>
+        </>
+    )
 }
 
 export default IdeaDetails

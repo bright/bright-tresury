@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
         content: {
             display: 'flex',
             flexDirection: 'row',
+            flexWrap: 'wrap',
             alignItems: 'center',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 flexDirection: 'column',
@@ -27,9 +28,8 @@ const useStyles = makeStyles((theme: Theme) =>
             },
         },
         tip: {
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                marginTop: '8px',
-            },
+            marginTop: '8px',
+            marginBottom: '8px',
         },
     }),
 )
