@@ -10,6 +10,9 @@ import { IdeaNetworkDto } from './dto/idea-network.dto'
 import { UpdateIdeaDto } from './dto/update-idea.dto'
 import { Idea } from './entities/idea.entity'
 import { IdeaNetwork } from './entities/idea-network.entity'
+import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
+import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
 
 const logger = getLogger()
@@ -22,6 +25,8 @@ export class IdeasService {
         @InjectRepository(IdeaNetwork)
         private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
         private readonly detailsService: IdeaProposalDetailsService,
+        @InjectRepository(IdeaMilestonesRepository)
+        private readonly ideaMilestoneRepository: IdeaMilestonesRepository,
     ) {}
 
     async find(networkName?: string, sessionData?: SessionData): Promise<Idea[]> {
@@ -59,18 +64,6 @@ export class IdeasService {
         return idea
     }
 
-    async findOneIdeaNetworkWithIdea(networkId: string, sessionData: SessionData): Promise<IdeaNetwork> {
-        const ideaNetwork = await this.ideaNetworkRepository.findOne(networkId, { relations: ['idea'] })
-        if (!ideaNetwork) {
-            throw new NotFoundException(`There is no idea network with id ${networkId}`)
-        }
-        if (!ideaNetwork.idea) {
-            throw new NotFoundException(`There is no idea for network with id: ${networkId}`)
-        }
-        ideaNetwork.idea.canGetOrThrow(sessionData.user)
-        return ideaNetwork
-    }
-
     async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, Idea>> {
         const result = new Map<number, Idea>()
 
@@ -89,38 +82,6 @@ export class IdeasService {
         })
 
         return result
-    }
-
-    async update(dto: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<Idea> {
-        const currentIdea = await this.findOne(id, sessionData)
-
-        currentIdea.canEditOrThrow(sessionData.user)
-
-        if (dto.details) {
-            await this.detailsService.update(dto.details, currentIdea.details)
-        }
-
-        await this.ideaRepository.save({
-            ...currentIdea,
-            beneficiary: dto.beneficiary ?? currentIdea.beneficiary,
-            status: dto.status ?? currentIdea.status,
-            networks: dto.networks
-                ? dto.networks.map((updatedNetwork: CreateIdeaNetworkDto) => {
-                      const existingNetwork = currentIdea.networks.find(
-                          (currentIdeaNetwork: IdeaNetworkDto) => currentIdeaNetwork.id === updatedNetwork.id,
-                      )
-                      if (existingNetwork) {
-                          return {
-                              ...existingNetwork,
-                              ...updatedNetwork,
-                          }
-                      } else {
-                          return new IdeaNetwork(updatedNetwork.name, updatedNetwork.value)
-                      }
-                  })
-                : currentIdea.networks,
-        })
-        return (await this.ideaRepository.findOne(id, { relations: ['networks'] }))!
     }
 
     async create(createIdeaDto: CreateIdeaDto, sessionData: SessionData): Promise<Idea> {
@@ -144,5 +105,65 @@ export class IdeasService {
         currentIdea.canEditOrThrow(sessionData.user)
 
         await this.ideaRepository.remove(currentIdea)
+    }
+
+    async update(dto: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<Idea> {
+        const currentIdea = await this.findOne(id, sessionData)
+
+        currentIdea.canEditOrThrow(sessionData.user)
+
+        if (dto.details) {
+            await this.detailsService.update(dto.details, currentIdea.details)
+        }
+
+        await this.ideaRepository.save({
+            ...currentIdea,
+            beneficiary: dto.beneficiary ?? currentIdea.beneficiary,
+            status: dto.status ?? currentIdea.status,
+            networks: this.getIdeaNetworks(dto, currentIdea),
+        })
+
+        const milestones = await this.ideaMilestoneRepository.find({
+            where: { ideaId: currentIdea.id },
+            relations: ['networks'],
+        })
+
+        if (dto.networks) {
+            for (const milestone of milestones) {
+                const networks = this.getMilestoneNetworks(dto.networks!, milestone)
+                await this.ideaMilestoneRepository.save({ id: milestone.id, networks })
+            }
+        }
+
+        return (await this.ideaRepository.findOne(id, { relations: ['networks'] }))!
+    }
+
+    private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestone) {
+        return dtoNetworks.map((dtoNetwork) => {
+            const milestoneNetwork = milestone.networks.find((n) => n.name === dtoNetwork.name)
+            if (milestoneNetwork) {
+                return milestoneNetwork
+            } else {
+                return new IdeaMilestoneNetwork(dtoNetwork.name, 0)
+            }
+        })
+    }
+
+    private getIdeaNetworks(dto: UpdateIdeaDto, currentIdea: Idea) {
+        return dto.networks
+            ? dto.networks.map((updatedNetwork: CreateIdeaNetworkDto) => {
+                  const existingNetwork = currentIdea.networks.find(
+                      (currentIdeaNetwork: IdeaNetworkDto) => currentIdeaNetwork.id === updatedNetwork.id,
+                  )
+                  if (existingNetwork) {
+                      return {
+                          ...existingNetwork,
+                          ...updatedNetwork,
+                      }
+                  } else {
+                      return new IdeaNetwork(updatedNetwork.name, updatedNetwork.value)
+                  }
+              })
+            : currentIdea.networks
     }
 }
