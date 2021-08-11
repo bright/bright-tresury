@@ -10,6 +10,8 @@ import CommentAuthorImage from './CommentAuthorImage'
 import { extractTime } from '@polkadot/util'
 import { timeToString } from '../../../util/dateUtil'
 import { ellipseTextInTheMiddle } from '../../../util/stringUtil'
+import { IconButton, Menu, MenuItem } from '@material-ui/core'
+import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -74,6 +76,17 @@ const DisplayComment = ({ comment: { author, createdAt, thumbsUp, thumbsDown, co
         if (ageMs < 60 * 1000) return t('lessThanMinuteAgo')
         return `${timeToString(extractTime(ageMs), t)} ${t('ago')}`
     }
+    const [anchorEl, setAnchorEl] = React.useState(null)
+    const open = Boolean(anchorEl)
+
+    const handleClick = (event: any) => {
+        setAnchorEl(event.currentTarget)
+    }
+
+    const handleClose = () => {
+        setAnchorEl(null)
+    }
+    const options = ['Edit', 'Delete']
 
     return (
         <div className={classes.root}>
@@ -86,6 +99,36 @@ const DisplayComment = ({ comment: { author, createdAt, thumbsUp, thumbsDown, co
                     <SmallVerticalDivider className={classes.grayDivider} />
                     <div className={classes.age}>
                         {t('discussion.commentedTimestampTitle')} {formatAge(createdAt)}
+                    </div>
+                    <div>
+                        <IconButton
+                            aria-label="more"
+                            aria-controls="long-menu"
+                            aria-haspopup="true"
+                            style={{ fontSize: '4px' }}
+                            onClick={handleClick}
+                        >
+                            <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                            id="long-menu"
+                            anchorEl={anchorEl}
+                            keepMounted
+                            open={open}
+                            onClose={handleClose}
+                            PaperProps={{
+                                style: {
+                                    maxHeight: 48 * 4.5,
+                                    width: '20ch',
+                                },
+                            }}
+                        >
+                            {options.map((option) => (
+                                <MenuItem key={option} selected={option === 'Pyxis'} onClick={handleClose}>
+                                    {option}
+                                </MenuItem>
+                            ))}
+                        </Menu>
                     </div>
                 </div>
                 {/* TODO: code below is a feature to be implemented */}
