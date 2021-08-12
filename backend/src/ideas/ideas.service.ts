@@ -129,10 +129,12 @@ export class IdeasService {
         })
 
         if (dto.networks) {
-            for (const milestone of milestones) {
-                const networks = this.getMilestoneNetworks(dto.networks!, milestone)
-                await this.ideaMilestoneRepository.save({ id: milestone.id, networks })
-            }
+            await Promise.all(
+                milestones.map((milestone) => {
+                    const networks = this.getMilestoneNetworks(dto.networks!, milestone)
+                    this.ideaMilestoneRepository.save({ id: milestone.id, networks })
+                }),
+            )
         }
 
         return (await this.ideaRepository.findOne(id, { relations: ['networks'] }))!
@@ -141,11 +143,7 @@ export class IdeasService {
     private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestone) {
         return dtoNetworks.map((dtoNetwork) => {
             const milestoneNetwork = milestone.networks.find((n) => n.name === dtoNetwork.name)
-            if (milestoneNetwork) {
-                return milestoneNetwork
-            } else {
-                return new IdeaMilestoneNetwork(dtoNetwork.name, 0)
-            }
+            return milestoneNetwork ?? new IdeaMilestoneNetwork(dtoNetwork.name, 0)
         })
     }
 
@@ -160,9 +158,8 @@ export class IdeasService {
                           ...existingNetwork,
                           ...updatedNetwork,
                       }
-                  } else {
-                      return new IdeaNetwork(updatedNetwork.name, updatedNetwork.value)
                   }
+                  return new IdeaNetwork(updatedNetwork.name, updatedNetwork.value)
               })
             : currentIdea.networks
     }

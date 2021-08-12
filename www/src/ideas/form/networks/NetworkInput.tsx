@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             display: 'flex',
             flexDirection: 'row',
-            // flexWrap: 'wrap',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 flexDirection: 'column',
             },

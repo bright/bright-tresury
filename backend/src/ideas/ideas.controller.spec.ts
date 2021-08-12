@@ -73,7 +73,8 @@ describe(`/api/v1/ideas`, () => {
 
             const actualIdea2 = body.find((idea: IdeaDto) => idea.details.title === 'Test title2')
             expect(actualIdea2).toBeDefined()
-            expect(actualIdea2!.networks[0].name).toBe(NETWORKS.KUSAMA)
+            expect(actualIdea2!.networks.find((n) => n.name === NETWORKS.KUSAMA)).toBeDefined()
+            expect(actualIdea2!.networks.find((n) => n.name === NETWORKS.POLKADOT)).toBeDefined()
             done()
         })
 
