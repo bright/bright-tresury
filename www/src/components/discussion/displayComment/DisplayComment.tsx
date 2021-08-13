@@ -15,6 +15,7 @@ import CommentOptionsMenu from '../../../ideas/idea/discussion/CommentOptionsMen
 import Error from '../../error/Error'
 import { useAuth } from '../../../auth/AuthContext'
 import { Nil } from '../../../util/types'
+import EditComment from '../../../components/editComment/EditComment'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -92,6 +93,8 @@ const DisplayComment = ({
     const { user } = useAuth()
     const isAuthor = user?.id && author.userId && user?.id === author.userId
 
+    const [editMode, setEditMode] = useState(false)
+
     const formatAge = (timestamp: number) => {
         const ageMs = Date.now() - timestamp
         if (ageMs < 60 * 1000) return t('lessThanMinuteAgo')
@@ -125,10 +128,25 @@ const DisplayComment = ({
                     {/*        <img src={linkIcon} alt={''} />*/}
                     {/*    </div>*/}
 
-                    {isAuthor ? <CommentOptionsMenu onEditClick={() => {}} onDeleteClick={onDeleteClick} /> : null}
+                    {isAuthor ? (
+                        <CommentOptionsMenu
+                            onEditClick={() => {
+                                setEditMode(true)
+                            }}
+                            onDeleteClick={onDeleteClick}
+                        />
+                    ) : null}
                 </div>
             </div>
-            <div className={classes.body}>{content}</div>
+            {editMode ? (
+                <EditComment
+                    onSendClick={() => Promise.resolve(setEditMode(false))}
+                    onCancelClick={() => setEditMode(false)}
+                    value={content}
+                />
+            ) : (
+                <div className={classes.body}>{content}</div>
+            )}
             {error ? <Error className={classes.error} text={error}></Error> : <div style={{ height: '24px' }}></div>}
         </div>
     )

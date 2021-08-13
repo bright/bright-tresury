@@ -6,6 +6,7 @@ import { IdeaComment } from './entities/idea-comment.entity'
 import { Idea } from '../entities/idea.entity'
 import { User } from '../../users/user.entity'
 import { IdeasService } from '../ideas.service'
+import { UpdateIdeaCommentDto } from './dto/update-idea-comment.dto'
 
 @Injectable()
 export class IdeaCommentsService {
@@ -44,5 +45,19 @@ export class IdeaCommentsService {
         const ideaComment = await this.findOne(ideaId, commentId)
         ideaComment.canEditOrThrow(user)
         return this.ideaCommentsRepository.remove(ideaComment)
+    }
+
+    async update(
+        ideaId: string,
+        commentId: string,
+        updateIdeaCommentDto: UpdateIdeaCommentDto,
+        user: User,
+    ): Promise<IdeaComment> {
+        const ideaComment = await this.findOne(ideaId, commentId)
+        ideaComment.canEditOrThrow(user)
+        return this.ideaCommentsRepository.save({
+            ...ideaComment,
+            content: updateIdeaCommentDto.content,
+        })
     }
 }
