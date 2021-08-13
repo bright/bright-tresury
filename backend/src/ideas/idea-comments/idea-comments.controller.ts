@@ -1,8 +1,7 @@
-import { BadRequestException, Body, Delete, Get, HttpStatus, Inject, Param, Post, UseGuards } from '@nestjs/common'
+import { Body, Delete, Get, HttpStatus, Inject, Param, Post, UseGuards } from '@nestjs/common'
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
-
 import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { IdeaCommentDto } from './dto/idea-comment.dto'
 import { CreateIdeaCommentDto } from './dto/create-idea-comment.dto'

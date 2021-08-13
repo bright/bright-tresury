@@ -24,6 +24,7 @@ const IdeaDiscussion = ({ ideaId }: IdeaDiscussionProps) => {
     const renderIdeaComment = (comment: IdeaCommentDto) => (
         <DisplayIdeaComment key={comment.id} comment={comment} ideaId={ideaId} />
     )
+
     return (
         <DiscussionContainer>
             <LoadingWrapper
