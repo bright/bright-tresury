@@ -1,22 +1,21 @@
-import { IdeaDto, IdeaNetworkDto, IdeaStatus } from '../ideas.dto'
 import { AuthContextUser } from '../../auth/AuthContext'
+import { IdeaFormValues } from '../form/IdeaForm'
+import { IdeaDto } from '../ideas.dto'
 
 export function doesIdeaBelongToUser(idea: IdeaDto, user?: AuthContextUser) {
     return idea.ownerId === user?.id
 }
 
-export function createEmptyIdea(network: string): IdeaDto {
+export function createEmptyIdea(network: string): IdeaFormValues {
     return {
         beneficiary: '',
-        networks: [{ name: network, value: 0 } as IdeaNetworkDto],
-        status: IdeaStatus.Draft,
-        details: {
-            title: '',
-            field: '',
-            content: '',
-            portfolio: '',
-            links: [''],
-            contact: '',
-        },
-    } as IdeaDto
+        currentNetwork: { name: network, value: 0 },
+        otherNetworks: [],
+        title: '',
+        field: '',
+        content: '',
+        portfolio: '',
+        links: [''],
+        contact: '',
+    }
 }

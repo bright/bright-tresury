@@ -27,7 +27,8 @@ const IdeaCard = ({
         ordinalNumber,
         status,
         details: { title },
-        networks: ideaNetworks,
+        currentNetwork,
+        additionalNetworks,
         beneficiary,
     },
 }: IdeaCardProps) => {
@@ -35,7 +36,7 @@ const IdeaCard = ({
     const { networks: contextNetworks } = useNetworks()
 
     const networks = contextNetworks.filter((contextNetwork) =>
-        ideaNetworks.find((ideaNetwork) => ideaNetwork.name === contextNetwork.id),
+        [...additionalNetworks, currentNetwork].find((ideaNetwork) => ideaNetwork.name === contextNetwork.id),
     )
 
     return (
@@ -52,7 +53,7 @@ const IdeaCard = ({
 
             <CardDetails>
                 <CardTitle title={title} />
-                {ideaNetworks.length > 0 ? <NetworkValue value={ideaNetworks[0].value} /> : null}
+                <NetworkValue value={currentNetwork.value} />
             </CardDetails>
 
             <Divider />

@@ -5,10 +5,10 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import Button from '../../components/button/Button'
 import FormFooter from '../../components/form/footer/FormFooter'
-import { Network } from '../../networks/networks.dto'
 import { useNetworks } from '../../networks/useNetworks'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
-import { IdeaDto, IdeaNetworkDto } from '../ideas.dto'
+import { Nil } from '../../util/types'
+import { EditIdeaDto, EditIdeaNetworkDto, IdeaDto, IdeaStatus } from '../ideas.dto'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import IdeaFormFields from './IdeaFormFields'
 
@@ -27,8 +27,8 @@ const useStyles = makeStyles(() =>
 )
 
 interface OwnProps {
-    idea: IdeaDto
-    onSubmit: (idea: IdeaDto) => void
+    idea?: IdeaDto
+    onSubmit: (idea: EditIdeaDto) => void
     extendedValidation?: boolean
     foldable?: boolean
 }
@@ -37,8 +37,8 @@ export type IdeaFormProps = PropsWithChildren<OwnProps>
 
 export interface IdeaFormValues {
     beneficiary: string
-    currentNetwork: IdeaNetworkDto
-    otherNetworks: IdeaNetworkDto[]
+    currentNetwork: EditIdeaNetworkDto
+    otherNetworks: EditIdeaNetworkDto[]
     title: string
     field?: string
     content: string
@@ -47,11 +47,24 @@ export interface IdeaFormValues {
     links?: string[]
 }
 
-const toFormValues = (idea: IdeaDto, contextNetwork: Network): IdeaFormValues => {
+const toFormValues = (idea: Nil<IdeaDto>, network: string): IdeaFormValues => {
+    if (!idea) {
+        return {
+            beneficiary: '',
+            currentNetwork: { name: network, value: 0 },
+            otherNetworks: [],
+            title: '',
+            field: '',
+            content: '',
+            portfolio: '',
+            links: [''],
+            contact: '',
+        }
+    }
     return {
         beneficiary: idea.beneficiary,
-        currentNetwork: idea.networks.find((n) => n.name === contextNetwork.id)!,
-        otherNetworks: idea.networks.filter((n) => n.name !== contextNetwork.id),
+        currentNetwork: idea.currentNetwork,
+        otherNetworks: idea.additionalNetworks,
         ...idea.details,
         links: idea.details.links && idea.details.links.length > 0 ? idea.details.links : [''],
     }
@@ -61,7 +74,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     const classes = useStyles()
     const { t } = useTranslation()
     const [folded, setFolded] = useState(!!foldable)
-    const { network: contextNetwork } = useNetworks()
+    const { network } = useNetworks()
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('idea.details.form.emptyFieldError')),
@@ -92,11 +105,10 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
 
     const noEmptyLinks = (links: string[] | undefined) => links?.filter((link: string) => Boolean(link))
 
-    const onFormikSubmit = (formIdea: IdeaFormValues) =>
-        onSubmit({
-            ...idea,
+    const onFormikSubmit = (formIdea: IdeaFormValues) => {
+        let editedIdea = {
             beneficiary: formIdea.beneficiary,
-            networks: formIdea.otherNetworks.concat(formIdea.currentNetwork),
+            networks: [...formIdea.otherNetworks, formIdea.currentNetwork],
             details: {
                 title: formIdea.title,
                 contact: formIdea.contact,
@@ -105,12 +117,18 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
                 portfolio: formIdea.portfolio,
                 links: noEmptyLinks(formIdea.links),
             },
-        })
+            status: IdeaStatus.Draft,
+        }
+        if (idea) {
+            editedIdea = { ...idea, ...editedIdea }
+        }
+        return onSubmit(editedIdea)
+    }
 
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={toFormValues(idea, contextNetwork)}
+            initialValues={toFormValues(idea, network.id)}
             validationSchema={extendedValidation ? validationSchema.concat(extendedValidationSchema) : validationSchema}
             onSubmit={onFormikSubmit}
         >

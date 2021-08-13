@@ -55,7 +55,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
     const emptyValues = (idea: IdeaDto): IdeaMilestoneFormValues => {
         return {
             beneficiary: idea.beneficiary,
-            networks: idea.networks.map((n) => {
+            networks: [idea.currentNetwork, ...idea.additionalNetworks].map((n) => {
                 return { name: n.name, value: 0 } as IdeaMilestoneNetworkDto
             }),
             ...detailsInitialValues,

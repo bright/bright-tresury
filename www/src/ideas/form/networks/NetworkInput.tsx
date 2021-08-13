@@ -8,7 +8,7 @@ import { ClassNameProps } from '../../../components/props/className.props'
 import { Label } from '../../../components/text/Label'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
-import { IdeaNetworkDto } from '../../ideas.dto'
+import { EditIdeaNetworkDto } from '../../ideas.dto'
 import Bond from './Bond'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     inputName?: string
-    ideaNetwork: IdeaNetworkDto
+    ideaNetwork: EditIdeaNetworkDto
     readonly?: boolean
 }
 

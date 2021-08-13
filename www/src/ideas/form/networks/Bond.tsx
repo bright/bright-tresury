@@ -9,7 +9,7 @@ import { Label } from '../../../components/text/Label'
 import { calculateBondValue } from '../../../networks/bondUtil'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
-import { IdeaNetworkDto } from '../../ideas.dto'
+import { EditIdeaNetworkDto } from '../../ideas.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    ideaNetwork: IdeaNetworkDto
+    ideaNetwork: EditIdeaNetworkDto
 }
 
 export type BondProps = OwnProps & ClassNameProps

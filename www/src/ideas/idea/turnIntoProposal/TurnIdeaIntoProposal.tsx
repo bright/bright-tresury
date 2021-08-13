@@ -1,19 +1,19 @@
 import React, { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from 'react-query'
 import { useParams } from 'react-router'
 import { useHistory } from 'react-router-dom'
 import { useAuth } from '../../../auth/AuthContext'
 import Container from '../../../components/form/Container'
+import FormFooterButton from '../../../components/form/footer/FormFooterButton'
+import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
+import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
+import { useModal } from '../../../components/modal/useModal'
 import { useNetworks } from '../../../networks/useNetworks'
 import IdeaForm from '../../form/IdeaForm'
 import { IDEA_QUERY_KEY_BASE, useGetIdea, usePatchIdea, useTurnIdeaIntoProposal } from '../../ideas.api'
+import { EditIdeaDto, IdeaStatus, TurnIdeaIntoProposalDto } from '../../ideas.dto'
 import SubmitProposalModal, { ExtrinsicDetails } from '../../SubmitProposalModal'
-import FormFooterButton from '../../../components/form/footer/FormFooterButton'
-import { useModal } from '../../../components/modal/useModal'
-import { IdeaDto, IdeaStatus, TurnIdeaIntoProposalDto } from '../../ideas.dto'
-import { useQueryClient } from 'react-query'
-import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
-import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 
 const TurnIdeaIntoProposal = () => {
     const { t } = useTranslation()
@@ -28,7 +28,8 @@ const TurnIdeaIntoProposal = () => {
 
     const { user } = useAuth()
 
-    const { data: idea } = useGetIdea(ideaId)
+    const { network } = useNetworks()
+    const { data: idea } = useGetIdea({ ideaId, network: network.id })
 
     const { mutateAsync: patchMutateAsync, isError } = usePatchIdea()
 
@@ -42,7 +43,7 @@ const TurnIdeaIntoProposal = () => {
         return idea?.ownerId !== user?.id
     }, [idea, user])
 
-    const submit = async (formIdea: IdeaDto) => {
+    const submit = async (formIdea: EditIdeaDto) => {
         const editedIdea = { ...idea, ...formIdea }
 
         await patchMutateAsync(editedIdea, {
@@ -53,14 +54,11 @@ const TurnIdeaIntoProposal = () => {
         })
     }
 
-    const { network } = useNetworks()
-    const ideaNetwork = idea?.networks.find((n) => n.name === network.id)
-
     const onTurn = useCallback(
         async ({ extrinsicHash, lastBlockHash }: ExtrinsicDetails) => {
-            if (idea && ideaNetwork) {
+            if (idea) {
                 const turnIdeaIntoProposalDto: TurnIdeaIntoProposalDto = {
-                    ideaNetworkId: ideaNetwork.id!,
+                    ideaNetworkId: idea.currentNetwork.id,
                     extrinsicHash,
                     lastBlockHash,
                 }
@@ -76,10 +74,6 @@ const TurnIdeaIntoProposal = () => {
 
     if (ideaBelongsToAnotherUser) {
         return <Container title={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />
-    }
-
-    if (!ideaNetwork) {
-        return <Container title={t('idea.turnIntoProposal.noIdeaNetworkForCurrentNetwork')} />
     }
 
     return (
@@ -104,7 +98,7 @@ const TurnIdeaIntoProposal = () => {
                         onClose={submitProposalModal.close}
                         onTurn={onTurn}
                         title={t('idea.details.submitProposalModal.title')}
-                        value={ideaNetwork.value}
+                        value={idea.currentNetwork.value}
                         beneficiary={idea.beneficiary}
                     />
                 </>

@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next'
 import { ClassNameProps } from '../../../components/props/className.props'
 import { Label } from '../../../components/text/Label'
 import { useNetworks } from '../../../networks/useNetworks'
-import { IdeaNetworkDto } from '../../ideas.dto'
+import { EditIdeaNetworkDto } from '../../ideas.dto'
 import AdditionalNetworkCard from './AdditionalNetworkCard'
 import AddNetworkButton from './AddNetworkButton'
 
 interface OwnProps {
-    currentNetwork: IdeaNetworkDto
-    otherNetworks: IdeaNetworkDto[]
+    currentNetwork: EditIdeaNetworkDto
+    otherNetworks: EditIdeaNetworkDto[]
 }
 
 export type AdditionalNetworksProps = OwnProps & ClassNameProps

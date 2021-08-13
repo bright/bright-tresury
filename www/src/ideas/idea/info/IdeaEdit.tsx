@@ -5,7 +5,7 @@ import IdeaForm from '../../form/IdeaForm'
 import { usePatchIdea } from '../../ideas.api'
 import { useHistory } from 'react-router'
 import { ROUTE_IDEAS } from '../../../routes/routes'
-import { IdeaDto, IdeaStatus } from '../../ideas.dto'
+import { EditIdeaDto, IdeaDto, IdeaStatus } from '../../ideas.dto'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 
@@ -26,7 +26,7 @@ const IdeaEdit = ({ idea }: IdeaEditProps) => {
 
     const isDraft = useMemo(() => !idea.status || idea.status === IdeaStatus.Draft, [idea.status])
 
-    const submit = async (formIdea: IdeaDto) => {
+    const submit = async (formIdea: EditIdeaDto) => {
         const editedIdea = { ...idea, ...formIdea, status: activate ? IdeaStatus.Active : idea.status }
 
         await mutateAsync(editedIdea, {

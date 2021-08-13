@@ -1,30 +1,27 @@
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import FormFooterButton from '../../components/form/footer/FormFooterButton'
+import { useHistory } from 'react-router'
 import Container from '../../components/form/Container'
+import FormFooterButton from '../../components/form/footer/FormFooterButton'
+import FormFooterButtonsContainer from '../../components/form/footer/FormFooterButtonsContainer'
+import FormFooterErrorBox from '../../components/form/footer/FormFooterErrorBox'
 import { useNetworks } from '../../networks/useNetworks'
+import { ROUTE_IDEAS } from '../../routes/routes'
 import IdeaForm from '../form/IdeaForm'
 import { useCreateIdea } from '../ideas.api'
-import FormFooterErrorBox from '../../components/form/footer/FormFooterErrorBox'
-import { useHistory } from 'react-router'
-import { ROUTE_IDEAS } from '../../routes/routes'
-import { IdeaDto, IdeaStatus } from '../ideas.dto'
-import FormFooterButtonsContainer from '../../components/form/footer/FormFooterButtonsContainer'
-import { createEmptyIdea } from '../utils/ideas.utils'
+import { EditIdeaDto, IdeaStatus } from '../ideas.dto'
 
 const IdeaCreate = () => {
     const { t } = useTranslation()
-    const { network } = useNetworks()
 
-    const [idea] = useState(createEmptyIdea(network.id))
     const [activate, setActivate] = useState(false)
 
     const history = useHistory()
 
     const { mutateAsync, isError } = useCreateIdea()
 
-    const submit = async (formIdea: IdeaDto) => {
-        const editedIdea = { ...idea, ...formIdea, status: activate ? IdeaStatus.Active : IdeaStatus.Draft }
+    const submit = async (formIdea: EditIdeaDto) => {
+        const editedIdea = { ...formIdea, status: activate ? IdeaStatus.Active : IdeaStatus.Draft }
 
         await mutateAsync(editedIdea, {
             onSuccess: () => {
@@ -38,7 +35,7 @@ const IdeaCreate = () => {
 
     return (
         <Container title={t('idea.introduceTitle')}>
-            <IdeaForm idea={idea} onSubmit={submit}>
+            <IdeaForm onSubmit={submit}>
                 {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
 
                 <FormFooterButtonsContainer>

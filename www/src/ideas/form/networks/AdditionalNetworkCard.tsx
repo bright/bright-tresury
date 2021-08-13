@@ -7,7 +7,7 @@ import FormSelect from '../../../components/select/FormSelect'
 import { Network } from '../../../networks/networks.dto'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
-import { IdeaNetworkDto } from '../../ideas.dto'
+import { EditIdeaNetworkDto } from '../../ideas.dto'
 import NetworkInput from './NetworkInput'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -52,7 +52,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    ideaNetwork: IdeaNetworkDto
+    ideaNetwork: EditIdeaNetworkDto
     index: number
     availableNetworks: Network[]
     removeNetwork: () => void

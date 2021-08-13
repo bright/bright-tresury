@@ -1,7 +1,6 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
-import { useNetworks } from '../../../networks/useNetworks'
-import { IdeaNetworkDto } from '../../ideas.dto'
+import { EditIdeaNetworkDto } from '../../ideas.dto'
 import AdditionalNetworks from './AdditionalNetworks'
 import NetworkInput from './NetworkInput'
 
@@ -14,8 +13,8 @@ const useStyles = makeStyles(() =>
 )
 
 interface OwnProps {
-    currentNetwork: IdeaNetworkDto
-    otherNetworks: IdeaNetworkDto[]
+    currentNetwork: EditIdeaNetworkDto
+    otherNetworks: EditIdeaNetworkDto[]
 }
 
 export type NetworksInputProps = OwnProps

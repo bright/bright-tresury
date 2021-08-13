@@ -57,9 +57,6 @@ export type IdeaDetailsProps = OwnProps
 const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { network } = useNetworks()
-
-    const additionalNetworks = idea.networks.filter((n) => n.name !== network.id)
 
     return (
         <>
@@ -77,7 +74,7 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
             <div className={classes.details}>
                 <IdeaProposalDetails details={idea.details} />
                 <Label label={t('idea.details.additionalNets')} className={classes.spacing} />
-                {additionalNetworks.map((additionalNetwork) => (
+                {idea.additionalNetworks.map((additionalNetwork) => (
                     <AdditionalNetworkDetailsCard ideaNetwork={additionalNetwork} />
                 ))}
             </div>
