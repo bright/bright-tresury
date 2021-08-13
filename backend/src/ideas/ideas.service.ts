@@ -132,7 +132,7 @@ export class IdeasService {
             await Promise.all(
                 milestones.map((milestone) => {
                     const networks = this.getMilestoneNetworks(dto.networks!, milestone)
-                    this.ideaMilestoneRepository.save({ id: milestone.id, networks })
+                    return this.ideaMilestoneRepository.save({ id: milestone.id, networks })
                 }),
             )
         }
