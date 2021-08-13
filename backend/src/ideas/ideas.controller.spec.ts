@@ -73,8 +73,13 @@ describe(`/api/v1/ideas`, () => {
 
             const actualIdea2 = body.find((idea: IdeaDto) => idea.details.title === 'Test title2')
             expect(actualIdea2).toBeDefined()
+            const polkadotNetwork = actualIdea2!.networks!.find((n: IdeaNetworkDto) => n.name === NETWORKS.POLKADOT)
+            expect(polkadotNetwork).toBeDefined()
+            expect(polkadotNetwork!.value).toBe(4)
+            expect(polkadotNetwork!.extrinsic).toBeNull()
+            expect(polkadotNetwork!.status).toBe('active')
+
             expect(actualIdea2!.networks.find((n) => n.name === NETWORKS.KUSAMA)).toBeDefined()
-            expect(actualIdea2!.networks.find((n) => n.name === NETWORKS.POLKADOT)).toBeDefined()
             done()
         })
 
@@ -166,8 +171,18 @@ describe(`/api/v1/ideas`, () => {
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.networks).toBeDefined()
             expect(body.networks!.length).toBe(2)
-            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === NETWORKS.KUSAMA)).toBeDefined()
-            expect(body.networks!.find((n: IdeaNetworkDto) => n.name === NETWORKS.POLKADOT)).toBeDefined()
+
+            const kusamaNetwork = body.networks!.find((n: IdeaNetworkDto) => n.name === NETWORKS.KUSAMA)
+            expect(kusamaNetwork).toBeDefined()
+            expect(kusamaNetwork!.value).toBe(241)
+            expect(kusamaNetwork!.extrinsic).toBeNull()
+            expect(kusamaNetwork!.status).toBe('active')
+
+            const polkadotNetwork = body.networks!.find((n: IdeaNetworkDto) => n.name === NETWORKS.POLKADOT)
+            expect(polkadotNetwork).toBeDefined()
+            expect(polkadotNetwork!.value).toBe(12)
+            expect(polkadotNetwork!.extrinsic).toBeNull()
+            expect(polkadotNetwork!.status).toBe('active')
             done()
         })
 
