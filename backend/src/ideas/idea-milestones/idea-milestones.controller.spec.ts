@@ -8,7 +8,7 @@ import {
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
 import { Idea } from '../entities/idea.entity'
-import { IdeaStatus } from '../idea-status'
+import { IdeaStatus } from '../entities/idea-status'
 import { IdeasService } from '../ideas.service'
 import { createIdea, createIdeaMilestone, createSessionData } from '../spec.helpers'
 import { IdeaMilestoneDto } from './dto/idea-milestone.dto'

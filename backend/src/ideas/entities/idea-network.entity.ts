@@ -1,8 +1,9 @@
+import { BadRequestException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
 import { Extrinsic } from '../../extrinsics/extrinsic.entity'
+import { defaultIdeaNetworkStatus, IdeaNetworkStatus } from './idea-network-status'
 import { Idea } from './idea.entity'
-import { BadRequestException } from '@nestjs/common'
 
 @Entity('idea_networks')
 export class IdeaNetwork extends BaseEntity {
@@ -22,17 +23,37 @@ export class IdeaNetwork extends BaseEntity {
     @Column({ nullable: true, type: 'integer' })
     blockchainProposalId: number | null
 
-    constructor(name: string, value: number = 0, extrinsic = null, blockchainProposalId = null) {
+    @Column({
+        type: 'enum',
+        enum: IdeaNetworkStatus,
+        default: defaultIdeaNetworkStatus,
+        nullable: false,
+    })
+    status: IdeaNetworkStatus
+
+    constructor(
+        name: string,
+        value: number = 0,
+        status: IdeaNetworkStatus = defaultIdeaNetworkStatus,
+        extrinsic = null,
+        blockchainProposalId = null,
+        idea?: Idea,
+    ) {
         super()
         this.name = name
         this.value = value
         this.extrinsic = extrinsic
         this.blockchainProposalId = blockchainProposalId
+        this.idea = idea
+        this.status = status
     }
 
     canTurnIntoProposalOrThrow = () => {
         if (Number(this.value) === 0) {
             throw new BadRequestException('Value of the idea network with the given id has to be greater than zero')
+        }
+        if (this.status === IdeaNetworkStatus.TurnedIntoProposal) {
+            throw new BadRequestException(`Idea with the given id is already turned into proposal in this network`)
         }
     }
 }

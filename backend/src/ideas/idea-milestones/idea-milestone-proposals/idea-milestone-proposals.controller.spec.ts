@@ -10,11 +10,11 @@ import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
 import { Idea } from '../../entities/idea.entity'
-import { IdeaStatus } from '../../idea-status'
+import { IdeaStatus } from '../../entities/idea-status'
 import { IdeasService } from '../../ideas.service'
 import { createIdea, createIdeaMilestone, saveIdeaMilestone } from '../../spec.helpers'
 import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
-import { IdeaMilestoneStatus } from '../idea-milestone-status'
+import { IdeaMilestoneStatus } from '../entities/idea-milestone-status'
 import { IdeaMilestonesService } from '../idea-milestones.service'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {

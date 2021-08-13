@@ -6,10 +6,11 @@ import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supe
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { CreateIdeaDto } from './dto/create-idea.dto'
 import { IdeaNetworkDto } from './dto/idea-network.dto'
+import { IdeaNetworkStatus } from './entities/idea-network-status'
 import { IdeaNetwork } from './entities/idea-network.entity'
 import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
 import { IdeasService } from './ideas.service'
-import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
+import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 import { createSessionData } from './spec.helpers'
 
 describe(`IdeasService`, () => {
@@ -379,6 +380,7 @@ describe(`IdeasService`, () => {
             expect(savedIdea.networks!.length).toBe(1)
             expect(savedIdea.networks![0].name).toBe(NETWORKS.KUSAMA)
             expect(savedIdea.networks![0].value).toBe('10.000000000000000')
+            expect(savedIdea.networks![0].status).toBe(IdeaNetworkStatus.Active)
             done()
         })
     })
@@ -402,6 +404,7 @@ describe(`IdeasService`, () => {
             const savedIdea = await getService().findOne(idea.id, sessionData)
             expect(savedIdea.networks[0].name).toBe(NETWORKS.KUSAMA)
             expect(savedIdea.networks[0].value).toBe('249.000000000000000')
+            expect(savedIdea.networks![0].status).toBe(IdeaNetworkStatus.Active)
         })
 
         it('should update and save idea milestone networks when updating networks', async () => {

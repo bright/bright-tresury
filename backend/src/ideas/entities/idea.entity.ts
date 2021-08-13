@@ -4,11 +4,12 @@ import { v4 as uuid } from 'uuid'
 import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { User } from '../../users/user.entity'
-import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity'
-import { DefaultIdeaStatus, IdeaStatus } from '../idea-status'
-import { IdeaNetwork } from './idea-network.entity'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
+import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity'
+import { IdeaNetworkStatus } from './idea-network-status'
+import { IdeaNetwork } from './idea-network.entity'
 import { IdeaComment } from '../idea-comments/entities/idea-comment.entity'
+import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
 
 @Entity('ideas')
 export class Idea extends BaseEntity {
@@ -19,6 +20,7 @@ export class Idea extends BaseEntity {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
+        eager: true,
     })
     networks: IdeaNetwork[]
 
@@ -101,7 +103,11 @@ export class Idea extends BaseEntity {
         if (!this.beneficiary) {
             throw new EmptyBeneficiaryException()
         }
-        if ([IdeaStatus.TurnedIntoProposal, IdeaStatus.TurnedIntoProposalByMilestone].includes(this.status)) {
+        if (
+            this.status === IdeaStatus.TurnedIntoProposalByMilestone ||
+            (this.status === IdeaStatus.TurnedIntoProposal &&
+                this.networks.every((n) => n.status === IdeaNetworkStatus.TurnedIntoProposal))
+        ) {
             throw new BadRequestException(
                 `Idea with the given id or at least one of it's milestones is already turned into proposal`,
             )

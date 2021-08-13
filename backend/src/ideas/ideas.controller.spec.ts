@@ -10,7 +10,7 @@ import { beforeSetupFullApp, cleanDatabase, request, NETWORKS } from '../utils/s
 import { IdeaNetworkDto } from './dto/idea-network.dto'
 import { IdeaDto } from './dto/idea.dto'
 import { IdeasService } from './ideas.service'
-import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
+import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 import { createIdea, createSessionData } from './spec.helpers'
 
 const baseUrl = '/api/v1/ideas'

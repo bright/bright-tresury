@@ -13,7 +13,7 @@ import { IdeaNetwork } from './entities/idea-network.entity'
 import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-network.entity'
 import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
-import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
+import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 
 const logger = getLogger()
 
@@ -56,7 +56,7 @@ export class IdeasService {
     }
 
     async findOne(id: string, sessionData?: SessionData): Promise<Idea> {
-        const idea = await this.ideaRepository.findOne(id, { relations: ['networks'] })
+        const idea = await this.ideaRepository.findOne(id)
         if (!idea) {
             throw new NotFoundException('There is no idea with such id')
         }
@@ -97,7 +97,7 @@ export class IdeasService {
         )
 
         const createdIdea = await this.ideaRepository.save(idea)
-        return (await this.ideaRepository.findOne(createdIdea.id, { relations: ['networks'] }))!
+        return (await this.ideaRepository.findOne(createdIdea.id))!
     }
 
     async delete(id: string, sessionData: SessionData) {
@@ -123,10 +123,7 @@ export class IdeasService {
             networks: this.getIdeaNetworks(dto, currentIdea),
         })
 
-        const milestones = await this.ideaMilestoneRepository.find({
-            where: { ideaId: currentIdea.id },
-            relations: ['networks'],
-        })
+        const milestones = await this.ideaMilestoneRepository.find({ ideaId: currentIdea.id })
 
         if (dto.networks) {
             await Promise.all(
@@ -137,7 +134,7 @@ export class IdeasService {
             )
         }
 
-        return (await this.ideaRepository.findOne(id, { relations: ['networks'] }))!
+        return (await this.ideaRepository.findOne(id))!
     }
 
     private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestone) {

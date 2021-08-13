@@ -4,7 +4,7 @@ import { MilestoneDetails } from '../../../milestone-details/entities/milestone-
 import { IdeaMilestoneNetwork } from './idea-milestone-network.entity'
 import { Idea } from '../../entities/idea.entity'
 import { Nil } from '../../../utils/types'
-import { defaultIdeaMilestoneStatus, IdeaMilestoneStatus } from '../idea-milestone-status'
+import { defaultIdeaMilestoneStatus, IdeaMilestoneStatus } from './idea-milestone-status'
 import { BadRequestException } from '@nestjs/common'
 import { EmptyBeneficiaryException } from '../../exceptions/empty-beneficiary.exception'
 
@@ -34,6 +34,7 @@ export class IdeaMilestone extends BaseEntity {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
+        eager: true,
     })
     networks: IdeaMilestoneNetwork[]
 

@@ -12,7 +12,7 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { Idea } from '../entities/idea.entity'
 import { createIdea } from '../spec.helpers'
 import { IdeasService } from '../ideas.service'
-import { IdeaStatus } from '../idea-status'
+import { IdeaStatus } from '../entities/idea-status'
 import { IdeaNetwork } from '../entities/idea-network.entity'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {

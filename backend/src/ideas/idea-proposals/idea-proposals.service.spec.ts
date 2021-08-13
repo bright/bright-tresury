@@ -8,10 +8,11 @@ import { UpdateExtrinsicDto } from '../../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { ProposalsService } from '../../proposals/proposals.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
+import { IdeaNetworkStatus } from '../entities/idea-network-status'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
 import { IdeaNetwork } from '../entities/idea-network.entity'
 import { IdeasService } from '../ideas.service'
-import { IdeaStatus } from '../idea-status'
+import { IdeaStatus } from '../entities/idea-status'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { CreateIdeaProposalDto, IdeaProposalDataDto } from './dto/create-idea-proposal.dto'
 import { IdeaProposalsService } from './idea-proposals.service'
@@ -113,7 +114,7 @@ describe('IdeaProposalsService', () => {
             const ideaWithEmptyBeneficiaryAddress = await createIdea(
                 {
                     beneficiary: '',
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 },
                 sessionData,
                 ideasService(),
@@ -130,8 +131,8 @@ describe('IdeaProposalsService', () => {
             ).rejects.toThrow(EmptyBeneficiaryException)
         })
 
-        it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
-            const ideaWithTurnedIntoProposalStatus = await createIdea(
+        it(`should return bad request exception for idea and network with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
+            const ideaAlreadyTurned = await createIdea(
                 {
                     beneficiary: uuid(),
                     status: IdeaStatus.TurnedIntoProposal,
@@ -140,16 +141,44 @@ describe('IdeaProposalsService', () => {
                 sessionData,
                 ideasService(),
             )
-
-            createIdeaProposalDto.ideaNetworkId = ideaWithTurnedIntoProposalStatus.networks[0].id
+            await ideaNetworkRepository().save({
+                id: ideaAlreadyTurned.networks[0].id,
+                status: IdeaNetworkStatus.TurnedIntoProposal,
+            })
+            createIdeaProposalDto.ideaNetworkId = ideaAlreadyTurned.networks[0].id
 
             await expect(
+                ideaProposalsService().createProposal(ideaAlreadyTurned.id, createIdeaProposalDto, sessionData),
+            ).rejects.toThrow(BadRequestException)
+        })
+
+        it(`should resolve for idea already turned into proposal for a NOT turned network`, async () => {
+            const ideaAlreadyTurned = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    networks: [
+                        { name: NETWORKS.POLKADOT, value: 100 },
+                        { name: NETWORKS.KUSAMA, value: 10 },
+                    ],
+                },
+                sessionData,
+                ideasService(),
+            )
+            // turn idea into proposal for first network
+            await ideaProposalsService().createProposal(
+                ideaAlreadyTurned.id,
+                { ...createIdeaProposalDto, ideaNetworkId: ideaAlreadyTurned.networks[0].id },
+                sessionData,
+            )
+
+            // try turning idea into proposal for the second network
+            await expect(
                 ideaProposalsService().createProposal(
-                    ideaWithTurnedIntoProposalStatus.id,
-                    createIdeaProposalDto,
+                    ideaAlreadyTurned.id,
+                    { ...createIdeaProposalDto, ideaNetworkId: ideaAlreadyTurned.networks[0].id },
                     sessionData,
                 ),
-            ).rejects.toThrow(BadRequestException)
+            ).resolves.toBeDefined()
         })
 
         it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async () => {
@@ -157,7 +186,7 @@ describe('IdeaProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     status: IdeaStatus.TurnedIntoProposalByMilestone,
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 },
                 sessionData,
                 ideasService(),
@@ -186,7 +215,7 @@ describe('IdeaProposalsService', () => {
             const ideaWithZeroNetworkValue = await createIdea(
                 {
                     beneficiary: uuid(),
-                    networks: [{ name: 'polkadot', value: 0 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 0 }],
                 },
                 sessionData,
                 ideasService(),
@@ -304,7 +333,7 @@ describe('IdeaProposalsService', () => {
         })
     })
 
-    describe('turnIdeaIntoProposal', () => {
+    describe.only('turnIdeaIntoProposal', () => {
         it(`should change idea status to ${IdeaStatus.TurnedIntoProposal}`, async () => {
             await ideaProposalsService().turnIdeaIntoProposal(idea, idea.networks[0], 3)
 
@@ -319,6 +348,50 @@ describe('IdeaProposalsService', () => {
             const updatedIdeaNetwork = await ideaNetworkRepository().findOne(idea.networks[0].id)
 
             expect(updatedIdeaNetwork!.blockchainProposalId).toBe(3)
+        })
+
+        it(`should change idea network status to ${IdeaNetworkStatus.TurnedIntoProposal}`, async () => {
+            await ideaProposalsService().turnIdeaIntoProposal(idea, idea.networks[0], 3)
+
+            const ideaNetwork = await ideaNetworkRepository().findOne(idea.networks[0].id)
+
+            expect(ideaNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
+        })
+
+        it.only(`should set other idea network statuses to ${IdeaNetworkStatus.Pending}`, async () => {
+            const ideaWithMultipleNetworks = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    networks: [
+                        { name: NETWORKS.POLKADOT, value: 2 },
+                        { name: NETWORKS.KUSAMA, value: 3 },
+                    ],
+                },
+                sessionData,
+                ideasService(),
+            )
+
+            // turn first network and check
+            await ideaProposalsService().turnIdeaIntoProposal(
+                ideaWithMultipleNetworks,
+                ideaWithMultipleNetworks.networks[0],
+                3,
+            )
+            let firstNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[0].id)
+            let secondNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[1].id)
+            expect(firstNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
+            expect(secondNetwork!.status).toBe(IdeaNetworkStatus.Pending)
+
+            // turn the second network and check
+            await ideaProposalsService().turnIdeaIntoProposal(
+                ideaWithMultipleNetworks,
+                ideaWithMultipleNetworks.networks[1],
+                3,
+            )
+            firstNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[0].id)
+            secondNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[1].id)
+            expect(firstNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
+            expect(secondNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
         })
     })
 })

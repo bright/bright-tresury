@@ -5,7 +5,7 @@ import { MilestoneDetails } from '../../milestone-details/entities/milestone-det
 import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { IdeaMilestone } from './entities/idea-milestone.entity'
-import { IdeaMilestoneStatus } from './idea-milestone-status'
+import { IdeaMilestoneStatus } from './entities/idea-milestone-status'
 import { IdeaMilestonesRepository } from './idea-milestones.repository'
 
 const createDetails = async (app: INestApplication, details?: Partial<MilestoneDetails>) => {

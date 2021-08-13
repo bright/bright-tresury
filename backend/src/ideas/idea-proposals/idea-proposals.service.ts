@@ -1,18 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { networkInterfaces } from 'os'
 import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
+import { BlockchainService } from '../../blockchain/blockchain.service'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../../extrinsics/extrinsics.service'
 import { getLogger } from '../../logging.module'
 import { IdeaWithMilestones, ProposalsService } from '../../proposals/proposals.service'
-import { IdeaMilestonesService } from '../idea-milestones/idea-milestones.service'
-import { CreateIdeaProposalDto } from './dto/create-idea-proposal.dto'
-import { IdeasService } from '../ideas.service'
-import { BlockchainService } from '../../blockchain/blockchain.service'
-import { Idea } from '../entities/idea.entity'
-import { IdeaStatus } from '../idea-status'
+import { IdeaNetworkStatus } from '../entities/idea-network-status'
 import { IdeaNetwork } from '../entities/idea-network.entity'
+import { IdeaStatus } from '../entities/idea-status'
+import { Idea } from '../entities/idea.entity'
+import { IdeaMilestonesService } from '../idea-milestones/idea-milestones.service'
+import { IdeasService } from '../ideas.service'
+import { CreateIdeaProposalDto } from './dto/create-idea-proposal.dto'
 
 const logger = getLogger()
 
@@ -42,7 +44,7 @@ export class IdeaProposalsService {
 
         idea.canTurnIntoProposalOrThrow()
 
-        const ideaNetwork = await idea.networks?.find(({ id }) => id === ideaNetworkId)
+        const ideaNetwork = await idea.networks.find(({ id }) => id === ideaNetworkId)
 
         if (!ideaNetwork) {
             throw new NotFoundException('Idea network with the given id not found')
@@ -87,18 +89,26 @@ export class IdeaProposalsService {
         validIdeaNetwork: IdeaNetwork,
         blockchainProposalIndex: number,
     ): Promise<void> {
-        logger.info(`Set idea ${validIdea.id} status to turned_into_proposal.`)
+        logger.info(`Set idea ${validIdea.id} status to ${IdeaStatus.TurnedIntoProposal}.`)
         await this.ideaRepository.save({
             ...validIdea,
             status: IdeaStatus.TurnedIntoProposal,
         })
 
+        logger.info(`Set other networks statuses to ${IdeaNetworkStatus.Pending}.`)
+        for (const network of validIdea.networks) {
+            if (network.status !== IdeaNetworkStatus.TurnedIntoProposal) {
+                await this.ideaNetworkRepository.save({ ...network, status: IdeaNetworkStatus.Pending })
+            }
+        }
+
         logger.info(
-            `Set blockchainProposalIndex to ${blockchainProposalIndex} for the idea network ${validIdeaNetwork.id}.`,
+            `Set blockchainProposalIndex to ${blockchainProposalIndex} and status to ${IdeaNetworkStatus.TurnedIntoProposal} for the idea network ${validIdeaNetwork.id}.`,
         )
         await this.ideaNetworkRepository.save({
             ...validIdeaNetwork,
             blockchainProposalId: blockchainProposalIndex,
+            status: IdeaNetworkStatus.TurnedIntoProposal,
         })
     }
 }
