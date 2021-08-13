@@ -1,4 +1,4 @@
-import { Body, Get, Inject, Param, Post, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, Delete, Get, HttpStatus, Inject, Param, Post, UseGuards } from '@nestjs/common'
 import { ApiCreatedResponse, ApiNotFoundResponse, ApiOkResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
@@ -7,6 +7,9 @@ import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { IdeaCommentDto } from './dto/idea-comment.dto'
 import { CreateIdeaCommentDto } from './dto/create-idea-comment.dto'
 import { IdeaCommentsService } from './idea-comments.service'
+import { getLogger } from '../../logging.module'
+
+const logger = getLogger()
 
 @ControllerApiVersion('/ideas/:ideaId/comments', ['v1'])
 @ApiTags('ideas.comments')
@@ -28,7 +31,7 @@ export class IdeaCommentsController {
     @ApiNotFoundResponse({
         description: 'Idea with the given id not found.',
     })
-    async getComments(@Param('ideaId') ideaId: string): Promise<IdeaCommentDto[]> {
+    async getAll(@Param('ideaId') ideaId: string): Promise<IdeaCommentDto[]> {
         const ideaComments = await this.ideaCommentsService.findAll(ideaId)
         return ideaComments.map((ideaComment) => new IdeaCommentDto(ideaComment))
     }
@@ -51,7 +54,26 @@ export class IdeaCommentsController {
         @Body() createIdeaCommentDto: CreateIdeaCommentDto,
         @ReqSession() session: SessionData,
     ): Promise<IdeaCommentDto> {
+        logger.info(`Creating new idea comment ${ideaId}...`)
         const ideaComment = await this.ideaCommentsService.create(ideaId, session.user, createIdeaCommentDto)
         return new IdeaCommentDto(ideaComment)
+    }
+
+    @ApiOkResponse({
+        description: 'Deleted idea comment.',
+    })
+    @ApiNotFoundResponse({
+        status: HttpStatus.NOT_FOUND,
+        description: 'No idea found or no idea comment found.',
+    })
+    @Delete(':commentId')
+    @UseGuards(SessionGuard)
+    async delete(
+        @Param('ideaId') ideaId: string,
+        @Param('commentId') commentId: string,
+        @ReqSession() session: SessionData,
+    ) {
+        logger.info(`Deleting idea comment ${commentId}...`)
+        await this.ideaCommentsService.delete(ideaId, commentId, session.user)
     }
 }

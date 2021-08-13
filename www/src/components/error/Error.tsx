@@ -1,6 +1,8 @@
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
+import { ClassNameProps } from '../props/className.props'
+import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -12,14 +14,15 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface ErrorProps {
+interface OwnProps {
     text: string
 }
 
-const Error = ({ text }: ErrorProps) => {
-    const classes = useStyles()
+export type ErrorProps = OwnProps & ClassNameProps
 
-    return <p className={classes.root}>{text}</p>
+const Error = ({ text, className }: ErrorProps) => {
+    const classes = useStyles()
+    return <p className={clsx(classes.root, className)}>{text}</p>
 }
 
 export default Error

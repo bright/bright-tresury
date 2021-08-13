@@ -18,7 +18,6 @@ interface OwnProps {}
 export type DiscussionTopRowProps = OwnProps
 
 const DiscussionHeader = ({}: DiscussionTopRowProps) => {
-
     const classes = useStyles()
     const { t } = useTranslation()
     const { isUserSignedInAndVerified: canComment, user } = useAuth()

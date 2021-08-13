@@ -3,6 +3,7 @@ import { Column, Entity, ManyToOne } from 'typeorm'
 import { Idea } from '../../entities/idea.entity'
 import { User } from '../../../users/user.entity'
 import { Nil } from '../../../utils/types'
+import { ForbiddenException } from '@nestjs/common'
 
 @Entity('idea_comments')
 export class IdeaComment extends BaseEntity {
@@ -28,5 +29,15 @@ export class IdeaComment extends BaseEntity {
         this.content = content
         this.thumbsUp = thumbsUp
         this.thumbsDown = thumbsDown
+    }
+
+    canEdit = (user: User) => {
+        return this.author?.id === user.id
+    }
+
+    canEditOrThrow = (user: User) => {
+        if (!this.canEdit(user)) {
+            throw new ForbiddenException('The given user has no access to this idea comment')
+        }
     }
 }

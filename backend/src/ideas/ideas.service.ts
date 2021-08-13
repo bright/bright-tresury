@@ -103,7 +103,6 @@ export class IdeasService {
     async delete(id: string, sessionData: SessionData) {
         const currentIdea = await this.findOne(id, sessionData)
         currentIdea.canEditOrThrow(sessionData.user)
-
         await this.ideaRepository.remove(currentIdea)
     }
 

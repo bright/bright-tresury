@@ -3,6 +3,7 @@ import { Button } from '@material-ui/core'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import clsx from 'clsx'
+import { Nil } from '../../../util/types'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     onCancelClick: () => void
     onSendClick: () => void
-    error?: string
+    error?: Nil<string>
 }
 export type CancelSendButtonsProps = OwnProps
 const CancelSendButtons = ({ onCancelClick, onSendClick, error }: CancelSendButtonsProps) => {

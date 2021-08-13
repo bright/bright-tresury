@@ -209,6 +209,8 @@
     "ago": "ago",
     "lessThanMinuteAgo": "less than a minute ago",
     "discussion": {
+        "edit": "Edit",
+        "delete": "Delete",
         "commentAlso": "Comment also on ",
         "enterCommentPlaceholder": "Leave your comment here",
         "commentedTimestampTitle": "commented",
@@ -219,7 +221,8 @@
         "sendCommentError": "Could not save the comment",
         "noComments": "There are no comments yet. Be the first to start the discussion.",
         "thumbsUpAlt": "Thumbs Up",
-        "thumbsDownAlt": "Thumbs Down"
+        "thumbsDownAlt": "Thumbs Down",
+        "deleteError": "Something went wrong when deleting this comment..."
     },
 
     "idea": {

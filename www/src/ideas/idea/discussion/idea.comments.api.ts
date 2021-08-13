@@ -1,4 +1,4 @@
-import { apiGet, apiPost } from '../../../api'
+import { apiDelete, apiGet, apiPost } from '../../../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { IdeaCommentDto, CreateIdeaCommentDto } from './idea.comment.dto'
 import { IDEAS_API_PATH } from '../../ideas.api'
@@ -34,4 +34,18 @@ function createIdeaComment({ ideaId, data }: CreateIdeaCommentParams) {
 
 export const useCreateIdeaComment = () => {
     return useMutation(createIdeaComment)
+}
+
+// DELETE
+export interface DeleteIdeaCommentParams {
+    ideaId: string
+    commentId: string
+}
+
+function deleteIdeaComment({ ideaId, commentId }: DeleteIdeaCommentParams): Promise<void> {
+    return apiDelete(`${getIdeaCommentsApiBasePath(ideaId)}/${commentId}`)
+}
+
+export const useDeleteIdeaComment = () => {
+    return useMutation(deleteIdeaComment)
 }

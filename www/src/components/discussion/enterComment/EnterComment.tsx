@@ -4,6 +4,7 @@ import CancelSendButtons from './CancelSendButtons'
 import { Collapse, TextareaAutosize } from '@material-ui/core'
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
+import { Nil } from '../../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,22 +36,22 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     onSendClick: (commentContent: string) => Promise<void>
+    onCancelClick?: Nil<() => void>
+    error?: Nil<string>
 }
 export type EnterCommentProps = OwnProps
 
-const EnterComment = ({ onSendClick }: EnterCommentProps) => {
+const EnterComment = ({ onSendClick, error, onCancelClick }: EnterCommentProps) => {
     const classes = useStyles()
     const [focus, setFocus] = useState(false)
-    const [sendCommentError, setSendCommentError] = useState('')
     const [commentContent, setCommentContent] = useState('')
     const { t } = useTranslation()
-    const onEnterCommentSendClick = () =>
-        onSendClick(commentContent)
-            .then(() => setCommentContent(''))
-            .catch(() => setSendCommentError(t('discussion.sendCommentError')))
+    const onEnterCommentSendClick = () => onSendClick(commentContent).then(() => setCommentContent(''))
+
     const onEnterCommentCancelClick = () => {
         setFocus(false)
         setCommentContent('')
+        if (onCancelClick) onCancelClick()
     }
 
     return (
@@ -71,7 +72,7 @@ const EnterComment = ({ onSendClick }: EnterCommentProps) => {
                 <CancelSendButtons
                     onCancelClick={onEnterCommentCancelClick}
                     onSendClick={onEnterCommentSendClick}
-                    error={sendCommentError}
+                    error={error}
                 />
             </Collapse>
         </div>
