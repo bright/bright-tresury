@@ -27,7 +27,7 @@ const IdeaEdit = ({ idea }: IdeaEditProps) => {
     const isDraft = useMemo(() => !idea.status || idea.status === IdeaStatus.Draft, [idea.status])
 
     const submit = async (formIdea: EditIdeaDto) => {
-        const editedIdea = { ...idea, ...formIdea, status: activate ? IdeaStatus.Active : idea.status }
+        const editedIdea = { id: idea.id, ...formIdea, status: activate ? IdeaStatus.Active : undefined }
 
         await mutateAsync(editedIdea, {
             onSuccess: () => {

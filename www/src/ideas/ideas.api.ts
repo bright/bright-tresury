@@ -1,7 +1,14 @@
 import { apiGet, apiPost, apiPatch } from '../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
-import { EditIdeaDto, IdeaDto, IdeaNetworkDto, IdeaStatus, TurnIdeaIntoProposalDto } from './ideas.dto'
+import {
+    EditIdeaDto,
+    EditIdeaNetworkDto,
+    IdeaDto,
+    IdeaNetworkDto,
+    IdeaStatus,
+    TurnIdeaIntoProposalDto,
+} from './ideas.dto'
 
 export const IDEAS_API_PATH = '/ideas'
 
@@ -24,6 +31,21 @@ function toIdeaDto(apiIdea: ApiIdeaDto, networkId: string): IdeaDto {
         ...apiIdea,
         currentNetwork,
         additionalNetworks: apiIdea.networks.filter((n) => n.name !== networkId),
+    }
+}
+
+export interface ApiEditIdeaDto {
+    id?: string
+    beneficiary?: string
+    networks?: EditIdeaNetworkDto[]
+    status?: IdeaStatus
+    details?: IdeaProposalDetailsDto
+}
+
+function toApiEditIdeaDto(idea: EditIdeaDto): ApiEditIdeaDto {
+    return {
+        ...idea,
+        networks: [...idea.additionalNetworks, idea.currentNetwork],
     }
 }
 
@@ -58,8 +80,10 @@ export const useGetIdea = (
 
 // CREATE
 
-function createIdea(idea: EditIdeaDto) {
-    return apiPost<EditIdeaDto>(`${IDEAS_API_PATH}`, idea)
+async function createIdea(idea: EditIdeaDto) {
+    const data = toApiEditIdeaDto(idea)
+    const result = await apiPost<ApiIdeaDto>(`${IDEAS_API_PATH}`, data)
+    return toIdeaDto(result, idea.currentNetwork.name)
 }
 
 export const useCreateIdea = () => {
@@ -68,8 +92,10 @@ export const useCreateIdea = () => {
 
 // PATCH
 
-function patchIdea(idea: EditIdeaDto) {
-    return apiPatch<EditIdeaDto>(`${IDEAS_API_PATH}/${idea.id}`, idea)
+async function patchIdea(idea: EditIdeaDto) {
+    const data = toApiEditIdeaDto(idea)
+    const result = await apiPatch<ApiIdeaDto>(`${IDEAS_API_PATH}/${idea.id}`, data)
+    return toIdeaDto(result, idea.currentNetwork.name)
 }
 
 export const usePatchIdea = () => {
@@ -84,7 +110,7 @@ export interface TurnIdeaIntoProposalParams {
 }
 
 function turnIdeaIntoProposal({ ideaId, data }: TurnIdeaIntoProposalParams) {
-    return apiPost<IdeaDto>(`${IDEAS_API_PATH}/${ideaId}/proposals`, data)
+    return apiPost(`${IDEAS_API_PATH}/${ideaId}/proposals`, data)
 }
 
 export const useTurnIdeaIntoProposal = () => {

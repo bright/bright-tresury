@@ -1,8 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath, useHistory } from 'react-router-dom'
 import Button from '../../components/button/Button'
+import CloseButton from '../../components/closeIcon/CloseButton'
 import BasicInfo from '../../components/header/BasicInfo'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import HeaderContainer from '../../components/header/details/HeaderContainer'
@@ -12,14 +13,14 @@ import Title from '../../components/header/details/Title'
 import FlexBreakLine from '../../components/header/FlexBreakLine'
 import HeaderTabs from '../../components/header/HeaderTabs'
 import NetworkRewardDeposit from '../../components/network/NetworkRewardDeposit'
+import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 import OptionalTitle from '../../components/text/OptionalTitle'
 import { ROUTE_TURN_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
+import { IdeaDto } from '../ideas.dto'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
 import { IdeaStatusIndicator } from './status/IdeaStatusIndicator'
-import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
-import { IdeaDto, IdeaStatus } from '../ideas.dto'
-import CloseButton from '../../components/closeIcon/CloseButton'
+import { useIdea } from './useIdea'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -75,15 +76,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     idea: IdeaDto
-    canEdit: boolean
 }
 
 export type IdeaHeaderProps = OwnProps
 
-const IdeaHeader = ({ idea, canEdit }: IdeaHeaderProps) => {
+const IdeaHeader = ({ idea }: IdeaHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
+    const { canTurnIntoProposal } = useIdea(idea.id)
 
     const navigateToList = () => {
         history.goBack()
@@ -92,14 +93,6 @@ const IdeaHeader = ({ idea, canEdit }: IdeaHeaderProps) => {
     const navigateToTurnIntoProposal = () => {
         history.push(generatePath(ROUTE_TURN_IDEA, { ideaId: idea.id }), { idea })
     }
-
-    const canTurnIntoProposal = useMemo(
-        () =>
-            !!idea.id &&
-            canEdit &&
-            ![IdeaStatus.TurnedIntoProposal, IdeaStatus.TurnedIntoProposalByMilestone].includes(idea.status),
-        [idea, canEdit],
-    )
 
     const networkValue = idea.currentNetwork.value
 

@@ -108,7 +108,8 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     const onFormikSubmit = (formIdea: IdeaFormValues) => {
         let editedIdea = {
             beneficiary: formIdea.beneficiary,
-            networks: [...formIdea.otherNetworks, formIdea.currentNetwork],
+            additionalNetworks: formIdea.otherNetworks,
+            currentNetwork: formIdea.currentNetwork,
             details: {
                 title: formIdea.title,
                 contact: formIdea.contact,
@@ -117,10 +118,6 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
                 portfolio: formIdea.portfolio,
                 links: noEmptyLinks(formIdea.links),
             },
-            status: IdeaStatus.Draft,
-        }
-        if (idea) {
-            editedIdea = { ...idea, ...editedIdea }
         }
         return onSubmit(editedIdea)
     }

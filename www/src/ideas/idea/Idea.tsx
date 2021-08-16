@@ -31,7 +31,7 @@ const Idea = () => {
         >
             {idea ? (
                 <div className={classes.root}>
-                    <IdeaHeader idea={idea} canEdit={canEdit} />
+                    <IdeaHeader idea={idea} />
                     <Switch>
                         <Route exact={true} path={path}>
                             <IdeaInfo idea={idea} canEdit={canEdit} />

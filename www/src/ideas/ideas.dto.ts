@@ -14,9 +14,10 @@ export interface IdeaDto {
 
 export interface EditIdeaDto {
     id?: string
-    beneficiary: string
-    networks: EditIdeaNetworkDto[]
-    status: IdeaStatus
+    beneficiary?: string
+    currentNetwork: EditIdeaNetworkDto
+    additionalNetworks: EditIdeaNetworkDto[]
+    status?: IdeaStatus
     details: IdeaProposalDetailsDto
 }
 

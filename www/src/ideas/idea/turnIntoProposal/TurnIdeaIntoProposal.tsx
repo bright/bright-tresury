@@ -3,17 +3,18 @@ import { useTranslation } from 'react-i18next'
 import { useQueryClient } from 'react-query'
 import { useParams } from 'react-router'
 import { useHistory } from 'react-router-dom'
-import { useAuth } from '../../../auth/AuthContext'
 import Container from '../../../components/form/Container'
 import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
 import { useModal } from '../../../components/modal/useModal'
 import { useNetworks } from '../../../networks/useNetworks'
+import { ROUTE_PROPOSALS } from '../../../routes/routes'
 import IdeaForm from '../../form/IdeaForm'
 import { IDEA_QUERY_KEY_BASE, useGetIdea, usePatchIdea, useTurnIdeaIntoProposal } from '../../ideas.api'
-import { EditIdeaDto, IdeaStatus, TurnIdeaIntoProposalDto } from '../../ideas.dto'
+import { EditIdeaDto, TurnIdeaIntoProposalDto } from '../../ideas.dto'
 import SubmitProposalModal, { ExtrinsicDetails } from '../../SubmitProposalModal'
+import { useIdea } from '../useIdea'
 
 const TurnIdeaIntoProposal = () => {
     const { t } = useTranslation()
@@ -26,25 +27,17 @@ const TurnIdeaIntoProposal = () => {
 
     const queryClient = useQueryClient()
 
-    const { user } = useAuth()
-
     const { network } = useNetworks()
-    const { data: idea } = useGetIdea({ ideaId, network: network.id })
+    const { data: idea } = useGetIdea({ ideaId, network: network.id }, { refetchOnWindowFocus: false })
 
     const { mutateAsync: patchMutateAsync, isError } = usePatchIdea()
 
     const { mutateAsync: turnMutateAsync } = useTurnIdeaIntoProposal()
 
-    const ideaAlreadyTurnedIntoProposal = useMemo(() => {
-        return idea && [IdeaStatus.TurnedIntoProposal, IdeaStatus.TurnedIntoProposalByMilestone].includes(idea.status)
-    }, [idea])
-
-    const ideaBelongsToAnotherUser = useMemo(() => {
-        return idea?.ownerId !== user?.id
-    }, [idea, user])
+    const { canTurnIntoProposal, isOwner } = useIdea(idea?.id ?? '')
 
     const submit = async (formIdea: EditIdeaDto) => {
-        const editedIdea = { ...idea, ...formIdea }
+        const editedIdea = { id: idea?.id, ...formIdea }
 
         await patchMutateAsync(editedIdea, {
             onSuccess: (patchedIdea) => {
@@ -68,12 +61,12 @@ const TurnIdeaIntoProposal = () => {
         [idea, turnMutateAsync],
     )
 
-    if (ideaAlreadyTurnedIntoProposal) {
-        return <Container title={t('idea.turnIntoProposal.ideaIsAlreadyConvertedIntoProposal')} />
+    if (!isOwner) {
+        return <Container title={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />
     }
 
-    if (ideaBelongsToAnotherUser) {
-        return <Container title={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />
+    if (!canTurnIntoProposal) {
+        history.push(ROUTE_PROPOSALS)
     }
 
     return (
