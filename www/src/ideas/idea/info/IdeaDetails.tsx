@@ -6,9 +6,9 @@ import Identicon from '../../../components/identicon/Identicon'
 import { Label } from '../../../components/text/Label'
 import Placeholder from '../../../components/text/Placeholder'
 import IdeaProposalDetails from '../../../idea-proposal-details/IdeaProposalDetails'
-import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
 import { IdeaDto } from '../../ideas.dto'
+import { useIdea } from '../useIdea'
 import AdditionalNetworkDetailsCard from './AdditionalNetworkDetailsCard'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -57,6 +57,7 @@ export type IdeaDetailsProps = OwnProps
 const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const { isOwner } = useIdea(idea.id)
 
     return (
         <>
@@ -75,7 +76,7 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
                 <IdeaProposalDetails details={idea.details} />
                 <Label label={t('idea.details.additionalNets')} className={classes.spacing} />
                 {idea.additionalNetworks.map((additionalNetwork) => (
-                    <AdditionalNetworkDetailsCard ideaNetwork={additionalNetwork} />
+                    <AdditionalNetworkDetailsCard ideaNetwork={additionalNetwork} isOwner={isOwner} />
                 ))}
             </div>
         </>

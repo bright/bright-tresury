@@ -36,6 +36,7 @@ export const theme = {
             draft: '#B159A9',
             active: '#0E65F2',
             turnedIntoProposal: '#2FD3AE',
+            pending: '#FBC13E',
             turnedIntoProposalByMilestone: '#2FD3AE',
             closed: '#1B1D1C',
         },

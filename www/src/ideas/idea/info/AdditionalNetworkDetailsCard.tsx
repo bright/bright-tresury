@@ -7,6 +7,7 @@ import NetworkCard from '../../../components/network/NetworkCard'
 import { Label } from '../../../components/text/Label'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
+import IdeaNetworkStatusIndicator from '../../form/networks/IdeaNetworkStatusIndicator'
 import NetworkInput from '../../form/networks/NetworkInput'
 import { IdeaNetworkDto } from '../../ideas.dto'
 
@@ -29,25 +30,19 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingTop: '16px',
             },
             display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                flexDirection: 'column-reverse',
-            },
-        },
-        contentLeft: {
-            flexGrow: 1,
+            flexDirection: 'column',
         },
     }),
 )
 
 interface OwnProps {
     ideaNetwork: IdeaNetworkDto
+    isOwner: boolean
 }
 
 export type AdditionalNetworkCardProps = OwnProps
 
-const AdditionalNetworkDetailsCard = ({ ideaNetwork }: AdditionalNetworkCardProps) => {
+const AdditionalNetworkDetailsCard = ({ ideaNetwork, isOwner }: AdditionalNetworkCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { networks } = useNetworks()
@@ -61,13 +56,12 @@ const AdditionalNetworkDetailsCard = ({ ideaNetwork }: AdditionalNetworkCardProp
     return (
         <NetworkCard className={classes.card} networks={[selectedNetwork]}>
             <div className={classes.content}>
-                <div className={classes.contentLeft}>
-                    <FormGroup className={classes.smallField}>
-                        <Label label={t('idea.details.net')} />
-                        <TextField value={selectedNetwork.name} disabled={true} />
-                    </FormGroup>
-                    <NetworkInput ideaNetwork={ideaNetwork} readonly={true} />
-                </div>
+                <IdeaNetworkStatusIndicator ideaNetwork={ideaNetwork} isOwner={isOwner} />
+                <FormGroup className={classes.smallField}>
+                    <Label label={t('idea.details.net')} />
+                    <TextField value={selectedNetwork.name} disabled={true} />
+                </FormGroup>
+                <NetworkInput ideaNetwork={ideaNetwork} readonly={true} />
             </div>
         </NetworkCard>
     )

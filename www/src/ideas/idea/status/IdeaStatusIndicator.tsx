@@ -1,17 +1,45 @@
+import { createStyles } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Status from '../../../components/status/Status'
+import { useNetworks } from '../../../networks/useNetworks'
 import { theme } from '../../../theme/theme'
-import { IdeaStatus } from '../../ideas.dto'
+import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 
-interface Props {
-    status: IdeaStatus
+const useStyles = makeStyles((theme) =>
+    createStyles({
+        root: {
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        otherStatus: {
+            paddingLeft: '6px',
+        },
+        spacer: {
+            marginLeft: '8px',
+            borderWidth: '0 0 0 1px',
+            borderStyle: 'solid',
+            borderColor: theme.palette.text.disabled,
+            height: '12px',
+        },
+    }),
+)
+
+interface OwnProps {
+    idea: IdeaDto
 }
 
-export const IdeaStatusIndicator = ({ status }: Props) => {
-    const { t } = useTranslation()
+export type IdeaStatusIndicatorProps = OwnProps
 
-    const getStatusTranslationKey = (): string => {
+const IdeaStatusIndicator = ({ idea: { currentNetwork, additionalNetworks }, idea }: IdeaStatusIndicatorProps) => {
+    const { t } = useTranslation()
+    const classes = useStyles()
+    const { networks } = useNetworks()
+
+    const getStatusTranslationKey = (status: IdeaStatus): string => {
         switch (status) {
             case IdeaStatus.Draft:
                 return 'idea.list.card.statusDraft'
@@ -19,6 +47,8 @@ export const IdeaStatusIndicator = ({ status }: Props) => {
                 return 'idea.list.card.statusActive'
             case IdeaStatus.TurnedIntoProposal:
                 return 'idea.list.card.statusTurnedIntoProposal'
+            case IdeaStatus.Pending:
+                return 'idea.list.card.pending'
             case IdeaStatus.TurnedIntoProposalByMilestone:
                 return 'idea.list.card.statusTurnedIntoProposalByMilestone'
             case IdeaStatus.Closed:
@@ -26,7 +56,7 @@ export const IdeaStatusIndicator = ({ status }: Props) => {
         }
     }
 
-    const getStatusColor = (): string => {
+    const getStatusColor = (status: IdeaStatus): string => {
         switch (status) {
             case IdeaStatus.Draft:
                 return theme.palette.status.draft
@@ -34,6 +64,8 @@ export const IdeaStatusIndicator = ({ status }: Props) => {
                 return theme.palette.status.active
             case IdeaStatus.TurnedIntoProposal:
                 return theme.palette.status.turnedIntoProposal
+            case IdeaStatus.Pending:
+                return theme.palette.status.pending
             case IdeaStatus.TurnedIntoProposalByMilestone:
                 return theme.palette.status.turnedIntoProposalByMilestone
             case IdeaStatus.Closed:
@@ -41,5 +73,30 @@ export const IdeaStatusIndicator = ({ status }: Props) => {
         }
     }
 
-    return <Status label={t(getStatusTranslationKey())} color={getStatusColor()} />
+    const otherStatus =
+        idea.status === IdeaStatus.TurnedIntoProposal ? IdeaStatus.Pending : IdeaStatus.TurnedIntoProposal
+
+    const otherStatusNetworksNames = additionalNetworks
+        .filter((n) => n.status !== currentNetwork.status)
+        .map((n) => networks.find((network) => network.id === n.name)?.name ?? n.name)
+        .join(', ')
+
+    return (
+        <div className={classes.root}>
+            <Status label={t(getStatusTranslationKey(idea.status))} color={getStatusColor(idea.status)} />
+            {otherStatusNetworksNames.length > 0 ? (
+                <>
+                    <div className={classes.spacer} />
+                    <Status
+                        className={classes.otherStatus}
+                        label={t(getStatusTranslationKey(otherStatus))}
+                        color={getStatusColor(otherStatus)}
+                        sublabel={`(${otherStatusNetworksNames})`}
+                    />
+                </>
+            ) : null}
+        </div>
+    )
 }
+
+export default IdeaStatusIndicator

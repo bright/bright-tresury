@@ -1,11 +1,12 @@
-import { apiGet, apiPost, apiPatch } from '../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
+import { apiGet, apiPatch, apiPost } from '../api'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
 import {
     EditIdeaDto,
     EditIdeaNetworkDto,
     IdeaDto,
     IdeaNetworkDto,
+    IdeaNetworkStatus,
     IdeaStatus,
     TurnIdeaIntoProposalDto,
 } from './ideas.dto'
@@ -31,6 +32,11 @@ function toIdeaDto(apiIdea: ApiIdeaDto, networkId: string): IdeaDto {
         ...apiIdea,
         currentNetwork,
         additionalNetworks: apiIdea.networks.filter((n) => n.name !== networkId),
+        status:
+            apiIdea.status === IdeaStatus.TurnedIntoProposal &&
+            currentNetwork.status !== IdeaNetworkStatus.TurnedIntoProposal
+                ? IdeaStatus.Pending
+                : apiIdea.status,
     }
 }
 

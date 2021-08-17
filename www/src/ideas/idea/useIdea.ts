@@ -1,7 +1,7 @@
+import { useMemo } from 'react'
 import { useAuth } from '../../auth/AuthContext'
 import { useNetworks } from '../../networks/useNetworks'
 import { useGetIdea } from '../ideas.api'
-import { useMemo } from 'react'
 import { IdeaNetworkStatus, IdeaStatus } from '../ideas.dto'
 
 export const useIdea = (ideaId: string) => {
@@ -15,7 +15,7 @@ export const useIdea = (ideaId: string) => {
     }, [isUserSignedInAndVerified, idea, user])
 
     const canEdit = useMemo(() => {
-        return isOwner
+        return isOwner && !!idea && (idea.status === IdeaStatus.Active || idea.status === IdeaStatus.Draft)
     }, [isOwner])
 
     const canTurnIntoProposal = useMemo(

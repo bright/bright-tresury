@@ -19,7 +19,7 @@ import { ROUTE_TURN_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto } from '../ideas.dto'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
-import { IdeaStatusIndicator } from './status/IdeaStatusIndicator'
+import IdeaStatusIndicator from './status/IdeaStatusIndicator'
 import { useIdea } from './useIdea'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -103,7 +103,7 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps) => {
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
                 <BasicInfoDivider />
                 <Status>
-                    <IdeaStatusIndicator status={idea.status} />
+                    <IdeaStatusIndicator idea={idea} />
                 </Status>
                 <Title>
                     <OptionalTitle title={idea.details.title} />

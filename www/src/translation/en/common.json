@@ -256,7 +256,13 @@
                     "additionalNet": "+ Additional Net",
                     "allNetsAdded": "All nets have been added",
                     "net": "Net",
-                    "remove": "Remove Net"
+                    "remove": "Remove Net",
+                    "status": {
+                        "active": "Active",
+                        "turnedIntoProposal": "Turned into Proposal",
+                        "pending": "Pending",
+                        "changeTo": "Change to {{networkName}} net and turn this idea into proposal"
+                    }
                 }
             },
             "header": {
@@ -296,6 +302,7 @@
                 "statusDraft": "Draft",
                 "statusActive": "Active",
                 "statusTurnedIntoProposal": "Turned into Proposal",
+                "pending": "Pending",
                 "statusTurnedIntoProposalByMilestone": "Turned into Proposal by Milestone",
                 "statusClosed": "Closed",
                 "beneficiary": "(Beneficiary)"

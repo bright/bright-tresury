@@ -1,8 +1,10 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles } from '@material-ui/core'
+import { ClassNameProps } from '../props/className.props'
+import clsx from 'clsx'
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
     createStyles({
         root: {
             display: 'flex',
@@ -20,22 +22,30 @@ const useStyles = makeStyles(() =>
             fontSize: '14px',
             fontWeight: 500,
         },
+        sublabel: {
+            fontSize: '12px',
+            fontWeight: 500,
+            color: theme.palette.text.disabled,
+        },
     }),
 )
 
 interface OwnProps {
     label: string
+    sublabel?: string
     color: string
 }
 
-export type StatusProps = OwnProps
+export type StatusProps = OwnProps & ClassNameProps
 
-const Status = ({ label, color }: StatusProps) => {
+const Status = ({ label, sublabel, color, className }: StatusProps) => {
     const classes = useStyles()
     return (
-        <div className={classes.root}>
+        <div className={clsx(classes.root, className)}>
             <div className={classes.circle} style={{ backgroundColor: color }} />
-            <div className={classes.label}>{label}</div>
+            <div className={classes.label}>
+                {label} {sublabel ? <span className={classes.sublabel}>{sublabel}</span> : null}
+            </div>
         </div>
     )
 }

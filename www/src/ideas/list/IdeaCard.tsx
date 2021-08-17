@@ -6,7 +6,7 @@ import { ROUTE_IDEA } from '../../routes/routes'
 import Divider from '../../components/divider/Divider'
 import { useTranslation } from 'react-i18next'
 import { IdeaContentType } from '../idea/IdeaContentTypeTabs'
-import { IdeaStatusIndicator } from '../idea/status/IdeaStatusIndicator'
+import IdeaStatusIndicator from '../idea/status/IdeaStatusIndicator'
 import NetworkCard from '../../components/network/NetworkCard'
 import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import NetworkValue from '../../components/network/NetworkValue'
@@ -25,12 +25,12 @@ const IdeaCard = ({
     idea: {
         id,
         ordinalNumber,
-        status,
         details: { title },
         currentNetwork,
         additionalNetworks,
         beneficiary,
     },
+    idea,
 }: IdeaCardProps) => {
     const { t } = useTranslation()
     const { networks: contextNetworks } = useNetworks()
@@ -46,7 +46,7 @@ const IdeaCard = ({
         >
             <CardHeader>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={ordinalNumber} />
-                <IdeaStatusIndicator status={status} />
+                <IdeaStatusIndicator idea={idea} />
             </CardHeader>
 
             <Divider />
