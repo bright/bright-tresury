@@ -8,17 +8,19 @@ import {
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
-import { TextFieldStylesProps, useTextFieldStyles } from '../form/input/textFieldStyles'
+import { TextFieldStylesProps } from '../form/input/textFieldStyles'
 
 const useStyles = makeStyles(() =>
     createStyles({
-        root: {
-            padding: '0',
-        },
         label: {
             marginBottom: '1em',
             color: '#1B1D1C',
             fontSize: '0.75em',
+        },
+        select: {
+            fontSize: '0.875em',
+            padding: '1em',
+            fontWeight: 500,
         },
     }),
 )
@@ -44,7 +46,6 @@ const Select = ({
     ...props
 }: SelectProps) => {
     const classes = useStyles()
-    const textFieldClasses = useTextFieldStyles({ colorScheme })()
     return (
         <FormGroup>
             {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
@@ -54,8 +55,7 @@ const Select = ({
                 disableUnderline={true}
                 inputProps={{
                     classes: {
-                        select: textFieldClasses.input,
-                        root: textFieldClasses.root,
+                        select: classes.select,
                     },
                     ...inputProps,
                 }}
