@@ -14,6 +14,7 @@ import {
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
+    ApiForbiddenResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiPropertyOptional,
@@ -102,6 +103,9 @@ export class IdeasController {
     @ApiNotFoundResponse({
         description: 'No idea found',
     })
+    @ApiForbiddenResponse({
+        description: 'Idea with the given id cannot be edited',
+    })
     @Patch(':id')
     @UseGuards(SessionGuard)
     async updateIdea(
@@ -118,8 +122,10 @@ export class IdeasController {
         description: 'Deleted idea.',
     })
     @ApiNotFoundResponse({
-        status: HttpStatus.NOT_FOUND,
         description: 'No idea found.',
+    })
+    @ApiForbiddenResponse({
+        description: 'Idea with the given id cannot be deleted',
     })
     @Delete(':id')
     @UseGuards(SessionGuard)

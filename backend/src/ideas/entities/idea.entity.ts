@@ -83,6 +83,12 @@ export class Idea extends BaseEntity {
         return this.ownerId === user.id
     }
 
+    isOwnerOrThrow = (user: User) => {
+        if (!this.isOwner(user)) {
+            throw new ForbiddenException('The given user cannot edit or delete this idea')
+        }
+    }
+
     canEditOrThrow = (user: User) => {
         if (
             !this.isOwner(user) ||

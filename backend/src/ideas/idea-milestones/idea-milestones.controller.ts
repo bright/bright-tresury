@@ -2,6 +2,7 @@ import { Body, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
+    ApiForbiddenResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiParam,
@@ -77,6 +78,9 @@ export class IdeaMilestonesController {
     @ApiBadRequestResponse({
         description: 'End date of the milestone cannot be prior to the start date',
     })
+    @ApiForbiddenResponse({
+        description: 'Milestones cannot be added to the given idea',
+    })
     @UseGuards(SessionGuard)
     async create(
         @Param('ideaId') ideaId: string,
@@ -105,6 +109,9 @@ export class IdeaMilestonesController {
     })
     @ApiBadRequestResponse({
         description: 'End date of the milestone cannot be prior to the start date',
+    })
+    @ApiForbiddenResponse({
+        description: 'Idea milestone with the given id cannot be edited',
     })
     @UseGuards(SessionGuard)
     async update(

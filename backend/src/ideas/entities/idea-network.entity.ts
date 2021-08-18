@@ -1,4 +1,4 @@
-import { BadRequestException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
 import { Extrinsic } from '../../extrinsics/extrinsic.entity'
@@ -46,6 +46,12 @@ export class IdeaNetwork extends BaseEntity {
         this.blockchainProposalId = blockchainProposalId
         this.idea = idea
         this.status = status
+    }
+
+    canEditOrThrow = () => {
+        if (this.status === IdeaNetworkStatus.TurnedIntoProposal) {
+            throw new ForbiddenException(`This idea network is already turned into proposal and you cannot edit it`)
+        }
     }
 
     canTurnIntoProposalOrThrow = () => {
