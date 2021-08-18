@@ -1,12 +1,12 @@
-import { BaseEntity } from '../../../database/base.entity'
+import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
+import { BaseEntity } from '../../../database/base.entity'
 import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
-import { IdeaMilestoneNetwork } from './idea-milestone-network.entity'
-import { Idea } from '../../entities/idea.entity'
 import { Nil } from '../../../utils/types'
-import { defaultIdeaMilestoneStatus, IdeaMilestoneStatus } from './idea-milestone-status'
-import { BadRequestException } from '@nestjs/common'
+import { Idea } from '../../entities/idea.entity'
 import { EmptyBeneficiaryException } from '../../exceptions/empty-beneficiary.exception'
+import { IdeaMilestoneNetwork } from './idea-milestone-network.entity'
+import { defaultIdeaMilestoneStatus, IdeaMilestoneStatus } from './idea-milestone-status'
 
 @Entity('idea_milestones')
 export class IdeaMilestone extends BaseEntity {
@@ -56,6 +56,12 @@ export class IdeaMilestone extends BaseEntity {
         this.beneficiary = beneficiary
         this.ordinalNumber = 0
         this.details = details
+    }
+
+    canEdit = () => {
+        if (this.status === IdeaMilestoneStatus.TurnedIntoProposal) {
+            throw new ForbiddenException('You cannot edit idea milestone with the given id')
+        }
     }
 
     canTurnIntoProposalOrThrow = () => {

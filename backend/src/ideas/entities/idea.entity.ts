@@ -5,10 +5,10 @@ import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { User } from '../../users/user.entity'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
+import { IdeaComment } from '../idea-comments/entities/idea-comment.entity'
 import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity'
 import { IdeaNetworkStatus } from './idea-network-status'
 import { IdeaNetwork } from './idea-network.entity'
-import { IdeaComment } from '../idea-comments/entities/idea-comment.entity'
 import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
 
 @Entity('ideas')
@@ -79,13 +79,23 @@ export class Idea extends BaseEntity {
         this.comments = comments
     }
 
-    canEdit = (user: User) => {
+    isOwner = (user: User) => {
         return this.ownerId === user.id
     }
 
     canEditOrThrow = (user: User) => {
-        if (!this.canEdit(user)) {
-            throw new ForbiddenException('The given user has no access to this idea')
+        if (
+            !this.isOwner(user) ||
+            this.status === IdeaStatus.TurnedIntoProposal ||
+            this.status === IdeaStatus.TurnedIntoProposalByMilestone
+        ) {
+            throw new ForbiddenException('The given user cannot edit or delete this idea')
+        }
+    }
+
+    canEditMilestonesOrThrow = (user: User) => {
+        if (!this.isOwner(user) || this.status === IdeaStatus.TurnedIntoProposal) {
+            throw new ForbiddenException('The given user cannot edit this ideas milestones')
         }
     }
 

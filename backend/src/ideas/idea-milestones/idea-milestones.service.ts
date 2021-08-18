@@ -61,7 +61,7 @@ export class IdeaMilestonesService {
     async create(ideaId: string, dto: CreateIdeaMilestoneDto, sessionData: SessionData): Promise<IdeaMilestone> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
-        idea.canEditOrThrow(sessionData.user)
+        idea.canEditMilestonesOrThrow(sessionData.user)
 
         const details = await this.detailsService.create(dto.details)
 
@@ -90,7 +90,8 @@ export class IdeaMilestonesService {
             throw new NotFoundException('Idea milestone with the given id not found')
         }
 
-        currentIdeaMilestone.idea.canEditOrThrow(sessionData.user)
+        currentIdeaMilestone.idea.canEditMilestonesOrThrow(sessionData.user)
+        currentIdeaMilestone.canEdit()
 
         const updatedNetworks =
             dto.networks &&

@@ -5,12 +5,14 @@ import { v4 as uuid } from 'uuid'
 import { SessionData } from '../../auth/session/session.decorator'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
-import { Idea } from '../entities/idea.entity'
 import { IdeaStatus } from '../entities/idea-status'
+import { Idea } from '../entities/idea.entity'
 import { IdeasService } from '../ideas.service'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
 import { IdeaMilestoneNetwork } from './entities/idea-milestone-network.entity'
+import { IdeaMilestoneStatus } from './entities/idea-milestone-status'
+import { IdeaMilestonesRepository } from './idea-milestones.repository'
 import { IdeaMilestonesService } from './idea-milestones.service'
 
 const minimalCreateIdeaMilestoneDto = {
@@ -22,6 +24,8 @@ describe(`IdeaMilestonesService`, () => {
     const app = beforeSetupFullApp()
 
     const getIdeasService = () => app.get().get(IdeasService)
+    const getMilestonesRepository = () => app.get().get(IdeaMilestonesRepository)
+    const getIdeaRepository = () => app.get().get(getRepositoryToken(Idea))
     const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
     const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
@@ -333,6 +337,13 @@ describe(`IdeaMilestonesService`, () => {
                 getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, otherSessionData),
             ).rejects.toThrow(ForbiddenException)
         })
+
+        it(`should resolve for idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async () => {
+            await getIdeaRepository().save({ ...idea, status: IdeaStatus.TurnedIntoProposalByMilestone })
+            await expect(
+                getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionData),
+            ).resolves.toBeDefined()
+        })
     })
 
     describe('update', () => {
@@ -574,6 +585,41 @@ describe(`IdeaMilestonesService`, () => {
                     otherSessionData,
                 ),
             ).rejects.toThrow(ForbiddenException)
+        })
+
+        it(`should throw forbidden for milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                minimalCreateIdeaMilestoneDto,
+                sessionData,
+            )
+            await getMilestonesRepository().save({ ...ideaMilestone, status: IdeaMilestoneStatus.TurnedIntoProposal })
+
+            await expect(
+                getIdeaMilestonesService().update(
+                    ideaMilestone.id,
+                    { details: { description: 'Updated description' } },
+                    sessionData,
+                ),
+            ).rejects.toThrow(ForbiddenException)
+        })
+
+        it(`should resolve for milestone with ${IdeaMilestoneStatus.Active} and idea with ${IdeaStatus.TurnedIntoProposalByMilestone}`, async () => {
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                minimalCreateIdeaMilestoneDto,
+                sessionData,
+            )
+            await getMilestonesRepository().save({ ...ideaMilestone, status: IdeaMilestoneStatus.Active })
+            await getIdeaRepository().save({ ...idea, status: IdeaStatus.TurnedIntoProposalByMilestone })
+
+            await expect(
+                getIdeaMilestonesService().update(
+                    ideaMilestone.id,
+                    { details: { description: 'Updated description' } },
+                    sessionData,
+                ),
+            ).resolves.toBeDefined()
         })
     })
 })

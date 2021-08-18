@@ -87,7 +87,7 @@ export class IdeasController {
     @Post()
     @UseGuards(SessionGuard)
     async createIdea(@Body() createIdeaDto: CreateIdeaDto, @ReqSession() session: SessionData): Promise<IdeaDto> {
-        logger.info(`Updating idea...`, createIdeaDto)
+        logger.info(`Creating idea...`, createIdeaDto)
         const idea = await this.ideasService.create(createIdeaDto, session)
         return new IdeaDto(idea)
     }

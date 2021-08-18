@@ -480,6 +480,38 @@ describe(`IdeasService`, () => {
             )
             done()
         })
+
+        it(`should throw forbidden exception when trying to update idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
+            const idea = await getService().create(
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    status: IdeaStatus.TurnedIntoProposal,
+                },
+                sessionData,
+            )
+
+            await expect(
+                getService().update({ details: { title: 'New title' } }, idea.id, sessionData),
+            ).rejects.toThrow(ForbiddenException)
+            done()
+        })
+
+        it(`should throw forbidden exception when trying to update idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
+            const idea = await getService().create(
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    status: IdeaStatus.TurnedIntoProposalByMilestone,
+                },
+                sessionData,
+            )
+
+            await expect(
+                getService().update({ details: { title: 'New title' } }, idea.id, sessionData),
+            ).rejects.toThrow(ForbiddenException)
+            done()
+        })
     })
 
     describe('delete', () => {
@@ -509,6 +541,34 @@ describe(`IdeasService`, () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'other@email.com' })
 
             await expect(getService().delete(createdIdea.id, otherUser)).rejects.toThrow(ForbiddenException)
+            done()
+        })
+
+        it(`should throw forbidden exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
+            const idea = await getService().create(
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    status: IdeaStatus.TurnedIntoProposal,
+                },
+                sessionData,
+            )
+
+            await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(ForbiddenException)
+            done()
+        })
+
+        it(`should throw forbidden exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
+            const idea = await getService().create(
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    status: IdeaStatus.TurnedIntoProposalByMilestone,
+                },
+                sessionData,
+            )
+
+            await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(ForbiddenException)
             done()
         })
     })
