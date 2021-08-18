@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { networkInterfaces } from 'os'
 import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
 import { BlockchainService } from '../../blockchain/blockchain.service'
@@ -40,7 +39,7 @@ export class IdeaProposalsService {
         logger.info(`Start turning idea ${ideaId} into a proposal.`)
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
-        idea.canEditOrThrow(sessionData.user)
+        idea.isOwnerOrThrow(sessionData.user)
 
         idea.canTurnIntoProposalOrThrow()
 

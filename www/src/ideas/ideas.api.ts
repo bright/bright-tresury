@@ -4,6 +4,7 @@ import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-d
 import {
     EditIdeaDto,
     EditIdeaNetworkDto,
+    EditSingleIdeaNetworkDto,
     IdeaDto,
     IdeaNetworkDto,
     IdeaNetworkStatus,
@@ -106,6 +107,21 @@ async function patchIdea(idea: EditIdeaDto) {
 
 export const usePatchIdea = () => {
     return useMutation(patchIdea)
+}
+
+// PATCH idea network
+
+interface PatchIdeaNetworkParams {
+    ideaNetwork: EditSingleIdeaNetworkDto
+    ideaId: string
+}
+
+function patchIdeaNetwork({ ideaNetwork: { id, value }, ideaId }: PatchIdeaNetworkParams): Promise<IdeaNetworkDto> {
+    return apiPatch<IdeaNetworkDto>(`${IDEAS_API_PATH}/${ideaId}/networks/${id}`, { value })
+}
+
+export const usePatchIdeaNetwork = () => {
+    return useMutation(patchIdeaNetwork)
 }
 
 // TURN INTO PROPOSAL

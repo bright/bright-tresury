@@ -35,6 +35,11 @@ export interface EditIdeaNetworkDto {
     value: number
 }
 
+export interface EditSingleIdeaNetworkDto {
+    id: string
+    value: number
+}
+
 export enum IdeaStatus {
     Draft = 'draft',
     Active = 'active',

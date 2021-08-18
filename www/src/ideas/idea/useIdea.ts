@@ -16,7 +16,7 @@ export const useIdea = (ideaId: string) => {
 
     const canEdit = useMemo(() => {
         return isOwner && !!idea && (idea.status === IdeaStatus.Active || idea.status === IdeaStatus.Draft)
-    }, [isOwner])
+    }, [isOwner, idea])
 
     const canTurnIntoProposal = useMemo(
         () =>
