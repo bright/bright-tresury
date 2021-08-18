@@ -15,7 +15,7 @@ import { IdeaNetworksService } from './idea-networks.service'
 
 @ControllerApiVersion('/ideas/:ideaId/networks', ['v1'])
 export class IdeaNetworksController {
-    constructor(private readonly ideaNetworksService: IdeaNetworksService) {}
+    constructor(private readonly networksService: IdeaNetworksService) {}
     @Patch(':id')
     @ApiParam({
         name: 'ideaId',
@@ -40,7 +40,7 @@ export class IdeaNetworksController {
     })
     @UseGuards(SessionGuard)
     async update(@Param('id') id: string, @Body() dto: UpdateIdeaNetworkDto, @ReqSession() session: SessionData) {
-        const ideaNetwork = await this.ideaNetworksService.update(id, dto, session)
-        return new IdeaNetworkDto(ideaNetwork)
+        const network = await this.networksService.update(id, dto, session)
+        return new IdeaNetworkDto(network)
     }
 }

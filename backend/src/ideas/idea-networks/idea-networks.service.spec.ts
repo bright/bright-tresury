@@ -75,7 +75,7 @@ describe('IdeaNetworksService', () => {
         it(`should resolve when trying to update network with ${IdeaNetworkStatus.Active} status`, async () => {
             const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
             const ideaNetworkId = idea.networks[0].id
-            await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.Pending })
+            await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.Active })
 
             await expect(getService().update(ideaNetworkId, { value: 5 }, sessionData)).resolves.toBeDefined()
         })

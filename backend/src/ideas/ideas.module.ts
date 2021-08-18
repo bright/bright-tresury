@@ -4,6 +4,8 @@ import { ExtrinsicsModule } from '../extrinsics/extrinsics.module'
 import { IdeaProposalDetailsModule } from '../idea-proposal-details/idea-proposal-details.module'
 import { MilestoneDetailsModule } from '../milestone-details/milestone-details.module'
 import { ProposalsModule } from '../proposals/proposals.module'
+import { IdeaMilestoneNetworksController } from './idea-milestones/idea-milestone-networks/idea-milestone-networks.controller'
+import { IdeaMilestoneNetworksService } from './idea-milestones/idea-milestone-networks/idea-milestone-networks.service'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { IdeaProposalsController } from './idea-proposals/idea-proposals.controller'
 import { IdeaProposalsService } from './idea-proposals/idea-proposals.service'
@@ -43,6 +45,7 @@ import { IdeaNetworksController } from './idea-networks/idea-networks.controller
         IdeasService,
         IdeaProposalsService,
         IdeaMilestonesService,
+        IdeaMilestoneNetworksService,
         IdeaMilestoneProposalsService,
         IsValidNetworkConstraint,
         IdeaCommentsService,
@@ -51,6 +54,7 @@ import { IdeaNetworksController } from './idea-networks/idea-networks.controller
     controllers: [
         IdeasController,
         IdeaMilestonesController,
+        IdeaMilestoneNetworksController,
         IdeaMilestoneProposalsController,
         IdeaProposalsController,
         IdeaCommentsController,

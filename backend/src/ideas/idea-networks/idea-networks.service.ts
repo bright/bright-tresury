@@ -9,19 +9,19 @@ import { UpdateIdeaNetworkDto } from './dto/update-idea-network.dto'
 export class IdeaNetworksService {
     constructor(
         @InjectRepository(IdeaNetwork)
-        private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
+        private readonly networkRepository: Repository<IdeaNetwork>,
     ) {}
     async update(id: string, dto: UpdateIdeaNetworkDto, sessionData: SessionData): Promise<IdeaNetwork> {
-        const ideaNetwork = await this.ideaNetworkRepository.findOne(id, { relations: ['idea'] })
+        const network = await this.networkRepository.findOne(id, { relations: ['idea'] })
 
-        if (!ideaNetwork) {
+        if (!network) {
             throw new NotFoundException('Idea network with the given id does not exist')
         }
 
-        ideaNetwork.idea!.isOwnerOrThrow(sessionData.user)
-        ideaNetwork.canEditOrThrow()
+        network.idea!.isOwnerOrThrow(sessionData.user)
+        network.canEditOrThrow()
 
-        await this.ideaNetworkRepository.save({ id, ...dto })
-        return (await this.ideaNetworkRepository.findOne(id))!
+        await this.networkRepository.save({ id, ...dto })
+        return (await this.networkRepository.findOne(id))!
     }
 }
