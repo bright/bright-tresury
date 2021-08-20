@@ -1,61 +1,38 @@
 import React from 'react'
-import IdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
-import { IDEA_MILESTONES_QUERY_KEY_BASE, usePatchIdeaMilestone } from '../idea.milestones.api'
+import Button from '../../../../components/button/Button'
+import { MilestoneModalHeader } from '../../../../milestone-details/components/milestone-modal/MilestoneModalHeader'
 import { IdeaDto } from '../../../ideas.dto'
-import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
-import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
-import { IdeaMilestoneDto, PatchIdeaMilestoneDto } from '../idea.milestones.dto'
-import { useQueryClient } from 'react-query'
-import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
+import { IdeaMilestoneDto } from '../idea.milestones.dto'
+import { useIdeaMilestone } from '../useIdeaMilestone'
+import IdeaMilestoneEditForm from './IdeaMilestoneEditForm'
 
 interface OwnProps {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    onCancel: () => void
-    onSuccess: () => void
+    onClose: () => void
+    onTurnIntoProposalClick: (ideaMilestone: IdeaMilestoneDto) => void
 }
 
 export type IdeaMilestoneEditProps = OwnProps
 
-const IdeaMilestoneEdit = ({ idea, ideaMilestone, onCancel, onSuccess }: IdeaMilestoneEditProps) => {
+const IdeaMilestoneEdit = ({ idea, ideaMilestone, onClose, onTurnIntoProposalClick }: IdeaMilestoneEditProps) => {
     const { t } = useTranslation()
 
-    const queryClient = useQueryClient()
-
-    const { mutateAsync, isError } = usePatchIdeaMilestone()
-
-    const submit = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
-        const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = {
-            ...ideaMilestone,
-            ...ideaMilestoneFromValues,
-        }
-
-        await mutateAsync(
-            { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: patchIdeaMilestoneDto },
-            {
-                onSuccess: async () => {
-                    await queryClient.refetchQueries([IDEA_MILESTONES_QUERY_KEY_BASE, idea.id])
-                    onSuccess()
-                },
-            },
-        )
-    }
+    const { canTurnIntoProposal } = useIdeaMilestone(ideaMilestone, idea)
 
     return (
-        <IdeaMilestoneForm idea={idea} ideaMilestone={ideaMilestone} readonly={false} onSubmit={submit}>
-            {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
-
-            <FormFooterButtonsContainer>
-                <FormFooterButton type={'submit'} variant={'contained'}>
-                    {t('idea.milestones.modal.form.buttons.save')}
-                </FormFooterButton>
-
-                <FormFooterButton type={'button'} variant={'text'} onClick={onCancel}>
-                    {t('idea.milestones.modal.form.buttons.cancel')}
-                </FormFooterButton>
-            </FormFooterButtonsContainer>
-        </IdeaMilestoneForm>
+        <>
+            <MilestoneModalHeader>
+                <h2 id="modal-title">{t('idea.milestones.modal.editMilestone')}</h2>
+                {canTurnIntoProposal ? (
+                    <Button color="primary" onClick={() => onTurnIntoProposalClick(ideaMilestone)}>
+                        {t('idea.details.header.turnIntoProposal')}
+                    </Button>
+                ) : null}
+            </MilestoneModalHeader>
+            <IdeaMilestoneEditForm idea={idea} ideaMilestone={ideaMilestone} onCancel={onClose} onSuccess={onClose} />
+        </>
     )
 }
 

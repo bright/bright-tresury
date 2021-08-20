@@ -1,26 +1,24 @@
 import React, { useCallback, useState } from 'react'
-import { useTurnIdeaMilestoneIntoProposal } from '../idea.milestones.api'
-import { IdeaMilestoneDetailsModal } from '../details/IdeaMilestoneDetailsModal'
-import Grid from '../../../../components/grid/Grid'
-import IdeaMilestoneCard from './IdeaMilestoneCard'
-import { mobileHeaderListHorizontalMargin } from '../../../../components/header/list/HeaderListContainer'
-import TurnIdeaMilestoneIntoProposalModal from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalModal'
-import { useModal } from '../../../../components/modal/useModal'
-import SubmitProposalModal, { ExtrinsicDetails } from '../../../SubmitProposalModal'
 import { useTranslation } from 'react-i18next'
-import IdeaMilestoneEditModal from '../edit/IdeaMilestoneEditModal'
+import Grid from '../../../../components/grid/Grid'
+import { mobileHeaderListHorizontalMargin } from '../../../../components/header/list/HeaderListContainer'
+import { useModal } from '../../../../components/modal/useModal'
 import { IdeaDto } from '../../../ideas.dto'
+import SubmitProposalModal, { ExtrinsicDetails } from '../../../SubmitProposalModal'
+import { useTurnIdeaMilestoneIntoProposal } from '../idea.milestones.api'
 import { IdeaMilestoneDto, TurnIdeaMilestoneIntoProposalDto } from '../idea.milestones.dto'
+import TurnIdeaMilestoneIntoProposalModal from '../turnIntoProposal/TurnIdeaMilestoneIntoProposalModal'
+import IdeaMilestoneCard from './IdeaMilestoneCard'
+import IdeaMilestoneModal from './IdeaMilestoneModal'
 
 interface OwnProps {
     idea: IdeaDto
     ideaMilestones: IdeaMilestoneDto[]
-    canEdit: boolean
 }
 
 export type IdeaMilestoneListProps = OwnProps
 
-const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: IdeaMilestoneListProps) => {
+const IdeaMilestonesList = ({ idea, ideaMilestones }: IdeaMilestoneListProps) => {
     const { t } = useTranslation()
 
     const [focusedIdeaMilestone, setFocusedIdeaMilestone] = useState<IdeaMilestoneDto | null>(null)
@@ -32,27 +30,17 @@ const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: IdeaMilestoneList
         setIdeaMilestoneToBeTurnedIntoProposal,
     ] = useState<IdeaMilestoneDto | null>(null)
 
-    const editModal = useModal()
-    const detailsModal = useModal()
+    const milestoneModal = useModal()
     const turnModal = useModal()
     const submitProposalModal = useModal()
 
-    const handleOnEditModalClose = () => {
-        editModal.close()
-        setFocusedIdeaMilestone(null)
-    }
-
-    const handleOnDetailsModalClose = () => {
-        detailsModal.close()
+    const handleOnMilestoneModalClose = () => {
+        milestoneModal.close()
         setFocusedIdeaMilestone(null)
     }
 
     const handleOnCardClick = (ideaMilestone: IdeaMilestoneDto) => {
-        if (canEdit) {
-            editModal.open()
-        } else {
-            detailsModal.open()
-        }
+        milestoneModal.open()
         setFocusedIdeaMilestone(ideaMilestone)
     }
 
@@ -63,7 +51,7 @@ const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: IdeaMilestoneList
 
     const handleOnSuccessfulPatchBeforeTurnIntoProposalSubmit = (patchedIdeaMilestone: IdeaMilestoneDto) => {
         turnModal.close()
-        editModal.close()
+        milestoneModal.close()
         setIdeaMilestoneToBeTurnedIntoProposal(patchedIdeaMilestone)
         submitProposalModal.open()
     }
@@ -101,21 +89,12 @@ const IdeaMilestonesList = ({ idea, ideaMilestones, canEdit }: IdeaMilestoneList
             />
 
             {focusedIdeaMilestone ? (
-                <IdeaMilestoneEditModal
-                    open={editModal.visible}
+                <IdeaMilestoneModal
+                    open={milestoneModal.visible}
                     idea={idea}
                     ideaMilestone={focusedIdeaMilestone}
-                    onClose={handleOnEditModalClose}
+                    onClose={handleOnMilestoneModalClose}
                     onTurnIntoProposalClick={handleOnTurnIntoProposalClick}
-                />
-            ) : null}
-
-            {focusedIdeaMilestone ? (
-                <IdeaMilestoneDetailsModal
-                    open={detailsModal.visible}
-                    idea={idea}
-                    ideaMilestone={focusedIdeaMilestone}
-                    onClose={handleOnDetailsModalClose}
                 />
             ) : null}
 

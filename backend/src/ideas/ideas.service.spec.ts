@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../auth/session/session.decorator'
@@ -481,7 +481,7 @@ describe(`IdeasService`, () => {
             done()
         })
 
-        it(`should throw forbidden exception when trying to update idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
+        it(`should throw BadRequestException when trying to update idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
@@ -493,11 +493,11 @@ describe(`IdeasService`, () => {
 
             await expect(
                 getService().update({ details: { title: 'New title' } }, idea.id, sessionData),
-            ).rejects.toThrow(ForbiddenException)
+            ).rejects.toThrow(BadRequestException)
             done()
         })
 
-        it(`should throw forbidden exception when trying to update idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
+        it(`should throw BadRequestException when trying to update idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
@@ -509,7 +509,7 @@ describe(`IdeasService`, () => {
 
             await expect(
                 getService().update({ details: { title: 'New title' } }, idea.id, sessionData),
-            ).rejects.toThrow(ForbiddenException)
+            ).rejects.toThrow(BadRequestException)
             done()
         })
     })
@@ -544,7 +544,7 @@ describe(`IdeasService`, () => {
             done()
         })
 
-        it(`should throw forbidden exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
+        it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
@@ -554,11 +554,11 @@ describe(`IdeasService`, () => {
                 sessionData,
             )
 
-            await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(ForbiddenException)
+            await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(BadRequestException)
             done()
         })
 
-        it(`should throw forbidden exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
+        it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
@@ -568,7 +568,7 @@ describe(`IdeasService`, () => {
                 sessionData,
             )
 
-            await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(ForbiddenException)
+            await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(BadRequestException)
             done()
         })
     })

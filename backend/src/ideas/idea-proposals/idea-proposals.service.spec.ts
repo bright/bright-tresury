@@ -333,7 +333,7 @@ describe('IdeaProposalsService', () => {
         })
     })
 
-    describe.only('turnIdeaIntoProposal', () => {
+    describe('turnIdeaIntoProposal', () => {
         it(`should change idea status to ${IdeaStatus.TurnedIntoProposal}`, async () => {
             await ideaProposalsService().turnIdeaIntoProposal(idea, idea.networks[0], 3)
 
@@ -358,7 +358,7 @@ describe('IdeaProposalsService', () => {
             expect(ideaNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
         })
 
-        it.only(`should set other idea network statuses to ${IdeaNetworkStatus.Pending}`, async () => {
+        it(`should set other idea network statuses to ${IdeaNetworkStatus.Pending}`, async () => {
             const ideaWithMultipleNetworks = await createIdea(
                 {
                     beneficiary: uuid(),
@@ -371,16 +371,33 @@ describe('IdeaProposalsService', () => {
                 ideasService(),
             )
 
-            // turn first network and check
             await ideaProposalsService().turnIdeaIntoProposal(
                 ideaWithMultipleNetworks,
                 ideaWithMultipleNetworks.networks[0],
                 3,
             )
-            let firstNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[0].id)
-            let secondNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[1].id)
-            expect(firstNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
+            const secondNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[1].id)
             expect(secondNetwork!.status).toBe(IdeaNetworkStatus.Pending)
+        })
+
+        it(`should not update other idea network status if already turned into proposal`, async () => {
+            const ideaWithMultipleNetworks = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    networks: [
+                        { name: NETWORKS.POLKADOT, value: 2 },
+                        { name: NETWORKS.KUSAMA, value: 3 },
+                    ],
+                },
+                sessionData,
+                ideasService(),
+            )
+            // turn first network
+            await ideaProposalsService().turnIdeaIntoProposal(
+                ideaWithMultipleNetworks,
+                ideaWithMultipleNetworks.networks[0],
+                3,
+            )
 
             // turn the second network and check
             await ideaProposalsService().turnIdeaIntoProposal(
@@ -388,9 +405,7 @@ describe('IdeaProposalsService', () => {
                 ideaWithMultipleNetworks.networks[1],
                 3,
             )
-            firstNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[0].id)
-            secondNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[1].id)
-            expect(firstNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
+            const secondNetwork = await ideaNetworkRepository().findOne(ideaWithMultipleNetworks.networks[1].id)
             expect(secondNetwork!.status).toBe(IdeaNetworkStatus.TurnedIntoProposal)
         })
     })

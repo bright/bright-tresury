@@ -60,7 +60,7 @@ export class IdeaMilestone extends BaseEntity {
 
     canEdit = () => {
         if (this.status === IdeaMilestoneStatus.TurnedIntoProposal) {
-            throw new ForbiddenException('You cannot edit idea milestone with the given id')
+            throw new BadRequestException('You cannot edit idea milestone with the given id')
         }
     }
 

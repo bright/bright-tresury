@@ -1,31 +1,27 @@
 import React from 'react'
-import IdeaMilestoneForm from '../form/IdeaMilestoneForm'
 import { useTranslation } from 'react-i18next'
-import { IdeaMilestoneDto } from '../idea.milestones.dto'
+import { MilestoneModalHeader } from '../../../../milestone-details/components/milestone-modal/MilestoneModalHeader'
 import { IdeaDto } from '../../../ideas.dto'
-import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
-import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
+import { IdeaMilestoneDto } from '../idea.milestones.dto'
+import IdeaMilestoneDetailsForm from './IdeaMilestoneDetailsForm'
 
-interface OwnProps {
+interface Props {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    onCancel: () => void
+    onClose: () => void
 }
 
-export type IdeaMilestoneDetailsProps = OwnProps
-
-const IdeaMilestoneDetails = ({ idea, ideaMilestone, onCancel }: IdeaMilestoneDetailsProps) => {
+export const IdeaMilestoneDetails = ({ idea, ideaMilestone, onClose }: Props) => {
     const { t } = useTranslation()
 
     return (
-        <IdeaMilestoneForm idea={idea} ideaMilestone={ideaMilestone} readonly={true}>
-            <FormFooterButtonsContainer>
-                <FormFooterButton type={'button'} variant={'text'} onClick={onCancel}>
-                    {t('idea.milestones.modal.form.buttons.cancel')}
-                </FormFooterButton>
-            </FormFooterButtonsContainer>
-        </IdeaMilestoneForm>
+        <>
+            <MilestoneModalHeader>
+                <h2 id="modal-title">
+                    {t('idea.milestones.modal.milestone')} - <b>{ideaMilestone.ordinalNumber}</b>
+                </h2>
+            </MilestoneModalHeader>
+            <IdeaMilestoneDetailsForm idea={idea} ideaMilestone={ideaMilestone} onCancel={onClose} />
+        </>
     )
 }
-
-export default IdeaMilestoneDetails

@@ -1,8 +1,9 @@
-import { createStyles, Link as MaterialLink } from '@material-ui/core'
+import { createStyles, Link as MaterialLink, LinkProps as MaterialLinkProps } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import React, { PropsWithChildren } from 'react'
-import { Link as ReactRouterLink } from 'react-router-dom'
+import React from 'react'
+import { Link as ReactRouterLink, LinkProps as ReactRouterLinkProps } from 'react-router-dom'
 import Strong from '../strong/Strong'
+import clsx from 'clsx'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -15,17 +16,14 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface OwnProps {
-    to: string
-    replace?: boolean
-}
+interface OwnProps {}
 
-export type RouterLinkProps = PropsWithChildren<OwnProps>
+export type RouterLinkProps = OwnProps & MaterialLinkProps & ReactRouterLinkProps
 
-const RouterLink = ({ to, replace, children }: RouterLinkProps) => {
+const RouterLink = ({ children, className, ...props }: RouterLinkProps) => {
     const classes = useStyles()
     return (
-        <MaterialLink component={ReactRouterLink} to={to} replace={replace} className={classes.link}>
+        <MaterialLink component={ReactRouterLink} className={clsx(classes.link, className)} {...props}>
             <Strong>{children}</Strong>
         </MaterialLink>
     )

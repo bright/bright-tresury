@@ -1,4 +1,4 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
@@ -587,7 +587,7 @@ describe(`IdeaMilestonesService`, () => {
             ).rejects.toThrow(ForbiddenException)
         })
 
-        it(`should throw forbidden for milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
+        it(`should throw BadRequestException for milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
             const ideaMilestone = await getIdeaMilestonesService().create(
                 idea.id,
                 minimalCreateIdeaMilestoneDto,
@@ -601,7 +601,7 @@ describe(`IdeaMilestonesService`, () => {
                     { details: { description: 'Updated description' } },
                     sessionData,
                 ),
-            ).rejects.toThrow(ForbiddenException)
+            ).rejects.toThrow(BadRequestException)
         })
 
         it(`should resolve for milestone with ${IdeaMilestoneStatus.Active} and idea with ${IdeaStatus.TurnedIntoProposalByMilestone}`, async () => {

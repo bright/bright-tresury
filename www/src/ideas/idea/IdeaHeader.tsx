@@ -84,7 +84,7 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
-    const { canTurnIntoProposal } = useIdea(idea.id)
+    const { canTurnIntoProposal } = useIdea(idea)
 
     const navigateToList = () => {
         history.goBack()

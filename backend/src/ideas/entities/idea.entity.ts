@@ -90,18 +90,16 @@ export class Idea extends BaseEntity {
     }
 
     canEditOrThrow = (user: User) => {
-        if (
-            !this.isOwner(user) ||
-            this.status === IdeaStatus.TurnedIntoProposal ||
-            this.status === IdeaStatus.TurnedIntoProposalByMilestone
-        ) {
-            throw new ForbiddenException('The given user cannot edit or delete this idea')
+        this.isOwnerOrThrow(user)
+        if (this.status === IdeaStatus.TurnedIntoProposal || this.status === IdeaStatus.TurnedIntoProposalByMilestone) {
+            throw new BadRequestException('The given user cannot edit or delete this idea')
         }
     }
 
     canEditMilestonesOrThrow = (user: User) => {
-        if (!this.isOwner(user) || this.status === IdeaStatus.TurnedIntoProposal) {
-            throw new ForbiddenException('The given user cannot edit this ideas milestones')
+        this.isOwnerOrThrow(user)
+        if (this.status === IdeaStatus.TurnedIntoProposal) {
+            throw new BadRequestException('The given user cannot edit this ideas milestones')
         }
     }
 

@@ -67,13 +67,11 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
     const { mutateAsync: patchMutateAsync, isError } = usePatchIdeaNetwork()
 
     const onsubmit = async (values: TurnPendingIdeaIntoProposalFormValues) => {
-        debugger
         const ideaNetwork = { ...idea.currentNetwork, ...values }
         await patchMutateAsync(
             { ideaId: idea.id, ideaNetwork },
             {
                 onSuccess: (patchedIdeaNetwork) => {
-                    debugger
                     queryClient.setQueryData([IDEA_QUERY_KEY_BASE, idea!.id], {
                         ...idea,
                         currentNetwork: patchedIdeaNetwork,

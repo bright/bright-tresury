@@ -23,7 +23,7 @@ const TurnIdeaIntoProposal = () => {
     const { network } = useNetworks()
     const { data: idea } = useGetIdea({ ideaId, network: network.id }, { refetchOnWindowFocus: false })
 
-    const { canTurnIntoProposal, isOwner } = useIdea(idea?.id ?? '')
+    const { canTurnIntoProposal, isOwner } = useIdea(idea)
 
     if (!isOwner) {
         return <Container title={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />

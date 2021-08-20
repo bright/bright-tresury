@@ -1,4 +1,5 @@
 import React from 'react'
+import { useIdea } from '../useIdea'
 import { useGetIdeaMilestones } from './idea.milestones.api'
 import NoIdeaMilestonesInfo from './components/NoIdeaMilestonesInfo'
 import IdeaMilestoneCreateModal from './create/IdeaMilestoneCreateModal'
@@ -12,12 +13,11 @@ import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/use
 
 interface OwnProps {
     idea: IdeaDto
-    canEdit: boolean
 }
 
 export type IdeaMilestonesProps = OwnProps
 
-const IdeaMilestones = ({ idea, canEdit }: IdeaMilestonesProps) => {
+const IdeaMilestones = ({ idea }: IdeaMilestonesProps) => {
     const { t } = useTranslation()
 
     const classes = useSuccessfullyLoadedItemStyles()
@@ -25,6 +25,8 @@ const IdeaMilestones = ({ idea, canEdit }: IdeaMilestonesProps) => {
     const createModal = useModal()
 
     const { status, data: ideaMilestones } = useGetIdeaMilestones(idea.id)
+
+    const { canEditIdeaMilestones } = useIdea(idea)
 
     return (
         <LoadingWrapper
@@ -34,14 +36,14 @@ const IdeaMilestones = ({ idea, canEdit }: IdeaMilestonesProps) => {
         >
             {ideaMilestones ? (
                 <div className={classes.content}>
-                    {ideaMilestones.length === 0 ? <NoIdeaMilestonesInfo canEdit={canEdit} /> : null}
-                    {canEdit ? (
+                    {ideaMilestones.length === 0 ? <NoIdeaMilestonesInfo idea={idea} /> : null}
+                    {canEditIdeaMilestones ? (
                         <CreateIdeaMilestoneButton
                             text={t('idea.milestones.createMilestone')}
                             onClick={createModal.open}
                         />
                     ) : null}
-                    <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} canEdit={canEdit} />
+                    <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} />
                     <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />
                 </div>
             ) : null}

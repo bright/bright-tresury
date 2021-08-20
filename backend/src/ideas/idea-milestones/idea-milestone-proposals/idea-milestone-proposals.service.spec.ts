@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, HttpStatus, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
@@ -8,7 +8,7 @@ import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
 import { ProposalsService } from '../../../proposals/proposals.service'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../../../utils/spec.helpers'
 import { Idea } from '../../entities/idea.entity'
 import { IdeaStatus } from '../../entities/idea-status'
 import { IdeasService } from '../../ideas.service'
@@ -53,6 +53,7 @@ describe('IdeaMilestoneProposalsService', () => {
     const app = beforeSetupFullApp()
 
     const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
+    const ideasRepository = beforeAllSetup(() => app().get<Repository<Idea>>(getRepositoryToken(Idea)))
     const ideaMilestonesService = beforeAllSetup(() => app().get<IdeaMilestonesService>(IdeaMilestonesService))
     const ideaMilestoneProposalsService = beforeAllSetup(() =>
         app().get<IdeaMilestoneProposalsService>(IdeaMilestoneProposalsService),
@@ -149,11 +150,10 @@ describe('IdeaMilestoneProposalsService', () => {
             ).rejects.toThrow(ForbiddenException)
         })
 
-        it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
+        it(`should throw BadRequestException for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
             const ideaWithTurnedIntoProposalStatus = await createIdea(
                 {
                     beneficiary: uuid(),
-                    status: IdeaStatus.TurnedIntoProposal,
                 },
                 sessionData,
                 ideasService(),
@@ -165,9 +165,12 @@ describe('IdeaMilestoneProposalsService', () => {
                 sessionData,
                 ideaMilestonesService(),
             )
+            await ideasRepository().save({
+                ...ideaWithTurnedIntoProposalStatus,
+                status: IdeaStatus.TurnedIntoProposal,
+            })
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-
             await expect(
                 ideaMilestoneProposalsService().createProposal(
                     ideaWithTurnedIntoProposalStatus.id,
@@ -219,10 +222,10 @@ describe('IdeaMilestoneProposalsService', () => {
             ).rejects.toThrow(BadRequestException)
         })
 
-        it(`should return bad request exception for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
+        it(`should throw BadRequestException for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
-                createIdeaMilestoneDto(100, ''),
+                createIdeaMilestoneDto(),
                 sessionData,
                 ideaMilestonesService(),
             )
@@ -239,6 +242,31 @@ describe('IdeaMilestoneProposalsService', () => {
                     sessionData,
                 ),
             ).rejects.toThrow(BadRequestException)
+        })
+
+        it(`should resolve for idea ${IdeaStatus.TurnedIntoProposalByMilestone} and milestone ${IdeaMilestoneStatus.Active}`, async () => {
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(),
+                sessionData,
+                ideaMilestonesService(),
+            )
+            await app()
+                .get<Repository<Idea>>(getRepositoryToken(Idea))
+                .save({ ...idea, status: IdeaStatus.TurnedIntoProposalByMilestone })
+            ideaMilestone.status = IdeaMilestoneStatus.Active
+            await saveIdeaMilestone(ideaMilestone)
+
+            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
+
+            await expect(
+                ideaMilestoneProposalsService().createProposal(
+                    idea.id,
+                    ideaMilestone.id,
+                    createIdeaMilestoneProposalDto,
+                    sessionData,
+                ),
+            ).resolves.toBeDefined()
         })
 
         it('should throw not found exception for not existing idea milestone network', async () => {

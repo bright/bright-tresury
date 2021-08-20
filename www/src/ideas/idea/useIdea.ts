@@ -1,37 +1,53 @@
 import { useMemo } from 'react'
 import { useAuth } from '../../auth/AuthContext'
-import { useNetworks } from '../../networks/useNetworks'
-import { useGetIdea } from '../ideas.api'
-import { IdeaNetworkStatus, IdeaStatus } from '../ideas.dto'
+import { Nil } from '../../util/types'
+import { IdeaDto, IdeaStatus } from '../ideas.dto'
 
-export const useIdea = (ideaId: string) => {
-    const { network } = useNetworks()
-    const { status, data: idea } = useGetIdea({ ideaId, network: network.id })
-
+export const useIdea = (idea: Nil<IdeaDto>) => {
     const { isUserSignedInAndVerified, user } = useAuth()
 
     const isOwner = useMemo(() => {
         return isUserSignedInAndVerified && idea?.ownerId === user?.id
     }, [isUserSignedInAndVerified, idea, user])
 
-    const canEdit = useMemo(() => {
-        return isOwner && !!idea && (idea.status === IdeaStatus.Active || idea.status === IdeaStatus.Draft)
-    }, [isOwner, idea])
+    const isIdeaEditable = useMemo(() => {
+        return !!idea && (idea.status === IdeaStatus.Active || idea.status === IdeaStatus.Draft)
+    }, [idea])
+
+    const canEditIdea = useMemo(() => {
+        return isOwner && isIdeaEditable
+    }, [isOwner, isIdeaEditable])
+
+    const isIdeaMilestonesEditable = useMemo(
+        () =>
+            !!idea &&
+            (idea.status === IdeaStatus.Active ||
+                idea.status === IdeaStatus.Draft ||
+                idea.status === IdeaStatus.TurnedIntoProposalByMilestone),
+        [idea],
+    )
+
+    const canEditIdeaMilestones = useMemo(() => isOwner && isIdeaMilestonesEditable, [
+        isIdeaMilestonesEditable,
+        isOwner,
+    ])
 
     const canTurnIntoProposal = useMemo(
         () =>
-            idea &&
+            !!idea &&
             isOwner &&
-            idea.status !== IdeaStatus.TurnedIntoProposalByMilestone &&
-            idea.currentNetwork.status !== IdeaNetworkStatus.TurnedIntoProposal,
+            (idea.status === IdeaStatus.Active ||
+                idea.status === IdeaStatus.Draft ||
+                idea.status === IdeaStatus.Pending),
         [idea, isOwner],
     )
 
     return {
-        status,
-        idea,
-        canEdit,
         isOwner,
+        isIdeaEditable,
+        canEditIdea,
+        isIdeaMilestonesEditable,
+        canEditIdeaMilestones,
         canTurnIntoProposal,
     }
 }

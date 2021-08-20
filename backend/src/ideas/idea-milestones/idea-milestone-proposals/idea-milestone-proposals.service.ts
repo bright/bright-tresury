@@ -40,7 +40,7 @@ export class IdeaMilestoneProposalsService {
     ): Promise<IdeaMilestoneNetwork> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
-        idea.canEditOrThrow(sessionData.user)
+        idea.isOwnerOrThrow(sessionData.user)
 
         idea.canTurnMilestoneIntoProposalOrThrow()
 

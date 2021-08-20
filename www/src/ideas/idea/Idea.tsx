@@ -1,6 +1,8 @@
 import React from 'react'
 import { useParams } from 'react-router'
+import { useNetworks } from '../../networks/useNetworks'
 import Route from '../../routes/Route'
+import { useGetIdea } from '../ideas.api'
 import IdeaHeader from './IdeaHeader'
 import { IdeaContentType } from './IdeaContentTypeTabs'
 import { Switch, useRouteMatch } from 'react-router-dom'
@@ -10,7 +12,6 @@ import IdeaMilestones from './milestones/IdeaMilestones'
 import LoadingWrapper from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
-import { useIdea } from './useIdea'
 
 const Idea = () => {
     const classes = useSuccessfullyLoadedItemStyles()
@@ -21,7 +22,8 @@ const Idea = () => {
 
     let { ideaId } = useParams<{ ideaId: string }>()
 
-    const { status, idea, canEdit } = useIdea(ideaId)
+    const { network } = useNetworks()
+    const { status, data: idea } = useGetIdea({ ideaId, network: network.id })
 
     return (
         <LoadingWrapper
@@ -34,13 +36,13 @@ const Idea = () => {
                     <IdeaHeader idea={idea} />
                     <Switch>
                         <Route exact={true} path={path}>
-                            <IdeaInfo idea={idea} canEdit={canEdit} />
+                            <IdeaInfo idea={idea} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Info}`}>
-                            <IdeaInfo idea={idea} canEdit={canEdit} />
+                            <IdeaInfo idea={idea} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
-                            <IdeaMilestones idea={idea} canEdit={canEdit} />
+                            <IdeaMilestones idea={idea} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
                             <IdeaDiscussion ideaId={idea.id} />

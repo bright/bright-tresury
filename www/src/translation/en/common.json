@@ -320,8 +320,9 @@
             "createMilestone": "+ Create Milestone",
             "ordinalNumberPrefix": "Milestone - ",
             "noIdeaMilestones": {
-                "canEdit": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better.",
-                "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab."
+                "ownerCanAdd": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better.",
+                "notOwnerCanAdd": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab.",
+                "cannotAdd": "No milestones have been added to the idea. The idea is already turned into proposal, go to <a>proposal milestones tab</a> to check it's milestones."
             },
             "modal": {
                 "milestone": "Milestone",

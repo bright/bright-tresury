@@ -57,7 +57,7 @@ export type IdeaDetailsProps = OwnProps
 const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { isOwner } = useIdea(idea.id)
+    const { isOwner } = useIdea(idea)
 
     return (
         <>
