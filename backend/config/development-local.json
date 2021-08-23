@@ -30,7 +30,7 @@
             "id": "development-2",
             "name": "Development 2",
             "url": "ws://localhost:9955",
-            "ss58Format": 42,
+            "ss58Format": 0,
             "genesisHash": "",
             "bond": {
                 "minValue": 1000,

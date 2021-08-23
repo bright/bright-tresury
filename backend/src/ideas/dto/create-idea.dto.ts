@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
 import { ArrayMinSize, IsEnum, IsIn, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
 import { CreateIdeaProposalDetailsDto } from '../../idea-proposal-details/dto/create-idea-proposal-details.dto'
+import { TransformAddress } from '../../utils/address/address.transform'
 import { IsValidAddress } from '../../utils/address/address.validator'
 import { IdeaStatus } from '../entities/idea-status'
 import { CreateIdeaNetworkDto } from './create-idea-network.dto'
@@ -14,6 +15,7 @@ export class CreateIdeaDto {
     })
     @IsOptional()
     @IsValidAddress()
+    @TransformAddress()
     beneficiary?: string
 
     @ApiProperty({

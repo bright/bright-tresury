@@ -246,7 +246,7 @@
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
                 "valueCannotBeLessThanZero": "The value cannot be less than zero",
-                "wrongBeneficiaryError": "Wrong beneficiary address",
+                "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
                 "showAll": "Show all information",
                 "showLess": "Show less information",
                 "networks": {
@@ -333,7 +333,7 @@
                 "editMilestone": "Edit Milestone",
                 "form": {
                     "emptyFieldError": "This field cannot be empty",
-                    "wrongBeneficiaryAddressError": "Wrong beneficiary address",
+                    "wrongBeneficiaryAddressError": "Wrong beneficiary address (please provide encoded address)",
                     "nonZeroFieldError": "The value must be greater than zero",
                     "valueCannotBeLessThanZero": "The value cannot be less than zero",
                     "beneficiary": "Beneficiary",

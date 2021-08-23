@@ -4,12 +4,13 @@ import linkIcon from '../../../assets/link.svg'
 import React, { useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { formatAddress } from '../../../components/identicon/utils'
 import SmallVerticalDivider from '../../smallHorizontalDivider/SmallVerticalDivider'
+import { useNetworks } from '../../../networks/useNetworks'
 import { IdeaCommentDto } from '../../../ideas/idea/discussion/idea.comment.dto'
 import CommentAuthorImage from '../../../ideas/idea/discussion/CommentAuthorImage'
 import { extractTime } from '@polkadot/util'
 import { timeToString } from '../../../util/dateUtil'
-import { ellipseTextInTheMiddle } from '../../../util/stringUtil'
 import CommentOptionsMenu from '../../../ideas/idea/discussion/CommentOptionsMenu'
 import Error from '../../error/Error'
 import { useAuth } from '../../../auth/AuthContext'
@@ -86,6 +87,7 @@ const DisplayComment = ({
 }: DisplayCommentProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const { network } = useNetworks()
 
     const { isUserSignedInAndVerified: canComment, user } = useAuth()
     const isAuthor = user?.id && author.userId && user?.id === author.userId
@@ -102,7 +104,9 @@ const DisplayComment = ({
                 <div className={classes.headerLeft}>
                     <CommentAuthorImage author={author} />
                     <div className={classes.author}>
-                        {author.isEmailPasswordEnabled ? author.username : ellipseTextInTheMiddle(author.web3address!)}
+                        {author.isEmailPasswordEnabled
+                            ? author.username
+                            : formatAddress(author.web3address, network.ss58Format)}
                     </div>
                     <SmallVerticalDivider className={classes.grayDivider} />
                     <div className={classes.age}>

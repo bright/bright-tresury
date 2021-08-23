@@ -1,6 +1,8 @@
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
+import { formatAddress } from '../../../../components/identicon/utils'
 import useMilestoneDetailsForm from '../../../../milestone-details/useMilestoneDetailsForm'
+import { useNetworks } from '../../../../networks/useNetworks'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
 import { IdeaMilestoneFormValues } from './IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
@@ -15,6 +17,7 @@ export type useIdeaMilestoneFormProps = OwnProps
 
 const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps) => {
     const { t } = useTranslation()
+    const { network } = useNetworks()
 
     const { validationSchema: detailsValidationSchema, initialValues: detailsInitialValues } = useMilestoneDetailsForm({
         details: ideaMilestone?.details,
@@ -24,7 +27,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
         beneficiary: Yup.string().test(
             'validate-address',
             t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
-            isValidAddressOrEmpty,
+            (address) => isValidAddressOrEmpty(address, network.ss58Format),
         ),
         networks: Yup.array().of(
             Yup.object().shape({
@@ -36,10 +39,8 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
     const extendedValidationSchema = Yup.object().shape({
         beneficiary: Yup.string()
             .required(t('idea.milestones.modal.form.emptyFieldError'))
-            .test(
-                'validate-address',
-                t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
-                isValidAddressOrEmpty,
+            .test('validate-address', t('idea.milestones.modal.form.wrongBeneficiaryAddressError'), (address) =>
+                isValidAddressOrEmpty(address, network.ss58Format),
             ),
         networks: Yup.array().of(
             Yup.object().shape({
@@ -54,7 +55,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
 
     const emptyValues = (idea: IdeaDto): IdeaMilestoneFormValues => {
         return {
-            beneficiary: idea.beneficiary,
+            beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
             networks: [idea.currentNetwork, ...idea.additionalNetworks].map((n) => {
                 return { name: n.name, value: 0 } as IdeaMilestoneNetworkDto
             }),
@@ -64,7 +65,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
 
     const valuesFromDto = ({ beneficiary, networks }: IdeaMilestoneDto): IdeaMilestoneFormValues => {
         return {
-            beneficiary,
+            beneficiary: formatAddress(beneficiary, network.ss58Format, false),
             networks,
             ...detailsInitialValues,
         }

@@ -1,7 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
-import { ellipseTextInTheMiddle } from '../../util/stringUtil'
-import  Identicon  from './Identicon'
+import { useNetworks } from '../../networks/useNetworks'
+import Identicon from './Identicon'
+import { formatAddress } from './utils'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -40,13 +41,9 @@ export type AddressInfoWithLabelProps = OwnProps
 
 const AddressInfoWithLabel = ({ address, label }: AddressInfoWithLabelProps) => {
     const classes = useStyles()
+    const { network } = useNetworks()
 
-    const addressFragment = useMemo(() => {
-        if (!address) {
-            return ''
-        }
-        return ellipseTextInTheMiddle(address, 12)
-    }, [address])
+    const addressFragment = useMemo(() => formatAddress(address, network.ss58Format), [address, network])
 
     return (
         <div className={classes.root}>

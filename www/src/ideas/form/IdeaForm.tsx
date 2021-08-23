@@ -5,10 +5,12 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import Button from '../../components/button/Button'
 import FormFooter from '../../components/form/footer/FormFooter'
+import { formatAddress } from '../../components/identicon/utils'
+import { Network } from '../../networks/networks.dto'
 import { useNetworks } from '../../networks/useNetworks'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
 import { Nil } from '../../util/types'
-import { EditIdeaDto, EditIdeaNetworkDto, IdeaDto, IdeaStatus } from '../ideas.dto'
+import { EditIdeaDto, EditIdeaNetworkDto, IdeaDto } from '../ideas.dto'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import IdeaFormFields from './IdeaFormFields'
 
@@ -47,11 +49,11 @@ export interface IdeaFormValues {
     links?: string[]
 }
 
-const toFormValues = (idea: Nil<IdeaDto>, network: string): IdeaFormValues => {
+const toFormValues = (idea: Nil<IdeaDto>, network: Network): IdeaFormValues => {
     if (!idea) {
         return {
             beneficiary: '',
-            currentNetwork: { name: network, value: 0 },
+            currentNetwork: { name: network.id, value: 0 },
             otherNetworks: [],
             title: '',
             field: '',
@@ -62,7 +64,7 @@ const toFormValues = (idea: Nil<IdeaDto>, network: string): IdeaFormValues => {
         }
     }
     return {
-        beneficiary: idea.beneficiary,
+        beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
         currentNetwork: idea.currentNetwork,
         otherNetworks: idea.additionalNetworks,
         ...idea.details,
@@ -79,7 +81,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     const validationSchema = Yup.object({
         title: Yup.string().required(t('idea.details.form.emptyFieldError')),
         beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
-            return isValidAddressOrEmpty(address)
+            return isValidAddressOrEmpty(address, network.ss58Format)
         }),
         otherNetworks: Yup.array().of(
             Yup.object().shape({
@@ -125,7 +127,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={toFormValues(idea, network.id)}
+            initialValues={toFormValues(idea, network)}
             validationSchema={extendedValidation ? validationSchema.concat(extendedValidationSchema) : validationSchema}
             onSubmit={onFormikSubmit}
         >

@@ -313,9 +313,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                         .post(baseUrl(idea.id))
                         .send({
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: {},
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -327,11 +325,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: null,
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: { subject: null },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -343,11 +338,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: '',
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: { subject: '' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -356,12 +348,11 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it(`should return ${HttpStatus.BAD_REQUEST} if networks are not given`, () => {
             return sessionHandler
                 .authorizeRequest(
-                    request(app()).post(baseUrl(idea.id)).send({
-                        subject: 'ideaMilestoneSubject',
-                        dateFrom: null,
-                        dateTo: null,
-                        description: null,
-                    }),
+                    request(app())
+                        .post(baseUrl(idea.id))
+                        .send({
+                            details: { subject: 'ideaMilestoneSubject' },
+                        }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })
@@ -369,13 +360,12 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it(`should return ${HttpStatus.BAD_REQUEST} if networks are empty array`, () => {
             return sessionHandler
                 .authorizeRequest(
-                    request(app()).post(baseUrl(idea.id)).send({
-                        subject: 'ideaMilestoneSubject',
-                        networks: [],
-                        dateFrom: null,
-                        dateTo: null,
-                        description: null,
-                    }),
+                    request(app())
+                        .post(baseUrl(idea.id))
+                        .send({
+                            networks: [],
+                            details: { subject: 'ideaMilestoneSubject' },
+                        }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })
@@ -386,11 +376,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ value: 10 }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: { subject: 'ideaMilestoneSubject' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -402,11 +389,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: null, value: 10 }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: { subject: 'ideaMilestoneSubject' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -418,11 +402,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: NETWORKS.POLKADOT }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: { subject: 'ideaMilestoneSubject' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -434,11 +415,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: NETWORKS.POLKADOT, value: null }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: { subject: 'ideaMilestoneSubject' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -450,11 +428,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: NETWORKS.POLKADOT, value: 'value' }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: { subject: 'ideaMilestoneSubject' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -466,11 +441,10 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: NETWORKS.POLKADOT, value: -1 }],
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: {
+                                subject: 'ideaMilestoneSubject',
+                            },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -482,15 +456,36 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: NETWORKS.POLKADOT, value: 'value' }],
                             beneficiary: '5GrwvaEF5z',
-                            dateFrom: null,
-                            dateTo: null,
-                            description: null,
+                            details: {
+                                subject: 'ideaMilestoneSubject',
+                            },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it('should pass base encoded beneficiary address to service method', async () => {
+            const kusamaEncodedAddress = 'GABitXHtTEcAkCQYJyK7LQijTmiU62rWDzNCbwg8cvrKfWe'
+            const baseEncodedAddress = '5Fea4aBRG6DgR6NxmcAGDP3iasVUfRDg3r9cowfiepiMaa6h'
+            const spyOnService = jest.spyOn(getIdeaMilestonesService(), 'create')
+
+            await sessionHandler.authorizeRequest(
+                request(app())
+                    .post(baseUrl(idea.id))
+                    .send({
+                        details: { subject: 'ideaMilestoneSubject' },
+                        networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                        beneficiary: kusamaEncodedAddress,
+                    }),
+            )
+
+            expect(spyOnService).toHaveBeenCalledWith(
+                idea.id,
+                expect.objectContaining({ beneficiary: baseEncodedAddress }),
+                expect.anything(),
+            )
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} if dateFrom is given but has incorrect format`, () => {
@@ -499,11 +494,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
-                            dateFrom: 'incorrect_format',
-                            dateTo: null,
-                            description: null,
+                            details: { subject: 'ideaMilestoneSubject', dateFrom: 'incorrect_format' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -515,11 +507,8 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
                             networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
-                            dateFrom: null,
-                            dateTo: 'incorrect_format',
-                            description: null,
+                            details: { subject: 'ideaMilestoneSubject', dateFrom: null, dateTo: 'incorrect_format' },
                         }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
@@ -613,7 +602,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             await request(app())
                 .post(baseUrl(idea.id))
                 .send({
-                    subject: 'ideaMilestoneSubject',
+                    details: { subject: 'ideaMilestoneSubject' },
                     networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                 })
                 .expect(HttpStatus.FORBIDDEN)
@@ -626,7 +615,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            subject: 'ideaMilestoneSubject',
+                            details: { subject: 'ideaMilestoneSubject' },
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                         }),
                 )
@@ -707,19 +696,21 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         })
 
         it(`should patch beneficiary correctly`, async () => {
+            const polkadotEncodedAddress = '12TpXjttC29ZBEwHqdmbEtXJ9JSR9NZm2nxsrMwfXUHoxX6U'
+            const baseEncodedAddress = '5DXXPQdpLEt5jhvmszib6jh9HgSmT51cxJEPh4xJyPGHnKyJ'
             const response = await sessionHandler
                 .authorizeRequest(
                     request(app())
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
-                            beneficiary: '15Vn4KyqUhE1YtSNsZ8E6pAMSjbYVdz6MR4L2971Zs7ju9ZT',
+                            beneficiary: polkadotEncodedAddress,
                         }),
                 )
                 .expect(HttpStatus.OK)
 
             const body = response.body as IdeaMilestoneDto
 
-            expect(body.beneficiary).toBe('15Vn4KyqUhE1YtSNsZ8E6pAMSjbYVdz6MR4L2971Zs7ju9ZT')
+            expect(body.beneficiary).toBe(baseEncodedAddress)
         })
 
         it(`should patch dateFrom correctly`, async () => {
@@ -806,7 +797,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .patch(`${baseUrl(draftIdea.id)}/${milestone.id}`)
                         .send({
-                            subject: 'ideaMilestoneSubject',
+                            details: { subject: 'ideaMilestoneSubject' },
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                         }),
                 )
@@ -817,7 +808,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             await request(app())
                 .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                 .send({
-                    subject: 'ideaMilestoneSubject',
+                    details: { subject: 'ideaMilestoneSubject' },
                     networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                 })
                 .expect(HttpStatus.FORBIDDEN)
@@ -830,11 +821,41 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
-                            subject: 'ideaMilestoneSubject',
+                            details: { subject: 'ideaMilestoneSubject' },
                             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
                         }),
                 )
                 .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} if beneficiary is incorrect`, () => {
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
+                        .send({
+                            beneficiary: '5GrwvaEF5z',
+                        }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it('should pass base encoded beneficiary address to service method', async () => {
+            const kusamaEncodedAddress = 'GABitXHtTEcAkCQYJyK7LQijTmiU62rWDzNCbwg8cvrKfWe'
+            const baseEncodedAddress = '5Fea4aBRG6DgR6NxmcAGDP3iasVUfRDg3r9cowfiepiMaa6h'
+            const spyOnService = jest.spyOn(getIdeaMilestonesService(), 'update')
+            await sessionHandler.authorizeRequest(
+                request(app())
+                    .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
+                    .send({
+                        beneficiary: kusamaEncodedAddress,
+                    }),
+            )
+            expect(spyOnService).toHaveBeenCalledWith(
+                ideaMilestone.id,
+                expect.objectContaining({ beneficiary: baseEncodedAddress }),
+                expect.anything(),
+            )
         })
     })
 })

@@ -242,6 +242,103 @@ describe(`/api/v1/ideas`, () => {
                 .expect(201)
         })
 
+        it('should return created for all valid data', () => {
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .post(baseUrl)
+                        .send({
+                            details: {
+                                title: 'Test title',
+                                content: 'Test content',
+                                field: 'Test field',
+                                contact: 'Test contact',
+                                portfolio: 'Test portfolio',
+                                links: ['Test link'],
+                            },
+                            networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                            beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                        }),
+                )
+                .expect(201)
+        })
+
+        it('should return idea data for valid data', async (done) => {
+            const kusamaEncodedAddress = 'GABitXHtTEcAkCQYJyK7LQijTmiU62rWDzNCbwg8cvrKfWe'
+            const baseEncodedAddress = '5Fea4aBRG6DgR6NxmcAGDP3iasVUfRDg3r9cowfiepiMaa6h'
+            const response = await sessionHandler.authorizeRequest(
+                request(app())
+                    .post(baseUrl)
+                    .send({
+                        details: {
+                            title: 'Test title',
+                            content: 'Test content',
+                            field: 'Test field',
+                            contact: 'Test contact',
+                            portfolio: 'Test portfolio',
+                            links: ['Test link'],
+                        },
+                        networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                        beneficiary: kusamaEncodedAddress,
+                    }),
+            )
+
+            const body = response.body
+            expect(uuidValidate(body.id)).toBe(true)
+            expect(body.beneficiary).toBe(baseEncodedAddress)
+            expect(body.networks!.length).toBe(1)
+            expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
+            expect(body.networks[0].value).toBe(10)
+            expect(body.details.title).toBe('Test title')
+            expect(body.details.content).toBe('Test content')
+            expect(body.details.contact).toBe('Test contact')
+            expect(body.details.portfolio).toBe('Test portfolio')
+            expect(body.details.links).toStrictEqual(['Test link'])
+            expect(body.ordinalNumber).toBeDefined()
+            expect(body.status).toBe(DefaultIdeaStatus)
+            done()
+        })
+
+        it('should create an idea and networks', async (done) => {
+            const result = await sessionHandler.authorizeRequest(
+                request(app())
+                    .post(baseUrl)
+                    .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 10 }] }),
+            )
+
+            const ideasService = app.get().get(IdeasService)
+            const actual = await ideasService.findOne(result.body.id, sessionHandler.sessionData)
+            expect(actual).toBeDefined()
+            expect(actual!.details.title).toBe('Test title')
+            expect(actual!.networks!.length).toBe(1)
+            expect(actual!.networks![0].name).toBe(NETWORKS.KUSAMA)
+            expect(Number(actual!.networks![0].value)).toBe(10)
+            done()
+        })
+
+        it('should return forbidden for not authorized request', () => {
+            return request(app())
+                .post(baseUrl)
+                .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] })
+                .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it('should return forbidden for not verified user', async (done) => {
+            const sessionHandlerNotVerified = await createUserSessionHandler(
+                app(),
+                'not.verified@example.com',
+                'not-verified',
+            )
+            await sessionHandlerNotVerified
+                .authorizeRequest(
+                    request(app())
+                        .post(baseUrl)
+                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] }),
+                )
+                .expect(HttpStatus.FORBIDDEN)
+            done()
+        })
+
         it('should return bad request if no networks', () => {
             return sessionHandler
                 .authorizeRequest(
@@ -282,7 +379,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(400)
         })
 
-        it('should return bad request if network without a value', () => {
+        it('should return bad request if network without a name and value', () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app())
@@ -322,22 +419,6 @@ describe(`/api/v1/ideas`, () => {
                         .post(baseUrl)
                         .send({
                             details: { title: 'Test title', links: 'link' },
-                            networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
-                        }),
-                )
-                .expect(HttpStatus.BAD_REQUEST)
-        })
-
-        it('should return bad request if links are strings array', () => {
-            return sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl)
-                        .send({
-                            details: {
-                                title: 'Test title',
-                                links: 'https://somelink.com',
-                            },
                             networks: [{ name: NETWORKS.KUSAMA, value: 2 }],
                         }),
                 )
@@ -399,102 +480,26 @@ describe(`/api/v1/ideas`, () => {
                 .expect(201)
         })
 
-        it('should return created for all valid data', () => {
-            return sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl)
-                        .send({
-                            details: {
-                                title: 'Test title',
-                                content: 'Test content',
-                                field: 'Test field',
-                                contact: 'Test contact',
-                                portfolio: 'Test portfolio',
-                                links: ['Test link'],
-                            },
-                            networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
-                            beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
-                        }),
-                )
-                .expect(201)
-        })
-
-        it('should return created idea for valid data', async (done) => {
-            const response = await sessionHandler.authorizeRequest(
+        it('should pass base encoded beneficiary address to service method', async () => {
+            const kusamaEncodedAddress = 'GABitXHtTEcAkCQYJyK7LQijTmiU62rWDzNCbwg8cvrKfWe'
+            const baseEncodedAddress = '5Fea4aBRG6DgR6NxmcAGDP3iasVUfRDg3r9cowfiepiMaa6h'
+            const spyOnService = jest.spyOn(getService(), 'create')
+            await sessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl)
                     .send({
-                        details: {
-                            title: 'Test title',
-                            content: 'Test content',
-                            field: 'Test field',
-                            contact: 'Test contact',
-                            portfolio: 'Test portfolio',
-                            links: ['Test link'],
-                        },
-                        networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
-                        beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+                        beneficiary: kusamaEncodedAddress,
+                        details: { title: 'Test title' },
+                        networks: [{ name: NETWORKS.KUSAMA, value: 3 }],
                     }),
             )
-
-            const body = response.body
-            expect(uuidValidate(body.id)).toBe(true)
-            expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(body.networks!.length).toBe(1)
-            expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
-            expect(body.networks[0].value).toBe(10)
-            expect(body.details.title).toBe('Test title')
-            expect(body.details.content).toBe('Test content')
-            expect(body.details.contact).toBe('Test contact')
-            expect(body.details.portfolio).toBe('Test portfolio')
-            expect(body.details.links).toStrictEqual(['Test link'])
-            expect(body.ordinalNumber).toBeDefined()
-            expect(body.status).toBe(DefaultIdeaStatus)
-            done()
-        })
-
-        it('should create an idea and networks', async (done) => {
-            const result = await sessionHandler.authorizeRequest(
-                request(app())
-                    .post(baseUrl)
-                    .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 10 }] }),
+            expect(spyOnService).toHaveBeenCalledWith(
+                expect.objectContaining({ beneficiary: baseEncodedAddress }),
+                expect.anything(),
             )
-
-            const ideasService = app.get().get(IdeasService)
-            const actual = await ideasService.findOne(result.body.id, sessionHandler.sessionData)
-            expect(actual).toBeDefined()
-            expect(actual!.details.title).toBe('Test title')
-            expect(actual!.networks!.length).toBe(1)
-            expect(actual!.networks![0].name).toBe(NETWORKS.KUSAMA)
-            expect(Number(actual!.networks![0].value)).toBe(10)
-            done()
         })
 
-        it('should return forbidden for not authorized request', () => {
-            return request(app())
-                .post(baseUrl)
-                .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] })
-                .expect(HttpStatus.FORBIDDEN)
-        })
-
-        it('should return forbidden for not verified user', async (done) => {
-            const sessionHandlerNotVerified = await createUserSessionHandler(
-                app(),
-                'not.verified@example.com',
-                'not-verified',
-            )
-            await sessionHandlerNotVerified
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl)
-                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 3 }] }),
-                )
-                .expect(HttpStatus.FORBIDDEN)
-            done()
-        })
-
-        it('should not save the idea with empty string in links array', () => {
+        it(`should return ${HttpStatus.BAD_REQUEST} for empty string in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = ['', 'Test Link']
@@ -503,7 +508,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
-        it('should not save the idea with undefined value in links array', () => {
+        it(`should return ${HttpStatus.BAD_REQUEST} for undefined value in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = [undefined, 'Test Link']
@@ -512,7 +517,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
-        it('should not save the idea with null value in links array', () => {
+        it(`should return ${HttpStatus.BAD_REQUEST} for null value in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = [null, 'Test Link']
@@ -521,7 +526,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
-        it('should not save the idea with numbers in links array', () => {
+        it(`should return ${HttpStatus.BAD_REQUEST} for numbers in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             const links = [123, 'Test Link']
@@ -530,7 +535,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
-        it('should not save the idea with too long links (length over 1000) in links array', () => {
+        it(`should return ${HttpStatus.BAD_REQUEST} for too long links (length over 1000) in links array`, () => {
             const link = `https://${'x'.repeat(1000)}.com`
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
@@ -540,7 +545,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
-        it('should not save the idea with too many links (more than 10) in links array', () => {
+        it(`should return ${HttpStatus.BAD_REQUEST} for too many links (more than 10) in links array`, () => {
             const links = new Array(11).map((_, index) => `https://${index}.com`)
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
@@ -562,15 +567,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(200)
             done()
         })
-        it('should return not found if wrong id', () => {
-            return sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .patch(`${baseUrl}/${uuid()}`)
-                        .send({ details: { title: 'Test title 2' } }),
-                )
-                .expect(404)
-        })
+
         it('should patch title', async (done) => {
             const idea = await createIdea({ details: { title: 'Test title' } }, sessionHandler.sessionData)
             const response = await sessionHandler
@@ -583,6 +580,7 @@ describe(`/api/v1/ideas`, () => {
             expect(response.body.details.title).toBe('Test title 2')
             done()
         })
+
         it('should patch network', async (done) => {
             const idea = await createIdea(
                 {
@@ -702,6 +700,7 @@ describe(`/api/v1/ideas`, () => {
             expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
             done()
         })
+
         it('should not patch ordinal number', async (done) => {
             const idea = await createIdea({}, sessionHandler.sessionData)
             const ordinalNumber = idea.ordinalNumber + 13
@@ -711,6 +710,7 @@ describe(`/api/v1/ideas`, () => {
             expect(response.body.ordinalNumber).not.toBe(ordinalNumber)
             done()
         })
+
         it('should not pass ordinal number to the service', async (done) => {
             const spyOnPatchIdea = jest.spyOn(getService(), 'update')
             const idea = await createIdea({}, sessionHandler.sessionData)
@@ -737,19 +737,6 @@ describe(`/api/v1/ideas`, () => {
             done()
         })
 
-        it('should return forbidden for idea created by other user', async (done) => {
-            const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const idea = await createIdea({ details: { title: 'Test title' } }, otherUser)
-            await sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .patch(`${baseUrl}/${idea.id}`)
-                        .send({ details: { title: 'Test title 2' } }),
-                )
-                .expect(HttpStatus.FORBIDDEN)
-            done()
-        })
-
         it('should return forbidden for not verified user', async (done) => {
             const sessionHandlerNotVerified = await createUserSessionHandler(
                 app(),
@@ -765,6 +752,22 @@ describe(`/api/v1/ideas`, () => {
                 )
                 .expect(HttpStatus.FORBIDDEN)
             done()
+        })
+
+        it('should pass base encoded beneficiary address to service method', async () => {
+            const kusamaEncodedAddress = 'GABitXHtTEcAkCQYJyK7LQijTmiU62rWDzNCbwg8cvrKfWe'
+            const baseEncodedAddress = '5Fea4aBRG6DgR6NxmcAGDP3iasVUfRDg3r9cowfiepiMaa6h'
+            const spyOnService = jest.spyOn(getService(), 'create')
+            const idea = await createIdea({}, sessionHandler.sessionData)
+
+            await sessionHandler.authorizeRequest(
+                request(app()).patch(`${baseUrl}/${idea.id}`).send({ beneficiary: kusamaEncodedAddress }),
+            )
+
+            expect(spyOnService).toHaveBeenCalledWith(
+                expect.objectContaining({ beneficiary: baseEncodedAddress }),
+                expect.anything(),
+            )
         })
     })
     describe('DELETE', () => {

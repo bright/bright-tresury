@@ -10,6 +10,7 @@ import FormFooter from '../../../components/form/footer/FormFooter'
 import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
+import AddressInfo from '../../../components/identicon/AddressInfo'
 import Identicon from '../../../components/identicon/Identicon'
 import { Label } from '../../../components/text/Label'
 import { breakpoints } from '../../../theme/theme'
@@ -33,13 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 fontSize: '16px',
             },
-        },
-        beneficiary: {
-            display: 'flex',
-            alignItems: 'center',
-        },
-        accountValue: {
-            marginLeft: '.5em',
         },
         spacing: {
             marginTop: '2em',
@@ -98,10 +92,7 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
                     <Label label={t('idea.details.title')} />
                     <text className={classes.text}>{idea.details.title}</text>
                     <Label className={classes.spacing} label={t('idea.details.beneficiary')} />
-                    <div className={classes.beneficiary}>
-                        <Identicon address={idea.beneficiary} />
-                        <div className={clsx(classes.accountValue, classes.text)}>{idea.beneficiary}</div>
-                    </div>
+                    <AddressInfo address={idea.beneficiary} ellipsed={false} />
                     <NetworkInput className={classes.spacing} inputName={'value'} ideaNetwork={idea.currentNetwork} />
                     <FormFooter>
                         {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}

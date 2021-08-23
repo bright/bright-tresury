@@ -1,8 +1,10 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
+import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
-import { ellipseTextInTheMiddle } from '../../util/stringUtil'
+import { Nil } from '../../util/types'
 import Identicon from './Identicon'
+import { formatAddress } from './utils'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -25,24 +27,21 @@ const useStyles = makeStyles((theme: Theme) => {
 })
 
 interface OwnProps {
-    address: string
+    address: Nil<string>
+    ellipsed?: boolean
 }
 
 export type AddressInfoProps = OwnProps
 
-const AddressInfo = ({ address }: AddressInfoProps) => {
+const AddressInfo = ({ address, ellipsed = true }: AddressInfoProps) => {
     const classes = useStyles()
+    const { network } = useNetworks()
 
-    const addressFragment = useMemo(() => {
-        if (!address) {
-            return ''
-        }
-        return ellipseTextInTheMiddle(address, 12)
-    }, [address])
+    const addressFragment = useMemo(() => formatAddress(address, network.ss58Format, ellipsed), [address])
 
     return (
         <div className={classes.root}>
-            <Identicon address={address} />
+            {address ? <Identicon address={address} /> : null}
             <div className={classes.address}>{addressFragment}</div>
         </div>
     )
