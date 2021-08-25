@@ -13,7 +13,12 @@ interface OwnProps {
 
 export type NoIdeaMilestonesInfoProps = OwnProps
 
-const NoIdeaMilestonesInfo = ({ idea }: NoIdeaMilestonesInfoProps) => {
+const NoIdeaMilestonesInfo = ({
+    idea: {
+        currentNetwork: { blockchainProposalId },
+    },
+    idea,
+}: NoIdeaMilestonesInfoProps) => {
     const { t } = useTranslation()
 
     const { isOwner, isIdeaMilestonesEditable } = useIdea(idea)
@@ -24,19 +29,25 @@ const NoIdeaMilestonesInfo = ({ idea }: NoIdeaMilestonesInfoProps) => {
         }
         return <p>{t('idea.milestones.noIdeaMilestones.notOwnerCanAdd')}</p>
     }
+
     return (
-        <Trans
-            i18nKey="idea.milestones.noIdeaMilestones.cannotAdd"
-            components={{
-                a: (
-                    <RouterLink
-                        to={generatePath(`${ROUTE_PROPOSAL}/${ProposalContentType.Milestones}`, {
-                            proposalIndex: 1,
-                        })}
-                    />
-                ),
-            }}
-        />
+        <p>
+            {t('idea.milestones.noIdeaMilestones.cannotAdd')}
+            {blockchainProposalId !== null && blockchainProposalId !== undefined ? (
+                <Trans
+                    i18nKey="idea.milestones.noIdeaMilestones.goToProposal"
+                    components={{
+                        a: (
+                            <RouterLink
+                                to={generatePath(`${ROUTE_PROPOSAL}/${ProposalContentType.Milestones}`, {
+                                    proposalIndex: blockchainProposalId,
+                                })}
+                            />
+                        ),
+                    }}
+                />
+            ) : null}
+        </p>
     )
 }
 

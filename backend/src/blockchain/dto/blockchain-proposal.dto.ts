@@ -1,4 +1,5 @@
 import { DeriveAccountRegistration, DeriveTreasuryProposal } from '@polkadot/api-derive/types'
+import { User } from '../../users/user.entity'
 import { transformBalance } from '../utils'
 import { BlockchainAccountInfo, toBlockchainAccountInfo } from './blockchain-account-info.dto'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
@@ -19,7 +20,39 @@ export class BlockchainProposal {
     motions: BlockchainProposalMotion[]
     status: BlockchainProposalStatus
 
-    constructor({ proposalIndex, proposer, beneficiary, value, bond, motions, status }: BlockchainProposal) {
+    static create(
+        derivedProposal: DeriveTreasuryProposal,
+        status: BlockchainProposalStatus,
+        identities: Map<string, DeriveAccountRegistration>,
+        toBlockchainProposalMotionEnd: (endBlock: BlockNumber) => BlockchainProposalMotionEnd,
+    ): BlockchainProposal {
+        const { id, council, proposal } = derivedProposal
+        const proposerAddress = proposal.proposer.toHuman()
+        const beneficiaryAddress = proposal.beneficiary.toHuman()
+
+        const proposalIndex = id.toNumber()
+        const proposer = toBlockchainAccountInfo(proposerAddress, identities.get(proposerAddress))
+        const beneficiary = toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress))
+        /*
+            TODO We should get the decimals from the chain info or config files. This should be handled when adding multiple networks support.
+             */
+        const value = transformBalance(proposal.value, 12)
+        const bond = transformBalance(proposal.bond, 12)
+        const motions = council.map((motion) =>
+            toBlockchainProposalMotion(motion, identities, toBlockchainProposalMotionEnd),
+        )
+        return new this(proposalIndex, proposer, beneficiary, value, bond, motions, status)
+    }
+
+    constructor(
+        proposalIndex: number,
+        proposer: BlockchainAccountInfo,
+        beneficiary: BlockchainAccountInfo,
+        value: number,
+        bond: number,
+        motions: BlockchainProposalMotion[],
+        status: BlockchainProposalStatus,
+    ) {
         this.proposalIndex = proposalIndex
         this.proposer = proposer
         this.beneficiary = beneficiary
@@ -28,27 +61,8 @@ export class BlockchainProposal {
         this.motions = motions
         this.status = status
     }
-}
 
-export function toBlockchainProposal(
-    derivedProposal: DeriveTreasuryProposal,
-    status: BlockchainProposalStatus,
-    identities: Map<string, DeriveAccountRegistration>,
-    toBlockchainProposalMotionEnd: (endBlock: BlockNumber) => BlockchainProposalMotionEnd,
-): BlockchainProposal {
-    const { id, council, proposal } = derivedProposal
-    const proposerAddress = proposal.proposer.toHuman()
-    const beneficiaryAddress = proposal.beneficiary.toHuman()
-    return new BlockchainProposal({
-        proposalIndex: id.toNumber(),
-        proposer: toBlockchainAccountInfo(proposerAddress, identities.get(proposerAddress)),
-        beneficiary: toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress)),
-        /*
-        TODO We should get the decimals from the chain info or config files. This should be handled when adding multiple networks support.
-         */
-        value: transformBalance(proposal.value, 12),
-        bond: transformBalance(proposal.bond, 12),
-        motions: council.map((motion) => toBlockchainProposalMotion(motion, identities, toBlockchainProposalMotionEnd)),
-        status,
-    })
+    isOwner = (user: User) => {
+        return !!user.web3Addresses?.find(({ address }) => this.proposer.address === address)
+    }
 }

@@ -13,7 +13,7 @@ export class Web3AddressesService {
 
     async create(createWeb3Address: CreateWeb3AddressDto): Promise<Web3Address> {
         const isPrimary = !(await this.hasAnyAddresses(createWeb3Address.user!.id))
-        const web3Address = new Web3Address(createWeb3Address.address, createWeb3Address.user!, isPrimary)
+        const web3Address = new Web3Address(createWeb3Address.address, isPrimary, createWeb3Address.user)
         const createdAddress = await this.web3AddressRepository.save(web3Address)
         return (await this.web3AddressRepository.findOne(createdAddress.id))!
     }

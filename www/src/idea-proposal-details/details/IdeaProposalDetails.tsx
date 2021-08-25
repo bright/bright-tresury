@@ -1,11 +1,11 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import Link from '../components/link/Link'
-import { Label } from '../components/text/Label'
-import Placeholder from '../components/text/Placeholder'
-import { breakpoints } from '../theme/theme'
-import { IdeaProposalDetailsDto } from './idea-proposal-details.dto'
+import Link from '../../components/link/Link'
+import { Label } from '../../components/text/Label'
+import Placeholder from '../../components/text/Placeholder'
+import { breakpoints } from '../../theme/theme'
+import { IdeaProposalDetailsDto } from '../idea-proposal-details.dto'
 import LongText from './LongText'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    details?: IdeaProposalDetailsDto
+    details: IdeaProposalDetailsDto
 }
 
 export type IdeaProposalDetailsProps = OwnProps
@@ -45,32 +45,32 @@ const IdeaProposalDetails = ({ details }: IdeaProposalDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
-    const nonEmptyLinks = useMemo(() => (details?.links ? details.links.filter((link: string) => !!link) : []), [
+    const nonEmptyLinks = useMemo(() => (details.links ? details.links.filter((link: string) => !!link) : []), [
         details,
     ])
 
     return (
         <div>
             <div className={classes.spacing}>
-                <Label label={t('idea.details.field')} />
+                <Label label={t('ideaProposalDetails.field')} />
                 <text className={classes.text}>
-                    {details?.field || <Placeholder value={t('idea.details.field')} />}
+                    {details.field || <Placeholder value={t('ideaProposalDetails.field')} />}
                 </text>
             </div>
             <div className={classes.spacing}>
-                <Label label={t('idea.details.content')} />
-                <LongText text={details?.content} placeholder={t('idea.details.content')} />
+                <Label label={t('ideaProposalDetails.content')} />
+                <LongText text={details.content} placeholder={t('ideaProposalDetails.content')} />
             </div>
             <div className={classes.spacing}>
-                <Label label={t('idea.details.contact')} />
-                <LongText text={details?.contact} placeholder={t('idea.details.contact')} />
+                <Label label={t('ideaProposalDetails.contact')} />
+                <LongText text={details.contact} placeholder={t('ideaProposalDetails.contact')} />
             </div>
             <div className={classes.spacing}>
-                <Label label={t('idea.details.portfolio')} />
-                <LongText text={details?.portfolio} placeholder={t('idea.details.portfolio')} />
+                <Label label={t('ideaProposalDetails.portfolio')} />
+                <LongText text={details.portfolio} placeholder={t('ideaProposalDetails.portfolio')} />
             </div>
             <div className={classes.spacing}>
-                <Label label={t('idea.details.links')} />
+                <Label label={t('ideaProposalDetails.links')} />
                 {nonEmptyLinks.length > 0 ? (
                     nonEmptyLinks.map((link: string, index: number) => (
                         <div className={index !== 0 ? classes.linkSpacing : ''}>
@@ -80,7 +80,7 @@ const IdeaProposalDetails = ({ details }: IdeaProposalDetailsProps) => {
                         </div>
                     ))
                 ) : (
-                    <Placeholder value={t('idea.details.links')} />
+                    <Placeholder value={t('ideaProposalDetails.links')} />
                 )}
             </div>
         </div>

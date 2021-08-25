@@ -6,6 +6,8 @@ import * as Yup from 'yup'
 import Button from '../../components/button/Button'
 import FormFooter from '../../components/form/footer/FormFooter'
 import { formatAddress } from '../../components/identicon/utils'
+import { linksValidationSchema } from '../../idea-proposal-details/form/LinksInput'
+import { titleValidationSchema } from '../../idea-proposal-details/form/TitleInput'
 import { Network } from '../../networks/networks.dto'
 import { useNetworks } from '../../networks/useNetworks'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
@@ -79,7 +81,8 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     const { network } = useNetworks()
 
     const validationSchema = Yup.object({
-        title: Yup.string().required(t('idea.details.form.emptyFieldError')),
+        title: titleValidationSchema(t),
+        links: linksValidationSchema(t),
         beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
             return isValidAddressOrEmpty(address, network.ss58Format)
         }),
@@ -91,9 +94,6 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
         currentNetwork: Yup.object().shape({
             value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
         }),
-        links: Yup.array().of(
-            Yup.string().url(t('idea.details.form.badLinkError')).max(1000, t('idea.details.form.linkTooLong')),
-        ),
     })
 
     const extendedValidationSchema = Yup.object().shape({

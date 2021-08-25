@@ -13,10 +13,10 @@ export class Web3Address extends BaseEntity {
     @Column({ nullable: false, type: 'boolean', default: false })
     isPrimary: boolean
 
-    constructor(address: string, user: User, isPrimary: boolean) {
+    constructor(address: string, isPrimary: boolean, user?: User) {
         super()
         this.address = address
-        this.user = user
         this.isPrimary = isPrimary
+        this.user = user
     }
 }

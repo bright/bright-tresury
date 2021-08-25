@@ -62,4 +62,8 @@ export class Proposal extends BaseEntity {
         this.ideaMilestoneNetwork = ideaMilestoneNetwork
         this.blockchainProposalId = blockchainProposalId
     }
+
+    isOwner(user: User) {
+        return this.ownerId === user.id
+    }
 }

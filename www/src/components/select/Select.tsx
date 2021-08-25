@@ -43,11 +43,12 @@ const Select = ({
     label,
     placeholder,
     colorScheme,
+    className,
     ...props
 }: SelectProps) => {
     const classes = useStyles()
     return (
-        <FormGroup>
+        <FormGroup className={className}>
             {label ? <InputLabel className={classes.label}>{label}</InputLabel> : null}
             <MaterialSelect
                 {...props}

@@ -6,7 +6,7 @@ import { extractTime } from '@polkadot/util'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { getLogger } from '../logging.module'
-import { BlockchainProposal, BlockchainProposalStatus, toBlockchainProposal } from './dto/blockchain-proposal.dto'
+import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { getProposers, getBeneficiaries, getVoters } from './utils'
@@ -168,7 +168,7 @@ export class BlockchainService implements OnModuleDestroy {
 
         return [
             ...proposals.map((derivedProposal) =>
-                toBlockchainProposal(
+                BlockchainProposal.create(
                     derivedProposal,
                     BlockchainProposalStatus.Proposal,
                     identities,
@@ -176,7 +176,7 @@ export class BlockchainService implements OnModuleDestroy {
                 ),
             ),
             ...approvals.map((derivedProposal) =>
-                toBlockchainProposal(
+                BlockchainProposal.create(
                     derivedProposal,
                     BlockchainProposalStatus.Approval,
                     identities,

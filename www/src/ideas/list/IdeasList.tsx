@@ -12,7 +12,7 @@ export type IdeasListProps = OwnProps
 const IdeasList = ({ ideas }: IdeasListProps) => {
     const renderCard = (idea: IdeaDto) => <IdeaCard idea={idea} />
 
-    return <Grid items={ideas.sort((a, b) => a.ordinalNumber - b.ordinalNumber)} renderItem={renderCard} />
+    return <Grid items={ideas.sort((a, b) => b.ordinalNumber - a.ordinalNumber)} renderItem={renderCard} />
 }
 
 export default IdeasList

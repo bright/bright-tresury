@@ -6,9 +6,11 @@ import { useTranslation } from 'react-i18next'
 import Identicon from '../../../components/identicon/Identicon'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 import { Label } from '../../../components/text/Label'
-import IdeaProposalDetails from '../../../idea-proposal-details/IdeaProposalDetails'
 import { breakpoints } from '../../../theme/theme'
 import { ProposalDto } from '../../proposals.dto'
+import { useProposal } from '../useProposals'
+import ProposalDetails from './details/ProposalDetails'
+import ProposalEdit from './form/ProposalEdit'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,32 +24,14 @@ const useStyles = makeStyles((theme: Theme) =>
                 fontSize: '16px',
             },
         },
-        longText: {
-            padding: '20px',
-            backgroundColor: theme.palette.background.default,
-            borderRadius: '8px',
-            fontSize: '16px',
-            fontWeight: 400,
-            width: '70%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '100%',
-                padding: '16px',
-                fontSize: '18px',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: '10px',
-                fontSize: '14px',
-            },
-        },
-        spacing: {
-            marginTop: '2em',
-        },
-        proposer: {
+        addressContainer: {
             display: 'flex',
             alignItems: 'center',
-            marginBottom: '28px',
         },
-        accountValue: {
+        spacer: {
+            marginTop: '2em',
+        },
+        address: {
             marginLeft: '.5em',
         },
     }),
@@ -59,33 +43,32 @@ interface OwnProps {
 
 export type ProposalInfoProps = OwnProps
 
-const ProposalInfo = ({ proposal: { proposer, beneficiary, details } }: ProposalInfoProps) => {
+const ProposalInfo = ({ proposal: { proposer, beneficiary, details }, proposal }: ProposalInfoProps) => {
     const successfullyLoadedItemClasses = useSuccessfullyLoadedItemStyles()
     const classes = useStyles()
 
     const { t } = useTranslation()
+    const { canEditProposal } = useProposal(proposal)
 
     return (
         <div className={successfullyLoadedItemClasses.content}>
             <Label label={t('proposal.content.info.proposer')} />
-            <div className={classes.proposer}>
+            <div className={classes.addressContainer}>
                 <>
                     <Identicon address={proposer.address} />
-                    <div className={`${classes.accountValue} ${classes.text}`}>
-                        {proposer.display ?? proposer.address}
-                    </div>
+                    <div className={`${classes.address} ${classes.text}`}>{proposer.display ?? proposer.address}</div>
                 </>
             </div>
-            <Label label={t('proposal.content.info.beneficiary')} />
-            <div className={classes.proposer}>
+            <Label className={classes.spacer} label={t('proposal.content.info.beneficiary')} />
+            <div className={classes.addressContainer}>
                 <>
                     <Identicon address={beneficiary.address} />
-                    <div className={clsx(classes.accountValue, classes.text)}>
+                    <div className={clsx(classes.address, classes.text)}>
                         {beneficiary.display ?? beneficiary.address}
                     </div>
                 </>
             </div>
-            <IdeaProposalDetails details={details} />
+            {canEditProposal ? <ProposalEdit proposal={proposal} /> : <ProposalDetails proposal={proposal} />}
         </div>
     )
 }

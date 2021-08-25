@@ -19,13 +19,14 @@ const Input = ({
     endAdornment,
     name = '',
     textFieldColorScheme = TextFieldColorScheme.Light,
+    className,
     ...props
 }: InputProps) => {
     const [field, meta] = useField(name)
     const hasError: boolean = meta.touched && Boolean(meta.error)
 
     return (
-        <FormGroup>
+        <FormGroup className={className}>
             {label ? <Label label={label} /> : null}
             <TextField
                 {...props}

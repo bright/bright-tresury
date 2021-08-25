@@ -1,8 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
-import Placeholder from '../components/text/Placeholder'
-import { breakpoints } from '../theme/theme'
-import { Nil } from '../util/types'
+import Placeholder from '../../components/text/Placeholder'
+import { Nil } from '../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,6 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: '8px',
             fontSize: '16px',
             fontWeight: 400,
+            width: '100%',
+            resize: 'vertical',
         },
     }),
 )

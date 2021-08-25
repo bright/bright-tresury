@@ -1,30 +1,14 @@
 import { Get, Param, Query } from '@nestjs/common'
-import { ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumberString, Validate } from 'class-validator'
-import { ControllerApiVersion } from '../utils/ControllerApiVersion'
-import { ProposalDto } from './dto/proposal.dto'
-import { ProposalsService } from './proposals.service'
+import { ApiNotFoundResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 
 import { getLogger } from '../logging.module'
-import { IsValidNetworkConstraint } from '../utils/network.validator'
-const logger = getLogger()
-class GetProposalsQuery {
-    @ApiProperty({
-        description: 'Network name',
-    })
-    @IsNotEmpty()
-    @Validate(IsValidNetworkConstraint)
-    network!: string
-}
+import { ControllerApiVersion } from '../utils/ControllerApiVersion'
+import { ProposalDto } from './dto/proposal.dto'
+import { ProposalsParam } from './proposals.param'
+import { ProposalsQuery } from './proposals.query'
+import { ProposalsService } from './proposals.service'
 
-class GetProposalParams {
-    @ApiProperty({
-        description: 'Proposal index',
-    })
-    @IsNumberString()
-    @IsNotEmpty()
-    proposalIndex!: string
-}
+const logger = getLogger()
 
 @ApiTags('proposals')
 @ControllerApiVersion('/proposals', ['v1'])
@@ -36,8 +20,8 @@ export class ProposalsController {
         description: 'Respond with proposals for the given network',
         type: [ProposalDto],
     })
-    async getProposals(@Query() { network }: GetProposalsQuery): Promise<ProposalDto[]> {
-        logger.info(`getting proposals for network: ${network}`)
+    async getProposals(@Query() { network }: ProposalsQuery): Promise<ProposalDto[]> {
+        logger.info(`Getting proposals for network: ${network}`)
         const proposals = await this.proposalsService.find(network)
         return proposals.map((proposal) => new ProposalDto(proposal))
     }
@@ -51,9 +35,10 @@ export class ProposalsController {
         description: 'Proposal with the given id in the given network not found',
     })
     async getProposal(
-        @Param() { proposalIndex }: GetProposalParams,
-        @Query() { network }: GetProposalsQuery,
+        @Param() { proposalIndex }: ProposalsParam,
+        @Query() { network }: ProposalsQuery,
     ): Promise<ProposalDto> {
+        logger.info(`Getting proposal ${proposalIndex} for network: ${network}`)
         const proposal = await this.proposalsService.findOne(Number(proposalIndex), network)
         return new ProposalDto(proposal)
     }

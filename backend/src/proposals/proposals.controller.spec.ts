@@ -101,7 +101,7 @@ describe(`/api/v1/proposals`, () => {
 
             const body = result.body as ProposalDto[]
 
-            expect(body.length).toBe(3)
+            expect(body).toHaveLength(4)
 
             const proposal1 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 0)
 

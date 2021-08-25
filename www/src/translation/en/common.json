@@ -224,25 +224,15 @@
         "thumbsDownAlt": "Thumbs Down",
         "deleteError": "Something went wrong when deleting this comment..."
     },
-
     "idea": {
         "copyLink": "Copy Link",
         "ordinalNumberPrefix": "Idea - ",
         "details": {
-            "title": "Title",
             "beneficiary": "Beneficiary",
             "field": "Field of Idea",
-            "content": "Reason of Proposal",
-            "contact": "Proposer's information",
-            "portfolio": "Portfolio",
-            "links": "Links",
-            "additionalNets": "Additional Nets",
+            "content": "Reason of Idea",
             "net": "Net",
             "form": {
-                "linkPlaceholder": "Add external link to your proposal here",
-                "addLink": "+ Add Link",
-                "badLinkError": "This is not a valid URL",
-                "linkTooLong": "URL too long",
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
                 "valueCannotBeLessThanZero": "The value cannot be less than zero",
@@ -325,7 +315,8 @@
             "noIdeaMilestones": {
                 "ownerCanAdd": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better.",
                 "notOwnerCanAdd": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab.",
-                "cannotAdd": "No milestones have been added to the idea. The idea is already turned into proposal, go to <a>proposal milestones tab</a> to check it's milestones."
+                "cannotAdd": "No milestones have been added to the idea.",
+                "goToProposal": " The idea is already turned into proposal, go to <a>proposal milestones tab</a> to check it's milestones."
             },
             "modal": {
                 "milestone": "Milestone",
@@ -413,6 +404,17 @@
                 "rewarded": "Rewarded"
             }
         },
+        "details": {
+            "field": "Field of Proposal",
+            "content": "Reason of Proposal",
+            "noProposalDetails": {
+                "cannotEdit": "No proposal description have been added.",
+                "askToAddDescription": "No proposal description have been added yet. You can ask the owner to add description in the Discussion tab."
+            },
+            "form": {
+                "edit": "Edit"
+            }
+        },
         "voting": {
             "motion": "Motion",
             "votingEnd": "Voting end - ",
@@ -449,6 +451,28 @@
                     "noDescriptionProvided": "No description provided"
                 }
             }
+        }
+    },
+    "ideaProposalDetails": {
+        "title": "Title",
+        "field": "Field",
+        "fieldOptions": {
+            "optimisation": "Optimisation",
+            "treasury": "Treasury",
+            "transactions": "Transactions",
+            "other": "Other"
+        },
+        "content": "Reason",
+        "contact": "Proposer's information",
+        "portfolio": "Portfolio",
+        "links": "Links",
+        "additionalNets": "Additional Nets",
+        "form": {
+            "linkPlaceholder": "Add external link to your proposal here",
+            "addLink": "+ Add Link",
+            "badLinkError": "This is not a valid URL",
+            "linkTooLong": "URL too long",
+            "emptyFieldError": "This field cannot be empty"
         }
     },
     "milestoneDetails": {

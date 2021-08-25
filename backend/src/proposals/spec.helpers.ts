@@ -2,8 +2,14 @@ import { INestApplication } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
-import { createUserSessionHandlerWithVerifiedEmail } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
-import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
+import {
+    createUserSessionHandlerWithVerifiedEmail,
+    SessionHandler,
+} from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
+import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info.dto'
+import { BlockchainProposalMotion } from '../blockchain/dto/blockchain-proposal-motion.dto'
+import { BlockchainProposal, BlockchainProposalStatus } from '../blockchain/dto/blockchain-proposal.dto'
+import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { CreateIdeaDto } from '../ideas/dto/create-idea.dto'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
@@ -11,11 +17,8 @@ import { CreateIdeaMilestoneDto } from '../ideas/idea-milestones/dto/create-idea
 import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
 import { createIdea, createIdeaMilestone } from '../ideas/spec.helpers'
 import { getLogger } from '../logging.module'
-import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info.dto'
-import { BlockchainProposalMotion } from '../blockchain/dto/blockchain-proposal-motion.dto'
-import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
 import { NETWORKS } from '../utils/spec.helpers'
-import { IdeaWithMilestones } from './proposals.service'
+import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 
 const makeMotion = (
     hash: string,
@@ -61,49 +64,65 @@ export const mockedBlockchainService = {
             return []
         }
         return [
-            {
-                proposalIndex: 0,
-                proposer: { display: 'John Doe', address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
-                beneficiary: { address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
-                bond: 0.001,
-                value: 1e-14,
-                status: 'proposal',
-                motions: [makeMotion('hash_0_0', 'approveProposal', 0, [], [])] as BlockchainProposalMotion[],
-            },
-            {
-                proposalIndex: 1,
-                proposer: { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-                beneficiary: { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
-                bond: 40,
-                value: 2000,
-                status: 'proposal',
-                motions: [makeMotion('hash_1_0', 'approveProposal', 1, [], [])] as BlockchainProposalMotion[],
-            },
-            {
-                proposalIndex: 3,
-                proposer: { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-                beneficiary: { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
-                bond: 20,
-                value: 1000,
-                status: 'approval',
-                motions: [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
-            },
-        ] as BlockchainProposal[]
+            new BlockchainProposal(
+                0,
+                { display: 'John Doe', address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
+                { address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
+                1e-14,
+                0.001,
+                [makeMotion('hash_0_0', 'approveProposal', 0, [], [])] as BlockchainProposalMotion[],
+                BlockchainProposalStatus.Proposal,
+            ),
+
+            new BlockchainProposal(
+                1,
+                { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
+                { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+                2000,
+                40,
+                [makeMotion('hash_1_0', 'approveProposal', 1, [], [])] as BlockchainProposalMotion[],
+                BlockchainProposalStatus.Proposal,
+            ),
+            new BlockchainProposal(
+                2,
+                { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
+                { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+
+                1000,
+                20,
+
+                [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
+                BlockchainProposalStatus.Proposal,
+            ),
+            new BlockchainProposal(
+                3,
+                { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
+                { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+
+                1000,
+                20,
+                [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
+                BlockchainProposalStatus.Approval,
+            ),
+        ]
     },
 }
 
-export const setUpValues = async (
+export const setUpIdea = async (
     app: INestApplication,
+    sessionHandlerParam?: SessionHandler,
     ideaDto?: Partial<CreateIdeaDto>,
-    milestoneDto?: Partial<CreateIdeaMilestoneDto>,
 ) => {
     const ideaNetworkRepository = app.get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork))
 
-    const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app)
+    const sessionHandler = sessionHandlerParam ?? (await createUserSessionHandlerWithVerifiedEmail(app))
 
     const idea = await createIdea(
         {
-            details: { title: 'ideaTitle' },
+            details: {
+                title: 'ideaTitle',
+                ...ideaDto?.details,
+            },
             beneficiary: uuid(),
             networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
             ...ideaDto,
@@ -114,17 +133,23 @@ export const setUpValues = async (
 
     const ideaNetwork = (await ideaNetworkRepository.findOne(idea.networks[0].id, { relations: ['idea'] }))!
 
-    const ideaWithMilestones = await createIdea(
-        {
-            details: { title: 'ideaWithMilestoneTitle' },
-            beneficiary: uuid(),
-            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
-        },
-        sessionHandler.sessionData,
-    )
+    return {
+        sessionHandler,
+        idea: idea as IdeaWithMilestones,
+        ideaNetwork,
+    }
+}
+
+export const setUpIdeaWithMilestone = async (
+    app: INestApplication,
+    sessionHandlerParam?: SessionHandler,
+    ideaDto?: Partial<CreateIdeaDto>,
+    milestoneDto?: Partial<CreateIdeaMilestoneDto>,
+) => {
+    const { sessionHandler, idea, ideaNetwork } = await setUpIdea(app, sessionHandlerParam, ideaDto)
 
     const ideaMilestone = await createIdeaMilestone(
-        ideaWithMilestones.id,
+        idea.id,
         {
             networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
             ...milestoneDto,
@@ -132,15 +157,68 @@ export const setUpValues = async (
         },
         sessionHandler.sessionData,
     )
-    ideaWithMilestones.milestones = [ideaMilestone]
+    idea.milestones = [ideaMilestone]
 
     return {
         sessionHandler,
-        idea: idea as IdeaWithMilestones,
-        ideaNetwork,
-        ideaWithMilestones: ideaWithMilestones as IdeaWithMilestones,
-        ideaWithMilestoneNetwork: ideaWithMilestones.networks[0],
+        ideaWithMilestone: idea as IdeaWithMilestones,
+        ideaWithMilestoneNetwork: ideaNetwork,
         ideaMilestone,
         ideaMilestoneNetwork: ideaMilestone.networks[0],
+    }
+}
+
+export const setUpProposalFromIdea = async (
+    app: INestApplication,
+    sessionHandlerParam?: SessionHandler,
+    ideaDto?: Partial<CreateIdeaDto>,
+) => {
+    const ideaNetworkRepository = app.get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork))
+    const proposalsService = app.get(ProposalsService)
+
+    const { sessionHandler, idea, ideaNetwork } = await setUpIdea(app, sessionHandlerParam, ideaDto)
+
+    ideaNetwork.blockchainProposalId = 0
+    await ideaNetworkRepository.save(ideaNetwork)
+    const proposal = await proposalsService.createFromIdea(idea as IdeaWithMilestones, 0, ideaNetwork)
+
+    return {
+        sessionHandler,
+        idea,
+        proposal,
+    }
+}
+
+export const setUpProposalFromIdeaMilestone = async (
+    app: INestApplication,
+    sessionHandlerParam?: SessionHandler,
+    ideaDto?: Partial<CreateIdeaDto>,
+    milestoneDto?: Partial<CreateIdeaMilestoneDto>,
+) => {
+    const ideaMilestoneNetworkRepository = app.get<Repository<IdeaMilestoneNetwork>>(
+        getRepositoryToken(IdeaMilestoneNetwork),
+    )
+    const proposalsService = app.get(ProposalsService)
+
+    const { sessionHandler, ideaWithMilestone, ideaMilestone, ideaMilestoneNetwork } = await setUpIdeaWithMilestone(
+        app,
+        sessionHandlerParam,
+        ideaDto,
+        milestoneDto,
+    )
+
+    ideaMilestoneNetwork.blockchainProposalId = 1
+    await ideaMilestoneNetworkRepository.save(ideaMilestoneNetwork)
+    const proposal = await proposalsService.createFromMilestone(
+        ideaWithMilestone,
+        1,
+        ideaMilestoneNetwork,
+        ideaMilestone,
+    )
+
+    return {
+        sessionHandler,
+        ideaWithMilestone,
+        proposal,
     }
 }
