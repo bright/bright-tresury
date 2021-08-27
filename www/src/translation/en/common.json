@@ -409,10 +409,13 @@
             "content": "Reason of Proposal",
             "noProposalDetails": {
                 "cannotEdit": "No proposal description have been added.",
-                "askToAddDescription": "No proposal description have been added yet. You can ask the owner to add description in the Discussion tab."
+                "askToAddDescription": "No proposal description have been added yet. You can ask the owner to add description in the Discussion tab.",
+                "canAdd": "Looks like you have created this proposal. Would you Like to add details? Detailed description will allow our community appreciate the proposal more and understand it better.",
+                "addDetails": "+ Add details",
+                "hideDetails": "Hide details"
             },
             "form": {
-                "edit": "Edit"
+                "edit": "Save"
             }
         },
         "voting": {

@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
@@ -11,7 +11,7 @@ import { Web3Address } from '../../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { Proposal } from '../entities/proposal.entity'
 import { IdeaWithMilestones, ProposalsService } from '../proposals.service'
-import { mockedBlockchainService, setUpProposalFromIdea } from '../spec.helpers'
+import { createProposerSessionData, mockedBlockchainService, proposals, setUpProposalFromIdea } from '../spec.helpers'
 import { ProposalDetailsService } from './proposal-details.service'
 
 describe('ProposalDetailsService', () => {
@@ -31,6 +31,101 @@ describe('ProposalDetailsService', () => {
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
+    })
+
+    describe('create', () => {
+        it(`should save all data`, async () => {
+            const proposal = proposals[0]
+            const sessionData = await createProposerSessionData(proposal)
+
+            await service().create(
+                proposal.proposalIndex,
+                NETWORKS.POLKADOT,
+                {
+                    title: 'new title',
+                    content: 'new content',
+                    contact: 'new contact',
+                    portfolio: 'new portfolio',
+                    field: 'new field',
+                    links: ['new link'],
+                },
+                sessionData,
+            )
+
+            const { details } = (await proposalsRepository().findOne({ blockchainProposalId: proposal.proposalIndex }))!
+            expect(details.title).toBe('new title')
+            expect(details.content).toBe('new content')
+            expect(details.contact).toBe('new contact')
+            expect(details.portfolio).toBe('new portfolio')
+            expect(details.field).toBe('new field')
+            expect(details.links).toBe('["new link"]')
+        })
+
+        it(`should throw ConflictException when trying to create already existing details`, async () => {
+            const {
+                proposal,
+                sessionHandler: { sessionData },
+            } = await setUpProposalFromIdea(app())
+
+            await expect(
+                service().create(
+                    proposal.blockchainProposalId,
+                    proposal.networkId,
+                    {
+                        title: 'new title',
+                    },
+                    sessionData,
+                ),
+            ).rejects.toThrow(ConflictException)
+        })
+
+        it(`should throw ForbiddenException when user with no address assigned tries to create`, async () => {
+            const proposal = proposals[0]
+            const notProposerSessionData = await createSessionData()
+
+            await expect(
+                service().create(
+                    proposal.proposalIndex,
+                    NETWORKS.POLKADOT,
+                    {
+                        title: 'new title',
+                    },
+                    notProposerSessionData,
+                ),
+            ).rejects.toThrow(ForbiddenException)
+        })
+
+        it(`should throw ForbiddenException when user with not a proposer address assigned tries to create`, async () => {
+            const proposal = proposals[0]
+            const notProposerSessionData = await createProposerSessionData(proposals[1])
+
+            await expect(
+                service().create(
+                    proposal.proposalIndex,
+                    NETWORKS.POLKADOT,
+                    {
+                        title: 'new title',
+                    },
+                    notProposerSessionData,
+                ),
+            ).rejects.toThrow(ForbiddenException)
+        })
+
+        it(`should throw NotFoundException when trying to create details for a not existing proposal`, async () => {
+            const sessionData = await createSessionData()
+
+            await expect(service().create(150, NETWORKS.POLKADOT, { title: 'title' }, sessionData)).rejects.toThrow(
+                NotFoundException,
+            )
+        })
+
+        it(`should throw BadRequestException when trying to create details for a proposal with ${BlockchainProposalStatus.Approval} status`, async () => {
+            const proposal = proposals[3]
+            const sessionData = await createProposerSessionData(proposal)
+            await expect(
+                service().create(proposal.proposalIndex, NETWORKS.POLKADOT, { title: 'title' }, sessionData),
+            ).rejects.toThrow(BadRequestException)
+        })
     })
 
     describe('update', () => {
@@ -131,7 +226,7 @@ describe('ProposalDetailsService', () => {
             await expect(service().update(150, NETWORKS.POLKADOT, {}, sessionData)).rejects.toThrow(NotFoundException)
         })
 
-        it(`should throw NotFoundException when trying to update not proposal created outside of the app`, async () => {
+        it(`should throw NotFoundException when trying to update a proposal created outside of the app`, async () => {
             const {
                 sessionHandler: { sessionData },
             } = await setUpProposalFromIdea(app())

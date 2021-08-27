@@ -2,6 +2,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { UseMutationResult } from 'react-query/types/react/types'
 import { useHistory } from 'react-router'
 import * as Yup from 'yup'
 import FormFooter from '../../../../components/form/footer/FormFooter'
@@ -17,7 +18,8 @@ import TitleInput, { titleValidationSchema } from '../../../../idea-proposal-det
 import { IdeaProposalDetailsDto } from '../../../../idea-proposal-details/idea-proposal-details.dto'
 import { useNetworks } from '../../../../networks/useNetworks'
 import { ROUTE_PROPOSALS } from '../../../../routes/routes'
-import { usePatchProposalDetails } from '../proposal-details.api'
+import { MutateProposalDetailsParams } from '../proposal-details.api'
+import { ProposalDetailsDto } from '../proposal-details.dto'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -32,17 +34,18 @@ const useStyles = makeStyles(() =>
 interface OwnProps {
     details: IdeaProposalDetailsDto
     proposalIndex: number
+    useMutation: () => UseMutationResult<ProposalDetailsDto, unknown, MutateProposalDetailsParams>
 }
 
-export type ProposalEditFormProps = OwnProps
+export type ProposalDetailsFormProps = OwnProps
 
-const ProposalEditForm = ({ details, proposalIndex }: ProposalEditFormProps) => {
+const ProposalDetailsForm = ({ details, proposalIndex, useMutation }: ProposalDetailsFormProps) => {
     const classes = useStyles()
-    const { t } = useTranslation()
     const { network } = useNetworks()
+    const { t } = useTranslation()
     const history = useHistory()
 
-    const { mutateAsync, isError } = usePatchProposalDetails()
+    const { mutateAsync, isError } = useMutation()
 
     const onSubmit = async (values: IdeaProposalDetailsDto) => {
         await mutateAsync(
@@ -95,4 +98,4 @@ const ProposalEditForm = ({ details, proposalIndex }: ProposalEditFormProps) => 
         </Formik>
     )
 }
-export default ProposalEditForm
+export default ProposalDetailsForm

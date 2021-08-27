@@ -1,21 +1,35 @@
 import { useMutation } from 'react-query'
-import { apiPatch } from '../../../api'
+import { apiPatch, apiPost } from '../../../api'
 import { PROPOSALS_API_PATH } from '../../proposals.api'
-import { EditProposalDetailsDto, ProposalDetailsDto } from './proposal-details.dto'
+import { CreateProposalDetailsDto, EditProposalDetailsDto, ProposalDetailsDto } from './proposal-details.dto'
 
-// PATCH
-
-interface PatchProposalDetailsParams {
+export interface MutateProposalDetailsParams {
     proposalIndex: number
     network: string
-    dto: EditProposalDetailsDto
+    dto: CreateProposalDetailsDto
 }
+
+// POST
+
+function postProposalDetails({
+    proposalIndex,
+    network,
+    dto,
+}: MutateProposalDetailsParams): Promise<ProposalDetailsDto> {
+    return apiPost<ProposalDetailsDto>(`${PROPOSALS_API_PATH}/${proposalIndex}/details?network=${network}`, dto)
+}
+
+export const usePostProposalDetails = () => {
+    return useMutation(postProposalDetails)
+}
+
+// PATCH
 
 function patchProposalDetails({
     proposalIndex,
     network,
     dto,
-}: PatchProposalDetailsParams): Promise<ProposalDetailsDto> {
+}: MutateProposalDetailsParams): Promise<ProposalDetailsDto> {
     return apiPatch<ProposalDetailsDto>(`${PROPOSALS_API_PATH}/${proposalIndex}/details?network=${network}`, dto)
 }
 

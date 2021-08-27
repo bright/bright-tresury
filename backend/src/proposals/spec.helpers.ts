@@ -14,11 +14,12 @@ import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { CreateIdeaDto } from '../ideas/dto/create-idea.dto'
 import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
 import { CreateIdeaMilestoneDto } from '../ideas/idea-milestones/dto/create-idea-milestone.dto'
-import { createIdea, createIdeaMilestone } from '../ideas/spec.helpers'
+import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { getLogger } from '../logging.module'
+import { Web3Address } from '../users/web3-addresses/web3-address.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
-import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
 
 const makeMotion = (
     hash: string,
@@ -35,6 +36,49 @@ const makeMotion = (
     threshold: 2,
     motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } as BlockchainTimeLeft },
 })
+
+export const proposals = [
+    new BlockchainProposal(
+        0,
+        { display: 'John Doe', address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
+        { address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
+        1e-14,
+        0.001,
+        [makeMotion('hash_0_0', 'approveProposal', 0, [], [])] as BlockchainProposalMotion[],
+        BlockchainProposalStatus.Proposal,
+    ),
+
+    new BlockchainProposal(
+        1,
+        { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
+        { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+        2000,
+        40,
+        [makeMotion('hash_1_0', 'approveProposal', 1, [], [])] as BlockchainProposalMotion[],
+        BlockchainProposalStatus.Proposal,
+    ),
+    new BlockchainProposal(
+        2,
+        { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
+        { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+
+        1000,
+        20,
+
+        [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
+        BlockchainProposalStatus.Proposal,
+    ),
+    new BlockchainProposal(
+        3,
+        { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
+        { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+
+        1000,
+        20,
+        [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
+        BlockchainProposalStatus.Approval,
+    ),
+]
 
 export const mockedBlockchainService = {
     listenForExtrinsic: async (
@@ -63,50 +107,14 @@ export const mockedBlockchainService = {
         if (networkId !== NETWORKS.POLKADOT) {
             return []
         }
-        return [
-            new BlockchainProposal(
-                0,
-                { display: 'John Doe', address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
-                { address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
-                1e-14,
-                0.001,
-                [makeMotion('hash_0_0', 'approveProposal', 0, [], [])] as BlockchainProposalMotion[],
-                BlockchainProposalStatus.Proposal,
-            ),
-
-            new BlockchainProposal(
-                1,
-                { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-                { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
-                2000,
-                40,
-                [makeMotion('hash_1_0', 'approveProposal', 1, [], [])] as BlockchainProposalMotion[],
-                BlockchainProposalStatus.Proposal,
-            ),
-            new BlockchainProposal(
-                2,
-                { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-                { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
-
-                1000,
-                20,
-
-                [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
-                BlockchainProposalStatus.Proposal,
-            ),
-            new BlockchainProposal(
-                3,
-                { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-                { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
-
-                1000,
-                20,
-                [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
-                BlockchainProposalStatus.Approval,
-            ),
-        ]
+        return proposals
     },
 }
+
+export const createProposerSessionData = (proposal: BlockchainProposal) =>
+    createSessionData({
+        web3Addresses: [new Web3Address(proposal.proposer.address, true)],
+    })
 
 export const setUpIdea = async (
     app: INestApplication,

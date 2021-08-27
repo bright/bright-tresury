@@ -12,19 +12,11 @@ import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.
 import { getLogger } from '../logging.module'
 import { MilestoneDetailsService } from '../milestone-details/milestone-details.service'
 import { Nil } from '../utils/types'
+import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-with-domain-details.dto'
 import { Proposal } from './entities/proposal.entity'
 import { ProposalMilestone } from './proposal-milestones/entities/proposal-milestone.entity'
 
 const logger = getLogger()
-
-export type BlockchainProposalWithDomainDetails = {
-    blockchain: BlockchainProposal
-    entity: Nil<Proposal>
-    isCreatedFromIdea: boolean
-    isCreatedFromIdeaMilestone: boolean
-    ideaId: Nil<string>
-    ideaMilestoneId: Nil<string>
-}
 
 export interface IdeaWithMilestones extends Idea {
     milestones: IdeaMilestone[]
@@ -103,14 +95,14 @@ export class ProposalsService {
     ): BlockchainProposalWithDomainDetails {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const idea = proposalEntity?.ideaNetwork?.idea ?? milestone?.idea
-        return {
+        return new BlockchainProposalWithDomainDetails({
             blockchain: blockchainProposal,
             entity: proposalEntity,
             isCreatedFromIdea: !!idea && !milestone,
             isCreatedFromIdeaMilestone: !!milestone,
             ideaId: idea?.id,
             ideaMilestoneId: milestone?.id,
-        }
+        })
     }
 
     async createFromIdea(

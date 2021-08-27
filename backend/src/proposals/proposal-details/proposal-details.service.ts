@@ -1,9 +1,12 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
-import { BlockchainProposalStatus } from '../../blockchain/dto/blockchain-proposal.dto'
+import { CreateIdeaProposalDetailsDto } from '../../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { UpdateIdeaProposalDetailsDto } from '../../idea-proposal-details/dto/update-idea-proposal-details.dto'
 import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { IdeaProposalDetailsService } from '../../idea-proposal-details/idea-proposal-details.service'
+import { Proposal } from '../entities/proposal.entity'
 import { ProposalsService } from '../proposals.service'
 
 @Injectable()
@@ -11,6 +14,8 @@ export class ProposalDetailsService {
     constructor(
         private readonly proposalsService: ProposalsService,
         private readonly ideaProposalDetailsService: IdeaProposalDetailsService,
+        @InjectRepository(Proposal)
+        private readonly proposalsRepository: Repository<Proposal>,
     ) {}
 
     async update(
@@ -25,14 +30,37 @@ export class ProposalDetailsService {
             throw new NotFoundException('Details for a proposal with the given id in the given network not found')
         }
 
-        if (!proposal.blockchain.isOwner(user) && !proposal.entity.isOwner(user)) {
-            throw new ForbiddenException('The given user cannot edit this proposal')
-        }
+        proposal.isOwnerOrThrow(user)
 
-        if (proposal.blockchain.status === BlockchainProposalStatus.Approval) {
-            throw new BadRequestException('You cannot edit an approved proposal details')
-        }
+        proposal.blockchain.isEditableOrThrow()
 
         return this.ideaProposalDetailsService.update(dto, proposal.entity.details)
+    }
+
+    async create(
+        proposalIndex: number,
+        network: string,
+        dto: CreateIdeaProposalDetailsDto,
+        { user }: SessionData,
+    ): Promise<IdeaProposalDetails> {
+        const proposal = await this.proposalsService.findOne(proposalIndex, network)
+
+        if (proposal.entity) {
+            throw new ConflictException('Details for a proposal with the given id already exist')
+        }
+
+        proposal.blockchain.isOwnerOrThrow(user)
+        proposal.blockchain.isEditableOrThrow()
+
+        const details = await this.ideaProposalDetailsService.create(dto)
+        const proposalEntity = await this.proposalsRepository.create({
+            ownerId: user.id,
+            details,
+            networkId: network,
+            blockchainProposalId: proposalIndex,
+        })
+        const savedProposal = await this.proposalsRepository.save(proposalEntity)
+
+        return savedProposal.details
     }
 }

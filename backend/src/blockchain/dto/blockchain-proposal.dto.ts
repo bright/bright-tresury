@@ -1,3 +1,4 @@
+import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { DeriveAccountRegistration, DeriveTreasuryProposal } from '@polkadot/api-derive/types'
 import { User } from '../../users/user.entity'
 import { transformBalance } from '../utils'
@@ -5,6 +6,7 @@ import { BlockchainAccountInfo, toBlockchainAccountInfo } from './blockchain-acc
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { BlockchainProposalMotion, toBlockchainProposalMotion } from './blockchain-proposal-motion.dto'
 import { BlockchainProposalMotionEnd } from './blockchain-proposal-motion-end.dto'
+import { encodeAddress } from '@polkadot/keyring'
 
 export enum BlockchainProposalStatus {
     Proposal = 'proposal',
@@ -63,6 +65,23 @@ export class BlockchainProposal {
     }
 
     isOwner = (user: User) => {
-        return !!user.web3Addresses?.find(({ address }) => this.proposer.address === address)
+        const encodedProposerAddress = encodeAddress(this.proposer.address)
+        return !!user.web3Addresses?.find(({ address }) => encodedProposerAddress === address)
+    }
+
+    isOwnerOrThrow = (user: User) => {
+        if (!this.isOwner(user)) {
+            throw new ForbiddenException('The given user cannot add details to this proposal')
+        }
+    }
+
+    isEditable = () => {
+        return this.status !== BlockchainProposalStatus.Approval
+    }
+
+    isEditableOrThrow = () => {
+        if (!this.isEditable()) {
+            throw new BadRequestException('You cannot edit an approved proposal details')
+        }
     }
 }

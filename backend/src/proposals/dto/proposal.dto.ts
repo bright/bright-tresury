@@ -3,8 +3,8 @@ import { BlockchainProposalStatus } from '../../blockchain/dto/blockchain-propos
 import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
 import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
 import { Nil } from '../../utils/types'
-import { BlockchainProposalWithDomainDetails } from '../proposals.service'
 import { BlockchainProposalMotion } from '../../blockchain/dto/blockchain-proposal-motion.dto'
+import { BlockchainProposalWithDomainDetails } from './blockchain-proposal-with-domain-details.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',

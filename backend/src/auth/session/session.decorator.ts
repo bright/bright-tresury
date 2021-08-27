@@ -7,7 +7,7 @@ export interface SessionData {
 
 export const ReqSession = createParamDecorator(
     async (data: unknown, ctx: ExecutionContext): Promise<SessionData | undefined> => {
-        const req = ctx.switchToHttp().getRequest()
+        const req = await ctx.switchToHttp().getRequest()
         return req.session
     },
 )

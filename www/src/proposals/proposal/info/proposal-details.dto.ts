@@ -2,3 +2,4 @@ import { IdeaProposalDetailsDto } from '../../../idea-proposal-details/idea-prop
 
 export type ProposalDetailsDto = IdeaProposalDetailsDto
 export type EditProposalDetailsDto = Partial<ProposalDetailsDto>
+export type CreateProposalDetailsDto = ProposalDetailsDto
