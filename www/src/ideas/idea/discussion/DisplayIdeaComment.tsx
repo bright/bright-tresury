@@ -32,9 +32,7 @@ const DisplayIdeaComment = ({ ideaId, comment }: DisplayIdeaCommentProps) => {
     }
 
     const updateComment = async (commentContent: string) => {
-        const updateIdeaCommentDto = {
-            content: commentContent,
-        }
+        const updateIdeaCommentDto = { content: commentContent }
         await updateIdeaComment(
             { ideaId, commentId: comment.id, data: updateIdeaCommentDto },
             {

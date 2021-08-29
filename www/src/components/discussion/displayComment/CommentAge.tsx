@@ -21,6 +21,7 @@ export type CommentAgeProps = OwnProps
 const CommentAge = ({ createdAt, updatedAt }: CommentAgeProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+
     const commentAge = useMemo(() => {
         const title =
             updatedAt > createdAt
