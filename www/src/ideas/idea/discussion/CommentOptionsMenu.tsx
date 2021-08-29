@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         icon: {
-            padding: '6px',
+            padding: '0',
         },
     }),
 )

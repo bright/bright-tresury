@@ -213,7 +213,8 @@
         "delete": "Delete",
         "commentAlso": "Comment also on ",
         "enterCommentPlaceholder": "Leave your comment here",
-        "commentedTimestampTitle": "commented",
+        "commentCreateTimestampTitle": "commented",
+        "commentUpdatedTimestampTitle": "edited",
         "inOrderToComment": "In order to comment, please ",
         "logIn": "log in",
         "cancelComment": "Cancel",
@@ -222,7 +223,8 @@
         "noComments": "There are no comments yet. Be the first to start the discussion.",
         "thumbsUpAlt": "Thumbs Up",
         "thumbsDownAlt": "Thumbs Down",
-        "deleteError": "Something went wrong when deleting this comment..."
+        "deleteError": "Something went wrong when deleting this comment...",
+        "editError": "Something went wrong when updating this comment..."
     },
     "idea": {
         "copyLink": "Copy Link",

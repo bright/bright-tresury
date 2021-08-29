@@ -4,6 +4,7 @@ export interface IdeaCommentDto {
     id: string
     author: CommentAuthorDto
     createdAt: number
+    updatedAt: number
     thumbsUp: number
     thumbsDown: number
     content: string
@@ -17,3 +18,5 @@ export interface CommentAuthorDto {
 export interface CreateIdeaCommentDto {
     content: string
 }
+
+export type UpdateIdeaCommentDto = CreateIdeaCommentDto

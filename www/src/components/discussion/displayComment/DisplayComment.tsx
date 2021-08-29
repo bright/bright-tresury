@@ -4,18 +4,17 @@ import linkIcon from '../../../assets/link.svg'
 import React, { useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { formatAddress } from '../../../components/identicon/utils'
 import SmallVerticalDivider from '../../smallHorizontalDivider/SmallVerticalDivider'
-import { useNetworks } from '../../../networks/useNetworks'
 import { IdeaCommentDto } from '../../../ideas/idea/discussion/idea.comment.dto'
-import CommentAuthorImage from '../../../ideas/idea/discussion/CommentAuthorImage'
-import { extractTime } from '@polkadot/util'
-import { timeToString } from '../../../util/dateUtil'
+import CommentAuthorImage from '../commentAuthorImage/CommentAuthorImage'
 import CommentOptionsMenu from '../../../ideas/idea/discussion/CommentOptionsMenu'
 import Error from '../../error/Error'
 import { useAuth } from '../../../auth/AuthContext'
 import { Nil } from '../../../util/types'
-import EditComment from '../../../components/editComment/EditComment'
+import EditComment from '../editComment/EditComment'
+import Author from './Author'
+import CommentAge from './CommentAge'
+import CommentContent from './CommentContent'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,15 +36,7 @@ const useStyles = makeStyles((theme: Theme) =>
         headerRight: {
             display: 'flex',
         },
-        author: {
-            paddingTop: '6px',
-            marginLeft: '16px',
-            fontWeight: 600,
-        },
-        age: {
-            paddingTop: '6px',
-            color: theme.palette.text.disabled,
-        },
+
         thumb: {
             paddingTop: '8px',
             paddingRight: '8px',
@@ -59,9 +50,7 @@ const useStyles = makeStyles((theme: Theme) =>
             paddingTop: '8px',
             margin: '0px 6px',
         },
-        body: {
-            marginTop: '16px',
-        },
+
         grayDivider: {
             color: theme.palette.text.disabled,
         },
@@ -76,29 +65,31 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     comment: IdeaCommentDto
-    onDeleteClick: () => Promise<void>
+    saveEditComment: (content: string) => Promise<void>
+    cancelEditComment: () => void
+    deleteComment: () => Promise<void>
     error?: Nil<string>
 }
 export type DisplayCommentProps = OwnProps
 
-const DisplayComment = ({
-    comment: { id, author, createdAt, thumbsUp, thumbsDown, content },
-    onDeleteClick,
-    error,
-}: DisplayCommentProps) => {
+const DisplayComment = ({ comment, deleteComment, saveEditComment, cancelEditComment, error }: DisplayCommentProps) => {
+    const { id, author, createdAt, updatedAt, content } = comment
     const classes = useStyles()
     const { t } = useTranslation()
-    const { network } = useNetworks()
 
     const { user } = useAuth()
     const isAuthor = user?.id && author.userId && user?.id === author.userId
 
     const [editMode, setEditMode] = useState(false)
-
-    const formatAge = (timestamp: number) => {
-        const ageMs = Date.now() - timestamp
-        if (ageMs < 60 * 1000) return t('lessThanMinuteAgo')
-        return `${timeToString(extractTime(ageMs), t)} ${t('ago')}`
+    const enableEditMode = () => setEditMode(true)
+    const disableEditMode = () => setEditMode(false)
+    const onSendClick = async (content: string) => {
+        await saveEditComment(content)
+        return disableEditMode()
+    }
+    const onCancelClick = () => {
+        cancelEditComment()
+        disableEditMode()
     }
 
     return (
@@ -106,48 +97,22 @@ const DisplayComment = ({
             <div className={classes.header}>
                 <div className={classes.headerLeft}>
                     <CommentAuthorImage author={author} />
-                    <div className={classes.author}>
-                        {author.isEmailPasswordEnabled
-                            ? author.username
-                            : formatAddress(author.web3address, network.ss58Format)}
-                    </div>
+                    <Author author={author} />
                     <SmallVerticalDivider className={classes.grayDivider} />
-                    <div className={classes.age}>
-                        {t('discussion.commentedTimestampTitle')} {formatAge(createdAt)}
-                    </div>
+                    <CommentAge createdAt={createdAt} updatedAt={updatedAt} />
                 </div>
                 <div className={classes.headerRight}>
-                    {/* TODO: code below is a feature to be implemented */}
-                    {/*    <div className={styles.commentHeaderThumb}>*/}
-                    {/*        <img src={thumbsUpIcon} alt={t('discussion.thumbsUpAlt')} /> {thumbsUp}*/}
-                    {/*    </div>*/}
-                    {/*    <div className={styles.commentHeaderThumb}>*/}
-                    {/*        <img className={styles.rotate180} src={thumbsDownIcon} alt={t('discussion.thumbsDownAlt')'} /> {thumbsDown}*/}
-                    {/*    </div>*/}
-                    {/*    <div className={styles.commentHeaderLink}>*/}
-                    {/*        <img src={linkIcon} alt={''} />*/}
-                    {/*    </div>*/}
-
                     {isAuthor ? (
-                        <CommentOptionsMenu
-                            onEditClick={() => {
-                                setEditMode(true)
-                            }}
-                            onDeleteClick={onDeleteClick}
-                        />
+                        <CommentOptionsMenu onEditClick={enableEditMode} onDeleteClick={deleteComment} />
                     ) : null}
                 </div>
             </div>
             {editMode ? (
-                <EditComment
-                    onSendClick={() => Promise.resolve(setEditMode(false))}
-                    onCancelClick={() => setEditMode(false)}
-                    value={content}
-                />
+                <EditComment onSendClick={onSendClick} onCancelClick={onCancelClick} value={content} />
             ) : (
-                <div className={classes.body}>{content}</div>
+                <CommentContent content={content} />
             )}
-            {error ? <Error className={classes.error} text={error}></Error> : <div style={{ height: '24px' }}></div>}
+            {error ? <Error className={classes.error} text={error} /> : <div style={{ height: '24px' }} />}
         </div>
     )
 }

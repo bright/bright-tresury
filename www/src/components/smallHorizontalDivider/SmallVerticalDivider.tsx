@@ -9,7 +9,7 @@ const useStyles = makeStyles(() =>
             fontWeight: 600,
             marginLeft: '8px',
             marginRight: '8px',
-            alignSelf: 'center',
+            alignSelf: 'flex-end',
         },
         blackDivider: {
             color: 'black',

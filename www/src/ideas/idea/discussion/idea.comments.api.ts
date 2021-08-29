@@ -1,6 +1,6 @@
-import { apiDelete, apiGet, apiPost } from '../../../api'
+import { apiDelete, apiGet, apiPatch, apiPost } from '../../../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { IdeaCommentDto, CreateIdeaCommentDto } from './idea.comment.dto'
+import { IdeaCommentDto, CreateIdeaCommentDto, UpdateIdeaCommentDto } from './idea.comment.dto'
 import { IDEAS_API_PATH } from '../../ideas.api'
 
 const getIdeaCommentsApiBasePath = (ideaId: string) => {
@@ -34,6 +34,20 @@ function createIdeaComment({ ideaId, data }: CreateIdeaCommentParams) {
 
 export const useCreateIdeaComment = () => {
     return useMutation(createIdeaComment)
+}
+
+export interface UpdateIdeaCommentParams {
+    ideaId: string
+    commentId: string
+    data: UpdateIdeaCommentDto
+}
+
+function updateIdeaComment({ ideaId, commentId, data }: UpdateIdeaCommentParams) {
+    return apiPatch<IdeaCommentDto>(`${getIdeaCommentsApiBasePath(ideaId)}/${commentId}`, data)
+}
+
+export function useUpdateIdeaComment() {
+    return useMutation(updateIdeaComment)
 }
 
 // DELETE

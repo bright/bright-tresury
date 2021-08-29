@@ -13,6 +13,9 @@ export class IdeaCommentDto {
     @ApiProperty({ description: 'Create date as timestamp ' })
     createdAt: number
 
+    @ApiProperty({ description: 'Update date as timestamp ' })
+    updatedAt: number
+
     @ApiProperty({ description: 'Thumbs up pressed count' })
     thumbsUp: number
 
@@ -26,10 +29,11 @@ export class IdeaCommentDto {
     @IsString()
     content: string
 
-    constructor({ id, author, createdAt, thumbsUp, thumbsDown, content }: IdeaComment) {
+    constructor({ id, author, createdAt, updatedAt, thumbsUp, thumbsDown, content }: IdeaComment) {
         this.id = id
         this.author = new IdeaCommentAuthorDto(author)
         this.createdAt = createdAt.getTime()
+        this.updatedAt = updatedAt.getTime()
         this.thumbsUp = thumbsUp
         this.thumbsDown = thumbsDown
         this.content = content

@@ -25,7 +25,7 @@ describe('IdeaProposalDetailsService', () => {
         idea = await createIdea({}, usr1SessionData, getIdeasService())
     })
 
-    describe('create', () => {
+    describe('create idea comment', () => {
         it('should create comment for existing idea', async () => {
             const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
@@ -42,7 +42,7 @@ describe('IdeaProposalDetailsService', () => {
         })
     })
 
-    describe('get', () => {
+    describe('get idea comment(s)', () => {
         it('should return saved comment', async () => {
             const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
@@ -70,7 +70,7 @@ describe('IdeaProposalDetailsService', () => {
         })
     })
 
-    describe('delete', () => {
+    describe('delete idea comment', () => {
         it('should delete saved comment', async () => {
             const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
@@ -107,6 +107,64 @@ describe('IdeaProposalDetailsService', () => {
             await expect(getIdeaCommentsService().delete(idea.id, comment.id, usr2SessionData.user)).rejects.toThrow(
                 ForbiddenException,
             )
+        })
+    })
+    describe('update idea comment', () => {
+        it('should update idea comment', async () => {
+            const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
+                content: 'This is a comment',
+            })
+            const updatedComment = await getIdeaCommentsService().update(
+                idea.id,
+                createdComment.id,
+                { content: 'Edit' },
+                usr1SessionData.user,
+            )
+
+            expect(updatedComment.id).toBe(createdComment.id)
+            expect(updatedComment.createdAt.getTime()).toBe(createdComment.createdAt.getTime())
+            expect(updatedComment.updatedAt.getTime()).not.toBe(createdComment.updatedAt.getTime())
+            expect(updatedComment.content).toBe('Edit')
+            expect(updatedComment.thumbsUp).toBe(createdComment.thumbsUp)
+            expect(updatedComment.thumbsDown).toBe(createdComment.thumbsDown)
+        })
+
+        it('should throw ForbiddenException when updating other user idea comment', async () => {
+            const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
+                content: 'This is a comment',
+            })
+            const usr2SessionData = await createSessionData({ username: 'usr_2', email: 'usr_2@example.com' })
+            await expect(
+                getIdeaCommentsService().update(idea.id, createdComment.id, { content: 'Edit' }, usr2SessionData.user),
+            ).rejects.toThrow(ForbiddenException)
+        })
+
+        it('should throw NotFoundException when updating comment to wrong idea', async () => {
+            const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
+                content: 'This is a comment',
+            })
+            await expect(
+                getIdeaCommentsService().update(
+                    '00000000-0000-0000-0000-000000000000',
+                    createdComment.id,
+                    { content: 'Edit' },
+                    usr1SessionData.user,
+                ),
+            ).rejects.toThrow(NotFoundException)
+        })
+
+        it('should throw NotFoundException when updating comment with wrong id', async () => {
+            const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
+                content: 'This is a comment',
+            })
+            await expect(
+                getIdeaCommentsService().update(
+                    idea.id,
+                    '00000000-0000-0000-0000-000000000000',
+                    { content: 'Edit' },
+                    usr1SessionData.user,
+                ),
+            ).rejects.toThrow(NotFoundException)
         })
     })
 })

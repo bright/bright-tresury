@@ -1,9 +1,9 @@
 import React from 'react'
-import Avatar from '../../../components/avatar/Avatar'
+import Avatar from '../../avatar/Avatar'
 import clsx from 'clsx'
-import Identicon from '../../../components/identicon/Identicon'
+import Identicon from '../../identicon/Identicon'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { CommentAuthorDto } from './idea.comment.dto'
+import { CommentAuthorDto } from '../../../ideas/idea/discussion/idea.comment.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

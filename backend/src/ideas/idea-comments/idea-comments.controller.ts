@@ -63,7 +63,7 @@ export class IdeaCommentsController {
         @Body() createIdeaCommentDto: CreateIdeaCommentDto,
         @ReqSession() session: SessionData,
     ): Promise<IdeaCommentDto> {
-        logger.info(`Creating new idea comment ${ideaId}...`)
+        logger.info(`Creating new idea comment for idea: ${ideaId}...`)
         const ideaComment = await this.ideaCommentsService.create(ideaId, session.user, createIdeaCommentDto)
         return new IdeaCommentDto(ideaComment)
     }
