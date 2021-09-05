@@ -567,21 +567,25 @@
     "errors": {
         "errorOccurredWhileLoadingIdeas": "An error occurred while loading ideas.",
         "errorOccurredWhileLoadingProposals": "An error occurred while loading proposals.",
-        "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
         "errorOccurredWhileLoadingIdea": "An error occurred while loading idea.",
+        "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
+        "errorOccurredWhileLoadingIdeaComments": "An error occurred while loading idea comments.",
         "errorOccurredWhileLoadingProposal": "An error occurred while loading proposal.",
         "errorOccurredWhileLoadingProposalMilestones": "An error occurred while loading proposal milestones.",
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
+        "errorOccurredWhileLoadingProposalComments": "An error occurred while loading proposal comments.",
         "somethingWentWrong": "Ooops... Something went wrong."
     },
     "loading": {
         "ideas": "We're loading the ideas. It may take a moment. Bear with us.",
         "idea": "We're loading the idea. It may take a moment. Bear with us.",
         "ideaMilestones": "We're loading the idea milestones. It may take a moment. Bear with us.",
+        "ideaComments": "We're loading the idea comments. It may take a moment. Bear with us.",
         "proposals": "We're loading the proposals. It may take a moment. Bear with us.",
         "proposal": "We're loading the proposal. It may take a moment. Bear with us.",
         "proposalMilestones": "We're loading the proposal milestones. It may take a moment. Bear with us.",
         "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us.",
         "stats": "We're loading the statistics. It may take a moment. Bear with us."
+        "proposalComments": "We're loading the proposal comments. It may take a moment. Bear with us.",
     }
 }

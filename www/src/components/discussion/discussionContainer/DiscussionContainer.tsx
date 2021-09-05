@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react'
-import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import { useSuccessfullyLoadedItemStyles } from '../../loading/useSuccessfullyLoadedItemStyles'
 
 interface OwnProp {}
 

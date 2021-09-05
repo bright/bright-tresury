@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IdeaComment } from '../entities/idea-comment.entity'
+import { IdeaComment } from '../../ideas/idea-comments/entities/idea-comment.entity'
 import { IsNotEmpty, IsString } from 'class-validator'
-import { IdeaCommentAuthorDto } from './idea-comment-author.dto'
+import { CommentAuthorDto } from './comment-author.dto'
+import { Comment } from '../comment.entity'
 
-export class IdeaCommentDto {
+export class CommentDto {
     @ApiProperty({ description: 'Comment Id' })
     id: string
 
-    @ApiProperty({ description: 'Information about comment author', type: IdeaCommentAuthorDto })
-    author: IdeaCommentAuthorDto
+    @ApiProperty({ description: 'Information about comment author', type: CommentAuthorDto })
+    author: CommentAuthorDto
 
     @ApiProperty({ description: 'Create date as timestamp ' })
     createdAt: number
@@ -29,9 +30,9 @@ export class IdeaCommentDto {
     @IsString()
     content: string
 
-    constructor({ id, author, createdAt, updatedAt, thumbsUp, thumbsDown, content }: IdeaComment) {
+    constructor({ id, author, createdAt, updatedAt, thumbsUp, thumbsDown, content }: Comment) {
         this.id = id
-        this.author = new IdeaCommentAuthorDto(author)
+        this.author = new CommentAuthorDto(author)
         this.createdAt = createdAt.getTime()
         this.updatedAt = updatedAt.getTime()
         this.thumbsUp = thumbsUp

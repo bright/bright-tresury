@@ -28,6 +28,7 @@ import { IdeaComment } from './idea-comments/entities/idea-comment.entity'
 import { IdeaCommentsService } from './idea-comments/idea-comments.service'
 import { IdeaNetworksService } from './idea-networks/idea-networks.service'
 import { IdeaNetworksController } from './idea-networks/idea-networks.controller'
+import { Comment } from '../comments/comment.entity'
 
 @Module({
     imports: [
@@ -39,7 +40,14 @@ import { IdeaNetworksController } from './idea-networks/idea-networks.controller
         MilestoneDetailsModule,
         ConfigModule,
         ProposalsModule,
-        TypeOrmModule.forFeature([Idea, IdeaNetwork, IdeaMilestonesRepository, IdeaMilestoneNetwork, IdeaComment]),
+        TypeOrmModule.forFeature([
+            Idea,
+            IdeaNetwork,
+            IdeaMilestonesRepository,
+            IdeaMilestoneNetwork,
+            IdeaComment,
+            Comment,
+        ]),
     ],
     providers: [
         IdeasService,

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import Link from '../../../components/link/Link'
+import Link from '../../link/Link'
 import { useTranslation } from 'react-i18next'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'

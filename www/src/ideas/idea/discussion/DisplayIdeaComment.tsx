@@ -1,24 +1,20 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { IdeaCommentDto, UpdateIdeaCommentDto } from './idea.comment.dto'
 import DisplayComment from '../../../components/discussion/displayComment/DisplayComment'
-import { IDEA_COMMENTS_QUERY_KEY_BASE, useDeleteIdeaComment, useUpdateIdeaComment } from './idea.comments.api'
+import { IDEA_COMMENTS_QUERY_KEY_BASE, useDeleteIdeaComment, useEditIdeaComment } from './idea.comments.api'
 import { useQueryClient } from 'react-query'
+import { CommentDto } from '../../../components/discussion/comment.dto'
 
 interface OwnProps {
     ideaId: string
-    comment: IdeaCommentDto
+    comment: CommentDto
 }
 export type DisplayIdeaCommentProps = OwnProps
 
 const DisplayIdeaComment = ({ ideaId, comment }: DisplayIdeaCommentProps) => {
     const { t } = useTranslation()
     const { mutateAsync: deleteIdeaComment, isError: isDeleteIdeaCommentError } = useDeleteIdeaComment()
-    const {
-        mutateAsync: updateIdeaComment,
-        isError: isUpdateIdeaCommentError,
-        reset: updateReset,
-    } = useUpdateIdeaComment()
+    const { mutateAsync: editIdeaComment, isError: isEditIdeaCommentError, reset: editReset } = useEditIdeaComment()
     const queryClient = useQueryClient()
     const deleteComment = async () => {
         await deleteIdeaComment(
@@ -31,10 +27,12 @@ const DisplayIdeaComment = ({ ideaId, comment }: DisplayIdeaCommentProps) => {
         )
     }
 
-    const updateComment = async (commentContent: string) => {
-        const updateIdeaCommentDto = { content: commentContent }
-        await updateIdeaComment(
-            { ideaId, commentId: comment.id, data: updateIdeaCommentDto },
+    const saveEditComment = async (commentContent: string) => {
+        const editIdeaCommentDto = {
+            content: commentContent,
+        }
+        await editIdeaComment(
+            { ideaId, commentId: comment.id, data: editIdeaCommentDto },
             {
                 onSuccess: async () => {
                     await queryClient.refetchQueries([IDEA_COMMENTS_QUERY_KEY_BASE, ideaId])
@@ -42,16 +40,15 @@ const DisplayIdeaComment = ({ ideaId, comment }: DisplayIdeaCommentProps) => {
             },
         )
     }
-    const deleteError = isDeleteIdeaCommentError ? t('discussion.deleteError') : undefined
-    const updateError = isUpdateIdeaCommentError ? t('discussion.editError') : undefined
-    const error = deleteError ?? updateError
+
     return (
         <DisplayComment
             comment={comment}
-            cancelEditComment={updateReset}
-            saveEditComment={updateComment}
+            cancelEditComment={editReset}
+            saveEditComment={saveEditComment}
+            editError={isEditIdeaCommentError ? t('discussion.editError') : undefined}
             deleteComment={deleteComment}
-            error={error}
+            deleteError={isDeleteIdeaCommentError ? t('discussion.deleteError') : undefined}
         />
     )
 }

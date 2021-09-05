@@ -27,8 +27,8 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 interface OwnProps {
-    onCancelClick: () => void
-    onSendClick: () => void
+    onCancelClick: () => any
+    onSendClick: () => any
     error?: Nil<string>
 }
 export type CancelSendButtonsProps = OwnProps

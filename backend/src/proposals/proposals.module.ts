@@ -15,6 +15,10 @@ import { ProposalsService } from './proposals.service'
 import { ConfigModule } from '../config/config.module'
 import { IsValidNetworkConstraint } from '../utils/network.validator'
 import { ProposalDetailsService } from './proposal-details/proposal-details.service'
+import { ProposalCommentsController } from './proposal-comments/proposal-comments.controller'
+import { ProposalCommentsService } from './proposal-comments/proposal-comments.service'
+import { Comment } from '../comments/comment.entity'
+import { ProposalComment } from './proposal-comments/entities/proposal-comment.entity'
 
 @Module({
     imports: [
@@ -24,10 +28,21 @@ import { ProposalDetailsService } from './proposal-details/proposal-details.serv
         SessionModule,
         IdeaProposalDetailsModule,
         MilestoneDetailsModule,
-        TypeOrmModule.forFeature([Proposal, ProposalMilestone]),
+        TypeOrmModule.forFeature([Proposal, ProposalMilestone, ProposalComment, Comment]),
     ],
-    controllers: [ProposalsController, ProposalMilestonesController, ProposalDetailsController],
-    providers: [ProposalsService, IsValidNetworkConstraint, ProposalMilestonesService, ProposalDetailsService],
+    controllers: [
+        ProposalsController,
+        ProposalMilestonesController,
+        ProposalDetailsController,
+        ProposalCommentsController,
+    ],
+    providers: [
+        ProposalsService,
+        IsValidNetworkConstraint,
+        ProposalMilestonesService,
+        ProposalDetailsService,
+        ProposalCommentsService,
+    ],
     exports: [ProposalsService],
 })
 export class ProposalsModule {}

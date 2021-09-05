@@ -1,8 +1,8 @@
 import React from 'react'
-import { CommentAuthorDto } from '../../../ideas/idea/discussion/idea.comment.dto'
 import { formatAddress } from '../../../components/identicon/utils'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import {useNetworks} from "../../../networks/useNetworks";
+import { useNetworks } from '../../../networks/useNetworks'
+import { CommentAuthorDto } from '../comment.dto'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         author: {
@@ -21,7 +21,9 @@ const Author = ({ author: { isEmailPasswordEnabled, username, web3address } }: A
     const classes = useStyles()
     const { network } = useNetworks()
     return (
-        <div className={classes.author}>{isEmailPasswordEnabled ? username : formatAddress(web3address, network.ss58Format)}</div>
+        <div className={classes.author}>
+            {isEmailPasswordEnabled ? username : formatAddress(web3address, network.ss58Format)}
+        </div>
     )
 }
 export default Author

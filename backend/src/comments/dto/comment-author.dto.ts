@@ -1,9 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { User } from '../../../users/user.entity'
-import { Nil } from '../../../utils/types'
+import { User } from '../../users/user.entity'
+import { Nil } from '../../utils/types'
 import { InternalServerErrorException } from '@nestjs/common'
 
-export class IdeaCommentAuthorDto {
+export class CommentAuthorDto {
     @ApiProperty({ description: 'User Id' })
     userId: string
     @ApiPropertyOptional({ description: 'Username of the user who create the comment' })

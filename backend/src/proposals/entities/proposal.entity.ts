@@ -7,6 +7,8 @@ import { IdeaMilestoneNetwork } from '../../ideas/idea-milestones/entities/idea-
 import { User } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
 import { ProposalMilestone } from '../proposal-milestones/entities/proposal-milestone.entity'
+import { IdeaComment } from '../../ideas/idea-comments/entities/idea-comment.entity'
+import { ProposalComment } from '../proposal-comments/entities/proposal-comment.entity'
 
 @Entity('proposals')
 export class Proposal extends BaseEntity {
@@ -40,6 +42,13 @@ export class Proposal extends BaseEntity {
     @Column({ nullable: false, type: 'integer' })
     blockchainProposalId: number
 
+    @OneToMany(() => IdeaComment, (ideaComment) => ideaComment.idea, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+    })
+    comments: ProposalComment[]
+
     @OneToMany(() => ProposalMilestone, (milestone) => milestone.proposal, {
         cascade: true,
         onDelete: 'CASCADE',
@@ -54,6 +63,7 @@ export class Proposal extends BaseEntity {
         ideaMilestoneNetwork: IdeaMilestoneNetwork,
         networkId: string,
         blockchainProposalId: number,
+        comments: ProposalComment[],
     ) {
         super()
         this.networkId = networkId
@@ -62,6 +72,7 @@ export class Proposal extends BaseEntity {
         this.ideaNetwork = ideaNetwork
         this.ideaMilestoneNetwork = ideaMilestoneNetwork
         this.blockchainProposalId = blockchainProposalId
+        this.comments = comments
     }
 
     isOwner(user: User) {

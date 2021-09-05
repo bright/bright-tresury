@@ -1,7 +1,7 @@
 import { apiDelete, apiGet, apiPatch, apiPost } from '../../../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { IdeaCommentDto, CreateIdeaCommentDto, UpdateIdeaCommentDto } from './idea.comment.dto'
 import { IDEAS_API_PATH } from '../../ideas.api'
+import { CommentDto, CreateCommentDto, EditCommentDto } from '../../../components/discussion/comment.dto'
 
 const getIdeaCommentsApiBasePath = (ideaId: string) => {
     return `${IDEAS_API_PATH}/${ideaId}/comments`
@@ -9,15 +9,15 @@ const getIdeaCommentsApiBasePath = (ideaId: string) => {
 
 // GET ALL
 
-async function getIdeaComments(ideaId: string): Promise<IdeaCommentDto[]> {
-    const result = await apiGet<IdeaCommentDto[]>(getIdeaCommentsApiBasePath(ideaId))
+async function getIdeaComments(ideaId: string): Promise<CommentDto[]> {
+    const result = await apiGet<CommentDto[]>(getIdeaCommentsApiBasePath(ideaId))
     result.sort((a, b) => b.createdAt - a.createdAt)
     return result
 }
 
 export const IDEA_COMMENTS_QUERY_KEY_BASE = 'ideaComments'
 
-export const useGetIdeaComments = (ideaId: string, options?: UseQueryOptions<IdeaCommentDto[]>) => {
+export const useGetIdeaComments = (ideaId: string, options?: UseQueryOptions<CommentDto[]>) => {
     return useQuery([IDEA_COMMENTS_QUERY_KEY_BASE, ideaId], () => getIdeaComments(ideaId), options)
 }
 
@@ -25,32 +25,35 @@ export const useGetIdeaComments = (ideaId: string, options?: UseQueryOptions<Ide
 
 export interface CreateIdeaCommentParams {
     ideaId: string
-    data: CreateIdeaCommentDto
+    data: CreateCommentDto
 }
 
 function createIdeaComment({ ideaId, data }: CreateIdeaCommentParams) {
-    return apiPost<IdeaCommentDto>(`${getIdeaCommentsApiBasePath(ideaId)}`, data)
+    return apiPost<CommentDto>(`${getIdeaCommentsApiBasePath(ideaId)}`, data)
 }
 
 export const useCreateIdeaComment = () => {
     return useMutation(createIdeaComment)
 }
 
-export interface UpdateIdeaCommentParams {
+// PATCH
+
+export interface EditIdeaCommentParams {
     ideaId: string
     commentId: string
-    data: UpdateIdeaCommentDto
+    data: EditCommentDto
 }
 
-function updateIdeaComment({ ideaId, commentId, data }: UpdateIdeaCommentParams) {
-    return apiPatch<IdeaCommentDto>(`${getIdeaCommentsApiBasePath(ideaId)}/${commentId}`, data)
+function editIdeaComment({ ideaId, commentId, data }: EditIdeaCommentParams) {
+    return apiPatch<CommentDto>(`${getIdeaCommentsApiBasePath(ideaId)}/${commentId}`, data)
 }
 
-export function useUpdateIdeaComment() {
-    return useMutation(updateIdeaComment)
+export function useEditIdeaComment() {
+    return useMutation(editIdeaComment)
 }
 
 // DELETE
+
 export interface DeleteIdeaCommentParams {
     ideaId: string
     commentId: string

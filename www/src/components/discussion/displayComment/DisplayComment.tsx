@@ -1,9 +1,8 @@
 import React, { useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import SmallVerticalDivider from '../../smallHorizontalDivider/SmallVerticalDivider'
-import { IdeaCommentDto } from '../../../ideas/idea/discussion/idea.comment.dto'
 import CommentAuthorImage from '../commentAuthorImage/CommentAuthorImage'
-import CommentOptionsMenu from '../../../ideas/idea/discussion/CommentOptionsMenu'
+import CommentOptionsMenu from '../commentOptionsMenu/CommentOptionsMenu'
 import Error from '../../error/Error'
 import { useAuth } from '../../../auth/AuthContext'
 import { Nil } from '../../../util/types'
@@ -11,6 +10,7 @@ import EditComment from '../editComment/EditComment'
 import Author from './Author'
 import CommentAge from './CommentAge'
 import CommentContent from './CommentContent'
+import { CommentDto } from '../comment.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -45,21 +45,26 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    comment: IdeaCommentDto
+    comment: CommentDto
+
     saveEditComment: (content: string) => Promise<void>
     cancelEditComment: () => void
+    editError?: Nil<string>
+
     deleteComment: () => Promise<void>
-    error?: Nil<string>
+    deleteError?: Nil<string>
 }
 export type DisplayCommentProps = OwnProps
 
 const DisplayComment = ({
-    comment: { author, createdAt, updatedAt, content },
-    deleteComment,
+    comment,
     saveEditComment,
     cancelEditComment,
-    error,
+    editError,
+    deleteComment,
+    deleteError,
 }: DisplayCommentProps) => {
+    const { author, createdAt, updatedAt, content } = comment
     const classes = useStyles()
     const { user } = useAuth()
     const isAuthor = user?.id && author.userId && user?.id === author.userId
@@ -91,11 +96,16 @@ const DisplayComment = ({
                 </div>
             </div>
             {editMode ? (
-                <EditComment onSendClick={onSendClick} onCancelClick={onCancelClick} value={content} />
+                <EditComment
+                    onSendClick={onSendClick}
+                    onCancelClick={onCancelClick}
+                    value={content}
+                    error={editError}
+                />
             ) : (
                 <CommentContent content={content} />
             )}
-            {error ? <Error className={classes.error} text={error} /> : <div style={{ height: '24px' }} />}
+            {deleteError ? <Error className={classes.error} text={deleteError} /> : <div style={{ height: '24px' }} />}
         </div>
     )
 }

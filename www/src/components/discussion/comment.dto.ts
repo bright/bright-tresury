@@ -1,6 +1,6 @@
-import { Nil } from '../../../util/types'
+import { Nil } from '../../util/types'
 
-export interface IdeaCommentDto {
+export interface CommentDto {
     id: string
     author: CommentAuthorDto
     createdAt: number
@@ -15,8 +15,8 @@ export interface CommentAuthorDto {
     username: Nil<string>
     isEmailPasswordEnabled: boolean
 }
-export interface CreateIdeaCommentDto {
+export interface CreateCommentDto {
     content: string
 }
 
-export type UpdateIdeaCommentDto = CreateIdeaCommentDto
+export type EditCommentDto = CreateCommentDto

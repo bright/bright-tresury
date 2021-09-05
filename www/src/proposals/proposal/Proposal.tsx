@@ -52,7 +52,7 @@ const Proposal = () => {
                             <ProposalMilestones proposal={proposal} canEdit={canEdit} />
                         </Route>
                         <Route exact={true} path={`${path}/${ProposalContentType.Discussion}`}>
-                            <ProposalDiscussion />
+                            <ProposalDiscussion proposalIndex={proposal.proposalIndex} />
                         </Route>
                         <Route exact={true} path={`${path}/${ProposalContentType.Voting}`}>
                             {proposal ? <ProposalVoting proposal={proposal} /> : null}

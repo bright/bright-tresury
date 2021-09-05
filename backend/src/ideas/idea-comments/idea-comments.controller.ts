@@ -10,11 +10,11 @@ import {
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { SessionGuard } from '../../auth/session/guard/session.guard'
-import { IdeaCommentDto } from './dto/idea-comment.dto'
-import { CreateIdeaCommentDto } from './dto/create-idea-comment.dto'
+import { CommentDto } from '../../comments/dto/comment.dto'
+import { CreateCommentDto } from '../../comments/dto/create-comment.dto'
 import { IdeaCommentsService } from './idea-comments.service'
 import { getLogger } from '../../logging.module'
-import { UpdateIdeaCommentDto } from './dto/update-idea-comment.dto'
+import { UpdateCommentDto } from '../../comments/dto/update-comment.dto'
 
 const logger = getLogger()
 
@@ -38,9 +38,9 @@ export class IdeaCommentsController {
     @ApiNotFoundResponse({
         description: 'Idea with the given id not found.',
     })
-    async getAll(@Param('ideaId') ideaId: string): Promise<IdeaCommentDto[]> {
+    async getAll(@Param('ideaId') ideaId: string): Promise<CommentDto[]> {
         const ideaComments = await this.ideaCommentsService.findAll(ideaId)
-        return ideaComments.map((ideaComment) => new IdeaCommentDto(ideaComment))
+        return ideaComments.map(({ comment }) => new CommentDto(comment))
     }
 
     @Post()
@@ -50,7 +50,7 @@ export class IdeaCommentsController {
     })
     @ApiCreatedResponse({
         description: 'New idea comment created.',
-        type: IdeaCommentDto,
+        type: CommentDto,
     })
     @ApiNotFoundResponse({
         description: 'Idea with the given id not found.',
@@ -58,17 +58,17 @@ export class IdeaCommentsController {
     @UseGuards(SessionGuard)
     async create(
         @Param('ideaId') ideaId: string,
-        @Body() createIdeaCommentDto: CreateIdeaCommentDto,
+        @Body() createCommentDto: CreateCommentDto,
         @ReqSession() session: SessionData,
-    ): Promise<IdeaCommentDto> {
+    ): Promise<CommentDto> {
         logger.info(`Creating new idea comment for idea: ${ideaId}...`)
-        const ideaComment = await this.ideaCommentsService.create(ideaId, session.user, createIdeaCommentDto)
-        return new IdeaCommentDto(ideaComment)
+        const { comment } = await this.ideaCommentsService.create(ideaId, session.user, createCommentDto)
+        return new CommentDto(comment)
     }
 
     @ApiOkResponse({
         description: 'Patched idea comment.',
-        type: IdeaCommentDto,
+        type: CommentDto,
     })
     @ApiBadRequestResponse({
         description: 'Comment content must not be empty.',
@@ -81,12 +81,12 @@ export class IdeaCommentsController {
     async update(
         @Param('ideaId') ideaId: string,
         @Param('commentId') commentId: string,
-        @Body() updateIdeaCommentDto: UpdateIdeaCommentDto,
+        @Body() updateCommentDto: UpdateCommentDto,
         @ReqSession() session: SessionData,
-    ): Promise<IdeaCommentDto> {
-        logger.info(`Updating idea comment ${commentId}...`, updateIdeaCommentDto)
-        const ideaComment = await this.ideaCommentsService.update(ideaId, commentId, updateIdeaCommentDto, session.user)
-        return new IdeaCommentDto(ideaComment)
+    ): Promise<CommentDto> {
+        logger.info(`Updating idea comment ${commentId}...`, updateCommentDto)
+        const { comment } = await this.ideaCommentsService.update(ideaId, commentId, updateCommentDto, session.user)
+        return new CommentDto(comment)
     }
 
     @ApiOkResponse({

@@ -1,18 +1,20 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import EnterComment from '../../../components/discussion/enterComment/EnterComment'
-import { IDEA_COMMENTS_QUERY_KEY_BASE, useCreateIdeaComment } from './idea.comments.api'
+import { PROPOSAL_COMMENTS_QUERY_KEY_BASE, useCreateProposalComment } from './proposal.comments.api'
 import { useQueryClient } from 'react-query'
 import { CreateCommentDto } from '../../../components/discussion/comment.dto'
+import { useNetworks } from '../../../networks/useNetworks'
 
 interface OwnProps {
-    ideaId: string
+    proposalIndex: number
 }
-export type EnterIdeaCommentProps = OwnProps
+export type EnterProposalCommentProps = OwnProps
 
-const EnterIdeaComment = ({ ideaId }: EnterIdeaCommentProps) => {
+const EnterProposalComment = ({ proposalIndex }: EnterProposalCommentProps) => {
     const { t } = useTranslation()
-    const { mutateAsync: createIdeaComment, isError, reset } = useCreateIdeaComment()
+    const { network } = useNetworks()
+    const { mutateAsync: createProposalComment, isError, reset } = useCreateProposalComment()
 
     const queryClient = useQueryClient()
     const onSendClick = async (commentContent: string) => {
@@ -20,11 +22,11 @@ const EnterIdeaComment = ({ ideaId }: EnterIdeaCommentProps) => {
             content: commentContent,
         } as CreateCommentDto
 
-        await createIdeaComment(
-            { ideaId: ideaId, data: ideaCommentDto },
+        await createProposalComment(
+            { proposalIndex, network: network.id, data: ideaCommentDto },
             {
                 onSuccess: async () => {
-                    await queryClient.refetchQueries([IDEA_COMMENTS_QUERY_KEY_BASE, ideaId])
+                    await queryClient.refetchQueries([PROPOSAL_COMMENTS_QUERY_KEY_BASE, proposalIndex])
                 },
             },
         )
@@ -38,4 +40,4 @@ const EnterIdeaComment = ({ ideaId }: EnterIdeaCommentProps) => {
         />
     )
 }
-export default EnterIdeaComment
+export default EnterProposalComment

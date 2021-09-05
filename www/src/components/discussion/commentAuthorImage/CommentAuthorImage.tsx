@@ -3,7 +3,7 @@ import Avatar from '../../avatar/Avatar'
 import clsx from 'clsx'
 import Identicon from '../../identicon/Identicon'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { CommentAuthorDto } from '../../../ideas/idea/discussion/idea.comment.dto'
+import { CommentAuthorDto } from '../comment.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

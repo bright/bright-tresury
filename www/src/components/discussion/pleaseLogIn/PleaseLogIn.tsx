@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Link from '../../../components/link/Link'
+import Link from '../../link/Link'
 import { useHistory } from 'react-router'
 import { ROUTE_SIGNIN } from '../../../routes/routes'
 const useStyles = makeStyles((theme: Theme) =>

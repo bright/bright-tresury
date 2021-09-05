@@ -97,6 +97,7 @@ export const createUserSessionHandler = async (
             { id: 'password', value: password },
         ],
     }
+
     const res: any = await request(app).post(`/api/v1/signup`).send(signupData)
     const user = await app.get(getRepositoryToken(User)).findOne({ email })
     return createSessionHandler(res, user)
