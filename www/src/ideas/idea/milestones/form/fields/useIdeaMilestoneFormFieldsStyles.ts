@@ -15,5 +15,13 @@ export const useIdeaMilestoneFormFieldsStyles = makeStyles((theme: Theme) =>
                 width: '100%',
             },
         },
+        ideaMilestoneNetworkInput: {
+            paddingTop: '8px',
+            paddingBottom: '24px',
+        },
+        withBorder: {
+            border: '1px solid',
+            borderColor: theme.palette.background.paper,
+        },
     }),
 )
