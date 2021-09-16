@@ -6,6 +6,8 @@ export interface ProposalMilestoneDto {
     details: MilestoneDetailsDto
 }
 
-export type CreateIdeaMilestoneDto = Omit<ProposalMilestoneDto, 'id' | 'ordinalNumber'>
+export type CreateIdeaMilestoneDto = Omit<ProposalMilestoneDto, 'id' | 'details'> & {
+    details: CreateIdeaMilestoneDto
+}
 
 export type PatchIdeaMilestoneDto = Partial<ProposalMilestoneDto>

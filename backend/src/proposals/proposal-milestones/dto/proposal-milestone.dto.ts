@@ -10,24 +10,13 @@ export class ProposalMilestoneDto {
     id: string
 
     @ApiProperty({
-        description: 'Ordinal number of the milestone',
-    })
-    ordinalNumber: number
-
-    @ApiPropertyOptional({
-        description: 'Blockchain address of the proposal milestone beneficiary',
-    })
-    beneficiary: Nil<string>
-
-    @ApiProperty({
         description: 'Details of the milestone',
         type: [MilestoneDetails],
     })
     details: MilestoneDetails
 
-    constructor({ id, ordinalNumber, details }: ProposalMilestone) {
+    constructor({ id, details }: ProposalMilestone) {
         this.id = id
-        this.ordinalNumber = ordinalNumber
         this.details = details
     }
 }

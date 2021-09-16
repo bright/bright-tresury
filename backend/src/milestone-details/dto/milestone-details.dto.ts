@@ -25,10 +25,24 @@ export class MilestoneDetailsDto {
     })
     description: Nil<string>
 
-    constructor({ subject, dateFrom, dateTo, description }: MilestoneDetails) {
+    @ApiProperty({
+        description: 'Date of creating the milestone',
+        type: Date,
+    })
+    createdAt: Date
+
+    @ApiProperty({
+        description: 'Date of updating the milestone',
+        type: Date,
+    })
+    updatedAt: Date
+
+    constructor({ subject, dateFrom, dateTo, description, createdAt, updatedAt }: MilestoneDetails) {
         this.subject = subject
         this.dateFrom = dateFrom
         this.dateTo = dateTo
         this.description = description
+        this.createdAt = createdAt
+        this.updatedAt = updatedAt
     }
 }

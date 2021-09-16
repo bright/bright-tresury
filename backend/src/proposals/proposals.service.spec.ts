@@ -7,6 +7,7 @@ import { IdeaProposalDetails } from '../idea-proposal-details/idea-proposal-deta
 import { createIdeaMilestone } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { Proposal } from './entities/proposal.entity'
+import { ProposalMilestone } from './proposal-milestones/entities/proposal-milestone.entity'
 import { ProposalsService } from './proposals.service'
 import { mockedBlockchainService, setUpIdea, setUpIdeaWithMilestone } from './spec.helpers'
 
@@ -267,18 +268,56 @@ describe('ProposalsService', () => {
             expect(savedProposal!.milestones!.length).toBe(2)
 
             const savedMilestone1 = savedProposal!.milestones![0]
-            expect(savedMilestone1.ordinalNumber).toBe(1)
             expect(savedMilestone1.details.subject).toBe('subject')
             expect(savedMilestone1.details.description).toBe('description')
             expect(savedMilestone1.details.dateFrom).toBe('2021-04-20')
             expect(savedMilestone1.details.dateTo).toBe('2021-04-21')
 
             const savedMilestone2 = savedProposal!.milestones![1]
-            expect(savedMilestone2.ordinalNumber).toBe(2)
             expect(savedMilestone2.details.subject).toBe('subject1')
             expect(savedMilestone2.details.description).toBe(null)
             expect(savedMilestone2.details.dateFrom).toBe(null)
             expect(savedMilestone2.details.dateTo).toBe(null)
+        })
+
+        it('should create proposal milestones and save the createdBy order', async () => {
+            const { idea, ideaNetwork, sessionHandler } = await setUpIdea(app(), undefined, {})
+            const networks = [{ name: NETWORKS.POLKADOT, value: 100 }]
+
+            const createMilestone = async (subject: string) => {
+                const milestone = await createIdeaMilestone(
+                    idea.id,
+                    {
+                        networks,
+                        details: { subject },
+                    },
+                    sessionHandler.sessionData,
+                )
+                idea.milestones.push(milestone)
+            }
+
+            await createMilestone('1')
+            await createMilestone('2')
+            await createMilestone('3')
+            await createMilestone('4')
+            await createMilestone('5')
+
+            const savedProposal = await proposalsService().createFromIdea(idea, 3, ideaNetwork)
+
+            const proposalMilestonesRepository = app().get<Repository<ProposalMilestone>>(
+                getRepositoryToken(ProposalMilestone),
+            )
+
+            const milestones = await proposalMilestonesRepository.find({
+                where: { proposalId: savedProposal.id },
+                order: { createdAt: 'ASC' },
+            })
+
+            expect(milestones[0].details.subject).toBe('1')
+            expect(milestones[1].details.subject).toBe('2')
+            expect(milestones[2].details.subject).toBe('3')
+            expect(milestones[3].details.subject).toBe('4')
+            expect(milestones[4].details.subject).toBe('5')
         })
 
         it('should return proposal entity', async () => {

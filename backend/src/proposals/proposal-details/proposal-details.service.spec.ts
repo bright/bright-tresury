@@ -79,7 +79,7 @@ describe('ProposalDetailsService', () => {
             ).rejects.toThrow(ConflictException)
         })
 
-        it(`should throw ForbiddenException when user with no address assigned tries to create`, async () => {
+        it(`should throw ForbiddenException when user with no address assigned tries to create`, async (done) => {
             const proposal = proposals[0]
             const notProposerSessionData = await createSessionData()
 
@@ -93,6 +93,7 @@ describe('ProposalDetailsService', () => {
                     notProposerSessionData,
                 ),
             ).rejects.toThrow(ForbiddenException)
+            done()
         })
 
         it(`should throw ForbiddenException when user with not a proposer address assigned tries to create`, async () => {

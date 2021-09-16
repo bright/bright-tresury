@@ -32,6 +32,10 @@ export class MilestoneDetailsService {
         return (await this.detailsRepository.findOne(details.id))!
     }
 
+    async delete(details: MilestoneDetails): Promise<void> {
+        await this.detailsRepository.remove(details)
+    }
+
     private validateDates({ dateFrom, dateTo }: { dateFrom?: Nil<Date>; dateTo?: Nil<Date> }) {
         if (dateFrom && dateTo && isBefore(new Date(dateTo), new Date(dateFrom))) {
             throw new BadRequestException('End date of the milestone cannot be prior to the start date')

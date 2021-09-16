@@ -96,4 +96,17 @@ describe('MilestoneDetailsService', () => {
             expect(updatedDetails.description).toBe('Updated description')
         })
     })
+
+    describe('delete', () => {
+        it('should delete details', async () => {
+            const details = await getService().create({
+                subject: 'Test subject',
+            })
+
+            await getService().delete(details)
+
+            const deletedDetails = await getRepository().findOne(details.id)
+            expect(deletedDetails).toBeUndefined()
+        })
+    })
 })

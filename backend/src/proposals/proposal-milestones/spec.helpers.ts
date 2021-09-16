@@ -1,7 +1,10 @@
 import { INestApplication } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { createUserSessionHandlerWithVerifiedEmail } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
+import {
+    createUserSessionHandlerWithVerifiedEmail,
+    SessionHandler,
+} from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
 import { IdeaProposalDetailsService } from '../../idea-proposal-details/idea-proposal-details.service'
 import { MilestoneDetailsDto } from '../../milestone-details/dto/milestone-details.dto'
@@ -17,6 +20,17 @@ export const setUp = async (
 ) => {
     const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app)
 
+    const proposal = await createProposal(app, sessionHandler, proposalDto, detailsDto)
+
+    return { proposal, sessionHandler }
+}
+
+export const createProposal = async (
+    app: INestApplication,
+    sessionHandler: SessionHandler,
+    proposalDto?: Partial<Proposal>,
+    detailsDto?: Partial<IdeaProposalDetailsDto>,
+) => {
     const detailsService = app.get<IdeaProposalDetailsService>(IdeaProposalDetailsService)
     const details = await detailsService.create({ title: 'title', ...detailsDto })
 
@@ -28,9 +42,7 @@ export const setUp = async (
         details,
         ...proposalDto,
     })
-    const savedProposal = await proposalsRepository.save(proposal)
-
-    return { proposal: savedProposal, sessionHandler }
+    return proposalsRepository.save(proposal)
 }
 
 export const createProposalMilestone = async (
@@ -45,7 +57,6 @@ export const createProposalMilestone = async (
     const proposalMilestonesRepository = app.get<Repository<ProposalMilestone>>(getRepositoryToken(ProposalMilestone))
     const milestone = await proposalMilestonesRepository.create({
         proposal,
-        ordinalNumber: 1,
         details,
         ...milestoneDto,
     })

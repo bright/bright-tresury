@@ -146,21 +146,21 @@ export class ProposalsService {
     }
 
     private async assignMilestones(ideaMilestones: IdeaMilestone[], proposal: Proposal): Promise<ProposalMilestone[]> {
-        return await Promise.all(
-            ideaMilestones.map(async (ideaMilestone) => {
-                const details = await this.milestoneDetailsService.create({
-                    subject: ideaMilestone.details.subject,
-                    dateTo: ideaMilestone.details.dateTo,
-                    dateFrom: ideaMilestone.details.dateFrom,
-                    description: ideaMilestone.details.description,
-                })
-                const proposalMilestone = await this.proposalMilestonesRepository.create({
-                    ordinalNumber: ideaMilestone.ordinalNumber,
-                    details,
-                    proposal,
-                })
-                return await this.proposalMilestonesRepository.save(proposalMilestone)
-            }),
-        )
+        const proposalMilestones: ProposalMilestone[] = []
+        ideaMilestones.sort((a, b) => a.createdAt.valueOf() - b.createdAt.valueOf())
+        for (const ideaMilestone of ideaMilestones) {
+            const details = await this.milestoneDetailsService.create({
+                subject: ideaMilestone.details.subject,
+                dateTo: ideaMilestone.details.dateTo,
+                dateFrom: ideaMilestone.details.dateFrom,
+                description: ideaMilestone.details.description,
+            })
+            const proposalMilestone = await this.proposalMilestonesRepository.create({
+                details,
+                proposal,
+            })
+            proposalMilestones.push(await this.proposalMilestonesRepository.save(proposalMilestone))
+        }
+        return proposalMilestones
     }
 }

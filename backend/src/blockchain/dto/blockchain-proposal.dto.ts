@@ -76,12 +76,12 @@ export class BlockchainProposal {
     }
 
     isEditable = () => {
-        return this.status !== BlockchainProposalStatus.Approval
+        return this.status === BlockchainProposalStatus.Proposal
     }
 
     isEditableOrThrow = () => {
         if (!this.isEditable()) {
-            throw new BadRequestException('You cannot edit an approved proposal details')
+            throw new BadRequestException('You cannot edit an approved/rewarded/rejected proposal details')
         }
     }
 }

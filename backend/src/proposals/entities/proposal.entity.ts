@@ -1,3 +1,4 @@
+import { ForbiddenException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
@@ -65,5 +66,11 @@ export class Proposal extends BaseEntity {
 
     isOwner(user: User) {
         return this.ownerId === user.id
+    }
+
+    isOwnerOrThrow = (user: User) => {
+        if (!this.isOwner(user)) {
+            throw new ForbiddenException('The given user cannot edit this proposal')
+        }
     }
 }

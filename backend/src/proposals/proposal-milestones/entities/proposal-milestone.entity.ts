@@ -11,9 +11,6 @@ export class ProposalMilestone extends BaseEntity {
     @Column({ nullable: false, type: 'text' })
     proposalId!: string
 
-    @Column({ type: 'integer' })
-    ordinalNumber!: number
-
     @OneToOne(() => MilestoneDetails, { eager: true })
     @JoinColumn()
     details!: MilestoneDetails

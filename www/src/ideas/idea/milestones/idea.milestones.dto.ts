@@ -1,4 +1,4 @@
-import { MilestoneDetailsDto } from '../../../milestone-details/milestone-details.dto'
+import { CreateMilestoneDetailsDto, MilestoneDetailsDto } from '../../../milestone-details/milestone-details.dto'
 import { Nil } from '../../../util/types'
 
 export enum IdeaMilestoneStatus {
@@ -21,7 +21,9 @@ export interface IdeaMilestoneNetworkDto {
     value: number
 }
 
-export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumber' | 'status'>
+export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumber' | 'status' | 'details'> & {
+    details: CreateMilestoneDetailsDto
+}
 
 export type PatchIdeaMilestoneDto = Partial<IdeaMilestoneDto>
 
