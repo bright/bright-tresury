@@ -35,7 +35,8 @@ const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
             <NetworkInput
                 className={classes.inputField}
                 inputName={'currentNetwork.value'}
-                ideaNetwork={values.currentNetwork}
+                networkId={values.currentNetwork.name}
+                value={values.currentNetwork.value}
             />
         </>
     )

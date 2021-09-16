@@ -93,7 +93,12 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
                     <text className={classes.text}>{idea.details.title}</text>
                     <Label className={classes.spacing} label={t('idea.details.beneficiary')} />
                     <AddressInfo address={idea.beneficiary} ellipsed={false} />
-                    <NetworkInput className={classes.spacing} inputName={'value'} ideaNetwork={idea.currentNetwork} />
+                    <NetworkInput
+                        className={classes.spacing}
+                        inputName={'value'}
+                        networkId={idea.currentNetwork.name}
+                        value={idea.currentNetwork.value}
+                    />
                     <FormFooter>
                         {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
                         <FormFooterButtonsContainer>

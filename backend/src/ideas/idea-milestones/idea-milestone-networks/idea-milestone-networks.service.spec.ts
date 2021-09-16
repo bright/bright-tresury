@@ -31,7 +31,9 @@ describe('IdeaMilestoneNetworksService', () => {
 
     describe('update', () => {
         it('should update networks value', async () => {
-            const { ideaMilestoneNetworkId, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { ideaMilestoneNetworkId, sessionData } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
 
             await getService().update(ideaMilestoneNetworkId, { value: 5 }, sessionData)
 
@@ -42,7 +44,9 @@ describe('IdeaMilestoneNetworksService', () => {
         it(`should throw forbidden exception when trying to update network of other user's idea`, async () => {
             const otherSessionData = await createSessionData({ username: 'other', email: 'other@example.com' })
 
-            const { ideaMilestoneNetworkId } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { ideaMilestoneNetworkId } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
 
             await expect(getService().update(ideaMilestoneNetworkId, { value: 5 }, otherSessionData)).rejects.toThrow(
                 ForbiddenException,
@@ -50,13 +54,17 @@ describe('IdeaMilestoneNetworksService', () => {
         })
 
         it(`should throw not found exception when trying to update not existing network`, async () => {
-            const { sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { sessionData } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
 
             await expect(getService().update(uuid(), { value: 5 }, sessionData)).rejects.toThrow(NotFoundException)
         })
 
         it(`should throw forbidden exception when trying to update network with ${IdeaMilestoneNetworkStatus.TurnedIntoProposal} status`, async () => {
-            const { ideaMilestoneNetworkId, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { ideaMilestoneNetworkId, sessionData } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
             await getRepository().save({
                 id: ideaMilestoneNetworkId,
                 status: IdeaMilestoneNetworkStatus.TurnedIntoProposal,
@@ -68,14 +76,18 @@ describe('IdeaMilestoneNetworksService', () => {
         })
 
         it(`should resolve when trying to update network with ${IdeaMilestoneNetworkStatus.Pending} status`, async () => {
-            const { ideaMilestoneNetworkId, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { ideaMilestoneNetworkId, sessionData } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
             await getRepository().save({ id: ideaMilestoneNetworkId, status: IdeaMilestoneNetworkStatus.Pending })
 
             await expect(getService().update(ideaMilestoneNetworkId, { value: 5 }, sessionData)).resolves.toBeDefined()
         })
 
         it(`should resolve when trying to update network with ${IdeaMilestoneNetworkStatus.Active} status`, async () => {
-            const { ideaMilestoneNetworkId, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { ideaMilestoneNetworkId, sessionData } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
             await getRepository().save({ id: ideaMilestoneNetworkId, status: IdeaMilestoneNetworkStatus.Active })
 
             await expect(getService().update(ideaMilestoneNetworkId, { value: 5 }, sessionData)).resolves.toBeDefined()

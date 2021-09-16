@@ -61,7 +61,7 @@ const AdditionalNetworkDetailsCard = ({ ideaNetwork, isOwner }: AdditionalNetwor
                     <Label label={t('idea.details.net')} />
                     <TextField value={selectedNetwork.name} disabled={true} />
                 </FormGroup>
-                <NetworkInput ideaNetwork={ideaNetwork} readonly={true} />
+                <NetworkInput networkId={ideaNetwork.name} value={ideaNetwork.value} readonly={true} />
             </div>
         </NetworkCard>
     )

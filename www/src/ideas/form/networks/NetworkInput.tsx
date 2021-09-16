@@ -8,7 +8,6 @@ import { ClassNameProps } from '../../../components/props/className.props'
 import { Label } from '../../../components/text/Label'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
-import { EditIdeaNetworkDto } from '../../ideas.dto'
 import Bond from './Bond'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,18 +34,19 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     inputName?: string
-    ideaNetwork: EditIdeaNetworkDto
     readonly?: boolean
+    networkId: string
+    value: number
 }
 
 export type NetworkInputProps = OwnProps & ClassNameProps
 
-const NetworkInput = ({ inputName, ideaNetwork, className, readonly = false }: NetworkInputProps) => {
+const NetworkInput = ({ inputName, networkId, value, className, readonly = false }: NetworkInputProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { networks } = useNetworks()
 
-    const selectedNetwork = networks.find((n) => n.id === ideaNetwork.name)!
+    const selectedNetwork = networks.find((n) => n.id === networkId)!
 
     return (
         <div className={clsx(classes.root, className)}>
@@ -65,15 +65,15 @@ const NetworkInput = ({ inputName, ideaNetwork, className, readonly = false }: N
                         <Label label={t('idea.details.form.networks.reward')} />
                         <TextField
                             className={classes.value}
+                            disabled={true}
+                            value={value}
                             placeholder={t('idea.details.form.networks.reward')}
                             endAdornment={selectedNetwork.currency}
-                            disabled={true}
-                            value={ideaNetwork.value}
                         />
                     </>
                 )}
             </div>
-            <Bond className={classes.bond} ideaNetwork={ideaNetwork} />
+            <Bond className={classes.bond} network={selectedNetwork} value={value} />
         </div>
     )
 }

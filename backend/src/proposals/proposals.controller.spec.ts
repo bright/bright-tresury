@@ -12,6 +12,7 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { ProposalDto } from './dto/proposal.dto'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
+import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
 
 const baseUrl = '/api/v1/proposals'
 
@@ -74,7 +75,7 @@ describe(`/api/v1/proposals`, () => {
         ideaMilestone = await createIdeaMilestone(
             ideaWithMilestone.id,
             {
-                networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
                 details: {
                     subject: 'ideaMilestoneSubject',
                     description: 'description',

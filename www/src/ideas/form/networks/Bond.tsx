@@ -7,9 +7,8 @@ import InformationTip from '../../../components/info/InformationTip'
 import { ClassNameProps } from '../../../components/props/className.props'
 import { Label } from '../../../components/text/Label'
 import { calculateBondValue } from '../../../networks/bondUtil'
-import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
-import { EditIdeaNetworkDto } from '../../ideas.dto'
+import { Network } from '../../../networks/networks.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,29 +34,25 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    ideaNetwork: EditIdeaNetworkDto
+    network: Network
+    value: number
 }
 
 export type BondProps = OwnProps & ClassNameProps
 
-const Bond = ({ ideaNetwork, className }: BondProps) => {
+const Bond = ({ network, value, className }: BondProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { networks } = useNetworks()
 
-    const selectedNetwork = networks.find((n) => n.id === ideaNetwork.name)!
-
-    const bond = calculateBondValue(ideaNetwork.value, selectedNetwork.bond.percentage, selectedNetwork.bond.minValue)
+    const bond = calculateBondValue(value, network.bond.percentage, network.bond.minValue)
 
     const tipLabel =
-        bond === selectedNetwork.bond.minValue ? (
+        bond === network.bond.minValue ? (
             t('idea.details.form.networks.bond.min')
         ) : (
             <Trans
                 i18nKey="idea.details.form.networks.bond.percentage"
-                values={{
-                    percentage: selectedNetwork.bond.percentage,
-                }}
+                values={{ percentage: network.bond.percentage }}
             />
         )
 

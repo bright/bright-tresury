@@ -14,6 +14,7 @@ import { createIdea, createIdeaMilestone, createSessionData } from '../spec.help
 import { IdeaMilestoneDto } from './dto/idea-milestone.dto'
 import { IdeaMilestone } from './entities/idea-milestone.entity'
 import { IdeaMilestonesService } from './idea-milestones.service'
+import { IdeaMilestoneNetworkStatus } from './entities/idea-milestone-network-status'
 
 const baseUrl = (ideaId: string) => `/api/v1/ideas/${ideaId}/milestones`
 
@@ -26,7 +27,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
     let sessionHandler: SessionHandler
 
     const milestoneDto = {
-        networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+        networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
         details: {
             subject: 'subject',
         },
@@ -106,7 +107,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'ideaMilestoneSubject',
@@ -184,7 +185,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'subject',
@@ -630,7 +631,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'ideaMilestoneSubject',

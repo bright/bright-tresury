@@ -92,7 +92,8 @@ const AdditionalNetworkCard = ({
                     <NetworkInput
                         className={classes.inputField}
                         inputName={`otherNetworks[${index}].value`}
-                        ideaNetwork={ideaNetwork}
+                        networkId={ideaNetwork.name}
+                        value={ideaNetwork.value}
                     />
                 </div>
                 <Button className={classes.removeButton} variant={'text'} onClick={removeNetwork}>

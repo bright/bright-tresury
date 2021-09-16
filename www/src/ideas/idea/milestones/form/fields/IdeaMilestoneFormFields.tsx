@@ -10,8 +10,12 @@ import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
 import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
 import NetworkCard from '../../../../../components/network/NetworkCard'
 import { IdeaMilestoneNetworkDto } from '../../idea.milestones.dto'
-import { Network } from '../../../../../networks/networks.dto'
 import clsx from 'clsx'
+import { findNetwork, isSameNetwork } from '../../idea.milestones.utils'
+import Bond from '../../../../form/networks/Bond'
+import NetworkInput from '../../../../form/networks/NetworkInput'
+import Status from '../../../../../components/status/Status'
+import IdeaMilestoneNetworkStatusIndicator from '../../status/IdeaMilestoneNetworkStatus'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
@@ -25,14 +29,14 @@ export type IdeaMilestoneFormFieldsProps = OwnProps
 const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsProps) => {
     const classes = useIdeaMilestoneFormFieldsStyles()
     const { t } = useTranslation()
-    const {
-        network: { currency },
-        networks,
-    } = useNetworks()
-    const findNetwork = (ideaMilestoneNetworkDto: IdeaMilestoneNetworkDto) =>
-        networks.find((network) => ideaMilestoneNetworkDto.name === network.id)
-    const compareNetworks = (network1: IdeaMilestoneNetworkDto, network2: IdeaMilestoneNetworkDto) =>
-        (network1.name ?? '').localeCompare(network2.name)
+    const { network: currentNetwork, networks } = useNetworks()
+
+    const compareNetworks = (network1: IdeaMilestoneNetworkDto, network2: IdeaMilestoneNetworkDto) => {
+        // sort networks so current network is always first
+        if (isSameNetwork(network1, currentNetwork)) return -1
+        if (isSameNetwork(network2, currentNetwork)) return 1
+        return (network1.name ?? '').localeCompare(network2.name)
+    }
 
     return (
         <div className={classes.root}>
@@ -46,22 +50,20 @@ const IdeaMilestoneFormFields = ({ values, readonly }: IdeaMilestoneFormFieldsPr
             />
             <DateRangeInput readonly={readonly} />
             {values.networks.sort(compareNetworks).map((ideaMilestoneNetworkDto, idx) => {
-                const network = findNetwork(ideaMilestoneNetworkDto)
-                const label = `${t(`${translationKeyPrefix}.budget`)} ${network?.name ?? ''}`
+                const network = findNetwork(ideaMilestoneNetworkDto, networks)
                 return (
-                    <NetworkCard
-                        networks={network ? [network] : undefined}
-                        className={clsx(classes.narrowField, classes.withBorder)}
-                    >
-                        <Input
-                            name={`networks[${idx}].value`}
-                            type={`number`}
-                            label={label}
-                            key={idx}
-                            endAdornment={currency}
-                            textFieldColorScheme={TextFieldColorScheme.Dark}
-                            className={classes.ideaMilestoneNetworkInput}
-                            disabled={readonly}
+                    <NetworkCard networks={network ? [network] : undefined} className={clsx(classes.withBorder)}>
+                        <IdeaMilestoneNetworkStatusIndicator
+                            status={ideaMilestoneNetworkDto.status}
+                            sublabel={network?.name ?? ''}
+                            className={classes.statusIndicator}
+                        />
+                        <NetworkInput
+                            inputName={`networks[${idx}].value`}
+                            className={classes.networkInput}
+                            value={ideaMilestoneNetworkDto.value}
+                            networkId={ideaMilestoneNetworkDto.name}
+                            readonly={readonly}
                         />
                     </NetworkCard>
                 )

@@ -16,6 +16,7 @@ import { createIdea, createIdeaMilestone, saveIdeaMilestone } from '../../spec.h
 import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
 import { IdeaMilestoneStatus } from '../entities/idea-milestone-status'
 import { IdeaMilestonesService } from '../idea-milestones.service'
+import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
@@ -46,7 +47,7 @@ const createIdeaMilestoneDto = (
     beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
 ) => {
     return {
-        networks: [{ name: NETWORKS.POLKADOT, value: networkValue }],
+        networks: [{ name: NETWORKS.POLKADOT, value: networkValue, status: IdeaMilestoneNetworkStatus.Active }],
         beneficiary,
         details: {
             subject: 'subject',

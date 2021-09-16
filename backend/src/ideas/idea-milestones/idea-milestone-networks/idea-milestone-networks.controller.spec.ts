@@ -7,6 +7,7 @@ import {
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
 import { createIdea, createIdeaMilestone } from '../../spec.helpers'
 import { CreateIdeaMilestoneNetworkDto } from '../dto/create-idea-milestone-network.dto'
+import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
 
 const baseUrl = (ideaId: string, milestoneId: string, id: string) =>
     `/api/v1/ideas/${ideaId}/milestones/${milestoneId}/networks/${id}`
@@ -30,7 +31,7 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     describe('PATCH', () => {
         it(`should return ${HttpStatus.OK}`, async () => {
             const { idea, ideaMilestone, sessionHandler, ideaMilestoneNetworkId } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10 },
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
             return sessionHandler
                 .authorizeRequest(
@@ -43,7 +44,7 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
 
         it(`should return updated values`, async () => {
             const { idea, ideaMilestone, sessionHandler, ideaMilestoneNetworkId } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10 },
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
             const { body } = await sessionHandler.authorizeRequest(
                 request(app()).patch(baseUrl(idea.id, ideaMilestone.id, ideaMilestoneNetworkId)).send({ value: 12 }),
@@ -54,7 +55,7 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
 
         it(`should return ${HttpStatus.BAD_REQUEST} for negative value`, async () => {
             const { idea, ideaMilestone, sessionHandler, ideaMilestoneNetworkId } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10 },
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
             return sessionHandler
@@ -68,7 +69,7 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
 
         it(`should return ${HttpStatus.BAD_REQUEST} for no value provided`, async () => {
             const { idea, ideaMilestone, sessionHandler, ideaMilestoneNetworkId } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10 },
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
             return sessionHandler
@@ -80,7 +81,7 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
 
         it(`should return ${HttpStatus.FORBIDDEN} for not authorized request`, async () => {
             const { idea, ideaMilestone, ideaMilestoneNetworkId } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10 },
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
             return request(app())
@@ -91,7 +92,7 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
 
         it(`should return ${HttpStatus.FORBIDDEN} for not verified user request`, async () => {
             const { idea, ideaMilestone, ideaMilestoneNetworkId } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10 },
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
             const notAuthorized = await createUserSessionHandler(app(), 'other@example.com', 'other')

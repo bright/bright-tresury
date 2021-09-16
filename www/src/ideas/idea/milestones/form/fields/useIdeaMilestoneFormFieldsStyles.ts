@@ -9,19 +9,17 @@ export const useIdeaMilestoneFormFieldsStyles = makeStyles((theme: Theme) =>
             gap: '2em',
             marginTop: '1em',
         },
-        narrowField: {
-            width: '50%',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                width: '100%',
-            },
-        },
-        ideaMilestoneNetworkInput: {
-            paddingTop: '8px',
-            paddingBottom: '24px',
-        },
         withBorder: {
             border: '1px solid',
             borderColor: theme.palette.background.paper,
+        },
+        statusIndicator: {
+            marginLeft: '-6px',
+            marginTop: '10px',
+            justifyContent: 'start',
+        },
+        networkInput: {
+            marginBottom: '10px',
         },
     }),
 )

@@ -3,6 +3,7 @@ import { createUserSessionHandlerWithVerifiedEmail } from '../../../auth/superto
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
 import { createIdea, createIdeaMilestone } from '../../spec.helpers'
 import { CreateIdeaMilestoneNetworkDto } from '../dto/create-idea-milestone-network.dto'
+import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
 
 describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     const app = beforeSetupFullApp()
@@ -23,7 +24,7 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     describe('PATCH', () => {
         it(`should update idea milestone network value`, async () => {
             const { idea, sessionHandler, ideaMilestoneNetworkId, ideaMilestone } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10 },
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
             await sessionHandler.authorizeRequest(

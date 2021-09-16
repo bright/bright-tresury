@@ -12,6 +12,7 @@ import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service
 import { IdeasService } from './ideas.service'
 import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 import { createSessionData } from './spec.helpers'
+import { IdeaMilestoneNetworkStatus } from './idea-milestones/entities/idea-milestone-network-status'
 
 describe(`IdeasService`, () => {
     const app = beforeSetupFullApp()
@@ -418,7 +419,7 @@ describe(`IdeasService`, () => {
             const ideaMilestone = await getMilestonesService().create(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.KUSAMA, value: 20 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: 20, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: null,
                     details: { subject: 'subject' },
                 },

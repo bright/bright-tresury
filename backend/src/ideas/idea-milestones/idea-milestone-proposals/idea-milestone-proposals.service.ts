@@ -4,7 +4,7 @@ import { IdeaMilestonesRepository } from '../idea-milestones.repository'
 import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { Connection, Repository } from 'typeorm'
 import { IdeasService } from '../../ideas.service'
 import { IdeaMilestonesService } from '../idea-milestones.service'
 import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
@@ -15,10 +15,12 @@ import { Idea } from '../../entities/idea.entity'
 import { IdeaMilestone } from '../entities/idea-milestone.entity'
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { SessionData } from '../../../auth/session/session.decorator'
+import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
 
 @Injectable()
 export class IdeaMilestoneProposalsService {
     constructor(
+        private readonly connection: Connection,
         @InjectRepository(Idea)
         private readonly ideaRepository: Repository<Idea>,
         @InjectRepository(IdeaMilestonesRepository)
@@ -87,7 +89,6 @@ export class IdeaMilestoneProposalsService {
         )
 
         await this.ideaMilestoneNetworkRepository.save(ideaMilestoneNetwork)
-
         return ideaMilestoneNetwork
     }
 
@@ -98,19 +99,33 @@ export class IdeaMilestoneProposalsService {
         validIdeaMilestoneNetwork: IdeaMilestoneNetwork,
         blockchainProposalIndex: number,
     ): Promise<void> {
-        await this.ideaRepository.save({
-            ...validIdea,
-            status: IdeaStatus.TurnedIntoProposalByMilestone,
-        })
+        const updateIdeaMilestoneNetworks = (ideaMilestoneNetwork: IdeaMilestoneNetwork): IdeaMilestoneNetwork => {
+            if (ideaMilestoneNetwork.id === validIdeaMilestoneNetwork.id)
+                return {
+                    ...validIdeaMilestoneNetwork,
+                    status: IdeaMilestoneNetworkStatus.TurnedIntoProposal,
+                    blockchainProposalId: blockchainProposalIndex,
+                } as IdeaMilestoneNetwork
 
+            return {
+                ...ideaMilestoneNetwork,
+                status:
+                    ideaMilestoneNetwork.status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal
+                        ? IdeaMilestoneNetworkStatus.Pending
+                        : ideaMilestoneNetwork.status,
+            } as IdeaMilestoneNetwork
+        }
+
+        // this save updates both ideaMilestone and ideaMilestoneNetwork db entries
         await this.ideaMilestoneRepository.save({
             ...validIdeaMilestone,
+            networks: validIdeaMilestone.networks.map(updateIdeaMilestoneNetworks),
             status: IdeaMilestoneStatus.TurnedIntoProposal,
         })
 
-        await this.ideaMilestoneNetworkRepository.save({
-            ...validIdeaMilestoneNetwork,
-            blockchainProposalId: blockchainProposalIndex,
+        await this.ideaRepository.save({
+            ...validIdea,
+            status: IdeaStatus.TurnedIntoProposalByMilestone,
         })
     }
 }

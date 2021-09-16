@@ -5,7 +5,11 @@ export enum IdeaMilestoneStatus {
     Active = 'active',
     TurnedIntoProposal = 'turned_into_proposal',
 }
-
+export enum IdeaMilestoneNetworkStatus {
+    Active = 'active',
+    TurnedIntoProposal = 'turned_into_proposal',
+    Pending = 'pending',
+}
 export interface IdeaMilestoneDto {
     id: string
     ordinalNumber: number
@@ -19,6 +23,7 @@ export interface IdeaMilestoneNetworkDto {
     id: string
     name: string
     value: number
+    status: IdeaMilestoneNetworkStatus
 }
 
 export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumber' | 'status' | 'details'> & {

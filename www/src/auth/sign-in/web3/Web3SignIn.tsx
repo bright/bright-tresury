@@ -38,6 +38,7 @@ const Web3SignIn = () => {
                 setIsUserSignedIn(true)
             },
             onError: (err) => {
+                console.log(err)
                 if ((err as AxiosError).response?.status === 404) {
                     const selectedAccount = formikRef?.current?.values?.account
                     history.push(ROUTE_SIGNUP_WEB3, {

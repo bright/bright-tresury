@@ -27,7 +27,8 @@ const NetworksInput = ({ currentNetwork, otherNetworks }: NetworksInputProps) =>
             <NetworkInput
                 className={classes.inputField}
                 inputName={'currentNetwork.value'}
-                ideaNetwork={currentNetwork}
+                networkId={currentNetwork.name}
+                value={currentNetwork.value}
             />
             <AdditionalNetworks
                 className={classes.inputField}

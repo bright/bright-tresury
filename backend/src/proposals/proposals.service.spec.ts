@@ -10,6 +10,7 @@ import { Proposal } from './entities/proposal.entity'
 import { ProposalMilestone } from './proposal-milestones/entities/proposal-milestone.entity'
 import { ProposalsService } from './proposals.service'
 import { mockedBlockchainService, setUpIdea, setUpIdeaWithMilestone } from './spec.helpers'
+import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
 
 describe('ProposalsService', () => {
     const app = beforeSetupFullApp()
@@ -250,7 +251,7 @@ describe('ProposalsService', () => {
             const secondMilestone = await createIdeaMilestone(
                 ideaWithMilestone.id,
                 {
-                    networks: [{ name: 'localhost', value: 100 }],
+                    networks: [{ name: 'localhost', value: 100, status: IdeaMilestoneNetworkStatus.Active }],
                     details: { subject: 'subject1' },
                 },
                 sessionHandler.sessionData,

@@ -31,7 +31,11 @@ async function bootstrap() {
 
     logger.info('Listen on port ', config.port)
     await app.listen(config.port)
-
+    process.on('unhandledRejection', (err) => {
+        console.log()
+        console.log(err)
+        console.log
+    })
     if (module.hot) {
         module.hot.accept()
         module.hot.dispose(() => {

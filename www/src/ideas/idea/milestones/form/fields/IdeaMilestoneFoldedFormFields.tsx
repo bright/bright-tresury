@@ -5,12 +5,17 @@ import { useTranslation } from 'react-i18next'
 import { useNetworks } from '../../../../../networks/useNetworks'
 import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
 import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
+import { IdeaMilestoneNetworkDto } from '../../idea.milestones.dto'
+import { Network } from '../../../../../networks/networks.dto'
+import Bond from '../../../../form/networks/Bond'
+import NetworkInput from '../../../../form/networks/NetworkInput'
+import { findIdeaMilestoneNetwork } from '../../idea.milestones.utils'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
 interface OwnProps {
-    values: IdeaMilestoneFormValues
     readonly: boolean
+    values: IdeaMilestoneFormValues
 }
 
 export type IdeaMilestoneFoldedFormFieldsProps = OwnProps
@@ -18,10 +23,10 @@ export type IdeaMilestoneFoldedFormFieldsProps = OwnProps
 const IdeaMilestoneFoldedFormFields = ({ values, readonly }: IdeaMilestoneFoldedFormFieldsProps) => {
     const classes = useIdeaMilestoneFormFieldsStyles()
     const { t } = useTranslation()
-    const {
-        network: { currency },
-    } = useNetworks()
+    const { network: currentNetwork } = useNetworks()
 
+    // <Input name={`networks[0].value`} <- we use 0 because we want to display only 1 network which is the current network
+    // please see IdeaMilestoneFormFields.tsx compareNetworks() for more details
     return (
         <div className={classes.root}>
             <Input
@@ -31,20 +36,12 @@ const IdeaMilestoneFoldedFormFields = ({ values, readonly }: IdeaMilestoneFolded
                 disabled={readonly}
                 textFieldColorScheme={TextFieldColorScheme.Dark}
             />
-            {values.networks.map((network, idx) => {
-                return (
-                    <Input
-                        name={`networks[${idx}].value`}
-                        type={`number`}
-                        label={t(`${translationKeyPrefix}.budget`)}
-                        key={idx}
-                        endAdornment={currency}
-                        textFieldColorScheme={TextFieldColorScheme.Dark}
-                        className={classes.narrowField}
-                        disabled={readonly}
-                    />
-                )
-            })}
+            <NetworkInput
+                inputName={`networks[0].value`}
+                networkId={currentNetwork.id}
+                value={values.networks[0].value}
+                readonly={readonly}
+            />
         </div>
     )
 }

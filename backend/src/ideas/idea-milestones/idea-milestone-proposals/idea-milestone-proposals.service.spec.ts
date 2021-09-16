@@ -8,7 +8,7 @@ import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
 import { ProposalsService } from '../../../proposals/proposals.service'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../../../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
 import { Idea } from '../../entities/idea.entity'
 import { IdeaStatus } from '../../entities/idea-status'
 import { IdeasService } from '../../ideas.service'
@@ -19,6 +19,8 @@ import { IdeaMilestoneStatus } from '../entities/idea-milestone-status'
 import { IdeaMilestonesService } from '../idea-milestones.service'
 import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
 import { IdeaMilestoneProposalsService } from './idea-milestone-proposals.service'
+import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
+import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
@@ -41,7 +43,7 @@ const createIdeaMilestoneDto = (
     beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
 ) => {
     return {
-        networks: [{ name: 'polkadot', value: networkValue }],
+        networks: [{ name: 'polkadot', value: networkValue, status: IdeaMilestoneNetworkStatus.Active }],
         beneficiary,
         details: {
             subject: 'subject',
@@ -557,6 +559,56 @@ describe('IdeaMilestoneProposalsService', () => {
             const updatedIdeaMilestoneNetwork = await ideaMilestoneNetworkRepository().findOne(ideaMilestoneNetwork.id)
 
             expect(updatedIdeaMilestoneNetwork!.blockchainProposalId).toBe(3)
+        })
+        it('should turn one ideaMilestoneNetwork into proposal and set Pending status to other', async () => {
+            const ideaWithTwoNetworks = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    networks: [
+                        { name: NETWORKS.POLKADOT, value: 1000 },
+                        { name: NETWORKS.KUSAMA, value: 1000 },
+                    ],
+                },
+                sessionData,
+                ideasService(),
+            )
+            const ideaMilestoneWithTwoNetworks = await createIdeaMilestone(
+                ideaWithTwoNetworks.id,
+                {
+                    networks: [
+                        { name: NETWORKS.POLKADOT, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
+                        { name: NETWORKS.KUSAMA, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
+                    ],
+                },
+                sessionData,
+                ideaMilestonesService(),
+            )
+            const ideaMilestoneNetworkA = ideaMilestoneWithTwoNetworks.networks[0]
+            const ideaMilestoneNetworkB = ideaMilestoneWithTwoNetworks.networks[1]
+            await ideaMilestoneProposalsService().turnIdeaMilestoneIntoProposal(
+                ideaWithTwoNetworks,
+                ideaMilestoneWithTwoNetworks,
+                ideaMilestoneNetworkA,
+                0,
+            )
+            const modifiedIdea = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
+            expect(modifiedIdea.status).toBe(IdeaStatus.TurnedIntoProposalByMilestone)
+
+            const modifiedIdeaMilestone = await ideaMilestonesService().findOne(
+                ideaMilestoneWithTwoNetworks.id,
+                sessionData,
+            )
+            expect(modifiedIdeaMilestone.status).toBe(IdeaMilestoneStatus.TurnedIntoProposal)
+
+            const modifiedIdeaMilestoneNetworkA = modifiedIdeaMilestone.networks.find(
+                ({ id }) => id === ideaMilestoneNetworkA.id,
+            )!
+            expect(modifiedIdeaMilestoneNetworkA.status).toBe(IdeaMilestoneNetworkStatus.TurnedIntoProposal)
+
+            const modifiedIdeaMilestoneNetworkB = modifiedIdeaMilestone.networks.find(
+                ({ id }) => id === ideaMilestoneNetworkB.id,
+            )!
+            expect(modifiedIdeaMilestoneNetworkB.status).toBe(IdeaMilestoneNetworkStatus.Pending)
         })
     })
 })

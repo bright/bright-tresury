@@ -9,18 +9,18 @@ import FormFooterButtonsContainer from '../../../../components/form/footer/FormF
 interface OwnProps {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    onCancel: () => void
+    onClose: () => void
 }
 
 export type IdeaMilestoneDetailsProps = OwnProps
 
-const IdeaMilestoneDetailsForm = ({ idea, ideaMilestone, onCancel }: IdeaMilestoneDetailsProps) => {
+const IdeaMilestoneDetailsForm = ({ idea, ideaMilestone, onClose }: IdeaMilestoneDetailsProps) => {
     const { t } = useTranslation()
 
     return (
         <IdeaMilestoneForm idea={idea} ideaMilestone={ideaMilestone} readonly={true}>
             <FormFooterButtonsContainer>
-                <FormFooterButton type={'button'} variant={'text'} onClick={onCancel}>
+                <FormFooterButton type={'button'} variant={'text'} onClick={onClose}>
                     {t('idea.milestones.modal.form.buttons.cancel')}
                 </FormFooterButton>
             </FormFooterButtonsContainer>

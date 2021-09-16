@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next'
 import CardHeader from '../../../../components/card/components/CardHeader'
 import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
 import IdeaMilestoneStatusIndicator from '../status/IdeaMilestoneStatusIndicator'
+import { useNetworks } from '../../../../networks/useNetworks'
+import { findIdeaMilestoneNetwork } from '../idea.milestones.utils'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -41,6 +43,9 @@ export type IdeaMilestoneCardProps = OwnProps
 const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const { network: currentNetwork } = useNetworks()
+
+    const ideaMilestoneNetwork = findIdeaMilestoneNetwork(ideaMilestone.networks, currentNetwork)
 
     return (
         <ButtonCard onClick={() => onClick(ideaMilestone)}>
@@ -50,7 +55,7 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
                     ordinalNumber={ideaMilestone.ordinalNumber}
                 />
                 <div className={classes.headerStatusAndDateRange}>
-                    <IdeaMilestoneStatusIndicator status={ideaMilestone.status} />
+                    <IdeaMilestoneStatusIndicator ideaMilestone={ideaMilestone} />
                     <MilestoneDateRange
                         dateFrom={ideaMilestone.details.dateFrom}
                         dateTo={ideaMilestone.details.dateTo}
@@ -62,9 +67,7 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
 
             <CardDetails>
                 <CardTitle title={ideaMilestone.details.subject} />
-                {ideaMilestone.networks && ideaMilestone.networks.length > 0 ? (
-                    <NetworkValue value={ideaMilestone.networks[0].value} />
-                ) : null}
+                {ideaMilestoneNetwork ? <NetworkValue value={ideaMilestoneNetwork.value} /> : null}
             </CardDetails>
 
             <div className={classes.description}>

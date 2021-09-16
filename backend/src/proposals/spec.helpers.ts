@@ -20,6 +20,7 @@ import { getLogger } from '../logging.module'
 import { Web3Address } from '../users/web3-addresses/web3-address.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
+import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
 
 const makeMotion = (
     hash: string,
@@ -159,7 +160,7 @@ export const setUpIdeaWithMilestone = async (
     const ideaMilestone = await createIdeaMilestone(
         idea.id,
         {
-            networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+            networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
             ...milestoneDto,
             details: { subject: 'milestoneSubject', ...milestoneDto?.details },
         },

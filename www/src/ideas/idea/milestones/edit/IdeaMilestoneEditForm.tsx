@@ -12,13 +12,12 @@ import FormFooterButtonsContainer from '../../../../components/form/footer/FormF
 interface OwnProps {
     idea: IdeaDto
     ideaMilestone: IdeaMilestoneDto
-    onCancel: () => void
-    onSuccess: () => void
+    onClose: () => void
 }
 
 export type IdeaMilestoneEditProps = OwnProps
 
-const IdeaMilestoneEditForm = ({ idea, ideaMilestone, onCancel, onSuccess }: IdeaMilestoneEditProps) => {
+const IdeaMilestoneEditForm = ({ idea, ideaMilestone, onClose }: IdeaMilestoneEditProps) => {
     const { t } = useTranslation()
 
     const queryClient = useQueryClient()
@@ -36,7 +35,7 @@ const IdeaMilestoneEditForm = ({ idea, ideaMilestone, onCancel, onSuccess }: Ide
             {
                 onSuccess: async () => {
                     await queryClient.refetchQueries([IDEA_MILESTONES_QUERY_KEY_BASE, idea.id])
-                    onSuccess()
+                    onClose()
                 },
             },
         )
@@ -51,7 +50,7 @@ const IdeaMilestoneEditForm = ({ idea, ideaMilestone, onCancel, onSuccess }: Ide
                     {t('idea.milestones.modal.form.buttons.save')}
                 </FormFooterButton>
 
-                <FormFooterButton type={'button'} variant={'text'} onClick={onCancel}>
+                <FormFooterButton type={'button'} variant={'text'} onClick={onClose}>
                     {t('idea.milestones.modal.form.buttons.cancel')}
                 </FormFooterButton>
             </FormFooterButtonsContainer>
