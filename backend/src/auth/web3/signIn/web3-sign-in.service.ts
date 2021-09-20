@@ -46,7 +46,7 @@ export class Web3SignInService {
         if (res) {
             try {
                 await this.superTokensService.createSession(res, user.authId)
-            } catch (error) {
+            } catch (error: any) {
                 throw new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
             }
         }

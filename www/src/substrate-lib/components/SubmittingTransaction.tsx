@@ -82,8 +82,8 @@ const SubmittingTransaction = ({
         if (dispatchError) {
             if (dispatchError.isModule && api) {
                 const decoded = api.registry.findMetaError(dispatchError.asModule)
-                const { documentation, name, section } = decoded
-                txResult.error = { section, name, description: documentation.join(' ') }
+                const { docs, name, section } = decoded
+                txResult.error = { section, name, description: docs.join(' ') }
             } else {
                 txResult.error = { description: dispatchError.toString() }
             }
@@ -94,7 +94,7 @@ const SubmittingTransaction = ({
                 phase.isApplyExtrinsic && event.section === txAttrs.palletRpc && event.method === txAttrs.eventMethod,
         )
         if (applyExtrinsicEvent) {
-            txResult.event = applyExtrinsicEvent.event.meta
+            txResult.event = (applyExtrinsicEvent.event.meta as unknown) as EventMetadataLatest
         }
 
         setResult(txResult)

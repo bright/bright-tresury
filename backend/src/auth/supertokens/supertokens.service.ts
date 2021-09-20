@@ -72,10 +72,10 @@ export class SuperTokensService {
 
     handleCustomFormFieldsPostSignUp = async (
         user: SuperTokensUser,
-        formFields: Array<{
+        formFields: {
             id: string
             value: any
-        }>,
+        }[],
     ): Promise<void> => {
         const { id, email } = user
         const usernameFormField = formFields.find(({ id: formFieldKey }) => formFieldKey === SuperTokensUsernameKey)
@@ -121,7 +121,7 @@ export class SuperTokensService {
     async signUp(email: string, password: string): Promise<SuperTokensUser> {
         try {
             return await superTokensSignUp(email, password)
-        } catch (error) {
+        } catch (error: any) {
             throw error.type === EmailPasswordSessionError.EMAIL_ALREADY_EXISTS_ERROR
                 ? new ConflictException(error.message)
                 : new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
@@ -273,7 +273,7 @@ export class SuperTokensService {
         try {
             await verifyEmailUsingToken(token)
             await this.refreshJwtPayload(req, res)
-        } catch (e) {
+        } catch (e: any) {
             res.status(HttpStatus.BAD_REQUEST).send(e.message)
         }
     }

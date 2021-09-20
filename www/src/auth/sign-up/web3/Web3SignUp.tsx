@@ -44,7 +44,7 @@ const Web3SignUp = () => {
     const accountSelectionAddress = locationState?.accountSelection?.address
 
     const { accounts } = useAccounts()
-    let accountSelection = accountSelectionAddress && accounts.find((acc) => acc.address == accountSelectionAddress)
+    let accountSelection = accountSelectionAddress && accounts.find((acc) => acc.address === accountSelectionAddress)
     const { t } = useTranslation()
 
     const history = useHistory()

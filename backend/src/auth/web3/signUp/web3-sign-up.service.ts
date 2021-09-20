@@ -65,7 +65,7 @@ export class Web3SignUpService {
         try {
             await this.superTokensService.verifyEmail(user.authId, superTokensUser.email)
             await this.superTokensService.createSession(res, superTokensUser.id)
-        } catch (error) {
+        } catch (error: any) {
             throw new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
         }
     }

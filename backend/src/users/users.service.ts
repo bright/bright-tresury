@@ -31,7 +31,7 @@ export class UsersService {
     async findOne(id: string): Promise<User> {
         try {
             return await this.findOneOrFail({ id })
-        } catch (e) {
+        } catch (e: any) {
             throw handleFindError(e, 'There is no user with such id')
         }
     }
@@ -39,7 +39,7 @@ export class UsersService {
     async findOneByUsername(username: string): Promise<User> {
         try {
             return await this.findOneOrFail({ username })
-        } catch (e) {
+        } catch (e: any) {
             throw handleFindError(e, 'There is no user with such username')
         }
     }
@@ -47,7 +47,7 @@ export class UsersService {
     async findOneByEmail(email: string): Promise<User> {
         try {
             return await this.findOneOrFail({ email })
-        } catch (e) {
+        } catch (e: any) {
             throw handleFindError(e, 'There is no user with such email')
         }
     }
@@ -55,7 +55,7 @@ export class UsersService {
     async findOneByAuthId(authId: string): Promise<User> {
         try {
             return await this.findOneOrFail({ authId })
-        } catch (e) {
+        } catch (e: any) {
             throw handleFindError(e, `There is no user with authId ${authId}`)
         }
     }
@@ -171,7 +171,7 @@ export class UsersService {
     private async validateClassAndUsername<T extends { username: string }>(constructor: ClassConstructor<T>, dto: T) {
         try {
             await validateOrReject(plainToClass(constructor, dto))
-        } catch (e) {
+        } catch (e: any) {
             throw new BadRequestException(e.message)
         }
         await this.validateUsername(dto.username)
