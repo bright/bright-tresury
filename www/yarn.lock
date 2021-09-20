@@ -2128,7 +2128,7 @@
     "@polkadot/util-crypto" "^7.4.1"
     rxjs "^7.3.0"
 
-"@polkadot/api@6.0.3", "@polkadot/api@^6.0.3":
+"@polkadot/api@6.0.3":
   version "6.0.3"
   resolved "https://registry.yarnpkg.com/@polkadot/api/-/api-6.0.3.tgz#a46b4168a32e4bd7783009449560db741c700610"
   integrity sha512-KrDhxYx/CilGhxns8Ga1iHC2grIx62b+5P8MEA1YxaB5QXn4d+S6Dcsj57kjdEZzNrcVWV7mOScPUoqWeqcVFw==
@@ -2267,16 +2267,6 @@
     "@polkadot/networks" "^7.4.1"
     "@polkadot/types" "6.0.3"
     "@polkadot/util" "^7.4.1"
-
-"@polkadot/types@5.9.1":
-  version "5.9.1"
-  resolved "https://registry.yarnpkg.com/@polkadot/types/-/types-5.9.1.tgz#74cf4695795f2aa365ff85d3873e22c430100bc9"
-  integrity sha512-30vcSlNBxPyWYZaxKDr/BoMhfLCRKB265XxpnnNJmbdZZsL+N4Zp2mJR9/UbA6ypmJBkUjD7b1s9AYsLwUs+8w==
-  dependencies:
-    "@babel/runtime" "^7.15.4"
-    "@polkadot/util" "^7.3.1"
-    "@polkadot/util-crypto" "^7.3.1"
-    rxjs "^7.3.0"
 
 "@polkadot/types@6.0.3":
   version "6.0.3"

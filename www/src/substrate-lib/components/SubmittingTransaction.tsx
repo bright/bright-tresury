@@ -94,7 +94,7 @@ const SubmittingTransaction = ({
                 phase.isApplyExtrinsic && event.section === txAttrs.palletRpc && event.method === txAttrs.eventMethod,
         )
         if (applyExtrinsicEvent) {
-            txResult.event = (applyExtrinsicEvent.event.meta as unknown) as EventMetadataLatest
+            txResult.event = applyExtrinsicEvent.event.meta
         }
 
         setResult(txResult)
