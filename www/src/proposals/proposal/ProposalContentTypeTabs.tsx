@@ -6,7 +6,6 @@ import milestonesIcon from '../../assets/milestones.svg'
 import discussionIcon from '../../assets/discussion.svg'
 import votingIcon from '../../assets/voting.svg'
 import { useRouteMatch } from 'react-router-dom'
-import { ProposalDto } from '../proposals.dto'
 
 export enum ProposalContentType {
     Info = 'info',
@@ -15,14 +14,11 @@ export enum ProposalContentType {
     Voting = 'voting',
 }
 
-interface OwnProps {
-    proposal: ProposalDto
-    searchParamName: string
-}
+interface OwnProps {}
 
 export type ProposalContentTypeTabsProps = OwnProps
 
-export const ProposalContentTypeTabs = ({ proposal, searchParamName }: ProposalContentTypeTabsProps) => {
+export const ProposalContentTypeTabs = ({}: ProposalContentTypeTabsProps) => {
     const { t } = useTranslation()
 
     let { url } = useRouteMatch()
@@ -53,15 +49,7 @@ export const ProposalContentTypeTabs = ({ proposal, searchParamName }: ProposalC
         }
     }
 
-    // Milestones content tab should be visible only if proposal was created from idea
-    const contentTypes = Object.values(ProposalContentType).filter((contentType) => {
-        if (contentType === ProposalContentType.Milestones) {
-            return proposal.isCreatedFromIdea
-        }
-        return true
-    })
-
-    const tabEntries = contentTypes.map((contentType: ProposalContentType) => {
+    const tabEntries = Object.values(ProposalContentType).map((contentType: ProposalContentType) => {
         return {
             label: getTranslation(contentType),
             path: `${url}/${contentType}`,
@@ -71,7 +59,7 @@ export const ProposalContentTypeTabs = ({ proposal, searchParamName }: ProposalC
 
     return (
         <div>
-            <Tabs searchParamName={searchParamName} values={tabEntries} />
+            <Tabs values={tabEntries} />
         </div>
     )
 }

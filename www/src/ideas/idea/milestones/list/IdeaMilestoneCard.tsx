@@ -16,10 +16,6 @@ import IdeaMilestoneStatusIndicator from '../status/IdeaMilestoneStatusIndicator
 
 const useStyles = makeStyles(() =>
     createStyles({
-        cardContent: {
-            margin: '0 20px 0 24px',
-            cursor: 'pointer',
-        },
         headerStatusAndDateRange: {
             display: 'flex',
             flexDirection: 'column',

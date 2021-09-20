@@ -1,20 +1,28 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { ProposalDto } from '../../../proposals.dto'
+import { useProposal } from '../../useProposals'
 
 interface OwnProps {
-    canEdit: boolean
+    proposal: ProposalDto
 }
 
 export type NoProposalMilestonesInfoProps = OwnProps
 
-const NoProposalMilestonesInfo = ({ canEdit }: NoProposalMilestonesInfoProps) => {
+const NoProposalMilestonesInfo = ({ proposal }: NoProposalMilestonesInfoProps) => {
     const { t } = useTranslation()
+    const { canEdit, isEditable, canEditMilestones } = useProposal(proposal)
 
-    if (canEdit) {
-        return <p>{t('proposal.milestones.noMilestones.canEdit')}</p>
-    } else {
-        return <p>{t('proposal.milestones.noMilestones.cannotEdit')}</p>
+    if (!isEditable) {
+        return <p>{t('proposal.milestones.noMilestones.noMilestones')}</p>
     }
+    if (!canEdit) {
+        return <p>{t('proposal.milestones.noMilestones.notOwner')}</p>
+    }
+    if (!canEditMilestones) {
+        return <p>{t('proposal.milestones.noMilestones.noDetails')}</p>
+    }
+    return <p>{t('proposal.milestones.noMilestones.addMilestones')}</p>
 }
 
 export default NoProposalMilestonesInfo

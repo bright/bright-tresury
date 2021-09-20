@@ -1,13 +1,18 @@
-import { MilestoneDetailsDto } from '../../../milestone-details/milestone-details.dto'
+import {
+    CreateMilestoneDetailsDto,
+    MilestoneDetailsDto,
+    UpdateMilestoneDetailsDto,
+} from '../../../milestone-details/milestone-details.dto'
 
 export interface ProposalMilestoneDto {
     id: string
-    ordinalNumber: number
     details: MilestoneDetailsDto
 }
 
-export type CreateIdeaMilestoneDto = Omit<ProposalMilestoneDto, 'id' | 'details'> & {
-    details: CreateIdeaMilestoneDto
+export type CreateProposalMilestoneDto = {
+    details: CreateMilestoneDetailsDto
 }
 
-export type PatchIdeaMilestoneDto = Partial<ProposalMilestoneDto>
+export type UpdateProposalMilestoneDto = {
+    details?: UpdateMilestoneDetailsDto
+}

@@ -25,9 +25,9 @@ export type ProposalDetailsProps = OwnProps
 const ProposalDetails = ({ proposal: { details }, proposal }: ProposalDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { isProposalEditable } = useProposal(proposal)
+    const { isEditable } = useProposal(proposal)
 
-    const informationTipLabel = isProposalEditable
+    const informationTipLabel = isEditable
         ? t('proposal.details.noProposalDetails.askToAddDescription')
         : t('proposal.details.noProposalDetails.cannotEdit')
 

@@ -1,6 +1,5 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { ApiProperty } from '@nestjs/swagger'
 import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
-import { Nil } from '../../../utils/types'
 import { ProposalMilestone } from '../entities/proposal-milestone.entity'
 
 export class ProposalMilestoneDto {
@@ -11,7 +10,7 @@ export class ProposalMilestoneDto {
 
     @ApiProperty({
         description: 'Details of the milestone',
-        type: [MilestoneDetails],
+        type: MilestoneDetails,
     })
     details: MilestoneDetails
 

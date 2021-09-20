@@ -23,18 +23,23 @@ export const useProposal = (proposal: Nil<ProposalDto>) => {
         return isUserSignedInAndVerified && isProposer
     }, [isUserSignedInAndVerified, proposal, user, ss58Format])
 
-    const isProposalEditable = useMemo(() => {
+    const isEditable = useMemo(() => {
         return !!proposal && proposal.status === ProposalStatus.Submitted
     }, [proposal])
 
     const canEdit = useMemo(() => {
-        return isOwner && isProposer && isProposalEditable
-    }, [isUserSignedInAndVerified, proposal, user])
+        return (isOwner || isProposer) && isEditable
+    }, [isOwner, isProposer, isEditable])
+
+    const canEditMilestones = useMemo(() => {
+        return canEdit && !!proposal?.details
+    }, [canEdit, proposal])
 
     return {
         isOwner,
         isProposer,
-        isProposalEditable,
+        isEditable,
         canEdit,
+        canEditMilestones,
     }
 }

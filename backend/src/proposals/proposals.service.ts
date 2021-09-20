@@ -155,7 +155,7 @@ export class ProposalsService {
                 dateFrom: ideaMilestone.details.dateFrom,
                 description: ideaMilestone.details.description,
             })
-            const proposalMilestone = await this.proposalMilestonesRepository.create({
+            const proposalMilestone = this.proposalMilestonesRepository.create({
                 details,
                 proposal,
             })

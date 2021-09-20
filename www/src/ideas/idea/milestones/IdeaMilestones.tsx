@@ -1,4 +1,5 @@
 import React from 'react'
+import CreateMilestoneButton from '../../../milestone-details/components/CreateMilestoneButton'
 import { useIdea } from '../useIdea'
 import { useGetIdeaMilestones } from './idea.milestones.api'
 import NoIdeaMilestonesInfo from './components/NoIdeaMilestonesInfo'
@@ -6,7 +7,6 @@ import IdeaMilestoneCreateModal from './create/IdeaMilestoneCreateModal'
 import { IdeaDto } from '../../ideas.dto'
 import IdeaMilestonesList from './list/IdeaMilestonesList'
 import LoadingWrapper from '../../../components/loading/LoadingWrapper'
-import CreateIdeaMilestoneButton from './components/CreateIdeaMilestoneButton'
 import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
@@ -38,10 +38,7 @@ const IdeaMilestones = ({ idea }: IdeaMilestonesProps) => {
                 <div className={classes.content}>
                     {ideaMilestones.length === 0 ? <NoIdeaMilestonesInfo idea={idea} /> : null}
                     {canEditIdeaMilestones ? (
-                        <CreateIdeaMilestoneButton
-                            text={t('idea.milestones.createMilestone')}
-                            onClick={createModal.open}
-                        />
+                        <CreateMilestoneButton text={t('idea.milestones.createMilestone')} onClick={createModal.open} />
                     ) : null}
                     <IdeaMilestonesList idea={idea} ideaMilestones={ideaMilestones} />
                     <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />

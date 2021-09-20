@@ -1,4 +1,4 @@
-import { ForbiddenException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { BlockchainProposal } from '../../blockchain/dto/blockchain-proposal.dto'
 import { User } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
@@ -43,5 +43,18 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
         if (!this.isOwner(user)) {
             throw new ForbiddenException('The given user cannot edit this proposal')
         }
+    }
+
+    canEditOrThrow = (user: User) => {
+        this.isOwnerOrThrow(user)
+        this.blockchain.isEditableOrThrow()
+    }
+
+    canEditMilestonesOrThrow = (user: User) => {
+        if (!this.entity) {
+            throw new BadRequestException('You cannot edit milestones of a proposal with no details created')
+        }
+        this.isOwnerOrThrow(user)
+        this.blockchain.isEditableOrThrow()
     }
 }

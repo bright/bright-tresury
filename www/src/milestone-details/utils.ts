@@ -1,13 +1,13 @@
 import { Nil } from '../util/types'
 import { MilestoneDetailsDto } from './milestone-details.dto'
 
-export function compareMilestones(a: MilestoneDetailsDto, b: MilestoneDetailsDto): number {
-    const compareDateFrom = compareNilDates(a.dateFrom, a.dateTo)
+export function compareMilestoneDetails(a: MilestoneDetailsDto, b: MilestoneDetailsDto): number {
+    const compareDateFrom = compareNilDates(a.dateFrom, b.dateFrom)
     if (compareDateFrom !== 0) {
         return compareDateFrom
     }
 
-    const compareDateTo = compareNilDates(a.dateFrom, a.dateTo)
+    const compareDateTo = compareNilDates(a.dateTo, b.dateTo)
     if (compareDateTo !== 0) {
         return compareDateTo
     }
@@ -17,13 +17,13 @@ export function compareMilestones(a: MilestoneDetailsDto, b: MilestoneDetailsDto
 
 function compareNilDates(a: Nil<Date>, b: Nil<Date>): number {
     if (a && b) {
-        return a.getTime() - b.getTime()
+        return a.valueOf() - b.valueOf()
     }
     if (a && !b) {
-        return 1
+        return -1
     }
     if (!a && b) {
-        return -1
+        return 1
     }
     return 0
 }

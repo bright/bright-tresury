@@ -48,11 +48,9 @@ const Proposal = () => {
                         <Route exact={true} path={`${path}/${ProposalContentType.Info}`}>
                             <ProposalInfo proposal={proposal} />
                         </Route>
-                        {proposal.isCreatedFromIdea && proposal.ideaId ? (
-                            <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
-                                <ProposalMilestones proposalIndex={proposal.proposalIndex} canEdit={canEdit} />
-                            </Route>
-                        ) : null}
+                        <Route exact={true} path={`${path}/${ProposalContentType.Milestones}`}>
+                            <ProposalMilestones proposal={proposal} canEdit={canEdit} />
+                        </Route>
                         <Route exact={true} path={`${path}/${ProposalContentType.Discussion}`}>
                             <ProposalDiscussion />
                         </Route>

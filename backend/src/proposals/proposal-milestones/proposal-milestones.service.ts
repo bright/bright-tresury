@@ -1,10 +1,9 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
 import { MilestoneDetailsService } from '../../milestone-details/milestone-details.service'
-import { User } from '../../users/user.entity'
-import { BlockchainProposalWithDomainDetails, ProposalsService } from '../proposals.service'
+import { ProposalsService } from '../proposals.service'
 import { CreateProposalMilestoneDto } from './dto/create-proposal-milestone.dto'
 import { UpdateProposalMilestoneDto } from './dto/update-proposal-milestone.dto'
 import { ProposalMilestone } from './entities/proposal-milestone.entity'
@@ -31,14 +30,16 @@ export class ProposalMilestonesService {
     }
 
     async findOne(milestoneId: string, proposalIndex: number, networkId: string): Promise<ProposalMilestone> {
-        const milestone = await this.proposalMilestoneRepository.findOne(milestoneId, { relations: ['proposal'] })
+        const milestone = await this.proposalMilestoneRepository.findOne({
+            where: {
+                id: milestoneId,
+                proposal: { blockchainProposalId: proposalIndex, networkId },
+            },
+            relations: ['proposal'],
+        })
 
         if (!milestone) {
             throw new NotFoundException('Proposal milestone with a given id not found')
-        }
-
-        if (milestone.proposal.blockchainProposalId !== proposalIndex || milestone.proposal.networkId !== networkId) {
-            throw new NotFoundException('Proposal with a given id not found')
         }
 
         return milestone
@@ -52,11 +53,11 @@ export class ProposalMilestonesService {
     ): Promise<ProposalMilestone> {
         const proposal = await this.proposalsService.findOne(proposalIndex, networkId)
 
-        this.canEditMilestonesOrThrow(proposal, user)
+        proposal.canEditMilestonesOrThrow(user)
 
         const details = await this.detailsService.create(dto.details)
 
-        const milestone = await this.proposalMilestoneRepository.create({
+        const milestone = this.proposalMilestoneRepository.create({
             details,
             proposalId: proposal.entity!.id,
         })
@@ -74,7 +75,7 @@ export class ProposalMilestonesService {
     ): Promise<ProposalMilestone> {
         const proposal = await this.proposalsService.findOne(proposalIndex, networkId)
 
-        this.canEditMilestonesOrThrow(proposal, user)
+        proposal.canEditMilestonesOrThrow(user)
 
         const milestone = await this.findOne(milestoneId, proposalIndex, networkId)
 
@@ -88,19 +89,12 @@ export class ProposalMilestonesService {
 
     async delete(milestoneId: string, proposalIndex: number, networkId: string, { user }: SessionData): Promise<void> {
         const proposal = await this.proposalsService.findOne(proposalIndex, networkId)
-        this.canEditMilestonesOrThrow(proposal, user)
+
+        proposal.canEditMilestonesOrThrow(user)
 
         const milestone = await this.findOne(milestoneId, proposalIndex, networkId)
 
         await this.detailsService.delete(milestone.details)
         await this.proposalMilestoneRepository.remove(milestone)
-    }
-
-    private canEditMilestonesOrThrow(proposal: BlockchainProposalWithDomainDetails, user: User) {
-        proposal.blockchain.isEditableOrThrow()
-        if (!proposal.entity) {
-            throw new BadRequestException('You cannot edit milestones of a proposal with no details created')
-        }
-        proposal.entity.isOwnerOrThrow(user)
     }
 }

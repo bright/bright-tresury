@@ -26,7 +26,7 @@ const useStyles = makeStyles<Theme, StylesProps>((theme) => {
 
 interface OwnProps<T> {
     items?: T[]
-    renderItem?: (item: T) => JSX.Element
+    renderItem?: (item: T, index: number) => JSX.Element
     horizontalPadding?: string
     mobileHorizontalPadding?: string
 }
@@ -58,7 +58,7 @@ const Grid = ({
                 : null}
             {items?.map((item, index: number) => (
                 <GridItem key={index} xs={xs || 12} md={md || 6} {...props}>
-                    {renderItem ? renderItem(item) : null}
+                    {renderItem ? renderItem(item, index) : null}
                 </GridItem>
             ))}
         </MaterialGrid>

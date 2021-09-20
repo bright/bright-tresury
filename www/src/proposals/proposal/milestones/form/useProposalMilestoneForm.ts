@@ -5,9 +5,9 @@ interface OwnProps {
     milestone?: ProposalMilestoneDto
 }
 
-export type useProposalMilestoneForm = OwnProps
+export type UseProposalMilestoneFormProps = OwnProps
 
-const useProposalMilestoneForm = ({ milestone }: useProposalMilestoneForm) => {
+const useProposalMilestoneForm = ({ milestone }: UseProposalMilestoneFormProps) => {
     const { validationSchema: detailsValidationSchema, initialValues: detailsInitialValues } = useMilestoneDetailsForm({
         details: milestone?.details,
     })

@@ -6,7 +6,7 @@ import { UpdateMilestoneDetailsDto } from '../../../milestone-details/dto/update
 export class UpdateProposalMilestoneDto {
     @ApiPropertyOptional({
         description: 'Details of the milestone',
-        type: [UpdateMilestoneDetailsDto],
+        type: UpdateMilestoneDetailsDto,
     })
     @ValidateNested({ each: true })
     @Type(() => UpdateMilestoneDetailsDto)

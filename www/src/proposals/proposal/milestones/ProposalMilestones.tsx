@@ -2,23 +2,32 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import LoadingWrapper from '../../../components/loading/LoadingWrapper'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import Modal from '../../../components/modal/Modal'
+import { useModal } from '../../../components/modal/useModal'
+import CreateMilestoneButton from '../../../milestone-details/components/CreateMilestoneButton'
 import { useNetworks } from '../../../networks/useNetworks'
+import { ProposalDto } from '../../proposals.dto'
+import ProposalMilestoneCreate from './create/ProposalMilestoneCreate'
 import NoProposalMilestonesInfo from './list/NoProposalMilestonesInfo'
 import ProposalMilestonesList from './list/ProposalMilestonesList'
 import { useGetProposalMilestones } from './proposal.milestones.api'
 
 interface OwnProps {
-    proposalIndex: number
+    proposal: ProposalDto
     canEdit: boolean
 }
 
 export type ProposalMilestonesProps = OwnProps
 
-const ProposalMilestones = ({ proposalIndex, canEdit }: ProposalMilestonesProps) => {
+const ProposalMilestones = ({ proposal, canEdit }: ProposalMilestonesProps) => {
     const classes = useSuccessfullyLoadedItemStyles()
     const { t } = useTranslation()
     const { network } = useNetworks()
-    const { status, data: milestones } = useGetProposalMilestones({ proposalIndex, network: network.id })
+    const { status, data: milestones } = useGetProposalMilestones({
+        proposalIndex: proposal.proposalIndex,
+        network: network.id,
+    })
+    const { visible, open, close } = useModal()
 
     return (
         <LoadingWrapper
@@ -26,12 +35,31 @@ const ProposalMilestones = ({ proposalIndex, canEdit }: ProposalMilestonesProps)
             errorText={t('errors.errorOccurredWhileLoadingProposalMilestones')}
             loadingText={t('loading.proposalMilestones')}
         >
-            {milestones ? (
-                <div className={classes.content}>
-                    {milestones.length === 0 ? <NoProposalMilestonesInfo canEdit={canEdit} /> : null}
-                    <ProposalMilestonesList milestones={milestones} canEdit={canEdit} />
-                </div>
-            ) : null}
+            <div className={classes.content}>
+                {canEdit ? (
+                    <>
+                        <CreateMilestoneButton text={t('idea.milestones.createMilestone')} onClick={open} />
+                        <Modal
+                            open={visible}
+                            onClose={close}
+                            aria-labelledby="modal-title"
+                            fullWidth={true}
+                            maxWidth={'md'}
+                        >
+                            <ProposalMilestoneCreate onClose={close} proposalIndex={proposal.proposalIndex} />
+                        </Modal>
+                    </>
+                ) : null}
+                {milestones && milestones.length > 0 ? (
+                    <ProposalMilestonesList
+                        milestones={milestones}
+                        canEdit={canEdit}
+                        proposalIndex={proposal.proposalIndex}
+                    />
+                ) : (
+                    <NoProposalMilestonesInfo proposal={proposal} />
+                )}
+            </div>
         </LoadingWrapper>
     )
 }

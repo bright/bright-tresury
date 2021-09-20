@@ -1,4 +1,4 @@
-import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ConflictException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
@@ -30,9 +30,7 @@ export class ProposalDetailsService {
             throw new NotFoundException('Details for a proposal with the given id in the given network not found')
         }
 
-        proposal.isOwnerOrThrow(user)
-
-        proposal.blockchain.isEditableOrThrow()
+        proposal.canEditOrThrow(user)
 
         return this.ideaProposalDetailsService.update(dto, proposal.entity.details)
     }
@@ -49,11 +47,10 @@ export class ProposalDetailsService {
             throw new ConflictException('Details for a proposal with the given id already exist')
         }
 
-        proposal.blockchain.isOwnerOrThrow(user)
-        proposal.blockchain.isEditableOrThrow()
+        proposal.canEditOrThrow(user)
 
         const details = await this.ideaProposalDetailsService.create(dto)
-        const proposalEntity = await this.proposalsRepository.create({
+        const proposalEntity = this.proposalsRepository.create({
             ownerId: user.id,
             details,
             networkId: network,

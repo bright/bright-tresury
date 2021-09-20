@@ -45,7 +45,7 @@ const ProposalDetailsForm = ({ details, proposalIndex, useMutation }: ProposalDe
     const { t } = useTranslation()
     const history = useHistory()
 
-    const { mutateAsync, isError } = useMutation()
+    const { mutateAsync, isError, isLoading } = useMutation()
 
     const onSubmit = async (values: IdeaProposalDetailsDto) => {
         await mutateAsync(
@@ -88,7 +88,7 @@ const ProposalDetailsForm = ({ details, proposalIndex, useMutation }: ProposalDe
                     <FormFooter>
                         {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
                         <FormFooterButtonsContainer>
-                            <FormFooterButton type={'submit'} variant={'contained'}>
+                            <FormFooterButton type={'submit'} variant={'contained'} disabled={isLoading}>
                                 {t('proposal.details.form.edit')}
                             </FormFooterButton>
                         </FormFooterButtonsContainer>

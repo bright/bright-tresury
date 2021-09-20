@@ -54,10 +54,13 @@ const TabLabel = ({ label, filterName, svg, path, isDefault, searchParamName }: 
                 to={path}
                 replace={true}
                 isActive={(match, location: Location) => {
+                    if (!searchParamName && match) {
+                        return true
+                    }
                     const searchParamFilter = searchParamName
                         ? new URLSearchParams(location.search).get(searchParamName)
                         : undefined
-                    if (searchParamFilter === filterName) {
+                    if (searchParamFilter && searchParamFilter === filterName) {
                         return true
                     }
                     if (!searchParamFilter && isDefault) {

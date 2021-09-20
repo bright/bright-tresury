@@ -1,12 +1,12 @@
 import React from 'react'
-import Button from '../../../../components/button/Button'
+import Button from '../../components/button/Button'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { breakpoints } from '../../../../theme/theme'
-import { mobileHeaderListHorizontalMargin } from '../../../../components/header/list/HeaderListContainer'
+import { breakpoints } from '../../theme/theme'
+import { mobileHeaderListHorizontalMargin } from '../../components/header/list/HeaderListContainer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        newIdeaMilestoneButton: {
+        button: {
             fontWeight: 700,
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 fontSize: '15px',
@@ -22,16 +22,16 @@ interface OwnProps {
     onClick: () => void
 }
 
-export type CreateIdeaMilestoneButtonProps = OwnProps
+export type CreateMilestoneButtonProps = OwnProps
 
-const CreateIdeaMilestoneButton = ({ text, onClick }: CreateIdeaMilestoneButtonProps) => {
+const CreateMilestoneButton = ({ text, onClick }: CreateMilestoneButtonProps) => {
     const classes = useStyles()
 
     return (
-        <Button variant="text" color="primary" className={classes.newIdeaMilestoneButton} onClick={onClick}>
+        <Button variant="text" color="primary" className={classes.button} onClick={onClick}>
             {text}
         </Button>
     )
 }
 
-export default CreateIdeaMilestoneButton
+export default CreateMilestoneButton

@@ -2,7 +2,7 @@ import { createStyles } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import ButtonCard from '../../../../components/card/Card'
+import ButtonCard from '../../../../components/card/ButtonCard'
 import CardDetails from '../../../../components/card/components/CardDetails'
 import CardHeader from '../../../../components/card/components/CardHeader'
 import CardTitle from '../../../../components/card/components/CardTitle'
@@ -31,22 +31,20 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     milestone: ProposalMilestoneDto
+    ordinalNumber: number
     onClick: (milestone: ProposalMilestoneDto) => void
 }
 
 export type ProposalMilestoneCardProps = OwnProps
 
-const ProposalMilestoneCard = ({ milestone, onClick }: ProposalMilestoneCardProps) => {
+const ProposalMilestoneCard = ({ milestone, onClick, ordinalNumber }: ProposalMilestoneCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
     return (
         <ButtonCard onClick={() => onClick(milestone)}>
             <CardHeader>
-                <OrdinalNumber
-                    prefix={t('idea.milestones.ordinalNumberPrefix')}
-                    ordinalNumber={milestone.ordinalNumber}
-                />
+                <OrdinalNumber prefix={t('idea.milestones.ordinalNumberPrefix')} ordinalNumber={ordinalNumber} />
                 <div className={classes.headerStatusAndDateRange}>
                     <MilestoneDateRange dateFrom={milestone.details.dateFrom} dateTo={milestone.details.dateTo} />
                 </div>

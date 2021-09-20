@@ -25,11 +25,13 @@ export interface CreateMilestoneDetailsDto {
     description: Nil<string>
 }
 
+export type UpdateMilestoneDetailsDto = Partial<CreateMilestoneDetailsDto>
+
 export function toMilestoneDetailsDto(apiDto: ApiMilestoneDetailsDto) {
     return {
         ...apiDto,
-        dateFrom: !!apiDto.dateFrom ? new Date(apiDto.dateFrom) : undefined,
-        dateTo: !!apiDto.dateTo ? new Date(apiDto.dateTo) : undefined,
+        dateFrom: !!apiDto.dateFrom ? new Date(apiDto.dateFrom) : null,
+        dateTo: !!apiDto.dateTo ? new Date(apiDto.dateTo) : null,
         createdAt: new Date(apiDto.createdAt),
         updatedAt: new Date(apiDto.updatedAt),
     }

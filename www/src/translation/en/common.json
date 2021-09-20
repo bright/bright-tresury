@@ -232,6 +232,7 @@
             "field": "Field of Idea",
             "content": "Reason of Idea",
             "net": "Net",
+            "additionalNets": "Additional Nets",
             "form": {
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
@@ -432,8 +433,10 @@
             "createMilestone": "+ Create Milestone",
             "ordinalNumberPrefix": "Milestone - ",
             "noMilestones": {
-                "canEdit": "Please add milestones for this proposal, milestones will allow our community appreciate the proposal more and understand it better.",
-                "cannotEdit": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab."
+                "noMilestones": "No milestones have been added to this proposal.",
+                "notOwner": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab.",
+                "noDetails": "Looks like you have created this proposal. Once you add the title and some details in the Info tab, you can add milestones to allow our community to understand the proposal better.",
+                "addMilestones": "Please add milestones for this proposal, milestones will allow our community appreciate the proposal more and understand it better."
             },
             "modal": {
                 "milestone": "Milestone",
@@ -445,7 +448,7 @@
                         "cancel": "Cancel",
                         "create": "Create",
                         "save": "Save",
-                        "submit": "Submit"
+                        "remove": "Remove milestone"
                     }
                 }
             },
@@ -469,7 +472,6 @@
         "contact": "Proposer's information",
         "portfolio": "Portfolio",
         "links": "Links",
-        "additionalNets": "Additional Nets",
         "form": {
             "linkPlaceholder": "Add external link to your proposal here",
             "addLink": "+ Add Link",

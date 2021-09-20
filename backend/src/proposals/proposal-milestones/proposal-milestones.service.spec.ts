@@ -6,9 +6,10 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { createSessionData } from '../../ideas/spec.helpers'
+import { Web3Address } from '../../users/web3-addresses/web3-address.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { ProposalStatus } from '../dto/proposal.dto'
-import { mockedBlockchainService } from '../spec.helpers'
+import { mockedBlockchainService, setUpProposalFromIdea } from '../spec.helpers'
 import { ProposalMilestone } from './entities/proposal-milestone.entity'
 import { ProposalMilestonesService } from './proposal-milestones.service'
 import { createProposalMilestone, setUp } from './spec.helpers'
@@ -229,6 +230,26 @@ describe(`ProposalMilestonesService`, () => {
                 service().create(proposal.blockchainProposalId, NETWORKS.POLKADOT, { details }, otherSessionData),
             ).rejects.toThrow(ForbiddenException)
         })
+
+        it(`should resolve when user with proposer address assigned tries to update`, async () => {
+            const { proposal } = await setUpProposalFromIdea(app())
+            const proposerSessionData = await createSessionData({
+                username: 'other',
+                email: 'other@example.con',
+                web3Addresses: [new Web3Address('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
+            })
+
+            await expect(
+                service().create(
+                    proposal.blockchainProposalId,
+                    proposal.networkId,
+                    {
+                        details,
+                    },
+                    proposerSessionData,
+                ),
+            ).resolves.toBeDefined()
+        })
     })
 
     describe('update', () => {
@@ -372,6 +393,26 @@ describe(`ProposalMilestonesService`, () => {
                 service().update(milestone.id, proposal.blockchainProposalId, NETWORKS.POLKADOT, {}, otherSessionData),
             ).rejects.toThrow(ForbiddenException)
         })
+
+        it(`should resolve when user with proposer address assigned tries to update`, async () => {
+            const { proposal } = await setUpProposalFromIdea(app())
+            const milestone = await createProposalMilestone(app(), proposal)
+            const proposerSessionData = await createSessionData({
+                username: 'other',
+                email: 'other@example.con',
+                web3Addresses: [new Web3Address('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
+            })
+
+            await expect(
+                service().update(
+                    milestone.id,
+                    proposal.blockchainProposalId,
+                    proposal.networkId,
+                    {},
+                    proposerSessionData,
+                ),
+            ).resolves.toBeDefined()
+        })
     })
 
     describe('delete', () => {
@@ -433,6 +474,20 @@ describe(`ProposalMilestonesService`, () => {
             await expect(
                 service().delete(milestone.id, proposal.blockchainProposalId, NETWORKS.POLKADOT, otherSessionData),
             ).rejects.toThrow(ForbiddenException)
+        })
+
+        it(`should resolve when user with proposer address assigned tries to delete`, async () => {
+            const { proposal } = await setUpProposalFromIdea(app())
+            const milestone = await createProposalMilestone(app(), proposal)
+            const proposerSessionData = await createSessionData({
+                username: 'other',
+                email: 'other@example.con',
+                web3Addresses: [new Web3Address('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
+            })
+
+            await expect(
+                service().delete(milestone.id, proposal.blockchainProposalId, proposal.networkId, proposerSessionData),
+            ).resolves
         })
     })
 })

@@ -84,7 +84,7 @@ const ProposalHeader = ({ proposal, searchParamName }: ProposalHeaderProps) => {
             <FlexBreakLine className={classes.flexBreakLine} />
 
             <HeaderTabs className={classes.contentTypeTabs}>
-                <ProposalContentTypeTabs searchParamName={searchParamName} proposal={proposal} />
+                <ProposalContentTypeTabs />
             </HeaderTabs>
         </HeaderContainer>
     )
