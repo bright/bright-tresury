@@ -56,6 +56,9 @@ export class IdeaMilestoneNetwork extends BaseEntity {
     }
 
     canTurnIntoProposalOrThrow = () => {
+        if (this.status === IdeaMilestoneNetworkStatus.TurnedIntoProposal) {
+            throw new BadRequestException('This idea milestone network is already turned into proposal')
+        }
         if (Number(this.value) === 0) {
             throw new BadRequestException(
                 'Value of the idea milestone network with the given id has to be greater than zero',

@@ -48,8 +48,6 @@ export class IdeaMilestoneProposalsService {
 
         const ideaMilestone = await this.ideaMilestonesService.findOne(ideaMilestoneId, sessionData)
 
-        ideaMilestone.canTurnIntoProposalOrThrow()
-
         const ideaMilestoneNetwork = await ideaMilestone.networks.find(({ id }) => id === ideaMilestoneNetworkId)
 
         if (!ideaMilestoneNetwork) {

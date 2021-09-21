@@ -36,7 +36,6 @@ export async function handleWeb3Sign(
     const startSignUpResponse = await startCall({ address: account.baseEncodedAddress, details })
 
     const signMessage = startSignUpResponse?.signMessage
-    console.log('signMessage', signMessage)
     if (!signMessage) {
         throw new Error('Web3 sign challenge message not found')
     }
@@ -46,8 +45,6 @@ export async function handleWeb3Sign(
         data: stringToHex(signMessage),
         type: 'bytes',
     })
-    console.log('signature', signature)
-    console.log('account.baseEncodedAddress', account.baseEncodedAddress)
     return await confirmCall({
         address: account.baseEncodedAddress,
         signature,

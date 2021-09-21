@@ -91,7 +91,7 @@ export class IdeaMilestonesService {
         }
 
         currentIdeaMilestone.idea.canEditMilestonesOrThrow(sessionData.user)
-        currentIdeaMilestone.canEdit()
+        currentIdeaMilestone.canEditOrThrow()
 
         const updatedNetworks =
             dto.networks &&

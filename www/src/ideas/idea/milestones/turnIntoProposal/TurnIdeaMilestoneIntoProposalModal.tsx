@@ -10,6 +10,7 @@ import FormFooterButton from '../../../../components/form/footer/FormFooterButto
 import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
 import { useQueryClient } from 'react-query'
 import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
+import { useIdeaMilestone } from '../useIdeaMilestone'
 
 const useStyles = makeStyles(
     createStyles({
@@ -48,13 +49,15 @@ const TurnIdeaMilestoneIntoProposalModal = ({
     const queryClient = useQueryClient()
 
     const { mutateAsync, isError } = usePatchIdeaMilestone()
-
+    const { canEdit } = useIdeaMilestone(ideaMilestone, idea)
     const submit = async ({ beneficiary, networks }: IdeaMilestoneFormValues) => {
         const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = {
             ...ideaMilestone,
             beneficiary,
             networks,
         }
+
+        if (!canEdit) return onSuccessfulPatch(ideaMilestone)
 
         await mutateAsync(
             { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: patchIdeaMilestoneDto },
@@ -93,7 +96,7 @@ const TurnIdeaMilestoneIntoProposalModal = ({
                 <IdeaMilestoneForm
                     idea={idea}
                     ideaMilestone={ideaMilestone}
-                    readonly={false}
+                    readonly={!canEdit}
                     folded={true}
                     extendedValidation={true}
                     onSubmit={submit}

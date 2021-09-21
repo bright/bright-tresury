@@ -19,7 +19,7 @@ const IdeaMilestoneNetworkStatusIndicator = ({
 }: IdeaMilestoneNetworkStatusIndicatorProps) => {
     const { t } = useTranslation()
 
-    if (status === IdeaMilestoneNetworkStatus.Active) return null
+    if (!status || status === IdeaMilestoneNetworkStatus.Active) return null
 
     const label = t(
         status === IdeaMilestoneNetworkStatus.Pending
