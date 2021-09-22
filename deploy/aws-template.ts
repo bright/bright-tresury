@@ -854,7 +854,7 @@ export default cloudform({
                     Cpu: 100,
                     Essential: true,
                     Image: Fn.Ref('AppImage'),
-                    Command: ['npm', 'run', 'database-migrate-and-main'],
+                    Command: ['npm', 'run', 'database-migrate-clean-and-main'],
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {
                         LogDriver: 'awslogs',

@@ -18,6 +18,7 @@
         "main": "npx --node-options $NODE_DEBUG_OPTION -- ts-node --files src/main.ts",
         "main:dist": "node $NODE_DEBUG_OPTION dist/src/main.js --max-old-space-size=450",
         "database-migrate-and-main": "yarn run database:migrate && yarn run main:dist",
+        "database-migrate-clean-and-main": "yarn run database:migrate && yarn run database:clean && yarn run main:dist",
         "main:dev": "npm run main | bunyan -o short",
         "main:nodemon": "nodemon --config ./main.nodemon.json",
         "main:nodemon:dist": "nodemon --config ./main-dist.nodemon.json",
@@ -26,6 +27,7 @@
         "database:migrate": "npx --node-options $NODE_DEBUG_OPTION -- ts-node --files src/database.migrate.up.ts",
         "database:migrate:undo": "DATABASE_USERNAME=deployer npx --node-arg $NODE_DEBUG_OPTION -- ts-node --files src/database.migrate.down.ts",
         "database:migrate:ci": "npm run database:migrate | bunyan -o short",
+        "database:clean": "npx --node-arg $NODE_DEBUG_OPTION -- ts-node --files src/database.clean.ts",
         "webpack": "webpack --config webpack.config.ts"
     },
     "author": "",

@@ -17,15 +17,17 @@ describe(`SuperTokens Service`, () => {
     })
 
     describe('sign up', () => {
-        it('should save user in the database', async () => {
+        it('should save user in the database', async (done) => {
             const superTokensUser = await getService().signUp(email, password)
             const savedSuperTokensUser = await getAuthUser(superTokensUser.id)
             expect(savedSuperTokensUser).toBeDefined()
             expect(savedSuperTokensUser!.id).toBe(superTokensUser.id)
+            done()
         })
-        it('should not save user if email already taken', async () => {
+        it('should not save user if email already taken', async (done) => {
             await getService().signUp(email, password)
             await expect(getService().signUp(email, password)).rejects.toThrow(ConflictException)
+            done()
         })
     })
 })
