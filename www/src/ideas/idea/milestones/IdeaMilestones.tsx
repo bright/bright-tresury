@@ -10,6 +10,7 @@ import LoadingWrapper from '../../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import { useNetworks } from '../../../networks/useNetworks'
 
 interface OwnProps {
     idea: IdeaDto
@@ -23,8 +24,8 @@ const IdeaMilestones = ({ idea }: IdeaMilestonesProps) => {
     const classes = useSuccessfullyLoadedItemStyles()
 
     const createModal = useModal()
-
-    const { status, data: ideaMilestones } = useGetIdeaMilestones(idea.id)
+    const { network: currentNetwork } = useNetworks()
+    const { status, data: ideaMilestones } = useGetIdeaMilestones(idea.id, currentNetwork.id)
 
     const { canEditIdeaMilestones } = useIdea(idea)
 

@@ -30,7 +30,7 @@ describe('filter ideas', () => {
                 createIdea(IdeaStatus.Draft, user),
                 createIdea(IdeaStatus.Active, user),
                 createIdea(IdeaStatus.TurnedIntoProposal, user),
-                createIdea(IdeaStatus.TurnedIntoProposalByMilestone, user),
+                createIdea(IdeaStatus.MilestoneSubmission, user),
                 createIdea(IdeaStatus.Closed, user),
             ]
 
@@ -50,7 +50,7 @@ describe('filter ideas', () => {
                 createIdea(IdeaStatus.Draft, user),
                 createIdea(IdeaStatus.Active, otherUser),
                 createIdea(IdeaStatus.TurnedIntoProposal, user),
-                createIdea(IdeaStatus.TurnedIntoProposalByMilestone, otherUser),
+                createIdea(IdeaStatus.MilestoneSubmission, otherUser),
                 createIdea(IdeaStatus.Closed, user),
             ]
 
@@ -62,7 +62,7 @@ describe('filter ideas', () => {
                 createIdea(IdeaStatus.Draft, user),
                 createIdea(IdeaStatus.Active, user),
                 createIdea(IdeaStatus.TurnedIntoProposal, user),
-                createIdea(IdeaStatus.TurnedIntoProposalByMilestone, user),
+                createIdea(IdeaStatus.MilestoneSubmission, user),
                 createIdea(IdeaStatus.Closed, user),
             ]
 
@@ -74,7 +74,7 @@ describe('filter ideas', () => {
                 createIdea(IdeaStatus.Draft, user),
                 createIdea(IdeaStatus.Active, user),
                 createIdea(IdeaStatus.TurnedIntoProposal, user),
-                createIdea(IdeaStatus.TurnedIntoProposalByMilestone, user),
+                createIdea(IdeaStatus.MilestoneSubmission, user),
                 createIdea(IdeaStatus.Closed, user),
             ]
 
@@ -88,7 +88,7 @@ describe('filter ideas', () => {
                 createIdea(IdeaStatus.Draft, user),
                 createIdea(IdeaStatus.Active, user),
                 createIdea(IdeaStatus.TurnedIntoProposal, user),
-                createIdea(IdeaStatus.TurnedIntoProposalByMilestone, user),
+                createIdea(IdeaStatus.MilestoneSubmission, user),
                 createIdea(IdeaStatus.Closed, user),
             ]
 

@@ -23,7 +23,7 @@ export const useIdea = (idea: Nil<IdeaDto>) => {
             !!idea &&
             (idea.status === IdeaStatus.Active ||
                 idea.status === IdeaStatus.Draft ||
-                idea.status === IdeaStatus.TurnedIntoProposalByMilestone),
+                idea.status === IdeaStatus.MilestoneSubmission),
         [idea],
     )
 

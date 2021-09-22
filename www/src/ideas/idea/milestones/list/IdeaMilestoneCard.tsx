@@ -13,8 +13,6 @@ import { useTranslation } from 'react-i18next'
 import CardHeader from '../../../../components/card/components/CardHeader'
 import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
 import IdeaMilestoneStatusIndicator from '../status/IdeaMilestoneStatusIndicator'
-import { useNetworks } from '../../../../networks/useNetworks'
-import { findIdeaMilestoneNetwork } from '../idea.milestones.utils'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -43,9 +41,8 @@ export type IdeaMilestoneCardProps = OwnProps
 const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { network: currentNetwork } = useNetworks()
 
-    const ideaMilestoneNetwork = findIdeaMilestoneNetwork(ideaMilestone.networks, currentNetwork)
+    const ideaMilestoneNetwork = ideaMilestone.currentNetwork
 
     return (
         <ButtonCard onClick={() => onClick(ideaMilestone)}>

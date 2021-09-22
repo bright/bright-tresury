@@ -60,7 +60,7 @@ const IdeaMilestonesList = ({ idea, ideaMilestones }: IdeaMilestoneListProps) =>
         async ({ extrinsicHash, lastBlockHash }: ExtrinsicDetails) => {
             if (ideaMilestoneToBeTurnedIntoProposal) {
                 const turnIdeaMilestoneIntoProposalDto: TurnIdeaMilestoneIntoProposalDto = {
-                    ideaMilestoneNetworkId: ideaMilestoneToBeTurnedIntoProposal.networks[0].id,
+                    ideaMilestoneNetworkId: ideaMilestoneToBeTurnedIntoProposal.currentNetwork.id,
                     extrinsicHash,
                     lastBlockHash,
                 }
@@ -114,7 +114,7 @@ const IdeaMilestonesList = ({ idea, ideaMilestones }: IdeaMilestoneListProps) =>
                     onClose={submitProposalModal.close}
                     onTurn={onTurn}
                     title={t('idea.milestones.turnIntoProposal.submit.title')}
-                    value={ideaMilestoneToBeTurnedIntoProposal.networks[0].value}
+                    value={ideaMilestoneToBeTurnedIntoProposal.currentNetwork.value}
                     beneficiary={ideaMilestoneToBeTurnedIntoProposal.beneficiary!}
                 />
             ) : null}

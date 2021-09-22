@@ -89,7 +89,7 @@ const DisplayComment = ({
     const { t } = useTranslation()
     const { network } = useNetworks()
 
-    const { isUserSignedInAndVerified: canComment, user } = useAuth()
+    const { user } = useAuth()
     const isAuthor = user?.id && author.userId && user?.id === author.userId
 
     const formatAge = (timestamp: number) => {

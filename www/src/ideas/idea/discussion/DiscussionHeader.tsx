@@ -20,7 +20,7 @@ export type DiscussionTopRowProps = OwnProps
 const DiscussionHeader = ({}: DiscussionTopRowProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { isUserSignedInAndVerified: canComment, user } = useAuth()
+    const { isUserSignedInAndVerified: canComment } = useAuth()
     return (
         <div className={classes.topRow}>
             <CopyInputValue value={window.location.href} copyText={t('idea.copyLink')} />

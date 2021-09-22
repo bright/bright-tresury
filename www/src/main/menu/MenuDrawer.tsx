@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import clsx from 'clsx'
 import { createStyles, Drawer, isWidthDown, Theme, withWidth } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'

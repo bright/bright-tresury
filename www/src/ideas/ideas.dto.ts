@@ -45,7 +45,7 @@ export enum IdeaStatus {
     Active = 'active',
     TurnedIntoProposal = 'turned_into_proposal',
     Pending = 'pending',
-    TurnedIntoProposalByMilestone = 'turned_into_proposal_by_milestone',
+    MilestoneSubmission = 'milestone_submission',
     Closed = 'closed',
 }
 

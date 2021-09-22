@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query'
 import { apiPatch, apiPost } from '../../../api'
 import { PROPOSALS_API_PATH } from '../../proposals.api'
-import { CreateProposalDetailsDto, EditProposalDetailsDto, ProposalDetailsDto } from './proposal-details.dto'
+import { CreateProposalDetailsDto, ProposalDetailsDto } from './proposal-details.dto'
 
 export interface MutateProposalDetailsParams {
     proposalIndex: number

@@ -21,7 +21,13 @@ describe('IdeaMilestoneNetworksService', () => {
         const idea = await createIdea({ networks }, sessionData)
         const ideaMilestone = await createIdeaMilestone(idea.id, { networks }, sessionData)
         const ideaMilestoneNetworkId = ideaMilestone.networks[0].id
-        return { sessionData, idea, ideaMilestone, ideaMilestoneNetworkId }
+        return {
+            sessionData,
+            idea,
+            ideaMilestone,
+            ideaMilestoneNetworks: ideaMilestone.networks,
+            ideaMilestoneNetworkId,
+        }
     }
 
     beforeEach(async () => {
@@ -91,6 +97,27 @@ describe('IdeaMilestoneNetworksService', () => {
             await getRepository().save({ id: ideaMilestoneNetworkId, status: IdeaMilestoneNetworkStatus.Active })
 
             await expect(getService().update(ideaMilestoneNetworkId, { value: 5 }, sessionData)).resolves.toBeDefined()
+        })
+    })
+    describe('updateMultiple', () => {
+        it('should update networks values', async () => {
+            const { ideaMilestoneNetworks, sessionData } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+                { name: NETWORKS.POLKADOT, value: 8, status: IdeaMilestoneNetworkStatus.Active },
+            ])
+
+            const returnedNetworks = await getService().updateMultiple(
+                {
+                    [ideaMilestoneNetworks[0].id]: { value: 12 },
+                    [ideaMilestoneNetworks[1].id]: { value: 14 },
+                },
+                sessionData,
+            )
+            expect(returnedNetworks).toHaveLength(2)
+
+            const savedNetwork = await getRepository().findByIds(ideaMilestoneNetworks.map(({ id }) => id))
+            expect(savedNetwork[0].value).toBe('12.000000000000000')
+            expect(savedNetwork[1].value).toBe('14.000000000000000')
         })
     })
 })

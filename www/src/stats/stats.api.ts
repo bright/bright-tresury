@@ -1,5 +1,5 @@
 import { apiGet } from '../api'
-import { useQuery, UseQueryOptions } from 'react-query'
+import { useQuery } from 'react-query'
 import { StatsDto } from './stats.dto'
 
 export const STATS_API_PATH = '/stats'
