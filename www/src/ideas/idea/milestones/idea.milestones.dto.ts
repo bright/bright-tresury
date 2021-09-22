@@ -10,12 +10,14 @@ export enum IdeaMilestoneNetworkStatus {
     TurnedIntoProposal = 'turned_into_proposal',
     Pending = 'pending',
 }
+
 export interface IdeaMilestoneDto {
     id: string
     ordinalNumber: number
     status: IdeaMilestoneStatus
     beneficiary: Nil<string>
-    networks: IdeaMilestoneNetworkDto[]
+    currentNetwork: IdeaMilestoneNetworkDto
+    additionalNetworks: IdeaMilestoneNetworkDto[]
     details: MilestoneDetailsDto
 }
 
@@ -26,11 +28,14 @@ export interface IdeaMilestoneNetworkDto {
     status: IdeaMilestoneNetworkStatus
 }
 
+
 export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumber' | 'status' | 'details'> & {
     details: CreateMilestoneDetailsDto
 }
-
 export type PatchIdeaMilestoneDto = Partial<IdeaMilestoneDto>
+
+export type UpdateIdeaMilestoneNetworkDto = Partial<IdeaMilestoneNetworkDto>
+export type UpdateIdeaMilestoneNetworksDto = { [key: string]: UpdateIdeaMilestoneNetworkDto }
 
 export interface TurnIdeaMilestoneIntoProposalDto {
     ideaMilestoneNetworkId: string

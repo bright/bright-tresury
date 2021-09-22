@@ -1,6 +1,5 @@
-import { headerListHorizontalMargin, mobileHeaderListHorizontalMargin } from '../header/list/HeaderListContainer'
-import Select from './Select'
 import React from 'react'
+import Select from './Select'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
 import { useTranslation } from 'react-i18next'

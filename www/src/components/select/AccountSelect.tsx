@@ -3,8 +3,6 @@ import { Account } from '../../substrate-lib/accounts/AccountsContext'
 import { useAccounts } from '../../substrate-lib/accounts/useAccounts'
 import FormSelect from './FormSelect'
 import { useTranslation } from 'react-i18next'
-import { Theme } from '@material-ui/core'
-import { makeStyles } from '@material-ui/core/styles'
 import i18next from 'i18next'
 
 export const EMPTY_ACCOUNT = {

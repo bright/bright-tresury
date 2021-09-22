@@ -18,7 +18,7 @@ export type IdeaDiscussionProps = OwnProps
 
 const IdeaDiscussion = ({ ideaId }: IdeaDiscussionProps) => {
     const { status, data: ideaComments } = useGetIdeaComments(ideaId)
-    const { isUserSignedInAndVerified: canComment, user } = useAuth()
+    const { isUserSignedInAndVerified: canComment } = useAuth()
     const { t } = useTranslation()
 
     const renderIdeaComment = (comment: IdeaCommentDto) => (

@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { ClassNameProps } from '../../../../components/props/className.props'
 
 interface OwnProps {
-    status: IdeaMilestoneNetworkStatus
+    status?: IdeaMilestoneNetworkStatus
     sublabel?: string
 }
 

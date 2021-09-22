@@ -4,45 +4,42 @@ import { TextFieldColorScheme } from '../../../../../components/form/input/textF
 import { useTranslation } from 'react-i18next'
 import { useNetworks } from '../../../../../networks/useNetworks'
 import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
-import { useIdeaMilestoneFormFieldsStyles } from './useIdeaMilestoneFormFieldsStyles'
-import { IdeaMilestoneNetworkDto } from '../../idea.milestones.dto'
-import { Network } from '../../../../../networks/networks.dto'
-import Bond from '../../../../form/networks/Bond'
+import { IdeaMilestoneDto } from '../../idea.milestones.dto'
 import NetworkInput from '../../../../form/networks/NetworkInput'
-import { findIdeaMilestoneNetwork } from '../../idea.milestones.utils'
+import { IdeaDto } from '../../../../ideas.dto'
+import { useIdeaMilestone } from '../../useIdeaMilestone'
+import IdeaMilestoneFieldsContainer from './IdeaMilestoneFieldsContainer'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
 interface OwnProps {
-    readonly: boolean
     values: IdeaMilestoneFormValues
+    ideaMilestone?: IdeaMilestoneDto
+    idea: IdeaDto
 }
 
 export type IdeaMilestoneFoldedFormFieldsProps = OwnProps
 
-const IdeaMilestoneFoldedFormFields = ({ values, readonly }: IdeaMilestoneFoldedFormFieldsProps) => {
-    const classes = useIdeaMilestoneFormFieldsStyles()
+const IdeaMilestoneFoldedFormFields = ({ values, ideaMilestone, idea }: IdeaMilestoneFoldedFormFieldsProps) => {
     const { t } = useTranslation()
     const { network: currentNetwork } = useNetworks()
-
-    // <Input name={`networks[0].value`} <- we use 0 because we want to display only 1 network which is the current network
-    // please see IdeaMilestoneFormFields.tsx compareNetworks() for more details
+    const { canEdit, canTurnIntoProposal } = useIdeaMilestone(idea, ideaMilestone)
     return (
-        <div className={classes.root}>
+        <IdeaMilestoneFieldsContainer>
             <Input
                 name="beneficiary"
                 label={t(`${translationKeyPrefix}.beneficiary`)}
                 placeholder={t(`${translationKeyPrefix}.beneficiary`)}
-                disabled={readonly}
+                disabled={!canEdit}
                 textFieldColorScheme={TextFieldColorScheme.Dark}
             />
             <NetworkInput
-                inputName={`networks[0].value`}
+                inputName={`currentNetwork.value`}
                 networkId={currentNetwork.id}
-                value={values.networks[0].value}
-                readonly={readonly}
+                value={values.currentNetwork.value}
+                readonly={!canTurnIntoProposal}
             />
-        </div>
+        </IdeaMilestoneFieldsContainer>
     )
 }
 

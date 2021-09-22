@@ -49,8 +49,8 @@ const IdeaStatusIndicator = ({ idea: { currentNetwork, additionalNetworks }, ide
                 return 'idea.list.card.statusTurnedIntoProposal'
             case IdeaStatus.Pending:
                 return 'idea.list.card.pending'
-            case IdeaStatus.TurnedIntoProposalByMilestone:
-                return 'idea.list.card.statusTurnedIntoProposalByMilestone'
+            case IdeaStatus.MilestoneSubmission:
+                return 'idea.list.card.milestoneSubmission'
             case IdeaStatus.Closed:
                 return 'idea.list.card.statusClosed'
         }
@@ -66,8 +66,8 @@ const IdeaStatusIndicator = ({ idea: { currentNetwork, additionalNetworks }, ide
                 return theme.palette.status.turnedIntoProposal
             case IdeaStatus.Pending:
                 return theme.palette.status.pending
-            case IdeaStatus.TurnedIntoProposalByMilestone:
-                return theme.palette.status.turnedIntoProposalByMilestone
+            case IdeaStatus.MilestoneSubmission:
+                return theme.palette.status.milestoneSubmission
             case IdeaStatus.Closed:
                 return theme.palette.status.closed
         }

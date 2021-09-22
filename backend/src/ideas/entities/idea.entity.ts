@@ -91,7 +91,7 @@ export class Idea extends BaseEntity {
 
     canEditOrThrow = (user: User) => {
         this.isOwnerOrThrow(user)
-        if (this.status === IdeaStatus.TurnedIntoProposal || this.status === IdeaStatus.TurnedIntoProposalByMilestone) {
+        if (this.status === IdeaStatus.TurnedIntoProposal || this.status === IdeaStatus.MilestoneSubmission) {
             throw new BadRequestException('The given user cannot edit or delete this idea')
         }
     }
@@ -118,7 +118,7 @@ export class Idea extends BaseEntity {
             throw new EmptyBeneficiaryException()
         }
         if (
-            this.status === IdeaStatus.TurnedIntoProposalByMilestone ||
+            this.status === IdeaStatus.MilestoneSubmission ||
             (this.status === IdeaStatus.TurnedIntoProposal &&
                 this.networks.every((n) => n.status === IdeaNetworkStatus.TurnedIntoProposal))
         ) {

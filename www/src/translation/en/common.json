@@ -297,7 +297,7 @@
                 "statusActive": "Active",
                 "statusTurnedIntoProposal": "Turned into Proposal",
                 "pending": "Pending",
-                "statusTurnedIntoProposalByMilestone": "Turned into Proposal by Milestone",
+                "milestoneSubmission": "Milestone Submission",
                 "statusClosed": "Closed",
                 "beneficiary": "(Beneficiary)"
             },

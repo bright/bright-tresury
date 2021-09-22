@@ -2,7 +2,6 @@ import React from 'react'
 import { makeStyles, Theme } from '@material-ui/core/styles'
 import { ButtonBase, createStyles } from '@material-ui/core'
 import { NavLink } from 'react-router-dom'
-import { IdeaFilterSearchParamName } from '../../ideas/list/IdeaStatusFilters'
 import { breakpoints } from '../../theme/theme'
 import { Location } from 'history'
 

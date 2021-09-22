@@ -24,16 +24,36 @@ export interface IdeaMilestoneFormValues {
     dateTo: Nil<Date>
     description: Nil<string>
     beneficiary: Nil<string>
-    networks: IdeaMilestoneNetworkDto[]
+    currentNetwork: IdeaMilestoneNetworkDto
+    additionalNetworks: IdeaMilestoneNetworkDto[]
 }
 
 interface OwnProps {
     idea: IdeaDto
     ideaMilestone?: IdeaMilestoneDto
-    readonly: boolean
     folded?: boolean
     extendedValidation?: boolean
     onSubmit?: (values: IdeaMilestoneFormValues) => void
+    onTurnIntoProposalClick?: (ideaMilestoneDto: IdeaMilestoneDto) => void
+}
+
+export const mergeFormValuesWithIdeaMilestone = (
+    formValues: IdeaMilestoneFormValues,
+    ideaMilestone: IdeaMilestoneDto,
+): IdeaMilestoneDto => {
+    return {
+        ...ideaMilestone,
+        beneficiary: formValues.beneficiary,
+        currentNetwork: formValues.currentNetwork,
+        additionalNetworks: formValues.additionalNetworks,
+        details: {
+            ...ideaMilestone.details,
+            subject: formValues.subject,
+            dateFrom: formValues.dateFrom,
+            dateTo: formValues.dateTo,
+            description: formValues.description,
+        },
+    }
 }
 
 export type IdeaMilestoneFormProps = PropsWithChildren<OwnProps>
@@ -41,10 +61,10 @@ export type IdeaMilestoneFormProps = PropsWithChildren<OwnProps>
 const IdeaMilestoneForm = ({
     idea,
     ideaMilestone,
-    readonly,
     folded = false,
     extendedValidation = false,
     onSubmit,
+    onTurnIntoProposalClick,
     children,
 }: IdeaMilestoneFormProps) => {
     const classes = useStyles()
@@ -64,9 +84,14 @@ const IdeaMilestoneForm = ({
             {({ values, handleSubmit }) => (
                 <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                     {folded ? (
-                        <IdeaMilestoneFoldedFormFields values={values} readonly={readonly} />
+                        <IdeaMilestoneFoldedFormFields values={values} ideaMilestone={ideaMilestone} idea={idea} />
                     ) : (
-                        <IdeaMilestoneFormFields values={values} readonly={readonly} />
+                        <IdeaMilestoneFormFields
+                            values={values}
+                            ideaMilestone={ideaMilestone}
+                            idea={idea}
+                            onTurnIntoProposalClick={onTurnIntoProposalClick}
+                        />
                     )}
                     <FormFooter>{children}</FormFooter>
                 </form>

@@ -43,7 +43,7 @@ const createIdeaMilestoneDto = (
     beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
 ) => {
     return {
-        networks: [{ name: 'polkadot', value: networkValue, status: IdeaMilestoneNetworkStatus.Active }],
+        networks: [{ name: NETWORKS.POLKADOT, value: networkValue, status: IdeaMilestoneNetworkStatus.Active }],
         beneficiary,
         details: {
             subject: 'subject',
@@ -173,11 +173,12 @@ describe('IdeaMilestoneProposalsService', () => {
             })
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
+
             await expect(
                 ideaMilestoneProposalsService().createProposal(
                     ideaWithTurnedIntoProposalStatus.id,
                     ideaMilestone.id,
-                    createIdeaMilestoneProposalDto,
+                    { ...createIdeaMilestoneProposalDto, ideaMilestoneNetworkId: ideaMilestone.networks[0].id },
                     sessionData,
                 ),
             ).rejects.toThrow(BadRequestException)
@@ -227,15 +228,26 @@ describe('IdeaMilestoneProposalsService', () => {
         it(`should throw BadRequestException for idea milestone with ${IdeaMilestoneStatus.TurnedIntoProposal} status`, async () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
-                createIdeaMilestoneDto(),
+                {
+                    beneficiary: uuid(),
+                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+                    details: {
+                        subject: 'milestone subject',
+                    },
+                },
                 sessionData,
                 ideaMilestonesService(),
             )
             ideaMilestone.status = IdeaMilestoneStatus.TurnedIntoProposal
             await saveIdeaMilestone(ideaMilestone)
+            // update ideaMilestoneNetwork status to TurnedIntoProposal
+            const [ideaMilestoneNetwork] = await ideaMilestoneNetworkRepository().find({ ideaMilestone })
+            ideaMilestoneNetwork.status = IdeaMilestoneNetworkStatus.TurnedIntoProposal
+            await ideaMilestoneNetworkRepository().save(ideaMilestoneNetwork)
 
             createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
 
+            // this should fail because the milestone network status is already turned_into_proposal
             await expect(
                 ideaMilestoneProposalsService().createProposal(
                     idea.id,
@@ -246,7 +258,7 @@ describe('IdeaMilestoneProposalsService', () => {
             ).rejects.toThrow(BadRequestException)
         })
 
-        it(`should resolve for idea ${IdeaStatus.TurnedIntoProposalByMilestone} and milestone ${IdeaMilestoneStatus.Active}`, async () => {
+        it(`should resolve for idea ${IdeaStatus.MilestoneSubmission} and milestone ${IdeaMilestoneStatus.Active}`, async () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 createIdeaMilestoneDto(),
@@ -255,7 +267,7 @@ describe('IdeaMilestoneProposalsService', () => {
             )
             await app()
                 .get<Repository<Idea>>(getRepositoryToken(Idea))
-                .save({ ...idea, status: IdeaStatus.TurnedIntoProposalByMilestone })
+                .save({ ...idea, status: IdeaStatus.MilestoneSubmission })
             ideaMilestone.status = IdeaMilestoneStatus.Active
             await saveIdeaMilestone(ideaMilestone)
 
@@ -370,7 +382,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 },
             )
 
-            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn(
+            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn<IdeaMilestoneProposalsService, any>(
                 ideaMilestoneProposalsService(),
                 'turnIdeaMilestoneIntoProposal',
             )
@@ -429,7 +441,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 },
             )
 
-            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn(
+            const turnIdeaMilestoneIntoProposalSpy = jest.spyOn<IdeaMilestoneProposalsService, any>(
                 ideaMilestoneProposalsService(),
                 'turnIdeaMilestoneIntoProposal',
             )
@@ -522,7 +534,7 @@ describe('IdeaMilestoneProposalsService', () => {
             ideaMilestoneNetwork = ideaMilestone.networks[0]
         })
 
-        it(`should change idea status to ${IdeaStatus.TurnedIntoProposalByMilestone}`, async () => {
+        it(`should change idea status to ${IdeaStatus.MilestoneSubmission}`, async () => {
             await ideaMilestoneProposalsService().turnIdeaMilestoneIntoProposal(
                 idea,
                 ideaMilestone,
@@ -532,7 +544,7 @@ describe('IdeaMilestoneProposalsService', () => {
 
             const updatedIdea = await ideasService().findOne(idea.id, sessionData)
 
-            expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposalByMilestone)
+            expect(updatedIdea.status).toBe(IdeaStatus.MilestoneSubmission)
         })
 
         it(`should change idea milestone status to ${IdeaMilestoneStatus.TurnedIntoProposal}`, async () => {
@@ -592,7 +604,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 0,
             )
             const modifiedIdea = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
-            expect(modifiedIdea.status).toBe(IdeaStatus.TurnedIntoProposalByMilestone)
+            expect(modifiedIdea.status).toBe(IdeaStatus.MilestoneSubmission)
 
             const modifiedIdeaMilestone = await ideaMilestonesService().findOne(
                 ideaMilestoneWithTwoNetworks.id,
@@ -609,6 +621,71 @@ describe('IdeaMilestoneProposalsService', () => {
                 ({ id }) => id === ideaMilestoneNetworkB.id,
             )!
             expect(modifiedIdeaMilestoneNetworkB.status).toBe(IdeaMilestoneNetworkStatus.Pending)
+        })
+
+        it('turn both ideaMilestoneNetworks into proposals and check that their statuses are TurnedIntoProposal', async () => {
+            const ideaWithTwoNetworks = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    networks: [
+                        { name: NETWORKS.POLKADOT, value: 1000 },
+                        { name: NETWORKS.KUSAMA, value: 1000 },
+                    ],
+                },
+                sessionData,
+                ideasService(),
+            )
+            const ideaMilestoneWithTwoNetworks = await createIdeaMilestone(
+                ideaWithTwoNetworks.id,
+                {
+                    networks: [
+                        { name: NETWORKS.POLKADOT, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
+                        { name: NETWORKS.KUSAMA, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
+                    ],
+                },
+                sessionData,
+                ideaMilestonesService(),
+            )
+            const ideaMilestoneNetworkA = ideaMilestoneWithTwoNetworks.networks[0]
+
+            await ideaMilestoneProposalsService().turnIdeaMilestoneIntoProposal(
+                ideaWithTwoNetworks,
+                ideaMilestoneWithTwoNetworks,
+                ideaMilestoneNetworkA,
+                0,
+            )
+
+            const ideaAfterFirstTurn = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
+            const ideaMilestoneAfterFirstTurn = await ideaMilestonesService().findOne(
+                ideaMilestoneWithTwoNetworks.id,
+                sessionData,
+            )
+            const ideaMilestoneNetworkB = ideaMilestoneWithTwoNetworks.networks[1]
+            await ideaMilestoneProposalsService().turnIdeaMilestoneIntoProposal(
+                ideaAfterFirstTurn,
+                ideaMilestoneAfterFirstTurn,
+                ideaMilestoneNetworkB,
+                0,
+            )
+
+            const modifiedIdea = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
+            expect(modifiedIdea.status).toBe(IdeaStatus.MilestoneSubmission)
+
+            const modifiedIdeaMilestone = await ideaMilestonesService().findOne(
+                ideaMilestoneWithTwoNetworks.id,
+                sessionData,
+            )
+            expect(modifiedIdeaMilestone.status).toBe(IdeaMilestoneStatus.TurnedIntoProposal)
+
+            const modifiedIdeaMilestoneNetworkA = modifiedIdeaMilestone.networks.find(
+                ({ id }) => id === ideaMilestoneNetworkA.id,
+            )!
+            expect(modifiedIdeaMilestoneNetworkA.status).toBe(IdeaMilestoneNetworkStatus.TurnedIntoProposal)
+
+            const modifiedIdeaMilestoneNetworkB = modifiedIdeaMilestone.networks.find(
+                ({ id }) => id === ideaMilestoneNetworkB.id,
+            )!
+            expect(modifiedIdeaMilestoneNetworkB.status).toBe(IdeaMilestoneNetworkStatus.TurnedIntoProposal)
         })
     })
 })

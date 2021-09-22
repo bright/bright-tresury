@@ -283,7 +283,7 @@ describe('ProposalsService', () => {
 
         it('should create proposal milestones and save the createdBy order', async () => {
             const { idea, ideaNetwork, sessionHandler } = await setUpIdea(app(), undefined, {})
-            const networks = [{ name: NETWORKS.POLKADOT, value: 100 }]
+            const networks = [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }]
 
             const createMilestone = async (subject: string) => {
                 const milestone = await createIdeaMilestone(

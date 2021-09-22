@@ -498,12 +498,12 @@ describe(`IdeasService`, () => {
             done()
         })
 
-        it(`should throw BadRequestException when trying to update idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
+        it(`should throw BadRequestException when trying to update idea with ${IdeaStatus.MilestoneSubmission} status`, async (done) => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
-                    status: IdeaStatus.TurnedIntoProposalByMilestone,
+                    status: IdeaStatus.MilestoneSubmission,
                 },
                 sessionData,
             )
@@ -559,12 +559,12 @@ describe(`IdeasService`, () => {
             done()
         })
 
-        it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async (done) => {
+        it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.MilestoneSubmission} status`, async (done) => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
-                    status: IdeaStatus.TurnedIntoProposalByMilestone,
+                    status: IdeaStatus.MilestoneSubmission,
                 },
                 sessionData,
             )

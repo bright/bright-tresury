@@ -339,8 +339,8 @@ describe(`IdeaMilestonesService`, () => {
             ).rejects.toThrow(ForbiddenException)
         })
 
-        it(`should resolve for idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async () => {
-            await getIdeaRepository().save({ ...idea, status: IdeaStatus.TurnedIntoProposalByMilestone })
+        it(`should resolve for idea with ${IdeaStatus.MilestoneSubmission} status`, async () => {
+            await getIdeaRepository().save({ ...idea, status: IdeaStatus.MilestoneSubmission })
             await expect(
                 getIdeaMilestonesService().create(idea.id, minimalCreateIdeaMilestoneDto, sessionData),
             ).resolves.toBeDefined()
@@ -618,14 +618,14 @@ describe(`IdeaMilestonesService`, () => {
             ).rejects.toThrow(BadRequestException)
         })
 
-        it(`should resolve for milestone with ${IdeaMilestoneStatus.Active} and idea with ${IdeaStatus.TurnedIntoProposalByMilestone}`, async () => {
+        it(`should resolve for milestone with ${IdeaMilestoneStatus.Active} and idea with ${IdeaStatus.MilestoneSubmission}`, async () => {
             const ideaMilestone = await getIdeaMilestonesService().create(
                 idea.id,
                 minimalCreateIdeaMilestoneDto,
                 sessionData,
             )
             await getMilestonesRepository().save({ ...ideaMilestone, status: IdeaMilestoneStatus.Active })
-            await getIdeaRepository().save({ ...idea, status: IdeaStatus.TurnedIntoProposalByMilestone })
+            await getIdeaRepository().save({ ...idea, status: IdeaStatus.MilestoneSubmission })
 
             await expect(
                 getIdeaMilestonesService().update(

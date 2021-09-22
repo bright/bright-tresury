@@ -181,22 +181,22 @@ describe('IdeaProposalsService', () => {
             ).resolves.toBeDefined()
         })
 
-        it(`should return bad request exception for idea with ${IdeaStatus.TurnedIntoProposalByMilestone} status`, async () => {
-            const ideaWithTurnedIntoProposalByMilestoneStatus = await createIdea(
+        it(`should return bad request exception for idea with ${IdeaStatus.MilestoneSubmission} status`, async () => {
+            const ideaWithMilestoneSubmissionStatus = await createIdea(
                 {
                     beneficiary: uuid(),
-                    status: IdeaStatus.TurnedIntoProposalByMilestone,
+                    status: IdeaStatus.MilestoneSubmission,
                     networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
                 },
                 sessionData,
                 ideasService(),
             )
 
-            createIdeaProposalDto.ideaNetworkId = ideaWithTurnedIntoProposalByMilestoneStatus.networks[0].id
+            createIdeaProposalDto.ideaNetworkId = ideaWithMilestoneSubmissionStatus.networks[0].id
 
             await expect(
                 ideaProposalsService().createProposal(
-                    ideaWithTurnedIntoProposalByMilestoneStatus.id,
+                    ideaWithMilestoneSubmissionStatus.id,
                     createIdeaProposalDto,
                     sessionData,
                 ),
