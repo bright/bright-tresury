@@ -15,6 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
             fontFamily: theme.typography.fontFamily,
             fontSize: '14px',
             fontWeight: 500,
+            marginTop: '8px',
+            width: '100%',
+            resize: 'none',
             padding: '1em',
             outline: 'none',
             border: '1px solid',
@@ -42,15 +45,14 @@ export type EditCommentProps = OwnProps
 const EditComment = ({ onSendClick, onCancelClick, value, initialFocus = true }: EditCommentProps) => {
     const classes = useStyles()
     const [sendCommentError, setSendCommentError] = useState('')
-    const [focus, setFocus] = useState(initialFocus)
     const [commentContent, setCommentContent] = useState(value)
     const { t } = useTranslation()
     const onEditCommentSendClick = () =>
         onSendClick(commentContent).catch(() => setSendCommentError(t('discussion.sendCommentError')))
     let textArea: HTMLElement | null
     useEffect(() => {
-        if (focus) textArea?.focus()
-    }, [focus])
+        if (initialFocus) textArea?.focus()
+    }, [initialFocus])
     return (
         <div className={clsx(classes.editCommentRow)}>
             <TextareaAutosize
@@ -62,7 +64,6 @@ const EditComment = ({ onSendClick, onCancelClick, value, initialFocus = true }:
                 rowsMin={2}
                 rowsMax={5}
                 className={classes.textarea}
-                style={{ width: '100%', resize: 'none' }}
             />
             <CancelSendButtons
                 onCancelClick={onCancelClick}

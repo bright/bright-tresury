@@ -14,39 +14,15 @@ describe('Idea comments', () => {
     const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
     let sessionHandler: SessionHandler
     let idea: Idea
-    beforeEach(async () => {
+    beforeAll(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
         sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
         idea = await createIdea({}, sessionHandler.sessionData, ideasService())
     })
-    it(`GET comments response should have ${HttpStatus.OK} status code`, async () => {
-        return request(app()).get(`/api/v1/ideas/${idea.id}/comments`).expect(HttpStatus.OK)
-    })
 
-    it(`GET comments response should have ${HttpStatus.NOT_FOUND} status code for not existing idea`, async () => {
-        return request(app())
-            .get(`/api/v1/ideas/00000000-0000-0000-0000-000000000000/comments`)
-            .expect(HttpStatus.NOT_FOUND)
-    })
-
-    it(`POST response should have ${HttpStatus.CREATED} status code`, async () => {
-        return sessionHandler.authorizeRequest(
-            request(app())
-                .post(`/api/v1/ideas/${idea.id}/comments`)
-                .send({ content: 'This is a comment' })
-                .expect(HttpStatus.CREATED),
-        )
-    })
-
-    it(`POST response should have ${HttpStatus.FORBIDDEN} status code for not signed in user`, async () => {
-        return request(app())
-            .post(`/api/v1/ideas/${idea.id}/comments`)
-            .send({ content: 'This is a comment' })
-            .expect(HttpStatus.FORBIDDEN)
-    })
-
-    it(`GET comments request should return new comment after creating one`, async () => {
+    it(`POST to create new comment, PATCH to update the comment, DELETE to remove the comment`, async () => {
+        // POST - create new comment
         await sessionHandler.authorizeRequest(
             request(app())
                 .post(`/api/v1/ideas/${idea.id}/comments`)
@@ -54,80 +30,57 @@ describe('Idea comments', () => {
                 .expect(HttpStatus.CREATED),
         )
 
-        const { body } = await request(app()).get(`/api/v1/ideas/${idea.id}/comments`)
+        let body
+
+        // GET - validate created comment
+
+        body = (await request(app()).get(`/api/v1/ideas/${idea.id}/comments`)).body
         expect(Array.isArray(body)).toBe(true)
         expect(body).toHaveLength(1)
 
-        const comment = body[0]
+        const createdComment = body[0]
         const { id: userId, username, isEmailPasswordEnabled } = sessionHandler.sessionData.user
-        expect(comment).toMatchObject({
+        expect(createdComment).toMatchObject({
             author: { userId, username, isEmailPasswordEnabled },
             content: 'This is a comment',
             thumbsUp: 0,
             thumbsDown: 0,
         })
-        expect(comment.author.web3address).toBeUndefined()
-        expect(comment.id).toBeDefined()
-        expect(comment.createdAt).toBeDefined()
-        expect(comment.createdAt).not.toBeNaN()
-    })
+        expect(createdComment.author.web3address).toBeUndefined()
+        expect(createdComment.id).toBeDefined()
+        expect(createdComment.createdAt).toBeDefined()
+        expect(createdComment.createdAt).not.toBeNaN()
 
-    it(`DELETE comment request should delete the comment`, async () => {
+        // PATCH to update the comment
+
         await sessionHandler.authorizeRequest(
             request(app())
-                .post(`/api/v1/ideas/${idea.id}/comments`)
-                .send({ content: 'This is a comment' })
-                .expect(HttpStatus.CREATED),
-        )
-
-        const { body: commentsAfterCreate } = await request(app()).get(`/api/v1/ideas/${idea.id}/comments`)
-        expect(Array.isArray(commentsAfterCreate)).toBe(true)
-        expect(commentsAfterCreate).toHaveLength(1)
-
-        const comment = commentsAfterCreate[0]
-        await sessionHandler.authorizeRequest(
-            request(app())
-                .delete(`/api/v1/ideas/${idea.id}/comments/${comment.id}`)
-                .send({ content: 'This is a comment' })
+                .patch(`/api/v1/ideas/${idea.id}/comments/${createdComment.id}`)
+                .send({ content: 'This is updated comment' })
                 .expect(HttpStatus.OK),
         )
+        body = (await request(app()).get(`/api/v1/ideas/${idea.id}/comments`)).body
+        expect(Array.isArray(body)).toBe(true)
+        expect(body).toHaveLength(1)
 
-        const { body: commentsAfterDelete } = await request(app()).get(`/api/v1/ideas/${idea.id}/comments`)
-        expect(Array.isArray(commentsAfterDelete)).toBe(true)
-        expect(commentsAfterDelete).toHaveLength(0)
-    })
+        const updatedComment = body[0]
+        expect(updatedComment).toMatchObject({
+            author: { userId, username, isEmailPasswordEnabled },
+            content: 'This is updated comment',
+            thumbsUp: 0,
+            thumbsDown: 0,
+        })
 
-    it(`DELETE comment response should have ${HttpStatus.FORBIDDEN} status code for not signed in user`, async () => {
-        return request(app())
-            .delete(`/api/v1/ideas/${idea.id}/comments/00000000-0000-0000-0000-000000000000`)
-            .send({ content: 'This is a comment' })
-            .expect(HttpStatus.FORBIDDEN)
-    })
+        // DELETE to remove the comment
 
-    it(`DELETE comment response should have ${HttpStatus.NOT_FOUND} status code when deleting comment but its assign to different idea`, async () => {
         await sessionHandler.authorizeRequest(
             request(app())
-                .post(`/api/v1/ideas/${idea.id}/comments`)
-                .send({ content: 'This is a comment' })
-                .expect(HttpStatus.CREATED),
+                .delete(`/api/v1/ideas/${idea.id}/comments/${createdComment.id}`)
+                .send({ content: 'This is updated comment' })
+                .expect(HttpStatus.OK),
         )
-
-        const { body: commentsAfterCreate } = await request(app()).get(`/api/v1/ideas/${idea.id}/comments`)
-
-        return sessionHandler.authorizeRequest(
-            request(app())
-                .delete(`/api/v1/ideas/00000000-0000-0000-0000-000000000000/comments/${commentsAfterCreate[0].id}`)
-                .send({ content: 'This is a comment' })
-                .expect(HttpStatus.NOT_FOUND),
-        )
-    })
-
-    it(`DELETE comment response should have ${HttpStatus.NOT_FOUND} status code for not existing idea comment`, async () => {
-        return sessionHandler.authorizeRequest(
-            request(app())
-                .delete(`/api/v1/ideas/${idea.id}/comments/00000000-0000-0000-0000-000000000000`)
-                .send({ content: 'This is a comment' })
-                .expect(HttpStatus.NOT_FOUND),
-        )
+        body = (await request(app()).get(`/api/v1/ideas/${idea.id}/comments`)).body
+        expect(Array.isArray(body)).toBe(true)
+        expect(body).toHaveLength(0)
     })
 })

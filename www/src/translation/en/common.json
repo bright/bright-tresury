@@ -213,7 +213,7 @@
         "delete": "Delete",
         "commentAlso": "Comment also on ",
         "enterCommentPlaceholder": "Leave your comment here",
-        "commentCreateTimestampTitle": "commented",
+        "commentCreatedTimestampTitle": "commented",
         "commentUpdatedTimestampTitle": "edited",
         "inOrderToComment": "In order to comment, please ",
         "logIn": "log in",

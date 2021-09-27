@@ -33,7 +33,7 @@ describe('IdeaProposalDetailsService', () => {
             const savedComment = (await getRepository().findOne(createdComment.id))!
             expect(savedComment.content).toBe('This is a comment')
         })
-        it('should throw NotFoundException when creating a comment for non existing idea', async () => {
+        it(`should throw ${NotFoundException} when creating a comment for non existing idea`, async () => {
             await expect(
                 getIdeaCommentsService().create('00000000-0000-0000-0000-000000000000', usr1SessionData.user, {
                     content: 'This is a comment',
@@ -47,8 +47,8 @@ describe('IdeaProposalDetailsService', () => {
             const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
             })
-            const foundComments = await getIdeaCommentsService().findAll(idea.id)
 
+            const foundComments = await getIdeaCommentsService().findAll(idea.id)
             expect(Array.isArray(foundComments)).toBe(true)
             expect(foundComments).toHaveLength(1)
 
@@ -75,11 +75,15 @@ describe('IdeaProposalDetailsService', () => {
             const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
             })
-            const commentsAfterCreate = await getIdeaCommentsService().findAll(idea.id)
+            const commentsAfterCreate = await getRepository().find({
+                where: { idea: { id: idea.id } },
+            })
             expect(commentsAfterCreate).toHaveLength(1)
 
             await getIdeaCommentsService().delete(idea.id, createdComment.id, usr1SessionData.user)
-            const commentsAfterDelete = await getIdeaCommentsService().findAll(idea.id)
+            const commentsAfterDelete = await getRepository().find({
+                where: { idea: { id: idea.id } },
+            })
             expect(commentsAfterDelete).toHaveLength(0)
         })
         it('should throw NotFoundException when deleting comments for non existing idea', async () => {
@@ -114,13 +118,8 @@ describe('IdeaProposalDetailsService', () => {
             const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
             })
-            const updatedComment = await getIdeaCommentsService().update(
-                idea.id,
-                createdComment.id,
-                { content: 'Edit' },
-                usr1SessionData.user,
-            )
-
+            await getIdeaCommentsService().update(idea.id, createdComment.id, { content: 'Edit' }, usr1SessionData.user)
+            const updatedComment = (await getRepository().findOne(createdComment.id))!
             expect(updatedComment.id).toBe(createdComment.id)
             expect(updatedComment.createdAt.getTime()).toBe(createdComment.createdAt.getTime())
             expect(updatedComment.updatedAt.getTime()).not.toBe(createdComment.updatedAt.getTime())

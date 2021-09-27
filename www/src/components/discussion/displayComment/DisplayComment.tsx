@@ -1,9 +1,5 @@
-import thumbsUpIcon from '../../../assets/thumbs_down.svg'
-import thumbsDownIcon from '../../../assets/thumbs_down.svg'
-import linkIcon from '../../../assets/link.svg'
 import React, { useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { useTranslation } from 'react-i18next'
 import SmallVerticalDivider from '../../smallHorizontalDivider/SmallVerticalDivider'
 import { IdeaCommentDto } from '../../../ideas/idea/discussion/idea.comment.dto'
 import CommentAuthorImage from '../commentAuthorImage/CommentAuthorImage'
@@ -36,21 +32,6 @@ const useStyles = makeStyles((theme: Theme) =>
         headerRight: {
             display: 'flex',
         },
-
-        thumb: {
-            paddingTop: '8px',
-            paddingRight: '8px',
-            color: theme.palette.text.disabled,
-            margin: '0px 6px',
-        },
-        rotate180: {
-            transform: 'rotate(180deg)',
-        },
-        link: {
-            paddingTop: '8px',
-            margin: '0px 6px',
-        },
-
         grayDivider: {
             color: theme.palette.text.disabled,
         },
@@ -72,14 +53,16 @@ interface OwnProps {
 }
 export type DisplayCommentProps = OwnProps
 
-const DisplayComment = ({ comment, deleteComment, saveEditComment, cancelEditComment, error }: DisplayCommentProps) => {
-    const { id, author, createdAt, updatedAt, content } = comment
+const DisplayComment = ({
+    comment: { author, createdAt, updatedAt, content },
+    deleteComment,
+    saveEditComment,
+    cancelEditComment,
+    error,
+}: DisplayCommentProps) => {
     const classes = useStyles()
-    const { t } = useTranslation()
-
     const { user } = useAuth()
     const isAuthor = user?.id && author.userId && user?.id === author.userId
-
     const [editMode, setEditMode] = useState(false)
     const enableEditMode = () => setEditMode(true)
     const disableEditMode = () => setEditMode(false)

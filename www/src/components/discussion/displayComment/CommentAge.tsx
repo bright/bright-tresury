@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { timeToString } from '../../../util/dateUtil'
@@ -21,22 +21,19 @@ export type CommentAgeProps = OwnProps
 const CommentAge = ({ createdAt, updatedAt }: CommentAgeProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const formatAge = (timestamp: number) => {
+    const commentAge = useMemo(() => {
+        const title =
+            updatedAt > createdAt
+                ? t('discussion.commentUpdatedTimestampTitle')
+                : t('discussion.commentCreatedTimestampTitle')
+
+        const timestamp = updatedAt > createdAt ? updatedAt : createdAt
         const ageMs = Date.now() - timestamp
         if (ageMs < 60 * 1000) return t('lessThanMinuteAgo')
         const extractedTime = { ...extractTime(ageMs), seconds: 0 } // we don't want to show "seconds ago"
-        return `${timeToString(extractedTime, t)} ${t('ago')}`
-    }
-    const text =
-        updatedAt > createdAt
-            ? t('discussion.commentUpdatedTimestampTitle')
-            : t('discussion.commentCreateTimestampTitle')
-    const timestamp = updatedAt > createdAt ? updatedAt : createdAt
+        return `${title} ${timeToString(extractedTime, t)} ${t('ago')}`
+    }, [updatedAt, createdAt, t])
 
-    return (
-        <div className={classes.age}>
-            {text} {formatAge(timestamp)}
-        </div>
-    )
+    return <div className={classes.age}>{commentAge}</div>
 }
 export default CommentAge

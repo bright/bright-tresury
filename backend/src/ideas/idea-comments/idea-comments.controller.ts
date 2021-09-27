@@ -14,8 +14,6 @@ import { IdeaCommentDto } from './dto/idea-comment.dto'
 import { CreateIdeaCommentDto } from './dto/create-idea-comment.dto'
 import { IdeaCommentsService } from './idea-comments.service'
 import { getLogger } from '../../logging.module'
-import { IdeaDto } from '../dto/idea.dto'
-import { UpdateIdeaDto } from '../dto/update-idea.dto'
 import { UpdateIdeaCommentDto } from './dto/update-idea-comment.dto'
 
 const logger = getLogger()
