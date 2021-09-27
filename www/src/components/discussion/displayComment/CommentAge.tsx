@@ -31,6 +31,7 @@ const CommentAge = ({ createdAt, updatedAt }: CommentAgeProps) => {
         const ageMs = Date.now() - timestamp
         if (ageMs < 60 * 1000) return t('lessThanMinuteAgo')
         const extractedTime = { ...extractTime(ageMs), seconds: 0 } // we don't want to show "seconds ago"
+
         return `${title} ${timeToString(extractedTime, t)} ${t('ago')}`
     }, [updatedAt, createdAt, t])
 
