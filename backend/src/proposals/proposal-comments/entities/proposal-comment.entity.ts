@@ -14,7 +14,7 @@ export class ProposalComment {
     @Column({ nullable: false, type: 'text' })
     networkId: string
 
-    @OneToOne(() => Comment)
+    @OneToOne(() => Comment, { eager: true })
     @JoinColumn()
     comment: Comment
 

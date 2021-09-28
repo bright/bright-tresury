@@ -24,146 +24,51 @@ describe('Proposal comments', () => {
         await cleanAuthorizationDatabase()
         sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
     })
-    it(`GET comments response should have ${HttpStatus.OK} status code`, async () => {
-        return request(app()).get(`/api/v1/proposals/0/comments?network=${POLKADOT}`).expect(HttpStatus.OK)
-    })
-
-    it(`GET comments response should have ${HttpStatus.OK} status code for not existing proposal but an empty array response body`, async () => {
-        const { body } = await request(app())
-            .get(`/api/v1/proposals/0/comments?network=${POLKADOT}`)
-            .expect(HttpStatus.OK)
-        expect(Array.isArray(body)).toBe(true)
-        expect(body).toHaveLength(0)
-    })
-
-    it(`POST response should have ${HttpStatus.CREATED} status code`, async () => {
-        return sessionHandler.authorizeRequest(
-            request(app())
-                .post(`/api/v1/proposals/0/comments`)
-                .send({ content: 'This is a comment', network: POLKADOT })
-                .expect(HttpStatus.CREATED),
-        )
-    })
-
-    it(`POST response should have ${HttpStatus.FORBIDDEN} status code for not signed in user`, async () => {
-        return request(app())
-            .post(`/api/v1/proposals/0/comments`)
-            .send({ content: 'This is a comment', network: POLKADOT })
-            .expect(HttpStatus.FORBIDDEN)
-    })
-
-    it(`GET comments request should return new comment after creating one`, async () => {
-        await sessionHandler.authorizeRequest(
+    it(`CRUD Requests`, async () => {
+        // CREATE
+        const { body: createdComment } = await sessionHandler.authorizeRequest(
             request(app())
                 .post(`/api/v1/proposals/0/comments`)
                 .send({ content: 'This is a comment', network: POLKADOT })
                 .expect(HttpStatus.CREATED),
         )
 
-        const { body } = await request(app()).get(`/api/v1/proposals/0/comments?network=${POLKADOT}`)
-        expect(Array.isArray(body)).toBe(true)
-        expect(body).toHaveLength(1)
+        // READ
+        const { body: readComments } = await request(app()).get(`/api/v1/proposals/0/comments?network=${POLKADOT}`)
+        expect(Array.isArray(readComments)).toBe(true)
+        expect(readComments).toHaveLength(1)
 
-        const comment = body[0]
+        const [readComment] = readComments
+        expect(readComment).toMatchObject(createdComment)
+        expect(readComment.content).toBe('This is a comment')
         const { id: userId, username, isEmailPasswordEnabled } = sessionHandler.sessionData.user
-        expect(comment).toMatchObject({
-            author: { userId, username, isEmailPasswordEnabled },
-            content: 'This is a comment',
-            thumbsUp: 0,
-            thumbsDown: 0,
-        })
-        expect(comment.author.web3address).toBeUndefined()
-        expect(comment.id).toBeDefined()
-        expect(comment.createdAt).toBeDefined()
-        expect(comment.createdAt).not.toBeNaN()
-    })
+        expect(readComment.author).toMatchObject({ userId, username, isEmailPasswordEnabled })
 
-    it(`PATCH comment request should edit the comment`, async () => {
+        // PATCH
         await sessionHandler.authorizeRequest(
             request(app())
-                .post(`/api/v1/proposals/0/comments`)
-                .send({ content: 'This is a comment', network: POLKADOT })
-                .expect(HttpStatus.CREATED),
-        )
-
-        const { body: commentsAfterCreate } = await request(app()).get(
-            `/api/v1/proposals/0/comments?network=${POLKADOT}`,
-        )
-        expect(Array.isArray(commentsAfterCreate)).toBe(true)
-        expect(commentsAfterCreate).toHaveLength(1)
-
-        await sessionHandler.authorizeRequest(
-            request(app())
-                .patch(`/api/v1/proposals/0/comments/${commentsAfterCreate[0].id}`)
-                .send({ content: 'Edited', network: POLKADOT })
+                .patch(`/api/v1/proposals/0/comments/${createdComment.id}`)
+                .send({ content: 'This is a comment edit', network: POLKADOT })
                 .expect(HttpStatus.OK),
         )
-
-        const { body: commentsAfterUpdate } = await request(app()).get(
+        const { body: readCommentsAfterPatch } = await request(app()).get(
             `/api/v1/proposals/0/comments?network=${POLKADOT}`,
         )
-        expect(Array.isArray(commentsAfterUpdate)).toBe(true)
-        expect(commentsAfterUpdate).toHaveLength(1)
+        expect(Array.isArray(readCommentsAfterPatch)).toBe(true)
+        expect(readCommentsAfterPatch).toHaveLength(1)
 
-        expect(commentsAfterUpdate[0].content).toBe('Edited')
-    })
+        const [readCommentAfterPatch] = readCommentsAfterPatch
+        expect(readCommentAfterPatch.content).toBe('This is a comment edit')
 
-    it(`DELETE comment request should delete the comment`, async () => {
+        // DELETE
         await sessionHandler.authorizeRequest(
-            request(app())
-                .post(`/api/v1/proposals/0/comments`)
-                .send({ content: 'This is a comment', network: POLKADOT })
-                .expect(HttpStatus.CREATED),
+            request(app()).delete(`/api/v1/proposals/0/comments/${createdComment.id}`).expect(HttpStatus.OK),
         )
 
-        const { body: commentsAfterCreate } = await request(app()).get(
+        const { body: readCommentsAfterDelete } = await request(app()).get(
             `/api/v1/proposals/0/comments?network=${POLKADOT}`,
         )
-        expect(Array.isArray(commentsAfterCreate)).toBe(true)
-        expect(commentsAfterCreate).toHaveLength(1)
-
-        const comment = commentsAfterCreate[0]
-        await sessionHandler.authorizeRequest(
-            request(app()).delete(`/api/v1/proposals/0/comments/${comment.id}`).expect(HttpStatus.OK),
-        )
-
-        const { body: commentsAfterDelete } = await request(app()).get(
-            `/api/v1/proposals/0/comments?network=${POLKADOT}`,
-        )
-        expect(Array.isArray(commentsAfterDelete)).toBe(true)
-        expect(commentsAfterDelete).toHaveLength(0)
-    })
-
-    it(`DELETE comment response should have ${HttpStatus.FORBIDDEN} status code for not signed in user`, async () => {
-        return request(app())
-            .delete(`/api/v1/proposals/0/comments/00000000-0000-0000-0000-000000000000`)
-            .expect(HttpStatus.FORBIDDEN)
-    })
-
-    it(`DELETE comment response should have ${HttpStatus.NOT_FOUND} status code when deleting comment but its assign to different proposal`, async () => {
-        await sessionHandler.authorizeRequest(
-            request(app())
-                .post(`/api/v1/proposals/0/comments`)
-                .send({ content: 'This is a comment', network: POLKADOT })
-                .expect(HttpStatus.CREATED),
-        )
-
-        const { body: commentsAfterCreate } = await request(app()).get(
-            `/api/v1/proposals/0/comments?network=${POLKADOT}`,
-        )
-
-        return sessionHandler.authorizeRequest(
-            request(app())
-                .delete(`/api/v1/comments/10000000/comments/${commentsAfterCreate[0].id}`)
-                .expect(HttpStatus.NOT_FOUND),
-        )
-    })
-
-    it(`DELETE comment response should have ${HttpStatus.NOT_FOUND} status code for not existing proposal comment`, async () => {
-        return sessionHandler.authorizeRequest(
-            request(app())
-                .delete(`/api/v1/proposals/0/comments/00000000-0000-0000-0000-000000000000`)
-                .expect(HttpStatus.NOT_FOUND),
-        )
+        expect(Array.isArray(readCommentsAfterDelete)).toBe(true)
+        expect(readCommentsAfterDelete).toHaveLength(0)
     })
 })

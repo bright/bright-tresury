@@ -42,7 +42,7 @@ export class ProposalCommentsService {
         dto: CreateCommentDto,
     ): Promise<ProposalComment> {
         // check if proposal exists (proposalService.findOne will throw exception if proposal does not exist
-        const proposal = await this.proposalsService.findOne(blockchainProposalId, networkId)
+        await this.proposalsService.findOne(blockchainProposalId, networkId)
         const comment = await this.commentsRepository.save(new Comment(author, dto.content))
         return this.proposalCommentsRepository.save(new ProposalComment(blockchainProposalId, networkId, comment))
     }
@@ -55,7 +55,7 @@ export class ProposalCommentsService {
         user: User,
     ): Promise<ProposalComment> {
         // check if proposal exists (proposalService.findOne will throw exception if proposal does not exist
-        const proposal = await this.proposalsService.findOne(blockchainProposalId, networkId)
+        await this.proposalsService.findOne(blockchainProposalId, networkId)
         const proposalComment = await this.findOne(commentId)
         proposalComment.canEditOrThrow(user)
         await this.commentsRepository.save({

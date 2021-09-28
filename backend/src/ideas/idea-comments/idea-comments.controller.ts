@@ -104,6 +104,7 @@ export class IdeaCommentsController {
         @ReqSession() session: SessionData,
     ) {
         logger.info(`Deleting idea comment ${commentId}...`)
-        await this.ideaCommentsService.delete(ideaId, commentId, session.user)
+        const { comment } = await this.ideaCommentsService.delete(ideaId, commentId, session.user)
+        await new CommentDto(comment)
     }
 }

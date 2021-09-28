@@ -21,7 +21,7 @@ export class IdeaCommentsService {
 
     async findOne(ideaId: string, commentId: string): Promise<IdeaComment> {
         const ideaComment = await this.ideaCommentsRepository.findOne({
-            relations: ['comment', 'idea', 'comment.author', 'comment.author.web3Addresses'],
+            relations: ['idea', 'comment', 'comment.author', 'comment.author.web3Addresses'],
             where: { comment: { id: commentId }, idea: { id: ideaId } },
         })
         if (!ideaComment)

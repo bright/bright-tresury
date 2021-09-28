@@ -50,7 +50,7 @@ describe('IdeaCommentsServiceSpec', () => {
             })
             const foundIdeaComment = await getIdeaCommentsService().findOne(idea.id, createdIdeaComment.comment.id)
             expect(foundIdeaComment.id).toBe(createdIdeaComment.id)
-            expect(foundIdeaComment.idea.id).toEqual(createdIdeaComment.idea.id)
+            expect(foundIdeaComment.idea!.id).toEqual(createdIdeaComment.idea!.id)
             expect(foundIdeaComment.comment.id).toEqual(createdIdeaComment.comment.id)
             expect(foundIdeaComment.comment.content).toEqual(createdIdeaComment.comment.content)
         })
@@ -85,7 +85,7 @@ describe('IdeaCommentsServiceSpec', () => {
 
     describe('delete idea comment', () => {
         it('should delete saved comment', async () => {
-            const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
+            const { comment: createdComment } = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
             })
             const commentsAfterCreate = await getRepository().find({
@@ -128,18 +128,18 @@ describe('IdeaCommentsServiceSpec', () => {
     })
     describe('update idea comment', () => {
         it('should update idea comment', async () => {
-            const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
+            const createdIdeaComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
             })
-
+            const { comment: createdComment } = createdIdeaComment
             await getIdeaCommentsService().update(idea.id, createdComment.id, { content: 'Edit' }, usr1SessionData.user)
-            const updatedComment = (await getRepository().findOne(createdComment.id))!
+            const { comment: updatedComment } = (await getRepository().findOne(createdIdeaComment.id))!
             expect(updatedComment.id).toBe(createdComment.id)
-            expect(updatedComment.comment.createdAt.getTime()).toBe(createdComment.comment.createdAt.getTime())
-            expect(updatedComment.comment.updatedAt.getTime()).not.toBe(createdComment.comment.updatedAt.getTime())
-            expect(updatedComment.comment.content).toBe('Edit')
-            expect(updatedComment.comment.thumbsUp).toBe(createdComment.comment.thumbsUp)
-            expect(updatedComment.comment.thumbsDown).toBe(createdComment.comment.thumbsDown)
+            expect(updatedComment.createdAt.getTime()).toBe(createdComment.createdAt.getTime())
+            expect(updatedComment.updatedAt.getTime()).not.toBe(createdComment.updatedAt.getTime())
+            expect(updatedComment.content).toBe('Edit')
+            expect(updatedComment.thumbsUp).toBe(createdComment.thumbsUp)
+            expect(updatedComment.thumbsDown).toBe(createdComment.thumbsDown)
         })
 
         it('should throw ForbiddenException when updating other user idea comment', async () => {
@@ -172,7 +172,7 @@ describe('IdeaCommentsServiceSpec', () => {
         })
 
         it('should throw NotFoundException when updating comment with wrong id', async () => {
-            const createdComment = await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
+            await getIdeaCommentsService().create(idea.id, usr1SessionData.user, {
                 content: 'This is a comment',
             })
             await expect(

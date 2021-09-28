@@ -3,6 +3,7 @@ import { Idea } from '../../entities/idea.entity'
 import { User } from '../../../users/user.entity'
 import { Comment } from '../../../comments/comment.entity'
 import { v4 as uuid } from 'uuid'
+import { Nil } from '../../../utils/types'
 
 @Entity('idea_comments')
 export class IdeaComment {
@@ -10,9 +11,9 @@ export class IdeaComment {
     id: string = uuid()
 
     @ManyToOne(() => Idea, (idea) => idea.comments)
-    idea: Idea
+    idea: Nil<Idea>
 
-    @OneToOne(() => Comment)
+    @OneToOne(() => Comment, { eager: true })
     @JoinColumn()
     comment: Comment
 

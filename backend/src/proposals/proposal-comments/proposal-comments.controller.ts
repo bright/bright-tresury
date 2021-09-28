@@ -13,21 +13,18 @@ import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { getLogger } from '../../logging.module'
 import { ProposalCommentsService } from './proposal-comments.service'
 import { CommentDto } from '../../comments/dto/comment.dto'
-import { ProposalsQuery } from '../proposals.query'
 import { BlockchainProposalIndex } from './blockchainProposalIndex.param'
-import { CreateCommentDto } from '../../comments/dto/create-comment.dto'
 import { NetworkDto } from './network.dto'
 import { UpdateCommentDto } from '../../comments/dto/update-comment.dto'
+import { NetworkNameQuery } from '../../utils/network-name.query'
+import { CreateProposalCommentDto } from './proposal-comments.dto'
 
 const logger = getLogger()
 
 @ControllerApiVersion('/proposals/:blockchainProposalIndex/comments', ['v1'])
 @ApiTags('proposals.comments')
 export class ProposalCommentsController {
-    constructor(
-        @Inject(ProposalCommentsService)
-        private readonly proposalCommentsService: ProposalCommentsService,
-    ) {}
+    constructor(private readonly proposalCommentsService: ProposalCommentsService) {}
 
     @Get()
     @ApiParam({
@@ -43,7 +40,7 @@ export class ProposalCommentsController {
     })
     async getAll(
         @Param() { blockchainProposalIndex }: BlockchainProposalIndex,
-        @Query() { network }: ProposalsQuery,
+        @Query() { network }: NetworkNameQuery,
     ): Promise<CommentDto[]> {
         logger.info(
             `Getting comments for proposal with blockchainProposalIndex: ${blockchainProposalIndex} and network ${network}`,
@@ -67,7 +64,7 @@ export class ProposalCommentsController {
     @UseGuards(SessionGuard)
     async create(
         @Param() { blockchainProposalIndex }: BlockchainProposalIndex,
-        @Body() createCommentDto: CreateCommentDto & NetworkDto,
+        @Body() createCommentDto: CreateProposalCommentDto,
         @ReqSession() session: SessionData,
     ): Promise<CommentDto> {
         const { network } = createCommentDto

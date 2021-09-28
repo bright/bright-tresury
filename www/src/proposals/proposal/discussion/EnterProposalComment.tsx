@@ -20,7 +20,7 @@ const EnterProposalComment = ({ proposalIndex }: EnterProposalCommentProps) => {
     const onSendClick = async (commentContent: string) => {
         const ideaCommentDto = {
             content: commentContent,
-        } as CreateCommentDto
+        }
 
         await createProposalComment(
             { proposalIndex, network: network.id, data: ideaCommentDto },

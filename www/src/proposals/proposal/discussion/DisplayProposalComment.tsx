@@ -45,7 +45,7 @@ const DisplayProposalComment = ({ proposalIndex, comment }: DisplayProposalComme
     const editComment = async (commentContent: string) => {
         const editProposalCommentDto = {
             content: commentContent,
-        } as EditCommentDto
+        }
         await editProposalComment(
             { proposalIndex, commentId: comment.id, network: network.id, data: editProposalCommentDto },
             {

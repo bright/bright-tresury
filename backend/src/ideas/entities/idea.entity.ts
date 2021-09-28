@@ -10,6 +10,7 @@ import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity
 import { IdeaNetworkStatus } from './idea-network-status'
 import { IdeaNetwork } from './idea-network.entity'
 import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
+import { Nil } from '../../utils/types'
 
 @Entity('ideas')
 export class Idea extends BaseEntity {
@@ -58,7 +59,7 @@ export class Idea extends BaseEntity {
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
-    comments: IdeaComment[]
+    comments: Nil<IdeaComment[]>
 
     constructor(
         networks: IdeaNetwork[],

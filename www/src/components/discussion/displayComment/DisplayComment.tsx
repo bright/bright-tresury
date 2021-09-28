@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+
 import SmallVerticalDivider from '../../smallHorizontalDivider/SmallVerticalDivider'
 import CommentAuthorImage from '../commentAuthorImage/CommentAuthorImage'
 import CommentOptionsMenu from '../commentOptionsMenu/CommentOptionsMenu'
@@ -11,6 +11,8 @@ import Author from './Author'
 import CommentAge from './CommentAge'
 import CommentContent from './CommentContent'
 import { CommentDto } from '../comment.dto'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { Theme } from '@material-ui/core'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
