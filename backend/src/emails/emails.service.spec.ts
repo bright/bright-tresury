@@ -1,17 +1,12 @@
 import { Test } from '@nestjs/testing'
 import { AppModule } from '../app.module'
-import { beforeAllSetup } from '../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp } from '../utils/spec.helpers'
 import { EmailsService } from './emails.service'
+import { ProposalMilestonesService } from '../proposals/proposal-milestones/proposal-milestones.service'
 
 describe('EmailsService', () => {
-    const module = beforeAllSetup(
-        async () =>
-            await Test.createTestingModule({
-                imports: [AppModule],
-            }).compile(),
-    )
-
-    const service = beforeAllSetup(() => module().get<EmailsService>(EmailsService))
+    const app = beforeSetupFullApp()
+    const service = beforeAllSetup(() => app().get<EmailsService>(EmailsService))
 
     it('should be defined', () => {
         expect(service).toBeDefined()

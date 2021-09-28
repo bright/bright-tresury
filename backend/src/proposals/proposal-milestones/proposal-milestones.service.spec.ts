@@ -487,7 +487,7 @@ describe(`ProposalMilestonesService`, () => {
 
             await expect(
                 service().delete(milestone.id, proposal.blockchainProposalId, proposal.networkId, proposerSessionData),
-            ).resolves
+            ).resolves.toBeUndefined()
         })
     })
 })

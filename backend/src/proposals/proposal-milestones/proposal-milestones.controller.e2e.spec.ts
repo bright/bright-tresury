@@ -1,11 +1,9 @@
 import { HttpStatus } from '@nestjs/common'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
-import { createUserSessionHandler } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
 import { mockedBlockchainService, proposals } from '../spec.helpers'
-import { createProposalMilestone, setUp } from './spec.helpers'
-import { v4 as uuid } from 'uuid'
+import { setUp } from './spec.helpers'
 
 const baseUrl = '/api/v1/proposals'
 const getBaseUrl = (blockchainProposalId: number | string, networkId: string, milestoneId: string = '') =>
@@ -68,11 +66,9 @@ describe('E2e tests of /api/v1/proposals/:proposalIndex/milestones', () => {
                     },
                 }),
         )
-
         const { body } = await request(app()).get(
             getBaseUrl(proposal.blockchainProposalId, NETWORKS.POLKADOT, milestone.id),
         )
-
         expect(body.details.subject).toBe('Other subject')
         expect(body.details.description).toBe('Some description')
         expect(body.details.dateFrom).toBe('2021-04-20')

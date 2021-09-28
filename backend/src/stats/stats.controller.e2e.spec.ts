@@ -9,10 +9,11 @@ describe('Stats', () => {
     beforeAll(() => {
         jest.spyOn(app().get(BlockchainService), 'getStats').mockImplementation(mockedStatsService.getStats)
     })
-    it(`GET stats response should have ${HttpStatus.OK} status code`, async () => {
-        return request(app()).get(`/api/v1/stats?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.OK)
+    it(`GET stats response should have ${HttpStatus.OK} status code`, async (done) => {
+        await request(app()).get(`/api/v1/stats?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.OK)
+        done()
     })
-    it('should return stats', async () => {
+    it('should return stats', async (done) => {
         const result = await request(app()).get(`/api/v1/stats?network=${NETWORKS.POLKADOT}`)
         const body = result.body as StatsDto
 
@@ -38,5 +39,6 @@ describe('Stats', () => {
             availableBalance: '100',
             nextFoundsBurn: '100',
         })
+        done()
     })
 })

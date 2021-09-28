@@ -74,11 +74,9 @@ export class ProposalMilestonesService {
         { user }: SessionData,
     ): Promise<ProposalMilestone> {
         const proposal = await this.proposalsService.findOne(proposalIndex, networkId)
-
         proposal.canEditMilestonesOrThrow(user)
 
         const milestone = await this.findOne(milestoneId, proposalIndex, networkId)
-
         if (!dto.details) {
             return milestone
         }
