@@ -6,6 +6,7 @@ import {
     IsNotEmpty,
     IsOptional,
     IsString,
+    IsUrl,
     Length,
     MaxLength,
 } from 'class-validator'
@@ -53,6 +54,7 @@ export class CreateIdeaProposalDetailsDto {
     @ArrayMaxSize(10)
     @IsString({ each: true })
     @Length(1, 1000, { each: true })
+    @IsUrl(undefined, { each: true })
     links?: string[]
 }
 
