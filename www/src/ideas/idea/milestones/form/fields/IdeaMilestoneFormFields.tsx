@@ -69,7 +69,7 @@ const IdeaMilestoneFormFields = ({
                 disabled={!canEdit}
                 textFieldColorScheme={TextFieldColorScheme.Dark}
             />
-            <DateRangeInput readonly={canEdit} />
+            <DateRangeInput readonly={!canEdit} />
             <IdeaMilestoneNetworkCardField
                 idea={idea}
                 ideaMilestone={ideaMilestone}
@@ -85,7 +85,7 @@ const IdeaMilestoneFormFields = ({
                     inputName={`additionalNetworks[${idx}].value`}
                 />
             ))}
-            <DescriptionInput readonly={canEdit} />
+            <DescriptionInput readonly={!canEdit} />
         </IdeaMilestoneFieldsContainer>
     )
 }
