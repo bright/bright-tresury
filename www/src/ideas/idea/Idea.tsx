@@ -45,7 +45,7 @@ const Idea = () => {
                             <IdeaMilestones idea={idea} />
                         </Route>
                         <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
-                            <IdeaDiscussion ideaId={idea.id} />
+                            <IdeaDiscussion idea={idea} />
                         </Route>
                     </Switch>
                 </div>

@@ -3,26 +3,28 @@ import DiscussionContainer from '../../../components/discussion/discussionContai
 import DiscussionHeader from '../../../components/discussion/discussionHeader/DiscussionHeader'
 import DiscussionCommentsContainer from '../../../components/discussion/discussionCommentsContainer/DiscussionCommentsContainer'
 import LoadingWrapper from '../../../components/loading/LoadingWrapper'
-import { useTranslation } from 'react-i18next'
+import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 import { useGetIdeaComments } from './idea.comments.api'
 import { useAuth } from '../../../auth/AuthContext'
-import DisplayIdeaComment from './DisplayIdeaComment'
-import NoComments from '../../../components/discussion/noComments/NoComments'
-import EnterIdeaComment from './EnterIdeaComment'
+import { useTranslation } from 'react-i18next'
 import { CommentDto } from '../../../components/discussion/comment.dto'
+import DisplayIdeaComment from './DisplayIdeaComment'
+import EnterIdeaComment from './EnterIdeaComment'
+import NoComments from '../../../components/discussion/noComments/NoComments'
+import AlreadyTurnedIntoProposal from './AlreadyTurnedIntoProposal'
 
 interface OwnProps {
-    ideaId: string
+    idea: IdeaDto
 }
 export type IdeaDiscussionProps = OwnProps
 
-const IdeaDiscussion = ({ ideaId }: IdeaDiscussionProps) => {
-    const { status, data: ideaComments } = useGetIdeaComments(ideaId)
+const IdeaDiscussion = ({ idea }: IdeaDiscussionProps) => {
+    const { status, data: ideaComments } = useGetIdeaComments(idea.id)
     const { isUserSignedInAndVerified: canComment } = useAuth()
     const { t } = useTranslation()
 
     const renderIdeaComment = (comment: CommentDto) => (
-        <DisplayIdeaComment key={comment.id} comment={comment} ideaId={ideaId} />
+        <DisplayIdeaComment key={comment.id} comment={comment} ideaId={idea.id} />
     )
 
     return (
@@ -32,9 +34,12 @@ const IdeaDiscussion = ({ ideaId }: IdeaDiscussionProps) => {
                 errorText={t('errors.errorOccurredWhileLoadingIdeaComments')}
                 loadingText={t('loading.ideaComments')}
             >
+                {idea.status === IdeaStatus.TurnedIntoProposal ? (
+                    <AlreadyTurnedIntoProposal proposalIndex={idea.currentNetwork.blockchainProposalId!} />
+                ) : null}
                 <DiscussionHeader />
                 <DiscussionCommentsContainer>
-                    {canComment ? <EnterIdeaComment ideaId={ideaId} /> : null}
+                    {canComment ? <EnterIdeaComment ideaId={idea.id} /> : null}
                     {ideaComments?.length ? ideaComments.map(renderIdeaComment) : <NoComments />}
                 </DiscussionCommentsContainer>
             </LoadingWrapper>

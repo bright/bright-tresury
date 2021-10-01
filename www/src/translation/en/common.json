@@ -212,6 +212,7 @@
         "edit": "Edit",
         "delete": "Delete",
         "commentAlso": "Comment also on ",
+        "ideaAlreadyTurnedIntoProposal": "This idea was turned into the proposal. We suggest discussing this in the proposal <a>page</a>.",
         "enterCommentPlaceholder": "Leave your comment here",
         "commentCreatedTimestampTitle": "commented",
         "commentUpdatedTimestampTitle": "edited",
