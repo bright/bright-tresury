@@ -52,7 +52,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
                         contact: 'new contact',
                         portfolio: 'new portfolio',
                         field: 'new field',
-                        links: ['new link'],
+                        links: ['https://goodlink.com'],
                     }),
             )
 
@@ -61,7 +61,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
             expect(body.contact).toBe('new contact')
             expect(body.portfolio).toBe('new portfolio')
             expect(body.field).toBe('new field')
-            expect(body.links).toStrictEqual(['new link'])
+            expect(body.links).toStrictEqual(['https://goodlink.com'])
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} if title is empty`, async () => {
@@ -134,7 +134,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
                         contact: 'new contact',
                         portfolio: 'new portfolio',
                         field: 'new field',
-                        links: ['new link'],
+                        links: ['https://goodlink.com'],
                     }),
             )
 
@@ -143,7 +143,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
             expect(body.contact).toBe('new contact')
             expect(body.portfolio).toBe('new portfolio')
             expect(body.field).toBe('new field')
-            expect(body.links).toStrictEqual(['new link'])
+            expect(body.links).toStrictEqual(['https://goodlink.com'])
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} if links are not array`, async () => {

@@ -25,7 +25,7 @@ describe('IdeaProposalDetailsService', () => {
                 field: 'Test field',
                 contact: 'Test contact',
                 portfolio: 'Test portfolio',
-                links: ['Test link'],
+                links: ['https://goodlink.com'],
             })
             const savedDetails = (await getRepository().findOne(createdDetails.id))!
             expect(savedDetails.title).toBe('Test title')
@@ -33,7 +33,7 @@ describe('IdeaProposalDetailsService', () => {
             expect(savedDetails.field).toBe('Test field')
             expect(savedDetails.contact).toBe('Test contact')
             expect(savedDetails.portfolio).toBe('Test portfolio')
-            expect(savedDetails.links).toEqual(JSON.stringify(['Test link']))
+            expect(savedDetails.links).toEqual(JSON.stringify(['https://goodlink.com']))
             done()
         })
     })
@@ -98,13 +98,13 @@ describe('IdeaProposalDetailsService', () => {
         it('should update and save idea with updated links', async () => {
             const details = await getService().create({
                 title: 'title',
-                links: ['Test link'],
+                links: ['https://goodlink.com'],
             })
 
-            await getService().update({ links: ['New Link'] }, details)
+            await getService().update({ links: ['https://newgoodlink.com'] }, details)
 
             const savedDetails = (await getRepository().findOne(details.id))!
-            expect(savedDetails.links).toBe(JSON.stringify(['New Link']))
+            expect(savedDetails.links).toBe(JSON.stringify(['https://newgoodlink.com']))
         })
     })
 })

@@ -254,7 +254,7 @@ describe(`/api/v1/ideas`, () => {
                                 field: 'Test field',
                                 contact: 'Test contact',
                                 portfolio: 'Test portfolio',
-                                links: ['Test link'],
+                                links: ['https://goodlink.com'],
                             },
                             networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
                             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
@@ -276,7 +276,7 @@ describe(`/api/v1/ideas`, () => {
                             field: 'Test field',
                             contact: 'Test contact',
                             portfolio: 'Test portfolio',
-                            links: ['Test link'],
+                            links: ['https://goodlink.com'],
                         },
                         networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
                         beneficiary: kusamaEncodedAddress,
@@ -293,7 +293,7 @@ describe(`/api/v1/ideas`, () => {
             expect(body.details.content).toBe('Test content')
             expect(body.details.contact).toBe('Test contact')
             expect(body.details.portfolio).toBe('Test portfolio')
-            expect(body.details.links).toStrictEqual(['Test link'])
+            expect(body.details.links).toStrictEqual(['https://goodlink.com'])
             expect(body.ordinalNumber).toBeDefined()
             expect(body.status).toBe(DefaultIdeaStatus)
             done()
@@ -502,7 +502,7 @@ describe(`/api/v1/ideas`, () => {
         it(`should return ${HttpStatus.BAD_REQUEST} for empty string in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
-            const links = ['', 'Test Link']
+            const links = ['', 'https://goodlink.com']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
@@ -511,7 +511,7 @@ describe(`/api/v1/ideas`, () => {
         it(`should return ${HttpStatus.BAD_REQUEST} for undefined value in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
-            const links = [undefined, 'Test Link']
+            const links = [undefined, 'https://goodlink.com']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
@@ -520,7 +520,7 @@ describe(`/api/v1/ideas`, () => {
         it(`should return ${HttpStatus.BAD_REQUEST} for null value in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
-            const links = [null, 'Test Link']
+            const links = [null, 'https://goodlink.com']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
@@ -529,7 +529,7 @@ describe(`/api/v1/ideas`, () => {
         it(`should return ${HttpStatus.BAD_REQUEST} for numbers in links array`, () => {
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
-            const links = [123, 'Test Link']
+            const links = [123, 'https://goodlink.com']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
@@ -539,14 +539,23 @@ describe(`/api/v1/ideas`, () => {
             const link = `https://${'x'.repeat(1000)}.com`
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
-            const links = [link, 'Test Link']
+            const links = [link, 'https://goodlink.com']
+            return sessionHandler
+                .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not valid links`, () => {
+            const title = ''
+            const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
+            const links = ['not a valid link']
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl).send({ details: { title, links }, networks }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for too many links (more than 10) in links array`, () => {
-            const links = new Array(11).map((_, index) => `https://${index}.com`)
+            const links = new Array(11).map((_, index) => `https://goodlink${index}.com`)
             const title = ''
             const networks = [{ name: NETWORKS.KUSAMA, value: 3 }]
             return sessionHandler
@@ -613,7 +622,7 @@ describe(`/api/v1/ideas`, () => {
                 {
                     details: {
                         title: 'Test title',
-                        links: ['The link'],
+                        links: ['https://goodlink.com'],
                     },
                     networks: [{ name: NETWORKS.KUSAMA, value: 13 }],
                 },
@@ -625,7 +634,7 @@ describe(`/api/v1/ideas`, () => {
                         .patch(`${baseUrl}/${idea.id}`)
                         .send({
                             details: {
-                                links: 'Updated link',
+                                links: 'https://goodlink.com',
                             },
                         }),
                 )

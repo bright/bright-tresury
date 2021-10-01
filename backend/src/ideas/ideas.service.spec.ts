@@ -352,7 +352,7 @@ describe(`IdeasService`, () => {
                         field: 'Test field',
                         contact: 'Test contact',
                         portfolio: 'Test portfolio',
-                        links: ['Test link'],
+                        links: ['https://goodlink.com'],
                     },
                     networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
@@ -366,7 +366,7 @@ describe(`IdeasService`, () => {
             expect(savedIdea.details.field).toBe('Test field')
             expect(savedIdea.details.contact).toBe('Test contact')
             expect(savedIdea.details.portfolio).toBe('Test portfolio')
-            expect(savedIdea.details.links).toEqual(JSON.stringify(['Test link']))
+            expect(savedIdea.details.links).toEqual(JSON.stringify(['https://goodlink.com']))
             done()
         })
 
