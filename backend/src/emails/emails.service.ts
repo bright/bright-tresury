@@ -8,6 +8,7 @@ import * as path from 'path'
 import { AWSConfig, AWSConfigToken } from '../aws.config'
 import { getLogger } from '../logging.module'
 import { EmailsConfig, EmailsConfigToken } from './emails.config'
+import { EmailTemplates } from './templates/templates'
 
 const logger = getLogger()
 
@@ -36,7 +37,12 @@ export class EmailsService {
         }
         const subject = 'Welcome to BrightTreasury!'
         const text = `Please confirm your registration and login to Treasury app: ${verifyUrl}`
-        const html = this.compileTemplate('verifyEmailTemplate', templateData)
+        const html = this.compileTemplate(EmailTemplates.VerifyEmailTemplate, templateData)
+        return this.sendEmail(to, subject, text, html)
+    }
+
+    async sendEmailFromTemplate(to: string, subject: string, text: string, template: EmailTemplates, data: unknown) {
+        const html = this.compileTemplate(template, data)
         return this.sendEmail(to, subject, text, html)
     }
 
@@ -60,11 +66,10 @@ export class EmailsService {
         return
     }
 
-    compileTemplate(name: string, data: any): string {
+    compileTemplate(name: EmailTemplates, data: unknown): string {
         try {
             const emailTemplateSource = this.getTemplateSource(name)
             if (!emailTemplateSource) {
-                logger.error(`Error compiling template ${name}. Template not found`)
                 return ''
             }
             const template = handlebars.compile(emailTemplateSource)
@@ -76,19 +81,18 @@ export class EmailsService {
         }
     }
 
-    private getTemplateSource(name: string) {
-        const baseTemplatesDir = path.join(__dirname, '/../emails/templates/')
-        const fallbackTemplatesDir = path.join(__dirname, '/../../emails/templates/')
-        const templatesDir = fs.existsSync(baseTemplatesDir)
-            ? baseTemplatesDir
-            : fs.existsSync(fallbackTemplatesDir)
-            ? fallbackTemplatesDir
+    private getTemplateSource(name: EmailTemplates) {
+        const baseTemplateFile = path.join(__dirname, '/../emails/templates/', `${name}.hbs`)
+        const fallbackTemplateFile = path.join(__dirname, '/../../emails/templates/', `${name}.hbs`)
+
+        const templateFile = fs.existsSync(baseTemplateFile)
+            ? baseTemplateFile
+            : fs.existsSync(fallbackTemplateFile)
+            ? fallbackTemplateFile
             : undefined
-        if (!templatesDir) {
-            return undefined
-        }
-        const templateFile = path.join(templatesDir, `${name}.hbs`)
-        if (!fs.existsSync(templateFile)) {
+
+        if (!templateFile) {
+            logger.error(`Error compiling template ${templateFile} - template file not found.`)
             return undefined
         }
         return fs.readFileSync(templateFile, 'utf8')

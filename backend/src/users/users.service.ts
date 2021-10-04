@@ -6,7 +6,7 @@ import {
     NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { FindConditions, Repository } from 'typeorm'
+import { FindConditions, In, Repository } from 'typeorm'
 import { User } from './user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { validateOrReject } from 'class-validator'
@@ -34,6 +34,11 @@ export class UsersService {
         } catch (e: any) {
             throw handleFindError(e, 'There is no user with such id')
         }
+    }
+
+    async find(ids: string[]): Promise<User[]> {
+        const users = await this.userRepository.find({ id: In(ids) })
+        return users
     }
 
     async findOneByUsername(username: string): Promise<User> {

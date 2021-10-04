@@ -34,7 +34,8 @@ describe('IdeaCommentsServiceSpec', () => {
             const { comment } = savedIdeaComment
             expect(comment.content).toBe('This is a comment')
         })
-        it(`should throw ${NotFoundException} when creating a comment for non existing idea`, async () => {
+
+        it(`should throw NotFoundException when creating a comment for non existing idea`, async () => {
             await expect(
                 getIdeaCommentsService().create('00000000-0000-0000-0000-000000000000', usr1SessionData.user, {
                     content: 'This is a comment',

@@ -1,4 +1,4 @@
-import { BeforeInsert, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm'
+import { BeforeInsert, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, Column } from 'typeorm'
 import { Idea } from '../../entities/idea.entity'
 import { User } from '../../../users/user.entity'
 import { Comment } from '../../../comments/comment.entity'
@@ -13,12 +13,16 @@ export class IdeaComment {
     @ManyToOne(() => Idea, (idea) => idea.comments)
     idea: Nil<Idea>
 
+    @Column()
+    ideaId: string
+
     @OneToOne(() => Comment, { eager: true })
     @JoinColumn()
     comment: Comment
 
     constructor(idea: Idea, comment: Comment) {
         this.idea = idea
+        this.ideaId = idea?.id
         this.comment = comment
     }
 

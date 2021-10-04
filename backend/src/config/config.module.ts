@@ -130,8 +130,10 @@ const loadConfig = memoize(async () => {
     return configSchema.getProperties()
 })
 
+export const AppConfigToken = 'AppConfig'
+
 const appConfigProvider: AsyncFactoryProvider<AppConfig> = {
-    provide: 'AppConfig',
+    provide: AppConfigToken,
     useFactory: async () => await loadConfig(),
 }
 

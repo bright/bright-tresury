@@ -5,6 +5,7 @@ import { memoize } from 'lodash'
 import supertest from 'supertest'
 import { getConnection } from 'typeorm'
 import { AppModule, configureGlobalServices } from '../app.module'
+import { EmailsService } from '../emails/emails.service'
 import { NestLoggerAdapter } from '../logging.module'
 import { Accessor } from './accessor'
 import { tryClose } from './closeable'
@@ -109,6 +110,13 @@ export async function createTestingApp(
     configureGlobalServices(nestApp)
 
     await nestApp.init()
+
+    jest.spyOn(nestApp.get<EmailsService>(EmailsService), 'sendEmail').mockImplementation(
+        async (to: string, subject: string, text: string, html: string) => {
+            console.log('Sending mock email')
+            await Promise.resolve()
+        },
+    )
 
     return nestApp
 }

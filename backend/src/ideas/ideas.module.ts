@@ -68,6 +68,6 @@ import { Comment } from '../comments/comment.entity'
         IdeaCommentsController,
         IdeaNetworksController,
     ],
-    exports: [IdeasService, IdeaMilestonesService],
+    exports: [IdeasService, IdeaMilestonesService, IdeaCommentsService],
 })
 export class IdeasModule {}

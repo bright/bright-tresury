@@ -1,3 +1,4 @@
+import { string0To255 } from 'aws-sdk/clients/customerprofiles'
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { ForbiddenException } from '@nestjs/common'
 import { BaseEntity } from '../database/base.entity'
@@ -8,6 +9,9 @@ import { Nil } from '../utils/types'
 export class Comment extends BaseEntity {
     @ManyToOne(() => User)
     author: Nil<User>
+
+    @Column({ type: 'text' })
+    authorId!: string
 
     @Column({ type: 'text' })
     content: string

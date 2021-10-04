@@ -21,6 +21,7 @@ import { StatsModule } from './stats/stats.module'
 import { IdeaProposalDetailsModule } from './idea-proposal-details/idea-proposal-details.module'
 import { MilestoneDetailsModule } from './milestone-details/milestone-details.module'
 import { useContainer } from 'class-validator'
+import { AppEventsModule } from './app-events/app-events.module'
 
 @Module({
     imports: [
@@ -37,6 +38,7 @@ import { useContainer } from 'class-validator'
         StatsModule,
         IdeaProposalDetailsModule,
         MilestoneDetailsModule,
+        AppEventsModule,
     ],
     exports: [],
     controllers: [AppController],

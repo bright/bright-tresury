@@ -1,8 +1,6 @@
-import { Test } from '@nestjs/testing'
-import { AppModule } from '../app.module'
 import { beforeAllSetup, beforeSetupFullApp } from '../utils/spec.helpers'
 import { EmailsService } from './emails.service'
-import { ProposalMilestonesService } from '../proposals/proposal-milestones/proposal-milestones.service'
+import { EmailTemplates } from './templates/templates'
 
 describe('EmailsService', () => {
     const app = beforeSetupFullApp()
@@ -33,7 +31,7 @@ describe('EmailsService', () => {
 
     describe('compile template', () => {
         it('should read template and replace params', async () => {
-            const actual = await service().compileTemplate('testTemplate', { param: 'value' })
+            const actual = await service().compileTemplate(EmailTemplates.TestTemplate, { param: 'value' })
             const expected = '<html>Test template with a value</html>\n'
             expect(actual).toBe(expected)
         })
