@@ -14,9 +14,6 @@ describe('New idea comment app event e2e', () => {
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
-    })
-
-    afterEach(() => {
         jest.clearAllMocks()
     })
 
@@ -26,7 +23,7 @@ describe('New idea comment app event e2e', () => {
         return { idea, ideaOwner: sessionData.user }
     }
 
-    describe('create idea comment', () => {
+    describe('after IdeaComment insert', () => {
         it('should create NewIdeaComment event for idea owner', async () => {
             const { idea } = await setUp()
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })

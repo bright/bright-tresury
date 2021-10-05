@@ -20,7 +20,7 @@ export class AppEventsService {
         logger.info('Creating new event...', data, userIds)
         const receivers = userIds.map((userId) => this.appEventReceiverRepository.create({ userId }))
 
-        const appEvent = await this.appEventRepository.create({ data, receivers })
+        const appEvent = this.appEventRepository.create({ data, receivers })
         const savedAppEvent = await this.appEventRepository.save(appEvent)
 
         logger.info('New event created', savedAppEvent)

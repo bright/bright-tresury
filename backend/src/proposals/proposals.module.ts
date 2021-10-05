@@ -43,6 +43,6 @@ import { ProposalComment } from './proposal-comments/entities/proposal-comment.e
         ProposalDetailsService,
         ProposalCommentsService,
     ],
-    exports: [ProposalsService],
+    exports: [ProposalsService, ProposalCommentsService],
 })
 export class ProposalsModule {}

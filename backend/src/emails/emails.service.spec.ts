@@ -6,10 +6,6 @@ describe('EmailsService', () => {
     const app = beforeSetupFullApp()
     const service = beforeAllSetup(() => app().get<EmailsService>(EmailsService))
 
-    it('should be defined', () => {
-        expect(service).toBeDefined()
-    })
-
     /*
         These tests are skipped by default, as we do not want to send an email on every run of tests.
         Enable them to check if sending emails works fine after any changes.

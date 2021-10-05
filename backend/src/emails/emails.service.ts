@@ -16,6 +16,7 @@ const logger = getLogger()
 export class EmailsService {
     private nodemailerTransport: Mail
     private readonly sesClient: SESClient
+    private templates: Partial<Record<EmailTemplates, string>> = {}
 
     constructor(
         @Inject(EmailsConfigToken) private readonly emailsConfig: EmailsConfig,
@@ -27,6 +28,9 @@ export class EmailsService {
                 ses: this.sesClient,
                 aws: { SendRawEmailCommand },
             },
+        })
+        Object.values(EmailTemplates).forEach((value) => {
+            this.templates[value] = this.getTemplateSource(value)
         })
     }
 
@@ -68,7 +72,7 @@ export class EmailsService {
 
     compileTemplate(name: EmailTemplates, data: unknown): string {
         try {
-            const emailTemplateSource = this.getTemplateSource(name)
+            const emailTemplateSource = this.templates[name]
             if (!emailTemplateSource) {
                 return ''
             }

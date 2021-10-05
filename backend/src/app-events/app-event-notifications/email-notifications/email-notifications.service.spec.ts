@@ -117,9 +117,9 @@ describe('EmailNotificationsService', () => {
             const data: NewProposalCommentDto = {
                 type: AppEventType.NewProposalComment as const,
                 commentId: uuid(),
-                networkId: 'polkadot',
-                proposalBlockchainId: '0',
-                title: 'title',
+                proposalBlockchainId: 0,
+                proposalTitle: 'title',
+                commentsUrl: 'http://localhost:3000',
             }
             const appEvent = createAppEvent([user.id], data)
 

@@ -29,16 +29,16 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaComm
     }
 
     async afterInsert({ entity }: InsertEvent<IdeaComment>) {
-        logger.info(`New comment created. Creating NewIdeaComment app event: `, entity)
+        logger.info(`New idea comment created. Creating NewIdeaComment app event: `, entity)
 
         const idea = entity.idea ?? (await this.ideasService.findOne(entity.ideaId))
         const receiverIds = await this.getReceiverIds(entity, idea)
-        const data = this.getData(entity, idea)
+        const data = this.getEventDetails(entity, idea)
 
         await this.appEventsService.create(data, receiverIds)
     }
 
-    private getData(ideaComment: IdeaComment, idea: Idea): NewIdeaCommentDto {
+    private getEventDetails(ideaComment: IdeaComment, idea: Idea): NewIdeaCommentDto {
         const networkQueryParam = idea.networks[0]?.name ? `networkId=${idea.networks[0]?.name}` : ''
         const commentsUrl = `${this.appConfig.websiteUrl}/ideas/${idea.id}/discussion?${networkQueryParam}`
 

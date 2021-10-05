@@ -36,9 +36,8 @@ export class UsersService {
         }
     }
 
-    async find(ids: string[]): Promise<User[]> {
-        const users = await this.userRepository.find({ id: In(ids) })
-        return users
+    find(ids: string[]): Promise<User[]> {
+        return this.userRepository.find({ id: In(ids) })
     }
 
     async findOneByUsername(username: string): Promise<User> {

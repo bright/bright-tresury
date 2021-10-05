@@ -32,7 +32,7 @@ export class EmailNotificationsService {
 
     async send(appEvent: AppEvent): Promise<void> {
         logger.info('Sending notification emails for event: ', appEvent)
-        if (!appEvent.receivers || appEvent.receivers.length === 0) {
+        if (!appEvent.receivers) {
             logger.info('No receivers for this event - no emails will be sent')
             return
         }
@@ -66,8 +66,10 @@ export class EmailNotificationsService {
     }
 
     private async hasValidEmail(user: User): Promise<boolean> {
-        const isEmailVerified = await this.superTokensService.isEmailVerified(user)
-        return user.isEmailPasswordEnabled && isEmailVerified
+        if (!user.isEmailPasswordEnabled) {
+            return false
+        }
+        return this.superTokensService.isEmailVerified(user)
     }
 
     private getEmailDetails(appEvent: AppEvent): EmailDetails {
@@ -95,19 +97,16 @@ export class EmailNotificationsService {
 
     private getNewProposalCommentEmailDetails(data: NewProposalCommentDto): EmailDetails {
         const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Proposal ${data.proposalBlockchainId} - new comments`
-        const commentsUrl = `http://localhost:3000/proposals/${data.proposalBlockchainId}/discussion?networkId=${data.networkId}` // todo from app config
+        // const commentsUrl = `http://localhost:3000/proposals/${data.proposalBlockchainId}/discussion?networkId=${data.networkId}` // todo from app config
         const text = `You have a new comment in Proposal ${data.proposalBlockchainId} ${
-            data.title ?? ''
-        }. You can see them here: ${commentsUrl}`
+            data.proposalTitle ?? ''
+        }. You can see them here: ${data.commentsUrl}`
 
         return {
             subject,
             text,
             template: EmailTemplates.NewProposalCommentTemplate,
-            data: {
-                ...data,
-                // commentsUrl,
-            },
+            data,
         }
     }
 }

@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common'
 import { ModuleMetadata } from '@nestjs/common/interfaces'
 import { Test, TestingModuleBuilder } from '@nestjs/testing'
+import { logger } from 'handlebars'
 import { memoize } from 'lodash'
 import supertest from 'supertest'
 import { getConnection } from 'typeorm'
@@ -113,7 +114,8 @@ export async function createTestingApp(
 
     jest.spyOn(nestApp.get<EmailsService>(EmailsService), 'sendEmail').mockImplementation(
         async (to: string, subject: string, text: string, html: string) => {
-            console.log('Sending mock email')
+            // TODO use nodemailer mock
+            console.log(`Sending mock email to ${to} with subject ${subject}`)
             await Promise.resolve()
         },
     )
