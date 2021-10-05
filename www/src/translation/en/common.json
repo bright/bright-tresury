@@ -57,6 +57,24 @@
             "signOut": "Log out",
             "yourIdeas": "Your Ideas",
             "yourProposals": "Your Proposals"
+        },
+        "notifications": {
+            "notifications": "Notifications",
+            "loading": "We're loading the notifications. It may take a moment. Bear with us.",
+            "error": "An error occurred while loading notifications.",
+            "noNotifications": "There are no new notifications.",
+            "menuItems": {
+                "ideaDiscussion": {
+                    "title": "Idea Discussion",
+                    "goTo": "Go to Discussion",
+                    "description": "There are new messages in the idea discussion"
+                },
+                "proposalDiscussion": {
+                    "title": "Proposal Discussion",
+                    "goTo": "Go to Discussion",
+                    "description": "There are new messages in the proposal discussion"
+                }
+            }
         }
     },
     "menu": {

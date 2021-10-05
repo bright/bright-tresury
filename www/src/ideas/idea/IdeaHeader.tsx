@@ -1,7 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath, useHistory } from 'react-router-dom'
+import { useAuth } from '../../auth/AuthContext'
 import Button from '../../components/button/Button'
 import CloseButton from '../../components/closeIcon/CloseButton'
 import BasicInfo from '../../components/header/BasicInfo'
@@ -19,10 +21,10 @@ import { ROUTE_TURN_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto } from '../ideas.dto'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
-import IdeaStatusIndicator from './status/IdeaStatusIndicator'
+import PrivateIdeaContentTypeTabs from './PrivateIdeaContentTypeTabs'
 import OptionsButton from './OptionsButton'
+import IdeaStatusIndicator from './status/IdeaStatusIndicator'
 import { useIdea } from './useIdea'
-import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -132,6 +134,7 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps, theme: Theme) => {
     const { t } = useTranslation()
     const history = useHistory()
     const { canTurnIntoProposal, canEditIdea } = useIdea(idea)
+    const { user, isUserSignedInAndVerified } = useAuth()
 
     const navigateToList = () => {
         history.goBack()
@@ -171,7 +174,11 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps, theme: Theme) => {
             </div>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
-                <IdeaContentTypeTabs />
+                {isUserSignedInAndVerified && user ? (
+                    <PrivateIdeaContentTypeTabs userId={user.id} ideaId={idea.id} />
+                ) : (
+                    <IdeaContentTypeTabs />
+                )}
             </HeaderTabs>
             {canTurnIntoProposal && (
                 <div className={classes.turnIntoProposal}>

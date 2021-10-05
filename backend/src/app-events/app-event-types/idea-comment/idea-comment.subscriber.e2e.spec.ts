@@ -2,7 +2,7 @@ import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelper
 import { IdeaCommentsService } from '../../../ideas/idea-comments/idea-comments.service'
 import { IdeasService } from '../../../ideas/ideas.service'
 import { createIdea, createSessionData } from '../../../ideas/spec.helpers'
-import { beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
+import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
 
@@ -19,12 +19,16 @@ describe('New idea comment app event e2e', () => {
 
     const setUp = async () => {
         const sessionData = await createSessionData({ username: 'usr_1', email: 'usr_1@example.com' })
-        const idea = await createIdea({}, sessionData, getIdeasService())
+        const idea = await createIdea(
+            { networks: [{ name: NETWORKS.POLKADOT, value: 10 }] },
+            sessionData,
+            getIdeasService(),
+        )
         return { idea, ideaOwner: sessionData.user }
     }
 
     describe('after IdeaComment insert', () => {
-        it('should create NewIdeaComment event for idea owner', async () => {
+        it('should create NewIdeaComment event for idea owner', async (done) => {
             const { idea } = await setUp()
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
@@ -37,16 +41,18 @@ describe('New idea comment app event e2e', () => {
                 {
                     type: AppEventType.NewIdeaComment,
                     ideaId: idea.id,
-                    commentId: createdComment.id,
+                    commentId: createdComment.comment.id,
                     ideaOrdinalNumber: idea.ordinalNumber,
                     ideaTitle: idea.details.title,
-                    commentsUrl: `http://localhost:3000/ideas/${idea.id}/discussion?`,
+                    commentsUrl: `http://localhost:3000/ideas/${idea.id}/discussion?networkId=${NETWORKS.POLKADOT}`,
+                    networkIds: [NETWORKS.POLKADOT],
                 },
                 [idea.ownerId],
             )
+            done()
         })
 
-        it('should create NewIdeaComment event for all idea commenters and idea owner', async () => {
+        it('should create NewIdeaComment event for all idea commenters and idea owner', async (done) => {
             const { idea } = await setUp()
 
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
@@ -71,18 +77,20 @@ describe('New idea comment app event e2e', () => {
                 expect.anything(),
                 expect.arrayContaining([idea.ownerId, user1.user.id, user2.user.id]),
             )
+            done()
         })
 
-        it('should not create NewIdeaComment event for idea owner when he is commenting', async () => {
+        it('should not create NewIdeaComment event for idea owner when he is commenting', async (done) => {
             const { idea, ideaOwner } = await setUp()
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
             await getIdeaCommentsService().create(idea.id, ideaOwner, {
                 content: 'This is a comment',
             })
             expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([idea.ownerId]))
+            done()
         })
 
-        it('should not create NewIdeaComment event for the commenter', async () => {
+        it('should not create NewIdeaComment event for the commenter', async (done) => {
             const { idea } = await setUp()
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
@@ -99,6 +107,7 @@ describe('New idea comment app event e2e', () => {
                 content: 'This is a comment',
             })
             expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([user2.user.id]))
+            done()
         })
     })
 })

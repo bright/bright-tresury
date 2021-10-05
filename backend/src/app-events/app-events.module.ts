@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { SessionModule } from '../auth/session/session.module'
 import { SuperTokensModule } from '../auth/supertokens/supertokens.module'
 import { ConfigModule } from '../config/config.module'
 import { DatabaseModule } from '../database/database.module'
@@ -15,6 +16,7 @@ import { AppEventsService } from './app-events.service'
 import { AppEventReceiver } from './entities/app-event-receiver.entity'
 import { AppEvent } from './entities/app-event.entity'
 import { AppEventSubscriber } from './subscribers/app-event.subscriber'
+import { AppEventsController } from './app-events.controller'
 
 @Module({
     imports: [
@@ -26,6 +28,7 @@ import { AppEventSubscriber } from './subscribers/app-event.subscriber'
         IdeasModule,
         ProposalsModule,
         ConfigModule,
+        SessionModule,
     ],
     providers: [
         AppEventsService,
@@ -36,5 +39,6 @@ import { AppEventSubscriber } from './subscribers/app-event.subscriber'
         ProposalCommentSubscriber,
     ],
     exports: [AppEventsService],
+    controllers: [AppEventsController],
 })
 export class AppEventsModule {}

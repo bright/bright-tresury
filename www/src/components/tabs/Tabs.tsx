@@ -19,6 +19,7 @@ export interface TabEntry {
     filterName: string
     svg?: string
     isDefault?: boolean
+    notificationsCount?: number
 }
 
 interface OwnProps {
@@ -33,7 +34,7 @@ const Tabs = ({ values, searchParamName }: TabsProps) => {
     return (
         <div className={classes.root}>
             {values
-                ? values.map(({ label, path, svg, isDefault, filterName }) => (
+                ? values.map(({ label, path, svg, isDefault, filterName, notificationsCount }) => (
                       <TabLabel
                           key={label}
                           isDefault={isDefault}
@@ -42,6 +43,7 @@ const Tabs = ({ values, searchParamName }: TabsProps) => {
                           path={path}
                           filterName={filterName}
                           searchParamName={searchParamName}
+                          notificationsCount={notificationsCount}
                       />
                   ))
                 : null}

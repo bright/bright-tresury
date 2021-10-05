@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             marginLeft: '1em',
+            marginRight: '1em',
             fontSize: '16px',
             color: theme.palette.error.main,
         },

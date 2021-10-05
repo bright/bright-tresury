@@ -20,9 +20,9 @@ interface OwnProps {
     onClick: () => void
 }
 
-export type NetworkProps = OwnProps
+export type NetworkButtonProps = OwnProps
 
-const NetworkButton = ({ network, onClick }: NetworkProps) => {
+const NetworkButton = ({ network, onClick }: NetworkButtonProps) => {
     const { t } = useTranslation()
 
     const classes = useStyles({})

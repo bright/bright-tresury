@@ -7,7 +7,7 @@ import {
 } from '../../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { EmailsService } from '../../../emails/emails.service'
 import { EmailTemplates } from '../../../emails/templates/templates'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { NewProposalCommentDto } from '../../app-event-types/proposal-comment/new-proposal-comment.dto'
 import { AppEventData, AppEventType } from '../../entities/app-event-type'
 import { createAppEvent } from '../../spec.helpers'
@@ -101,6 +101,7 @@ describe('EmailNotificationsService', () => {
                 ideaOrdinalNumber: 9,
                 ideaTitle: 'title',
                 commentsUrl: 'http://localhost3000',
+                networkIds: [NETWORKS.POLKADOT],
             }
             const appEvent = createAppEvent([user.id], data)
 
@@ -120,6 +121,7 @@ describe('EmailNotificationsService', () => {
                 proposalBlockchainId: 0,
                 proposalTitle: 'title',
                 commentsUrl: 'http://localhost:3000',
+                networkId: NETWORKS.POLKADOT,
             }
             const appEvent = createAppEvent([user.id], data)
 

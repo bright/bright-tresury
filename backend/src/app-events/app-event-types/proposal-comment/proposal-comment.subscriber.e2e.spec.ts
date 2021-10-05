@@ -53,8 +53,9 @@ describe('New proposal comment app event e2e', () => {
                     type: AppEventType.NewProposalComment,
                     proposalBlockchainId: proposal.blockchainProposalId,
                     proposalTitle: proposal.details.title,
-                    commentId: createdComment.id,
+                    commentId: createdComment.comment.id,
                     commentsUrl: `http://localhost:3000/proposals/${proposal.blockchainProposalId}/discussion?networkId=${proposal.networkId}`,
+                    networkId: proposal.networkId,
                 },
                 expect.anything(),
             )

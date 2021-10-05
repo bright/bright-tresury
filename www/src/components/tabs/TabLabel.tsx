@@ -4,6 +4,7 @@ import { ButtonBase, createStyles } from '@material-ui/core'
 import { NavLink } from 'react-router-dom'
 import { breakpoints } from '../../theme/theme'
 import { Location } from 'history'
+import TabLabelImg from './TabLabelImg'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,6 +37,7 @@ interface OwnProps {
     label: string
     filterName: string
     path: string
+    notificationsCount?: number
     svg?: string
     isDefault?: boolean
     searchParamName?: string
@@ -43,9 +45,8 @@ interface OwnProps {
 
 export type TabLabelProps = OwnProps
 
-const TabLabel = ({ label, filterName, svg, path, isDefault, searchParamName }: TabLabelProps) => {
+const TabLabel = ({ label, filterName, svg, path, isDefault, searchParamName, notificationsCount }: TabLabelProps) => {
     const classes = useStyles()
-
     return (
         <ButtonBase centerRipple={true}>
             <NavLink
@@ -70,7 +71,7 @@ const TabLabel = ({ label, filterName, svg, path, isDefault, searchParamName }: 
                 }}
                 activeClassName={classes.selected}
             >
-                {svg ? <img className={classes.labelIcon} src={svg} alt={''} /> : null}
+                <TabLabelImg svg={svg} notificationsCount={notificationsCount} />
                 {label}
             </NavLink>
         </ButtonBase>

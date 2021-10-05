@@ -9,6 +9,7 @@ const useStyles = makeStyles(() =>
         },
         text: {
             marginLeft: '1em',
+            marginRight: '1em',
             fontSize: '16px',
         },
     }),

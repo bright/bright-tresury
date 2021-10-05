@@ -12,7 +12,7 @@ export const NETWORK_ID_SEARCH_PARAM_NAME = 'networkId'
 interface State {
     networks: Network[]
     network: Network
-    selectNetwork: (networkId: string) => void
+    selectNetwork: (networkId: string, pathName?: string, search?: string) => void
 }
 
 export const NetworksContext = React.createContext<State | undefined>(undefined)
@@ -29,15 +29,15 @@ const NetworksContextProvider = ({ children }: NetworksContextProviderProps) => 
     const history = useHistory()
     const { pathname, search } = useLocation()
 
-    const redirect = (networkId: string) => {
+    const redirect = (networkId: string, customPathName?: string, customSearch?: string) => {
         // We set the `isRedirecting` param to hide the app while redirecting
         setIsRedirecting(true)
 
-        const newSearch = new URLSearchParams(search)
+        const newSearch = new URLSearchParams(customSearch ?? search)
         newSearch.set(NETWORK_ID_SEARCH_PARAM_NAME, networkId)
 
         history.push({
-            pathname: pathname,
+            pathname: customPathName ?? pathname,
             search: newSearch.toString(),
         })
         // We need to reload the page once the network is changed, because there is no way to clean the keyring. We need to initialise it again.

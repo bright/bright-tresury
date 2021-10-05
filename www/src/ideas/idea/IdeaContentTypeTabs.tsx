@@ -12,7 +12,13 @@ export enum IdeaContentType {
     Discussion = 'discussion',
 }
 
-const IdeaContentTypeTabs = () => {
+interface OwnProps {
+    discussionNotificationsCount?: number
+}
+
+export type IdeaContentTypeTabsProps = OwnProps
+
+const IdeaContentTypeTabs = ({ discussionNotificationsCount = 0 }: IdeaContentTypeTabsProps) => {
     const { t } = useTranslation()
 
     const getTranslation = (ideaContentType: IdeaContentType): string => {
@@ -37,16 +43,29 @@ const IdeaContentTypeTabs = () => {
         }
     }
 
+    const getNotificationsCount = (ideaContentType: IdeaContentType): number => {
+        switch (ideaContentType) {
+            case IdeaContentType.Info:
+                return 0
+            case IdeaContentType.Milestones:
+                return 0
+            case IdeaContentType.Discussion:
+                return discussionNotificationsCount
+        }
+    }
+
     const contentTypes = Object.values(IdeaContentType)
 
     let { url } = useRouteMatch()
 
-    const tabEntries = contentTypes.map((contentType: IdeaContentType) => {
+    const tabEntries: TabEntry[] = contentTypes.map((contentType: IdeaContentType) => {
         return {
             label: getTranslation(contentType),
             path: `${url}/${contentType}`,
             svg: getIcon(contentType),
-        } as TabEntry
+            filterName: '',
+            notificationsCount: getNotificationsCount(contentType),
+        }
     })
 
     return (

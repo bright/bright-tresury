@@ -2,12 +2,14 @@ import { Theme } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
+import { ClassNameProps } from '../../../components/props/className.props'
 import { Network } from '../../../networks/networks.dto'
 import { useNetworks } from '../../../networks/useNetworks'
 import MenuItem from '../account/MenuItem'
 import { useMenu } from '../../../hook/useMenu'
 import NetworkButton from './NetworkButton'
 import NetworkName from './NetworkName'
+import clsx from 'clsx'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -28,7 +30,9 @@ const useMenuStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-const NetworkPicker = () => {
+export type NetworkPickerProps = ClassNameProps
+
+const NetworkPicker = ({ className }: NetworkPickerProps) => {
     const classes = useStyles()
     const menuClasses = useMenuStyles()
 
@@ -41,7 +45,7 @@ const NetworkPicker = () => {
     }
 
     return (
-        <div className={classes.root}>
+        <div className={clsx(classes.root, className)}>
             <NetworkButton onClick={handleOpen} network={network} />
             <Menu
                 classes={menuClasses}

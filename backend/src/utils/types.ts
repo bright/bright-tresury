@@ -37,3 +37,7 @@ export function StaticImpelements<T>() {
 }
 
 export type Nil<T> = T | null | undefined
+
+export function isNil<T>(value: Nil<T>): boolean {
+    return value === undefined || value === null
+}

@@ -6,4 +6,5 @@ export interface NewProposalCommentDto {
     proposalBlockchainId: number
     proposalTitle: string
     commentsUrl: string
+    networkId: string
 }

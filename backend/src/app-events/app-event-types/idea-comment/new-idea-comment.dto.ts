@@ -7,4 +7,5 @@ export interface NewIdeaCommentDto {
     ideaTitle: string
     commentId: string
     commentsUrl: string
+    networkIds: string[]
 }

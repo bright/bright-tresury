@@ -14,11 +14,13 @@ export enum ProposalContentType {
     Voting = 'voting',
 }
 
-interface OwnProps {}
+interface OwnProps {
+    discussionNotificationsCount?: number
+}
 
 export type ProposalContentTypeTabsProps = OwnProps
 
-export const ProposalContentTypeTabs = ({}: ProposalContentTypeTabsProps) => {
+export const ProposalContentTypeTabs = ({ discussionNotificationsCount = 0 }: ProposalContentTypeTabsProps) => {
     const { t } = useTranslation()
 
     let { url } = useRouteMatch()
@@ -49,12 +51,27 @@ export const ProposalContentTypeTabs = ({}: ProposalContentTypeTabsProps) => {
         }
     }
 
-    const tabEntries = Object.values(ProposalContentType).map((contentType: ProposalContentType) => {
+    const getNotificationsCount = (contentType: ProposalContentType): number => {
+        switch (contentType) {
+            case ProposalContentType.Info:
+                return 0
+            case ProposalContentType.Milestones:
+                return 0
+            case ProposalContentType.Discussion:
+                return discussionNotificationsCount
+            case ProposalContentType.Voting:
+                return 0
+        }
+    }
+
+    const tabEntries: TabEntry[] = Object.values(ProposalContentType).map((contentType: ProposalContentType) => {
         return {
             label: getTranslation(contentType),
             path: `${url}/${contentType}`,
             svg: getIcon(contentType),
-        } as TabEntry
+            filterName: '',
+            notificationsCount: getNotificationsCount(contentType),
+        }
     })
 
     return (

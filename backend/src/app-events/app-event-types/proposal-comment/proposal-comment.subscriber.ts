@@ -48,10 +48,11 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Prop
 
         return {
             type: AppEventType.NewProposalComment,
-            commentId: proposalComment.id,
+            commentId: proposalComment.comment.id,
             proposalTitle: proposal.entity?.details.title ?? '',
             proposalBlockchainId: proposalComment.blockchainProposalId,
             commentsUrl,
+            networkId: proposalComment.networkId,
         }
     }
 

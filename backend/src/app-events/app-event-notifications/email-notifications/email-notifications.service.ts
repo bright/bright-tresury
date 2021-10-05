@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { SuperTokensService } from '../../../auth/supertokens/supertokens.service'
 import { EmailsService } from '../../../emails/emails.service'
 import { EmailTemplates } from '../../../emails/templates/templates'
@@ -97,7 +97,6 @@ export class EmailNotificationsService {
 
     private getNewProposalCommentEmailDetails(data: NewProposalCommentDto): EmailDetails {
         const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Proposal ${data.proposalBlockchainId} - new comments`
-        // const commentsUrl = `http://localhost:3000/proposals/${data.proposalBlockchainId}/discussion?networkId=${data.networkId}` // todo from app config
         const text = `You have a new comment in Proposal ${data.proposalBlockchainId} ${
             data.proposalTitle ?? ''
         }. You can see them here: ${data.commentsUrl}`

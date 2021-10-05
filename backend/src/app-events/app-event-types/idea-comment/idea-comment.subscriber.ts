@@ -39,16 +39,18 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaComm
     }
 
     private getEventDetails(ideaComment: IdeaComment, idea: Idea): NewIdeaCommentDto {
-        const networkQueryParam = idea.networks[0]?.name ? `networkId=${idea.networks[0]?.name}` : ''
+        const networkId = idea.networks[0]?.name
+        const networkQueryParam = networkId ? `networkId=${networkId}` : ''
         const commentsUrl = `${this.appConfig.websiteUrl}/ideas/${idea.id}/discussion?${networkQueryParam}`
 
         return {
             type: AppEventType.NewIdeaComment,
-            commentId: ideaComment.id,
+            commentId: ideaComment.comment.id,
             ideaOrdinalNumber: idea.ordinalNumber,
             ideaTitle: idea.details.title,
             ideaId: idea.id,
             commentsUrl,
+            networkIds: idea.networks.map((n) => n.name),
         }
     }
 

@@ -29,6 +29,7 @@ export const theme = {
             default: '#FFFFFF',
             paper: '#F5F5F5',
         },
+        divider: '#F0F0F0',
         warning: {
             main: '#FF0000',
         },

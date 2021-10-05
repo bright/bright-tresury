@@ -11,13 +11,13 @@ import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { SessionGuard } from '../../auth/session/guard/session.guard'
 import { getLogger } from '../../logging.module'
+import { CreateProposalCommentDto } from './create-proposal-comment.dto'
 import { ProposalCommentsService } from './proposal-comments.service'
 import { CommentDto } from '../../comments/dto/comment.dto'
 import { BlockchainProposalIndex } from './blockchainProposalIndex.param'
 import { NetworkDto } from './network.dto'
 import { UpdateCommentDto } from '../../comments/dto/update-comment.dto'
 import { NetworkNameQuery } from '../../utils/network-name.query'
-import { CreateProposalCommentDto } from './proposal-comments.dto'
 
 const logger = getLogger()
 
@@ -55,11 +55,11 @@ export class ProposalCommentsController {
         description: 'Proposal Index',
     })
     @ApiCreatedResponse({
-        description: 'New idea comment created.',
+        description: 'New proposal comment created.',
         type: CommentDto,
     })
     @ApiNotFoundResponse({
-        description: 'Idea with the given id not found.',
+        description: 'Proposal with the given id within given network not found.',
     })
     @UseGuards(SessionGuard)
     async create(
