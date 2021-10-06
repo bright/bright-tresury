@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { CreateIdeaProposalDetailsDto } from './dto/create-idea-proposal-details.dto'
 import { UpdateIdeaProposalDetailsDto } from './dto/update-idea-proposal-details.dto'
 import { IdeaProposalDetails } from './idea-proposal-details.entity'
+import { Idea } from '../ideas/entities/idea.entity'
 
 @Injectable()
 export class IdeaProposalDetailsService {
@@ -25,5 +26,9 @@ export class IdeaProposalDetailsService {
         })
 
         return (await this.detailsRepository.findOne(details.id))!
+    }
+
+    async delete(entity: IdeaProposalDetails) {
+        return this.detailsRepository.remove(entity)
     }
 }

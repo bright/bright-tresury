@@ -1,5 +1,5 @@
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { apiGet, apiPatch, apiPost } from '../api'
+import { apiDelete, apiGet, apiPatch, apiPost } from '../api'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
 import {
     EditIdeaDto,
@@ -137,4 +137,18 @@ function turnIdeaIntoProposal({ ideaId, data }: TurnIdeaIntoProposalParams) {
 
 export const useTurnIdeaIntoProposal = () => {
     return useMutation(turnIdeaIntoProposal)
+}
+
+// DELETE IDEA
+
+export interface DeleteIdea {
+    ideaId: string
+}
+
+function deleteIdea({ ideaId }: DeleteIdea): Promise<void> {
+    return apiDelete(`${IDEAS_API_PATH}/${ideaId}`)
+}
+
+export const useDeleteIdea = () => {
+    return useMutation(deleteIdea)
 }

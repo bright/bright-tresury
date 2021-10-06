@@ -370,6 +370,15 @@
             "cancelComment": "Cancel",
             "sendComment": "Send",
             "commentedTimestampTitle": " | commented"
+        },
+        "optionsMenu": {
+            "deleteIdea": "Delete Idea",
+            "discard": "Discard",
+            "deleteIdeaModal": {
+                "title": "Are you sure you want to delete the idea?",
+                "subtitle": "By deleting this idea, you will lose all the data",
+                "error": "Could not delete the idea"
+            }
         }
     },
     "proposal": {

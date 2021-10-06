@@ -104,6 +104,7 @@ export class IdeasService {
         const currentIdea = await this.findOne(id, sessionData)
         currentIdea.canEditOrThrow(sessionData.user)
         await this.ideaRepository.remove(currentIdea)
+        await this.detailsService.delete(currentIdea.details)
     }
 
     async update(dto: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<Idea> {

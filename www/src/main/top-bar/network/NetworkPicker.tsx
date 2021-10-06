@@ -5,7 +5,7 @@ import React from 'react'
 import { Network } from '../../../networks/networks.dto'
 import { useNetworks } from '../../../networks/useNetworks'
 import MenuItem from '../account/MenuItem'
-import { useMenu } from '../useMenu'
+import { useMenu } from '../../../hook/useMenu'
 import NetworkButton from './NetworkButton'
 import NetworkName from './NetworkName'
 

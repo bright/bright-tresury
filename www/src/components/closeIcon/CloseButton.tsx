@@ -1,15 +1,22 @@
 import React from 'react'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import IconButton from '../button/IconButton'
 import crossSvg from '../../assets/cross.svg'
 import { ClassNameProps } from '../props/className.props'
 import clsx from 'clsx'
+import { breakpoints } from '../../theme/theme'
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             alignSelf: 'self-start',
             margin: '0 0 2em 2em',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                position: 'relative',
+                left: '20px',
+                bottom: '15px',
+                margin: '0',
+            },
         },
     }),
 )

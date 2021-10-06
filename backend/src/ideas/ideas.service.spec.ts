@@ -13,11 +13,15 @@ import { IdeasService } from './ideas.service'
 import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 import { createSessionData } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from './idea-milestones/entities/idea-milestone-network-status'
+import { IdeaProposalDetails } from '../idea-proposal-details/idea-proposal-details.entity'
+import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 
 describe(`IdeasService`, () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(IdeasService)
     const getIdeaNetworkRepository = () => app.get().get(getRepositoryToken(IdeaNetwork))
+    const getIdeaProposalDetailsRepository = () => app.get().get(getRepositoryToken(IdeaProposalDetails))
+    const getMilestoneRepository = () => app.get().get(IdeaMilestonesRepository)
     const getMilestonesService = () => app.get().get(IdeaMilestonesService)
 
     let sessionData: SessionData
@@ -559,6 +563,19 @@ describe(`IdeasService`, () => {
             done()
         })
 
+        it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
+            const idea = await getService().create(
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    status: IdeaStatus.TurnedIntoProposal,
+                },
+                sessionData,
+            )
+
+            await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(BadRequestException)
+            done()
+        })
         it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.MilestoneSubmission} status`, async (done) => {
             const idea = await getService().create(
                 {
@@ -568,9 +585,39 @@ describe(`IdeasService`, () => {
                 },
                 sessionData,
             )
-
             await expect(getService().delete(idea.id, sessionData)).rejects.toThrow(BadRequestException)
             done()
+        })
+        it('should delete milestone, networks and ideas when delete idea', async () => {
+            const idea = await getService().create(
+                {
+                    details: { title: 'Test title' },
+                    networks: [{ name: NETWORKS.KUSAMA, value: 42 }],
+                    status: IdeaStatus.Active,
+                },
+                sessionData,
+            )
+
+            const ideaMilestone = await getMilestonesService().create(
+                idea.id,
+                {
+                    networks: [{ name: NETWORKS.KUSAMA, value: 42, status: IdeaMilestoneNetworkStatus.Active }],
+                    beneficiary: null,
+                    details: { subject: 'subject' },
+                },
+                sessionData,
+            )
+
+            await getService().delete(idea.id, sessionData)
+
+            const network = await getIdeaNetworkRepository().findOne(idea.networks[0].id)
+            expect(network).toBeUndefined()
+
+            const details = await getIdeaProposalDetailsRepository().findOne(idea.details.id)
+            expect(details).toBeUndefined()
+
+            const milestone = await getMilestoneRepository().findOne(ideaMilestone.id)
+            expect(milestone).toBeUndefined()
         })
     })
 })

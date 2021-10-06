@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 gap: '1em',
                 justifyContent: 'inherit',
                 flexDirection: 'column',
+                marginBottom: '25px',
             },
         },
     }),

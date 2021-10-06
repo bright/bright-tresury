@@ -130,19 +130,17 @@ export const beforeSetupFullApp = memoize(
     },
 )
 
-const tablesToRemove = memoize(
-    async (): Promise<Array<{ table_name: string }>> => {
-        const connection = await getConnection()
-        return await connection.query(
-            `
+const tablesToRemove = memoize(async (): Promise<Array<{ table_name: string }>> => {
+    const connection = await getConnection()
+    return await connection.query(
+        `
         select * 
         from information_schema.tables 
         where 
             table_schema='public' and table_name != 'migrations'
         `,
-        )
-    },
-)
+    )
+})
 
 export const cleanDatabase = async () => {
     try {

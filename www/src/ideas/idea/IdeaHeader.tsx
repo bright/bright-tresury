@@ -20,7 +20,9 @@ import { breakpoints } from '../../theme/theme'
 import { IdeaDto } from '../ideas.dto'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
 import IdeaStatusIndicator from './status/IdeaStatusIndicator'
+import OptionsButton from './OptionsButton'
 import { useIdea } from './useIdea'
+import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -29,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         networkValues: {
             order: 2,
+            marginRight: '-40px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 4,
             },
@@ -42,6 +45,14 @@ const useStyles = makeStyles((theme: Theme) =>
                 order: 2,
             },
         },
+        closeIconOnTablet: {
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                display: 'none',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                display: 'none',
+            },
+        },
         contentTypeTabs: {
             order: 4,
             [theme.breakpoints.down(breakpoints.tablet)]: {
@@ -50,6 +61,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         turnIntoProposal: {
             order: 5,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            marginBottom: '5px',
+            flexGrow: 1,
             [theme.breakpoints.up(breakpoints.mobile)]: {
                 alignSelf: 'flex-end',
             },
@@ -57,7 +72,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 position: 'fixed',
                 padding: 16,
                 background: theme.palette.background.default,
-                bottom: 0,
+                bottom: '-30px',
                 left: 0,
                 right: 0,
                 display: 'flex',
@@ -65,10 +80,42 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: '100vw',
                 zIndex: 1,
             },
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                order: 2,
+                flexGrow: 'unset',
+                marginBottom: '25px',
+                marginRight: '5px',
+            },
         },
         turnIntoProposalButton: {
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 width: '100%',
+            },
+        },
+        tabletViewContainer: {
+            display: 'none',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'flex-end',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                display: 'flex',
+                order: 3,
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                display: 'flex',
+                order: 1,
+            },
+        },
+        optionsButton: {
+            order: 6,
+            marginRight: '20px',
+            display: 'flex',
+            justifyContent: 'center',
+        },
+        formatIconOnTablet: {
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginRight: '0',
+                alignSelf: 'center',
             },
         },
     }),
@@ -80,11 +127,11 @@ interface OwnProps {
 
 export type IdeaHeaderProps = OwnProps
 
-const IdeaHeader = ({ idea }: IdeaHeaderProps) => {
+const IdeaHeader = ({ idea }: IdeaHeaderProps, theme: Theme) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
-    const { canTurnIntoProposal } = useIdea(idea)
+    const { canTurnIntoProposal, canEditIdea } = useIdea(idea)
 
     const navigateToList = () => {
         history.goBack()
@@ -98,7 +145,10 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps) => {
 
     return (
         <HeaderContainer>
-            <CloseButton onClose={navigateToList} className={classes.closeIcon} />
+            <CloseButton
+                onClose={navigateToList}
+                className={clsx(classes.closeIcon, classes.closeIconOnTablet)}
+            ></CloseButton>
             <BasicInfo>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
                 <BasicInfoDivider />
@@ -112,6 +162,13 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps) => {
             <NetworkValues className={classes.networkValues}>
                 <NetworkRewardDeposit rewardValue={networkValue} />
             </NetworkValues>
+            <div className={classes.tabletViewContainer}>
+                <CloseButton
+                    onClose={navigateToList}
+                    className={clsx(classes.closeIcon, classes.formatIconOnTablet)}
+                ></CloseButton>
+                {canEditIdea ? <OptionsButton className={classes.formatIconOnTablet} idea={idea.id} /> : null}
+            </div>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
                 <IdeaContentTypeTabs />
@@ -128,6 +185,7 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps) => {
                     </Button>
                 </div>
             )}
+            {canEditIdea ? <OptionsButton className={classes.closeIconOnTablet} idea={idea} /> : null}
         </HeaderContainer>
     )
 }

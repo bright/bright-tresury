@@ -52,9 +52,8 @@ export class IdeaProposalsService {
         ideaNetwork.canTurnIntoProposalOrThrow()
 
         const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
-            const blockchainProposalIndex = this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(
-                extrinsicEvents,
-            )
+            const blockchainProposalIndex =
+                this.blockchainService.extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents)
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaIntoProposal(idea, ideaNetwork, blockchainProposalIndex)
