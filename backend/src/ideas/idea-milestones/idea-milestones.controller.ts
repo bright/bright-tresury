@@ -1,4 +1,4 @@
-import { Body, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
+import { Body, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common'
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
@@ -15,6 +15,9 @@ import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
 import { IdeaMilestoneDto } from './dto/idea-milestone.dto'
 import { UpdateIdeaMilestoneDto } from './dto/update-idea-milestone.dto'
 import { IdeaMilestonesService } from './idea-milestones.service'
+import { getLogger } from '../../logging.module'
+
+const logger = getLogger()
 
 @ControllerApiVersion('/ideas/:ideaId/milestones', ['v1'])
 @ApiTags('ideas.milestones')
@@ -125,5 +128,21 @@ export class IdeaMilestonesController {
             session,
         )
         return new IdeaMilestoneDto(updatedIdeaMilestone)
+    }
+
+    @ApiOkResponse({
+        description: 'Deleted idea milestone.',
+    })
+    @ApiNotFoundResponse({
+        description: 'No idea milestone found.',
+    })
+    @ApiForbiddenResponse({
+        description: 'Idea milestone with the given id cannot be deleted',
+    })
+    @Delete(':ideaMilestoneId')
+    @UseGuards(SessionGuard)
+    async delete(@Param('ideaMilestoneId') ideaMilestoneId: string, @ReqSession() session: SessionData) {
+        logger.info(`Deleting idea milestone ${ideaMilestoneId}...`)
+        await this.ideaMilestonesService.delete(ideaMilestoneId, session)
     }
 }

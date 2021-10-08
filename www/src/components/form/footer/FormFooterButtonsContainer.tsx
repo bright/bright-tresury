@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'space-between',
             position: 'relative',
             flexDirection: 'row-reverse',
-            flexGrow: 1,
+            // flexGrow: 1,
             alignItems: 'flex-end',
             width: '100%',
             [theme.breakpoints.down(breakpoints.mobile)]: {

@@ -1,4 +1,4 @@
-import { apiGet, apiPatch, apiPost } from '../../../api'
+import { apiDelete, apiGet, apiPatch, apiPost } from '../../../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import {
     CreateIdeaMilestoneDto,
@@ -159,4 +159,19 @@ function turnIdeaMilestoneIntoProposal({ ideaId, ideaMilestoneId, data }: TurnId
 
 export const useTurnIdeaMilestoneIntoProposal = () => {
     return useMutation(turnIdeaMilestoneIntoProposal)
+}
+
+// DELETE IDEA MILESTONE
+
+export interface DeleteIdeaMilestone {
+    ideaMilestoneId: string
+    ideaId: string
+}
+
+function deleteIdeaMilestone({ ideaMilestoneId, ideaId }: DeleteIdeaMilestone): Promise<void> {
+    return apiDelete(`${getIdeaMilestonesApiBasePath(ideaId)}/${ideaMilestoneId}`)
+}
+
+export const useDeleteIdeaMilestone = () => {
+    return useMutation(deleteIdeaMilestone)
 }

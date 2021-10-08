@@ -123,4 +123,12 @@ export class IdeaMilestonesService {
 
         return (await this.ideaMilestoneRepository.findOne(currentIdeaMilestone!.id))!
     }
+
+    async delete(ideaMilestoneId: string, sessionData: SessionData) {
+        const currentIdeaMilestone = await this.findOne(ideaMilestoneId, sessionData)
+        currentIdeaMilestone.idea.canEditMilestonesOrThrow(sessionData.user)
+
+        await this.ideaMilestoneRepository.remove(currentIdeaMilestone)
+        await this.detailsService.delete(currentIdeaMilestone.details)
+    }
 }

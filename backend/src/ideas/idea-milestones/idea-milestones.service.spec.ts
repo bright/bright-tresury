@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../../auth/session/session.decorator'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
+import { MilestoneDetails } from '../../milestone-details/entities/milestone-details.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { IdeaStatus } from '../entities/idea-status'
 import { Idea } from '../entities/idea.entity'
@@ -26,6 +27,8 @@ describe(`IdeaMilestonesService`, () => {
 
     const getIdeasService = () => app.get().get(IdeasService)
     const getMilestonesRepository = () => app.get().get(IdeaMilestonesRepository)
+    const getMilestoneDetailsRepository = () =>
+        app().get<Repository<MilestoneDetails>>(getRepositoryToken(MilestoneDetails))
     const getIdeaRepository = () => app.get().get(getRepositoryToken(Idea))
     const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
@@ -634,6 +637,58 @@ describe(`IdeaMilestonesService`, () => {
                     sessionData,
                 ),
             ).resolves.toBeDefined()
+        })
+    })
+    describe.only('delete', () => {
+        it('should delete milestones', async (done) => {
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                minimalCreateIdeaMilestoneDto,
+                sessionData,
+            )
+            await getIdeaMilestonesService().delete(ideaMilestone.id, sessionData)
+
+            const ideaMilestoneFind = await getMilestonesRepository().findOne(ideaMilestone.id)
+            expect(ideaMilestoneFind).toBeUndefined()
+
+            done()
+        })
+        it('should return not found if wrong milestone.id', async (done) => {
+            await expect(getIdeaMilestonesService().findOne(uuid())).rejects.toThrow(NotFoundException)
+            done()
+        })
+        it('should throw forbidden exception when trying to delete not own milestone', async (done) => {
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                minimalCreateIdeaMilestoneDto,
+                sessionData,
+            )
+
+            const otherUser = await createSessionData({ username: 'otherUser', email: 'other@email.com' })
+
+            await expect(getIdeaMilestonesService().delete(ideaMilestone.id, otherUser)).rejects.toThrow(
+                ForbiddenException,
+            )
+            done()
+        })
+        it('should delete networks and details when delete milestone', async () => {
+            const ideaMilestone = await getIdeaMilestonesService().create(
+                idea.id,
+                {
+                    networks: [{ name: NETWORKS.KUSAMA, value: 42, status: IdeaMilestoneNetworkStatus.Active }],
+                    beneficiary: null,
+                    details: { subject: 'subject' },
+                },
+                sessionData,
+            )
+
+            await getIdeaMilestonesService().delete(ideaMilestone.id, sessionData)
+
+            const network = await ideaMilestoneNetworkRepository().findOne(ideaMilestone.networks[0].id)
+            expect(network).toBeUndefined()
+
+            const details = await getMilestoneDetailsRepository().findOne(ideaMilestone.details.id)
+            expect(details).toBeUndefined()
         })
     })
 })

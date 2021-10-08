@@ -338,7 +338,15 @@
                         "cancel": "Cancel",
                         "create": "Create",
                         "save": "Save",
-                        "submit": "Submit"
+                        "submit": "Submit",
+                        "removeMilestone": "Remove milestone"
+                    },
+                    "removeModal": {
+                        "title": "Are you sure you want to remove milestone?",
+                        "subtitle": "By removing this milestone, you will lose all the data",
+                        "discard": "Discard",
+                        "removeMilestone": "Remove milestone",
+                        "error": "Cannot remove milestone"
                     }
                 }
             },
