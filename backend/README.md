@@ -38,6 +38,7 @@ Make sure that PostgreSQL, Polkadot node and SuperTokens(`authorization-test`) c
 -   `DEPLOY_ENV=test-local DATABASE_USERNAME=deployer npm run database:migrate`
 -   to run all tests `DEPLOY_ENV=test-local npm run test`
 -   to run a single test suit `DEPLOY_ENV=test-local npm run test -- testSuitName`
+-   to debug tests with IDE: set a break point in code, run `DEPLOY_ENV=test-local npm run test:debug` and click the link: "Debugger listening on ws://127.0.0.1:9229/some-uuid"
 
 If you do not want to run those in docker container read instructions below.
 

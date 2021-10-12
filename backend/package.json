@@ -9,9 +9,9 @@
         "compile": "nest build",
         "compile:docker": "npx @nestjs/cli build",
         "compile:watch": "nest build --watch",
-        "test": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand --detectOpenHandles",
-        "test:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand --detectOpenHandles | bunyan -o short",
-        "test:watch": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --watch | bunyan -o short",
+        "test": "DEPLOY_ENV=${DEPLOY_ENV:-'test-local'} jest --runInBand --detectOpenHandles",
+        "test:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'test-local'} node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+        "test:watch": "DEPLOY_ENV=${DEPLOY_ENV:-'test-local'} jest --watch | bunyan -o short",
         "test:ci": "DEPLOY_ENV=${DEPLOY_ENV:-'test'} jest --runInBand --detectOpenHandles",
         "auth:core:dev": "sh authorization.core.development.sh",
         "auth:core:test": "sh authorization.core.test.sh",
@@ -105,7 +105,7 @@
             "json",
             "ts"
         ],
-        "rootDir": "dist",
+        "rootDir": "src",
         "testRegex": ".spec.[jt]s$",
         "collectCoverageFrom": [
             "**/*.(t|j)s"
