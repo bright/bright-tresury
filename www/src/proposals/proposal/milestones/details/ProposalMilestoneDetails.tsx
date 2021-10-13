@@ -55,6 +55,7 @@ const ProposalMilestoneDetails = ({
                 </h2>
             </MilestoneModalHeader>
             <ProposalMilestoneForm
+                proposalIndex={proposalIndex}
                 milestone={milestone}
                 readonly={!canEdit}
                 onSubmit={onSubmit}

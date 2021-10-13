@@ -44,6 +44,7 @@ const ProposalMilestoneCreate = ({ onClose, proposalIndex }: ProposalMilestoneCr
                 <h2 id="modal-title">{t('proposal.milestones.modal.createMilestone')}</h2>
             </MilestoneModalHeader>
             <ProposalMilestoneForm
+                proposalIndex={proposalIndex}
                 readonly={false}
                 onCancel={onClose}
                 onSubmit={onSubmit}
