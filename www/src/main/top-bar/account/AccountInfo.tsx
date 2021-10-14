@@ -46,7 +46,7 @@ const AccountInfo = () => {
     }, [ideas, user])
 
     const numberOfMineProposals = useMemo(() => {
-        const mineProposals = proposals ? filterProposals(proposals, ProposalFilter.Mine) : []
+        const mineProposals = proposals ? filterProposals(proposals, ProposalFilter.Mine, user) : []
         return mineProposals.length
     }, [proposals, user])
 
