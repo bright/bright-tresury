@@ -18,8 +18,8 @@ const useStyles = makeStyles(() =>
             fontSize: '0.75em',
         },
         select: {
-            fontSize: '0.875em',
-            padding: '1em',
+            fontSize: '1em',
+            paddingLeft: '10px',
             fontWeight: 500,
         },
     }),

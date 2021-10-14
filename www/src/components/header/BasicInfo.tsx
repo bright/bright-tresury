@@ -1,7 +1,8 @@
-import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { PropsWithChildren } from 'react'
+import { breakpoints } from '../../theme/theme'
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             order: 1,
@@ -14,6 +15,11 @@ const useStyles = makeStyles(() =>
             marginRight: '32px',
             whiteSpace: 'pre-wrap',
             width: '40%',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                marginBottom: '24px',
+                marginRight: 0,
+                justifyContent: 'center',
+            },
         },
     }),
 )

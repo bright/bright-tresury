@@ -14,7 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
             display: 'none',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 fontWeight: 600,
-                display: 'inherit',
+                display: 'flex',
+                marginRight: 0,
             },
         },
     }),

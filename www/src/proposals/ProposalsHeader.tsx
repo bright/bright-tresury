@@ -12,6 +12,7 @@ import HeaderListTabs from '../components/header/list/HeaderListTabs'
 import PaperFilterBackground from '../components/header/list/PaperFilterBackground'
 import TimeSelectWrapper from '../components/header/list/TimeSelectWrapper'
 import RouterLink from '../components/link/RouterLink'
+import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -22,25 +23,40 @@ const useStyles = makeStyles((theme: Theme) => {
             },
         },
         timeSelectWrapper: {
+            display: 'flex',
+            alignItems: 'center',
             order: 4,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 2,
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                order: 2,
+                display: 'flex',
+                alignItems: 'center',
             },
         },
         paperBackground: {
-            order: 4,
+            order: 3,
+        },
+        buttonsContainer: {
+            order: 2,
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                display: 'none',
+            },
         },
         statusFilters: {
             overflowX: 'auto',
             order: 3,
+            display: 'flex',
+            alignItems: 'center',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                order: 3,
+                display: 'none',
             },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                order: 5,
+        },
+        displayOnMobile: {
+            display: 'none',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                display: 'flex',
             },
         },
     })
@@ -65,18 +81,23 @@ const ProposalsHeader = ({ selectedFilter }: ProposalsHeaderProps) => {
                     }}
                 />
             </BasicInfo>
-
             <FlexBreakLine className={classes.flexBreakLine} />
-
-            <TimeSelectWrapper className={classes.timeSelectWrapper}>
+            <TimeSelectWrapper className={clsx(classes.displayOnMobile, classes.timeSelectWrapper)}>
                 <TimeSelect />
             </TimeSelectWrapper>
-
-            <PaperFilterBackground className={classes.paperBackground} />
-
-            <HeaderListTabs className={classes.statusFilters}>
+            <PaperFilterBackground className={clsx(classes.displayOnMobile, classes.paperBackground)} />
+            <HeaderListTabs className={clsx(classes.statusFilters, classes.displayOnMobile)}>
                 <ProposalStatusFilters selectedFilter={selectedFilter} />
             </HeaderListTabs>
+            <div className={classes.buttonsContainer}>
+                <TimeSelectWrapper className={classes.timeSelectWrapper}>
+                    <TimeSelect />
+                </TimeSelectWrapper>
+                <PaperFilterBackground className={classes.paperBackground} />
+                <HeaderListTabs className={classes.statusFilters}>
+                    <ProposalStatusFilters selectedFilter={selectedFilter} />
+                </HeaderListTabs>
+            </div>
         </HeaderListContainer>
     )
 }

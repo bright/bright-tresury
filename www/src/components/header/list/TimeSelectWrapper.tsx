@@ -11,14 +11,8 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: '8px',
             alignSelf: 'center',
             height: '32px',
+            fontWeight: 900,
             backgroundColor: theme.palette.primary.light,
-            [theme.breakpoints.up(breakpoints.tablet)]: {
-                height: '32px',
-            },
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                margin: `0 ${headerListHorizontalMargin}`,
-                marginBottom: 16,
-            },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 height: '46px',
                 borderRadius: '0',

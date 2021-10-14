@@ -17,7 +17,7 @@ const Stats = ({}: StatsProps) => {
 
     return (
         <>
-            <StatsHeader />
+            {stats ? <StatsHeader timeLeft={stats.timeLeft} /> : <StatsHeader />}
             <LoadingWrapper
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingStatistics')}

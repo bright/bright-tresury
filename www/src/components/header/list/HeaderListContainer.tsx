@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 paddingLeft: 0,
                 paddingRight: 0,
-                paddingBottom: 0,
+                paddingBottom: '8px',
             },
             display: 'flex',
             flexDirection: 'row',
