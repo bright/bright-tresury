@@ -17,7 +17,7 @@ import { AppEventSubscriber } from './subscribers/app-event.subscriber'
 
 const getBaseUrl = (userId: string) => `/api/v1/users/${userId}/app-events`
 
-describe('AppEventsController', () => {
+describe('/api/v1/users/:userId/app-events/', () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get<AppEventsService>(AppEventsService)
     const appEventSubscriber = beforeAllSetup(() => app().get<AppEventSubscriber>(AppEventSubscriber))
@@ -45,7 +45,7 @@ describe('AppEventsController', () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             const event = await createAndSaveAppEvent([sessionHandler.sessionData.user.id])
             const { body } = await sessionHandler.authorizeRequest(
-                request(app()).get(getBaseUrl(sessionHandler.sessionData.user.id)).expect(200),
+                request(app()).get(getBaseUrl(sessionHandler.sessionData.user.id)),
             )
             expect(body.items[0].id).toBe(event.id)
             expect(body.items[0].isRead).toBe(false)
@@ -224,13 +224,6 @@ describe('AppEventsController', () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             return sessionHandler
                 .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?pageSize=not_number`))
-                .expect(HttpStatus.BAD_REQUEST)
-        })
-
-        it(`should return ${HttpStatus.BAD_REQUEST} for pageSize larger than the 1000`, async () => {
-            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
-            return sessionHandler
-                .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?pageSize=1001`))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
