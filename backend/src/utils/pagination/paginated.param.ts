@@ -16,7 +16,6 @@ export class PaginatedQueryParams {
     })
     @IsNumberString()
     @IsOptional()
-    @Max(1000)
     pageSize?: string
 }
 
@@ -27,7 +26,7 @@ export class PaginatedParams {
 
     constructor({ pageNumber, pageSize }: PaginatedQueryParams) {
         this.pageNumber = Number(pageNumber ?? 1)
-        this.pageSize = Number(pageSize ?? 50)
+        this.pageSize = Math.min(Number(pageSize ?? 50), 1000)
         this.offset = this.pageSize * (this.pageNumber - 1)
     }
 }
