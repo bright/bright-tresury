@@ -58,6 +58,9 @@ export class EmailNotificationsService {
 
         const usersWithValidEmails = await Promise.all(
             users.map(async (receiver) => {
+                if (!receiver.isEmailNotificationEnabled) {
+                    return undefined
+                }
                 const hasValidEmail = await this.hasValidEmail(receiver)
                 return hasValidEmail ? receiver : undefined
             }),

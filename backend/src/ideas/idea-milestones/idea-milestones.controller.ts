@@ -9,7 +9,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
-import { SessionGuard } from '../../auth/session/guard/session.guard'
+import { SessionGuard } from '../../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
 import { IdeaMilestoneDto } from './dto/idea-milestone.dto'

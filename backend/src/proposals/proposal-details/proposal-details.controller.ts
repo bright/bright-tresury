@@ -7,7 +7,7 @@ import {
     ApiOkResponse,
     ApiTags,
 } from '@nestjs/swagger'
-import { SessionGuard } from '../../auth/session/guard/session.guard'
+import { SessionGuard } from '../../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { CreateIdeaProposalDetailsDto } from '../../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'

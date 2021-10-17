@@ -1,3 +1,5 @@
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import {
@@ -7,6 +9,7 @@ import {
 } from '../../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { EmailsService } from '../../../emails/emails.service'
 import { EmailTemplates } from '../../../emails/templates/templates'
+import { User } from '../../../users/user.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { NewProposalCommentDto } from '../../app-event-types/proposal-comment/new-proposal-comment.dto'
 import { AppEventData, AppEventType } from '../../entities/app-event-type'
@@ -18,6 +21,7 @@ describe('EmailNotificationsService', () => {
     const app = beforeSetupFullApp()
 
     const service = beforeAllSetup(() => app().get<EmailNotificationsService>(EmailNotificationsService))
+    const usersRepository = beforeAllSetup(() => app().get<Repository<User>>(getRepositoryToken(User)))
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -42,6 +46,21 @@ describe('EmailNotificationsService', () => {
             const {
                 sessionData: { user },
             } = await createWeb3SessionHandler(app(), '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            const appEvent = createAppEvent([user.id])
+            const spy = jest.spyOn(app().get<EmailsService>(EmailsService), 'sendEmail')
+
+            await service().send(appEvent)
+
+            expect(spy).toHaveBeenCalledTimes(0)
+        })
+
+        it('should not call sendEmailFromTemplate function when user has switched off email notifications', async () => {
+            const {
+                sessionData: { user },
+            } = await createUserSessionHandlerWithVerifiedEmail(app())
+            user.isEmailNotificationEnabled = false
+            await usersRepository().save(user)
+
             const appEvent = createAppEvent([user.id])
             const spy = jest.spyOn(app().get<EmailsService>(EmailsService), 'sendEmail')
 
@@ -102,6 +121,7 @@ describe('EmailNotificationsService', () => {
                 ideaTitle: 'title',
                 commentsUrl: 'http://localhost3000',
                 networkIds: [NETWORKS.POLKADOT],
+                websiteUrl: 'http://localhost:3000',
             }
             const appEvent = createAppEvent([user.id], data)
 
@@ -122,6 +142,7 @@ describe('EmailNotificationsService', () => {
                 proposalTitle: 'title',
                 commentsUrl: 'http://localhost:3000',
                 networkId: NETWORKS.POLKADOT,
+                websiteUrl: 'http://localhost:3000',
             }
             const appEvent = createAppEvent([user.id], data)
 

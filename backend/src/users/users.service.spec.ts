@@ -32,6 +32,7 @@ describe(`Users Service`, () => {
             expect(user.email).toBe('chuck@email.com')
             expect(user.username).toBe('Chuck')
             expect(user.isEmailPasswordEnabled).toBe(true)
+            expect(user.isEmailNotificationEnabled).toBe(true)
         })
         it('should save user', async () => {
             const user = await getService().create({

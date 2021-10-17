@@ -1,5 +1,5 @@
 import { CanActivate, ExecutionContext, Inject, Injectable } from '@nestjs/common'
-import { ISessionResolver, SessionResolverProvider } from '../session.resolver'
+import { ISessionResolver, SessionResolverProvider } from '../session/session.resolver'
 
 /**
  * Use it in order to require authorised requests.

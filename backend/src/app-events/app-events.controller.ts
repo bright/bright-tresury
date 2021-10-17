@@ -1,6 +1,7 @@
 import { Body, ForbiddenException, Get, Param, Patch, Query, UseGuards } from '@nestjs/common'
 import { ApiBadRequestResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
-import { SessionGuard } from '../auth/session/guard/session.guard'
+import { SessionGuard } from '../auth/guards/session.guard'
+import { UserGuard } from '../auth/guards/user.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { PaginatedParams, PaginatedQueryParams } from '../utils/pagination/paginated.param'
@@ -27,15 +28,13 @@ export class AppEventsController {
         description: 'Not valid app event type or is read params.',
     })
     @UseGuards(SessionGuard)
+    @UseGuards(UserGuard)
     async getAll(
         @ReqSession() session: SessionData,
         @Param('userId') userId: string,
         @Query() paginated: PaginatedQueryParams,
         @Query() { isRead, appEventType, ideaId, networkId, proposalIndex }: AppEventQuery,
     ): Promise<PaginatedResponseDto<AppEventDto>> {
-        if (userId !== session.user.id) {
-            throw new ForbiddenException()
-        }
         const { items, total } = await this.appEventsService.findAll(
             {
                 userId,
@@ -64,14 +63,12 @@ export class AppEventsController {
         description: 'You need to provide app event ids.',
     })
     @UseGuards(SessionGuard)
+    @UseGuards(UserGuard)
     async markAsRead(
         @ReqSession() session: SessionData,
         @Param('userId') userId: string,
         @Body() { appEventIds }: ReadAppEventDto,
     ): Promise<void> {
-        if (userId !== session.user.id) {
-            throw new ForbiddenException()
-        }
         await this.appEventsService.markAsRead(userId, appEventIds)
     }
 }

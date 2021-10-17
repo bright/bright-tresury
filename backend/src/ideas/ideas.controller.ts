@@ -21,7 +21,7 @@ import {
 } from '@nestjs/swagger'
 import { IsOptional, Validate } from 'class-validator'
 import { validate as uuidValidate } from 'uuid'
-import { SessionGuard } from '../auth/session/guard/session.guard'
+import { SessionGuard } from '../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
 import { getLogger } from '../logging.module'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'

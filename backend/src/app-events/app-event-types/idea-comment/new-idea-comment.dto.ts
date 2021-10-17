@@ -8,4 +8,5 @@ export interface NewIdeaCommentDto {
     commentId: string
     commentsUrl: string
     networkIds: string[]
+    websiteUrl: string
 }

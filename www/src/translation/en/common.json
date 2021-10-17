@@ -119,6 +119,10 @@
             "passwordPlaceholder": "Enter password",
             "passwordLabel": "Password",
             "passwordRequired": "Password required"
+        },
+        "notifications": {
+            "title": "Notifications",
+            "switchTitle": "Email notifications"
         }
     },
     "auth": {

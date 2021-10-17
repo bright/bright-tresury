@@ -7,4 +7,5 @@ export interface NewProposalCommentDto {
     proposalTitle: string
     commentsUrl: string
     networkId: string
+    websiteUrl: string
 }

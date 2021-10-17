@@ -24,6 +24,9 @@ export class User extends BaseEntity {
     })
     web3Addresses?: Web3Address[]
 
+    @Column({ nullable: false, type: 'boolean', default: true })
+    isEmailNotificationEnabled: boolean
+
     constructor(
         authId: string,
         username: string,
@@ -31,6 +34,7 @@ export class User extends BaseEntity {
         isEmailPasswordEnabled: boolean,
         web3Addresses?: Web3Address[],
         id?: string,
+        isEmailNotificationEnabled: boolean = true,
     ) {
         super()
         this.authId = authId
@@ -39,5 +43,6 @@ export class User extends BaseEntity {
         this.isEmailPasswordEnabled = isEmailPasswordEnabled
         this.web3Addresses = web3Addresses
         this.id = id ?? uuid()
+        this.isEmailNotificationEnabled = isEmailNotificationEnabled
     }
 }

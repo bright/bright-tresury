@@ -36,6 +36,7 @@ describe('AppEventsService', () => {
         ideaTitle: 'title',
         commentsUrl: 'http://localhost3000',
         networkIds: [NETWORKS.POLKADOT],
+        websiteUrl: 'http://localhost:3000',
     }
 
     const newProposalCommentEventData: NewProposalCommentDto = {
@@ -45,6 +46,7 @@ describe('AppEventsService', () => {
         proposalTitle: 'title',
         commentsUrl: 'http://localhost3000',
         networkId: NETWORKS.POLKADOT,
+        websiteUrl: 'http://localhost:3000',
     }
 
     describe('create', () => {
@@ -244,7 +246,7 @@ describe('AppEventsService', () => {
         })
     })
 
-    describe.only('markAsRead', () => {
+    describe('markAsRead', () => {
         it('should set isRead to true for provided ids', async () => {
             const { user } = await createSessionData()
             const appEvent2 = await createAndSaveAppEvent([user.id])

@@ -46,6 +46,7 @@ describe('New idea comment app event e2e', () => {
                     ideaTitle: idea.details.title,
                     commentsUrl: `http://localhost:3000/ideas/${idea.id}/discussion?networkId=${NETWORKS.POLKADOT}`,
                     networkIds: [NETWORKS.POLKADOT],
+                    websiteUrl: 'http://localhost:3000',
                 },
                 [idea.ownerId],
             )

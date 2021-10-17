@@ -1,6 +1,6 @@
 import { Body, HttpCode, HttpStatus, Param, Post, UseGuards } from '@nestjs/common'
 import { ApiAcceptedResponse, ApiBadRequestResponse, ApiNotFoundResponse, ApiParam, ApiTags } from '@nestjs/swagger'
-import { SessionGuard } from '../../../auth/session/guard/session.guard'
+import { SessionGuard } from '../../../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../../../auth/session/session.decorator'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'

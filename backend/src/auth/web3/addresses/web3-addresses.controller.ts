@@ -2,7 +2,7 @@ import { Delete, HttpStatus, Param, Post, Req, Res, UseGuards } from '@nestjs/co
 import { Request, Response } from 'express'
 import { ApiBadRequestResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
-import { SessionGuard } from '../../session/guard/session.guard'
+import { SessionGuard } from '../../guards/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
 import { UsersService } from '../../../users/users.service'
 import { SuperTokensService } from '../../supertokens/supertokens.service'

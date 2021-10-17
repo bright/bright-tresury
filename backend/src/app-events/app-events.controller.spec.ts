@@ -96,14 +96,18 @@ describe('/api/v1/users/:userId/app-events/', () => {
         it(`should return ${HttpStatus.BAD_REQUEST} for not boolean isRead param`, async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             return sessionHandler
-                .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?isRead=not_boolean_value`))
+                .authorizeRequest(
+                    request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?isRead=not_boolean_value`),
+                )
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not valid AppEventType param`, async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             return sessionHandler
-                .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?appEventType=not_valid_type`))
+                .authorizeRequest(
+                    request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?appEventType=not_valid_type`),
+                )
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
@@ -152,7 +156,9 @@ describe('/api/v1/users/:userId/app-events/', () => {
             it(`should return ${HttpStatus.BAD_REQUEST} for not uuid ideaId param`, async () => {
                 const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
                 return sessionHandler
-                    .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?ideaId=not_uuid`))
+                    .authorizeRequest(
+                        request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?ideaId=not_uuid`),
+                    )
                     .expect(HttpStatus.BAD_REQUEST)
             })
         })
@@ -183,14 +189,18 @@ describe('/api/v1/users/:userId/app-events/', () => {
             it(`should return ${HttpStatus.BAD_REQUEST} for not number proposalIndex param`, async () => {
                 const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
                 return sessionHandler
-                    .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?proposalIndex=three`))
+                    .authorizeRequest(
+                        request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?proposalIndex=three`),
+                    )
                     .expect(HttpStatus.BAD_REQUEST)
             })
 
             it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId param`, async () => {
                 const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
                 return sessionHandler
-                    .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?networkId=not_valid`))
+                    .authorizeRequest(
+                        request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?networkId=not_valid`),
+                    )
                     .expect(HttpStatus.BAD_REQUEST)
             })
         })
@@ -223,14 +233,18 @@ describe('/api/v1/users/:userId/app-events/', () => {
         it(`should return ${HttpStatus.BAD_REQUEST} for not number pageSize param`, async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             return sessionHandler
-                .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?pageSize=not_number`))
+                .authorizeRequest(
+                    request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?pageSize=not_number`),
+                )
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not number pageNumber param`, async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             return sessionHandler
-                .authorizeRequest(request(app()).get(`${getBaseUrl(uuid())}?pageNumber=not_number`))
+                .authorizeRequest(
+                    request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?pageNumber=not_number`),
+                )
                 .expect(HttpStatus.BAD_REQUEST)
         })
     })

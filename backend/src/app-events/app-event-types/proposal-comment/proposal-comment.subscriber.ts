@@ -53,6 +53,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Prop
             proposalBlockchainId: proposalComment.blockchainProposalId,
             commentsUrl,
             networkId: proposalComment.networkId,
+            websiteUrl: this.appConfig.websiteUrl,
         }
     }
 

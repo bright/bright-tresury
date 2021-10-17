@@ -9,7 +9,7 @@ import {
     ApiTags,
 } from '@nestjs/swagger'
 import { IsNotEmpty, IsString } from 'class-validator'
-import { SessionGuard } from '../../auth/session/guard/session.guard'
+import { SessionGuard } from '../../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ProposalsParam } from '../proposals.param'

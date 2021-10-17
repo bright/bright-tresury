@@ -1,11 +1,10 @@
 import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common'
 import { SessionResolver, SessionResolverProvider } from './session.resolver'
-import { UsersModule } from '../../users/users.module'
 import { SessionUserMiddleware } from './session.middleware'
 import { SuperTokensModule } from '../supertokens/supertokens.module'
 
 @Module({
-    imports: [UsersModule, SuperTokensModule],
+    imports: [SuperTokensModule],
     providers: [
         {
             provide: SessionResolverProvider,

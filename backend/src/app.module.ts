@@ -21,6 +21,7 @@ import { LoggingModule, NestLoggerAdapter } from './logging.module'
 import { MilestoneDetailsModule } from './milestone-details/milestone-details.module'
 import { ProposalsModule } from './proposals/proposals.module'
 import { StatsModule } from './stats/stats.module'
+import { UserSettingsModule } from './users/user-settings/user-settings.module'
 import { UsersModule } from './users/users.module'
 
 @Module({
@@ -39,6 +40,7 @@ import { UsersModule } from './users/users.module'
         IdeaProposalDetailsModule,
         MilestoneDetailsModule,
         AppEventsModule,
+        UserSettingsModule,
     ],
     exports: [],
     controllers: [AppController],

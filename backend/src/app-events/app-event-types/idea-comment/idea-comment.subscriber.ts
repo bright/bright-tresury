@@ -51,6 +51,7 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaComm
             ideaId: idea.id,
             commentsUrl,
             networkIds: idea.networks.map((n) => n.name),
+            websiteUrl: this.appConfig.websiteUrl,
         }
     }
 

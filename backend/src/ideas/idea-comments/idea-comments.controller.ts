@@ -9,7 +9,7 @@ import {
 } from '@nestjs/swagger'
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
-import { SessionGuard } from '../../auth/session/guard/session.guard'
+import { SessionGuard } from '../../auth/guards/session.guard'
 import { CommentDto } from '../../comments/dto/comment.dto'
 import { CreateCommentDto } from '../../comments/dto/create-comment.dto'
 import { IdeaCommentsService } from './idea-comments.service'

@@ -8,7 +8,7 @@ import {
 } from '@nestjs/swagger'
 import { Request, Response } from 'express'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
-import { SessionGuard } from '../../session/guard/session.guard'
+import { SessionGuard } from '../../guards/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { StartSignMessageResponseDto } from '../../web3/signMessage/start-sign-message-response.dto'

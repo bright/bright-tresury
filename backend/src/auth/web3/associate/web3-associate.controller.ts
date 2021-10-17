@@ -9,7 +9,7 @@ import {
 import { Request, Response } from 'express'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { Web3AssociateService } from './web3-associate.service'
-import { SessionGuard } from '../../session/guard/session.guard'
+import { SessionGuard } from '../../guards/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
 import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'

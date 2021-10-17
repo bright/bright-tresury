@@ -1,5 +1,4 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common'
-import { UsersService } from '../../users/users.service'
 import { Response } from 'express'
 import { SessionRequest } from './session.middleware'
 import { SuperTokensService } from '../supertokens/supertokens.service'
@@ -17,7 +16,7 @@ export interface ISessionResolver {
 
 @Injectable()
 export class SessionResolver implements ISessionResolver {
-    constructor(private readonly userService: UsersService, private readonly superTokensService: SuperTokensService) {}
+    constructor(private readonly superTokensService: SuperTokensService) {}
 
     async validateSession(req: SessionRequest, res: Response): Promise<boolean> {
         try {
