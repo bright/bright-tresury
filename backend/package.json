@@ -126,6 +126,9 @@
             "ts-jest": {
                 "isolatedModules": true
             }
-        }
+        },
+        "setupFilesAfterEnv": [
+            "./test-setup.ts"
+        ]
     }
 }
