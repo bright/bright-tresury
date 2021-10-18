@@ -545,7 +545,7 @@
         "names": {
             "proposalsSubmitted": "Proposals Submitted",
             "proposalsApproved": "Proposals Approved",
-            "proposalsRejected": "Proposals Rejected",
+            "activeIdeas": "Active Ideas",
             "spendPeriod": "Spend Period",
             "timeLeft": "Time Left",
             "leftOfSpendingPeriod": "Left of Spending Period",

@@ -37,9 +37,9 @@ interface OwnProps {
     imgSrc: string
 }
 
-export type ProposalsStatsCardProps = OwnProps
+export type ImageStatsCardProps = OwnProps
 
-const ProposalsStatsCard = ({ value, name, imgSrc }: ProposalsStatsCardProps) => {
+const ImageStatsCard = ({ value, name, imgSrc }: ImageStatsCardProps) => {
     const classes = useStyles()
 
     return (
@@ -53,4 +53,4 @@ const ProposalsStatsCard = ({ value, name, imgSrc }: ProposalsStatsCardProps) =>
     )
 }
 
-export default ProposalsStatsCard
+export default ImageStatsCard
