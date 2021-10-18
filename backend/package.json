@@ -105,7 +105,7 @@
             "json",
             "ts"
         ],
-        "rootDir": "src",
+        "rootDir": "dist",
         "testRegex": ".spec.[jt]s$",
         "collectCoverageFrom": [
             "**/*.(t|j)s"
@@ -128,7 +128,7 @@
             }
         },
         "setupFilesAfterEnv": [
-            "./test-setup.ts"
+            "./src/test-setup.js"
         ]
     }
 }
