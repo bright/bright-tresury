@@ -63,8 +63,10 @@ const IdeaMilestoneModal = ({
     const deleteIdeaMilestoneModal = useModal()
     const queryClient = useQueryClient()
     const { mutateAsync: patchIdeaMilestone, isError: isPatchIdeaMilestoneError } = usePatchIdeaMilestone()
-    const { mutateAsync: patchIdeaMilestoneNetworks, isError: isPatchIdeaMilestoneNetworksError } =
-        usePatchIdeaMilestoneNetworks()
+    const {
+        mutateAsync: patchIdeaMilestoneNetworks,
+        isError: isPatchIdeaMilestoneNetworksError,
+    } = usePatchIdeaMilestoneNetworks()
 
     const submitPatchIdeaMilestone = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
         const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = mergeFormValuesWithIdeaMilestone(
@@ -93,18 +95,12 @@ const IdeaMilestoneModal = ({
         additionalNetworks,
     }: IdeaMilestoneFormValues) => {
         const ideaMilestoneNetworks = [currentNetwork, ...additionalNetworks]
-        const networksToUpdate = ideaMilestoneNetworks
-            .filter(({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal)
-            .reduce(
-                (acc, cur) => ({
-                    ...acc,
-                    [cur.id]: { value: cur.value },
-                }),
-                {},
-            )
+        const networksToUpdate = ideaMilestoneNetworks.filter(
+            ({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal,
+        )
 
         await patchIdeaMilestoneNetworks(
-            { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: networksToUpdate },
+            { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: { items: networksToUpdate } },
             {
                 onSuccess: async () => {
                     await queryClient.refetchQueries([IDEA_MILESTONES_QUERY_KEY_BASE, idea.id])

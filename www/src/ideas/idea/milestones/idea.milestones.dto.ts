@@ -28,14 +28,14 @@ export interface IdeaMilestoneNetworkDto {
     status: IdeaMilestoneNetworkStatus
 }
 
-
 export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumber' | 'status' | 'details'> & {
     details: CreateMilestoneDetailsDto
 }
 export type PatchIdeaMilestoneDto = Partial<IdeaMilestoneDto>
 
 export type UpdateIdeaMilestoneNetworkDto = Partial<IdeaMilestoneNetworkDto>
-export type UpdateIdeaMilestoneNetworksDto = { [key: string]: UpdateIdeaMilestoneNetworkDto }
+export type UpdateIdeaMilestoneNetworksItemDto = { id: string; value: number }
+export type UpdateIdeaMilestoneNetworksDto = { items: UpdateIdeaMilestoneNetworksItemDto[] }
 
 export interface TurnIdeaMilestoneIntoProposalDto {
     ideaMilestoneNetworkId: string

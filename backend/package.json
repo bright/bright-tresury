@@ -19,6 +19,7 @@
         "main:dist": "node $NODE_DEBUG_OPTION dist/src/main.js --max-old-space-size=450",
         "database-migrate-and-main": "yarn run database:migrate && yarn run main:dist",
         "database-migrate-clean-and-main": "yarn run database:migrate && yarn run database:clean && yarn run main:dist",
+        "start:debug": "DEPLOY_ENV=${DEPLOY_ENV:-'development-local'} nest start --debug --watch | bunyan -o short",
         "main:dev": "npm run main | bunyan -o short",
         "main:nodemon": "nodemon --config ./main.nodemon.json",
         "main:nodemon:dist": "nodemon --config ./main-dist.nodemon.json",

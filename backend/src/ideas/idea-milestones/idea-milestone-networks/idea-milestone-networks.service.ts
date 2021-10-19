@@ -17,21 +17,20 @@ export class IdeaMilestoneNetworksService {
         dto: UpdateIdeaMilestoneNetworksDto,
         sessionData: SessionData,
     ): Promise<IdeaMilestoneNetwork[]> {
-        const networkIds = Object.keys(dto)
-        // fetch all networks first
+        const networkIds = dto.items.map((network) => network.id)
         const networks = await this.networkRepository.findByIds(networkIds, {
             relations: ['ideaMilestone', 'ideaMilestone.idea'],
         })
-        // validate if we can modify all of them
-        for (const network of networks) {
-            if (!network) throw new NotFoundException('Idea milestone network with the given id does not exist')
 
+        for (const network of networks) {
             network.ideaMilestone!.idea!.isOwnerOrThrow(sessionData.user)
             network.canEditOrThrow()
+            const newValue = dto.items.find((item) => item.id === network.id)?.value
+            network.value = newValue ?? network.value
         }
-        // update all provided networks
-        await Promise.all(Object.entries(dto).map(([id, update]) => this.networkRepository.save({ id, ...update })))
-        // retrieve updated networks
+
+        await this.networkRepository.save(networks)
+
         return this.networkRepository.findByIds(networkIds)
     }
 

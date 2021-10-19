@@ -25,8 +25,10 @@ const IdeaMilestonesList = ({ idea, ideaMilestones }: IdeaMilestoneListProps) =>
 
     const { mutateAsync } = useTurnIdeaMilestoneIntoProposal()
 
-    const [ideaMilestoneToBeTurnedIntoProposal, setIdeaMilestoneToBeTurnedIntoProposal] =
-        useState<IdeaMilestoneDto | null>(null)
+    const [
+        ideaMilestoneToBeTurnedIntoProposal,
+        setIdeaMilestoneToBeTurnedIntoProposal,
+    ] = useState<IdeaMilestoneDto | null>(null)
 
     const milestoneModal = useModal()
     const turnModal = useModal()
