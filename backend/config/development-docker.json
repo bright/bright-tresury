@@ -21,10 +21,10 @@
             "ss58Format": 42,
             "genesisHash": "",
             "bond": {
-                "minValue": 1000,
+                "minValue": 1,
                 "percentage": 5
             },
-            "currency": "UNIT",
+            "currency": "Unit",
             "decimals": 12,
             "color": "#0E65F2",
             "isDefault": true
@@ -36,10 +36,10 @@
             "ss58Format": 42,
             "genesisHash": "",
             "bond": {
-                "minValue": 1000,
+                "minValue": 1,
                 "percentage": 5
             },
-            "currency": "UNIT",
+            "currency": "Unit",
             "developmentKeyring": true,
             "decimals": 12,
             "color": "#707070",

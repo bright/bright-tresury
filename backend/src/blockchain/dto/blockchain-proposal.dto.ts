@@ -7,6 +7,7 @@ import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { BlockchainProposalMotion, toBlockchainProposalMotion } from './blockchain-proposal-motion.dto'
 import { BlockchainProposalMotionEnd } from './blockchain-proposal-motion-end.dto'
 import { encodeAddress } from '@polkadot/keyring'
+import { BlockchainConfig } from '../blockchain.config'
 
 export enum BlockchainProposalStatus {
     Proposal = 'proposal',
@@ -24,6 +25,7 @@ export class BlockchainProposal {
 
     static create(
         derivedProposal: DeriveTreasuryProposal,
+        blockchainConfiguration: BlockchainConfig,
         status: BlockchainProposalStatus,
         identities: Map<string, DeriveAccountRegistration>,
         toBlockchainProposalMotionEnd: (endBlock: BlockNumber) => BlockchainProposalMotionEnd,
@@ -35,11 +37,8 @@ export class BlockchainProposal {
         const proposalIndex = id.toNumber()
         const proposer = toBlockchainAccountInfo(proposerAddress, identities.get(proposerAddress))
         const beneficiary = toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress))
-        /*
-            TODO We should get the decimals from the chain info or config files. This should be handled when adding multiple networks support.
-             */
-        const value = transformBalance(proposal.value, 12)
-        const bond = transformBalance(proposal.bond, 12)
+        const value = transformBalance(proposal.value, blockchainConfiguration.decimals)
+        const bond = transformBalance(proposal.bond, blockchainConfiguration.decimals)
         const motions = council.map((motion) =>
             toBlockchainProposalMotion(motion, identities, toBlockchainProposalMotionEnd),
         )

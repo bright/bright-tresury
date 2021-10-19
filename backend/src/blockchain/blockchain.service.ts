@@ -69,7 +69,7 @@ export class BlockchainService implements OnModuleDestroy {
             )
             if (extrinsic) {
                 logger.info(`Block with extrinsic ${extrinsicHash} found.`)
-                const events = (await api.query.system.events.at(header.hash)) as unknown as EventRecord[]
+                const events = ((await api.query.system.events.at(header.hash)) as unknown) as EventRecord[]
                 logger.info(`All extrinsic events.`, events)
                 await this.callUnsub()
 
@@ -167,11 +167,12 @@ export class BlockchainService implements OnModuleDestroy {
         const currentBlockNumber = await api.derive.chain.bestNumber()
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
-
+        const blockchainConfiguration = this.getBlockchainConfiguration(networkId)
         return [
             ...proposals.map((derivedProposal) =>
                 BlockchainProposal.create(
                     derivedProposal,
+                    blockchainConfiguration,
                     BlockchainProposalStatus.Proposal,
                     identities,
                     toBlockchainProposalMotionEnd,
@@ -180,6 +181,7 @@ export class BlockchainService implements OnModuleDestroy {
             ...approvals.map((derivedProposal) =>
                 BlockchainProposal.create(
                     derivedProposal,
+                    blockchainConfiguration,
                     BlockchainProposalStatus.Approval,
                     identities,
                     toBlockchainProposalMotionEnd,
@@ -323,13 +325,11 @@ export class BlockchainService implements OnModuleDestroy {
         }
     }
 
-    getDecimals(networkId: string): number {
-        const filter = (item: BlockchainConfig) => {
-            return item.id === networkId
-        }
-        const config = this.blockchainConfig.filter(filter) // find
-        const decimals = config[0].decimals
+    getBlockchainConfiguration(networkId: string): BlockchainConfig {
+        return this.blockchainConfig.find(({ id }) => networkId === id)!
+    }
 
-        return decimals
+    getDecimals(networkId: string): number {
+        return this.getBlockchainConfiguration(networkId).decimals
     }
 }

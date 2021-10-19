@@ -10,11 +10,11 @@
             "ss58Format": 0,
             "genesisHash": "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3",
             "bond": {
-                "minValue": 1000,
+                "minValue": 100,
                 "percentage": 5
             },
             "currency": "DOT",
-            "decimals": 12,
+            "decimals": 10,
             "color": "#E6007A",
             "isDefault": true,
             "isLiveNetwork": true
@@ -26,11 +26,11 @@
             "ss58Format": 2,
             "genesisHash": "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
             "bond": {
-                "minValue": 1000,
+                "minValue": 0.066666666,
                 "percentage": 5
             },
             "currency": "KSM",
-            "decimals": 15,
+            "decimals": 12,
             "color": "#000000",
             "isLiveNetwork": true
         }
