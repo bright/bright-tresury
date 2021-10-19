@@ -11,8 +11,7 @@ export type ProposalsListProps = OwnProps
 
 const ProposalsList = ({ proposals }: ProposalsListProps) => {
     const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal} />
-
-    return <Grid items={proposals} renderItem={renderCard} />
+    return <Grid items={proposals.sort((a, b) => b.proposalIndex - a.proposalIndex)} renderItem={renderCard} />
 }
 
 export default ProposalsList
