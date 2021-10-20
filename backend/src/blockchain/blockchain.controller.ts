@@ -1,19 +1,19 @@
-import { Get } from '@nestjs/common'
+import { Get, Inject } from '@nestjs/common'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
-import { ConfigService } from './config.service'
+import { BlockchainService } from './blockchain.service'
 
 @ApiTags('configuration')
-@ControllerApiVersion('/configuration', ['v1'])
-export class ConfigController {
-    constructor(private configService: ConfigService) {}
-    @Get('blockchains')
+@ControllerApiVersion('/blockchains', ['v1'])
+export class BlockchainController {
+    constructor(@Inject(BlockchainService) private blockchainService: BlockchainService) {}
+    @Get('configuration')
     @ApiOkResponse({
         description: 'Respond with current supported blockchains configuration',
         type: [BlockchainConfigurationDto],
     })
     getBlockchainsConfiguration(): BlockchainConfigurationDto[] {
-        return this.configService.getBlockchainsConfiguration()
+        return this.blockchainService.getBlockchainsConfiguration()
     }
 }

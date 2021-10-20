@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { BlockchainConfig } from '../../blockchain/blockchain.config'
+import { BlockchainConfig } from '../blockchain.config'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({

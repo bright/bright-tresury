@@ -4,12 +4,12 @@ import { HttpStatus } from '@nestjs/common'
 describe('GET blockchains configurations', () => {
     const app = beforeSetupFullApp()
     it(`response should have ${HttpStatus.OK} status code`, async (done) => {
-        await request(app()).get('/api/v1/configuration/blockchains').expect(HttpStatus.OK)
+        await request(app()).get('/api/v1/blockchains/configuration').expect(HttpStatus.OK)
         return done()
     })
 
     it('response should be an array and have expected fields', async (done) => {
-        const response = await request(app()).get('/api/v1/configuration/blockchains')
+        const response = await request(app()).get('/api/v1/blockchains/configuration')
         const blockchainsConfiguration = response.body
         expect(Array.isArray(blockchainsConfiguration)).toBe(true)
         for (const blockchainConfiguration of blockchainsConfiguration) {

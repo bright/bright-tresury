@@ -14,23 +14,58 @@ import BN from 'bn.js'
 import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
 import { BlockchainsConnections } from './blockchain.module'
 import { AccountId } from '@polkadot/types/interfaces/runtime'
-import { BN_MILLION, BN_ZERO, u8aConcat } from '@polkadot/util'
+import { BN_MILLION, BN_HUNDRED, BN_ZERO, u8aConcat } from '@polkadot/util'
 import { StatsDto } from '../stats/stats.dto'
 import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
 import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calculations.dto'
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain.config'
+import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
 
 const logger = getLogger()
 
 @Injectable()
 export class BlockchainService implements OnModuleDestroy {
     private unsub?: () => void
+
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
-        @Inject(BlockchainConfigToken) private readonly blockchainConfig: BlockchainConfig[],
+        @Inject(BlockchainConfigToken) private readonly blockchainsConfiguration: BlockchainConfig[],
     ) {}
 
+    private getBlockchainProperties(networkId: string) {
+        const api = this.getApi(networkId)
+        return {
+            chainDecimals: api.registry.chainDecimals[0],
+            chainToken: api.registry.chainTokens[0],
+            proposalBondMinimum: api.consts.treasury.proposalBondMinimum.toString(),
+            proposalBond: api.consts.treasury.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber(),
+        }
+    }
+
+    getBlockchainsConfiguration(): BlockchainConfigurationDto[] {
+        return this.blockchainsConfiguration.map((blockchainConfiguration) => {
+            const { chainDecimals, chainToken, proposalBondMinimum, proposalBond } = this.getBlockchainProperties(
+                blockchainConfiguration.id,
+            )
+            const decimals = chainDecimals ?? blockchainConfiguration.decimals
+            const currency = chainToken ?? blockchainConfiguration.currency
+            const minValue = proposalBondMinimum
+                ? transformBalance(proposalBondMinimum, decimals)
+                : blockchainConfiguration.bond.minValue
+            const percentage = proposalBond ?? blockchainConfiguration.bond.percentage
+            return new BlockchainConfigurationDto({
+                ...blockchainConfiguration,
+                decimals,
+                currency,
+                bond: { minValue, percentage },
+            })
+        })
+    }
+    getBlockchainConfiguration(networkId: string): BlockchainConfigurationDto {
+        const predicate = ({ id }: BlockchainConfigurationDto) => id === networkId
+        return this.getBlockchainsConfiguration().find(predicate)!
+    }
     getApi(networkId: string): ApiPromise {
         logger.info(`possible network ids: ${Object.keys(this.blockchainsConnections)} searching for ${networkId}`)
         if (Object.keys(this.blockchainsConnections).indexOf(networkId) === -1) {
@@ -324,11 +359,7 @@ export class BlockchainService implements OnModuleDestroy {
             nextFoundsBurn,
         }
     }
-
-    getBlockchainConfiguration(networkId: string): BlockchainConfig {
-        return this.blockchainConfig.find(({ id }) => networkId === id)!
-    }
-
+    
     getDecimals(networkId: string): number {
         return this.getBlockchainConfiguration(networkId).decimals
     }

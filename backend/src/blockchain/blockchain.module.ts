@@ -6,6 +6,7 @@ import { BlockchainConfig, BlockchainConfigToken } from './blockchain.config'
 import { BlockchainService } from './blockchain.service'
 import { Api } from 'aws-sdk/clients/apigatewayv2'
 import { ApiInterfaceEvents } from '@polkadot/api/types'
+import { BlockchainController } from './blockchain.controller'
 
 const logger = getLogger()
 export interface BlockchainsConnections {
@@ -101,6 +102,7 @@ export class PolkadotApiModule implements OnModuleDestroy {
 
 @Module({
     imports: [PolkadotApiModule, ConfigModule],
+    controllers: [BlockchainController],
     providers: [BlockchainService],
     exports: [BlockchainService],
 })

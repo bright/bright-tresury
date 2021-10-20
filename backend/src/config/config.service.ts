@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { BlockchainConfig, BlockchainConfigToken } from '../blockchain/blockchain.config'
-import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
+import { BlockchainConfigurationDto } from '../blockchain/dto/blockchain-configuration.dto'
 
 @Injectable()
 export class ConfigService {

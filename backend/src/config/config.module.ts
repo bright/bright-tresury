@@ -18,7 +18,6 @@ import { BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken } from 
 import { stringFormat } from './formats/string.format'
 import { notEmptyArrayFormat } from './formats/not-empty-array.format'
 import { AuthConfig, authConfigSchema, AuthConfigToken } from '../auth/auth.config'
-import { ConfigController } from './config.controller'
 import { ConfigService } from './config.service'
 
 interface EnvConfig {
@@ -161,7 +160,6 @@ const providers: Provider[] = [
 // @Global() // if we don't have to import config module everywhere
 @Module({
     providers,
-    controllers: [ConfigController],
     exports: providers,
 })
 export class ConfigModule {}
