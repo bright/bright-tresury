@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { CreateCommentDto } from '../../comments/dto/create-comment.dto'
@@ -37,7 +37,9 @@ export class IdeaCommentsService {
     }
 
     async create(ideaId: string, author: User, dto: CreateCommentDto): Promise<IdeaComment> {
-        const idea = await this.ideasService.findOne(ideaId)
+        const idea = await this.ideasService.findOne(ideaId, { user: author })
+        if (idea.isDraft()) throw new BadRequestException('Could not create a comment to idea with draft status')
+
         const comment = await this.commentsRepository.save(new Comment(author, dto.content))
         return await this.ideaCommentsRepository.save(new IdeaComment(idea, comment))
     }

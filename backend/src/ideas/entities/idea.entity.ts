@@ -80,6 +80,8 @@ export class Idea extends BaseEntity {
         this.comments = comments
     }
 
+    isDraft = (): boolean => this.status === IdeaStatus.Draft
+
     isOwner = (user: User) => {
         return this.ownerId === user.id
     }

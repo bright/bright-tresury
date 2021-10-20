@@ -7,8 +7,9 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import { createIdea, createSessionData } from '../spec.helpers'
 import { Idea } from '../entities/idea.entity'
 import { IdeasService } from '../ideas.service'
-import { ForbiddenException, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { SessionData } from '../../auth/session/session.decorator'
+import { IdeaStatus } from '../entities/idea-status'
 
 describe('IdeaCommentsServiceSpec', () => {
     const app = beforeSetupFullApp()
@@ -41,6 +42,15 @@ describe('IdeaCommentsServiceSpec', () => {
                     content: 'This is a comment',
                 }),
             ).rejects.toThrow(NotFoundException)
+        })
+
+        it(`should throw BadRequestException when creating a comment for draft idea`, async () => {
+            const draftIdea = await createIdea({ status: IdeaStatus.Draft }, usr1SessionData, getIdeasService())
+            await expect(
+                getIdeaCommentsService().create(draftIdea.id, usr1SessionData.user, {
+                    content: 'This is a comment',
+                }),
+            ).rejects.toThrow(BadRequestException)
         })
     })
 
