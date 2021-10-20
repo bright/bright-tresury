@@ -27,18 +27,13 @@ export const useIdea = (idea: Nil<IdeaDto>) => {
         [idea],
     )
 
-    const canEditIdeaMilestones = useMemo(() => isOwner && isIdeaMilestonesEditable, [
-        isIdeaMilestonesEditable,
-        isOwner,
-    ])
+    const canEditIdeaMilestones = useMemo(
+        () => isOwner && isIdeaMilestonesEditable,
+        [isIdeaMilestonesEditable, isOwner],
+    )
 
     const canTurnIntoProposal = useMemo(
-        () =>
-            !!idea &&
-            isOwner &&
-            (idea.status === IdeaStatus.Active ||
-                idea.status === IdeaStatus.Draft ||
-                idea.status === IdeaStatus.Pending),
+        () => !!idea && isOwner && (idea.status === IdeaStatus.Active || idea.status === IdeaStatus.Pending),
         [idea, isOwner],
     )
 

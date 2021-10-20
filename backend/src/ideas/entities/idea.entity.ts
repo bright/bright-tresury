@@ -127,6 +127,11 @@ export class Idea extends BaseEntity {
                 `Idea with the given id or at least one of it's milestones is already turned into proposal`,
             )
         }
+        if (this.status === IdeaStatus.Draft) {
+            throw new BadRequestException(
+                `Idea cannot be turned into a proposal because an idea has status ${IdeaStatus.Draft}`,
+            )
+        }
     }
 
     canTurnMilestoneIntoProposalOrThrow = () => {

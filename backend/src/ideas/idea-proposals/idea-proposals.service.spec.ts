@@ -152,6 +152,27 @@ describe('IdeaProposalsService', () => {
             ).rejects.toThrow(BadRequestException)
         })
 
+        it(`should return bad request exception for idea with ${IdeaStatus.Draft} status`, async () => {
+            const draftIdea = await createIdea(
+                {
+                    beneficiary: uuid(),
+                    status: IdeaStatus.Draft,
+                    networks: [{ name: 'polkadot', value: 100 }],
+                },
+                sessionData,
+                ideasService(),
+            )
+            await ideaNetworkRepository().save({
+                id: draftIdea.networks[0].id,
+                status: IdeaNetworkStatus.Active,
+            })
+            createIdeaProposalDto.ideaNetworkId = draftIdea.networks[0].id
+
+            await expect(
+                ideaProposalsService().createProposal(draftIdea.id, createIdeaProposalDto, sessionData),
+            ).rejects.toThrow(BadRequestException)
+        })
+
         it(`should resolve for idea already turned into proposal for a NOT turned network`, async () => {
             const ideaAlreadyTurned = await createIdea(
                 {
