@@ -12,6 +12,7 @@ import IdeaMilestones from './milestones/IdeaMilestones'
 import LoadingWrapper from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
+import { IdeaStatus } from '../ideas.dto'
 
 const Idea = () => {
     const classes = useSuccessfullyLoadedItemStyles()
@@ -44,9 +45,11 @@ const Idea = () => {
                         <Route exact={true} path={`${path}/${IdeaContentType.Milestones}`}>
                             <IdeaMilestones idea={idea} />
                         </Route>
-                        <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
-                            <IdeaDiscussion idea={idea} />
-                        </Route>
+                        {idea.status !== IdeaStatus.Draft ? (
+                            <Route exact={true} path={`${path}/${IdeaContentType.Discussion}`}>
+                                <IdeaDiscussion idea={idea} />
+                            </Route>
+                        ) : null}
                     </Switch>
                 </div>
             ) : null}
