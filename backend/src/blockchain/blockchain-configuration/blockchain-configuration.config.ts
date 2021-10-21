@@ -1,8 +1,8 @@
 import { Schema } from 'convict'
-import { booleanFormat } from '../config/formats/boolean.format'
-import { numberFormat } from '../config/formats/number.format'
-import { stringFormat } from '../config/formats/string.format'
-import { objectFormat } from '../config/formats/object.format'
+import { booleanFormat } from '../../config/formats/boolean.format'
+import { numberFormat } from '../../config/formats/number.format'
+import { stringFormat } from '../../config/formats/string.format'
+import { objectFormat } from '../../config/formats/object.format'
 
 export const BlockchainConfigToken = 'BlockchainConfig'
 
@@ -82,7 +82,7 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         format: numberFormat,
     },
     color: {
-        doc: 'Theme color that is used in frontend for this configuration',
+        doc: 'Theme color that is used in frontend for this blockchain-configuration',
         default: '#0E65F2',
         format: stringFormat,
     },

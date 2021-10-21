@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { BlockchainConfig } from '../blockchain.config'
+import { BlockchainConfig } from '../blockchain-configuration.config'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({
@@ -24,7 +24,7 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: '' })
     rpc: any
 
-    @ApiProperty({ description: 'Should we use development accounts when using this configuration' })
+    @ApiProperty({ description: 'Should we use development accounts when using this blockchain-configuration' })
     developmentKeyring: boolean
 
     @ApiProperty({ description: 'ss58 format' })
@@ -47,7 +47,7 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Decimal precision' })
     decimals: number
 
-    @ApiProperty({ description: 'Theme color that is used in frontend for this configuration' })
+    @ApiProperty({ description: 'Theme color that is used in frontend for this blockchain-configuration' })
     color: string
 
     @ApiProperty({ description: 'Should this network be used as default' })

@@ -1,5 +1,4 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
-import { ApiPromise } from '@polkadot/api'
 import Extrinsic from '@polkadot/types/extrinsic/Extrinsic'
 import { EventRecord, Header } from '@polkadot/types/interfaces'
 import { extractTime } from '@polkadot/util'
@@ -9,18 +8,18 @@ import { getLogger } from '../logging.module'
 import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import { getProposers, getBeneficiaries, getVoters, transformBalance } from './utils'
+import { getProposers, getBeneficiaries, getVoters, transformBalance, getApi } from './utils'
 import BN from 'bn.js'
 import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
 import { BlockchainsConnections } from './blockchain.module'
 import { AccountId } from '@polkadot/types/interfaces/runtime'
-import { BN_MILLION, BN_HUNDRED, BN_ZERO, u8aConcat } from '@polkadot/util'
+import { BN_MILLION, BN_ZERO, u8aConcat } from '@polkadot/util'
 import { StatsDto } from '../stats/stats.dto'
 import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
 import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calculations.dto'
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
-import { BlockchainConfig, BlockchainConfigToken } from './blockchain.config'
-import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
+import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
+import { BlockchainConfigurationService } from './blockchain-configuration/blockchain-configuration.service'
 
 const logger = getLogger()
 
@@ -31,48 +30,8 @@ export class BlockchainService implements OnModuleDestroy {
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
         @Inject(BlockchainConfigToken) private readonly blockchainsConfiguration: BlockchainConfig[],
+        private readonly blockchainConfigurationService: BlockchainConfigurationService,
     ) {}
-
-    private getBlockchainProperties(networkId: string) {
-        const api = this.getApi(networkId)
-        return {
-            chainDecimals: api.registry.chainDecimals[0],
-            chainToken: api.registry.chainTokens[0],
-            proposalBondMinimum: api.consts.treasury.proposalBondMinimum.toString(),
-            proposalBond: api.consts.treasury.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber(),
-        }
-    }
-
-    getBlockchainsConfiguration(): BlockchainConfigurationDto[] {
-        return this.blockchainsConfiguration.map((blockchainConfiguration) => {
-            const { chainDecimals, chainToken, proposalBondMinimum, proposalBond } = this.getBlockchainProperties(
-                blockchainConfiguration.id,
-            )
-            const decimals = chainDecimals ?? blockchainConfiguration.decimals
-            const currency = chainToken ?? blockchainConfiguration.currency
-            const minValue = proposalBondMinimum
-                ? transformBalance(proposalBondMinimum, decimals)
-                : blockchainConfiguration.bond.minValue
-            const percentage = proposalBond ?? blockchainConfiguration.bond.percentage
-            return new BlockchainConfigurationDto({
-                ...blockchainConfiguration,
-                decimals,
-                currency,
-                bond: { minValue, percentage },
-            })
-        })
-    }
-    getBlockchainConfiguration(networkId: string): BlockchainConfigurationDto {
-        const predicate = ({ id }: BlockchainConfigurationDto) => id === networkId
-        return this.getBlockchainsConfiguration().find(predicate)!
-    }
-    getApi(networkId: string): ApiPromise {
-        logger.info(`possible network ids: ${Object.keys(this.blockchainsConnections)} searching for ${networkId}`)
-        if (Object.keys(this.blockchainsConnections).indexOf(networkId) === -1) {
-            throw new Error(`Unrecognized network id: ${networkId}`)
-        }
-        return this.blockchainsConnections[networkId].apiPromise
-    }
 
     async onModuleDestroy() {
         await this.callUnsub()
@@ -90,7 +49,7 @@ export class BlockchainService implements OnModuleDestroy {
     ) {
         logger.info(`Listening for extrinsic with hash ${extrinsicHash}...`)
         let blocksCount = 0
-        const api = this.getApi(networkId)
+        const api = getApi(this.blockchainsConnections, networkId)
         // TODO: Inspect the "overload" ts-lint issue
         // @ts-ignore
         this.unsub = await api.rpc.chain.subscribeNewHeads(async (header: Header) => {
@@ -151,9 +110,10 @@ export class BlockchainService implements OnModuleDestroy {
 
     async getIdentities(networkId: string, addresses: string[]): Promise<Map<string, DeriveAccountRegistration>> {
         logger.info('Getting identities from blockchain')
+        const api = getApi(this.blockchainsConnections, networkId)
         const identities = new Map<string, DeriveAccountRegistration>()
         for (const address of addresses) {
-            identities.set(address, await this.getApi(networkId).derive.accounts.identity(address))
+            identities.set(address, await api.derive.accounts.identity(address))
         }
         return identities
     }
@@ -174,7 +134,7 @@ export class BlockchainService implements OnModuleDestroy {
 
     async getProposals(networkId: string): Promise<BlockchainProposal[]> {
         logger.info(`Getting proposals from blockchain for networkId: ${networkId}`)
-        const api = this.getApi(networkId)
+        const api = getApi(this.blockchainsConnections, networkId)
         const { proposals, proposalCount, approvals } = await api.derive.treasury.proposals()
 
         const proposalCountNumber = proposalCount.toNumber()
@@ -202,7 +162,7 @@ export class BlockchainService implements OnModuleDestroy {
         const currentBlockNumber = await api.derive.chain.bestNumber()
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
-        const blockchainConfiguration = this.getBlockchainConfiguration(networkId)
+        const blockchainConfiguration = this.blockchainConfigurationService.getBlockchainConfiguration(networkId)
         return [
             ...proposals.map((derivedProposal) =>
                 BlockchainProposal.create(
@@ -273,8 +233,9 @@ export class BlockchainService implements OnModuleDestroy {
     }
 
     async getProposalsCount(networkId: string): Promise<GetProposalsCountDto> {
-        const { proposals, approvals } = await this.getApi(networkId).derive.treasury.proposals()
-        const rejectedObject = await this.getApi(networkId).events.treasury.Rejected.meta.args
+        const api = getApi(this.blockchainsConnections, networkId)
+        const { proposals, approvals } = await api.derive.treasury.proposals()
+        const rejectedObject = await api.events.treasury.Rejected.meta.args
         const submitted = proposals.length
         const approved = approvals.length
         const rejected = rejectedObject.length
@@ -287,11 +248,12 @@ export class BlockchainService implements OnModuleDestroy {
     }
 
     async getSpendPeriodCalculations(networkId: string): Promise<GetSpendPeriodCalculationsDto> {
-        const spendPeriodAsObject = await this.getApi(networkId).consts.treasury.spendPeriod
+        const api = getApi(this.blockchainsConnections, networkId)
+        const spendPeriodAsObject = await api.consts.treasury.spendPeriod
         const spendPeriodAsNumber = spendPeriodAsObject.toNumber()
         const spendPeriod = this.blocksToTime(networkId, spendPeriodAsObject)
 
-        const bestNumber = await this.getApi(networkId).derive.chain.bestNumber()
+        const bestNumber = await api.derive.chain.bestNumber()
         const numberOfUsedBlocks = bestNumber.mod(spendPeriodAsObject)
         const blocksLeft = spendPeriodAsObject.sub(numberOfUsedBlocks)
         const blocksLeftAsNumber = blocksLeft.toNumber()
@@ -309,7 +271,7 @@ export class BlockchainService implements OnModuleDestroy {
 
     getBlockTime(networkId: string) {
         const DEFAULT_TIME = new BN(6000) // 6s - Source: https://wiki.polkadot.network/docs/en/faq#what-is-the-block-time-of-the-relay-chain
-        const api = this.getApi(networkId)
+        const api = getApi(this.blockchainsConnections, networkId)
 
         return (
             api.consts.babe?.expectedBlockTime ||
@@ -326,22 +288,21 @@ export class BlockchainService implements OnModuleDestroy {
 
     async getBudget(networkId: string) {
         const EMPTY_U8A_32 = new Uint8Array(32)
-
+        const api = getApi(this.blockchainsConnections, networkId)
         const treasuryAccount = u8aConcat(
             'modl',
-            this.getApi(networkId).consts.treasury && this.getApi(networkId).consts.treasury.palletId
-                ? this.getApi(networkId).consts.treasury.palletId.toU8a(true)
-                : 'py/trsry',
+            api.consts.treasury && api.consts.treasury.palletId ? api.consts.treasury.palletId.toU8a(true) : 'py/trsry',
             EMPTY_U8A_32,
         ).subarray(0, 32) as AccountId
 
-        const treasuryBalance = await this.getApi(networkId).derive.balances?.account(treasuryAccount)
+        const treasuryBalance = await api.derive.balances?.account(treasuryAccount)
 
         const burn =
-            treasuryBalance.freeBalance.gt(BN_ZERO) && !this.getApi(networkId).consts.treasury.burn.isZero()
-                ? this.getApi(networkId).consts.treasury.burn.mul(treasuryBalance.freeBalance).div(BN_MILLION)
+            treasuryBalance.freeBalance.gt(BN_ZERO) && !api.consts.treasury.burn.isZero()
+                ? api.consts.treasury.burn.mul(treasuryBalance.freeBalance).div(BN_MILLION)
                 : BN_ZERO
-        const burnUnit = transformBalance(burn, this.getDecimals(networkId)).toFixed(4)
+        const decimals = this.blockchainConfigurationService.getBlockchainConfiguration(networkId).decimals
+        const burnUnit = transformBalance(burn, decimals, 10).toFixed(4)
         const nextFoundsBurn = burnUnit.toString()
 
         const treasuryAvailableBalance = treasuryBalance.freeBalance.gt(BN_ZERO)
@@ -349,7 +310,7 @@ export class BlockchainService implements OnModuleDestroy {
             : undefined
 
         const treasuryAvailableBalanceUnit = treasuryAvailableBalance
-            ? transformBalance(treasuryAvailableBalance, this.getDecimals(networkId)).toFixed(4)
+            ? transformBalance(treasuryAvailableBalance, decimals, 10).toFixed(4)
             : ''
 
         const availableBalance = treasuryAvailableBalanceUnit.toString()
@@ -358,9 +319,5 @@ export class BlockchainService implements OnModuleDestroy {
             availableBalance,
             nextFoundsBurn,
         }
-    }
-    
-    getDecimals(networkId: string): number {
-        return this.getBlockchainConfiguration(networkId).decimals
     }
 }

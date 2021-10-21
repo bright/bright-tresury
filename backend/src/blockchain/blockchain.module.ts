@@ -2,11 +2,11 @@ import { Module, OnModuleDestroy } from '@nestjs/common'
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { ConfigModule } from '../config/config.module'
 import { getLogger } from '../logging.module'
-import { BlockchainConfig, BlockchainConfigToken } from './blockchain.config'
+import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
 import { BlockchainService } from './blockchain.service'
-import { Api } from 'aws-sdk/clients/apigatewayv2'
 import { ApiInterfaceEvents } from '@polkadot/api/types'
-import { BlockchainController } from './blockchain.controller'
+import { BlockchainConfigurationController } from './blockchain-configuration/blockchain-configuration.controller'
+import { BlockchainConfigurationService } from './blockchain-configuration/blockchain-configuration.service'
 
 const logger = getLogger()
 export interface BlockchainsConnections {
@@ -47,9 +47,9 @@ const removeAllEventHandlers = () => {
 
 const attachPolkadotApiEventHandlers = (apiPromise: ApiPromise, id: string) => {
     attachEventHandler(apiPromise, 'connected', onConnectedHandler.bind(null, id))
-    attachEventHandler(apiPromise, 'ready', onConnectedHandler.bind(null, id))
-    attachEventHandler(apiPromise, 'error', onConnectedHandler.bind(null, id))
-    attachEventHandler(apiPromise, 'disconnected', onConnectedHandler.bind(null, id))
+    attachEventHandler(apiPromise, 'ready', onReadyHandler.bind(null, id))
+    attachEventHandler(apiPromise, 'error', onErrorHandler.bind(null, id))
+    attachEventHandler(apiPromise, 'disconnected', onDisconnectedHandler.bind(null, id))
 }
 const polkadotApiFactory = {
     provide: 'PolkadotApi',
@@ -102,8 +102,8 @@ export class PolkadotApiModule implements OnModuleDestroy {
 
 @Module({
     imports: [PolkadotApiModule, ConfigModule],
-    controllers: [BlockchainController],
-    providers: [BlockchainService],
+    controllers: [BlockchainConfigurationController],
+    providers: [BlockchainService, BlockchainConfigurationService],
     exports: [BlockchainService],
 })
 export class BlockchainModule {}

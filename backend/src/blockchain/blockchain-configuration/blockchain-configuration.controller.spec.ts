@@ -1,15 +1,14 @@
-import { beforeSetupFullApp, request } from '../utils/spec.helpers'
+import { beforeSetupFullApp, request } from '../../utils/spec.helpers'
 import { HttpStatus } from '@nestjs/common'
 
 describe('GET blockchains configurations', () => {
     const app = beforeSetupFullApp()
-    it(`response should have ${HttpStatus.OK} status code`, async (done) => {
-        await request(app()).get('/api/v1/blockchains/configuration').expect(HttpStatus.OK)
-        return done()
+    it(`response should have ${HttpStatus.OK} status code`, async () => {
+        return request(app()).get('/api/v1/blockchain/configuration').expect(HttpStatus.OK)
     })
 
-    it('response should be an array and have expected fields', async (done) => {
-        const response = await request(app()).get('/api/v1/blockchains/configuration')
+    it('response should be an array and have expected fields', async () => {
+        const response = await request(app()).get('/api/v1/blockchain/configuration')
         const blockchainsConfiguration = response.body
         expect(Array.isArray(blockchainsConfiguration)).toBe(true)
         for (const blockchainConfiguration of blockchainsConfiguration) {
@@ -49,6 +48,5 @@ describe('GET blockchains configurations', () => {
             expect(typeof isDefault).toBe('boolean')
             expect(typeof isLiveNetwork).toBe('boolean')
         }
-        return done()
     })
 })

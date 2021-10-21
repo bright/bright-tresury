@@ -4,10 +4,10 @@ import ApiPromise from '@polkadot/api/promise'
 import { KeyringPair } from '@polkadot/keyring/types'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { beforeAllSetup, NETWORKS } from '../utils/spec.helpers'
-import { BlockchainModule } from './blockchain.module'
+import { BlockchainModule, BlockchainsConnections } from './blockchain.module'
 import BN from 'bn.js'
 import { BlockchainService } from './blockchain.service'
-import { BN_TEN } from './utils'
+import { BN_TEN, getApi } from './utils'
 import { ApiTypes } from '@polkadot/api/types'
 import { SubmittableExtrinsic } from '@polkadot/api/submittable/types'
 import { EventRecord } from '@polkadot/types/interfaces'
@@ -28,9 +28,10 @@ describe(`Blockchain service`, () => {
     )
 
     const service = beforeAllSetup(() => module().get<BlockchainService>(BlockchainService))
+    const blockchainsConnections = beforeAllSetup(() => module().get<BlockchainsConnections>('PolkadotApi'))
 
     beforeEach(async () => {
-        api = await service().getApi(NETWORKS.POLKADOT)
+        api = getApi(blockchainsConnections(), NETWORKS.POLKADOT)
         keyring = new Keyring({ type: 'sr25519' })
         aliceKeypair = keyring.addFromUri('//Alice', { name: 'Alice default' })
     })

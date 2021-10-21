@@ -14,11 +14,14 @@ import {
 } from '../database/database.config'
 import { getLogger } from '../logging.module'
 import { AsyncFactoryProvider, propertyOfProvider } from '../utils/dependency.injection'
-import { BlockchainConfig, blockchainConfigSchema, BlockchainConfigToken } from '../blockchain/blockchain.config'
+import {
+    BlockchainConfig,
+    blockchainConfigSchema,
+    BlockchainConfigToken,
+} from '../blockchain/blockchain-configuration/blockchain-configuration.config'
 import { stringFormat } from './formats/string.format'
 import { notEmptyArrayFormat } from './formats/not-empty-array.format'
 import { AuthConfig, authConfigSchema, AuthConfigToken } from '../auth/auth.config'
-import { ConfigService } from './config.service'
 
 interface EnvConfig {
     deployEnv: 'production' | 'development' | 'development-local' | 'stage' | 'qa' | 'test' | 'test-local'
@@ -154,7 +157,6 @@ const providers: Provider[] = [
     blockchainConfigProvider,
     authConfigProvider,
     emailsConfigProvider,
-    ConfigService,
 ]
 
 // @Global() // if we don't have to import config module everywhere

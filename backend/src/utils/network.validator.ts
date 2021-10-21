@@ -1,5 +1,8 @@
 import { ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface } from 'class-validator'
-import { BlockchainConfig, BlockchainConfigToken } from '../blockchain/blockchain.config'
+import {
+    BlockchainConfig,
+    BlockchainConfigToken,
+} from '../blockchain/blockchain-configuration/blockchain-configuration.config'
 import { Inject, Injectable } from '@nestjs/common'
 
 export function isValidNetwork(network: string, possibleValues: string[]): boolean {

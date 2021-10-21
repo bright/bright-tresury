@@ -2,7 +2,7 @@ import { apiGet } from '../api'
 import { useQuery, UseQueryOptions } from 'react-query'
 import { Network } from './networks.dto'
 
-const NETWORKS_API_PATH = '/blockchains/configuration'
+const NETWORKS_API_PATH = '/blockchain/configuration'
 
 function getNetworks() {
     return apiGet<Network[]>(`${NETWORKS_API_PATH}`)
