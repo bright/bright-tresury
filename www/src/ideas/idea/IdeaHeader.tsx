@@ -25,6 +25,7 @@ import PrivateIdeaContentTypeTabs from './PrivateIdeaContentTypeTabs'
 import OptionsButton from './OptionsButton'
 import IdeaStatusIndicator from './status/IdeaStatusIndicator'
 import { useIdea } from './useIdea'
+import { IdeaContentType, IdeaTabConfig } from './Idea'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -125,11 +126,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     idea: IdeaDto
+    ideaTabsConfig: IdeaTabConfig[]
 }
 
 export type IdeaHeaderProps = OwnProps
 
-const IdeaHeader = ({ idea }: IdeaHeaderProps, theme: Theme) => {
+const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
@@ -145,13 +147,12 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps, theme: Theme) => {
     }
 
     const networkValue = idea.currentNetwork.value
-
+    const withDiscussion = !!ideaTabsConfig.find(
+        ({ ideaContentType }) => ideaContentType === IdeaContentType.Discussion,
+    )
     return (
         <HeaderContainer>
-            <CloseButton
-                onClose={navigateToList}
-                className={clsx(classes.closeIcon, classes.closeIconOnTablet)}
-            ></CloseButton>
+            <CloseButton onClose={navigateToList} className={clsx(classes.closeIcon, classes.closeIconOnTablet)} />
             <BasicInfo>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
                 <BasicInfoDivider />
@@ -166,18 +167,19 @@ const IdeaHeader = ({ idea }: IdeaHeaderProps, theme: Theme) => {
                 <NetworkRewardDeposit rewardValue={networkValue} />
             </NetworkValues>
             <div className={classes.tabletViewContainer}>
-                <CloseButton
-                    onClose={navigateToList}
-                    className={clsx(classes.closeIcon, classes.formatIconOnTablet)}
-                ></CloseButton>
+                <CloseButton onClose={navigateToList} className={clsx(classes.closeIcon, classes.formatIconOnTablet)} />
                 {canEditIdea ? <OptionsButton className={classes.formatIconOnTablet} idea={idea.id} /> : null}
             </div>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
-                {isUserSignedInAndVerified && user ? (
-                    <PrivateIdeaContentTypeTabs userId={user.id} ideaId={idea.id} />
+                {isUserSignedInAndVerified && user && withDiscussion ? (
+                    <PrivateIdeaContentTypeTabs
+                        userId={user.id}
+                        ideaId={idea.id}
+                        ideaTabsConfig={ideaTabsConfig}
+                    ></PrivateIdeaContentTypeTabs>
                 ) : (
-                    <IdeaContentTypeTabs />
+                    <IdeaContentTypeTabs ideaTabsConfig={ideaTabsConfig} />
                 )}
             </HeaderTabs>
             {canTurnIntoProposal && (

@@ -2,13 +2,13 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath } from 'react-router-dom'
 import ideasSvg from '../../../../assets/menu_ideas_highlighted.svg'
-import { IdeaContentType } from '../../../../ideas/idea/IdeaContentTypeTabs'
 import { ROUTE_PROPOSAL } from '../../../../routes/routes'
 import { NewProposalCommentData } from '../app-events.dto'
 import NotificationsItemDescription from './components/NotificationsItemDescription'
 import NotificationsItemTitle from './components/NotificationsItemTitle'
 import NotificationsMenuItem from './components/NotificationsMenuItem'
 import NotificationsMenuItemHeader from './components/NotificationsMenuItemHeader'
+import { IdeaContentType } from '../../../../ideas/idea/Idea'
 
 interface OwnProps {
     data: NewProposalCommentData
