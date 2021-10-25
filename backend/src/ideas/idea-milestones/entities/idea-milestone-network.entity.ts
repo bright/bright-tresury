@@ -49,7 +49,7 @@ export class IdeaMilestoneNetwork extends BaseEntity {
 
     canEditOrThrow = () => {
         if (this.status === IdeaMilestoneNetworkStatus.TurnedIntoProposal) {
-            throw new ForbiddenException(
+            throw new BadRequestException(
                 `This idea milestone network is already turned into proposal and you cannot edit it`,
             )
         }

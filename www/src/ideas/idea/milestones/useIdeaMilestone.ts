@@ -8,17 +8,22 @@ import {
     IdeaMilestoneStatus,
 } from './idea.milestones.dto'
 
-export const useIdeaMilestone = (idea: IdeaDto, milestone?: IdeaMilestoneDto) => {
-    const { isOwner } = useIdea(idea)
+export interface UseIdeaMilestoneResult {
+    canEdit: boolean
+    canTurnIntoProposal: boolean
+    canEditAnyIdeaMilestoneNetwork: boolean
+    canEditIdeaMilestoneNetwork: (ideaMilestoneNetwork: IdeaMilestoneNetworkDto) => boolean
+}
+
+export const useIdeaMilestone = (idea: IdeaDto, milestone?: IdeaMilestoneDto): UseIdeaMilestoneResult => {
+    const { isOwner, canEditIdeaMilestones } = useIdea(idea)
     const isIdeaActive = idea.status === IdeaStatus.Active
     const isIdeaDraft = idea.status === IdeaStatus.Draft
-    const isIdeaTurnedIntoProposalByMilestone = idea.status === IdeaStatus.MilestoneSubmission
-    const isMilestoneActive = milestone?.status === IdeaMilestoneStatus.Active
+    const isMilestoneSubmission = idea.status === IdeaStatus.MilestoneSubmission
 
     const canEdit = useMemo(() => {
-        if (!milestone) return true
-        return isOwner && (isIdeaActive || isIdeaDraft || (isIdeaTurnedIntoProposalByMilestone && isMilestoneActive))
-    }, [milestone, isOwner, isIdeaActive, isIdeaDraft, isIdeaTurnedIntoProposalByMilestone, isMilestoneActive])
+        return canEditIdeaMilestones && (!milestone || milestone.status === IdeaMilestoneStatus.Active)
+    }, [canEditIdeaMilestones, milestone])
 
     const canTurnIntoProposal = useMemo(() => {
         if (!milestone) return false
@@ -27,25 +32,25 @@ export const useIdeaMilestone = (idea: IdeaDto, milestone?: IdeaMilestoneDto) =>
             isOwner &&
             (isIdeaActive ||
                 isIdeaDraft ||
-                (isIdeaTurnedIntoProposalByMilestone &&
-                    ideaMilestoneNetworkStatus &&
-                    ideaMilestoneNetworkStatus !== IdeaMilestoneNetworkStatus.TurnedIntoProposal))
+                (isMilestoneSubmission &&
+                    (ideaMilestoneNetworkStatus === IdeaMilestoneNetworkStatus.Active ||
+                        ideaMilestoneNetworkStatus === IdeaMilestoneNetworkStatus.Pending)))
         )
-    }, [milestone, isOwner, isIdeaActive, isIdeaDraft, isIdeaTurnedIntoProposalByMilestone])
+    }, [milestone, isOwner, isIdeaActive, isIdeaDraft, isMilestoneSubmission])
 
     const canEditIdeaMilestoneNetwork = (ideaMilestoneNetwork: IdeaMilestoneNetworkDto) =>
         ideaMilestoneNetwork.status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal
 
-    const canEditAnyIdeaMilestoneNetwork = useMemo(
-        () =>
-            milestone
-                ? milestone.additionalNetworks.reduce(
-                      (acc, ideaMilestoneNetwork) => acc || canEditIdeaMilestoneNetwork(ideaMilestoneNetwork),
-                      canEditIdeaMilestoneNetwork(milestone.currentNetwork),
-                  )
-                : false,
-        [milestone],
-    )
+    const canEditAnyIdeaMilestoneNetwork = useMemo(() => {
+        if (!milestone) return false
+        return (
+            canEditIdeaMilestones &&
+            milestone.additionalNetworks.reduce(
+                (acc, ideaMilestoneNetwork) => acc || canEditIdeaMilestoneNetwork(ideaMilestoneNetwork),
+                canEditIdeaMilestoneNetwork(milestone.currentNetwork),
+            )
+        )
+    }, [milestone])
 
     return {
         canEdit,

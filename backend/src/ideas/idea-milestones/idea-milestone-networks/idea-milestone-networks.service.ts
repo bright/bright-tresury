@@ -23,7 +23,7 @@ export class IdeaMilestoneNetworksService {
         })
 
         for (const network of networks) {
-            network.ideaMilestone!.idea!.isOwnerOrThrow(sessionData.user)
+            network.ideaMilestone!.idea!.canEditMilestonesOrThrow(sessionData.user)
             network.canEditOrThrow()
             const newValue = dto.items.find((item) => item.id === network.id)?.value
             network.value = newValue ?? network.value
@@ -45,7 +45,7 @@ export class IdeaMilestoneNetworksService {
             throw new NotFoundException('Idea milestone network with the given id does not exist')
         }
 
-        network.ideaMilestone!.idea!.isOwnerOrThrow(sessionData.user)
+        network.ideaMilestone!.idea!.canEditMilestonesOrThrow(sessionData.user)
         network.canEditOrThrow()
 
         await this.networkRepository.save({ id, ...dto })

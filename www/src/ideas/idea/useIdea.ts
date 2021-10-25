@@ -3,7 +3,16 @@ import { useAuth } from '../../auth/AuthContext'
 import { Nil } from '../../util/types'
 import { IdeaDto, IdeaStatus } from '../ideas.dto'
 
-export const useIdea = (idea: Nil<IdeaDto>) => {
+export interface UseIdeaResult {
+    isOwner: boolean
+    isIdeaEditable: boolean
+    canEditIdea: boolean
+    isIdeaMilestonesEditable: boolean
+    canEditIdeaMilestones: boolean
+    canTurnIntoProposal: boolean
+}
+
+export const useIdea = (idea: Nil<IdeaDto>): UseIdeaResult => {
     const { isUserSignedInAndVerified, user } = useAuth()
 
     const isOwner = useMemo(() => {

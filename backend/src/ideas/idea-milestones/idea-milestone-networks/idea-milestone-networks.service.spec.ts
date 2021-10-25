@@ -1,8 +1,9 @@
-import { ForbiddenException, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
+import { IdeaStatus } from '../../entities/idea-status'
 import { createIdeaMilestone } from '../../spec.helpers'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { CreateIdeaMilestoneNetworkDto } from '../dto/create-idea-milestone-network.dto'
@@ -10,11 +11,13 @@ import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-s
 import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
 import { createIdea, createSessionData } from '../../spec.helpers'
 import { IdeaMilestoneNetworksService } from './idea-milestone-networks.service'
+import { Idea } from '../../entities/idea.entity'
 
 describe('IdeaMilestoneNetworksService', () => {
     const app = beforeSetupFullApp()
     const getService = () => app().get(IdeaMilestoneNetworksService)
     const getRepository = () => app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork))
+    const getIdeasRepository = () => app().get<Repository<Idea>>(getRepositoryToken(Idea))
 
     const setUp = async (networks: CreateIdeaMilestoneNetworkDto[]) => {
         const sessionData = await createSessionData()
@@ -67,7 +70,7 @@ describe('IdeaMilestoneNetworksService', () => {
             await expect(getService().update(uuid(), { value: 5 }, sessionData)).rejects.toThrow(NotFoundException)
         })
 
-        it(`should throw forbidden exception when trying to update network with ${IdeaMilestoneNetworkStatus.TurnedIntoProposal} status`, async () => {
+        it(`should throw BadRequestException when trying to update network with ${IdeaMilestoneNetworkStatus.TurnedIntoProposal} status`, async () => {
             const { ideaMilestoneNetworkId, sessionData } = await setUp([
                 { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
@@ -77,7 +80,7 @@ describe('IdeaMilestoneNetworksService', () => {
             })
 
             await expect(getService().update(ideaMilestoneNetworkId, { value: 5 }, sessionData)).rejects.toThrow(
-                ForbiddenException,
+                BadRequestException,
             )
         })
 
@@ -97,6 +100,17 @@ describe('IdeaMilestoneNetworksService', () => {
             await getRepository().save({ id: ideaMilestoneNetworkId, status: IdeaMilestoneNetworkStatus.Active })
 
             await expect(getService().update(ideaMilestoneNetworkId, { value: 5 }, sessionData)).resolves.toBeDefined()
+        })
+
+        it(`should throw BadRequestException when trying to update network of idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
+            const { ideaMilestoneNetworkId, sessionData, idea } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
+            await getIdeasRepository().save({ id: idea.id, status: IdeaStatus.TurnedIntoProposal })
+
+            await expect(getService().update(ideaMilestoneNetworkId, { value: 5 }, sessionData)).rejects.toThrow(
+                BadRequestException,
+            )
         })
     })
     describe('updateMultiple', () => {
@@ -160,7 +174,7 @@ describe('IdeaMilestoneNetworksService', () => {
             expect(returnedNetworks[0].value).toBe('12.000000000000000')
         })
 
-        it(`should throw forbidden exception when trying to update network with ${IdeaMilestoneNetworkStatus.TurnedIntoProposal} status`, async () => {
+        it(`should throw BadRequestException when trying to update network with ${IdeaMilestoneNetworkStatus.TurnedIntoProposal} status`, async () => {
             const { ideaMilestoneNetworkId, sessionData } = await setUp([
                 { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
             ])
@@ -176,7 +190,7 @@ describe('IdeaMilestoneNetworksService', () => {
                     },
                     sessionData,
                 ),
-            ).rejects.toThrow(ForbiddenException)
+            ).rejects.toThrow(BadRequestException)
         })
 
         it(`should resolve when trying to update network with ${IdeaMilestoneNetworkStatus.Pending} status`, async () => {
@@ -209,6 +223,22 @@ describe('IdeaMilestoneNetworksService', () => {
                     sessionData,
                 ),
             ).resolves.toBeDefined()
+        })
+
+        it(`should throw BadRequestException when trying to update network of idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
+            const { ideaMilestoneNetworkId, sessionData, idea } = await setUp([
+                { name: NETWORKS.KUSAMA, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
+            await getIdeasRepository().save({ id: idea.id, status: IdeaStatus.TurnedIntoProposal })
+
+            await expect(
+                getService().updateMultiple(
+                    {
+                        items: [{ id: ideaMilestoneNetworkId, value: 12 }],
+                    },
+                    sessionData,
+                ),
+            ).rejects.toThrow(BadRequestException)
         })
 
         it(`should throw forbidden exception when trying to update network of other user's idea`, async () => {
