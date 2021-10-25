@@ -69,5 +69,8 @@
     "auth": {
         "coreUrl": "http://treasury-auth-qa:3567",
         "cookieSecure": true
+    },
+    "emails": {
+        "emailAddress": "treasury@brightinventions.pl"
     }
 }
