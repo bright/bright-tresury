@@ -573,7 +573,6 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const body = response.body as IdeaMilestoneDto
 
             expect(uuidValidate(body.id)).toBe(true)
-            expect(body.ordinalNumber).toBeDefined()
             expect(body.details.subject).toBe('ideaMilestoneSubject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
@@ -775,7 +774,6 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
             const body = response.body as IdeaMilestoneDto
 
-            expect(body.ordinalNumber).toBe(ideaMilestone.ordinalNumber)
             expect(body.details.subject).toBe('newSubject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)

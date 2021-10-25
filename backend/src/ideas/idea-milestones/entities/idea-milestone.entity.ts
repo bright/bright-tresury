@@ -17,9 +17,6 @@ export class IdeaMilestone extends BaseEntity {
     @Column({ nullable: false, type: 'text' })
     ideaId!: string
 
-    @Column({ type: 'integer' })
-    ordinalNumber: number
-
     @Column({
         type: 'enum',
         enum: IdeaMilestoneStatus,
@@ -55,7 +52,6 @@ export class IdeaMilestone extends BaseEntity {
         this.status = status
         this.networks = networks
         this.beneficiary = beneficiary
-        this.ordinalNumber = 0
         this.details = details
     }
 

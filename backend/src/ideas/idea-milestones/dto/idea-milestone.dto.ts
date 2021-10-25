@@ -11,11 +11,6 @@ export class IdeaMilestoneDto {
     })
     id: string
 
-    @ApiProperty({
-        description: 'Ordinal number of the milestone',
-    })
-    ordinalNumber: number
-
     @ApiPropertyOptional({
         description: 'Blockchain address of the idea milestone beneficiary',
     })
@@ -39,9 +34,8 @@ export class IdeaMilestoneDto {
     })
     details: MilestoneDetails
 
-    constructor({ id, ordinalNumber, status, networks, beneficiary, details }: IdeaMilestone) {
+    constructor({ id, status, networks, beneficiary, details }: IdeaMilestone) {
         this.id = id
-        this.ordinalNumber = ordinalNumber
         this.status = status
         this.networks = networks.map((network) => new IdeaMilestoneNetworkDto(network))
         this.beneficiary = beneficiary

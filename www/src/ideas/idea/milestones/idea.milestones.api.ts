@@ -1,5 +1,6 @@
 import { apiDelete, apiGet, apiPatch, apiPost } from '../../../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
+import { compareMilestoneDetails } from '../../../milestone-details/utils'
 import {
     CreateIdeaMilestoneDto,
     IdeaMilestoneDto,
@@ -11,15 +12,14 @@ import {
 } from './idea.milestones.dto'
 import { IDEAS_API_PATH } from '../../ideas.api'
 import { Nil } from '../../../util/types'
-import { MilestoneDetailsDto } from '../../../milestone-details/milestone-details.dto'
+import { ApiMilestoneDetailsDto, toMilestoneDetailsDto } from '../../../milestone-details/milestone-details.dto'
 
 interface ApiIdeaMilestoneDto {
     id: string
-    ordinalNumber: number
     status: IdeaMilestoneStatus
     beneficiary: Nil<string>
     networks: IdeaMilestoneNetworkDto[]
-    details: MilestoneDetailsDto
+    details: ApiMilestoneDetailsDto
 }
 const getIdeaMilestonesApiBasePath = (ideaId: string) => {
     return `${IDEAS_API_PATH}/${ideaId}/milestones`
@@ -34,6 +34,8 @@ const toIdeaMilestoneDto = (apiIdeaMilestoneDto: ApiIdeaMilestoneDto, currentNet
     )
     return {
         ...apiIdeaMilestoneDto,
+        ordinalNumber: 0,
+        details: toMilestoneDetailsDto(apiIdeaMilestoneDto.details),
         currentNetwork: currentNetworkIdeaMilestoneNetworkDto,
         additionalNetworks: additionalNetworksIdeaMilestoneNetworkDto,
     }
@@ -54,9 +56,10 @@ const getNetworksFromIdeaMilestoneDto = (
 // GET ALL
 
 async function getIdeaMilestones(ideaId: string, currentNetwork: string) {
-    const ideaMilestones = await apiGet<ApiIdeaMilestoneDto[]>(getIdeaMilestonesApiBasePath(ideaId))
-    ideaMilestones.sort((a, b) => a.ordinalNumber - b.ordinalNumber)
-    return ideaMilestones.map((ideaMilestone) => toIdeaMilestoneDto(ideaMilestone, currentNetwork))
+    const apiIdeaMilestones = await apiGet<ApiIdeaMilestoneDto[]>(getIdeaMilestonesApiBasePath(ideaId))
+    const ideaMilestones = apiIdeaMilestones.map((ideaMilestone) => toIdeaMilestoneDto(ideaMilestone, currentNetwork))
+    ideaMilestones.sort((a, b) => compareMilestoneDetails(a.details, b.details))
+    return ideaMilestones.map((milestone, index) => ({ ...milestone, ordinalNumber: index + 1 }))
 }
 
 export const IDEA_MILESTONES_QUERY_KEY_BASE = 'ideaMilestones'

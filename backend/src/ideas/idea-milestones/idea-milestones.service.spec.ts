@@ -172,7 +172,6 @@ describe(`IdeaMilestonesService`, () => {
             expect(foundIdeaMilestone.details.dateFrom).toBe('2021-04-20')
             expect(foundIdeaMilestone.details.dateTo).toBe('2021-04-21')
             expect(foundIdeaMilestone.details.description).toBe('ideaMilestoneDescription')
-            expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
         })
 
         it('should return idea milestone for draft idea for owner', async () => {
@@ -278,33 +277,6 @@ describe(`IdeaMilestonesService`, () => {
             expect(foundIdeaMilestone).toBeDefined()
         })
 
-        it('should add positive ordinal number', async () => {
-            const createdIdeaMilestone = await getIdeaMilestonesService().create(
-                idea.id,
-                minimalCreateIdeaMilestoneDto,
-                sessionData,
-            )
-            const foundIdeaMilestone = await getIdeaMilestonesService().findOne(createdIdeaMilestone.id, sessionData)
-
-            expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
-            expect(foundIdeaMilestone.ordinalNumber).toBeGreaterThan(0)
-        })
-
-        it('should auto increment ordinal number', async () => {
-            const firstCreatedIdeaMilestone = await getIdeaMilestonesService().create(
-                idea.id,
-                minimalCreateIdeaMilestoneDto,
-                sessionData,
-            )
-            const secondCreatedIdeaMilestone = await getIdeaMilestonesService().create(
-                idea.id,
-                minimalCreateIdeaMilestoneDto,
-                sessionData,
-            )
-
-            expect(secondCreatedIdeaMilestone.ordinalNumber).toBe(firstCreatedIdeaMilestone.ordinalNumber + 1)
-        })
-
         it('should create and save idea milestone with all valid data', async () => {
             const createdIdeaMilestone = await getIdeaMilestonesService().create(
                 idea.id,
@@ -333,7 +305,6 @@ describe(`IdeaMilestonesService`, () => {
             expect(foundIdeaMilestone.details.dateFrom).toBe('2021-04-20')
             expect(foundIdeaMilestone.details.dateTo).toBe('2021-04-21')
             expect(foundIdeaMilestone.details.description).toBe('ideaMilestoneDescription')
-            expect(foundIdeaMilestone.ordinalNumber).toBeDefined()
         })
 
         it('should throw forbidden for not owner', async () => {
@@ -406,7 +377,6 @@ describe(`IdeaMilestonesService`, () => {
             expect(updatedIdeaMilestone.details.dateFrom).toBe('2021-04-20')
             expect(updatedIdeaMilestone.details.dateTo).toBe('2021-04-21')
             expect(updatedIdeaMilestone.details.description).toBe('ideaMilestoneDescription')
-            expect(updatedIdeaMilestone.ordinalNumber).toBe(ideaMilestone.ordinalNumber)
         })
 
         it(`should update and save idea milestone with updated network's value`, async () => {
