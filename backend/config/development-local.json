@@ -72,5 +72,9 @@
             "color": "#000000",
             "isLiveNetwork": true
         }
-    ]
+    ],
+    "emails": {
+        "emailAddress": "treasury@brightinventions.pl",
+        "senderName": "BrightTreasury"
+    }
 }

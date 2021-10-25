@@ -40,6 +40,7 @@
         "cookieSecure": true
     },
     "emails": {
-        "emailAddress": "treasury@brightinventions.pl"
+        "emailAddress": "treasury@brightinventions.pl",
+        "senderName": "BrightTreasury"
     }
 }

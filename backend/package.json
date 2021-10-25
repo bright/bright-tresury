@@ -114,7 +114,8 @@
         "coverageDirectory": "../coverage",
         "testEnvironment": "node",
         "setupFilesAfterEnv": [
-            "jest-extended"
+            "jest-extended",
+            "./src/test-setup.js"
         ],
         "testResultsProcessor": "jest-teamcity-reporter",
         "transform": {
@@ -127,9 +128,6 @@
             "ts-jest": {
                 "isolatedModules": true
             }
-        },
-        "setupFilesAfterEnv": [
-            "./src/test-setup.js"
-        ]
+        }
     }
 }

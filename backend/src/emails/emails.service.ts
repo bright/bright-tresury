@@ -54,7 +54,7 @@ export class EmailsService {
         logger.info(`Sending email to ${to} with subject ${subject}`)
 
         const params = {
-            from: this.emailsConfig.emailAddress,
+            from: `${this.emailsConfig.senderName} ${this.emailsConfig.emailAddress}`,
             to,
             subject,
             text,
