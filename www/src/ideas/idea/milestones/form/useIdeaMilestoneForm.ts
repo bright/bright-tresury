@@ -29,11 +29,14 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
             t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
             (address) => isValidAddressOrEmpty(address, network.ss58Format),
         ),
-        networks: Yup.array().of(
+        otherNetworks: Yup.array().of(
             Yup.object().shape({
                 value: Yup.number().min(0, t('idea.milestones.modal.form.valueCannotBeLessThanZero')),
             }),
         ),
+        currentNetwork: Yup.object().shape({
+            value: Yup.number().min(0, t('idea.milestones.modal.form.valueCannotBeLessThanZero')),
+        }),
     })
 
     const extendedValidationSchema = Yup.object().shape({
@@ -42,13 +45,11 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
             .test('validate-address', t('idea.milestones.modal.form.wrongBeneficiaryAddressError'), (address) =>
                 isValidAddressOrEmpty(address, network.ss58Format),
             ),
-        networks: Yup.array().of(
-            Yup.object().shape({
-                value: Yup.number()
-                    .required(t('idea.milestones.modal.form.emptyFieldError'))
-                    .moreThan(0, t('idea.milestones.modal.form.nonZeroFieldError')),
-            }),
-        ),
+        currentNetwork: Yup.object().shape({
+            value: Yup.number()
+                .required(t('idea.milestones.modal.form.emptyFieldError'))
+                .moreThan(0, t('idea.milestones.modal.form.nonZeroFieldError')),
+        }),
     })
 
     const onSubmitFallback = () => {}

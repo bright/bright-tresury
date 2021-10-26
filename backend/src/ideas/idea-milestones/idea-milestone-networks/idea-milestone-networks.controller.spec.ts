@@ -67,6 +67,18 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
+        it(`should return ${HttpStatus.OK} for zero value`, async () => {
+            const { idea, ideaMilestone, sessionHandler, ideaMilestoneNetworkId } = await setUp([
+                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+            ])
+
+            return sessionHandler
+                .authorizeRequest(
+                    request(app()).patch(baseUrl(idea.id, ideaMilestone.id, ideaMilestoneNetworkId)).send({ value: 0 }),
+                )
+                .expect(HttpStatus.OK)
+        })
+
         it(`should return ${HttpStatus.BAD_REQUEST} for no value provided`, async () => {
             const { idea, ideaMilestone, sessionHandler, ideaMilestoneNetworkId } = await setUp([
                 { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },

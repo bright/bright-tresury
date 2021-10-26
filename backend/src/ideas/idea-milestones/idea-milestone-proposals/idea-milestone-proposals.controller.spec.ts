@@ -102,39 +102,6 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
             )
         })
 
-        it(`should return ${HttpStatus.FORBIDDEN} for not authorized request`, async () => {
-            const ideaMilestone = await createIdeaMilestone(
-                idea.id,
-                createIdeaMilestoneDto(),
-                verifiedUserSessionHandler.sessionData,
-                ideaMilestonesService(),
-            )
-
-            return request(app())
-                .post(baseUrl(idea.id, ideaMilestone.id))
-                .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id))
-                .expect(HttpStatus.FORBIDDEN)
-        })
-
-        it(`should return ${HttpStatus.FORBIDDEN} for not verified user`, async () => {
-            const notVerifiedUserSessionHandler = await createUserSessionHandler(app(), 'other@example.com', 'other')
-
-            const ideaMilestone = await createIdeaMilestone(
-                idea.id,
-                createIdeaMilestoneDto(),
-                verifiedUserSessionHandler.sessionData,
-                ideaMilestonesService(),
-            )
-
-            return notVerifiedUserSessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl(idea.id, ideaMilestone.id))
-                        .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
-                )
-                .expect(HttpStatus.FORBIDDEN)
-        })
-
         it(`should return ${HttpStatus.ACCEPTED} for all valid data`, async () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
@@ -177,6 +144,39 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
             expect(body.extrinsic!.lastBlockHash).toBe(
                 '0x74a566a72b3fdb19b766e2a8cfbee63388e56fb58edd48bce71e6177325ef13f',
             )
+        })
+
+        it(`should return ${HttpStatus.FORBIDDEN} for not authorized request`, async () => {
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(),
+                verifiedUserSessionHandler.sessionData,
+                ideaMilestonesService(),
+            )
+
+            return request(app())
+                .post(baseUrl(idea.id, ideaMilestone.id))
+                .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id))
+                .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it(`should return ${HttpStatus.FORBIDDEN} for not verified user`, async () => {
+            const notVerifiedUserSessionHandler = await createUserSessionHandler(app(), 'other@example.com', 'other')
+
+            const ideaMilestone = await createIdeaMilestone(
+                idea.id,
+                createIdeaMilestoneDto(),
+                verifiedUserSessionHandler.sessionData,
+                ideaMilestonesService(),
+            )
+
+            return notVerifiedUserSessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .post(baseUrl(idea.id, ideaMilestone.id))
+                        .send(createIdeaMilestoneProposalDto(ideaMilestone.networks[0].id)),
+                )
+                .expect(HttpStatus.FORBIDDEN)
         })
     })
 })
