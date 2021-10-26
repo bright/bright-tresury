@@ -184,6 +184,12 @@ describe('useIdeaMilestone', () => {
     })
 
     describe('canEditIdeaMilestoneNetwork', () => {
+        it('should return false when cannot edit idea milestones', () => {
+            mockUseIdea({ canEditIdeaMilestones: false })
+            const { canEditAnyIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea }, milestone)
+            expect(canEditAnyIdeaMilestoneNetwork).toBe(false)
+        })
+
         it('should return true when status is active', () => {
             const { canEditIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
             expect(
@@ -207,9 +213,9 @@ describe('useIdeaMilestone', () => {
     })
 
     describe('canEditAnyIdeaMilestoneNetwork', () => {
-        it('should return false when no milestone', () => {
+        it('should return true when no milestone', () => {
             const { canEditAnyIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
-            expect(canEditAnyIdeaMilestoneNetwork).toBe(false)
+            expect(canEditAnyIdeaMilestoneNetwork).toBe(true)
         })
 
         it('should return false when cannot edit idea milestones', () => {

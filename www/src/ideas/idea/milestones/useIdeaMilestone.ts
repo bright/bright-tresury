@@ -39,16 +39,13 @@ export const useIdeaMilestone = (idea: IdeaDto, milestone?: IdeaMilestoneDto): U
     }, [milestone, isOwner, isIdeaActive, isIdeaDraft, isMilestoneSubmission])
 
     const canEditIdeaMilestoneNetwork = (ideaMilestoneNetwork: IdeaMilestoneNetworkDto) =>
-        ideaMilestoneNetwork.status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal
+        canEditIdeaMilestones && ideaMilestoneNetwork.status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal
 
     const canEditAnyIdeaMilestoneNetwork = useMemo(() => {
-        if (!milestone) return false
+        if (!milestone) return true
         return (
-            canEditIdeaMilestones &&
-            milestone.additionalNetworks.reduce(
-                (acc, ideaMilestoneNetwork) => acc || canEditIdeaMilestoneNetwork(ideaMilestoneNetwork),
-                canEditIdeaMilestoneNetwork(milestone.currentNetwork),
-            )
+            canEditIdeaMilestoneNetwork(milestone.currentNetwork) ||
+            !!milestone.additionalNetworks.find((network) => canEditIdeaMilestoneNetwork(network))
         )
     }, [milestone])
 

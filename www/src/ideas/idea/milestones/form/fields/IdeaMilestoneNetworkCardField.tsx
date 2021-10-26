@@ -41,7 +41,7 @@ const IdeaMilestoneNetworkCardField = ({
     inputName,
 }: IdeaMilestoneNetworkCardFieldProps) => {
     const classes = useStyles()
-    const { canEditAnyIdeaMilestoneNetwork, canEditIdeaMilestoneNetwork } = useIdeaMilestone(idea, ideaMilestone)
+    const { canEditIdeaMilestoneNetwork } = useIdeaMilestone(idea, ideaMilestone)
     const { networks } = useNetworks()
     const network = findNetwork(ideaMilestoneNetwork, networks)
     if (!network) return null
@@ -57,7 +57,7 @@ const IdeaMilestoneNetworkCardField = ({
                 className={classes.networkInput}
                 value={ideaMilestoneNetwork.value}
                 networkId={ideaMilestoneNetwork.name}
-                readonly={!(canEditAnyIdeaMilestoneNetwork && canEditIdeaMilestoneNetwork(ideaMilestoneNetwork))}
+                readonly={!canEditIdeaMilestoneNetwork(ideaMilestoneNetwork)}
             />
         </NetworkCard>
     )
