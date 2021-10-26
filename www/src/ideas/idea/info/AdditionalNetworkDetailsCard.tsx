@@ -9,7 +9,7 @@ import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
 import IdeaNetworkStatusIndicator from '../../form/networks/IdeaNetworkStatusIndicator'
 import NetworkInput from '../../form/networks/NetworkInput'
-import { IdeaNetworkDto } from '../../ideas.dto'
+import { IdeaNetworkDto, IdeaNetworkStatus } from '../../ideas.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,7 +56,9 @@ const AdditionalNetworkDetailsCard = ({ ideaNetwork, isOwner }: AdditionalNetwor
     return (
         <NetworkCard className={classes.card} networks={[selectedNetwork]}>
             <div className={classes.content}>
-                <IdeaNetworkStatusIndicator ideaNetwork={ideaNetwork} isOwner={isOwner} />
+                {ideaNetwork.status !== IdeaNetworkStatus.Active ? (
+                    <IdeaNetworkStatusIndicator ideaNetwork={ideaNetwork} isOwner={isOwner} />
+                ) : null}
                 <FormGroup className={classes.smallField}>
                     <Label label={t('idea.details.net')} />
                     <TextField value={selectedNetwork.name} disabled={true} />
