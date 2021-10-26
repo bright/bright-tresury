@@ -1,7 +1,9 @@
 import React from 'react'
+import { useTranslation } from 'react-i18next'
 import Tabs, { TabEntry } from '../../components/tabs/Tabs'
 
 import { IdeaContentType, IdeaTabConfig } from './Idea'
+import { useRouteMatch } from 'react-router-dom'
 
 interface OwnProps {
     discussionNotificationsCount?: number
@@ -11,6 +13,8 @@ interface OwnProps {
 export type IdeaContentTypeTabsProps = OwnProps
 
 const IdeaContentTypeTabs = ({ discussionNotificationsCount = 0, ideaTabsConfig }: IdeaContentTypeTabsProps) => {
+    const { t } = useTranslation()
+    const { url } = useRouteMatch()
     const getNotificationsCount = (ideaContentType: IdeaContentType): number => {
         switch (ideaContentType) {
             case IdeaContentType.Discussion:
@@ -21,8 +25,8 @@ const IdeaContentTypeTabs = ({ discussionNotificationsCount = 0, ideaTabsConfig 
     }
 
     const tabEntries: TabEntry[] = ideaTabsConfig.map((ideaTabConfig) => ({
-        label: ideaTabConfig.translation,
-        path: ideaTabConfig.url,
+        label: t(ideaTabConfig.translationKey),
+        path: ideaTabConfig.getUrl(url),
         svg: ideaTabConfig.svg,
         filterName: '',
         notificationsCount: getNotificationsCount(ideaTabConfig.ideaContentType),

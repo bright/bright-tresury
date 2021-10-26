@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { useParams } from 'react-router'
 import { useNetworks } from '../../networks/useNetworks'
 import Route from '../../routes/Route'
@@ -22,12 +22,52 @@ export enum IdeaContentType {
     Discussion = 'discussion',
 }
 
+const getIdeaContentTypes = (idea: IdeaDto) => idea.status === IdeaStatus.Draft
+    ? [IdeaContentType.Info, IdeaContentType.Milestones]
+    : [IdeaContentType.Info, IdeaContentType.Milestones, IdeaContentType.Discussion]
+
+const IDEA_CONTENT_TYPE_BUILDER: { [key in IdeaContentType]: IdeaTabConfig} = {
+    [IdeaContentType.Info]: {
+        ideaContentType: IdeaContentType.Info,
+        translationKey: 'idea.content.infoLabel',
+        svg: infoIcon,
+        getUrl: (baseUrl: string) => `${baseUrl}/${IdeaContentType.Info}`,
+        getRoute: (basePath: string, idea: IdeaDto) => (
+            <Route key={IdeaContentType.Discussion} exact={true} path={`${basePath}/${IdeaContentType.Discussion}`}>
+                <IdeaInfo idea={idea} />
+            </Route>
+        )
+    },
+    [IdeaContentType.Milestones]: {
+        ideaContentType: IdeaContentType.Milestones,
+        translationKey: 'idea.content.milestonesLabel',
+        svg: milestonesIcon,
+        getUrl: (baseUrl: string) => `${baseUrl}/${IdeaContentType.Milestones}`,
+        getRoute: (basePath: string, idea: IdeaDto) => (
+            <Route key={IdeaContentType.Discussion} exact={true} path={`${basePath}/${IdeaContentType.Discussion}`}>
+                <IdeaMilestones idea={idea} />
+            </Route>
+        )
+    },
+    [IdeaContentType.Discussion]: {
+        ideaContentType: IdeaContentType.Discussion,
+        translationKey: 'idea.content.discussionLabel',
+        svg: discussionIcon,
+        getUrl: (baseUrl: string) => `${baseUrl}/${IdeaContentType.Discussion}`,
+        getRoute: (basePath: string, idea: IdeaDto) => (
+            <Route key={IdeaContentType.Discussion} exact={true} path={`${basePath}/${IdeaContentType.Discussion}`}>
+                <IdeaDiscussion idea={idea} />
+            </Route>
+        )
+    }
+}
+
 export interface IdeaTabConfig {
     ideaContentType: IdeaContentType
-    translation: string
+    translationKey: string
     svg: string
-    url: string
-    route: JSX.Element
+    getUrl: (baseUrl: string) => string
+    getRoute: (basePath: string, idea: IdeaDto) => JSX.Element
 }
 
 const Idea = () => {
@@ -35,51 +75,13 @@ const Idea = () => {
 
     const { t } = useTranslation()
 
-    let { path, url } = useRouteMatch()
+    let { path } = useRouteMatch()
 
     let { ideaId } = useParams<{ ideaId: string }>()
 
     const { network } = useNetworks()
     const { status, data: idea } = useGetIdea({ ideaId, network: network.id })
 
-    const buildIdeaTabsConfig = (idea: IdeaDto) => {
-        const makeRoute = (key: IdeaContentType, jsxElement: JSX.Element) => (
-            <Route key={key} exact={true} path={`${path}/${key}`}>
-                {jsxElement}
-            </Route>
-        )
-        const makeIdeaTabConfig = (
-            ideaContentType: IdeaContentType,
-            translationKey: string,
-            svg: string,
-            jsxElement: JSX.Element,
-        ) => ({
-            ideaContentType,
-            translation: t(translationKey),
-            svg,
-            url: `${url}/${ideaContentType}`,
-            route: makeRoute(ideaContentType, jsxElement),
-        })
-        const ideaTabsConfig: IdeaTabConfig[] = [
-            makeIdeaTabConfig(IdeaContentType.Info, 'idea.content.infoLabel', infoIcon, <IdeaInfo idea={idea} />),
-            makeIdeaTabConfig(
-                IdeaContentType.Milestones,
-                'idea.content.milestonesLabel',
-                milestonesIcon,
-                <IdeaMilestones idea={idea} />,
-            ),
-        ]
-        if (idea.status !== IdeaStatus.Draft)
-            ideaTabsConfig.push(
-                makeIdeaTabConfig(
-                    IdeaContentType.Discussion,
-                    'idea.content.discussionLabel',
-                    discussionIcon,
-                    <IdeaDiscussion idea={idea} />,
-                ),
-            )
-        return ideaTabsConfig
-    }
     return (
         <LoadingWrapper
             status={status}
@@ -88,19 +90,20 @@ const Idea = () => {
         >
             {idea
                 ? (() => {
-                      const ideaTabsConfig = buildIdeaTabsConfig(idea)
-                      const routes = ideaTabsConfig.map(({ route }) => route)
-                      return (
-                          <div className={classes.root}>
-                              <IdeaHeader idea={idea} ideaTabsConfig={ideaTabsConfig} />
-                              <Switch>
-                                  <Route exact={true} path={path}>
-                                      <IdeaInfo idea={idea} />
-                                  </Route>
-                                  {routes}
-                              </Switch>
-                          </div>
-                      )
+                    const ideaContentTypes = getIdeaContentTypes(idea)
+                    const ideaTabsConfig = ideaContentTypes.map((ideaContentType) => IDEA_CONTENT_TYPE_BUILDER[ideaContentType])
+                    const routes = ideaTabsConfig.map(({ getRoute }) => getRoute(path, idea))
+                    return (
+                        <div className={classes.root}>
+                          <IdeaHeader idea={idea} ideaTabsConfig={ideaTabsConfig} />
+                          <Switch>
+                              <Route exact={true} path={path}>
+                                  <IdeaInfo idea={idea} />
+                              </Route>
+                              {routes}
+                          </Switch>
+                      </div>
+                    )
                   })()
                 : null}
         </LoadingWrapper>
