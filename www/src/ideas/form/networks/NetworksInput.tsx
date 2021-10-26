@@ -14,12 +14,12 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     currentNetwork: EditIdeaNetworkDto
-    otherNetworks: EditIdeaNetworkDto[]
+    additionalNetworks: EditIdeaNetworkDto[]
 }
 
 export type NetworksInputProps = OwnProps
 
-const NetworksInput = ({ currentNetwork, otherNetworks }: NetworksInputProps) => {
+const NetworksInput = ({ currentNetwork, additionalNetworks }: NetworksInputProps) => {
     const classes = useStyles()
 
     return (
@@ -33,7 +33,7 @@ const NetworksInput = ({ currentNetwork, otherNetworks }: NetworksInputProps) =>
             <AdditionalNetworks
                 className={classes.inputField}
                 currentNetwork={currentNetwork}
-                otherNetworks={otherNetworks}
+                additionalNetworks={additionalNetworks}
             />
         </>
     )

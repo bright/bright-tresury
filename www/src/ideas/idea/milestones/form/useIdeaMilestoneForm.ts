@@ -29,7 +29,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
             t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
             (address) => isValidAddressOrEmpty(address, network.ss58Format),
         ),
-        otherNetworks: Yup.array().of(
+        additionalNetworks: Yup.array().of(
             Yup.object().shape({
                 value: Yup.number().min(0, t('idea.milestones.modal.form.valueCannotBeLessThanZero')),
             }),

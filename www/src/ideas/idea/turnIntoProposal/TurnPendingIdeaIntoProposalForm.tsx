@@ -75,7 +75,9 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
     }
 
     const validationSchema = Yup.object({
-        value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
+        value: Yup.number()
+            .required(t('idea.details.form.emptyFieldError'))
+            .moreThan(0, t('idea.details.form.nonZeroFieldError')),
     })
 
     return (

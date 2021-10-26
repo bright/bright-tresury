@@ -10,28 +10,28 @@ import AddNetworkButton from './AddNetworkButton'
 
 interface OwnProps {
     currentNetwork: EditIdeaNetworkDto
-    otherNetworks: EditIdeaNetworkDto[]
+    additionalNetworks: EditIdeaNetworkDto[]
 }
 
 export type AdditionalNetworksProps = OwnProps & ClassNameProps
 
-const AdditionalNetworks = ({ currentNetwork, otherNetworks, className }: AdditionalNetworksProps) => {
+const AdditionalNetworks = ({ currentNetwork, additionalNetworks, className }: AdditionalNetworksProps) => {
     const { t } = useTranslation()
     const { networks } = useNetworks()
 
     const availableNetworks = networks.filter(
-        (n) => currentNetwork.name !== n.id && !otherNetworks.find((ideaNetwork) => ideaNetwork.name === n.id),
+        (n) => currentNetwork.name !== n.id && !additionalNetworks.find((ideaNetwork) => ideaNetwork.name === n.id),
     )
 
     return (
         <FieldArray
-            name={'otherNetworks'}
+            name={'additionalNetworks'}
             render={(arrayHelpers) => (
                 <div className={className}>
-                    {otherNetworks.length ? (
+                    {additionalNetworks.length ? (
                         <>
                             <Label label={t('idea.details.additionalNets')} />
-                            {otherNetworks.map((ideaNetwork, index) => {
+                            {additionalNetworks.map((ideaNetwork, index) => {
                                 const ideaNetworkNetwork = networks.find((n) => n.id === ideaNetwork.name)!
                                 const currentAvailableNetworks = [ideaNetworkNetwork].concat(availableNetworks)
                                 return (

@@ -27,7 +27,7 @@ const IdeaFormFields = ({ values }: IdeaFormFieldsProps) => {
                 placeholder={t('idea.details.beneficiary')}
                 label={t('idea.details.beneficiary')}
             />
-            <NetworksInput currentNetwork={values.currentNetwork} otherNetworks={values.otherNetworks} />
+            <NetworksInput currentNetwork={values.currentNetwork} additionalNetworks={values.additionalNetworks} />
             <FieldInput placeholder={t('idea.details.field')} label={t('idea.details.field')} />
             <ContentInput placeholder={t('idea.details.content')} label={t('idea.details.content')} />
 

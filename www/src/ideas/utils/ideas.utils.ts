@@ -10,7 +10,7 @@ export function createEmptyIdea(network: string): IdeaFormValues {
     return {
         beneficiary: '',
         currentNetwork: { name: network, value: 0 },
-        otherNetworks: [],
+        additionalNetworks: [],
         title: '',
         field: '',
         content: '',

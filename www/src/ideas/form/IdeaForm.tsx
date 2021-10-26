@@ -42,7 +42,7 @@ export type IdeaFormProps = PropsWithChildren<OwnProps>
 export interface IdeaFormValues {
     beneficiary: string
     currentNetwork: EditIdeaNetworkDto
-    otherNetworks: EditIdeaNetworkDto[]
+    additionalNetworks: EditIdeaNetworkDto[]
     title: string
     field?: string
     content: string
@@ -56,7 +56,7 @@ const toFormValues = (idea: Nil<IdeaDto>, network: Network): IdeaFormValues => {
         return {
             beneficiary: '',
             currentNetwork: { name: network.id, value: 0 },
-            otherNetworks: [],
+            additionalNetworks: [],
             title: '',
             field: '',
             content: '',
@@ -68,7 +68,7 @@ const toFormValues = (idea: Nil<IdeaDto>, network: Network): IdeaFormValues => {
     return {
         beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
         currentNetwork: idea.currentNetwork,
-        otherNetworks: idea.additionalNetworks,
+        additionalNetworks: idea.additionalNetworks,
         ...idea.details,
         links: idea.details.links && idea.details.links.length > 0 ? idea.details.links : [''],
     }
@@ -86,7 +86,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
         beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
             return isValidAddressOrEmpty(address, network.ss58Format)
         }),
-        otherNetworks: Yup.array().of(
+        additionalNetworks: Yup.array().of(
             Yup.object().shape({
                 value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
             }),
@@ -110,7 +110,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
     const onFormikSubmit = (formIdea: IdeaFormValues) => {
         let editedIdea = {
             beneficiary: formIdea.beneficiary,
-            additionalNetworks: formIdea.otherNetworks,
+            additionalNetworks: formIdea.additionalNetworks,
             currentNetwork: formIdea.currentNetwork,
             details: {
                 title: formIdea.title,
