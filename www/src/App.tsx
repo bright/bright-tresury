@@ -12,7 +12,6 @@ import SignIn from './auth/sign-in/SignIn'
 import EmailSignUpSuccess from './auth/sign-up/email/EmailSignUpSucces'
 import SignUp from './auth/sign-up/SignUp'
 import IdeaCreate from './ideas/create/IdeaCreate'
-import Idea from './ideas/idea/Idea'
 import Ideas from './ideas/Ideas'
 import Main from './main/Main'
 import Proposal from './proposals/proposal/Proposal'
@@ -47,6 +46,7 @@ import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContex
 import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
 import Web3SignUpSuccess from './auth/sign-up/web3/Web3SignUpSuccess'
 import EmailNotVerified from './auth/verifyEmail/EmailNotVerified'
+import IdeaLoader from './ideas/idea/IdeaLoader'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -95,8 +95,8 @@ function AppRoutes() {
                     component={TurnIdeaIntoProposal}
                     requireVerified={true}
                 />
-                <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={Idea} requireVerified={true} />
-                <Route exact={false} path={ROUTE_IDEA} component={Idea} />
+                <PrivateRoute exact={true} path={ROUTE_EDIT_IDEA} component={IdeaLoader} requireVerified={true} />
+                <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />
                 <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
             </Switch>
         </Main>

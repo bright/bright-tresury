@@ -1,7 +1,7 @@
 import React from 'react'
 import { useGetIdeaDiscussionAppEvents } from '../../main/top-bar/notifications/app-events.api'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
-import { IdeaTabConfig } from './Idea'
+import { IdeaContentType, IdeaTabConfig } from './Idea'
 
 interface OwnProps {
     userId: string
@@ -18,7 +18,13 @@ const PrivateIdeaContentTypeTabs = ({ userId, ideaId, ideaTabsConfig }: PrivateI
         pageSize: 100,
         pageNumber: 1,
     })
-    return <IdeaContentTypeTabs discussionNotificationsCount={data?.total} ideaTabsConfig={ideaTabsConfig} />
+    ideaTabsConfig = ideaTabsConfig.map(ideaTabConfig => {
+        if (ideaTabConfig.ideaContentType !== IdeaContentType.Discussion)
+            return ideaTabConfig
+        return {...ideaTabConfig, notificationsCount: data?.total}
+    })
+
+    return <IdeaContentTypeTabs ideaTabsConfig={ideaTabsConfig} />
 }
 
 export default PrivateIdeaContentTypeTabs

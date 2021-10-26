@@ -177,7 +177,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
                         userId={user.id}
                         ideaId={idea.id}
                         ideaTabsConfig={ideaTabsConfig}
-                    ></PrivateIdeaContentTypeTabs>
+                    />
                 ) : (
                     <IdeaContentTypeTabs ideaTabsConfig={ideaTabsConfig} />
                 )}
