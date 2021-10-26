@@ -1,7 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React, {PropsWithChildren} from 'react'
+import React, { PropsWithChildren } from 'react'
 import { breakpoints } from '../../theme/theme'
-import FormHeader from "./header/FormHeader";
+import Error from '../error/Error'
+import FormHeader from './header/FormHeader'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,16 +24,18 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     title?: string
+    error?: string
 }
 
 export type ContainerProps = PropsWithChildren<OwnProps>
 
-const Container = ({ title, children }: ContainerProps) => {
+const Container = ({ title, error, children }: ContainerProps) => {
     const classes = useStyles()
 
     return (
         <div className={classes.root}>
-            {title && <FormHeader title={title} />}
+            {title ? <FormHeader title={title} /> : null}
+            {error ? <Error text={error} /> : null}
             {children}
         </div>
     )

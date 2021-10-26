@@ -135,7 +135,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
-    const { canTurnIntoProposal, canEditIdea } = useIdea(idea)
+    const { canTurnIntoProposal, isOwner } = useIdea(idea)
     const { user, isUserSignedInAndVerified } = useAuth()
 
     const navigateToList = () => {
@@ -167,8 +167,11 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
                 <NetworkRewardDeposit rewardValue={networkValue} />
             </NetworkValues>
             <div className={classes.tabletViewContainer}>
-                <CloseButton onClose={navigateToList} className={clsx(classes.closeIcon, classes.formatIconOnTablet)} />
-                {canEditIdea ? <OptionsButton className={classes.formatIconOnTablet} idea={idea.id} /> : null}
+                <CloseButton
+                    onClose={navigateToList}
+                    className={clsx(classes.closeIcon, classes.formatIconOnTablet)}
+                ></CloseButton>
+                {isOwner ? <OptionsButton className={classes.formatIconOnTablet} idea={idea.id} /> : null}
             </div>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
@@ -194,7 +197,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
                     </Button>
                 </div>
             )}
-            {canEditIdea ? <OptionsButton className={classes.closeIconOnTablet} idea={idea} /> : null}
+            {isOwner ? <OptionsButton className={classes.closeIconOnTablet} idea={idea} /> : null}
         </HeaderContainer>
     )
 }

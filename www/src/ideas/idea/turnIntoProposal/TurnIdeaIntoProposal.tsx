@@ -6,27 +6,28 @@ import Container from '../../../components/form/Container'
 import { useModal } from '../../../components/modal/useModal'
 import { useNetworks } from '../../../networks/useNetworks'
 import { ROUTE_PROPOSALS } from '../../../routes/routes'
-import { useGetIdea } from '../../ideas.api'
-import { IdeaStatus } from '../../ideas.dto'
+import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 import { useIdea } from '../useIdea'
 import TurnIdeaIntoProposalForm from './TurnIdeaIntoProposalForm'
 import TurnIdeaIntoProposalModal from './TurnIdeaIntoProposalModal'
 import TurnPendingIdeaIntoProposalForm from './TurnPendingIdeaIntoProposalForm'
 
-const TurnIdeaIntoProposal = () => {
+interface OwnProps {
+    idea: IdeaDto
+}
+
+export type TurnIdeaIntoProposalProps = OwnProps
+
+const TurnIdeaIntoProposal = ({ idea }: TurnIdeaIntoProposalProps) => {
     const { t } = useTranslation()
     const history = useHistory()
 
     const submitProposalModal = useModal()
 
-    const { ideaId } = useParams<{ ideaId: string }>()
-    const { network } = useNetworks()
-    const { data: idea } = useGetIdea({ ideaId, network: network.id }, { refetchOnWindowFocus: false })
-
     const { canTurnIntoProposal, isOwner } = useIdea(idea)
 
     if (!isOwner) {
-        return <Container title={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />
+        return <Container error={t('idea.turnIntoProposal.ideaBelongsToAnotherUser')} />
     }
 
     if (!canTurnIntoProposal) {

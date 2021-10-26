@@ -258,6 +258,9 @@
             "content": "Reason of Idea",
             "net": "Net",
             "additionalNets": "Additional Nets",
+            "edit": "Edit",
+            "editTitle": "Edit idea",
+            "cannotEditIdea": "You cannot edit this idea",
             "form": {
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
@@ -288,8 +291,9 @@
                 "turnIntoProposal": "Convert to Proposal"
             },
             "create": "Create",
-            "edit": "Edit",
-            "editAndActivate": "Edit and activate",
+            "save": "Save",
+            "cancel": "Cancel",
+            "saveAndActivate": "Save and activate",
             "saveDraft": "Save as Draft",
             "submitProposal": "Submit Proposal",
             "signAndSubmit": "Sign and submit",
@@ -403,6 +407,7 @@
         },
         "optionsMenu": {
             "deleteIdea": "Delete Idea",
+            "editIdea": "Edit Idea",
             "discard": "Discard",
             "deleteIdeaModal": {
                 "title": "Are you sure you want to delete the idea?",

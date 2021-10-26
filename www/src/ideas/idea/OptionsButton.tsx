@@ -5,6 +5,8 @@ import MenuItem from '@material-ui/core/MenuItem'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
+import { generatePath, useHistory } from 'react-router-dom'
+import { ROUTE_EDIT_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import clsx from 'clsx'
 import { useModal } from '../../components/modal/useModal'
@@ -26,12 +28,6 @@ const useStyles = makeStyles((theme: Theme) =>
                 margin: '0',
             },
         },
-        paper: {
-            style: {
-                maxHeight: 48 * 4.5,
-                width: '20ch',
-            },
-        },
     }),
 )
 
@@ -43,14 +39,20 @@ interface OwnProps {
 export type OptionsButtonProps = OwnProps
 
 const OptionsButton = ({ className, idea }: OptionsButtonProps) => {
+    const classes = useStyles()
     const { t } = useTranslation()
+    const history = useHistory()
     const deleteIdeaModal = useModal()
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
-    const classes = useStyles()
+    const { canEditIdea } = useIdea(idea)
 
     const onDeleteIdeaClick = () => {
         handleClose()
         deleteIdeaModal.open()
+    }
+
+    const onEditIdeaClick = () => {
+        history.push(generatePath(ROUTE_EDIT_IDEA, { ideaId: idea.id }))
     }
 
     return (
@@ -70,11 +72,13 @@ const OptionsButton = ({ className, idea }: OptionsButtonProps) => {
                 keepMounted
                 open={open}
                 onClose={handleClose}
-                classes={{
-                    paper: classes.paper,
-                }}
+                getContentAnchorEl={null}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
             >
-                <MenuItem key={'DeleteIdea'} onClick={onDeleteIdeaClick}>
+                <MenuItem key={'DeleteIdea'} onClick={onEditIdeaClick} disabled={!canEditIdea}>
+                    {t('idea.optionsMenu.editIdea')}
+                </MenuItem>
+                <MenuItem key={'DeleteIdea'} onClick={onDeleteIdeaClick} disabled={!canEditIdea}>
                     {t('idea.optionsMenu.deleteIdea')}
                 </MenuItem>
             </Menu>
