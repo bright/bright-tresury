@@ -1,12 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNumber, Min } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsNumberString, Min } from 'class-validator'
+import { NetworkPlanckValue } from '../../../../NetworkPlanckValue'
 
 export class UpdateIdeaMilestoneNetworkDto {
     @ApiProperty({
-        description: 'Reward for the idea in the network',
-        type: Number,
+        description: 'Reward for the idea in the network in Planck',
+        type: String,
     })
-    @IsNumber()
-    @Min(0)
-    value!: number
+    @IsNotEmpty()
+    @IsNumberString({ no_symbols: true })
+    value!: NetworkPlanckValue
 }

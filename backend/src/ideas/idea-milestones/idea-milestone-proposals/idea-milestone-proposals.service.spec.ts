@@ -21,6 +21,7 @@ import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-prop
 import { IdeaMilestoneProposalsService } from './idea-milestone-proposals.service'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
 import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
+import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
@@ -39,7 +40,7 @@ const updateExtrinsicDto: UpdateExtrinsicDto = {
 } as UpdateExtrinsicDto
 
 const createIdeaMilestoneDto = (
-    networkValue: number = 100,
+    networkValue: NetworkPlanckValue = '100' as NetworkPlanckValue,
     beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
 ) => {
     return {
@@ -207,7 +208,7 @@ describe('IdeaMilestoneProposalsService', () => {
         it('should throw empty beneficiary exception for idea milestone with empty beneficiary address', async () => {
             const ideaMilestoneWithEmptyBeneficiaryAddress = await createIdeaMilestone(
                 idea.id,
-                createIdeaMilestoneDto(100, ''),
+                createIdeaMilestoneDto('100' as NetworkPlanckValue, ''),
                 sessionData,
                 ideaMilestonesService(),
             )
@@ -230,7 +231,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 idea.id,
                 {
                     beneficiary: uuid(),
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                     details: {
                         subject: 'milestone subject',
                     },
@@ -306,7 +307,7 @@ describe('IdeaMilestoneProposalsService', () => {
         it('should throw bad request exception for idea milestone network which value in equal 0', async () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
-                createIdeaMilestoneDto(0),
+                createIdeaMilestoneDto('0' as NetworkPlanckValue),
                 sessionData,
                 ideaMilestonesService(),
             )
@@ -577,8 +578,8 @@ describe('IdeaMilestoneProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: 1000 },
-                        { name: NETWORKS.KUSAMA, value: 1000 },
+                        { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue },
+                        { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue },
                     ],
                 },
                 sessionData,
@@ -588,8 +589,8 @@ describe('IdeaMilestoneProposalsService', () => {
                 ideaWithTwoNetworks.id,
                 {
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
-                        { name: NETWORKS.KUSAMA, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
+                        { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+                        { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
                     ],
                 },
                 sessionData,
@@ -628,8 +629,8 @@ describe('IdeaMilestoneProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: 1000 },
-                        { name: NETWORKS.KUSAMA, value: 1000 },
+                        { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue },
+                        { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue },
                     ],
                 },
                 sessionData,
@@ -639,8 +640,8 @@ describe('IdeaMilestoneProposalsService', () => {
                 ideaWithTwoNetworks.id,
                 {
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
-                        { name: NETWORKS.KUSAMA, value: 1000, status: IdeaMilestoneNetworkStatus.Active },
+                        { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+                        { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
                     ],
                 },
                 sessionData,

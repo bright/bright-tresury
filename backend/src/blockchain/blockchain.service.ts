@@ -162,12 +162,10 @@ export class BlockchainService implements OnModuleDestroy {
         const currentBlockNumber = await api.derive.chain.bestNumber()
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
-        const blockchainConfiguration = this.blockchainConfigurationService.getBlockchainConfiguration(networkId)
         return [
             ...proposals.map((derivedProposal) =>
                 BlockchainProposal.create(
                     derivedProposal,
-                    blockchainConfiguration,
                     BlockchainProposalStatus.Proposal,
                     identities,
                     toBlockchainProposalMotionEnd,
@@ -176,7 +174,6 @@ export class BlockchainService implements OnModuleDestroy {
             ...approvals.map((derivedProposal) =>
                 BlockchainProposal.create(
                     derivedProposal,
-                    blockchainConfiguration,
                     BlockchainProposalStatus.Approval,
                     identities,
                     toBlockchainProposalMotionEnd,

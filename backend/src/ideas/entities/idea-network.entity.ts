@@ -4,14 +4,15 @@ import { BaseEntity } from '../../database/base.entity'
 import { Extrinsic } from '../../extrinsics/extrinsic.entity'
 import { defaultIdeaNetworkStatus, IdeaNetworkStatus } from './idea-network-status'
 import { Idea } from './idea.entity'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 @Entity('idea_networks')
 export class IdeaNetwork extends BaseEntity {
     @Column({ nullable: false })
     name: string
 
-    @Column('decimal', { precision: 39, scale: 15, nullable: false, default: 0 })
-    value: number
+    @Column('decimal', { precision: 54, scale: 0, nullable: false, default: 0 })
+    value: NetworkPlanckValue
 
     @ManyToOne(() => Idea, (idea) => idea.networks)
     idea?: Idea
@@ -33,7 +34,7 @@ export class IdeaNetwork extends BaseEntity {
 
     constructor(
         name: string,
-        value: number = 0,
+        value: NetworkPlanckValue = '0' as NetworkPlanckValue,
         status: IdeaNetworkStatus = defaultIdeaNetworkStatus,
         extrinsic = null,
         blockchainProposalId = null,

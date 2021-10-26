@@ -169,10 +169,11 @@ describe(`Blockchain service`, () => {
     describe('getProposals', () => {
         it('should return existing proposals', async () => {
             // create a proposal
+            const proposalValue = BN_TEN.pow(new BN(15))
             const setIdentityExtrinsic = api.tx.identity.setIdentity({ display: { Raw: 'Alice' } })
             await signAndSend(setIdentityExtrinsic, aliceKeypair)
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
-            const extrinsic = api.tx.treasury.proposeSpend(BN_TEN.pow(new BN(15)), bobAddress)
+            const extrinsic = api.tx.treasury.proposeSpend(proposalValue, bobAddress)
             await signAndSend(extrinsic, aliceKeypair)
             const proposals = await service().getProposals(NETWORKS.POLKADOT)
             expect(proposals.length).toBeGreaterThan(0)
@@ -181,8 +182,8 @@ describe(`Blockchain service`, () => {
             expect(lastProposal.proposer.address).toBe(aliceAddress)
             expect(lastProposal.proposer.display).toBe('Alice')
             expect(lastProposal.beneficiary.address).toBe(bobAddress)
-            expect(lastProposal.bond).toBe(50)
-            expect(lastProposal.value).toBe(1000)
+            expect(lastProposal.bond).toBe(proposalValue.muln(5).divn(100).toString()) // 5% of proposalValue
+            expect(lastProposal.value).toBe(proposalValue.toString())
         }, 60000)
     })
     describe('getStats', () => {

@@ -12,8 +12,8 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { Idea } from '../entities/idea.entity'
 import { createIdea } from '../spec.helpers'
 import { IdeasService } from '../ideas.service'
-import { IdeaStatus } from '../entities/idea-status'
 import { IdeaNetwork } from '../entities/idea-network.entity'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
@@ -79,7 +79,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
             idea = await createIdea(
                 {
                     beneficiary: uuid(),
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),
@@ -125,7 +125,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
             const body = result.body as IdeaNetwork
 
             expect(body.name).toBe(NETWORKS.POLKADOT)
-            expect(body.value).toBe(100)
+            expect(body.value).toBe('100')
             expect(body.extrinsic).toBeDefined()
             expect(body.extrinsic!.extrinsicHash).toBe(
                 '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',

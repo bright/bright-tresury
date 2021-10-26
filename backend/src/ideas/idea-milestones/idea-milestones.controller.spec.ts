@@ -15,6 +15,7 @@ import { IdeaMilestoneDto } from './dto/idea-milestone.dto'
 import { IdeaMilestone } from './entities/idea-milestone.entity'
 import { IdeaMilestonesService } from './idea-milestones.service'
 import { IdeaMilestoneNetworkStatus } from './entities/idea-milestone-network-status'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 const baseUrl = (ideaId: string) => `/api/v1/ideas/${ideaId}/milestones`
 
@@ -27,7 +28,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
     let sessionHandler: SessionHandler
 
     const milestoneDto = {
-        networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+        networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
         details: {
             subject: 'subject',
         },
@@ -107,7 +108,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'ideaMilestoneSubject',
@@ -128,7 +129,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body[0].details.subject).toBe('ideaMilestoneSubject')
             expect(body[0].networks.length).toBe(1)
             expect(body[0].networks[0].name).toBe(NETWORKS.POLKADOT)
-            expect(body[0].networks[0].value).toBe(100)
+            expect(body[0].networks[0].value).toBe('100')
             expect(body[0].beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body[0].details.dateFrom).toBe('2021-04-20')
             expect(body[0].details.dateTo).toBe('2021-04-21')
@@ -137,7 +138,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
         it('should return milestones of a draft idea of a logged in user', async () => {
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }], status: IdeaStatus.Draft },
                 sessionHandler.sessionData,
             )
             await getIdeaMilestonesService().create(draftIdea.id, milestoneDto, sessionHandler.sessionData)
@@ -152,7 +153,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return not found for a draft idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }], status: IdeaStatus.Draft },
                 otherUser,
             )
             await getIdeaMilestonesService().create(draftIdea.id, milestoneDto, otherUser)
@@ -185,7 +186,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'subject',
@@ -205,7 +206,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.details.subject).toBe('subject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
-            expect(body.networks[0].value).toBe(100)
+            expect(body.networks[0].value).toBe('100')
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.details.dateFrom).toBe('2021-06-20')
             expect(body.details.dateTo).toBe('2021-06-21')
@@ -313,7 +314,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                             details: {},
                         }),
                 )
@@ -326,7 +327,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                             details: { subject: null },
                         }),
                 )
@@ -339,7 +340,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                             details: { subject: '' },
                         }),
                 )
@@ -377,7 +378,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            networks: [{ value: 10 }],
+                            networks: [{ value: '10' as NetworkPlanckValue }],
                             details: { subject: 'ideaMilestoneSubject' },
                         }),
                 )
@@ -390,7 +391,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            networks: [{ name: null, value: 10 }],
+                            networks: [{ name: null, value: '10' as NetworkPlanckValue }],
                             details: { subject: 'ideaMilestoneSubject' },
                         }),
                 )
@@ -477,7 +478,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     .post(baseUrl(idea.id))
                     .send({
                         details: { subject: 'ideaMilestoneSubject' },
-                        networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                        networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                         beneficiary: kusamaEncodedAddress,
                     }),
             )
@@ -495,7 +496,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '100' }],
                             details: { subject: 'ideaMilestoneSubject', dateFrom: 'incorrect_format' },
                         }),
                 )
@@ -508,7 +509,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                     request(app())
                         .post(baseUrl(idea.id))
                         .send({
-                            networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '100' }],
                             details: { subject: 'ideaMilestoneSubject', dateFrom: null, dateTo: 'incorrect_format' },
                         }),
                 )
@@ -527,7 +528,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                                 dateTo: null,
                                 description: null,
                             },
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                         }),
                 )
                 .expect(HttpStatus.CREATED)
@@ -545,7 +546,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                                 dateTo: '2021-04-21',
                                 description: 'ideaDescription',
                             },
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                         }),
                 )
@@ -564,7 +565,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                                 dateTo: '2021-04-21',
                                 description: 'ideaDescription',
                             },
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                             beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                         }),
                 )
@@ -576,7 +577,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.details.subject).toBe('ideaMilestoneSubject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
-            expect(body.networks[0].value).toBe(10)
+            expect(body.networks[0].value).toBe('10')
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.details.dateFrom).toBe('2021-04-20')
             expect(body.details.dateTo).toBe('2021-04-21')
@@ -585,14 +586,14 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
         it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const otherIdea = await createIdea({ networks: [{ name: NETWORKS.POLKADOT, value: 100 }] }, otherUser)
+            const otherIdea = await createIdea({ networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }] }, otherUser)
             await sessionHandler
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl(otherIdea.id))
                         .send({
                             details: { subject: 'ideaMilestoneSubject' },
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                         }),
                 )
                 .expect(HttpStatus.FORBIDDEN)
@@ -603,7 +604,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 .post(baseUrl(idea.id))
                 .send({
                     details: { subject: 'ideaMilestoneSubject' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                 })
                 .expect(HttpStatus.FORBIDDEN)
         })
@@ -616,7 +617,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                         .post(baseUrl(idea.id))
                         .send({
                             details: { subject: 'ideaMilestoneSubject' },
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                         }),
                 )
                 .expect(HttpStatus.FORBIDDEN)
@@ -630,7 +631,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'ideaMilestoneSubject',
@@ -681,7 +682,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                             networks: [
                                 {
                                     ...ideaMilestone.networks[0],
-                                    value: 500,
+                                    value: '500',
                                 },
                             ],
                         }),
@@ -692,7 +693,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
             expect(body.networks).toBeDefined()
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
-            expect(body.networks[0].value).toBe(500)
+            expect(body.networks[0].value).toBe('500')
         })
 
         it(`should patch beneficiary correctly`, async () => {
@@ -777,7 +778,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             expect(body.details.subject).toBe('newSubject')
             expect(body.networks.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.POLKADOT)
-            expect(body.networks[0].value).toBe(100)
+            expect(body.networks[0].value).toBe('100')
             expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.details.dateFrom).toBe('2021-04-20')
             expect(body.details.dateTo).toBe('2021-04-21')
@@ -787,7 +788,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: 100 }], status: IdeaStatus.Draft },
+                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }], status: IdeaStatus.Draft },
                 otherUser,
             )
             const milestone = await createIdeaMilestone(draftIdea.id, milestoneDto, otherUser)
@@ -797,7 +798,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                         .patch(`${baseUrl(draftIdea.id)}/${milestone.id}`)
                         .send({
                             details: { subject: 'ideaMilestoneSubject' },
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                         }),
                 )
                 .expect(HttpStatus.FORBIDDEN)
@@ -808,7 +809,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                 .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                 .send({
                     details: { subject: 'ideaMilestoneSubject' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                 })
                 .expect(HttpStatus.FORBIDDEN)
         })
@@ -821,7 +822,7 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
                         .patch(`${baseUrl(idea.id)}/${ideaMilestone.id}`)
                         .send({
                             details: { subject: 'ideaMilestoneSubject' },
-                            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                         }),
                 )
                 .expect(HttpStatus.FORBIDDEN)

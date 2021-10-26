@@ -9,6 +9,7 @@ import { IdeaNetwork } from '../entities/idea-network.entity'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { IdeaNetworksService } from './idea-networks.service'
 import { v4 as uuid } from 'uuid'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 describe('IdeaNetworksService', () => {
     const app = beforeSetupFullApp()
@@ -28,56 +29,56 @@ describe('IdeaNetworksService', () => {
 
     describe('update', () => {
         it('should update networks value', async () => {
-            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
             const ideaNetworkId = idea.networks[0].id
 
-            await getService().update(ideaNetworkId, { value: 5 }, sessionData)
+            await getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)
 
             const savedIdeaNetwork = (await getRepository().findOne(ideaNetworkId))!
-            expect(savedIdeaNetwork.value).toBe('5.000000000000000')
+            expect(savedIdeaNetwork.value).toBe('5')
         })
 
         it(`should throw forbidden exception when trying to update network of other user's idea`, async () => {
             const otherSessionData = await createSessionData({ username: 'other', email: 'other@example.com' })
 
-            const { idea } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { idea } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
             const ideaNetworkId = idea.networks[0].id
 
-            await expect(getService().update(ideaNetworkId, { value: 5 }, otherSessionData)).rejects.toThrow(
+            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, otherSessionData)).rejects.toThrow(
                 ForbiddenException,
             )
         })
 
         it(`should throw not found exception when trying to update not existing network`, async () => {
-            const { sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
 
-            await expect(getService().update(uuid(), { value: 5 }, sessionData)).rejects.toThrow(NotFoundException)
+            await expect(getService().update(uuid(), { value: '5' as NetworkPlanckValue }, sessionData)).rejects.toThrow(NotFoundException)
         })
 
         it(`should throw forbidden exception when trying to update network with ${IdeaNetworkStatus.TurnedIntoProposal} status`, async () => {
-            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
             const ideaNetworkId = idea.networks[0].id
             await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.TurnedIntoProposal })
 
-            await expect(getService().update(ideaNetworkId, { value: 5 }, sessionData)).rejects.toThrow(
+            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).rejects.toThrow(
                 ForbiddenException,
             )
         })
 
         it(`should resolve when trying to update network with ${IdeaNetworkStatus.Pending} status`, async () => {
-            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
             const ideaNetworkId = idea.networks[0].id
             await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.Pending })
 
-            await expect(getService().update(ideaNetworkId, { value: 5 }, sessionData)).resolves.toBeDefined()
+            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).resolves.toBeDefined()
         })
 
         it(`should resolve when trying to update network with ${IdeaNetworkStatus.Active} status`, async () => {
-            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: 10 }])
+            const { idea, sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
             const ideaNetworkId = idea.networks[0].id
             await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.Active })
 
-            await expect(getService().update(ideaNetworkId, { value: 5 }, sessionData)).resolves.toBeDefined()
+            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).resolves.toBeDefined()
         })
     })
 })

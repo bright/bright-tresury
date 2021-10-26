@@ -1,9 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min, Validate } from 'class-validator'
+import { IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString, IsUUID, Min, Validate } from 'class-validator'
 import { ExtrinsicDto, toExtrinsicDto } from '../../../extrinsics/dto/extrinsic.dto'
 import { IsValidNetworkConstraint } from '../../../utils/network.validator'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
+import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
 
 export class IdeaMilestoneNetworkDto {
     @ApiProperty({
@@ -22,12 +23,11 @@ export class IdeaMilestoneNetworkDto {
     name: string
 
     @ApiProperty({
-        description: 'Reward for the milestone in the network',
+        description: 'Reward for the milestone in the network in Planck',
     })
     @IsNotEmpty()
-    @IsNumber()
-    @Min(0)
-    value: number
+    @IsNumberString({ no_symbols: true })
+    value: NetworkPlanckValue
 
     @IsOptional()
     extrinsic: ExtrinsicDto | null
@@ -40,7 +40,7 @@ export class IdeaMilestoneNetworkDto {
     constructor({ id, name, value, extrinsic, status }: IdeaMilestoneNetwork) {
         this.id = id
         this.name = name
-        this.value = Number(value)
+        this.value = value
         this.extrinsic = extrinsic ? toExtrinsicDto(extrinsic) : null
         this.status = status
     }

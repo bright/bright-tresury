@@ -18,6 +18,7 @@ import { CreateIdeaProposalDto, IdeaProposalDataDto } from './dto/create-idea-pr
 import { IdeaProposalsService } from './idea-proposals.service'
 import { v4 as uuid } from 'uuid'
 import { Idea } from '../entities/idea.entity'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
@@ -61,7 +62,7 @@ describe('IdeaProposalsService', () => {
         idea = await createIdea(
             {
                 beneficiary: uuid(),
-                networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
             },
             sessionData,
             ideasService(),
@@ -114,7 +115,7 @@ describe('IdeaProposalsService', () => {
             const ideaWithEmptyBeneficiaryAddress = await createIdea(
                 {
                     beneficiary: '',
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
                 },
                 sessionData,
                 ideasService(),
@@ -136,7 +137,7 @@ describe('IdeaProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     status: IdeaStatus.TurnedIntoProposal,
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: 'polkadot', value: '100' as NetworkPlanckValue }],
                 },
                 sessionData,
                 ideasService(),
@@ -157,7 +158,7 @@ describe('IdeaProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     status: IdeaStatus.Draft,
-                    networks: [{ name: 'polkadot', value: 100 }],
+                    networks: [{ name: 'polkadot', value: '100' as NetworkPlanckValue }],
                 },
                 sessionData,
                 ideasService(),
@@ -178,8 +179,8 @@ describe('IdeaProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: 100 },
-                        { name: NETWORKS.KUSAMA, value: 10 },
+                        { name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue },
+                        { name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue },
                     ],
                 },
                 sessionData,
@@ -207,7 +208,7 @@ describe('IdeaProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     status: IdeaStatus.MilestoneSubmission,
-                    networks: [{ name: NETWORKS.POLKADOT, value: 100 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
                 },
                 sessionData,
                 ideasService(),
@@ -236,7 +237,7 @@ describe('IdeaProposalsService', () => {
             const ideaWithZeroNetworkValue = await createIdea(
                 {
                     beneficiary: uuid(),
-                    networks: [{ name: NETWORKS.POLKADOT, value: 0 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '0' as NetworkPlanckValue }],
                 },
                 sessionData,
                 ideasService(),
@@ -384,8 +385,8 @@ describe('IdeaProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: 2 },
-                        { name: NETWORKS.KUSAMA, value: 3 },
+                        { name: NETWORKS.POLKADOT, value: '2' as NetworkPlanckValue },
+                        { name: NETWORKS.KUSAMA, value: '3' as NetworkPlanckValue },
                     ],
                 },
                 sessionData,
@@ -406,8 +407,8 @@ describe('IdeaProposalsService', () => {
                 {
                     beneficiary: uuid(),
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: 2 },
-                        { name: NETWORKS.KUSAMA, value: 3 },
+                        { name: NETWORKS.POLKADOT, value: '2' as NetworkPlanckValue },
+                        { name: NETWORKS.KUSAMA, value: '3' as NetworkPlanckValue },
                     ],
                 },
                 sessionData,

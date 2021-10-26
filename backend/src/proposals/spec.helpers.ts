@@ -21,6 +21,7 @@ import { Web3Address } from '../users/web3-addresses/web3-address.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 const makeMotion = (
     hash: string,
@@ -43,8 +44,8 @@ export const proposals = [
         0,
         { display: 'John Doe', address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
         { address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
-        1e-14,
-        0.001,
+        '1' as NetworkPlanckValue,
+        '100' as NetworkPlanckValue,
         [makeMotion('hash_0_0', 'approveProposal', 0, [], [])] as BlockchainProposalMotion[],
         BlockchainProposalStatus.Proposal,
     ),
@@ -53,8 +54,8 @@ export const proposals = [
         1,
         { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
         { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
-        2000,
-        40,
+        '2000' as NetworkPlanckValue,
+        '40' as NetworkPlanckValue,
         [makeMotion('hash_1_0', 'approveProposal', 1, [], [])] as BlockchainProposalMotion[],
         BlockchainProposalStatus.Proposal,
     ),
@@ -63,8 +64,8 @@ export const proposals = [
         { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
         { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
 
-        1000,
-        20,
+        '1000' as NetworkPlanckValue,
+        '20' as NetworkPlanckValue,
 
         [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
         BlockchainProposalStatus.Proposal,
@@ -74,8 +75,8 @@ export const proposals = [
         { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
         { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
 
-        1000,
-        20,
+        '1000' as NetworkPlanckValue,
+        '20' as NetworkPlanckValue,
         [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainProposalMotion[],
         BlockchainProposalStatus.Approval,
     ),
@@ -133,7 +134,7 @@ export const setUpIdea = async (
                 ...ideaDto?.details,
             },
             beneficiary: uuid(),
-            networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+            networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
             ...ideaDto,
         },
         sessionHandler.sessionData,
@@ -160,7 +161,7 @@ export const setUpIdeaWithMilestone = async (
     const ideaMilestone = await createIdeaMilestone(
         idea.id,
         {
-            networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+            networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
             ...milestoneDto,
             details: { subject: 'milestoneSubject', ...milestoneDto?.details },
         },

@@ -21,7 +21,7 @@
             "ss58Format": 42,
             "genesisHash": "",
             "bond": {
-                "minValue": 1,
+                "minValue": "1000000000000",
                 "percentage": 5
             },
             "currency": "Unit",
@@ -36,7 +36,7 @@
             "ss58Format": 42,
             "genesisHash": "",
             "bond": {
-                "minValue": 1,
+                "minValue": "1000000000000",
                 "percentage": 5
             },
             "currency": "Unit",

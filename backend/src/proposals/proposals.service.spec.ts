@@ -11,6 +11,7 @@ import { ProposalMilestone } from './proposal-milestones/entities/proposal-miles
 import { ProposalsService } from './proposals.service'
 import { mockedBlockchainService, setUpIdea, setUpIdeaWithMilestone } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 describe('ProposalsService', () => {
     const app = beforeSetupFullApp()
@@ -56,8 +57,8 @@ describe('ProposalsService', () => {
             expect(proposal1).toBeDefined()
             expect(proposal1!.blockchain.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(proposal1!.blockchain.beneficiary.address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
-            expect(proposal1!.blockchain.bond).toBe(0.001)
-            expect(proposal1!.blockchain.value).toBe(0.00000000000001)
+            expect(proposal1!.blockchain.bond).toBe('100')
+            expect(proposal1!.blockchain.value).toBe('1')
             expect(proposal1!.blockchain.status).toBe('proposal')
             expect(proposal1!.blockchain.motions).toBeDefined()
             expect(proposal1!.entity!.details.title).toBe('ideaTitle')
@@ -70,8 +71,8 @@ describe('ProposalsService', () => {
             expect(proposal2).toBeDefined()
             expect(proposal2!.blockchain.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(proposal2!.blockchain.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
-            expect(proposal2!.blockchain.bond).toBe(40)
-            expect(proposal2!.blockchain.value).toBe(2000)
+            expect(proposal2!.blockchain.bond).toBe('40')
+            expect(proposal2!.blockchain.value).toBe('2000')
             expect(proposal2!.blockchain.status).toBe('proposal')
             expect(proposal2!.blockchain.motions).toBeDefined()
             expect(proposal2!.entity!.details.title).toBe('ideaTitle - milestoneSubject')
@@ -83,8 +84,8 @@ describe('ProposalsService', () => {
             const proposal3 = proposals.find(({ blockchain: { proposalIndex } }) => proposalIndex === 3)
             expect(proposal3!.blockchain.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(proposal3!.blockchain.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
-            expect(proposal3!.blockchain.bond).toBe(20)
-            expect(proposal3!.blockchain.value).toBe(1000)
+            expect(proposal3!.blockchain.bond).toBe('20')
+            expect(proposal3!.blockchain.value).toBe('1000')
             expect(proposal3!.blockchain.status).toBe('approval')
             expect(proposal3!.blockchain.motions).toBeDefined()
             expect(proposal3!.entity).toBeUndefined()
@@ -103,8 +104,8 @@ describe('ProposalsService', () => {
             expect(proposal.blockchain.proposalIndex).toBe(0)
             expect(proposal.blockchain.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(proposal.blockchain.beneficiary.address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
-            expect(proposal.blockchain.bond).toBe(0.001)
-            expect(proposal.blockchain.value).toBe(0.00000000000001)
+            expect(proposal.blockchain.bond).toBe('100')
+            expect(proposal.blockchain.value).toBe('1')
             expect(proposal.blockchain.status).toBe('proposal')
         })
 
@@ -251,7 +252,7 @@ describe('ProposalsService', () => {
             const secondMilestone = await createIdeaMilestone(
                 ideaWithMilestone.id,
                 {
-                    networks: [{ name: 'localhost', value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [{ name: 'localhost', value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                     details: { subject: 'subject1' },
                 },
                 sessionHandler.sessionData,
@@ -283,7 +284,7 @@ describe('ProposalsService', () => {
 
         it('should create proposal milestones and save the createdBy order', async () => {
             const { idea, ideaNetwork, sessionHandler } = await setUpIdea(app(), undefined, {})
-            const networks = [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }]
+            const networks = [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }]
 
             const createMilestone = async (subject: string) => {
                 const milestone = await createIdeaMilestone(

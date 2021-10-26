@@ -13,6 +13,7 @@ import { Proposal } from '../entities/proposal.entity'
 import { IdeaWithMilestones, ProposalsService } from '../proposals.service'
 import { createProposerSessionData, mockedBlockchainService, proposals, setUpProposalFromIdea } from '../spec.helpers'
 import { ProposalDetailsService } from './proposal-details.service'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 describe('ProposalDetailsService', () => {
     const app = beforeSetupFullApp()
@@ -241,7 +242,7 @@ describe('ProposalDetailsService', () => {
                 {
                     details: { title: 'ideaTitle' },
                     beneficiary: uuid(),
-                    networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                 },
                 sessionData,
             )

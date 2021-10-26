@@ -4,6 +4,7 @@ import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../u
 import { createIdea, createIdeaMilestone } from '../../spec.helpers'
 import { CreateIdeaMilestoneNetworkDto } from '../dto/create-idea-milestone-network.dto'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
+import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
 
 describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     const app = beforeSetupFullApp()
@@ -24,17 +25,17 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     describe('PATCH', () => {
         it(`should update idea milestone network value`, async () => {
             const { idea, sessionHandler, ideaMilestoneNetworkId, ideaMilestone } = await setUp([
-                { name: NETWORKS.POLKADOT, value: 10, status: IdeaMilestoneNetworkStatus.Active },
+                { name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
             await sessionHandler.authorizeRequest(
                 request(app())
                     .patch(`/api/v1/ideas/${idea.id}/milestones/${ideaMilestone.id}/networks/${ideaMilestoneNetworkId}`)
-                    .send({ value: 12 }),
+                    .send({ value: '12' }),
             )
 
             const { body } = await request(app()).get(`/api/v1/ideas/${idea.id}/milestones/${ideaMilestone.id}`)
-            expect(body.networks[0].value).toBe(12)
+            expect(body.networks[0].value).toBe('12')
         })
     })
 })

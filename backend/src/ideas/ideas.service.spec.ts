@@ -15,6 +15,7 @@ import { createSessionData } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from './idea-milestones/entities/idea-milestone-network-status'
 import { IdeaProposalDetails } from '../idea-proposal-details/idea-proposal-details.entity'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 describe(`IdeasService`, () => {
     const app = beforeSetupFullApp()
@@ -39,7 +40,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Active,
                 },
                 sessionData,
@@ -47,7 +48,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 2' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.TurnedIntoProposal,
                 },
                 sessionData,
@@ -62,7 +63,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Active,
                 },
                 sessionData,
@@ -70,7 +71,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 2' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Active,
                 },
                 sessionData,
@@ -78,7 +79,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 2' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Active,
                 },
                 sessionData,
@@ -93,7 +94,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Draft,
                 },
                 sessionData,
@@ -108,7 +109,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Draft,
                 },
                 otherSessionData,
@@ -123,7 +124,7 @@ describe(`IdeasService`, () => {
             await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Draft,
                 },
                 otherSessionData,
@@ -141,7 +142,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                 },
                 sessionData,
             )
@@ -160,7 +161,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: 'other_network', value: 10 }],
+                    networks: [{ name: 'other_network', value: '10' as NetworkPlanckValue }],
                 },
                 sessionData,
             )
@@ -177,7 +178,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                 },
                 sessionData,
             )
@@ -197,8 +198,8 @@ describe(`IdeasService`, () => {
                 {
                     details: { title: 'Test title', content: 'content' },
                     networks: [
-                        { name: NETWORKS.KUSAMA, value: 15 },
-                        { name: NETWORKS.POLKADOT, value: 14 },
+                        { name: NETWORKS.KUSAMA, value: '15' as NetworkPlanckValue },
+                        { name: NETWORKS.POLKADOT, value: '14' as NetworkPlanckValue },
                     ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 },
@@ -226,7 +227,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Draft,
                 },
                 sessionData,
@@ -241,7 +242,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Draft,
                 },
                 otherSessionData,
@@ -254,7 +255,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title 1' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     status: IdeaStatus.Draft,
                 },
                 otherSessionData,
@@ -270,7 +271,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 1 } as IdeaNetworkDto],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
@@ -283,7 +284,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 1 } as IdeaNetworkDto],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
@@ -295,7 +296,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 1 } as IdeaNetworkDto],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                     status: IdeaStatus.Draft,
                 } as CreateIdeaDto,
                 sessionData,
@@ -308,7 +309,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 1 } as IdeaNetworkDto],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                     status: IdeaStatus.Active,
                 } as CreateIdeaDto,
                 sessionData,
@@ -321,7 +322,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 1 } as IdeaNetworkDto],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
@@ -333,14 +334,14 @@ describe(`IdeasService`, () => {
             const createdFirstIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 1 } as IdeaNetworkDto],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
             const createdSecondIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 1 } as IdeaNetworkDto],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
@@ -358,7 +359,7 @@ describe(`IdeasService`, () => {
                         portfolio: 'Test portfolio',
                         links: ['https://goodlink.com'],
                     },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 10 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 },
                 sessionData,
@@ -376,7 +377,7 @@ describe(`IdeasService`, () => {
 
         it('should create and save idea with networks', async (done) => {
             const createdIdea = await getService().create(
-                { details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 10 }] },
+                { details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }] },
                 sessionData,
             )
             const savedIdea = await getService().findOne(createdIdea.id, sessionData)
@@ -384,7 +385,7 @@ describe(`IdeasService`, () => {
             expect(savedIdea.details.title).toBe('Test title')
             expect(savedIdea.networks!.length).toBe(1)
             expect(savedIdea.networks![0].name).toBe(NETWORKS.KUSAMA)
-            expect(savedIdea.networks![0].value).toBe('10.000000000000000')
+            expect(savedIdea.networks![0].value).toBe('10')
             expect(savedIdea.networks![0].status).toBe(IdeaNetworkStatus.Active)
             done()
         })
@@ -395,20 +396,20 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
                 },
                 sessionData,
             )
             await getService().update(
                 {
-                    networks: [{ ...idea.networks[0], value: 249 }],
+                    networks: [{ ...idea.networks[0], value: '249' as NetworkPlanckValue }],
                 },
                 idea.id,
                 sessionData,
             )
             const savedIdea = await getService().findOne(idea.id, sessionData)
             expect(savedIdea.networks[0].name).toBe(NETWORKS.KUSAMA)
-            expect(savedIdea.networks[0].value).toBe('249.000000000000000')
+            expect(savedIdea.networks[0].value).toBe('249')
             expect(savedIdea.networks![0].status).toBe(IdeaNetworkStatus.Active)
         })
 
@@ -416,14 +417,14 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                 },
                 sessionData,
             )
             const ideaMilestone = await getMilestonesService().create(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.KUSAMA, value: 20, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '20' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: null,
                     details: { subject: 'subject' },
                 },
@@ -432,7 +433,7 @@ describe(`IdeasService`, () => {
 
             await getService().update(
                 {
-                    networks: [idea.networks[0], { name: NETWORKS.POLKADOT, value: 10 }],
+                    networks: [idea.networks[0], { name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                 },
                 idea.id,
                 sessionData,
@@ -443,11 +444,11 @@ describe(`IdeasService`, () => {
 
             const kusamaMilestoneNetwork = actualMilestone.networks.find((n) => n.name === NETWORKS.KUSAMA)!
             expect(kusamaMilestoneNetwork).toBeDefined()
-            expect(kusamaMilestoneNetwork.value).toBe('20.000000000000000')
+            expect(kusamaMilestoneNetwork.value).toBe('20')
 
             const polkadotMilestoneNetwork = actualMilestone.networks.find((n) => n.name === NETWORKS.POLKADOT)!
             expect(polkadotMilestoneNetwork).toBeDefined()
-            expect(polkadotMilestoneNetwork.value).toBe('0.000000000000000')
+            expect(polkadotMilestoneNetwork.value).toBe('0')
         })
 
         it('should throw not found if wrong id', async (done) => {
@@ -459,7 +460,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                 },
                 sessionData,
             )
@@ -472,7 +473,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                     status: IdeaStatus.Active,
                 },
                 sessionData,
@@ -490,7 +491,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                     status: IdeaStatus.TurnedIntoProposal,
                 },
                 sessionData,
@@ -506,7 +507,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                     status: IdeaStatus.MilestoneSubmission,
                 },
                 sessionData,
@@ -522,7 +523,7 @@ describe(`IdeasService`, () => {
     describe('delete', () => {
         it('should delete idea', async (done) => {
             const createdIdea = await getService().create(
-                { details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: 42 }] },
+                { details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue}] },
                 sessionData,
             )
             await getService().delete(createdIdea.id, sessionData)
@@ -537,7 +538,7 @@ describe(`IdeasService`, () => {
             const createdIdea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 42 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue}],
                     status: IdeaStatus.Active,
                 },
                 sessionData,
@@ -553,7 +554,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                     status: IdeaStatus.TurnedIntoProposal,
                 },
                 sessionData,
@@ -567,7 +568,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                     status: IdeaStatus.TurnedIntoProposal,
                 },
                 sessionData,
@@ -580,7 +581,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 44 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue}],
                     status: IdeaStatus.MilestoneSubmission,
                 },
                 sessionData,
@@ -592,7 +593,7 @@ describe(`IdeasService`, () => {
             const idea = await getService().create(
                 {
                     details: { title: 'Test title' },
-                    networks: [{ name: NETWORKS.KUSAMA, value: 42 }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue}],
                     status: IdeaStatus.Active,
                 },
                 sessionData,
@@ -601,7 +602,7 @@ describe(`IdeasService`, () => {
             const ideaMilestone = await getMilestonesService().create(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.KUSAMA, value: 42, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                     beneficiary: null,
                     details: { subject: 'subject' },
                 },

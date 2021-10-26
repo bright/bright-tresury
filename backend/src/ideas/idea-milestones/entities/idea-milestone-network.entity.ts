@@ -5,6 +5,7 @@ import { Extrinsic } from '../../../extrinsics/extrinsic.entity'
 import { defaultIdeaNetworkStatus } from '../../entities/idea-network-status'
 import { defaultIdeaMilestoneNetworkStatus, IdeaMilestoneNetworkStatus } from './idea-milestone-network-status'
 import { IdeaMilestone } from './idea-milestone.entity'
+import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
 
 @Entity('idea_milestone_networks')
 export class IdeaMilestoneNetwork extends BaseEntity {
@@ -14,8 +15,8 @@ export class IdeaMilestoneNetwork extends BaseEntity {
     @Column({ type: 'text' })
     name: string
 
-    @Column('decimal', { precision: 39, scale: 15, nullable: false, default: 0 })
-    value: number
+    @Column('decimal', { precision: 54, scale: 0, nullable: false, default: 0 })
+    value: NetworkPlanckValue
 
     @OneToOne(() => Extrinsic)
     @JoinColumn()
@@ -34,7 +35,7 @@ export class IdeaMilestoneNetwork extends BaseEntity {
 
     constructor(
         name: string,
-        value: number,
+        value: NetworkPlanckValue,
         extrinsic = null,
         blockchainProposalId = null,
         status = defaultIdeaMilestoneNetworkStatus,

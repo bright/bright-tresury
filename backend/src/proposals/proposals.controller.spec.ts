@@ -13,6 +13,7 @@ import { ProposalDto } from './dto/proposal.dto'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 const baseUrl = '/api/v1/proposals'
 
@@ -55,7 +56,7 @@ describe(`/api/v1/proposals`, () => {
             {
                 details: { ...details, title: 'ideaTitle' },
                 beneficiary: uuid(),
-                networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
             },
             sessionData,
         )
@@ -68,14 +69,14 @@ describe(`/api/v1/proposals`, () => {
             {
                 details: { ...details, title: 'ideaWithMilestoneTitle' },
                 beneficiary: uuid(),
-                networks: [{ name: NETWORKS.POLKADOT, value: 10 }],
+                networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
             },
             sessionData,
         )
         ideaMilestone = await createIdeaMilestone(
             ideaWithMilestone.id,
             {
-                networks: [{ name: NETWORKS.POLKADOT, value: 100, status: IdeaMilestoneNetworkStatus.Active }],
+                networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
                 details: {
                     subject: 'ideaMilestoneSubject',
                     description: 'description',
@@ -109,8 +110,8 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal1).toBeDefined()
             expect(proposal1!.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(proposal1!.beneficiary.address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
-            expect(proposal1!.bond).toBe(0.001)
-            expect(proposal1!.value).toBe(0.00000000000001)
+            expect(proposal1!.bond).toBe('100')
+            expect(proposal1!.value).toBe('1')
             expect(proposal1!.status).toBe('submitted')
             expect(proposal1!.details).toBeDefined()
             expect(proposal1!.isCreatedFromIdea).toBe(true)
@@ -133,8 +134,8 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal2).toBeDefined()
             expect(proposal2!.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(proposal2!.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
-            expect(proposal2!.bond).toBe(40)
-            expect(proposal2!.value).toBe(2000)
+            expect(proposal2!.bond).toBe('40')
+            expect(proposal2!.value).toBe('2000')
             expect(proposal2!.status).toBe('submitted')
             expect(proposal1!.details).toBeDefined()
             expect(proposal2!.isCreatedFromIdea).toBe(false)
@@ -156,8 +157,8 @@ describe(`/api/v1/proposals`, () => {
 
             expect(proposal3!.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(proposal3!.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
-            expect(proposal3!.bond).toBe(20)
-            expect(proposal3!.value).toBe(1000)
+            expect(proposal3!.bond).toBe('20')
+            expect(proposal3!.value).toBe('1000')
             expect(proposal3!.status).toBe('approved')
             expect(proposal3!.details).toBeUndefined()
             expect(proposal3!.isCreatedFromIdea).toBe(false)
@@ -202,8 +203,8 @@ describe(`/api/v1/proposals`, () => {
             const body = result.body as ProposalDto
             expect(body.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.beneficiary.address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
-            expect(body.bond).toBe(0.001)
-            expect(body.value).toBe(0.00000000000001)
+            expect(body.bond).toBe('100')
+            expect(body.value).toBe('1')
             expect(body.status).toBe('submitted')
             expect(body.motions).toBeDefined()
             expect(body.motions[0]).toEqual({
@@ -237,8 +238,8 @@ describe(`/api/v1/proposals`, () => {
 
             expect(body.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(body.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
-            expect(body.bond).toBe(40)
-            expect(body.value).toBe(2000)
+            expect(body.bond).toBe('40')
+            expect(body.value).toBe('2000')
             expect(body.status).toBe('submitted')
             expect(body.motions).toBeDefined()
             expect(body.motions[0]).toEqual({
@@ -272,8 +273,8 @@ describe(`/api/v1/proposals`, () => {
 
             expect(body.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
             expect(body.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
-            expect(body.bond).toBe(20)
-            expect(body.value).toBe(1000)
+            expect(body.bond).toBe('20')
+            expect(body.value).toBe('1000')
             expect(body.status).toBe('approved')
             expect(body.motions).toBeDefined()
             expect(body.motions[0]).toEqual({

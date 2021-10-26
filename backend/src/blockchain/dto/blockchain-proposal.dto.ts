@@ -8,6 +8,7 @@ import { BlockchainProposalMotion, toBlockchainProposalMotion } from './blockcha
 import { BlockchainProposalMotionEnd } from './blockchain-proposal-motion-end.dto'
 import { encodeAddress } from '@polkadot/keyring'
 import { BlockchainConfig } from '../blockchain-configuration/blockchain-configuration.config'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 export enum BlockchainProposalStatus {
     Proposal = 'proposal',
@@ -18,14 +19,13 @@ export class BlockchainProposal {
     proposalIndex: number
     proposer: BlockchainAccountInfo
     beneficiary: BlockchainAccountInfo
-    value: number
-    bond: number
+    value: NetworkPlanckValue
+    bond: NetworkPlanckValue
     motions: BlockchainProposalMotion[]
     status: BlockchainProposalStatus
 
     static create(
         derivedProposal: DeriveTreasuryProposal,
-        blockchainConfiguration: BlockchainConfig,
         status: BlockchainProposalStatus,
         identities: Map<string, DeriveAccountRegistration>,
         toBlockchainProposalMotionEnd: (endBlock: BlockNumber) => BlockchainProposalMotionEnd,
@@ -37,8 +37,8 @@ export class BlockchainProposal {
         const proposalIndex = id.toNumber()
         const proposer = toBlockchainAccountInfo(proposerAddress, identities.get(proposerAddress))
         const beneficiary = toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress))
-        const value = transformBalance(proposal.value, blockchainConfiguration.decimals)
-        const bond = transformBalance(proposal.bond, blockchainConfiguration.decimals)
+        const value = proposal.value.toString() as NetworkPlanckValue
+        const bond = proposal.bond.toString() as NetworkPlanckValue
         const motions = council.map((motion) =>
             toBlockchainProposalMotion(motion, identities, toBlockchainProposalMotionEnd),
         )
@@ -49,8 +49,8 @@ export class BlockchainProposal {
         proposalIndex: number,
         proposer: BlockchainAccountInfo,
         beneficiary: BlockchainAccountInfo,
-        value: number,
-        bond: number,
+        value: NetworkPlanckValue,
+        bond: NetworkPlanckValue,
         motions: BlockchainProposalMotion[],
         status: BlockchainProposalStatus,
     ) {

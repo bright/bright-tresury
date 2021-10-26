@@ -10,13 +10,12 @@ import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
 import { Idea } from '../../entities/idea.entity'
-import { IdeaStatus } from '../../entities/idea-status'
 import { IdeasService } from '../../ideas.service'
-import { createIdea, createIdeaMilestone, saveIdeaMilestone } from '../../spec.helpers'
+import { createIdea, createIdeaMilestone } from '../../spec.helpers'
 import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
-import { IdeaMilestoneStatus } from '../entities/idea-milestone-status'
 import { IdeaMilestonesService } from '../idea-milestones.service'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
+import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
@@ -43,7 +42,7 @@ const createIdeaMilestoneProposalDto = (ideaMilestoneNetworkId: string) => {
 }
 
 const createIdeaMilestoneDto = (
-    networkValue: number = 100,
+    networkValue: NetworkPlanckValue = '100' as NetworkPlanckValue,
     beneficiary: string = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
 ) => {
     return {
@@ -136,7 +135,7 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
             const body = result.body as IdeaMilestoneNetworkDto
 
             expect(body.name).toBe(NETWORKS.POLKADOT)
-            expect(body.value).toBe(100)
+            expect(body.value).toBe('100')
             expect(body.extrinsic).toBeDefined()
             expect(body.extrinsic!.extrinsicHash).toBe(
                 '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',

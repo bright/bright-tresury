@@ -14,6 +14,7 @@ import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-
 import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 const logger = getLogger()
 
@@ -140,7 +141,7 @@ export class IdeasService {
     private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestone) {
         return dtoNetworks.map((dtoNetwork) => {
             const milestoneNetwork = milestone.networks.find((n) => n.name === dtoNetwork.name)
-            return milestoneNetwork ?? new IdeaMilestoneNetwork(dtoNetwork.name, 0)
+            return milestoneNetwork ?? new IdeaMilestoneNetwork(dtoNetwork.name, '0' as NetworkPlanckValue)
         })
     }
 

@@ -3,6 +3,7 @@ import { createUserSessionHandlerWithVerifiedEmail } from '../../auth/supertoken
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
 import { CreateIdeaNetworkDto } from '../dto/create-idea-network.dto'
 import { createIdea } from '../spec.helpers'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     const app = beforeSetupFullApp()
@@ -21,14 +22,14 @@ describe('/api/v1/ideas/:ideaId/networks/:id', () => {
 
     describe('PATCH', () => {
         it(`should update idea network value`, async () => {
-            const { idea, sessionHandler, ideaNetworkId } = await setUp([{ name: NETWORKS.POLKADOT, value: 10 }])
+            const { idea, sessionHandler, ideaNetworkId } = await setUp([{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }])
 
             await sessionHandler.authorizeRequest(
-                request(app()).patch(`/api/v1/ideas/${idea.id}/networks/${ideaNetworkId}`).send({ value: 12 }),
+                request(app()).patch(`/api/v1/ideas/${idea.id}/networks/${ideaNetworkId}`).send({ value: '12' }),
             )
 
             const { body } = await request(app()).get(`/api/v1/ideas/${idea.id}`)
-            expect(body.networks[0].value).toBe(12)
+            expect(body.networks[0].value).toBe('12')
         })
     })
 })

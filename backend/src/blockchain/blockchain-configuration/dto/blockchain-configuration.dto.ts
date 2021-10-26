@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BlockchainConfig } from '../blockchain-configuration.config'
+import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({
@@ -37,7 +38,7 @@ export class BlockchainConfigurationDto {
         description: 'Bond values used when we submit new proposal. Supported properties: minValue and percentage',
     })
     bond: {
-        minValue: number
+        minValue: NetworkPlanckValue
         percentage: number
     }
 

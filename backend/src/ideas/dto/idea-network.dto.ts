@@ -3,6 +3,7 @@ import { ExtrinsicDto, toExtrinsicDto } from '../../extrinsics/dto/extrinsic.dto
 import { Nil } from '../../utils/types'
 import { IdeaNetworkStatus } from '../entities/idea-network-status'
 import { IdeaNetwork } from '../entities/idea-network.entity'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 export class IdeaNetworkDto {
     @ApiProperty({
@@ -17,9 +18,9 @@ export class IdeaNetworkDto {
 
     @ApiProperty({
         description: 'Reward for the idea in the network',
-        type: Number,
+        type: String,
     })
-    value: number
+    value: NetworkPlanckValue
 
     @ApiProperty({
         description: 'Status of the network',
@@ -42,8 +43,7 @@ export class IdeaNetworkDto {
         this.name = name
         this.status = status
         this.blockchainProposalId = blockchainProposalId
-        // TODO change to string
-        this.value = Number(value)
+        this.value = value
         this.extrinsic = extrinsic ? toExtrinsicDto(extrinsic) : null
     }
 }

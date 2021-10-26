@@ -5,6 +5,7 @@ import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-pro
 import { Nil } from '../../utils/types'
 import { BlockchainProposalMotion } from '../../blockchain/dto/blockchain-proposal-motion.dto'
 import { BlockchainProposalWithDomainDetails } from './blockchain-proposal-with-domain-details.dto'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -28,12 +29,12 @@ export class ProposalDto {
     @ApiProperty({
         description: 'Value of the proposal',
     })
-    value: number
+    value: NetworkPlanckValue
 
     @ApiProperty({
         description: 'Locked deposit',
     })
-    bond: number
+    bond: NetworkPlanckValue
 
     @ApiProperty({
         description: 'Status of a proposal',

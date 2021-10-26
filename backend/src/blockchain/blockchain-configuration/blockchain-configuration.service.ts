@@ -4,6 +4,7 @@ import { BlockchainsConnections } from '../blockchain.module'
 import { BN_MILLION, BN_HUNDRED } from '@polkadot/util'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration.config'
 import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 @Injectable()
 export class BlockchainConfigurationService {
@@ -26,10 +27,8 @@ export class BlockchainConfigurationService {
 
         const currency = api.registry.chainTokens[0] ?? defaultBlockchainConfig.currency
 
-        const proposalBondMinimum = api.consts.treasury.proposalBondMinimum.toString()
-        const minValue = proposalBondMinimum
-            ? transformBalance(proposalBondMinimum, decimals, 10)
-            : defaultBlockchainConfig.bond.minValue
+        const proposalBondMinimum = api.consts.treasury.proposalBondMinimum.toString() as NetworkPlanckValue
+        const minValue = proposalBondMinimum ?? defaultBlockchainConfig.bond.minValue
 
         const proposalBond = api.consts.treasury.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber()
         const percentage = proposalBond ?? defaultBlockchainConfig.bond.percentage

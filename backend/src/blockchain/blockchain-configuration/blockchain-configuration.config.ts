@@ -3,6 +3,7 @@ import { booleanFormat } from '../../config/formats/boolean.format'
 import { numberFormat } from '../../config/formats/number.format'
 import { stringFormat } from '../../config/formats/string.format'
 import { objectFormat } from '../../config/formats/object.format'
+import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 export const BlockchainConfigToken = 'BlockchainConfig'
 
@@ -16,7 +17,7 @@ export interface BlockchainConfig {
     ss58Format: number
     genesisHash: string
     bond: {
-        minValue: number
+        minValue: NetworkPlanckValue
         percentage: number
     }
     currency: string
@@ -69,7 +70,7 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     },
     bond: {
         doc: 'Proposal bond information used by this blockchain',
-        default: { minValue: 1000, percentage: 5 },
+        default: { minValue: '1000000000000' as NetworkPlanckValue, percentage: 5 },
     },
     currency: {
         doc: 'Currency ticker used',
