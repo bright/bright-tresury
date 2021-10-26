@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, HttpStatus, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
@@ -177,6 +177,38 @@ describe('IdeaMilestoneProposalsService', () => {
             await expect(
                 ideaMilestoneProposalsService().createProposal(
                     ideaWithTurnedIntoProposalStatus.id,
+                    ideaMilestone.id,
+                    { ...createIdeaMilestoneProposalDto, ideaMilestoneNetworkId: ideaMilestone.networks[0].id },
+                    sessionData,
+                ),
+            ).rejects.toThrow(BadRequestException)
+        })
+
+        it(`should throw BadRequestException for idea with ${IdeaStatus.Draft} status`, async () => {
+            const ideaWithDraftStatus = await createIdea(
+                {
+                    beneficiary: uuid(),
+                },
+                sessionData,
+                ideasService(),
+            )
+
+            const ideaMilestone = await createIdeaMilestone(
+                ideaWithDraftStatus.id,
+                createIdeaMilestoneDto(),
+                sessionData,
+                ideaMilestonesService(),
+            )
+            await ideasRepository().save({
+                ...ideaWithDraftStatus,
+                status: IdeaStatus.Draft,
+            })
+
+            createIdeaMilestoneProposalDto.ideaMilestoneNetworkId = ideaMilestone.networks[0].id
+
+            await expect(
+                ideaMilestoneProposalsService().createProposal(
+                    ideaWithDraftStatus.id,
                     ideaMilestone.id,
                     { ...createIdeaMilestoneProposalDto, ideaMilestoneNetworkId: ideaMilestone.networks[0].id },
                     sessionData,

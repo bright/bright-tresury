@@ -31,7 +31,6 @@ export const useIdeaMilestone = (idea: IdeaDto, milestone?: IdeaMilestoneDto): U
         return (
             isOwner &&
             (isIdeaActive ||
-                isIdeaDraft ||
                 (isMilestoneSubmission &&
                     (ideaMilestoneNetworkStatus === IdeaMilestoneNetworkStatus.Active ||
                         ideaMilestoneNetworkStatus === IdeaMilestoneNetworkStatus.Pending)))

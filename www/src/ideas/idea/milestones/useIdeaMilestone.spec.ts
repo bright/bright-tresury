@@ -125,12 +125,12 @@ describe('useIdeaMilestone', () => {
                 expect(canTurnIntoProposal).toBe(true)
             })
 
-            it('should return true when idea is draft', () => {
+            it('should return false when idea is draft', () => {
                 const { canTurnIntoProposal } = renderHookUseIdeaMilestone(
                     { ...idea, status: IdeaStatus.Draft },
                     milestone,
                 )
-                expect(canTurnIntoProposal).toBe(true)
+                expect(canTurnIntoProposal).toBe(false)
             })
 
             it('should return false when idea is pending', () => {
