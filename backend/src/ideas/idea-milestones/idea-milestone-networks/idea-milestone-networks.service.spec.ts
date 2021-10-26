@@ -130,9 +130,9 @@ describe('IdeaMilestoneNetworksService', () => {
                 sessionData,
             )
 
-            const savedNetwork = await getRepository().findByIds(ideaMilestoneNetworks.map(({ id }) => id))
-            expect(savedNetwork[0].value).toBe('12.000000000000000')
-            expect(savedNetwork[1].value).toBe('14.000000000000000')
+            const savedNetworks = await getRepository().findByIds(ideaMilestoneNetworks.map(({ id }) => id))
+            expect(savedNetworks.find((n) => n.id === ideaMilestoneNetworks[0].id)!.value).toBe('12.000000000000000')
+            expect(savedNetworks.find((n) => n.id === ideaMilestoneNetworks[1].id)!.value).toBe('14.000000000000000')
         })
 
         it('should return milestone networks', async () => {
