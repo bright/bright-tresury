@@ -4,13 +4,9 @@ import { useHistory } from 'react-router-dom'
 import Modal from '../components/modal/Modal'
 import Strong from '../components/strong/Strong'
 import { ROUTE_PROPOSALS } from '../routes/routes'
-import SubmittingTransaction from '../substrate-lib/components/SubmittingTransaction'
+import SubmittingTransaction, { ExtrinsicDetails } from '../substrate-lib/components/SubmittingTransaction'
 import { NetworkPlanckValue } from '../util/types'
 
-export interface ExtrinsicDetails {
-    extrinsicHash: string
-    lastBlockHash: string
-}
 
 interface OwnProps {
     open: boolean

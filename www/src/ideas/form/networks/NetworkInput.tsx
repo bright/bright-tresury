@@ -76,7 +76,7 @@ export const networkValueValidationSchema = ({ t, findNetwork, required = false 
 interface OwnProps {
     inputName?: string
     readonly?: boolean
-    networkId: string
+    networkId?: string
     value: NetworkDisplayValue
 }
 
@@ -85,8 +85,8 @@ export type NetworkInputProps = OwnProps & ClassNameProps
 const NetworkInput = ({ inputName, networkId, value, className, readonly = false }: NetworkInputProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { findNetwork } = useNetworks()
-    const network = findNetwork(networkId)!
+    const { findNetwork, network } = useNetworks()
+    const selectedNetwork = networkId ? findNetwork(networkId) ?? network: network
 
     return (
         <div className={clsx(classes.root, className)}>
@@ -98,7 +98,7 @@ const NetworkInput = ({ inputName, networkId, value, className, readonly = false
                         type={`text`}
                         label={t('idea.details.form.networks.reward')}
                         placeholder={t('idea.details.form.networks.reward')}
-                        endAdornment={network.currency}
+                        endAdornment={selectedNetwork.currency}
                     />
                 ) : (
                     <>
@@ -108,7 +108,7 @@ const NetworkInput = ({ inputName, networkId, value, className, readonly = false
                             disabled={true}
                             value={value}
                             placeholder={t('idea.details.form.networks.reward')}
-                            endAdornment={network.currency}
+                            endAdornment={selectedNetwork.currency}
                         />
                     </>
                 )}

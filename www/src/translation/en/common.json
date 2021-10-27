@@ -509,6 +509,38 @@
             }
         }
     },
+    "bounty": {
+        "list": {
+            "createBounty": "+ Create Bounty"
+        },
+        "create": {
+            "title": "Create Bounty",
+            "submit": "Submit",
+            "submitModal": {
+                "title": "You are about to create a bounty proposal",
+                "warningMessage": "In order to submit your bounty proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your bounty proposal will be <strong>rejected you will lose the deposit</strong>. If your bounty proposal is approved you will get the deposit money back.",
+                "eventDescription": "event bounty proposed finished"
+            }
+        },
+        "form": {
+            "emptyFieldError": "This field cannot be empty",
+            "nonZeroFieldError": "The value must be greater than zero",
+            "fields": {
+                "title": "Title",
+                "field": "Field of bounty",
+                "value": "Value",
+                "deposit": "Deposit",
+                "blockchainDescription": "Description (stored on-chain)",
+                "description": "Description",
+                "fieldOptions": {
+                    "optimisation": "Optimisation",
+                    "treasury": "Treasury",
+                    "transactions": "Transactions",
+                    "other": "Other"
+                }
+            }
+        }
+    },
     "ideaProposalDetails": {
         "title": "Title",
         "field": "Field",

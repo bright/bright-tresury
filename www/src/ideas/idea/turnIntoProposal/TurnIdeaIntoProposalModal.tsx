@@ -1,8 +1,9 @@
 import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
+import { ExtrinsicDetails } from '../../../substrate-lib/components/SubmittingTransaction'
 import { useTurnIdeaIntoProposal } from '../../ideas.api'
 import { IdeaDto, TurnIdeaIntoProposalDto } from '../../ideas.dto'
-import SubmitProposalModal, { ExtrinsicDetails } from '../../SubmitProposalModal'
+import SubmitProposalModal from '../../SubmitProposalModal'
 
 interface OwnProps {
     idea: IdeaDto

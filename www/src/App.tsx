@@ -3,6 +3,7 @@ import i18next from 'i18next'
 import React, { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
+import Bounties from './bounties/Bounties'
 import './App.css'
 import Account from './auth/account/Account'
 import { AuthContextProvider } from './auth/AuthContext'
@@ -23,9 +24,11 @@ import { PublicOnlyRoute } from './routes/PublicOnlyRoute'
 import Route from './routes/Route'
 import {
     ROUTE_ACCOUNT,
+    ROUTE_BOUNTIES,
     ROUTE_EMAIL_NOT_VERIFIED,
     ROUTE_IDEA,
     ROUTE_IDEAS,
+    ROUTE_NEW_BOUNTY,
     ROUTE_NEW_IDEA,
     ROUTE_PROPOSAL,
     ROUTE_PROPOSALS,
@@ -44,6 +47,7 @@ import { initializeSupertokens } from './supertokens'
 import ThemeWrapper from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
 import IdeaLoader from './ideas/idea/IdeaLoader'
+import BountyCreate from './bounties/create/BountyCreate'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -84,6 +88,8 @@ function AppRoutes() {
                 <Route exact={true} path={ROUTE_STATS} component={Stats} />
                 <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
                 <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal} />
+                <Route exact={true} path={ROUTE_BOUNTIES} component={Bounties} />
+                <PrivateRoute exact={true} path={ROUTE_NEW_BOUNTY} component={BountyCreate} requireVerified={true} />
                 <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate} requireVerified={true} />
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />

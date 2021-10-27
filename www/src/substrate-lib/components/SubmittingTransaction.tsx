@@ -47,11 +47,17 @@ export interface InputParam {
     type?: string
 }
 
+export interface ExtrinsicDetails {
+    extrinsicHash: string
+    lastBlockHash: string
+    signerAddress: string
+}
+
 interface OwnProps {
     onClose: () => void
     onSuccess?: () => void
     txAttrs: TxAttrs
-    onTransactionSigned: (data: { extrinsicHash: string; lastBlockHash: string }) => Promise<void>
+    onTransactionSigned: (data: ExtrinsicDetails) => Promise<void>
     title: string
     instruction: string | JSX.Element
 }
@@ -128,6 +134,7 @@ const SubmittingTransaction = ({
             await onTransactionSigned({
                 extrinsicHash: txExecute.hash.toString(),
                 lastBlockHash: signedBlock.hash.toString(),
+                signerAddress: address,
             })
             // send the transaction
             await txExecute.send(txResHandler).catch(txErrHandler)
