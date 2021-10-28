@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber, IsNumberString, Min } from 'class-validator'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { IsNotEmpty, IsNumberString } from 'class-validator'
+import { NetworkPlanckValue } from '../../../utils/types'
 
 export class UpdateIdeaNetworkDto {
     @ApiProperty({

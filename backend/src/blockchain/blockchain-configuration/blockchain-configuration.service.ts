@@ -4,7 +4,7 @@ import { BlockchainsConnections } from '../blockchain.module'
 import { BN_MILLION, BN_HUNDRED } from '@polkadot/util'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration.config'
 import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 @Injectable()
 export class BlockchainConfigurationService {

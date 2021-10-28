@@ -9,7 +9,7 @@ import { IdeaNetwork } from '../entities/idea-network.entity'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { IdeaNetworksService } from './idea-networks.service'
 import { v4 as uuid } from 'uuid'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 describe('IdeaNetworksService', () => {
     const app = beforeSetupFullApp()

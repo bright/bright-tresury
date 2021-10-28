@@ -18,7 +18,7 @@ import { CreateIdeaProposalDto, IdeaProposalDataDto } from './dto/create-idea-pr
 import { IdeaProposalsService } from './idea-proposals.service'
 import { v4 as uuid } from 'uuid'
 import { Idea } from '../entities/idea.entity'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
     blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',

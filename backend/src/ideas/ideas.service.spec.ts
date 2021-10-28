@@ -15,7 +15,7 @@ import { createSessionData } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from './idea-milestones/entities/idea-milestone-network-status'
 import { IdeaProposalDetails } from '../idea-proposal-details/idea-proposal-details.entity'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 describe(`IdeasService`, () => {
     const app = beforeSetupFullApp()

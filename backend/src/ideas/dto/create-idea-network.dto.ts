@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumber, IsNumberString, IsOptional, Min, Validate } from 'class-validator'
+import { IsNotEmpty, IsNumberString, IsOptional, Validate } from 'class-validator'
 import { IsValidNetworkConstraint } from '../../utils/network.validator'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 export class CreateIdeaNetworkDto {
     @ApiPropertyOptional({
@@ -18,7 +18,7 @@ export class CreateIdeaNetworkDto {
     name!: string
 
     @ApiProperty({
-        description: 'Reward for the idea in the network',
+        description: 'Reward for the idea in the network in planck',
         type: String,
     })
     @IsNotEmpty()

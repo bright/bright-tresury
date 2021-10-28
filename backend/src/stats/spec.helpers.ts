@@ -1,6 +1,6 @@
 import { StatsDto } from './stats.dto'
 import { getLogger } from '../logging.module'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 export const mockedStatsService = {
     getStats: async (): Promise<StatsDto> => {

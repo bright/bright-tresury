@@ -12,7 +12,7 @@ import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
 import { createIdea, createSessionData } from '../../spec.helpers'
 import { IdeaMilestoneNetworksService } from './idea-milestone-networks.service'
 import { Idea } from '../../entities/idea.entity'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../../utils/types'
 
 describe('IdeaMilestoneNetworksService', () => {
     const app = beforeSetupFullApp()

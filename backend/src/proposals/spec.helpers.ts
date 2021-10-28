@@ -21,7 +21,7 @@ import { Web3Address } from '../users/web3-addresses/web3-address.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 const makeMotion = (
     hash: string,

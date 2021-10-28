@@ -1,9 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ExtrinsicDto, toExtrinsicDto } from '../../extrinsics/dto/extrinsic.dto'
-import { Nil } from '../../utils/types'
+import { Nil, NetworkPlanckValue } from '../../utils/types'
 import { IdeaNetworkStatus } from '../entities/idea-network-status'
 import { IdeaNetwork } from '../entities/idea-network.entity'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
 
 export class IdeaNetworkDto {
     @ApiProperty({

@@ -12,7 +12,7 @@ import { IdeaDto } from './dto/idea.dto'
 import { IdeasService } from './ideas.service'
 import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 import { createIdea, createSessionData } from './spec.helpers'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 const baseUrl = '/api/v1/ideas'
 

@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
+
 
 export class StatsDto {
     @ApiProperty({

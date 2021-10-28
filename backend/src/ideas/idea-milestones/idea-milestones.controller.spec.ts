@@ -15,7 +15,7 @@ import { IdeaMilestoneDto } from './dto/idea-milestone.dto'
 import { IdeaMilestone } from './entities/idea-milestone.entity'
 import { IdeaMilestonesService } from './idea-milestones.service'
 import { IdeaMilestoneNetworkStatus } from './entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 const baseUrl = (ideaId: string) => `/api/v1/ideas/${ideaId}/milestones`
 

@@ -5,7 +5,8 @@ import { createIdea, createSessionData } from '../../../ideas/spec.helpers'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../../utils/types'
+
 
 describe('New idea comment app event e2e', () => {
     const app = beforeSetupFullApp()

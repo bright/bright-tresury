@@ -13,7 +13,7 @@ import { Proposal } from '../entities/proposal.entity'
 import { IdeaWithMilestones, ProposalsService } from '../proposals.service'
 import { createProposerSessionData, mockedBlockchainService, proposals, setUpProposalFromIdea } from '../spec.helpers'
 import { ProposalDetailsService } from './proposal-details.service'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 describe('ProposalDetailsService', () => {
     const app = beforeSetupFullApp()

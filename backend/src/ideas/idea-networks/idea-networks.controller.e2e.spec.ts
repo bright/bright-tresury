@@ -3,7 +3,7 @@ import { createUserSessionHandlerWithVerifiedEmail } from '../../auth/supertoken
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
 import { CreateIdeaNetworkDto } from '../dto/create-idea-network.dto'
 import { createIdea } from '../spec.helpers'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     const app = beforeSetupFullApp()

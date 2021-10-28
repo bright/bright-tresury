@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BlockchainConfig } from '../blockchain-configuration.config'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../../utils/types'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({

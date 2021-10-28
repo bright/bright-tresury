@@ -13,7 +13,6 @@ import { getFromAcct, transformParams } from './utils'
 import { useAccounts } from '../accounts/useAccounts'
 import { KeyringState } from '../accounts/AccountsContext'
 import { useSubstrate } from '../api/useSubstrate'
-import { NetworkPlanckValue } from '../../util/types'
 
 export interface Result {
     status: Status

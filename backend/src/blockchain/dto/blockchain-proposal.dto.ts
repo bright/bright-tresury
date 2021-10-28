@@ -7,8 +7,7 @@ import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { BlockchainProposalMotion, toBlockchainProposalMotion } from './blockchain-proposal-motion.dto'
 import { BlockchainProposalMotionEnd } from './blockchain-proposal-motion-end.dto'
 import { encodeAddress } from '@polkadot/keyring'
-import { BlockchainConfig } from '../blockchain-configuration/blockchain-configuration.config'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 export enum BlockchainProposalStatus {
     Proposal = 'proposal',

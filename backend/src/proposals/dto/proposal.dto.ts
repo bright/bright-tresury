@@ -5,7 +5,7 @@ import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-pro
 import { Nil } from '../../utils/types'
 import { BlockchainProposalMotion } from '../../blockchain/dto/blockchain-proposal-motion.dto'
 import { BlockchainProposalWithDomainDetails } from './blockchain-proposal-with-domain-details.dto'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 export enum ProposalStatus {
     Submitted = 'submitted',

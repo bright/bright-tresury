@@ -4,7 +4,7 @@ import { BaseEntity } from '../../database/base.entity'
 import { Extrinsic } from '../../extrinsics/extrinsic.entity'
 import { defaultIdeaNetworkStatus, IdeaNetworkStatus } from './idea-network-status'
 import { Idea } from './idea.entity'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 @Entity('idea_networks')
 export class IdeaNetwork extends BaseEntity {

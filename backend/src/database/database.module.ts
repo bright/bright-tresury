@@ -6,6 +6,8 @@ import { ConfigModule } from '../config/config.module'
 import { TypeOrmLoggerAdapater } from '../logging.module'
 import { DatabaseConfig, DatabaseConfigToken } from './database.config'
 import { join, resolve } from 'path'
+import { BlockchainModule } from '../blockchain/blockchain.module'
+import { BlockchainConfigurationService } from '../blockchain/blockchain-configuration/blockchain-configuration.service'
 
 const basePath = resolve(join(__dirname, '..', '..'))
 
@@ -33,6 +35,7 @@ const TypeOrmCoreModule = TypeOrmModule.forRootAsync({
 })
 
 @Module({
-    imports: [TypeOrmCoreModule],
+    imports: [TypeOrmCoreModule, BlockchainModule],
+    providers: [BlockchainConfigurationService]
 })
 export class DatabaseModule {}

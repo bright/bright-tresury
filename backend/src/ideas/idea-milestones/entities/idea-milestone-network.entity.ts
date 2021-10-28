@@ -1,11 +1,11 @@
-import { BadRequestException, ForbiddenException } from '@nestjs/common'
+import { BadRequestException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../../database/base.entity'
 import { Extrinsic } from '../../../extrinsics/extrinsic.entity'
 import { defaultIdeaNetworkStatus } from '../../entities/idea-network-status'
 import { defaultIdeaMilestoneNetworkStatus, IdeaMilestoneNetworkStatus } from './idea-milestone-network-status'
 import { IdeaMilestone } from './idea-milestone.entity'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../../utils/types'
 
 @Entity('idea_milestone_networks')
 export class IdeaMilestoneNetwork extends BaseEntity {

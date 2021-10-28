@@ -14,7 +14,7 @@ import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-
 import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 const logger = getLogger()
 

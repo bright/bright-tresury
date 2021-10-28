@@ -8,7 +8,7 @@ import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../u
 import { createIdea, createIdeaMilestone } from '../../spec.helpers'
 import { CreateIdeaMilestoneNetworkDto } from '../dto/create-idea-milestone-network.dto'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../../utils/types'
 
 const baseUrl = (ideaId: string, milestoneId: string, id: string = '') =>
     `/api/v1/ideas/${ideaId}/milestones/${milestoneId}/networks/${id}`

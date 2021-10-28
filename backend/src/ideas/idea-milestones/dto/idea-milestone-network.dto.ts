@@ -1,10 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
-import { IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString, IsUUID, Min, Validate } from 'class-validator'
+import { IsNotEmpty, IsNumberString, IsOptional, IsString, IsUUID, Validate } from 'class-validator'
 import { ExtrinsicDto, toExtrinsicDto } from '../../../extrinsics/dto/extrinsic.dto'
 import { IsValidNetworkConstraint } from '../../../utils/network.validator'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../../utils/types'
 
 export class IdeaMilestoneNetworkDto {
     @ApiProperty({

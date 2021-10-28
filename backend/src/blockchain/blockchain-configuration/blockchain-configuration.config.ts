@@ -3,7 +3,7 @@ import { booleanFormat } from '../../config/formats/boolean.format'
 import { numberFormat } from '../../config/formats/number.format'
 import { stringFormat } from '../../config/formats/string.format'
 import { objectFormat } from '../../config/formats/object.format'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 export const BlockchainConfigToken = 'BlockchainConfig'
 

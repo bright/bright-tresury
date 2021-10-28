@@ -16,7 +16,7 @@ import { IdeaMilestoneStatus } from './entities/idea-milestone-status'
 import { IdeaMilestonesRepository } from './idea-milestones.repository'
 import { IdeaMilestonesService } from './idea-milestones.service'
 import { IdeaMilestoneNetworkStatus } from './entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 const minimalCreateIdeaMilestoneDto = {
     details: { subject: 'ideaMilestoneSubject' },

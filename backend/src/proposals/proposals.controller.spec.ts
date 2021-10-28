@@ -13,7 +13,7 @@ import { ProposalDto } from './dto/proposal.dto'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 const baseUrl = '/api/v1/proposals'
 

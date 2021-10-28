@@ -4,7 +4,7 @@ import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../u
 import { createIdea, createIdeaMilestone } from '../../spec.helpers'
 import { CreateIdeaMilestoneNetworkDto } from '../dto/create-idea-milestone-network.dto'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../../utils/types'
 
 describe('/api/v1/ideas/:ideaId/networks/:id', () => {
     const app = beforeSetupFullApp()

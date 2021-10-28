@@ -11,7 +11,7 @@ import { ProposalMilestone } from './proposal-milestones/entities/proposal-miles
 import { ProposalsService } from './proposals.service'
 import { mockedBlockchainService, setUpIdea, setUpIdeaWithMilestone } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 describe('ProposalsService', () => {
     const app = beforeSetupFullApp()

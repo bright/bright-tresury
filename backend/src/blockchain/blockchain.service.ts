@@ -20,7 +20,7 @@ import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calcula
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
 import { BlockchainConfigurationService } from './blockchain-configuration/blockchain-configuration.service'
-import { NetworkPlanckValue } from '../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../utils/types'
 
 const logger = getLogger()
 

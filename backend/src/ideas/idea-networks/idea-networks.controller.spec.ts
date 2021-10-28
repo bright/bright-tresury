@@ -7,7 +7,7 @@ import {
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
 import { CreateIdeaNetworkDto } from '../dto/create-idea-network.dto'
 import { createIdea } from '../spec.helpers'
-import { NetworkPlanckValue } from '../../NetworkPlanckValue'
+import { NetworkPlanckValue } from '../../utils/types'
 
 const baseUrl = (ideaId: string, id: string) => `/api/v1/ideas/${ideaId}/networks/${id}`
 
