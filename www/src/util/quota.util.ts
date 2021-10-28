@@ -24,10 +24,13 @@ export const isCorrectDecimalPrecision = (value: string, decimals: number) => {
 }
 
 const padWithZeros = (count: number) => '0'.repeat(count)
-
+const removePrecedingZeros = (text: string): string => text.replace(/^0+/gm, '')
+const removeTrailingZeros = (text: string): string => text.replace(/0+$/gm, '')
 export const toNetworkPlanckValue = (value: NetworkDisplayValue, decimals: number): NetworkPlanckValue | undefined => {
     // check if value is a valid number ie. contains only numbers and optional single dot somewhere in the middle
     if (!isValidNumber(value)) return
+    // no need to pad with zeros if value is 0
+    if(value === '0') return '0' as NetworkPlanckValue
     // if value does not contain any decimals (numbers after the dot), lets just concatenate value with enough amount of zeros
     if (!isDecimal(value)) return `${value}${'0'.repeat(decimals)}` as NetworkPlanckValue
 
@@ -39,10 +42,10 @@ export const toNetworkPlanckValue = (value: NetworkDisplayValue, decimals: numbe
     const LEFT_AND_DOT_REGEXP = /^\d+\./gm
     const right = value.replace(LEFT_AND_DOT_REGEXP, '').substr(0, decimals)
 
-    return `${left}${right}${padWithZeros(decimals - right.length)}` as NetworkPlanckValue
+    const displayValue = removePrecedingZeros(`${left}${right}${padWithZeros(decimals - right.length)}`)
+    // removePrecedingZeros can remove empty string if its argument is a string with just zeros
+    return (displayValue === '' ? '0' : displayValue) as NetworkPlanckValue
 }
-
-const removeTrailingZeros = (text: string): string => text.replace(/0+$/gm, '')
 
 export const toNetworkDisplayValue = (value: NetworkPlanckValue, decimals: number): NetworkDisplayValue => {
     if (value === '0') return '0' as NetworkDisplayValue
