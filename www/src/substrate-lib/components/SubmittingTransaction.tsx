@@ -115,7 +115,7 @@ const SubmittingTransaction = ({
             return
         }
 
-        const transformed = transformParams(inputParams ?? [], network.decimals)
+        const transformed = transformParams(inputParams ?? [])
 
         // transformed can be empty parameters
         const txExecute = transformed ? api.tx[palletRpc][callable](...transformed) : api.tx[palletRpc][callable]()

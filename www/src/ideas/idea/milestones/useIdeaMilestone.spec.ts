@@ -9,6 +9,7 @@ import {
     IdeaMilestoneStatus,
 } from './idea.milestones.dto'
 import { useIdeaMilestone } from './useIdeaMilestone'
+import { NetworkPlanckValue } from '../../../util/types'
 
 describe('useIdeaMilestone', () => {
     const mockUseIdea = (mockParams: Partial<UseIdeaResult>) => {
@@ -30,7 +31,7 @@ describe('useIdeaMilestone', () => {
         currentNetwork: {
             id: '5cd895d2-8b44-4d39-b580-b338018cd5a5',
             name: 'polkadot',
-            value: 0,
+            value: '0' as NetworkPlanckValue,
             status: IdeaNetworkStatus.Active,
             blockchainProposalId: undefined,
         },
@@ -46,7 +47,7 @@ describe('useIdeaMilestone', () => {
     const milestoneNetwork: IdeaMilestoneNetworkDto = {
         id: '5cd895d2-8b44-4d39-b580-b338018cd5a5',
         name: 'polkadot',
-        value: 1,
+        value: '1' as NetworkPlanckValue,
         status: IdeaMilestoneNetworkStatus.Active,
     }
     const milestone: IdeaMilestoneDto = {
@@ -193,21 +194,19 @@ describe('useIdeaMilestone', () => {
         it('should return true when status is active', () => {
             const { canEditIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
             expect(
-                canEditIdeaMilestoneNetwork({ status: IdeaMilestoneNetworkStatus.Active } as IdeaMilestoneNetworkDto),
+                canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.Active),
             ).toBe(true)
         })
         it('should return true when status is pending', () => {
             const { canEditIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
             expect(
-                canEditIdeaMilestoneNetwork({ status: IdeaMilestoneNetworkStatus.Pending } as IdeaMilestoneNetworkDto),
+                canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.Pending),
             ).toBe(true)
         })
         it('should return false when status is turned into proposal', () => {
             const { canEditIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
             expect(
-                canEditIdeaMilestoneNetwork({
-                    status: IdeaMilestoneNetworkStatus.TurnedIntoProposal,
-                } as IdeaMilestoneNetworkDto),
+                canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.TurnedIntoProposal),
             ).toBe(false)
         })
     })

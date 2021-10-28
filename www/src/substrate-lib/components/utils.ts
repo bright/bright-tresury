@@ -38,7 +38,7 @@ export const getFromAcct = async (
     return fromAcct
 }
 
-export const transformParams = (inputParams: InputParam[], tokenDecimals: number): any[] => {
+export const transformParams = (inputParams: InputParam[]): any[] => {
     const trimmedParams = inputParams.map((inputParam: InputParam) => {
         return { ...inputParam, value: inputParam.value.trim() }
     })
