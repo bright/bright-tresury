@@ -1,4 +1,5 @@
 import { Time } from '@polkadot/util/types'
+import { NetworkPlanckValue } from '../util/types'
 
 export interface StatsDto {
     submitted: number
@@ -7,6 +8,6 @@ export interface StatsDto {
     spendPeriod: Time
     timeLeft: Time
     leftOfSpendingPeriod: number
-    availableBalance: string
-    nextFoundsBurn: string
+    availableBalance: NetworkPlanckValue
+    nextFoundsBurn: NetworkPlanckValue
 }

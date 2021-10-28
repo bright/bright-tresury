@@ -1,6 +1,6 @@
 import { Time } from '@polkadot/util/types'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
-import { Nil } from '../util/types'
+import { NetworkPlanckValue, Nil } from '../util/types'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -14,8 +14,8 @@ export interface ProposalDto {
     proposalIndex: number
     proposer: AccountInfo
     beneficiary: AccountInfo
-    value: number
-    bond: number
+    value: NetworkPlanckValue
+    bond: NetworkPlanckValue
     status: ProposalStatus
     motions: ProposalMotion[]
     isCreatedFromIdea: boolean

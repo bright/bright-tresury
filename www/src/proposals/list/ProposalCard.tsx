@@ -15,6 +15,8 @@ import NetworkValue from '../../components/network/NetworkValue'
 import CardHeader from '../../components/card/components/CardHeader'
 import CardDetails from '../../components/card/components/CardDetails'
 import CardTitle from '../../components/card/components/CardTitle'
+import { toNetworkDisplayValue } from '../../util/quota.util'
+import { useNetworks } from '../../networks/useNetworks'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -36,7 +38,7 @@ const ProposalCard = ({
     proposal: { proposalIndex, status, details, value, beneficiary, proposer },
 }: ProposalCardProps) => {
     const classes = useStyles()
-
+    const {network} = useNetworks()
     const { t } = useTranslation()
 
     const redirectTo = `${generatePath(ROUTE_PROPOSAL, { proposalIndex })}/${ProposalContentType.Info}`
@@ -52,7 +54,7 @@ const ProposalCard = ({
 
             <CardDetails>
                 <CardTitle title={details?.title} />
-                <NetworkValue value={value} />
+                <NetworkValue value={toNetworkDisplayValue(value, network.decimals)} />
             </CardDetails>
 
             <Divider />

@@ -1,4 +1,6 @@
 import { DefinitionRpcExt } from '@polkadot/types/types'
+import { NetworkPlanckValue } from '../util/types'
+
 
 export interface Network {
     id: string
@@ -10,7 +12,7 @@ export interface Network {
     rpc: Record<string, Record<string, DefinitionRpcExt>>
     developmentKeyring: boolean
     bond: {
-        minValue: number
+        minValue: NetworkPlanckValue
         percentage: number
     }
     currency: string

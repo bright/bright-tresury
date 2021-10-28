@@ -3,6 +3,7 @@ import { useNetworks } from '../../networks/useNetworks'
 import { formatNumber } from '../../util/numberUtil'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
+import { NetworkDisplayValue } from '../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    value: number
+    value: NetworkDisplayValue
 }
 
 export type NetworkValueProps = OwnProps
@@ -33,7 +34,7 @@ const NetworkValue = ({ value }: NetworkValueProps) => {
     const { network } = useNetworks()
     return (
         <p className={classes.root}>
-            {formatNumber(value)} {network.currency}
+            {`${value} ${network.currency}`}
         </p>
     )
 }

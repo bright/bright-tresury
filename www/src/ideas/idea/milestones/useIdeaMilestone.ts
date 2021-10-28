@@ -12,7 +12,7 @@ export interface UseIdeaMilestoneResult {
     canEdit: boolean
     canTurnIntoProposal: boolean
     canEditAnyIdeaMilestoneNetwork: boolean
-    canEditIdeaMilestoneNetwork: (ideaMilestoneNetwork: IdeaMilestoneNetworkDto) => boolean
+    canEditIdeaMilestoneNetwork: (status: IdeaMilestoneNetworkStatus) => boolean
 }
 
 export const useIdeaMilestone = (idea: IdeaDto, milestone?: IdeaMilestoneDto): UseIdeaMilestoneResult => {
@@ -38,14 +38,14 @@ export const useIdeaMilestone = (idea: IdeaDto, milestone?: IdeaMilestoneDto): U
         )
     }, [milestone, isOwner, isIdeaActive, isIdeaDraft, isMilestoneSubmission])
 
-    const canEditIdeaMilestoneNetwork = (ideaMilestoneNetwork: IdeaMilestoneNetworkDto) =>
-        canEditIdeaMilestones && ideaMilestoneNetwork.status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal
+    const canEditIdeaMilestoneNetwork = (status: IdeaMilestoneNetworkStatus) =>
+        canEditIdeaMilestones && status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal
 
     const canEditAnyIdeaMilestoneNetwork = useMemo(() => {
         if (!milestone) return true
         return (
-            canEditIdeaMilestoneNetwork(milestone.currentNetwork) ||
-            !!milestone.additionalNetworks.find((network) => canEditIdeaMilestoneNetwork(network))
+            canEditIdeaMilestoneNetwork(milestone.currentNetwork.status) ||
+            !!milestone.additionalNetworks.find((network) => canEditIdeaMilestoneNetwork(network.status))
         )
     }, [milestone])
 

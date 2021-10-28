@@ -12,9 +12,12 @@ import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorB
 import AddressInfo from '../../../components/identicon/AddressInfo'
 import { Label } from '../../../components/text/Label'
 import { breakpoints } from '../../../theme/theme'
-import NetworkInput from '../../form/networks/NetworkInput'
+import NetworkInput, { networkValueValidationSchema } from '../../form/networks/NetworkInput'
 import { IDEA_QUERY_KEY_BASE, usePatchIdeaNetwork } from '../../ideas.api'
 import { IdeaDto } from '../../ideas.dto'
+import { toNetworkDisplayValue, toNetworkPlanckValue } from '../../../util/quota.util'
+import { useNetworks } from '../../../networks/useNetworks'
+import { NetworkDisplayValue } from '../../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface TurnPendingIdeaIntoProposalFormValues {
-    value: number
+    value: NetworkDisplayValue
 }
 
 interface OwnProps {
@@ -57,9 +60,13 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
 
     const queryClient = useQueryClient()
     const { mutateAsync: patchMutateAsync, isError } = usePatchIdeaNetwork()
+    const {network, findNetwork} = useNetworks()
 
     const onsubmit = async (values: TurnPendingIdeaIntoProposalFormValues) => {
-        const ideaNetwork = { ...idea.currentNetwork, ...values }
+        const ideaNetwork = {
+            ...idea.currentNetwork,
+            value: toNetworkPlanckValue(values.value, network.decimals)!
+        }
         await patchMutateAsync(
             { ideaId: idea.id, ideaNetwork },
             {
@@ -75,15 +82,16 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
     }
 
     const validationSchema = Yup.object({
-        value: Yup.number()
-            .required(t('idea.details.form.emptyFieldError'))
-            .moreThan(0, t('idea.details.form.nonZeroFieldError')),
+        value: networkValueValidationSchema({t, findNetwork, required: true})
     })
 
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={{ value: idea.currentNetwork.value }}
+            initialValues={{
+                name: idea.currentNetwork.name,
+                value: toNetworkDisplayValue(idea.currentNetwork.value, network.decimals)
+            }}
             validationSchema={validationSchema}
             onSubmit={onsubmit}
         >
@@ -96,8 +104,8 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
                     <NetworkInput
                         className={classes.spacing}
                         inputName={'value'}
-                        networkId={idea.currentNetwork.name}
-                        value={idea.currentNetwork.value}
+                        networkId={values.name}
+                        value={values.value}
                     />
                     <FormFooter>
                         {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}

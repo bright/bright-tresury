@@ -11,6 +11,7 @@ import {
     IdeaStatus,
     TurnIdeaIntoProposalDto,
 } from './ideas.dto'
+import { NetworkPlanckValue } from '../util/types'
 
 export const IDEAS_API_PATH = '/ideas'
 
@@ -48,6 +49,8 @@ export interface ApiEditIdeaDto {
     status?: IdeaStatus
     details?: IdeaProposalDetailsDto
 }
+
+type ApiEditIdeaNetworkDto = Omit<EditIdeaNetworkDto, 'value'> & { value: NetworkPlanckValue }
 
 function toApiEditIdeaDto(idea: EditIdeaDto): ApiEditIdeaDto {
     return {

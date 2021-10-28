@@ -1,5 +1,6 @@
 import { StatsDto } from './stats.dto'
 import { getLogger } from '../logging.module'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 export const mockedStatsService = {
     getStats: async (): Promise<StatsDto> => {
@@ -23,8 +24,8 @@ export const mockedStatsService = {
                 milliseconds: 0,
             },
             leftOfSpendingPeriod: 1,
-            availableBalance: '100',
-            nextFoundsBurn: '100',
+            availableBalance: '100' as NetworkPlanckValue,
+            nextFoundsBurn: '100' as NetworkPlanckValue
         }
     },
 }

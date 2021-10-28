@@ -1,4 +1,11 @@
-export function calculateBondValue(networkValue: number, bondPercent: number, bondMinValue: number): number {
-    const bondValue = (networkValue * bondPercent) / 100
-    return Math.max(bondMinValue, bondValue)
+import { NetworkPlanckValue } from '../util/types'
+import BN from 'bn.js'
+
+export function calculateBondValue(
+    networkValue: NetworkPlanckValue,
+    bondPercent: number,
+    bondMinValue: NetworkPlanckValue
+): NetworkPlanckValue {
+    const bondValue = new BN(networkValue).muln(bondPercent).divn(100)
+    return BN.max(new BN(bondMinValue), bondValue).toString() as NetworkPlanckValue
 }

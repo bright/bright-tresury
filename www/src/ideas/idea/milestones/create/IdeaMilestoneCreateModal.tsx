@@ -1,7 +1,7 @@
 import React from 'react'
 import Modal from '../../../../components/modal/Modal'
 import { IdeaDto } from '../../../ideas.dto'
-import IdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/IdeaMilestoneForm'
+import IdeaMilestoneForm from '../form/IdeaMilestoneForm'
 import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
 import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { IDEA_MILESTONES_QUERY_KEY_BASE, useCreateIdeaMilestone } from '../idea.milestones.api'
 import { useQueryClient } from 'react-query'
 import { CreateIdeaMilestoneDto } from '../idea.milestones.dto'
+import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
 
 interface OwnProps {
     open: boolean
@@ -22,7 +23,7 @@ const IdeaMilestoneCreateModal = ({ open, idea, onClose }: IdeaMilestoneCreateMo
     const { t } = useTranslation()
 
     const { mutateAsync, isError } = useCreateIdeaMilestone()
-
+    const { toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({idea})
     const queryClient = useQueryClient()
 
     const submit = async ({
@@ -36,8 +37,8 @@ const IdeaMilestoneCreateModal = ({ open, idea, onClose }: IdeaMilestoneCreateMo
     }: IdeaMilestoneFormValues) => {
         const dto: CreateIdeaMilestoneDto = {
             beneficiary,
-            currentNetwork,
-            additionalNetworks,
+            currentNetwork: toIdeaMilestoneNetworkDto(currentNetwork),
+            additionalNetworks: additionalNetworks.map(toIdeaMilestoneNetworkDto),
             details: {
                 subject,
                 description,

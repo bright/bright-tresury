@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next'
 import CardHeader from '../../../../components/card/components/CardHeader'
 import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
 import IdeaMilestoneStatusIndicator from '../status/IdeaMilestoneStatusIndicator'
+import { toNetworkDisplayValue } from '../../../../util/quota.util'
+import { useNetworks } from '../../../../networks/useNetworks'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -41,7 +43,7 @@ export type IdeaMilestoneCardProps = OwnProps
 const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-
+    const { findNetwork } = useNetworks()
     const ideaMilestoneNetwork = ideaMilestone.currentNetwork
 
     return (
@@ -64,7 +66,11 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
 
             <CardDetails>
                 <CardTitle title={ideaMilestone.details.subject} />
-                {ideaMilestoneNetwork ? <NetworkValue value={ideaMilestoneNetwork.value} /> : null}
+                {
+                    ideaMilestoneNetwork
+                        ? <NetworkValue value={toNetworkDisplayValue(ideaMilestoneNetwork.value, findNetwork(ideaMilestoneNetwork.name)!.decimals)} />
+                        : null
+                }
             </CardDetails>
 
             <div className={classes.description}>

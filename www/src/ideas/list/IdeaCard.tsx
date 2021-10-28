@@ -14,6 +14,7 @@ import CardDetails from '../../components/card/components/CardDetails'
 import CardTitle from '../../components/card/components/CardTitle'
 import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 import { IdeaContentType } from '../idea/Idea'
+import { toNetworkDisplayValue } from '../../util/quota.util'
 
 interface OwnProps {
     idea: IdeaDto
@@ -33,7 +34,7 @@ const IdeaCard = ({
     idea,
 }: IdeaCardProps) => {
     const { t } = useTranslation()
-    const { networks: contextNetworks } = useNetworks()
+    const { network, networks: contextNetworks } = useNetworks()
 
     const networks = contextNetworks.filter((contextNetwork) =>
         [...additionalNetworks, currentNetwork].find((ideaNetwork) => ideaNetwork.name === contextNetwork.id),
@@ -53,7 +54,7 @@ const IdeaCard = ({
 
             <CardDetails>
                 <CardTitle title={title} />
-                <NetworkValue value={currentNetwork.value} />
+                <NetworkValue value={toNetworkDisplayValue(currentNetwork.value, network.decimals)} />
             </CardDetails>
 
             <Divider />

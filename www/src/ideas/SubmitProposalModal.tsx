@@ -5,6 +5,7 @@ import Modal from '../components/modal/Modal'
 import Strong from '../components/strong/Strong'
 import { ROUTE_PROPOSALS } from '../routes/routes'
 import SubmittingTransaction from '../substrate-lib/components/SubmittingTransaction'
+import { NetworkPlanckValue } from '../util/types'
 
 export interface ExtrinsicDetails {
     extrinsicHash: string
@@ -16,7 +17,7 @@ interface OwnProps {
     onClose: () => void
     onTurn: (extrinsicDetails: ExtrinsicDetails) => Promise<void>
     title: string
-    value: number
+    value: NetworkPlanckValue
     beneficiary: string
 }
 
@@ -61,7 +62,7 @@ const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary 
                     inputParams: [
                         {
                             name: 'value',
-                            value: value.toString(),
+                            value: value,
                             type: 'Compact<Balance>',
                         },
                         {

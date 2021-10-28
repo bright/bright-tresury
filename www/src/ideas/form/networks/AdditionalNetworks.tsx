@@ -7,10 +7,11 @@ import { useNetworks } from '../../../networks/useNetworks'
 import { EditIdeaNetworkDto } from '../../ideas.dto'
 import AdditionalNetworkCard from './AdditionalNetworkCard'
 import AddNetworkButton from './AddNetworkButton'
+import { IdeaNetworkFromValues } from '../useIdeaForm'
 
 interface OwnProps {
-    currentNetwork: EditIdeaNetworkDto
-    additionalNetworks: EditIdeaNetworkDto[]
+    currentNetwork: IdeaNetworkFromValues
+    additionalNetworks: IdeaNetworkFromValues[]
 }
 
 export type AdditionalNetworksProps = OwnProps & ClassNameProps

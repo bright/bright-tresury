@@ -2,12 +2,11 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
 import React, { PropsWithChildren } from 'react'
 import FormFooter from '../../../../components/form/footer/FormFooter'
-import { Nil } from '../../../../util/types'
 import { IdeaDto } from '../../../ideas.dto'
-import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../idea.milestones.dto'
+import { IdeaMilestoneDto } from '../idea.milestones.dto'
 import IdeaMilestoneFoldedFormFields from './fields/IdeaMilestoneFoldedFormFields'
 import IdeaMilestoneFormFields from './fields/IdeaMilestoneFormFields'
-import useIdeaMilestoneForm from './useIdeaMilestoneForm'
+import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from './useIdeaMilestoneForm'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -18,16 +17,6 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface IdeaMilestoneFormValues {
-    subject: string
-    dateFrom: Nil<Date>
-    dateTo: Nil<Date>
-    description: Nil<string>
-    beneficiary: Nil<string>
-    currentNetwork: IdeaMilestoneNetworkDto
-    additionalNetworks: IdeaMilestoneNetworkDto[]
-}
-
 interface OwnProps {
     idea: IdeaDto
     ideaMilestone?: IdeaMilestoneDto
@@ -35,25 +24,6 @@ interface OwnProps {
     extendedValidation?: boolean
     onSubmit?: (values: IdeaMilestoneFormValues) => void
     onTurnIntoProposalClick?: (ideaMilestoneDto: IdeaMilestoneDto) => void
-}
-
-export const mergeFormValuesWithIdeaMilestone = (
-    formValues: IdeaMilestoneFormValues,
-    ideaMilestone: IdeaMilestoneDto,
-): IdeaMilestoneDto => {
-    return {
-        ...ideaMilestone,
-        beneficiary: formValues.beneficiary,
-        currentNetwork: formValues.currentNetwork,
-        additionalNetworks: formValues.additionalNetworks,
-        details: {
-            ...ideaMilestone.details,
-            subject: formValues.subject,
-            dateFrom: formValues.dateFrom,
-            dateTo: formValues.dateTo,
-            description: formValues.description,
-        },
-    }
 }
 
 export type IdeaMilestoneFormProps = PropsWithChildren<OwnProps>

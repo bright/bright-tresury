@@ -2,13 +2,12 @@ import React from 'react'
 import Input from '../../../../../components/form/input/Input'
 import { TextFieldColorScheme } from '../../../../../components/form/input/textFieldStyles'
 import { useTranslation } from 'react-i18next'
-import { useNetworks } from '../../../../../networks/useNetworks'
-import { IdeaMilestoneFormValues } from '../IdeaMilestoneForm'
 import { IdeaMilestoneDto } from '../../idea.milestones.dto'
 import NetworkInput from '../../../../form/networks/NetworkInput'
 import { IdeaDto } from '../../../../ideas.dto'
 import { useIdeaMilestone } from '../../useIdeaMilestone'
 import IdeaMilestoneFieldsContainer from './IdeaMilestoneFieldsContainer'
+import { IdeaMilestoneFormValues } from '../useIdeaMilestoneForm'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
@@ -22,7 +21,6 @@ export type IdeaMilestoneFoldedFormFieldsProps = OwnProps
 
 const IdeaMilestoneFoldedFormFields = ({ values, ideaMilestone, idea }: IdeaMilestoneFoldedFormFieldsProps) => {
     const { t } = useTranslation()
-    const { network: currentNetwork } = useNetworks()
     const { canEdit, canTurnIntoProposal } = useIdeaMilestone(idea, ideaMilestone)
     return (
         <IdeaMilestoneFieldsContainer>
@@ -35,7 +33,7 @@ const IdeaMilestoneFoldedFormFields = ({ values, ideaMilestone, idea }: IdeaMile
             />
             <NetworkInput
                 inputName={`currentNetwork.value`}
-                networkId={currentNetwork.id}
+                networkId={values.currentNetwork.name}
                 value={values.currentNetwork.value}
                 readonly={!canTurnIntoProposal}
             />

@@ -1,5 +1,5 @@
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
-import { Nil } from '../util/types'
+import { NetworkDisplayValue, NetworkPlanckValue, Nil } from '../util/types'
 
 export interface IdeaDto {
     id: string
@@ -24,7 +24,7 @@ export interface EditIdeaDto {
 export interface IdeaNetworkDto {
     id: string
     name: string
-    value: number
+    value: NetworkPlanckValue
     status: IdeaNetworkStatus
     blockchainProposalId: Nil<number>
 }
@@ -32,12 +32,12 @@ export interface IdeaNetworkDto {
 export interface EditIdeaNetworkDto {
     id?: string
     name: string
-    value: number
+    value: NetworkPlanckValue
 }
 
 export interface EditSingleIdeaNetworkDto {
     id: string
-    value: number
+    value: NetworkPlanckValue
 }
 
 export enum IdeaStatus {

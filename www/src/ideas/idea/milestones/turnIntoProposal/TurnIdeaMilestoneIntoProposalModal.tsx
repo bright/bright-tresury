@@ -13,7 +13,7 @@ import {
 import Modal from '../../../../components/modal/Modal'
 import { Trans, useTranslation } from 'react-i18next'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import IdeaMilestoneForm, { IdeaMilestoneFormValues, mergeFormValuesWithIdeaMilestone } from '../form/IdeaMilestoneForm'
+import IdeaMilestoneForm from '../form/IdeaMilestoneForm'
 import { IdeaDto } from '../../../ideas.dto'
 import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
 import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
@@ -21,6 +21,7 @@ import { useQueryClient } from 'react-query'
 import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 import { useIdeaMilestone } from '../useIdeaMilestone'
 import { useNetworks } from '../../../../networks/useNetworks'
+import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
 
 const useStyles = makeStyles(
     createStyles({
@@ -63,12 +64,9 @@ const TurnIdeaMilestoneIntoProposalModal = ({
         isError: isPatchIdeaMilestoneNetworksError,
     } = usePatchIdeaMilestoneNetworks()
 
+    const {toIdeaMilestoneDto, toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({idea, ideaMilestone})
     const submitPatchIdeaMilestone = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
-        const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = mergeFormValuesWithIdeaMilestone(
-            ideaMilestoneFromValues,
-            ideaMilestone,
-        )
-
+        const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = toIdeaMilestoneDto(ideaMilestoneFromValues)
         await patchIdeaMilestone(
             {
                 ideaId: idea.id,
@@ -107,7 +105,8 @@ const TurnIdeaMilestoneIntoProposalModal = ({
         const ideaMilestoneNetworks = [currentNetwork, ...additionalNetworks]
         const networksToUpdate = ideaMilestoneNetworks.filter(
             ({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal,
-        )
+        ).map(toIdeaMilestoneNetworkDto)
+
         await patchIdeaMilestoneNetworks(
             { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: { items: networksToUpdate } },
             {
@@ -121,9 +120,9 @@ const TurnIdeaMilestoneIntoProposalModal = ({
         )
     }
 
-    const submit = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
-        if (canEdit) return await submitPatchIdeaMilestone(ideaMilestoneFromValues)
-        if (canEditAnyIdeaMilestoneNetwork) return await submitPatchIdeaMilestoneNetworks(ideaMilestoneFromValues)
+    const onSubmit = async (ideaMilestoneFormValues: IdeaMilestoneFormValues) => {
+        if (canEdit) return await submitPatchIdeaMilestone(ideaMilestoneFormValues)
+        if (canEditAnyIdeaMilestoneNetwork) return await submitPatchIdeaMilestoneNetworks(ideaMilestoneFormValues)
         return
     }
 
@@ -155,7 +154,7 @@ const TurnIdeaMilestoneIntoProposalModal = ({
                     ideaMilestone={ideaMilestone}
                     folded={true}
                     extendedValidation={true}
-                    onSubmit={submit}
+                    onSubmit={onSubmit}
                 >
                     {isPatchIdeaMilestoneError || isPatchIdeaMilestoneNetworksError ? (
                         <FormFooterErrorBox error={t('errors.somethingWentWrong')} />

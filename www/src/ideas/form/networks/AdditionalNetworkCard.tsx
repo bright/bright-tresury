@@ -9,6 +9,7 @@ import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
 import { EditIdeaNetworkDto } from '../../ideas.dto'
 import NetworkInput from './NetworkInput'
+import { IdeaNetworkFromValues } from '../useIdeaForm'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -52,7 +53,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    ideaNetwork: EditIdeaNetworkDto
+    ideaNetwork: IdeaNetworkFromValues
     index: number
     availableNetworks: Network[]
     removeNetwork: () => void

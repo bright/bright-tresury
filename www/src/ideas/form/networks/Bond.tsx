@@ -9,6 +9,8 @@ import { Label } from '../../../components/text/Label'
 import { calculateBondValue } from '../../../networks/bondUtil'
 import { breakpoints } from '../../../theme/theme'
 import { Network } from '../../../networks/networks.dto'
+import { NetworkPlanckValue } from '../../../util/types'
+import { toNetworkDisplayValue } from '../../../util/quota.util'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,7 +37,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     network: Network
-    value: number
+    value: NetworkPlanckValue
 }
 
 export type BondProps = OwnProps & ClassNameProps
@@ -60,7 +62,7 @@ const Bond = ({ network, value, className }: BondProps) => {
         <FormGroup className={className}>
             <Label label={t('idea.details.form.networks.bond.name')} />
             <div className={classes.content}>
-                <TextField disabled={true} name={''} type={`number`} value={bond} className={classes.input} />
+                <TextField disabled={true} name={''} type={`number`} value={toNetworkDisplayValue(bond, network.decimals)} className={classes.input} />
                 <InformationTip className={classes.tip} label={tipLabel} />
             </div>
         </FormGroup>

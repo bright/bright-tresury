@@ -3,8 +3,8 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import StyledSmallInput from '../../components/form/input/StyledSmallInput'
 import TitleInput from '../../idea-proposal-details/form/TitleInput'
-import { IdeaFormValues } from './IdeaForm'
 import NetworkInput from './networks/NetworkInput'
+import { IdeaFormValues } from './useIdeaForm'
 
 const useStyles = makeStyles(() =>
     createStyles({

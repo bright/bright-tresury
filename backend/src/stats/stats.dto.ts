@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 export class StatsDto {
     @ApiProperty({
@@ -33,14 +34,14 @@ export class StatsDto {
     leftOfSpendingPeriod: number
 
     @ApiProperty({
-        description: 'Available Balance',
+        description: 'Available Balance in Planck',
     })
-    availableBalance: string
+    availableBalance: NetworkPlanckValue
 
     @ApiProperty({
-        description: 'Next burn',
+        description: 'Next burn in Planck',
     })
-    nextFoundsBurn: string
+    nextFoundsBurn: NetworkPlanckValue
 
     constructor(
         submitted: number,
@@ -49,8 +50,8 @@ export class StatsDto {
         spendPeriod: BlockchainTimeLeft,
         timeLeft: BlockchainTimeLeft,
         leftOfSpendingPeriod: number,
-        availableBalance: string,
-        nextFoundsBurn: string,
+        availableBalance: NetworkPlanckValue,
+        nextFoundsBurn: NetworkPlanckValue,
     ) {
         this.submitted = submitted
         this.approved = approved

@@ -11,10 +11,12 @@ import { titleValidationSchema } from '../../idea-proposal-details/form/TitleInp
 import { Network } from '../../networks/networks.dto'
 import { useNetworks } from '../../networks/useNetworks'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
-import { Nil } from '../../util/types'
-import { EditIdeaDto, EditIdeaNetworkDto, IdeaDto } from '../ideas.dto'
+import { NetworkDisplayValue, Nil } from '../../util/types'
+import { EditIdeaDto, EditIdeaNetworkDto, IdeaDto, IdeaNetworkDto } from '../ideas.dto'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import IdeaFormFields from './IdeaFormFields'
+import { toNetworkDisplayValue } from '../../util/quota.util'
+import useIdeaForm, { IdeaFormValues } from './useIdeaForm'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -39,95 +41,24 @@ interface OwnProps {
 
 export type IdeaFormProps = PropsWithChildren<OwnProps>
 
-export interface IdeaFormValues {
-    beneficiary: string
-    currentNetwork: EditIdeaNetworkDto
-    additionalNetworks: EditIdeaNetworkDto[]
-    title: string
-    field?: string
-    content: string
-    contact?: string
-    portfolio?: string
-    links?: string[]
-}
-
-const toFormValues = (idea: Nil<IdeaDto>, network: Network): IdeaFormValues => {
-    if (!idea) {
-        return {
-            beneficiary: '',
-            currentNetwork: { name: network.id, value: 0 },
-            additionalNetworks: [],
-            title: '',
-            field: '',
-            content: '',
-            portfolio: '',
-            links: [''],
-            contact: '',
-        }
-    }
-    return {
-        beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
-        currentNetwork: idea.currentNetwork,
-        additionalNetworks: idea.additionalNetworks,
-        ...idea.details,
-        links: idea.details.links && idea.details.links.length > 0 ? idea.details.links : [''],
-    }
-}
-
 const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: IdeaFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const [folded, setFolded] = useState(!!foldable)
-    const { network } = useNetworks()
+    const {
+        validationSchema,
+        extendedValidationSchema,
+        toFormValues,
+        toEditIdeaDto
+    } = useIdeaForm()
 
-    const validationSchema = Yup.object({
-        title: titleValidationSchema(t),
-        links: linksValidationSchema(t),
-        beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
-            return isValidAddressOrEmpty(address, network.ss58Format)
-        }),
-        additionalNetworks: Yup.array().of(
-            Yup.object().shape({
-                value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
-            }),
-        ),
-        currentNetwork: Yup.object().shape({
-            value: Yup.number().min(0, t('idea.details.form.valueCannotBeLessThanZero')),
-        }),
-    })
 
-    const extendedValidationSchema = Yup.object().shape({
-        beneficiary: Yup.string().required(t('idea.details.form.emptyFieldError')),
-        currentNetwork: Yup.object().shape({
-            value: Yup.number()
-                .required(t('idea.details.form.emptyFieldError'))
-                .moreThan(0, t('idea.details.form.nonZeroFieldError')),
-        }),
-    })
-
-    const noEmptyLinks = (links: string[] | undefined) => links?.filter((link: string) => Boolean(link))
-
-    const onFormikSubmit = (formIdea: IdeaFormValues) => {
-        let editedIdea = {
-            beneficiary: formIdea.beneficiary,
-            additionalNetworks: formIdea.additionalNetworks,
-            currentNetwork: formIdea.currentNetwork,
-            details: {
-                title: formIdea.title,
-                contact: formIdea.contact,
-                content: formIdea.content,
-                field: formIdea.field,
-                portfolio: formIdea.portfolio,
-                links: noEmptyLinks(formIdea.links),
-            },
-        }
-        return onSubmit(editedIdea)
-    }
+    const onFormikSubmit = (formIdea: IdeaFormValues) => onSubmit(toEditIdeaDto(formIdea))
 
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={toFormValues(idea, network)}
+            initialValues={toFormValues(idea)}
             validationSchema={extendedValidation ? validationSchema.concat(extendedValidationSchema) : validationSchema}
             onSubmit={onFormikSubmit}
         >

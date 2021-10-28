@@ -1,8 +1,8 @@
 import React, { PropsWithChildren } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles, Theme } from '@material-ui/core'
-import { formatNumber } from '../../util/numberUtil'
 import { breakpoints } from '../../theme/theme'
+import { NetworkDisplayValue } from '../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    amount: number
+    amount: NetworkDisplayValue
     currency: string
     label?: string
 }
@@ -55,7 +55,7 @@ const Amount = ({ amount, currency, label, ...props }: AmountProps) => {
     return (
         <div {...props} className={classes.root}>
             <div className={classes.amount}>
-                {formatNumber(Number(amount))} {currency}
+                {`${amount} ${currency}`}
             </div>
             {label && <div className={classes.label}>{label}</div>}
         </div>

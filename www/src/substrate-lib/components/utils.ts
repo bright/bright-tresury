@@ -63,27 +63,7 @@ export const transformParams = (inputParams: InputParam[], tokenDecimals: number
 
         // Deal with a single value
         if (isNumType(type)) {
-            const decimals = new BN(tokenDecimals)
-            const indexOfDecimalPoint = value.indexOf('.')
-
-            if (indexOfDecimalPoint >= 0) {
-                // float
-                let integer = new BN(value.substr(0, indexOfDecimalPoint))
-                integer = integer.mul(BN_TEN.pow(decimals))
-
-                const fractionalString = value.substr(indexOfDecimalPoint + 1)
-                const fractionalLength = new BN(fractionalString.length)
-                let fractional = new BN(fractionalString)
-                fractional = fractional.mul(BN_TEN.pow(decimals.sub(fractionalLength)))
-
-                const converted = integer.add(fractional)
-                return [...memo, converted]
-            } else {
-                // int
-                let bn = new BN(value)
-                const converted = bn.mul(BN_TEN.pow(decimals))
-                return [...memo, converted]
-            }
+            return [...memo, new BN(value)]
         }
         return [...memo, value]
     }, [])

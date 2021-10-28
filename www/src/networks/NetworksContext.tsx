@@ -6,6 +6,7 @@ import Loader from '../components/loading/Loader'
 import NetworkNotFound from './NetworkNotFound'
 import { useGetNetworks } from './networks.api'
 import { Network } from './networks.dto'
+import { Nil } from '../util/types'
 
 export const NETWORK_ID_SEARCH_PARAM_NAME = 'networkId'
 
@@ -13,6 +14,7 @@ interface State {
     networks: Network[]
     network: Network
     selectNetwork: (networkId: string, pathName?: string, search?: string) => void
+    findNetwork: (networkId: string) => Nil<Network>
 }
 
 export const NetworksContext = React.createContext<State | undefined>(undefined)
@@ -65,8 +67,10 @@ const NetworksContextProvider = ({ children }: NetworksContextProviderProps) => 
         return <NetworkNotFound networks={networks} selectNetwork={redirect} />
     }
 
+    const findNetwork = (networkId: string) => networks.find(({ id }) => networkId === id)
+
     return (
-        <NetworksContext.Provider value={{ networks, network: network, selectNetwork: redirect }}>
+        <NetworksContext.Provider value={{ networks, network: network, selectNetwork: redirect, findNetwork }}>
             {children}
         </NetworksContext.Provider>
     )

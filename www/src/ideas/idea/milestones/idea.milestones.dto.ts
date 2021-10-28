@@ -1,5 +1,5 @@
 import { CreateMilestoneDetailsDto, MilestoneDetailsDto } from '../../../milestone-details/milestone-details.dto'
-import { Nil } from '../../../util/types'
+import { NetworkPlanckValue, Nil } from '../../../util/types'
 
 export enum IdeaMilestoneStatus {
     Active = 'active',
@@ -24,7 +24,7 @@ export interface IdeaMilestoneDto {
 export interface IdeaMilestoneNetworkDto {
     id: string
     name: string
-    value: number
+    value: NetworkPlanckValue
     status: IdeaMilestoneNetworkStatus
 }
 
@@ -34,7 +34,7 @@ export type CreateIdeaMilestoneDto = Omit<IdeaMilestoneDto, 'id' | 'ordinalNumbe
 export type PatchIdeaMilestoneDto = Partial<IdeaMilestoneDto>
 
 export type UpdateIdeaMilestoneNetworkDto = Partial<IdeaMilestoneNetworkDto>
-export type UpdateIdeaMilestoneNetworksItemDto = { id: string; value: number }
+export type UpdateIdeaMilestoneNetworksItemDto = { id: string; value: NetworkPlanckValue }
 export type UpdateIdeaMilestoneNetworksDto = { items: UpdateIdeaMilestoneNetworksItemDto[] }
 
 export interface TurnIdeaMilestoneIntoProposalDto {

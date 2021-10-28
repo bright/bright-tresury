@@ -50,6 +50,7 @@ const IdeaMilestonesList = ({ idea, ideaMilestones }: IdeaMilestoneListProps) =>
     }
 
     const handleOnSuccessfulPatchBeforeTurnIntoProposalSubmit = (patchedIdeaMilestone: IdeaMilestoneDto) => {
+        debugger
         turnModal.close()
         milestoneModal.close()
         setIdeaMilestoneToBeTurnedIntoProposal(patchedIdeaMilestone)
@@ -64,7 +65,7 @@ const IdeaMilestonesList = ({ idea, ideaMilestones }: IdeaMilestoneListProps) =>
                     extrinsicHash,
                     lastBlockHash,
                 }
-
+                debugger
                 await mutateAsync({
                     ideaId: idea.id,
                     ideaMilestoneId: ideaMilestoneToBeTurnedIntoProposal.id,

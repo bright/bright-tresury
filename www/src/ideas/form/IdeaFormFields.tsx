@@ -7,8 +7,8 @@ import FieldInput from '../../idea-proposal-details/form/FieldInput'
 import LinkInput from '../../idea-proposal-details/form/LinksInput'
 import PortfolioInput from '../../idea-proposal-details/form/PorfolioInput'
 import TitleInput from '../../idea-proposal-details/form/TitleInput'
-import { IdeaFormValues } from './IdeaForm'
 import NetworksInput from './networks/NetworksInput'
+import { IdeaFormValues } from './useIdeaForm'
 
 interface OwnProps {
     values: IdeaFormValues

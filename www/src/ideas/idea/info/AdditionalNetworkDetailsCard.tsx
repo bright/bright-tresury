@@ -10,6 +10,7 @@ import { breakpoints } from '../../../theme/theme'
 import IdeaNetworkStatusIndicator from '../../form/networks/IdeaNetworkStatusIndicator'
 import NetworkInput from '../../form/networks/NetworkInput'
 import { IdeaNetworkDto, IdeaNetworkStatus } from '../../ideas.dto'
+import { toNetworkDisplayValue } from '../../../util/quota.util'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -45,9 +46,8 @@ export type AdditionalNetworkCardProps = OwnProps
 const AdditionalNetworkDetailsCard = ({ ideaNetwork, isOwner }: AdditionalNetworkCardProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { networks } = useNetworks()
-
-    const selectedNetwork = networks.find((n) => n.id === ideaNetwork.name)
+    const { findNetwork } = useNetworks()
+    const selectedNetwork = findNetwork(ideaNetwork.name)
 
     if (!selectedNetwork) {
         return <></>
@@ -63,7 +63,7 @@ const AdditionalNetworkDetailsCard = ({ ideaNetwork, isOwner }: AdditionalNetwor
                     <Label label={t('idea.details.net')} />
                     <TextField value={selectedNetwork.name} disabled={true} />
                 </FormGroup>
-                <NetworkInput networkId={ideaNetwork.name} value={ideaNetwork.value} readonly={true} />
+                <NetworkInput networkId={ideaNetwork.name} value={toNetworkDisplayValue(ideaNetwork.value, selectedNetwork.decimals)} readonly={true} />
             </div>
         </NetworkCard>
     )

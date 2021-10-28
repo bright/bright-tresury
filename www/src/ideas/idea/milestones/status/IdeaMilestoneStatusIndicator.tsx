@@ -1,7 +1,6 @@
 import React from 'react'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkStatus } from '../idea.milestones.dto'
 import { useNetworks } from '../../../../networks/useNetworks'
-import { findNetwork } from '../idea.milestones.utils'
 import { makeStyles } from '@material-ui/core/styles'
 import { createStyles } from '@material-ui/core'
 import IdeaMilestoneNetworkStatusIndicator from './IdeaMilestoneNetworkStatusIndicator'
@@ -34,7 +33,7 @@ interface OwnProps {
 export type IdeaMilestoneStatusIndicatorProps = OwnProps
 
 const IdeaMilestoneStatusIndicator = ({ ideaMilestone }: IdeaMilestoneStatusIndicatorProps) => {
-    const { networks } = useNetworks()
+    const { findNetwork } = useNetworks()
     const classes = useStyles()
 
     const currentIdeaMilestoneNetworkStatus = ideaMilestone.currentNetwork.status
@@ -48,7 +47,7 @@ const IdeaMilestoneStatusIndicator = ({ ideaMilestone }: IdeaMilestoneStatusIndi
 
     const otherNetworkNames = ideaMilestone.additionalNetworks
         .filter(({ status: ideaMilestoneNetworkStatus }) => ideaMilestoneNetworkStatus === otherStatus)
-        .map((ideaMilestoneNetwork) => findNetwork(ideaMilestoneNetwork, networks))
+        .map((ideaMilestoneNetwork) => findNetwork(ideaMilestoneNetwork.name))
         .filter((network) => network !== undefined)
         .map((network) => network!.name)
         .join(',')

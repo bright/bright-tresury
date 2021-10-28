@@ -12,7 +12,7 @@ export class ChangeColumnValuePrecision1633940504968 implements MigrationInterfa
     public async down(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
         ALTER TABLE "idea_networks" ALTER COLUMN "value" TYPE decimal(39,15);
-        ALTER TABLE "idea_milestone_networks" ALTER COLUMN "value" TYPE decimal(39,15) NOT NULL;
+        ALTER TABLE "idea_milestone_networks" ALTER COLUMN "value" TYPE decimal(39,15);
         `)
     }
 }

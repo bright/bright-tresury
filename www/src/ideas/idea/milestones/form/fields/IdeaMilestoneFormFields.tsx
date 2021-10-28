@@ -5,7 +5,6 @@ import { TextFieldColorScheme } from '../../../../../components/form/input/textF
 import DateRangeInput from '../../../../../milestone-details/components/form/DateRangeInput'
 import DescriptionInput from '../../../../../milestone-details/components/form/DescriptionInput'
 import SubjectInput from '../../../../../milestone-details/components/form/SubjectInput'
-import { IdeaMilestoneFormValues, mergeFormValuesWithIdeaMilestone } from '../IdeaMilestoneForm'
 import { IdeaMilestoneDto } from '../../idea.milestones.dto'
 import Button from '../../../../../components/button/Button'
 import { MilestoneModalHeader } from '../../../../../milestone-details/components/milestone-modal/MilestoneModalHeader'
@@ -13,6 +12,7 @@ import { IdeaDto } from '../../../../ideas.dto'
 import { useIdeaMilestone } from '../../useIdeaMilestone'
 import IdeaMilestoneNetworkCardField from './IdeaMilestoneNetworkCardField'
 import IdeaMilestoneFieldsContainer from './IdeaMilestoneFieldsContainer'
+import useIdeaMilestoneForm, { IdeaMilestoneFormValues, IdeaMilestoneNetworkFormValues } from '../useIdeaMilestoneForm'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
 
@@ -33,7 +33,7 @@ const IdeaMilestoneFormFields = ({
 }: IdeaMilestoneFormFieldsProps) => {
     const { t } = useTranslation()
     const { canEdit, canEditAnyIdeaMilestoneNetwork, canTurnIntoProposal } = useIdeaMilestone(idea, ideaMilestone)
-
+    const { toIdeaMilestoneDto } = useIdeaMilestoneForm({ idea, ideaMilestone })
     const renderTitle = () => {
         if (!ideaMilestone) return <>{t('idea.milestones.modal.createMilestone')}</>
 
@@ -49,7 +49,7 @@ const IdeaMilestoneFormFields = ({
         if (!onTurnIntoProposalClick || !ideaMilestone) {
             return
         }
-        onTurnIntoProposalClick(mergeFormValuesWithIdeaMilestone(values, ideaMilestone))
+        onTurnIntoProposalClick(toIdeaMilestoneDto(values))
     }
     return (
         <IdeaMilestoneFieldsContainer>
@@ -77,7 +77,7 @@ const IdeaMilestoneFormFields = ({
                 inputName={'currentNetwork.value'}
             />
 
-            {values.additionalNetworks.map((ideaMilestoneNetwork, idx) => (
+            {values.additionalNetworks.map((ideaMilestoneNetwork: IdeaMilestoneNetworkFormValues, idx: number) => (
                 <IdeaMilestoneNetworkCardField
                     idea={idea}
                     ideaMilestone={ideaMilestone}

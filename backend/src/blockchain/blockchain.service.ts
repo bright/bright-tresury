@@ -20,6 +20,7 @@ import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calcula
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
 import { BlockchainConfigurationService } from './blockchain-configuration/blockchain-configuration.service'
+import { NetworkPlanckValue } from '../NetworkPlanckValue'
 
 const logger = getLogger()
 
@@ -63,7 +64,7 @@ export class BlockchainService implements OnModuleDestroy {
             )
             if (extrinsic) {
                 logger.info(`Block with extrinsic ${extrinsicHash} found.`)
-                const events = ((await api.query.system.events.at(header.hash)) as unknown) as EventRecord[]
+                const events = (await api.query.system.events.at(header.hash)) as EventRecord[]
                 logger.info(`All extrinsic events.`, events)
                 await this.callUnsub()
 
@@ -298,19 +299,14 @@ export class BlockchainService implements OnModuleDestroy {
             treasuryBalance.freeBalance.gt(BN_ZERO) && !api.consts.treasury.burn.isZero()
                 ? api.consts.treasury.burn.mul(treasuryBalance.freeBalance).div(BN_MILLION)
                 : BN_ZERO
-        const decimals = this.blockchainConfigurationService.getBlockchainConfiguration(networkId).decimals
-        const burnUnit = transformBalance(burn, decimals, 10).toFixed(4)
-        const nextFoundsBurn = burnUnit.toString()
+
+        const nextFoundsBurn = burn.toString() as NetworkPlanckValue
 
         const treasuryAvailableBalance = treasuryBalance.freeBalance.gt(BN_ZERO)
             ? treasuryBalance.freeBalance
-            : undefined
+            : new BN(0)
 
-        const treasuryAvailableBalanceUnit = treasuryAvailableBalance
-            ? transformBalance(treasuryAvailableBalance, decimals, 10).toFixed(4)
-            : ''
-
-        const availableBalance = treasuryAvailableBalanceUnit.toString()
+        const availableBalance = treasuryAvailableBalance.toString() as NetworkPlanckValue
 
         return {
             availableBalance,

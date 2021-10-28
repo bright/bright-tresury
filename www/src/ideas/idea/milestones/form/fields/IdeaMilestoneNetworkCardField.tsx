@@ -1,12 +1,12 @@
-import { IdeaMilestoneDto, IdeaMilestoneNetworkDto } from '../../idea.milestones.dto'
+import { IdeaMilestoneDto } from '../../idea.milestones.dto'
 import { IdeaDto } from '../../../../ideas.dto'
 import { useIdeaMilestone } from '../../useIdeaMilestone'
 import { useNetworks } from '../../../../../networks/useNetworks'
-import { findNetwork } from '../../idea.milestones.utils'
 import NetworkCard from '../../../../../components/network/NetworkCard'
 import IdeaMilestoneNetworkStatusIndicator from '../../status/IdeaMilestoneNetworkStatusIndicator'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import NetworkInput from '../../../../form/networks/NetworkInput'
+import { IdeaMilestoneNetworkFormValues } from '../useIdeaMilestoneForm'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,7 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     idea: IdeaDto
     ideaMilestone?: IdeaMilestoneDto
-    ideaMilestoneNetwork: IdeaMilestoneNetworkDto
+    ideaMilestoneNetwork: IdeaMilestoneNetworkFormValues
     inputName: string
 }
 
@@ -42,8 +42,8 @@ const IdeaMilestoneNetworkCardField = ({
 }: IdeaMilestoneNetworkCardFieldProps) => {
     const classes = useStyles()
     const { canEditIdeaMilestoneNetwork } = useIdeaMilestone(idea, ideaMilestone)
-    const { networks } = useNetworks()
-    const network = findNetwork(ideaMilestoneNetwork, networks)
+    const { findNetwork } = useNetworks()
+    const network = findNetwork(ideaMilestoneNetwork.name)
     if (!network) return null
     return (
         <NetworkCard networks={[network]} className={classes.withBorder}>
@@ -57,7 +57,7 @@ const IdeaMilestoneNetworkCardField = ({
                 className={classes.networkInput}
                 value={ideaMilestoneNetwork.value}
                 networkId={ideaMilestoneNetwork.name}
-                readonly={!canEditIdeaMilestoneNetwork(ideaMilestoneNetwork)}
+                readonly={!canEditIdeaMilestoneNetwork(ideaMilestoneNetwork.status)}
             />
         </NetworkCard>
     )

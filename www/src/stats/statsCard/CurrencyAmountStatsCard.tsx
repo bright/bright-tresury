@@ -1,21 +1,22 @@
 import React from 'react'
 import { useNetworks } from '../../networks/useNetworks'
 import BaseStatsCard from './BaseStatsCard'
+import { NetworkDisplayValue } from '../../util/types'
+import { toFixedDecimals } from '../../util/quota.util'
 
 interface OwnProps {
-    value: string
+    value: NetworkDisplayValue
     name: string
     imgSrc: string
 }
 
-export type BaseStatsCardProps = OwnProps
+export type CurrencyAmountStatsCard = OwnProps
 
-const CurrencyAmountStatsCard = ({ value, name, imgSrc }: BaseStatsCardProps) => {
+const CurrencyAmountStatsCard = ({ value, name, imgSrc }: CurrencyAmountStatsCard) => {
     const {
         network: { currency },
     } = useNetworks()
-
-    return <BaseStatsCard value={`${value} ${currency}`} name={name} imgSrc={imgSrc} />
+    return <BaseStatsCard value={`${toFixedDecimals(value, 4)} ${currency}`} name={name} imgSrc={imgSrc} />
 }
 
 export default CurrencyAmountStatsCard

@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from '../../../../components/modal/Modal'
 import { IdeaDto } from '../../../ideas.dto'
 import { IdeaMilestoneDto, IdeaMilestoneNetworkStatus, PatchIdeaMilestoneDto } from '../idea.milestones.dto'
-import IdeaMilestoneForm, { IdeaMilestoneFormValues, mergeFormValuesWithIdeaMilestone } from '../form/IdeaMilestoneForm'
+import IdeaMilestoneForm from '../form/IdeaMilestoneForm'
 import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterButton from '../../../../components/form/footer/FormFooterButton'
 import { useTranslation } from 'react-i18next'
@@ -20,6 +20,7 @@ import { createStyles } from '@material-ui/core'
 import { theme } from '../../../../theme/theme'
 import { useModal } from '../../../../components/modal/useModal'
 import DeleteIdeaMilestoneModal from './DeleteIdeaMilestoneModal'
+import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -67,12 +68,9 @@ const IdeaMilestoneModal = ({
         mutateAsync: patchIdeaMilestoneNetworks,
         isError: isPatchIdeaMilestoneNetworksError,
     } = usePatchIdeaMilestoneNetworks()
-
+    const {toIdeaMilestoneDto, toIdeaMilestoneNetworkDto} = useIdeaMilestoneForm({ idea, ideaMilestone })
     const submitPatchIdeaMilestone = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
-        const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = mergeFormValuesWithIdeaMilestone(
-            ideaMilestoneFromValues,
-            ideaMilestone,
-        )
+        const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = toIdeaMilestoneDto(ideaMilestoneFromValues)
 
         await patchIdeaMilestone(
             {
@@ -97,7 +95,7 @@ const IdeaMilestoneModal = ({
         const ideaMilestoneNetworks = [currentNetwork, ...additionalNetworks]
         const networksToUpdate = ideaMilestoneNetworks.filter(
             ({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal,
-        )
+        ).map(toIdeaMilestoneNetworkDto)
 
         await patchIdeaMilestoneNetworks(
             { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: { items: networksToUpdate } },
