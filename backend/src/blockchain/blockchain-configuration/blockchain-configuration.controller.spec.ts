@@ -40,7 +40,7 @@ describe('GET blockchains configurations', () => {
             expect(typeof genesisHash).toBe('string')
             expect(bond).toBeDefined()
             expect(typeof bond).toBe('object')
-            expect(typeof bond.minValue).toBe('number')
+            expect(typeof bond.minValue).toBe('string')
             expect(typeof bond.percentage).toBe('number')
             expect(typeof currency).toBe('string')
             expect(typeof decimals).toBe('number')
