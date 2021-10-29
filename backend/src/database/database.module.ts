@@ -35,7 +35,6 @@ const TypeOrmCoreModule = TypeOrmModule.forRootAsync({
 })
 
 @Module({
-    imports: [TypeOrmCoreModule, BlockchainModule],
-    providers: [BlockchainConfigurationService]
+    imports: [TypeOrmCoreModule]
 })
 export class DatabaseModule {}
