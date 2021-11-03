@@ -262,7 +262,13 @@ describe('IdeaMilestoneProposalsService', () => {
                 idea.id,
                 {
                     beneficiary: uuid(),
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     details: {
                         subject: 'milestone subject',
                     },
@@ -382,11 +388,8 @@ describe('IdeaMilestoneProposalsService', () => {
             expect(ideaMilestoneNetwork!.extrinsic).toBeDefined()
         })
 
-        it('should call extractBlockchainProposalIndexFromExtrinsicEvents method from BlockchainService', async () => {
-            const extractBlockchainProposalIndexFromExtrinsicEventsSpy = jest.spyOn(
-                blockchainService(),
-                'extractBlockchainProposalIndexFromExtrinsicEvents',
-            )
+        it('should call extractProposalIndex method from BlockchainService', async () => {
+            const extractProposalIndexSpy = jest.spyOn(blockchainService(), 'extractProposalIndex')
 
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
@@ -404,11 +407,11 @@ describe('IdeaMilestoneProposalsService', () => {
                 sessionData,
             )
 
-            expect(extractBlockchainProposalIndexFromExtrinsicEventsSpy).toHaveBeenCalled()
+            expect(extractProposalIndexSpy).toHaveBeenCalled()
         })
 
         it('should call turnIdeaMilestoneIntoProposal if blockchainProposalIndex was found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return 3
                 },
@@ -439,7 +442,7 @@ describe('IdeaMilestoneProposalsService', () => {
         })
 
         it('should call call create proposal entity if blockchainProposalIndex was found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return 3
                 },
@@ -467,7 +470,7 @@ describe('IdeaMilestoneProposalsService', () => {
         })
 
         it('should not call turnIdeaMilestoneIntoProposal if blockchainProposalIndex was not found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return undefined
                 },
@@ -498,7 +501,7 @@ describe('IdeaMilestoneProposalsService', () => {
         })
 
         it('should not call create proposal entity if blockchainProposalIndex was not found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return undefined
                 },
@@ -620,8 +623,16 @@ describe('IdeaMilestoneProposalsService', () => {
                 ideaWithTwoNetworks.id,
                 {
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
-                        { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '1000' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                        {
+                            name: NETWORKS.KUSAMA,
+                            value: '1000' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
                     ],
                 },
                 sessionData,
@@ -671,8 +682,16 @@ describe('IdeaMilestoneProposalsService', () => {
                 ideaWithTwoNetworks.id,
                 {
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
-                        { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '1000' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                        {
+                            name: NETWORKS.KUSAMA,
+                            value: '1000' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
                     ],
                 },
                 sessionData,

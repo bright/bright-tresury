@@ -4,6 +4,7 @@ import StyledInput from '../../components/form/input/StyledInput'
 import StyledSmallInput from '../../components/form/input/StyledSmallInput'
 import StyledSmallFormSelect from '../../components/select/StyledSmallFormSelect'
 import NetworkInput from '../../ideas/form/networks/NetworkInput'
+import { NetworkDisplayValue } from '../../util/types'
 
 const BountyFormFields = () => {
     const { t } = useTranslation()
@@ -27,7 +28,7 @@ const BountyFormFields = () => {
                 ]}
             />
             {/*TODO TREAS-244 create a separate component to show the bond deposit value*/}
-            <NetworkInput inputName={'value'} value={0} />
+            <NetworkInput inputName={'value'} value={'0' as NetworkDisplayValue} />
             <StyledSmallInput
                 name="blockchainDescription"
                 placeholder={t('bounty.form.fields.blockchainDescription')}

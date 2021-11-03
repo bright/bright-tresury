@@ -6,6 +6,7 @@ import Strong from '../../components/strong/Strong'
 import { useNetworks } from '../../networks/useNetworks'
 import { ROUTE_BOUNTIES } from '../../routes/routes'
 import SubmittingTransaction, { ExtrinsicDetails } from '../../substrate-lib/components/SubmittingTransaction'
+import { toNetworkPlanckValue } from '../../util/quota.util'
 import { useCreateBounty } from '../bounties.api'
 import { CreateBountyDto } from '../bounties.dto'
 import { BountyFormValues } from '../form/BountyForm'
@@ -39,6 +40,7 @@ const SubmitBountyModal = ({ open, onClose, bounty }: SubmitBountyModalProps) =>
                     proposer: signerAddress,
                     extrinsicHash,
                     lastBlockHash,
+                    value: toNetworkPlanckValue(bounty.value, network.decimals)!,
                 }
                 await mutateAsync(params)
             }
@@ -76,7 +78,7 @@ const SubmitBountyModal = ({ open, onClose, bounty }: SubmitBountyModalProps) =>
                     inputParams: [
                         {
                             name: 'value',
-                            value: bounty.value.toString(),
+                            value: toNetworkPlanckValue(bounty.value, network.decimals)!,
                             type: 'Compact<Balance>',
                         },
                         {

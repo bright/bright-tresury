@@ -8,7 +8,7 @@ import { getLogger } from '../logging.module'
 import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import { getProposers, getBeneficiaries, getVoters, transformBalance, getApi } from './utils'
+import { getProposers, getBeneficiaries, getVoters, getApi, extractNumberFromBlockchainEvent } from './utils'
 import BN from 'bn.js'
 import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
 import { BlockchainsConnections } from './blockchain.module'
@@ -19,7 +19,6 @@ import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
 import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calculations.dto'
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
-import { BlockchainConfigurationService } from './blockchain-configuration/blockchain-configuration.service'
 import { NetworkPlanckValue } from '../utils/types'
 
 const logger = getLogger()
@@ -31,7 +30,6 @@ export class BlockchainService implements OnModuleDestroy {
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
         @Inject(BlockchainConfigToken) private readonly blockchainsConfiguration: BlockchainConfig[],
-        private readonly blockchainConfigurationService: BlockchainConfigurationService,
     ) {}
 
     async onModuleDestroy() {
@@ -47,7 +45,7 @@ export class BlockchainService implements OnModuleDestroy {
         networkId: string,
         extrinsicHash: string,
         cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>,
-    ) {
+    ): Promise<void> {
         logger.info(`Listening for extrinsic with hash ${extrinsicHash}...`)
         let blocksCount = 0
         const api = getApi(this.blockchainsConnections, networkId)
@@ -68,21 +66,7 @@ export class BlockchainService implements OnModuleDestroy {
                 logger.info(`All extrinsic events.`, events)
                 await this.callUnsub()
 
-                const applyExtrinsicEvents = events
-                    .filter(({ phase, event }) => phase.isApplyExtrinsic)
-                    .map(({ event }) => {
-                        const types = event.typeDef
-                        return {
-                            section: event.section,
-                            method: event.method,
-                            data: event.data.map((value, index) => {
-                                return {
-                                    name: types[index].type,
-                                    value: value.toString(),
-                                }
-                            }),
-                        } as ExtrinsicEvent
-                    })
+                const applyExtrinsicEvents = BlockchainService.getApplyExtrinsicEvents(events)
 
                 logger.info(`Apply extrinsic events.`, applyExtrinsicEvents)
 
@@ -107,6 +91,24 @@ export class BlockchainService implements OnModuleDestroy {
                 await this.callUnsub()
             }
         })
+    }
+
+    static getApplyExtrinsicEvents(events: EventRecord[]): ExtrinsicEvent[] {
+        return events
+            .filter(({ phase, event }) => phase.isApplyExtrinsic)
+            .map(({ event }) => {
+                const types = event.typeDef
+                return {
+                    section: event.section,
+                    method: event.method,
+                    data: event.data.map((value, index) => {
+                        return {
+                            name: types[index].type,
+                            value: value.toString(),
+                        }
+                    }),
+                } as ExtrinsicEvent
+            })
     }
 
     async getIdentities(networkId: string, addresses: string[]): Promise<Map<string, DeriveAccountRegistration>> {
@@ -183,29 +185,9 @@ export class BlockchainService implements OnModuleDestroy {
         ]
     }
 
-    extractBlockchainProposalIndexFromExtrinsicEvents(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
+    extractProposalIndex(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
         logger.info('Looking for a blockchain proposal index')
-        logger.info('Extracting event from extrinsicEvents with section: treasury, method: Proposed')
-
-        const event = extrinsicEvents.find(({ section, method }) => section === 'treasury' && method === 'Proposed')
-
-        if (event) {
-            logger.info('Event found')
-
-            const proposalIndex = Number(event?.data.find(({ name }) => name === 'ProposalIndex')?.value)
-
-            logger.info(`Found blockchain proposal index: ${proposalIndex}`)
-
-            if (!isNaN(proposalIndex)) {
-                return proposalIndex
-            }
-
-            logger.info('Found blockchain proposal index is NaN')
-        }
-
-        logger.info('Event not found')
-
-        return
+        return extractNumberFromBlockchainEvent(extrinsicEvents, 'treasury', 'Proposed', 'ProposalIndex')
     }
 
     async getStats(networkId: string): Promise<StatsDto> {

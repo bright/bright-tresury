@@ -23,6 +23,7 @@ import { ProposalsModule } from './proposals/proposals.module'
 import { StatsModule } from './stats/stats.module'
 import { UserSettingsModule } from './users/user-settings/user-settings.module'
 import { UsersModule } from './users/users.module'
+import { BountiesModule } from './bounties/bounties.module'
 
 @Module({
     imports: [
@@ -41,6 +42,7 @@ import { UsersModule } from './users/users.module'
         MilestoneDetailsModule,
         AppEventsModule,
         UserSettingsModule,
+        BountiesModule,
     ],
     exports: [],
     controllers: [AppController],

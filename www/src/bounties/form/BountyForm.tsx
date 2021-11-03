@@ -5,6 +5,9 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import FormFooter from '../../components/form/footer/FormFooter'
 import { useModal } from '../../components/modal/useModal'
+import { useNetworks } from '../../networks/useNetworks'
+import { toNetworkDisplayValue } from '../../util/quota.util'
+import { NetworkDisplayValue, NetworkPlanckValue } from '../../util/types'
 import SubmitBountyModal from '../create/SubmitBountyModal'
 import BountyFormFields from './BountyFormFields'
 
@@ -20,7 +23,7 @@ const useStyles = makeStyles(() =>
 
 export interface BountyFormValues {
     blockchainDescription: string
-    value: number
+    value: NetworkDisplayValue
     title: string
     field: string
     description: string
@@ -34,6 +37,7 @@ const BountyForm = ({ children }: IdeaFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const submitBountyModal = useModal()
+    const { network } = useNetworks()
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('bounty.form.emptyFieldError')),
@@ -43,7 +47,7 @@ const BountyForm = ({ children }: IdeaFormProps) => {
 
     const initialValues: BountyFormValues = {
         blockchainDescription: '',
-        value: 0,
+        value: toNetworkDisplayValue('0' as NetworkPlanckValue, network.decimals),
         title: '',
         field: '',
         description: '',

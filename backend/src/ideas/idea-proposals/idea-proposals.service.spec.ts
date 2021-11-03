@@ -262,21 +262,18 @@ describe('IdeaProposalsService', () => {
             expect(ideaNetwork!.extrinsic).toBeDefined()
         })
 
-        it('should call extractBlockchainProposalIndexFromExtrinsicEvents method from BlockchainService', async () => {
-            const extractBlockchainProposalIndexFromExtrinsicEventsSpy = jest.spyOn(
-                blockchainService(),
-                'extractBlockchainProposalIndexFromExtrinsicEvents',
-            )
+        it('should call extractProposalIndex method from BlockchainService', async () => {
+            const extractProposalIndexSpy = jest.spyOn(blockchainService(), 'extractProposalIndex')
 
             createIdeaProposalDto.ideaNetworkId = idea.networks[0].id
 
             await ideaProposalsService().createProposal(idea.id, createIdeaProposalDto, sessionData)
 
-            expect(extractBlockchainProposalIndexFromExtrinsicEventsSpy).toHaveBeenCalled()
+            expect(extractProposalIndexSpy).toHaveBeenCalled()
         })
 
         it('should call turnIdeaIntoProposal if blockchainProposalIndex was found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return 3
                 },
@@ -292,7 +289,7 @@ describe('IdeaProposalsService', () => {
         })
 
         it('should call create proposal entity if blockchainProposalIndex was found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return 3
                 },
@@ -309,7 +306,7 @@ describe('IdeaProposalsService', () => {
         })
 
         it('should not call turnIdeaIntoProposal if blockchainProposalIndex was not found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return undefined
                 },
@@ -325,7 +322,7 @@ describe('IdeaProposalsService', () => {
         })
 
         it('should not call create proposal entity if blockchainProposalIndex was not found', async () => {
-            jest.spyOn(blockchainService(), 'extractBlockchainProposalIndexFromExtrinsicEvents').mockImplementationOnce(
+            jest.spyOn(blockchainService(), 'extractProposalIndex').mockImplementationOnce(
                 (extrinsicEvents: ExtrinsicEvent[]): number | undefined => {
                     return undefined
                 },
