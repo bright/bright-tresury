@@ -10,14 +10,14 @@ import { ProposalsService } from '../../proposals/proposals.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { IdeaNetworkStatus } from '../entities/idea-network-status'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
-import { IdeaNetwork } from '../entities/idea-network.entity'
+import { IdeaNetworkEntity } from '../entities/idea-network.entity'
 import { IdeasService } from '../ideas.service'
 import { IdeaStatus } from '../entities/idea-status'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { CreateIdeaProposalDto, IdeaProposalDataDto } from './dto/create-idea-proposal.dto'
 import { IdeaProposalsService } from './idea-proposals.service'
 import { v4 as uuid } from 'uuid'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { NetworkPlanckValue } from '../../utils/types'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
@@ -45,10 +45,10 @@ describe('IdeaProposalsService', () => {
     const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
 
     const ideaNetworkRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)),
+        app().get<Repository<IdeaNetworkEntity>>(getRepositoryToken(IdeaNetworkEntity)),
     )
 
-    let idea: Idea
+    let idea: IdeaEntity
     let sessionData: SessionData
     let otherSessionData: SessionData
 

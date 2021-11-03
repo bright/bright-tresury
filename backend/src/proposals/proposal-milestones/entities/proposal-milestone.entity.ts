@@ -1,17 +1,17 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../../database/base.entity'
-import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
-import { Proposal } from '../../entities/proposal.entity'
+import { MilestoneDetailsEntity } from '../../../milestone-details/entities/milestone-details.entity'
+import { ProposalEntity } from '../../entities/proposal.entity'
 
 @Entity('proposal_milestones')
-export class ProposalMilestone extends BaseEntity {
-    @ManyToOne(() => Proposal, (proposal) => proposal.milestones)
-    proposal!: Proposal
+export class ProposalMilestoneEntity extends BaseEntity {
+    @ManyToOne(() => ProposalEntity, (proposal) => proposal.milestones)
+    proposal!: ProposalEntity
 
     @Column({ nullable: false, type: 'text' })
     proposalId!: string
 
-    @OneToOne(() => MilestoneDetails, { eager: true })
+    @OneToOne(() => MilestoneDetailsEntity, { eager: true })
     @JoinColumn()
-    details!: MilestoneDetails
+    details!: MilestoneDetailsEntity
 }

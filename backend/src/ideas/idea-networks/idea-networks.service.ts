@@ -2,16 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
-import { IdeaNetwork } from '../entities/idea-network.entity'
+import { IdeaNetworkEntity } from '../entities/idea-network.entity'
 import { UpdateIdeaNetworkDto } from './dto/update-idea-network.dto'
 
 @Injectable()
 export class IdeaNetworksService {
     constructor(
-        @InjectRepository(IdeaNetwork)
-        private readonly networkRepository: Repository<IdeaNetwork>,
+        @InjectRepository(IdeaNetworkEntity)
+        private readonly networkRepository: Repository<IdeaNetworkEntity>,
     ) {}
-    async update(id: string, dto: UpdateIdeaNetworkDto, sessionData: SessionData): Promise<IdeaNetwork> {
+    async update(id: string, dto: UpdateIdeaNetworkDto, sessionData: SessionData): Promise<IdeaNetworkEntity> {
         const network = await this.networkRepository.findOne(id, { relations: ['idea'] })
 
         if (!network) {

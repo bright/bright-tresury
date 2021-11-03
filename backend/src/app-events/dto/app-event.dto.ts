@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { AppEventReceiver } from '../entities/app-event-receiver.entity'
+import { AppEventReceiverEntity } from '../entities/app-event-receiver.entity'
 import { AppEventData } from '../entities/app-event-type'
-import { AppEvent } from '../entities/app-event.entity'
+import { AppEventEntity } from '../entities/app-event.entity'
 
 export class AppEventDto {
     @ApiProperty({
@@ -19,7 +19,7 @@ export class AppEventDto {
     })
     isRead: boolean
 
-    constructor(appEvent: AppEvent, receiver?: AppEventReceiver) {
+    constructor(appEvent: AppEventEntity, receiver?: AppEventReceiverEntity) {
         this.id = appEvent.id
         this.data = appEvent.data
         this.isRead = receiver?.isRead ?? false

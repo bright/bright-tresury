@@ -2,14 +2,14 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
-import { IdeaProposalDetails } from './idea-proposal-details.entity'
+import { IdeaProposalDetailsEntity } from './idea-proposal-details.entity'
 import { IdeaProposalDetailsService } from './idea-proposal-details.service'
 
 describe('IdeaProposalDetailsService', () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(IdeaProposalDetailsService)
     const getRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaProposalDetails>>(getRepositoryToken(IdeaProposalDetails)),
+        app().get<Repository<IdeaProposalDetailsEntity>>(getRepositoryToken(IdeaProposalDetailsEntity)),
     )
 
     beforeEach(async () => {

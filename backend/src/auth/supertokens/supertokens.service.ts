@@ -31,7 +31,7 @@ import { AuthorizationDatabaseName } from '../../database/authorization/authoriz
 import { EmailsService } from '../../emails/emails.service'
 import { getLogger } from '../../logging.module'
 import { CreateUserDto } from '../../users/dto/create-user.dto'
-import { User } from '../../users/user.entity'
+import { UserEntity } from '../../users/user.entity'
 import { UsersService } from '../../users/users.service'
 import { SessionData } from '../session/session.decorator'
 import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
@@ -106,7 +106,7 @@ export class SuperTokensService {
         return await superTokensGetSession(req, res, doAntiCsrfCheck)
     }
 
-    async isEmailVerified(user: User): Promise<boolean> {
+    async isEmailVerified(user: UserEntity): Promise<boolean> {
         if (!user.email) {
             return false
         }

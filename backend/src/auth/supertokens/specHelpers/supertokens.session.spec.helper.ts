@@ -7,7 +7,7 @@ import {
     verifyEmailUsingToken,
 } from 'supertokens-node/lib/build/recipe/emailverification'
 import { getAllSessionHandlesForUser, revokeSession } from 'supertokens-node/lib/build/recipe/session'
-import { User } from '../../../users/user.entity'
+import { UserEntity } from '../../../users/user.entity'
 import { request } from '../../../utils/spec.helpers'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../../session/session.decorator'
@@ -19,7 +19,7 @@ export class SessionHandler {
 
     private readonly cookies: string
 
-    constructor(cookies: string, user: User) {
+    constructor(cookies: string, user: UserEntity) {
         this.cookies = cookies
         this.sessionData = { user }
     }
@@ -99,11 +99,11 @@ export const createUserSessionHandler = async (
     }
 
     const res: any = await request(app).post(`/api/v1/signup`).send(signupData)
-    const user = await app.get(getRepositoryToken(User)).findOne({ email })
+    const user = await app.get(getRepositoryToken(UserEntity)).findOne({ email })
     return createSessionHandler(res, user)
 }
 
-export const createSessionHandler = (res: any, user: User): SessionHandler => {
+export const createSessionHandler = (res: any, user: UserEntity): SessionHandler => {
     const cookies = res.headers['set-cookie'].join('; ')
     return new SessionHandler(cookies, user)
 }

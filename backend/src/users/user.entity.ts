@@ -1,10 +1,10 @@
 import { Column, Entity, OneToMany } from 'typeorm'
 import { BaseEntity } from '../database/base.entity'
 import { v4 as uuid } from 'uuid'
-import { Web3Address } from './web3-addresses/web3-address.entity'
+import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
 
 @Entity('users')
-export class User extends BaseEntity {
+export class UserEntity extends BaseEntity {
     @Column({ nullable: false, type: 'text', unique: true })
     authId: string
 
@@ -17,12 +17,12 @@ export class User extends BaseEntity {
     @Column({ nullable: false, type: 'boolean' })
     isEmailPasswordEnabled: boolean
 
-    @OneToMany(() => Web3Address, (web3Address) => web3Address.user, {
+    @OneToMany(() => Web3AddressEntity, (web3Address) => web3Address.user, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
-    web3Addresses?: Web3Address[]
+    web3Addresses?: Web3AddressEntity[]
 
     @Column({ nullable: false, type: 'boolean', default: true })
     isEmailNotificationEnabled: boolean
@@ -32,7 +32,7 @@ export class User extends BaseEntity {
         username: string,
         email: string,
         isEmailPasswordEnabled: boolean,
-        web3Addresses?: Web3Address[],
+        web3Addresses?: Web3AddressEntity[],
         id?: string,
         isEmailNotificationEnabled: boolean = true,
     ) {

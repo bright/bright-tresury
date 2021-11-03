@@ -4,9 +4,9 @@ import { Repository } from 'typeorm'
 import { SessionData } from '../../auth/session/session.decorator'
 import { CreateIdeaProposalDetailsDto } from '../../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { UpdateIdeaProposalDetailsDto } from '../../idea-proposal-details/dto/update-idea-proposal-details.dto'
-import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
+import { IdeaProposalDetailsEntity } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { IdeaProposalDetailsService } from '../../idea-proposal-details/idea-proposal-details.service'
-import { Proposal } from '../entities/proposal.entity'
+import { ProposalEntity } from '../entities/proposal.entity'
 import { ProposalsService } from '../proposals.service'
 
 @Injectable()
@@ -14,8 +14,8 @@ export class ProposalDetailsService {
     constructor(
         private readonly proposalsService: ProposalsService,
         private readonly ideaProposalDetailsService: IdeaProposalDetailsService,
-        @InjectRepository(Proposal)
-        private readonly proposalsRepository: Repository<Proposal>,
+        @InjectRepository(ProposalEntity)
+        private readonly proposalsRepository: Repository<ProposalEntity>,
     ) {}
 
     async update(
@@ -23,7 +23,7 @@ export class ProposalDetailsService {
         network: string,
         dto: UpdateIdeaProposalDetailsDto,
         { user }: SessionData,
-    ): Promise<IdeaProposalDetails> {
+    ): Promise<IdeaProposalDetailsEntity> {
         const proposal = await this.proposalsService.findOne(proposalIndex, network)
 
         if (!proposal.entity) {
@@ -40,7 +40,7 @@ export class ProposalDetailsService {
         network: string,
         dto: CreateIdeaProposalDetailsDto,
         { user }: SessionData,
-    ): Promise<IdeaProposalDetails> {
+    ): Promise<IdeaProposalDetailsEntity> {
         const proposal = await this.proposalsService.findOne(proposalIndex, network)
 
         if (proposal.entity) {

@@ -9,10 +9,10 @@ import {
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../extrinsics/dto/updateExtrinsic.dto'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { createIdea } from '../spec.helpers'
 import { IdeasService } from '../ideas.service'
-import { IdeaNetwork } from '../entities/idea-network.entity'
+import { IdeaNetworkEntity } from '../entities/idea-network.entity'
 import { NetworkPlanckValue } from '../../utils/types'
 
 const updateExtrinsicDto: UpdateExtrinsicDto = {
@@ -57,7 +57,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
     })
 
     describe('POST', () => {
-        let idea: Idea
+        let idea: IdeaEntity
 
         beforeAll(() => {
             jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementation(
@@ -122,7 +122,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
                 request(app()).post(baseUrl(idea.id)).send(createIdeaProposalDto(idea.networks[0].id)),
             )
 
-            const body = result.body as IdeaNetwork
+            const body = result.body as IdeaNetworkEntity
 
             expect(body.name).toBe(NETWORKS.POLKADOT)
             expect(body.value).toBe('100')

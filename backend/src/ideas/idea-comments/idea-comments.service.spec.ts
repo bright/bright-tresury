@@ -2,10 +2,10 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
 import { IdeaCommentsService } from './idea-comments.service'
-import { IdeaComment } from './entities/idea-comment.entity'
+import { IdeaCommentEntity } from './entities/idea-comment.entity'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { createIdea, createSessionData } from '../spec.helpers'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { IdeasService } from '../ideas.service'
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { SessionData } from '../../auth/session/session.decorator'
@@ -15,10 +15,12 @@ describe('IdeaCommentsServiceSpec', () => {
     const app = beforeSetupFullApp()
     const getIdeaCommentsService = () => app.get().get(IdeaCommentsService)
     const getIdeasService = () => app.get().get(IdeasService)
-    const getRepository = beforeAllSetup(() => app().get<Repository<IdeaComment>>(getRepositoryToken(IdeaComment)))
+    const getRepository = beforeAllSetup(() =>
+        app().get<Repository<IdeaCommentEntity>>(getRepositoryToken(IdeaCommentEntity)),
+    )
     let usr1SessionData: SessionData
 
-    let idea: Idea
+    let idea: IdeaEntity
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()

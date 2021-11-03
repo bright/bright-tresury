@@ -1,11 +1,11 @@
 import { Inject } from '@nestjs/common'
 import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm'
-import { Idea } from '../../../ideas/entities/idea.entity'
+import { IdeaEntity } from '../../../ideas/entities/idea.entity'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
 import { AppConfig, AppConfigToken } from '../../../config/config.module'
 import { IdeasService } from '../../../ideas/ideas.service'
-import { IdeaComment } from '../../../ideas/idea-comments/entities/idea-comment.entity'
+import { IdeaCommentEntity } from '../../../ideas/idea-comments/entities/idea-comment.entity'
 import { getLogger } from '../../../logging.module'
 import { IdeaCommentsService } from '../../../ideas/idea-comments/idea-comments.service'
 import { NewIdeaCommentDto } from './new-idea-comment.dto'
@@ -13,7 +13,7 @@ import { NewIdeaCommentDto } from './new-idea-comment.dto'
 const logger = getLogger()
 
 @EventSubscriber()
-export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaComment> {
+export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaCommentEntity> {
     constructor(
         private readonly commentsService: IdeaCommentsService,
         private readonly appEventsService: AppEventsService,
@@ -25,10 +25,10 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaComm
     }
 
     listenTo() {
-        return IdeaComment
+        return IdeaCommentEntity
     }
 
-    async afterInsert({ entity }: InsertEvent<IdeaComment>) {
+    async afterInsert({ entity }: InsertEvent<IdeaCommentEntity>) {
         logger.info(`New idea comment created. Creating NewIdeaComment app event: `, entity)
 
         const idea = entity.idea ?? (await this.ideasService.findOne(entity.ideaId))
@@ -38,7 +38,7 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaComm
         await this.appEventsService.create(data, receiverIds)
     }
 
-    private getEventDetails(ideaComment: IdeaComment, idea: Idea): NewIdeaCommentDto {
+    private getEventDetails(ideaComment: IdeaCommentEntity, idea: IdeaEntity): NewIdeaCommentDto {
         const networkId = idea.networks[0]?.name
         const networkQueryParam = networkId ? `networkId=${networkId}` : ''
         const commentsUrl = `${this.appConfig.websiteUrl}/ideas/${idea.id}/discussion?${networkQueryParam}`
@@ -55,7 +55,7 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<IdeaComm
         }
     }
 
-    private async getReceiverIds(ideaComment: IdeaComment, idea: Idea): Promise<string[]> {
+    private async getReceiverIds(ideaComment: IdeaCommentEntity, idea: IdeaEntity): Promise<string[]> {
         const allAuthorIds = (await this.commentsService.findAll(idea.id)).map((c) => c.comment.authorId)
 
         // Set created from an array will take only distinct values

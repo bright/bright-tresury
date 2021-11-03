@@ -9,7 +9,7 @@ import {
 } from '../../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { EmailsService } from '../../../emails/emails.service'
 import { EmailTemplates } from '../../../emails/templates/templates'
-import { User } from '../../../users/user.entity'
+import { UserEntity } from '../../../users/user.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { NewProposalCommentDto } from '../../app-event-types/proposal-comment/new-proposal-comment.dto'
 import { AppEventData, AppEventType } from '../../entities/app-event-type'
@@ -21,7 +21,7 @@ describe('EmailNotificationsService', () => {
     const app = beforeSetupFullApp()
 
     const service = beforeAllSetup(() => app().get<EmailNotificationsService>(EmailNotificationsService))
-    const usersRepository = beforeAllSetup(() => app().get<Repository<User>>(getRepositoryToken(User)))
+    const usersRepository = beforeAllSetup(() => app().get<Repository<UserEntity>>(getRepositoryToken(UserEntity)))
 
     beforeEach(async () => {
         await cleanDatabase()

@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Nil } from '../../utils/types'
-import { MilestoneDetails } from '../entities/milestone-details.entity'
+import { MilestoneDetailsEntity } from '../entities/milestone-details.entity'
 
 export class MilestoneDetailsDto {
     @ApiProperty({
@@ -37,7 +37,7 @@ export class MilestoneDetailsDto {
     })
     updatedAt: Date
 
-    constructor({ subject, dateFrom, dateTo, description, createdAt, updatedAt }: MilestoneDetails) {
+    constructor({ subject, dateFrom, dateTo, description, createdAt, updatedAt }: MilestoneDetailsEntity) {
         this.subject = subject
         this.dateFrom = dateFrom
         this.dateTo = dateTo

@@ -5,7 +5,7 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { beforeAllSetup, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { CreateExtrinsicDto } from './dto/createExtrinsic.dto'
 import { UpdateExtrinsicDto } from './dto/updateExtrinsic.dto'
-import { Extrinsic, ExtrinsicStatuses } from './extrinsic.entity'
+import { ExtrinsicEntity, ExtrinsicStatuses } from './extrinsic.entity'
 import { ExtrinsicsModule } from './extrinsics.module'
 import { ExtrinsicsService } from './extrinsics.service'
 
@@ -56,7 +56,9 @@ describe('ExtrinsicsService', () => {
     const blockchainConfig: any = beforeAllSetup(() => module().resolve(BlockchainService))
 
     const service = beforeAllSetup(() => module().get<ExtrinsicsService>(ExtrinsicsService))
-    const repository = beforeAllSetup(() => module().get<Repository<Extrinsic>>(getRepositoryToken(Extrinsic)))
+    const repository = beforeAllSetup(() =>
+        module().get<Repository<ExtrinsicEntity>>(getRepositoryToken(ExtrinsicEntity)),
+    )
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -67,7 +69,7 @@ describe('ExtrinsicsService', () => {
     })
 
     describe('findByExtrinsicHash', () => {
-        const extrinsic = new Extrinsic(
+        const extrinsic = new ExtrinsicEntity(
             '0xeec6225d744ac4840ff761aa0f5cb8c680d78299435a4ebd67d3849ed587b2c1',
             '0x8d152599c9e65cc7195b483d3158b832fdcd3738ee88fe809dff80227f2c2e43',
         )

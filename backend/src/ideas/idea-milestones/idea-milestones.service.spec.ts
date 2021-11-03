@@ -4,14 +4,14 @@ import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../../auth/session/session.decorator'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
-import { MilestoneDetails } from '../../milestone-details/entities/milestone-details.entity'
+import { MilestoneDetailsEntity } from '../../milestone-details/entities/milestone-details.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { IdeaStatus } from '../entities/idea-status'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { IdeasService } from '../ideas.service'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
-import { IdeaMilestoneNetwork } from './entities/idea-milestone-network.entity'
+import { IdeaMilestoneNetworkEntity } from './entities/idea-milestone-network.entity'
 import { IdeaMilestoneStatus } from './entities/idea-milestone-status'
 import { IdeaMilestonesRepository } from './idea-milestones.repository'
 import { IdeaMilestonesService } from './idea-milestones.service'
@@ -20,7 +20,9 @@ import { NetworkPlanckValue } from '../../utils/types'
 
 const minimalCreateIdeaMilestoneDto = {
     details: { subject: 'ideaMilestoneSubject' },
-    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+    networks: [
+        { name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+    ],
 }
 
 describe(`IdeaMilestonesService`, () => {
@@ -29,15 +31,15 @@ describe(`IdeaMilestonesService`, () => {
     const getIdeasService = () => app.get().get(IdeasService)
     const getMilestonesRepository = () => app.get().get(IdeaMilestonesRepository)
     const getMilestoneDetailsRepository = () =>
-        app().get<Repository<MilestoneDetails>>(getRepositoryToken(MilestoneDetails))
-    const getIdeaRepository = () => app.get().get(getRepositoryToken(Idea))
+        app().get<Repository<MilestoneDetailsEntity>>(getRepositoryToken(MilestoneDetailsEntity))
+    const getIdeaRepository = () => app.get().get(getRepositoryToken(IdeaEntity))
     const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
     const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork)),
+        app().get<Repository<IdeaMilestoneNetworkEntity>>(getRepositoryToken(IdeaMilestoneNetworkEntity)),
     )
 
-    let idea: Idea
+    let idea: IdeaEntity
 
     let sessionData: SessionData
     let otherSessionData: SessionData
@@ -49,7 +51,11 @@ describe(`IdeaMilestonesService`, () => {
         sessionData = await createSessionData()
         otherSessionData = await createSessionData({ username: 'other', email: 'other@example.com' })
 
-        idea = await createIdea({ networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue  }] }, sessionData, getIdeasService())
+        idea = await createIdea(
+            { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }] },
+            sessionData,
+            getIdeasService(),
+        )
     })
 
     describe('find', () => {
@@ -65,7 +71,13 @@ describe(`IdeaMilestonesService`, () => {
         it('should return idea milestones for idea with added milestones', async () => {
             const createIdeaMilestoneDto: CreateIdeaMilestoneDto = {
                 details: { subject: 'ideaMilestoneSubject' },
-                networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                networks: [
+                    {
+                        name: NETWORKS.POLKADOT,
+                        value: '100' as NetworkPlanckValue,
+                        status: IdeaMilestoneNetworkStatus.Active,
+                    },
+                ],
             }
 
             await getIdeaMilestonesService().create(idea.id, createIdeaMilestoneDto, sessionData)
@@ -77,13 +89,22 @@ describe(`IdeaMilestonesService`, () => {
         })
 
         it('should return idea milestones only for the given idea', async () => {
-            const anotherIdea = await createIdea({ networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue  }] }, sessionData)
+            const anotherIdea = await createIdea(
+                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }] },
+                sessionData,
+            )
 
             await getIdeaMilestonesService().create(
                 idea.id,
                 {
                     details: { subject: 'ideaMilestoneSubject1' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -91,7 +112,13 @@ describe(`IdeaMilestonesService`, () => {
                 anotherIdea.id,
                 {
                     details: { subject: 'ideaMilestoneSubject1' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -104,14 +131,23 @@ describe(`IdeaMilestonesService`, () => {
 
         it('should return idea milestones for draft idea for owner', async () => {
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue  }], status: IdeaStatus.Draft },
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
+                    status: IdeaStatus.Draft,
+                },
                 sessionData,
             )
             await getIdeaMilestonesService().create(
                 draftIdea.id,
                 {
                     details: { subject: 'draftIdeaMilestoneSubject1' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -122,7 +158,10 @@ describe(`IdeaMilestonesService`, () => {
 
         it('should throw not found for draft idea for not owner', async () => {
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue  }], status: IdeaStatus.Draft },
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
+                    status: IdeaStatus.Draft,
+                },
                 sessionData,
             )
 
@@ -146,8 +185,16 @@ describe(`IdeaMilestonesService`, () => {
                     description: 'ideaMilestoneDescription',
                 },
                 networks: [
-                    { name: NETWORKS.POLKADOT, value: '50' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active },
-                    { name: NETWORKS.KUSAMA, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active },
+                    {
+                        name: NETWORKS.POLKADOT,
+                        value: '50' as NetworkPlanckValue,
+                        status: IdeaMilestoneNetworkStatus.Active,
+                    },
+                    {
+                        name: NETWORKS.KUSAMA,
+                        value: '100' as NetworkPlanckValue,
+                        status: IdeaMilestoneNetworkStatus.Active,
+                    },
                 ],
                 beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
             }
@@ -164,10 +211,10 @@ describe(`IdeaMilestonesService`, () => {
             expect(foundIdeaMilestone.networks).toBeDefined()
             expect(foundIdeaMilestone.networks.length).toBe(2)
             expect(
-                foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === NETWORKS.KUSAMA),
+                foundIdeaMilestone.networks.find((n: IdeaMilestoneNetworkEntity) => n.name === NETWORKS.KUSAMA),
             ).toBeDefined()
             expect(
-                foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === NETWORKS.POLKADOT),
+                foundIdeaMilestone.networks.find((n: IdeaMilestoneNetworkEntity) => n.name === NETWORKS.POLKADOT),
             ).toBeDefined()
             expect(foundIdeaMilestone.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(foundIdeaMilestone.details.dateFrom).toBe('2021-04-20')
@@ -177,14 +224,23 @@ describe(`IdeaMilestonesService`, () => {
 
         it('should return idea milestone for draft idea for owner', async () => {
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue  }], status: IdeaStatus.Draft },
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
+                    status: IdeaStatus.Draft,
+                },
                 sessionData,
             )
             const milestone = await getIdeaMilestonesService().create(
                 draftIdea.id,
                 {
                     details: { subject: 'draftIdeaMilestoneSubject1' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -196,7 +252,7 @@ describe(`IdeaMilestonesService`, () => {
         it('should throw not found for draft idea for not owner', async () => {
             const draftIdea = await createIdea(
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue  }],
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
                     status: IdeaStatus.Draft,
                 },
                 sessionData,
@@ -214,7 +270,13 @@ describe(`IdeaMilestonesService`, () => {
                 idea.id,
                 {
                     details: { subject: 'draftIdeaMilestoneSubject1' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -234,7 +296,13 @@ describe(`IdeaMilestonesService`, () => {
                 idea.id,
                 {
                     details: { subject: 'draftIdeaMilestoneSubject1' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -252,7 +320,13 @@ describe(`IdeaMilestonesService`, () => {
                 idea.id,
                 {
                     details: { subject: 'draftIdeaMilestoneSubject1' },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -288,7 +362,13 @@ describe(`IdeaMilestonesService`, () => {
                         dateTo: new Date(2021, 3, 21),
                         description: 'ideaMilestoneDescription',
                     },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 },
                 sessionData,
@@ -300,7 +380,7 @@ describe(`IdeaMilestonesService`, () => {
             expect(foundIdeaMilestone.networks).toBeDefined()
             expect(foundIdeaMilestone.networks.length).toBe(1)
             expect(
-                foundIdeaMilestone.networks.find((n: IdeaMilestoneNetwork) => n.name === NETWORKS.POLKADOT),
+                foundIdeaMilestone.networks.find((n: IdeaMilestoneNetworkEntity) => n.name === NETWORKS.POLKADOT),
             ).toBeDefined()
             expect(foundIdeaMilestone.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(foundIdeaMilestone.details.dateFrom).toBe('2021-04-20')
@@ -355,7 +435,13 @@ describe(`IdeaMilestonesService`, () => {
                         dateTo: new Date(2021, 3, 21),
                         description: 'ideaMilestoneDescription',
                     },
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                 },
                 sessionData,
@@ -385,7 +471,13 @@ describe(`IdeaMilestonesService`, () => {
                 idea.id,
                 {
                     ...minimalCreateIdeaMilestoneDto,
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -416,7 +508,13 @@ describe(`IdeaMilestonesService`, () => {
                 idea.id,
                 {
                     ...minimalCreateIdeaMilestoneDto,
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -447,7 +545,13 @@ describe(`IdeaMilestonesService`, () => {
                 idea.id,
                 {
                     ...minimalCreateIdeaMilestoneDto,
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -473,10 +577,10 @@ describe(`IdeaMilestonesService`, () => {
             expect(updatedIdeaMilestone.networks.length).toBe(2)
 
             const firstNetwork = updatedIdeaMilestone.networks.find(
-                ({ name }: IdeaMilestoneNetwork) => name === NETWORKS.POLKADOT,
+                ({ name }: IdeaMilestoneNetworkEntity) => name === NETWORKS.POLKADOT,
             )
             const secondNetwork = updatedIdeaMilestone.networks.find(
-                ({ name }: IdeaMilestoneNetwork) => name === NETWORKS.KUSAMA,
+                ({ name }: IdeaMilestoneNetworkEntity) => name === NETWORKS.KUSAMA,
             )
 
             expect(firstNetwork).toBeDefined()
@@ -492,15 +596,23 @@ describe(`IdeaMilestonesService`, () => {
                 {
                     ...minimalCreateIdeaMilestoneDto,
                     networks: [
-                        { name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active },
-                        { name: NETWORKS.KUSAMA, value: '150' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                        {
+                            name: NETWORKS.KUSAMA,
+                            value: '150' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
                     ],
                 },
                 sessionData,
             )
 
             const ideaMilestoneNetworkToRemain = ideaMilestone.networks.find(
-                ({ name }: IdeaMilestoneNetwork) => name === NETWORKS.POLKADOT,
+                ({ name }: IdeaMilestoneNetworkEntity) => name === NETWORKS.POLKADOT,
             )!
 
             await getIdeaMilestonesService().update(
@@ -524,7 +636,13 @@ describe(`IdeaMilestonesService`, () => {
                 idea.id,
                 {
                     ...minimalCreateIdeaMilestoneDto,
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue , status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                 },
                 sessionData,
             )
@@ -646,7 +764,13 @@ describe(`IdeaMilestonesService`, () => {
             const ideaMilestone = await getIdeaMilestonesService().create(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.KUSAMA,
+                            value: '42' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     beneficiary: null,
                     details: { subject: 'subject' },
                 },

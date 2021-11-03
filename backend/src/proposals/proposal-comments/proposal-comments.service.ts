@@ -1,24 +1,24 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { User } from '../../users/user.entity'
-import { Comment } from '../../comments/comment.entity'
+import { UserEntity } from '../../users/user.entity'
+import { CommentEntity } from '../../comments/comment.entity'
 import { ProposalsService } from '../proposals.service'
-import { ProposalComment } from './entities/proposal-comment.entity'
+import { ProposalCommentEntity } from './entities/proposal-comment.entity'
 import { UpdateCommentDto } from '../../comments/dto/update-comment.dto'
 import { CreateCommentDto } from '../../comments/dto/create-comment.dto'
 
 @Injectable()
 export class ProposalCommentsService {
     constructor(
-        @InjectRepository(ProposalComment)
-        private readonly proposalCommentsRepository: Repository<ProposalComment>,
-        @InjectRepository(Comment)
-        private readonly commentsRepository: Repository<Comment>,
+        @InjectRepository(ProposalCommentEntity)
+        private readonly proposalCommentsRepository: Repository<ProposalCommentEntity>,
+        @InjectRepository(CommentEntity)
+        private readonly commentsRepository: Repository<CommentEntity>,
         private readonly proposalsService: ProposalsService,
     ) {}
 
-    async findOne(commentId: string): Promise<ProposalComment> {
+    async findOne(commentId: string): Promise<ProposalCommentEntity> {
         const proposalComment = await this.proposalCommentsRepository.findOne({
             relations: ['comment', 'comment.author', 'comment.author.web3Addresses'],
             where: { comment: { id: commentId } },
@@ -28,7 +28,7 @@ export class ProposalCommentsService {
         return proposalComment
     }
 
-    async findAll(blockchainProposalId: number, networkId: string): Promise<ProposalComment[]> {
+    async findAll(blockchainProposalId: number, networkId: string): Promise<ProposalCommentEntity[]> {
         return this.proposalCommentsRepository.find({
             where: { blockchainProposalId, networkId },
             relations: ['comment', 'comment.author', 'comment.author.web3Addresses'],
@@ -38,13 +38,13 @@ export class ProposalCommentsService {
     async create(
         blockchainProposalId: number,
         networkId: string,
-        author: User,
+        author: UserEntity,
         dto: CreateCommentDto,
-    ): Promise<ProposalComment> {
+    ): Promise<ProposalCommentEntity> {
         // check if proposal exists (proposalService.findOne will throw exception if proposal does not exist
         await this.proposalsService.findOne(blockchainProposalId, networkId)
-        const comment = await this.commentsRepository.save(new Comment(author, dto.content))
-        return this.proposalCommentsRepository.save(new ProposalComment(blockchainProposalId, networkId, comment))
+        const comment = await this.commentsRepository.save(new CommentEntity(author, dto.content))
+        return this.proposalCommentsRepository.save(new ProposalCommentEntity(blockchainProposalId, networkId, comment))
     }
 
     async update(
@@ -52,8 +52,8 @@ export class ProposalCommentsService {
         networkId: string,
         commentId: string,
         dto: UpdateCommentDto,
-        user: User,
-    ): Promise<ProposalComment> {
+        user: UserEntity,
+    ): Promise<ProposalCommentEntity> {
         // check if proposal exists (proposalService.findOne will throw exception if proposal does not exist
         await this.proposalsService.findOne(blockchainProposalId, networkId)
         const proposalComment = await this.findOne(commentId)
@@ -65,7 +65,7 @@ export class ProposalCommentsService {
         return await this.findOne(commentId)
     }
 
-    async delete(blockchainProposalId: number, commentId: string, user: User) {
+    async delete(blockchainProposalId: number, commentId: string, user: UserEntity) {
         const proposalComment = await this.findOne(commentId)
         if (proposalComment.blockchainProposalId !== blockchainProposalId) {
             throw new NotFoundException('Comment does not belong to the proposal')

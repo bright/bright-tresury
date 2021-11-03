@@ -12,12 +12,12 @@ import { BlockchainProposal, BlockchainProposalStatus } from '../blockchain/dto/
 import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { CreateIdeaDto } from '../ideas/dto/create-idea.dto'
-import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
+import { IdeaNetworkEntity } from '../ideas/entities/idea-network.entity'
 import { CreateIdeaMilestoneDto } from '../ideas/idea-milestones/dto/create-idea-milestone.dto'
-import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { getLogger } from '../logging.module'
-import { Web3Address } from '../users/web3-addresses/web3-address.entity'
+import { Web3AddressEntity } from '../users/web3-addresses/web3-address.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
@@ -115,7 +115,7 @@ export const mockedBlockchainService = {
 
 export const createProposerSessionData = (proposal: BlockchainProposal) =>
     createSessionData({
-        web3Addresses: [new Web3Address(proposal.proposer.address, true)],
+        web3Addresses: [new Web3AddressEntity(proposal.proposer.address, true)],
     })
 
 export const setUpIdea = async (
@@ -123,7 +123,7 @@ export const setUpIdea = async (
     sessionHandlerParam?: SessionHandler,
     ideaDto?: Partial<CreateIdeaDto>,
 ) => {
-    const ideaNetworkRepository = app.get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork))
+    const ideaNetworkRepository = app.get<Repository<IdeaNetworkEntity>>(getRepositoryToken(IdeaNetworkEntity))
 
     const sessionHandler = sessionHandlerParam ?? (await createUserSessionHandlerWithVerifiedEmail(app))
 
@@ -161,7 +161,13 @@ export const setUpIdeaWithMilestone = async (
     const ideaMilestone = await createIdeaMilestone(
         idea.id,
         {
-            networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+            networks: [
+                {
+                    name: NETWORKS.POLKADOT,
+                    value: '100' as NetworkPlanckValue,
+                    status: IdeaMilestoneNetworkStatus.Active,
+                },
+            ],
             ...milestoneDto,
             details: { subject: 'milestoneSubject', ...milestoneDto?.details },
         },
@@ -183,7 +189,7 @@ export const setUpProposalFromIdea = async (
     sessionHandlerParam?: SessionHandler,
     ideaDto?: Partial<CreateIdeaDto>,
 ) => {
-    const ideaNetworkRepository = app.get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork))
+    const ideaNetworkRepository = app.get<Repository<IdeaNetworkEntity>>(getRepositoryToken(IdeaNetworkEntity))
     const proposalsService = app.get(ProposalsService)
 
     const { sessionHandler, idea, ideaNetwork } = await setUpIdea(app, sessionHandlerParam, ideaDto)
@@ -205,8 +211,8 @@ export const setUpProposalFromIdeaMilestone = async (
     ideaDto?: Partial<CreateIdeaDto>,
     milestoneDto?: Partial<CreateIdeaMilestoneDto>,
 ) => {
-    const ideaMilestoneNetworkRepository = app.get<Repository<IdeaMilestoneNetwork>>(
-        getRepositoryToken(IdeaMilestoneNetwork),
+    const ideaMilestoneNetworkRepository = app.get<Repository<IdeaMilestoneNetworkEntity>>(
+        getRepositoryToken(IdeaMilestoneNetworkEntity),
     )
     const proposalsService = app.get(ProposalsService)
 

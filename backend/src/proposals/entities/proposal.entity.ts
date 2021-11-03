@@ -1,35 +1,35 @@
 import { ForbiddenException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
-import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
-import { IdeaNetwork } from '../../ideas/entities/idea-network.entity'
-import { IdeaMilestoneNetwork } from '../../ideas/idea-milestones/entities/idea-milestone-network.entity'
-import { User } from '../../users/user.entity'
+import { IdeaProposalDetailsEntity } from '../../idea-proposal-details/idea-proposal-details.entity'
+import { IdeaNetworkEntity } from '../../ideas/entities/idea-network.entity'
+import { IdeaMilestoneNetworkEntity } from '../../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { UserEntity } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
-import { ProposalMilestone } from '../proposal-milestones/entities/proposal-milestone.entity'
+import { ProposalMilestoneEntity } from '../proposal-milestones/entities/proposal-milestone.entity'
 
 @Entity('proposals')
-export class Proposal extends BaseEntity {
-    @ManyToOne(() => User)
-    owner: Nil<User>
+export class ProposalEntity extends BaseEntity {
+    @ManyToOne(() => UserEntity)
+    owner: Nil<UserEntity>
 
     @Column({ nullable: false, type: 'text' })
     ownerId!: string
 
-    @OneToOne(() => IdeaProposalDetails, { eager: true })
+    @OneToOne(() => IdeaProposalDetailsEntity, { eager: true })
     @JoinColumn()
-    details: IdeaProposalDetails
+    details: IdeaProposalDetailsEntity
 
-    @OneToOne(() => IdeaNetwork)
+    @OneToOne(() => IdeaNetworkEntity)
     @JoinColumn()
-    ideaNetwork?: Nil<IdeaNetwork>
+    ideaNetwork?: Nil<IdeaNetworkEntity>
 
     @Column({ nullable: true, type: 'text' })
     ideaNetworkId?: Nil<string>
 
-    @OneToOne(() => IdeaMilestoneNetwork)
+    @OneToOne(() => IdeaMilestoneNetworkEntity)
     @JoinColumn()
-    ideaMilestoneNetwork?: Nil<IdeaMilestoneNetwork>
+    ideaMilestoneNetwork?: Nil<IdeaMilestoneNetworkEntity>
 
     @Column({ nullable: true, type: 'text' })
     ideaMilestoneNetworkId?: Nil<string>
@@ -40,18 +40,18 @@ export class Proposal extends BaseEntity {
     @Column({ nullable: false, type: 'integer' })
     blockchainProposalId: number
 
-    @OneToMany(() => ProposalMilestone, (milestone) => milestone.proposal, {
+    @OneToMany(() => ProposalMilestoneEntity, (milestone) => milestone.proposal, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
-    milestones?: ProposalMilestone[]
+    milestones?: ProposalMilestoneEntity[]
 
     constructor(
-        owner: User,
-        details: IdeaProposalDetails,
-        ideaNetwork: IdeaNetwork,
-        ideaMilestoneNetwork: IdeaMilestoneNetwork,
+        owner: UserEntity,
+        details: IdeaProposalDetailsEntity,
+        ideaNetwork: IdeaNetworkEntity,
+        ideaMilestoneNetwork: IdeaMilestoneNetworkEntity,
         networkId: string,
         blockchainProposalId: number,
     ) {
@@ -64,11 +64,11 @@ export class Proposal extends BaseEntity {
         this.blockchainProposalId = blockchainProposalId
     }
 
-    isOwner(user: User) {
+    isOwner(user: UserEntity) {
         return this.ownerId === user.id
     }
 
-    isOwnerOrThrow = (user: User) => {
+    isOwnerOrThrow = (user: UserEntity) => {
         if (!this.isOwner(user)) {
             throw new ForbiddenException('The given user cannot edit this proposal')
         }

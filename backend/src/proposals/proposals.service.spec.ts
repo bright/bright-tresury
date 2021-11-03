@@ -3,11 +3,11 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { IdeaProposalDetails } from '../idea-proposal-details/idea-proposal-details.entity'
+import { IdeaProposalDetailsEntity } from '../idea-proposal-details/idea-proposal-details.entity'
 import { createIdeaMilestone } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
-import { Proposal } from './entities/proposal.entity'
-import { ProposalMilestone } from './proposal-milestones/entities/proposal-milestone.entity'
+import { ProposalEntity } from './entities/proposal.entity'
+import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
 import { ProposalsService } from './proposals.service'
 import { mockedBlockchainService, setUpIdea, setUpIdeaWithMilestone } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
@@ -17,9 +17,11 @@ describe('ProposalsService', () => {
     const app = beforeSetupFullApp()
 
     const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
-    const proposalsRepository = beforeAllSetup(() => app().get<Repository<Proposal>>(getRepositoryToken(Proposal)))
+    const proposalsRepository = beforeAllSetup(() =>
+        app().get<Repository<ProposalEntity>>(getRepositoryToken(ProposalEntity)),
+    )
     const detailsRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaProposalDetails>>(getRepositoryToken(IdeaProposalDetails)),
+        app().get<Repository<IdeaProposalDetailsEntity>>(getRepositoryToken(IdeaProposalDetailsEntity)),
     )
 
     beforeAll(() => {
@@ -252,7 +254,13 @@ describe('ProposalsService', () => {
             const secondMilestone = await createIdeaMilestone(
                 ideaWithMilestone.id,
                 {
-                    networks: [{ name: 'localhost', value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: 'localhost',
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     details: { subject: 'subject1' },
                 },
                 sessionHandler.sessionData,
@@ -284,7 +292,13 @@ describe('ProposalsService', () => {
 
         it('should create proposal milestones and save the createdBy order', async () => {
             const { idea, ideaNetwork, sessionHandler } = await setUpIdea(app(), undefined, {})
-            const networks = [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }]
+            const networks = [
+                {
+                    name: NETWORKS.POLKADOT,
+                    value: '100' as NetworkPlanckValue,
+                    status: IdeaMilestoneNetworkStatus.Active,
+                },
+            ]
 
             const createMilestone = async (subject: string) => {
                 const milestone = await createIdeaMilestone(
@@ -306,8 +320,8 @@ describe('ProposalsService', () => {
 
             const savedProposal = await proposalsService().createFromIdea(idea, 3, ideaNetwork)
 
-            const proposalMilestonesRepository = app().get<Repository<ProposalMilestone>>(
-                getRepositoryToken(ProposalMilestone),
+            const proposalMilestonesRepository = app().get<Repository<ProposalMilestoneEntity>>(
+                getRepositoryToken(ProposalMilestoneEntity),
             )
 
             const milestones = await proposalMilestonesRepository.find({

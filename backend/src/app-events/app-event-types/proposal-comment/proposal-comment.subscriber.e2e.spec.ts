@@ -4,7 +4,7 @@ import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { createSessionData } from '../../../ideas/spec.helpers'
 import { ProposalCommentsService } from '../../../proposals/proposal-comments/proposal-comments.service'
 import { mockedBlockchainService, setUpProposalFromIdea } from '../../../proposals/spec.helpers'
-import { Web3Address } from '../../../users/web3-addresses/web3-address.entity'
+import { Web3AddressEntity } from '../../../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
@@ -79,7 +79,7 @@ describe('New proposal comment app event e2e', () => {
             const proposer = await createSessionData({
                 username: 'proposer',
                 email: 'proposer@example.com',
-                web3Addresses: [new Web3Address(proposal.proposer.address, true)],
+                web3Addresses: [new Web3AddressEntity(proposal.proposer.address, true)],
             })
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
@@ -138,7 +138,7 @@ describe('New proposal comment app event e2e', () => {
             const proposer = await createSessionData({
                 username: 'user1',
                 email: 'user1@example.com',
-                web3Addresses: [new Web3Address(proposal.proposer.address, true)],
+                web3Addresses: [new Web3AddressEntity(proposal.proposer.address, true)],
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 

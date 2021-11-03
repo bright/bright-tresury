@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
-import { IdeaMilestone } from '../entities/idea-milestone.entity'
+import { MilestoneDetailsEntity } from '../../../milestone-details/entities/milestone-details.entity'
+import { IdeaMilestoneEntity } from '../entities/idea-milestone.entity'
 import { IdeaMilestoneNetworkDto } from './idea-milestone-network.dto'
 import { Nil } from '../../../utils/types'
 import { IdeaMilestoneStatus } from '../entities/idea-milestone-status'
@@ -30,11 +30,11 @@ export class IdeaMilestoneDto {
 
     @ApiProperty({
         description: 'Details of the milestone',
-        type: [MilestoneDetails],
+        type: [MilestoneDetailsEntity],
     })
-    details: MilestoneDetails
+    details: MilestoneDetailsEntity
 
-    constructor({ id, status, networks, beneficiary, details }: IdeaMilestone) {
+    constructor({ id, status, networks, beneficiary, details }: IdeaMilestoneEntity) {
         this.id = id
         this.status = status
         this.networks = networks.map((network) => new IdeaMilestoneNetworkDto(network))

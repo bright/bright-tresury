@@ -9,18 +9,18 @@ import { AppEventNotificationsService } from './app-event-notifications/app-even
 import { NewIdeaCommentDto } from './app-event-types/idea-comment/new-idea-comment.dto'
 import { NewProposalCommentDto } from './app-event-types/proposal-comment/new-proposal-comment.dto'
 import { AppEventsService } from './app-events.service'
-import { AppEventReceiver } from './entities/app-event-receiver.entity'
+import { AppEventReceiverEntity } from './entities/app-event-receiver.entity'
 import { AppEventType } from './entities/app-event-type'
-import { AppEvent } from './entities/app-event.entity'
+import { AppEventEntity } from './entities/app-event.entity'
 import { createAndSaveAppEvent } from './spec.helpers'
 
 describe('AppEventsService', () => {
     const app = beforeSetupFullApp()
 
     const service = beforeAllSetup(() => app().get<AppEventsService>(AppEventsService))
-    const repository = beforeAllSetup(() => app().get<Repository<AppEvent>>(getRepositoryToken(AppEvent)))
+    const repository = beforeAllSetup(() => app().get<Repository<AppEventEntity>>(getRepositoryToken(AppEventEntity)))
     const receiversRepository = beforeAllSetup(() =>
-        app().get<Repository<AppEventReceiver>>(getRepositoryToken(AppEventReceiver)),
+        app().get<Repository<AppEventReceiverEntity>>(getRepositoryToken(AppEventReceiverEntity)),
     )
 
     beforeEach(async () => {
@@ -221,7 +221,7 @@ describe('AppEventsService', () => {
         it('should return paginated items', async () => {
             const { user } = await createSessionData({ email: 'user@example.com', username: 'user' })
 
-            const appEvents: AppEvent[] = []
+            const appEvents: AppEventEntity[] = []
             for (let i = 0; i < 10; i++) {
                 appEvents.push(await createAndSaveAppEvent([user.id], newIdeaCommentEventData))
             }

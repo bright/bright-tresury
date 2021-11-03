@@ -7,12 +7,12 @@ import {
     SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { IdeaStatus } from '../entities/idea-status'
 import { IdeasService } from '../ideas.service'
 import { createIdea, createIdeaMilestone, createSessionData } from '../spec.helpers'
 import { IdeaMilestoneDto } from './dto/idea-milestone.dto'
-import { IdeaMilestone } from './entities/idea-milestone.entity'
+import { IdeaMilestoneEntity } from './entities/idea-milestone.entity'
 import { IdeaMilestonesService } from './idea-milestones.service'
 import { IdeaMilestoneNetworkStatus } from './entities/idea-milestone-network-status'
 import { NetworkPlanckValue } from '../../utils/types'
@@ -24,11 +24,13 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
     const getIdeasService = () => app.get().get(IdeasService)
     const getIdeaMilestonesService = () => app.get().get(IdeaMilestonesService)
 
-    let idea: Idea
+    let idea: IdeaEntity
     let sessionHandler: SessionHandler
 
     const milestoneDto = {
-        networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+        networks: [
+            { name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+        ],
         details: {
             subject: 'subject',
         },
@@ -108,7 +110,13 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'ideaMilestoneSubject',
@@ -138,7 +146,10 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
         it('should return milestones of a draft idea of a logged in user', async () => {
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }], status: IdeaStatus.Draft },
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
+                    status: IdeaStatus.Draft,
+                },
                 sessionHandler.sessionData,
             )
             await getIdeaMilestonesService().create(draftIdea.id, milestoneDto, sessionHandler.sessionData)
@@ -146,14 +157,17 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
             expect(result.body.length).toBe(1)
 
-            const body = result.body as IdeaMilestone[]
+            const body = result.body as IdeaMilestoneEntity[]
             expect(body[0].details.subject).toBe(milestoneDto.details.subject)
         })
 
         it('should return not found for a draft idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }], status: IdeaStatus.Draft },
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
+                    status: IdeaStatus.Draft,
+                },
                 otherUser,
             )
             await getIdeaMilestonesService().create(draftIdea.id, milestoneDto, otherUser)
@@ -186,7 +200,13 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'subject',
@@ -586,7 +606,10 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
 
         it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
-            const otherIdea = await createIdea({ networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }] }, otherUser)
+            const otherIdea = await createIdea(
+                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }] },
+                otherUser,
+            )
             await sessionHandler
                 .authorizeRequest(
                     request(app())
@@ -625,13 +648,19 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
     })
 
     describe('PATCH', () => {
-        let ideaMilestone: IdeaMilestone
+        let ideaMilestone: IdeaMilestoneEntity
 
         beforeEach(async () => {
             ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 {
-                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+                    networks: [
+                        {
+                            name: NETWORKS.POLKADOT,
+                            value: '100' as NetworkPlanckValue,
+                            status: IdeaMilestoneNetworkStatus.Active,
+                        },
+                    ],
                     beneficiary: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
                     details: {
                         subject: 'ideaMilestoneSubject',
@@ -788,7 +817,10 @@ describe('/api/v1/ideas/:ideaId/milestones', () => {
         it('should return forbidden for an idea of other users', async () => {
             const otherUser = await createSessionData({ username: 'otherUser', email: 'otherEmail' })
             const draftIdea = await createIdea(
-                { networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }], status: IdeaStatus.Draft },
+                {
+                    networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
+                    status: IdeaStatus.Draft,
+                },
                 otherUser,
             )
             const milestone = await createIdeaMilestone(draftIdea.id, milestoneDto, otherUser)

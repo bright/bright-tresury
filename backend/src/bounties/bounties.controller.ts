@@ -2,7 +2,7 @@ import { Body, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
 import { SessionGuard } from '../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
-import { Extrinsic } from '../extrinsics/extrinsic.entity'
+import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { BountiesService } from './bounties.service'
 import { CreateBountyDto } from './dto/create-bounty.dto'
@@ -21,7 +21,10 @@ export class BountiesController {
         description: 'Not valid data',
     })
     @UseGuards(SessionGuard)
-    async createBounty(@Body() dto: CreateBountyDto, @ReqSession() sessionData: SessionData): Promise<Extrinsic> {
+    async createBounty(
+        @Body() dto: CreateBountyDto,
+        @ReqSession() sessionData: SessionData,
+    ): Promise<ExtrinsicEntity> {
         return this.bountiesService.listenForProposeBountyExtrinsic(dto, sessionData.user)
     }
 }

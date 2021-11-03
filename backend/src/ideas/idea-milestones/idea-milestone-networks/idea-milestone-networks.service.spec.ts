@@ -8,17 +8,18 @@ import { createIdeaMilestone } from '../../spec.helpers'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { CreateIdeaMilestoneNetworkDto } from '../dto/create-idea-milestone-network.dto'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
-import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
+import { IdeaMilestoneNetworkEntity } from '../entities/idea-milestone-network.entity'
 import { createIdea, createSessionData } from '../../spec.helpers'
 import { IdeaMilestoneNetworksService } from './idea-milestone-networks.service'
-import { Idea } from '../../entities/idea.entity'
+import { IdeaEntity } from '../../entities/idea.entity'
 import { NetworkPlanckValue } from '../../../utils/types'
 
 describe('IdeaMilestoneNetworksService', () => {
     const app = beforeSetupFullApp()
     const getService = () => app().get(IdeaMilestoneNetworksService)
-    const getRepository = () => app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork))
-    const getIdeasRepository = () => app().get<Repository<Idea>>(getRepositoryToken(Idea))
+    const getRepository = () =>
+        app().get<Repository<IdeaMilestoneNetworkEntity>>(getRepositoryToken(IdeaMilestoneNetworkEntity))
+    const getIdeasRepository = () => app().get<Repository<IdeaEntity>>(getRepositoryToken(IdeaEntity))
 
     const setUp = async (networks: CreateIdeaMilestoneNetworkDto[]) => {
         const sessionData = await createSessionData()
@@ -58,9 +59,9 @@ describe('IdeaMilestoneNetworksService', () => {
                 { name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
-            await expect(getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, otherSessionData)).rejects.toThrow(
-                ForbiddenException,
-            )
+            await expect(
+                getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, otherSessionData),
+            ).rejects.toThrow(ForbiddenException)
         })
 
         it(`should throw not found exception when trying to update not existing network`, async () => {
@@ -68,7 +69,9 @@ describe('IdeaMilestoneNetworksService', () => {
                 { name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
             ])
 
-            await expect(getService().update(uuid(), { value: '5' as NetworkPlanckValue }, sessionData)).rejects.toThrow(NotFoundException)
+            await expect(
+                getService().update(uuid(), { value: '5' as NetworkPlanckValue }, sessionData),
+            ).rejects.toThrow(NotFoundException)
         })
 
         it(`should throw BadRequestException when trying to update network with ${IdeaMilestoneNetworkStatus.TurnedIntoProposal} status`, async () => {
@@ -80,9 +83,9 @@ describe('IdeaMilestoneNetworksService', () => {
                 status: IdeaMilestoneNetworkStatus.TurnedIntoProposal,
             })
 
-            await expect(getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).rejects.toThrow(
-                BadRequestException,
-            )
+            await expect(
+                getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData),
+            ).rejects.toThrow(BadRequestException)
         })
 
         it(`should resolve when trying to update network with ${IdeaMilestoneNetworkStatus.Pending} status`, async () => {
@@ -91,7 +94,9 @@ describe('IdeaMilestoneNetworksService', () => {
             ])
             await getRepository().save({ id: ideaMilestoneNetworkId, status: IdeaMilestoneNetworkStatus.Pending })
 
-            await expect(getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).resolves.toBeDefined()
+            await expect(
+                getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData),
+            ).resolves.toBeDefined()
         })
 
         it(`should resolve when trying to update network with ${IdeaMilestoneNetworkStatus.Active} status`, async () => {
@@ -100,7 +105,9 @@ describe('IdeaMilestoneNetworksService', () => {
             ])
             await getRepository().save({ id: ideaMilestoneNetworkId, status: IdeaMilestoneNetworkStatus.Active })
 
-            await expect(getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).resolves.toBeDefined()
+            await expect(
+                getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData),
+            ).resolves.toBeDefined()
         })
 
         it(`should throw BadRequestException when trying to update network of idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
@@ -109,16 +116,20 @@ describe('IdeaMilestoneNetworksService', () => {
             ])
             await getIdeasRepository().save({ id: idea.id, status: IdeaStatus.TurnedIntoProposal })
 
-            await expect(getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).rejects.toThrow(
-                BadRequestException,
-            )
+            await expect(
+                getService().update(ideaMilestoneNetworkId, { value: '5' as NetworkPlanckValue }, sessionData),
+            ).rejects.toThrow(BadRequestException)
         })
     })
     describe('updateMultiple', () => {
         it('should update networks values', async () => {
             const { ideaMilestoneNetworks, sessionData } = await setUp([
                 { name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
-                { name: NETWORKS.POLKADOT, value: '8' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+                {
+                    name: NETWORKS.POLKADOT,
+                    value: '8' as NetworkPlanckValue,
+                    status: IdeaMilestoneNetworkStatus.Active,
+                },
             ])
 
             await getService().updateMultiple(
@@ -139,7 +150,11 @@ describe('IdeaMilestoneNetworksService', () => {
         it('should return milestone networks', async () => {
             const { ideaMilestoneNetworks, sessionData } = await setUp([
                 { name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
-                { name: NETWORKS.POLKADOT, value: '8' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active },
+                {
+                    name: NETWORKS.POLKADOT,
+                    value: '8' as NetworkPlanckValue,
+                    status: IdeaMilestoneNetworkStatus.Active,
+                },
             ])
 
             const returnedNetworks = await getService().updateMultiple(

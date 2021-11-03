@@ -2,23 +2,23 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../auth/session/session.decorator'
-import { User } from '../users/user.entity'
-import { Web3Address } from '../users/web3-addresses/web3-address.entity'
+import { UserEntity } from '../users/user.entity'
+import { Web3AddressEntity } from '../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp } from '../utils/spec.helpers'
 import { CreateIdeaDto } from './dto/create-idea.dto'
-import { Idea } from './entities/idea.entity'
+import { IdeaEntity } from './entities/idea.entity'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { IdeasService } from './ideas.service'
 import { IdeaStatus } from './entities/idea-status'
 import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
-import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
+import { IdeaMilestoneEntity } from './idea-milestones/entities/idea-milestone.entity'
 import { CreateIdeaMilestoneDto } from './idea-milestones/dto/create-idea-milestone.dto'
 
 export async function createIdea(
     idea: Partial<CreateIdeaDto>,
     sessionData: SessionData,
     ideasService?: IdeasService,
-): Promise<Idea> {
+): Promise<IdeaEntity> {
     const defaultIdea: CreateIdeaDto = {
         details: { title: 'title', content: '' },
         networks: [],
@@ -34,7 +34,7 @@ export async function createIdeaMilestone(
     createIdeaMilestoneDto: Partial<CreateIdeaMilestoneDto>,
     sessionData: SessionData,
     ideaMilestonesService?: IdeaMilestonesService,
-): Promise<IdeaMilestone> {
+): Promise<IdeaMilestoneEntity> {
     const defaultMilestone: CreateIdeaMilestoneDto = {
         details: { subject: 'ideaMilestoneSubject', dateFrom: null, dateTo: null, description: 'description' },
         networks: [],
@@ -46,26 +46,27 @@ export async function createIdeaMilestone(
 }
 
 export async function saveIdeaMilestone(
-    ideaMilestone: IdeaMilestone,
+    ideaMilestone: IdeaMilestoneEntity,
     ideaMilestoneRepository?: IdeaMilestonesRepository,
-): Promise<IdeaMilestone> {
+): Promise<IdeaMilestoneEntity> {
     const repository: IdeaMilestonesRepository =
         ideaMilestoneRepository ?? beforeSetupFullApp().get().get(IdeaMilestonesRepository)
     return await repository.save(ideaMilestone)
 }
 
 export async function createSessionData(
-    user: Partial<User> = {},
-    usersRepository?: Repository<User>,
+    user: Partial<UserEntity> = {},
+    usersRepository?: Repository<UserEntity>,
 ): Promise<SessionData> {
-    const defaultUser = new User(
+    const defaultUser = new UserEntity(
         user.id ?? uuid(),
         user.username ?? 'chuck',
         user.email ?? 'chuck@test.test',
         user.isEmailPasswordEnabled ?? true,
     )
 
-    const repository: Repository<User> = usersRepository ?? beforeSetupFullApp().get().get(getRepositoryToken(User))
+    const repository: Repository<UserEntity> =
+        usersRepository ?? beforeSetupFullApp().get().get(getRepositoryToken(UserEntity))
     const userEntity = await repository.save({ ...defaultUser, ...user })
     return { user: userEntity }
 }

@@ -3,13 +3,13 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
 import { CreateMilestoneDetailsDto } from './dto/create-milestone-details.dto'
-import { MilestoneDetails } from './entities/milestone-details.entity'
+import { MilestoneDetailsEntity } from './entities/milestone-details.entity'
 import { MilestoneDetailsService } from './milestone-details.service'
 
 describe('MilestoneDetailsService', () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(MilestoneDetailsService)
-    const getRepository = () => app.get().get(getRepositoryToken(MilestoneDetails))
+    const getRepository = () => app.get().get(getRepositoryToken(MilestoneDetailsEntity))
 
     beforeEach(async () => {
         await cleanDatabase()

@@ -1,26 +1,26 @@
 import { BeforeInsert, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, Column } from 'typeorm'
-import { Idea } from '../../entities/idea.entity'
-import { User } from '../../../users/user.entity'
-import { Comment } from '../../../comments/comment.entity'
+import { IdeaEntity } from '../../entities/idea.entity'
+import { UserEntity } from '../../../users/user.entity'
+import { CommentEntity } from '../../../comments/comment.entity'
 import { v4 as uuid } from 'uuid'
 import { Nil } from '../../../utils/types'
 
 @Entity('idea_comments')
-export class IdeaComment {
+export class IdeaCommentEntity {
     @PrimaryColumn()
     id: string = uuid()
 
-    @ManyToOne(() => Idea, (idea) => idea.comments)
-    idea: Nil<Idea>
+    @ManyToOne(() => IdeaEntity, (idea) => idea.comments)
+    idea: Nil<IdeaEntity>
 
     @Column()
     ideaId: string
 
-    @OneToOne(() => Comment, { eager: true })
+    @OneToOne(() => CommentEntity, { eager: true })
     @JoinColumn()
-    comment: Comment
+    comment: CommentEntity
 
-    constructor(idea: Idea, comment: Comment) {
+    constructor(idea: IdeaEntity, comment: CommentEntity) {
         this.idea = idea
         this.ideaId = idea?.id
         this.comment = comment
@@ -32,11 +32,11 @@ export class IdeaComment {
             this.id = uuid()
         }
     }
-    canEdit = (user: User) => {
+    canEdit = (user: UserEntity) => {
         return this.comment?.canEdit(user)
     }
 
-    canEditOrThrow = (user: User) => {
+    canEditOrThrow = (user: UserEntity) => {
         return this.comment?.canEditOrThrow(user)
     }
 }

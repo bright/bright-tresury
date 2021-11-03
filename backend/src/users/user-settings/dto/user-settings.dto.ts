@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { User } from '../../user.entity'
+import { UserEntity } from '../../user.entity'
 
 export class UserSettingsDto {
     @ApiProperty({
@@ -7,7 +7,7 @@ export class UserSettingsDto {
     })
     isEmailNotificationEnabled: boolean
 
-    constructor({ isEmailNotificationEnabled }: User) {
+    constructor({ isEmailNotificationEnabled }: UserEntity) {
         this.isEmailNotificationEnabled = isEmailNotificationEnabled
     }
 }

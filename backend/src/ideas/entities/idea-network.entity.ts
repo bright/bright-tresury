@@ -1,25 +1,25 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
-import { Extrinsic } from '../../extrinsics/extrinsic.entity'
+import { ExtrinsicEntity } from '../../extrinsics/extrinsic.entity'
 import { defaultIdeaNetworkStatus, IdeaNetworkStatus } from './idea-network-status'
-import { Idea } from './idea.entity'
+import { IdeaEntity } from './idea.entity'
 import { NetworkPlanckValue } from '../../utils/types'
 
 @Entity('idea_networks')
-export class IdeaNetwork extends BaseEntity {
+export class IdeaNetworkEntity extends BaseEntity {
     @Column({ nullable: false })
     name: string
 
     @Column('decimal', { precision: 54, scale: 0, nullable: false, default: 0 })
     value: NetworkPlanckValue
 
-    @ManyToOne(() => Idea, (idea) => idea.networks)
-    idea?: Idea
+    @ManyToOne(() => IdeaEntity, (idea) => idea.networks)
+    idea?: IdeaEntity
 
-    @OneToOne(() => Extrinsic)
+    @OneToOne(() => ExtrinsicEntity)
     @JoinColumn()
-    extrinsic: Extrinsic | null
+    extrinsic: ExtrinsicEntity | null
 
     @Column({ nullable: true, type: 'integer' })
     blockchainProposalId: number | null
@@ -38,7 +38,7 @@ export class IdeaNetwork extends BaseEntity {
         status: IdeaNetworkStatus = defaultIdeaNetworkStatus,
         extrinsic = null,
         blockchainProposalId = null,
-        idea?: Idea,
+        idea?: IdeaEntity,
     ) {
         super()
         this.name = name

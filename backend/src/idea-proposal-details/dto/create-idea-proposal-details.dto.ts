@@ -10,8 +10,8 @@ import {
     Length,
     MaxLength,
 } from 'class-validator'
-import { MilestoneDetails } from '../../milestone-details/entities/milestone-details.entity'
-import { IdeaProposalDetails, ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
+import { MilestoneDetailsEntity } from '../../milestone-details/entities/milestone-details.entity'
+import { IdeaProposalDetailsEntity, ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
 
 export class CreateIdeaProposalDetailsDto {
     @ApiProperty({ description: 'Title' })
@@ -59,8 +59,8 @@ export class CreateIdeaProposalDetailsDto {
 }
 
 export function toCreateIdeaProposalDetailsDto(
-    { title, content, field, contact, portfolio, links }: IdeaProposalDetails,
-    milestoneDetails?: MilestoneDetails,
+    { title, content, field, contact, portfolio, links }: IdeaProposalDetailsEntity,
+    milestoneDetails?: MilestoneDetailsEntity,
 ): CreateIdeaProposalDetailsDto {
     const dto = new CreateIdeaProposalDetailsDto()
     dto.title = title

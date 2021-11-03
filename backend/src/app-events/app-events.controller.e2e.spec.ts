@@ -2,7 +2,7 @@ import { InsertEvent } from 'typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { createUserSessionHandlerWithVerifiedEmail } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers'
-import { AppEvent } from './entities/app-event.entity'
+import { AppEventEntity } from './entities/app-event.entity'
 import { createAndSaveAppEvent } from './spec.helpers'
 import { AppEventSubscriber } from './subscribers/app-event.subscriber'
 
@@ -14,7 +14,7 @@ describe('AppEventsController E2E', () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
         jest.spyOn(appEventSubscriber(), 'afterInsert').mockImplementationOnce(
-            (event: InsertEvent<AppEvent>): Promise<void> => {
+            (event: InsertEvent<AppEventEntity>): Promise<void> => {
                 return Promise.resolve()
             },
         )

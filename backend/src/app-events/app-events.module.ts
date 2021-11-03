@@ -13,8 +13,8 @@ import { EmailNotificationsService } from './app-event-notifications/email-notif
 import { IdeaCommentSubscriber } from './app-event-types/idea-comment/idea-comment.subscriber'
 import { ProposalCommentSubscriber } from './app-event-types/proposal-comment/proposal-comment.subscriber'
 import { AppEventsService } from './app-events.service'
-import { AppEventReceiver } from './entities/app-event-receiver.entity'
-import { AppEvent } from './entities/app-event.entity'
+import { AppEventReceiverEntity } from './entities/app-event-receiver.entity'
+import { AppEventEntity } from './entities/app-event.entity'
 import { AppEventSubscriber } from './subscribers/app-event.subscriber'
 import { AppEventsController } from './app-events.controller'
 
@@ -23,7 +23,7 @@ import { AppEventsController } from './app-events.controller'
         DatabaseModule,
         EmailsModule,
         UsersModule,
-        TypeOrmModule.forFeature([AppEvent, AppEventReceiver]),
+        TypeOrmModule.forFeature([AppEventEntity, AppEventReceiverEntity]),
         SuperTokensModule,
         IdeasModule,
         ProposalsModule,

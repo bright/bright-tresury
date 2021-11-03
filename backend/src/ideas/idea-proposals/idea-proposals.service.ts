@@ -8,9 +8,9 @@ import { ExtrinsicsService } from '../../extrinsics/extrinsics.service'
 import { getLogger } from '../../logging.module'
 import { IdeaWithMilestones, ProposalsService } from '../../proposals/proposals.service'
 import { IdeaNetworkStatus } from '../entities/idea-network-status'
-import { IdeaNetwork } from '../entities/idea-network.entity'
+import { IdeaNetworkEntity } from '../entities/idea-network.entity'
 import { IdeaStatus } from '../entities/idea-status'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { IdeaMilestonesService } from '../idea-milestones/idea-milestones.service'
 import { IdeasService } from '../ideas.service'
 import { CreateIdeaProposalDto } from './dto/create-idea-proposal.dto'
@@ -20,10 +20,10 @@ const logger = getLogger()
 @Injectable()
 export class IdeaProposalsService {
     constructor(
-        @InjectRepository(Idea)
-        private readonly ideaRepository: Repository<Idea>,
-        @InjectRepository(IdeaNetwork)
-        private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
+        @InjectRepository(IdeaEntity)
+        private readonly ideaRepository: Repository<IdeaEntity>,
+        @InjectRepository(IdeaNetworkEntity)
+        private readonly ideaNetworkRepository: Repository<IdeaNetworkEntity>,
         private readonly extrinsicsService: ExtrinsicsService,
         private readonly ideasService: IdeasService,
         private readonly blockchainService: BlockchainService,
@@ -35,7 +35,7 @@ export class IdeaProposalsService {
         ideaId: string,
         { ideaNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaProposalDto,
         sessionData: SessionData,
-    ): Promise<IdeaNetwork> {
+    ): Promise<IdeaNetworkEntity> {
         logger.info(`Start turning idea ${ideaId} into a proposal.`)
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
@@ -52,7 +52,9 @@ export class IdeaProposalsService {
         ideaNetwork.canTurnIntoProposalOrThrow()
 
         const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
-            const blockchainProposalIndex = this.blockchainService.extractProposalIndex(extrinsicEvents)
+            const blockchainProposalIndex = this.blockchainService.extractProposalIndex(
+                extrinsicEvents,
+            )
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaIntoProposal(idea, ideaNetwork, blockchainProposalIndex)
@@ -82,8 +84,8 @@ export class IdeaProposalsService {
 
     // all entities passed to this function as arguments should be already validated
     async turnIdeaIntoProposal(
-        validIdea: Idea,
-        validIdeaNetwork: IdeaNetwork,
+        validIdea: IdeaEntity,
+        validIdeaNetwork: IdeaNetworkEntity,
         blockchainProposalIndex: number,
     ): Promise<void> {
         logger.info(`Set idea ${validIdea.id} status to ${IdeaStatus.TurnedIntoProposal}.`)

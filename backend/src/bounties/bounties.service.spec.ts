@@ -4,7 +4,7 @@ import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supe
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { createSessionData } from '../ideas/spec.helpers'
-import { User } from '../users/user.entity'
+import { UserEntity } from '../users/user.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
@@ -66,7 +66,7 @@ describe('BountiesService', () => {
             expect(result.networkId).toBe(NETWORKS.POLKADOT)
             expect(result.proposer).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(result.blockchainIndex).toBe(3)
-            expect(result.owner).toMatchObject<User>(user)
+            expect(result.owner).toMatchObject<UserEntity>(user)
         })
 
         it('should create bounty entity', async () => {

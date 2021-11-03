@@ -9,12 +9,12 @@ import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../../../extrinsics/extrinsicEvent'
 import { ProposalsService } from '../../../proposals/proposals.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
-import { Idea } from '../../entities/idea.entity'
+import { IdeaEntity } from '../../entities/idea.entity'
 import { IdeaStatus } from '../../entities/idea-status'
 import { IdeasService } from '../../ideas.service'
 import { createIdea, createIdeaMilestone, createSessionData, saveIdeaMilestone } from '../../spec.helpers'
-import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
-import { IdeaMilestone } from '../entities/idea-milestone.entity'
+import { IdeaMilestoneNetworkEntity } from '../entities/idea-milestone-network.entity'
+import { IdeaMilestoneEntity } from '../entities/idea-milestone.entity'
 import { IdeaMilestoneStatus } from '../entities/idea-milestone-status'
 import { IdeaMilestonesService } from '../idea-milestones.service'
 import { CreateIdeaMilestoneProposalDto } from './dto/create-idea-milestone-proposal.dto'
@@ -55,7 +55,7 @@ describe('IdeaMilestoneProposalsService', () => {
     const app = beforeSetupFullApp()
 
     const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
-    const ideasRepository = beforeAllSetup(() => app().get<Repository<Idea>>(getRepositoryToken(Idea)))
+    const ideasRepository = beforeAllSetup(() => app().get<Repository<IdeaEntity>>(getRepositoryToken(IdeaEntity)))
     const ideaMilestonesService = beforeAllSetup(() => app().get<IdeaMilestonesService>(IdeaMilestonesService))
     const ideaMilestoneProposalsService = beforeAllSetup(() =>
         app().get<IdeaMilestoneProposalsService>(IdeaMilestoneProposalsService),
@@ -64,10 +64,10 @@ describe('IdeaMilestoneProposalsService', () => {
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
 
     const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork)),
+        app().get<Repository<IdeaMilestoneNetworkEntity>>(getRepositoryToken(IdeaMilestoneNetworkEntity)),
     )
 
-    let idea: Idea
+    let idea: IdeaEntity
     let sessionData: SessionData
     let otherSessionData: SessionData
 
@@ -304,7 +304,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 ideaMilestonesService(),
             )
             await app()
-                .get<Repository<Idea>>(getRepositoryToken(Idea))
+                .get<Repository<IdeaEntity>>(getRepositoryToken(IdeaEntity))
                 .save({ ...idea, status: IdeaStatus.MilestoneSubmission })
             ideaMilestone.status = IdeaMilestoneStatus.Active
             await saveIdeaMilestone(ideaMilestone)
@@ -556,8 +556,8 @@ describe('IdeaMilestoneProposalsService', () => {
     })
 
     describe('turnIdeaMilestoneIntoProposal', () => {
-        let ideaMilestone: IdeaMilestone
-        let ideaMilestoneNetwork: IdeaMilestoneNetwork
+        let ideaMilestone: IdeaMilestoneEntity
+        let ideaMilestoneNetwork: IdeaMilestoneNetworkEntity
 
         beforeEach(async () => {
             ideaMilestone = await createIdeaMilestone(

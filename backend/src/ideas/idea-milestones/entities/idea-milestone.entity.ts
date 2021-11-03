@@ -1,18 +1,18 @@
 import { BadRequestException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../../database/base.entity'
-import { MilestoneDetails } from '../../../milestone-details/entities/milestone-details.entity'
+import { MilestoneDetailsEntity } from '../../../milestone-details/entities/milestone-details.entity'
 import { Nil } from '../../../utils/types'
-import { Idea } from '../../entities/idea.entity'
+import { IdeaEntity } from '../../entities/idea.entity'
 import { EmptyBeneficiaryException } from '../../exceptions/empty-beneficiary.exception'
-import { IdeaMilestoneNetwork } from './idea-milestone-network.entity'
+import { IdeaMilestoneNetworkEntity } from './idea-milestone-network.entity'
 import { defaultIdeaMilestoneStatus, IdeaMilestoneStatus } from './idea-milestone-status'
 import { IdeaMilestoneNetworkStatus } from './idea-milestone-network-status'
 
 @Entity('idea_milestones')
-export class IdeaMilestone extends BaseEntity {
-    @ManyToOne(() => Idea, (idea) => idea.milestones)
-    idea: Idea
+export class IdeaMilestoneEntity extends BaseEntity {
+    @ManyToOne(() => IdeaEntity, (idea) => idea.milestones)
+    idea: IdeaEntity
 
     @Column({ nullable: false, type: 'text' })
     ideaId!: string
@@ -28,23 +28,23 @@ export class IdeaMilestone extends BaseEntity {
     @Column({ nullable: true, type: 'text' })
     beneficiary: Nil<string>
 
-    @OneToMany(() => IdeaMilestoneNetwork, (ideaMilestoneNetwork) => ideaMilestoneNetwork.ideaMilestone, {
+    @OneToMany(() => IdeaMilestoneNetworkEntity, (ideaMilestoneNetwork) => ideaMilestoneNetwork.ideaMilestone, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         eager: true,
     })
-    networks: IdeaMilestoneNetwork[]
+    networks: IdeaMilestoneNetworkEntity[]
 
-    @OneToOne(() => MilestoneDetails, { eager: true })
+    @OneToOne(() => MilestoneDetailsEntity, { eager: true })
     @JoinColumn()
-    details: MilestoneDetails
+    details: MilestoneDetailsEntity
 
     constructor(
-        idea: Idea,
+        idea: IdeaEntity,
         status: IdeaMilestoneStatus,
-        networks: IdeaMilestoneNetwork[],
-        details: MilestoneDetails,
+        networks: IdeaMilestoneNetworkEntity[],
+        details: MilestoneDetailsEntity,
         beneficiary?: Nil<string>,
     ) {
         super()

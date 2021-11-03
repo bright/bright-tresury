@@ -6,7 +6,7 @@ import {
     SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { v4 as uuid } from 'uuid'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { IdeasService } from '../ideas.service'
 import { IdeaCommentsService } from './idea-comments.service'
@@ -17,7 +17,7 @@ describe('Idea comments', () => {
     const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
     const ZERO_UUID = '00000000-0000-0000-0000-000000000000'
     let sessionHandler: SessionHandler
-    let idea: Idea
+    let idea: IdeaEntity
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()

@@ -7,12 +7,12 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { IdeasService } from '../../ideas.service'
 import { IdeaMilestonesService } from '../idea-milestones.service'
-import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
+import { IdeaMilestoneNetworkEntity } from '../entities/idea-milestone-network.entity'
 import { ExtrinsicsService } from '../../../extrinsics/extrinsics.service'
 import { IdeaStatus } from '../../entities/idea-status'
 import { IdeaMilestoneStatus } from '../entities/idea-milestone-status'
-import { Idea } from '../../entities/idea.entity'
-import { IdeaMilestone } from '../entities/idea-milestone.entity'
+import { IdeaEntity } from '../../entities/idea.entity'
+import { IdeaMilestoneEntity } from '../entities/idea-milestone.entity'
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { SessionData } from '../../../auth/session/session.decorator'
 import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-status'
@@ -20,12 +20,12 @@ import { IdeaMilestoneNetworkStatus } from '../entities/idea-milestone-network-s
 @Injectable()
 export class IdeaMilestoneProposalsService {
     constructor(
-        @InjectRepository(Idea)
-        private readonly ideaRepository: Repository<Idea>,
+        @InjectRepository(IdeaEntity)
+        private readonly ideaRepository: Repository<IdeaEntity>,
         @InjectRepository(IdeaMilestonesRepository)
         private readonly ideaMilestoneRepository: IdeaMilestonesRepository,
-        @InjectRepository(IdeaMilestoneNetwork)
-        private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
+        @InjectRepository(IdeaMilestoneNetworkEntity)
+        private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetworkEntity>,
         private readonly ideasService: IdeasService,
         private readonly ideaMilestonesService: IdeaMilestonesService,
         private readonly extrinsicsService: ExtrinsicsService,
@@ -38,7 +38,7 @@ export class IdeaMilestoneProposalsService {
         ideaMilestoneId: string,
         { ideaMilestoneNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto,
         sessionData: SessionData,
-    ): Promise<IdeaMilestoneNetwork> {
+    ): Promise<IdeaMilestoneNetworkEntity> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.isOwnerOrThrow(sessionData.user)
@@ -57,7 +57,9 @@ export class IdeaMilestoneProposalsService {
         ideaMilestoneNetwork.canTurnIntoProposalOrThrow()
 
         const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
-            const blockchainProposalIndex = this.blockchainService.extractProposalIndex(extrinsicEvents)
+            const blockchainProposalIndex = this.blockchainService.extractProposalIndex(
+                extrinsicEvents,
+            )
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaMilestoneIntoProposal(
@@ -88,14 +90,14 @@ export class IdeaMilestoneProposalsService {
         return ideaMilestoneNetwork
     }
     private updateIdeaMilestoneNetworkStatus = (
-        ideaMilestoneNetwork: IdeaMilestoneNetwork,
+        ideaMilestoneNetwork: IdeaMilestoneNetworkEntity,
         status: IdeaMilestoneNetworkStatus,
-    ): IdeaMilestoneNetwork => ({ ...ideaMilestoneNetwork, status } as IdeaMilestoneNetwork)
+    ): IdeaMilestoneNetworkEntity => ({ ...ideaMilestoneNetwork, status } as IdeaMilestoneNetworkEntity)
 
     private updateIdeaMilestoneNetworksStatus = (
-        ideaMilestoneNetwork: IdeaMilestoneNetwork,
-        ideaMilestoneNetworkTurnedIntoProposal: IdeaMilestoneNetwork,
-    ): IdeaMilestoneNetwork => {
+        ideaMilestoneNetwork: IdeaMilestoneNetworkEntity,
+        ideaMilestoneNetworkTurnedIntoProposal: IdeaMilestoneNetworkEntity,
+    ): IdeaMilestoneNetworkEntity => {
         if (ideaMilestoneNetwork.id === ideaMilestoneNetworkTurnedIntoProposal.id)
             return this.updateIdeaMilestoneNetworkStatus(
                 ideaMilestoneNetworkTurnedIntoProposal,
@@ -111,15 +113,15 @@ export class IdeaMilestoneProposalsService {
 
     // all entities passed to this function as arguments should be already validated
     async turnIdeaMilestoneIntoProposal(
-        validIdea: Idea,
-        validIdeaMilestone: IdeaMilestone,
-        validIdeaMilestoneNetwork: IdeaMilestoneNetwork,
+        validIdea: IdeaEntity,
+        validIdeaMilestone: IdeaMilestoneEntity,
+        validIdeaMilestoneNetwork: IdeaMilestoneNetworkEntity,
         blockchainProposalIndex: number,
     ): Promise<void> {
         validIdeaMilestoneNetwork = {
             ...validIdeaMilestoneNetwork,
             blockchainProposalId: blockchainProposalIndex,
-        } as IdeaMilestoneNetwork
+        } as IdeaMilestoneNetworkEntity
         // this save updates both ideaMilestone and ideaMilestoneNetwork db entries
         await this.ideaMilestoneRepository.save({
             ...validIdeaMilestone,

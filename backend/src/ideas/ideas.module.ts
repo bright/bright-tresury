@@ -12,10 +12,10 @@ import { IdeaProposalsService } from './idea-proposals/idea-proposals.service'
 import { IdeasController } from './ideas.controller'
 import { DatabaseModule } from '../database/database.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Idea } from './entities/idea.entity'
+import { IdeaEntity } from './entities/idea.entity'
 import { IdeasService } from './ideas.service'
-import { IdeaNetwork } from './entities/idea-network.entity'
-import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaNetworkEntity } from './entities/idea-network.entity'
+import { IdeaMilestoneNetworkEntity } from './idea-milestones/entities/idea-milestone-network.entity'
 import { IdeaMilestonesController } from './idea-milestones/idea-milestones.controller'
 import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
 import { BlockchainModule } from '../blockchain/blockchain.module'
@@ -24,11 +24,11 @@ import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milesto
 import { ConfigModule } from '../config/config.module'
 import { IsValidNetworkConstraint } from '../utils/network.validator'
 import { IdeaCommentsController } from './idea-comments/idea-comments.controller'
-import { IdeaComment } from './idea-comments/entities/idea-comment.entity'
+import { IdeaCommentEntity } from './idea-comments/entities/idea-comment.entity'
 import { IdeaCommentsService } from './idea-comments/idea-comments.service'
 import { IdeaNetworksService } from './idea-networks/idea-networks.service'
 import { IdeaNetworksController } from './idea-networks/idea-networks.controller'
-import { Comment } from '../comments/comment.entity'
+import { CommentEntity } from '../comments/comment.entity'
 
 @Module({
     imports: [
@@ -41,12 +41,12 @@ import { Comment } from '../comments/comment.entity'
         ConfigModule,
         ProposalsModule,
         TypeOrmModule.forFeature([
-            Idea,
-            IdeaNetwork,
+            IdeaEntity,
+            IdeaNetworkEntity,
             IdeaMilestonesRepository,
-            IdeaMilestoneNetwork,
-            IdeaComment,
-            Comment,
+            IdeaMilestoneNetworkEntity,
+            IdeaCommentEntity,
+            CommentEntity,
         ]),
     ],
     providers: [

@@ -2,21 +2,21 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { SessionData } from '../../../auth/session/session.decorator'
-import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
+import { IdeaMilestoneNetworkEntity } from '../entities/idea-milestone-network.entity'
 import { UpdateIdeaMilestoneNetworkDto } from './dto/update-idea-milestone-network.dto'
 import { UpdateIdeaMilestoneNetworksDto } from './dto/update-idea-milestone-networks.dto'
 
 @Injectable()
 export class IdeaMilestoneNetworksService {
     constructor(
-        @InjectRepository(IdeaMilestoneNetwork)
-        private readonly networkRepository: Repository<IdeaMilestoneNetwork>,
+        @InjectRepository(IdeaMilestoneNetworkEntity)
+        private readonly networkRepository: Repository<IdeaMilestoneNetworkEntity>,
     ) {}
 
     async updateMultiple(
         dto: UpdateIdeaMilestoneNetworksDto,
         sessionData: SessionData,
-    ): Promise<IdeaMilestoneNetwork[]> {
+    ): Promise<IdeaMilestoneNetworkEntity[]> {
         const networkIds = dto.items.map((network) => network.id)
         const networks = await this.networkRepository.findByIds(networkIds, {
             relations: ['ideaMilestone', 'ideaMilestone.idea'],
@@ -38,7 +38,7 @@ export class IdeaMilestoneNetworksService {
         id: string,
         dto: UpdateIdeaMilestoneNetworkDto,
         sessionData: SessionData,
-    ): Promise<IdeaMilestoneNetwork> {
+    ): Promise<IdeaMilestoneNetworkEntity> {
         const network = await this.networkRepository.findOne(id, { relations: ['ideaMilestone', 'ideaMilestone.idea'] })
 
         if (!network) {

@@ -5,7 +5,7 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { CreateIdeaNetworkDto } from '../dto/create-idea-network.dto'
 import { IdeaNetworkStatus } from '../entities/idea-network-status'
-import { IdeaNetwork } from '../entities/idea-network.entity'
+import { IdeaNetworkEntity } from '../entities/idea-network.entity'
 import { createIdea, createSessionData } from '../spec.helpers'
 import { IdeaNetworksService } from './idea-networks.service'
 import { v4 as uuid } from 'uuid'
@@ -14,7 +14,7 @@ import { NetworkPlanckValue } from '../../utils/types'
 describe('IdeaNetworksService', () => {
     const app = beforeSetupFullApp()
     const getService = () => app().get(IdeaNetworksService)
-    const getRepository = () => app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork))
+    const getRepository = () => app().get<Repository<IdeaNetworkEntity>>(getRepositoryToken(IdeaNetworkEntity))
 
     const setUp = async (networks: CreateIdeaNetworkDto[]) => {
         const sessionData = await createSessionData()
@@ -44,15 +44,17 @@ describe('IdeaNetworksService', () => {
             const { idea } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
             const ideaNetworkId = idea.networks[0].id
 
-            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, otherSessionData)).rejects.toThrow(
-                ForbiddenException,
-            )
+            await expect(
+                getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, otherSessionData),
+            ).rejects.toThrow(ForbiddenException)
         })
 
         it(`should throw not found exception when trying to update not existing network`, async () => {
             const { sessionData } = await setUp([{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }])
 
-            await expect(getService().update(uuid(), { value: '5' as NetworkPlanckValue }, sessionData)).rejects.toThrow(NotFoundException)
+            await expect(
+                getService().update(uuid(), { value: '5' as NetworkPlanckValue }, sessionData),
+            ).rejects.toThrow(NotFoundException)
         })
 
         it(`should throw forbidden exception when trying to update network with ${IdeaNetworkStatus.TurnedIntoProposal} status`, async () => {
@@ -60,9 +62,9 @@ describe('IdeaNetworksService', () => {
             const ideaNetworkId = idea.networks[0].id
             await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.TurnedIntoProposal })
 
-            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).rejects.toThrow(
-                ForbiddenException,
-            )
+            await expect(
+                getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData),
+            ).rejects.toThrow(ForbiddenException)
         })
 
         it(`should resolve when trying to update network with ${IdeaNetworkStatus.Pending} status`, async () => {
@@ -70,7 +72,9 @@ describe('IdeaNetworksService', () => {
             const ideaNetworkId = idea.networks[0].id
             await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.Pending })
 
-            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).resolves.toBeDefined()
+            await expect(
+                getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData),
+            ).resolves.toBeDefined()
         })
 
         it(`should resolve when trying to update network with ${IdeaNetworkStatus.Active} status`, async () => {
@@ -78,7 +82,9 @@ describe('IdeaNetworksService', () => {
             const ideaNetworkId = idea.networks[0].id
             await getRepository().save({ id: ideaNetworkId, status: IdeaNetworkStatus.Active })
 
-            await expect(getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData)).resolves.toBeDefined()
+            await expect(
+                getService().update(ideaNetworkId, { value: '5' as NetworkPlanckValue }, sessionData),
+            ).resolves.toBeDefined()
         })
     })
 })

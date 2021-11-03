@@ -7,13 +7,13 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { FindConditions, In, Repository } from 'typeorm'
-import { User } from './user.entity'
+import { UserEntity } from './user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { validateOrReject } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 import { handleFindError } from '../utils/exceptions/databaseExceptions.handler'
 import { CreateWeb3UserDto } from './dto/create-web3-user.dto'
-import { Web3Address } from './web3-addresses/web3-address.entity'
+import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
 import { Web3AddressesService } from './web3-addresses/web3-addresses.service'
 import { isValidAddress } from '../utils/address/address.validator'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
@@ -23,12 +23,12 @@ import { CreateWeb3AddressDto } from './web3-addresses/create-web3-address.dto'
 @Injectable()
 export class UsersService {
     constructor(
-        @InjectRepository(User)
-        private readonly userRepository: Repository<User>,
+        @InjectRepository(UserEntity)
+        private readonly userRepository: Repository<UserEntity>,
         private readonly web3AddressService: Web3AddressesService,
     ) {}
 
-    async findOne(id: string): Promise<User> {
+    async findOne(id: string): Promise<UserEntity> {
         try {
             return await this.findOneOrFail({ id })
         } catch (e: any) {
@@ -36,11 +36,11 @@ export class UsersService {
         }
     }
 
-    find(ids: string[]): Promise<User[]> {
+    find(ids: string[]): Promise<UserEntity[]> {
         return this.userRepository.find({ id: In(ids) })
     }
 
-    async findOneByUsername(username: string): Promise<User> {
+    async findOneByUsername(username: string): Promise<UserEntity> {
         try {
             return await this.findOneOrFail({ username })
         } catch (e: any) {
@@ -48,7 +48,7 @@ export class UsersService {
         }
     }
 
-    async findOneByEmail(email: string): Promise<User> {
+    async findOneByEmail(email: string): Promise<UserEntity> {
         try {
             return await this.findOneOrFail({ email })
         } catch (e: any) {
@@ -56,7 +56,7 @@ export class UsersService {
         }
     }
 
-    async findOneByAuthId(authId: string): Promise<User> {
+    async findOneByAuthId(authId: string): Promise<UserEntity> {
         try {
             return await this.findOneOrFail({ authId })
         } catch (e: any) {
@@ -64,7 +64,7 @@ export class UsersService {
         }
     }
 
-    async findOneByWeb3Address(web3Address: string): Promise<User> {
+    async findOneByWeb3Address(web3Address: string): Promise<UserEntity> {
         const users = await this.userRepository
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.web3Addresses', 'web3Addresses')
@@ -79,18 +79,18 @@ export class UsersService {
         }
     }
 
-    private async findOneOrFail(conditions: FindConditions<User>): Promise<User> {
+    private async findOneOrFail(conditions: FindConditions<UserEntity>): Promise<UserEntity> {
         return await this.userRepository.findOneOrFail(conditions, { relations: ['web3Addresses'] })
     }
 
-    async create(createUserDto: CreateUserDto): Promise<User> {
+    async create(createUserDto: CreateUserDto): Promise<UserEntity> {
         await this.validateUser(createUserDto)
-        const user = new User(createUserDto.authId, createUserDto.username, createUserDto.email, true)
+        const user = new UserEntity(createUserDto.authId, createUserDto.username, createUserDto.email, true)
         const createdUser = await this.userRepository.save(user)
         return (await this.findOne(createdUser.id))!
     }
 
-    async associateEmailAccount(id: string, dto: AssociateEmailAccountDto): Promise<User> {
+    async associateEmailAccount(id: string, dto: AssociateEmailAccountDto): Promise<UserEntity> {
         if (dto.email) {
             await this.validateEmail(dto.email)
         }
@@ -103,20 +103,20 @@ export class UsersService {
         return (await this.findOne(id))!
     }
 
-    async createWeb3User(createWeb3UserDto: CreateWeb3UserDto): Promise<User> {
+    async createWeb3User(createWeb3UserDto: CreateWeb3UserDto): Promise<UserEntity> {
         await this.validateWeb3User(createWeb3UserDto)
         const user = await this.userRepository.save(
-            new User(createWeb3UserDto.authId, createWeb3UserDto.username, createWeb3UserDto.username, false, []),
+            new UserEntity(createWeb3UserDto.authId, createWeb3UserDto.username, createWeb3UserDto.username, false, []),
         )
         await this.web3AddressService.create(new CreateWeb3AddressDto(createWeb3UserDto.web3Address, user))
         return (await this.findOne(user.id))!
     }
 
-    async associateWeb3Address(user: User, address: string): Promise<User> {
+    async associateWeb3Address(user: UserEntity, address: string): Promise<UserEntity> {
         await this.validateWeb3Address(address)
         const currentUserAddresses = await this.web3AddressService.findByUserId(user.id)
         const alreadyHasAddress = currentUserAddresses
-            .map((web3Address: Web3Address) => web3Address.address)
+            .map((web3Address: Web3AddressEntity) => web3Address.address)
             .includes(address)
         if (alreadyHasAddress) {
             throw new BadRequestException('Address already associated')
@@ -130,17 +130,17 @@ export class UsersService {
         await this.userRepository.remove(currentUser)
     }
 
-    async unlinkAddress(user: User, address: string) {
+    async unlinkAddress(user: UserEntity, address: string) {
         const web3Address = await this.checkIfAddressBelongsToTheUser(user, address)
         await this.web3AddressService.deleteAddress(web3Address)
     }
 
-    async makeAddressPrimary(user: User, address: string) {
+    async makeAddressPrimary(user: UserEntity, address: string) {
         await this.checkIfAddressBelongsToTheUser(user, address)
         await this.web3AddressService.makePrimary(user.id, address)
     }
 
-    private async checkIfAddressBelongsToTheUser(user: User, address: string): Promise<Web3Address> {
+    private async checkIfAddressBelongsToTheUser(user: UserEntity, address: string): Promise<Web3AddressEntity> {
         const web3Address = user.web3Addresses?.find((bAddress) => bAddress.address === address)
         if (!web3Address) {
             throw new BadRequestException('Address does not belong to the user')

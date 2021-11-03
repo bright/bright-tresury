@@ -4,12 +4,12 @@ import { EmailsService } from '../../../emails/emails.service'
 import { EmailTemplates } from '../../../emails/templates/templates'
 import { getLogger } from '../../../logging.module'
 import { NewIdeaCommentDto } from '../../app-event-types/idea-comment/new-idea-comment.dto'
-import { User } from '../../../users/user.entity'
+import { UserEntity } from '../../../users/user.entity'
 import { UsersService } from '../../../users/users.service'
 import { NewProposalCommentDto } from '../../app-event-types/proposal-comment/new-proposal-comment.dto'
-import { AppEventReceiver } from '../../entities/app-event-receiver.entity'
+import { AppEventReceiverEntity } from '../../entities/app-event-receiver.entity'
 import { AppEventData, AppEventType } from '../../entities/app-event-type'
-import { AppEvent } from '../../entities/app-event.entity'
+import { AppEventEntity } from '../../entities/app-event.entity'
 
 const logger = getLogger()
 
@@ -30,7 +30,7 @@ export class EmailNotificationsService {
         private readonly superTokensService: SuperTokensService,
     ) {}
 
-    async send(appEvent: AppEvent): Promise<void> {
+    async send(appEvent: AppEventEntity): Promise<void> {
         logger.info('Sending notification emails for event: ', appEvent)
         if (!appEvent.receivers) {
             logger.info('No receivers for this event - no emails will be sent')
@@ -53,7 +53,7 @@ export class EmailNotificationsService {
         )
     }
 
-    private async getEmails(receivers: AppEventReceiver[]): Promise<string[]> {
+    private async getEmails(receivers: AppEventReceiverEntity[]): Promise<string[]> {
         const users = await this.usersService.find(receivers.map((receiver) => receiver.userId))
 
         const usersWithValidEmails = await Promise.all(
@@ -68,14 +68,14 @@ export class EmailNotificationsService {
         return usersWithValidEmails.filter((user) => user !== undefined).map((user) => user!.email)
     }
 
-    private async hasValidEmail(user: User): Promise<boolean> {
+    private async hasValidEmail(user: UserEntity): Promise<boolean> {
         if (!user.isEmailPasswordEnabled) {
             return false
         }
         return this.superTokensService.isEmailVerified(user)
     }
 
-    private getEmailDetails(appEvent: AppEvent): EmailDetails {
+    private getEmailDetails(appEvent: AppEventEntity): EmailDetails {
         switch (appEvent.data.type) {
             case AppEventType.NewIdeaComment:
                 return this.getNewIdeaCommentEmailDetails(appEvent.data)

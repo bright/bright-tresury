@@ -5,7 +5,7 @@ import {
     createUserSessionHandlerWithVerifiedEmail,
     SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
-import { Idea } from '../entities/idea.entity'
+import { IdeaEntity } from '../entities/idea.entity'
 import { createIdea } from '../spec.helpers'
 import { IdeasService } from '../ideas.service'
 
@@ -13,7 +13,7 @@ describe('Idea comments', () => {
     const app = beforeSetupFullApp()
     const ideasService = beforeAllSetup(() => app().get<IdeasService>(IdeasService))
     let sessionHandler: SessionHandler
-    let idea: Idea
+    let idea: IdeaEntity
     beforeAll(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()

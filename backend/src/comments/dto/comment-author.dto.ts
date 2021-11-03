@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { User } from '../../users/user.entity'
+import { UserEntity } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
 import { InternalServerErrorException } from '@nestjs/common'
 
@@ -13,7 +13,7 @@ export class CommentAuthorDto {
     @ApiProperty({ description: 'True if user signed up with email&password, False if web3 account was used' })
     isEmailPasswordEnabled: boolean
 
-    constructor(author: Nil<User>) {
+    constructor(author: Nil<UserEntity>) {
         if (!author) throw new InternalServerErrorException('Author is not defined')
         this.userId = author.id
         this.username = author.username

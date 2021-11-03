@@ -9,7 +9,7 @@ export enum ExtrinsicStatuses {
 }
 
 @Entity('extrinsics')
-export class Extrinsic extends BaseEntity {
+export class ExtrinsicEntity extends BaseEntity {
     @Column({ nullable: false })
     extrinsicHash: string
 

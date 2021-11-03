@@ -2,11 +2,11 @@ import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BountiesBlockchainService } from '../blockchain/bounties-blockchain.service'
-import { Extrinsic } from '../extrinsics/extrinsic.entity'
+import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { getLogger } from '../logging.module'
-import { User } from '../users/user.entity'
+import { UserEntity } from '../users/user.entity'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
 
@@ -19,13 +19,13 @@ export class BountiesService {
         private readonly extrinsicsService: ExtrinsicsService,
     ) {}
 
-    create(dto: CreateBountyDto, user: User): Promise<BountyEntity> {
+    create(dto: CreateBountyDto, user: UserEntity): Promise<BountyEntity> {
         logger.info(`Creating a bounty entity for index`)
         const bounty = this.repository.create({ ...dto, owner: user })
         return this.repository.save(bounty)
     }
 
-    async listenForProposeBountyExtrinsic(dto: CreateBountyDto, user: User): Promise<Extrinsic> {
+    async listenForProposeBountyExtrinsic(dto: CreateBountyDto, user: UserEntity): Promise<ExtrinsicEntity> {
         logger.info(`Start listening for a propose bounty extrinsic...`)
         const callback = async (events: ExtrinsicEvent[]) => {
             const bountyIndex = BountiesBlockchainService.extractBountyIndex(events)

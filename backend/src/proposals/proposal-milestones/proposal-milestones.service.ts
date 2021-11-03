@@ -6,18 +6,18 @@ import { MilestoneDetailsService } from '../../milestone-details/milestone-detai
 import { ProposalsService } from '../proposals.service'
 import { CreateProposalMilestoneDto } from './dto/create-proposal-milestone.dto'
 import { UpdateProposalMilestoneDto } from './dto/update-proposal-milestone.dto'
-import { ProposalMilestone } from './entities/proposal-milestone.entity'
+import { ProposalMilestoneEntity } from './entities/proposal-milestone.entity'
 
 @Injectable()
 export class ProposalMilestonesService {
     constructor(
-        @InjectRepository(ProposalMilestone)
-        private readonly proposalMilestoneRepository: Repository<ProposalMilestone>,
+        @InjectRepository(ProposalMilestoneEntity)
+        private readonly proposalMilestoneRepository: Repository<ProposalMilestoneEntity>,
         private readonly proposalsService: ProposalsService,
         private readonly detailsService: MilestoneDetailsService,
     ) {}
 
-    async find(proposalIndex: number, networkId: string): Promise<ProposalMilestone[]> {
+    async find(proposalIndex: number, networkId: string): Promise<ProposalMilestoneEntity[]> {
         const proposal = await this.proposalsService.findOne(proposalIndex, networkId)
 
         if (!proposal.entity) {
@@ -29,7 +29,7 @@ export class ProposalMilestonesService {
         })
     }
 
-    async findOne(milestoneId: string, proposalIndex: number, networkId: string): Promise<ProposalMilestone> {
+    async findOne(milestoneId: string, proposalIndex: number, networkId: string): Promise<ProposalMilestoneEntity> {
         const milestone = await this.proposalMilestoneRepository.findOne({
             where: {
                 id: milestoneId,
@@ -50,7 +50,7 @@ export class ProposalMilestonesService {
         networkId: string,
         dto: CreateProposalMilestoneDto,
         { user }: SessionData,
-    ): Promise<ProposalMilestone> {
+    ): Promise<ProposalMilestoneEntity> {
         const proposal = await this.proposalsService.findOne(proposalIndex, networkId)
 
         proposal.canEditMilestonesOrThrow(user)
@@ -72,7 +72,7 @@ export class ProposalMilestonesService {
         networkId: string,
         dto: UpdateProposalMilestoneDto,
         { user }: SessionData,
-    ): Promise<ProposalMilestone> {
+    ): Promise<ProposalMilestoneEntity> {
         const proposal = await this.proposalsService.findOne(proposalIndex, networkId)
         proposal.canEditMilestonesOrThrow(user)
 

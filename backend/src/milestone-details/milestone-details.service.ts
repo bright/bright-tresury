@@ -5,23 +5,23 @@ import { Repository } from 'typeorm'
 import { Nil } from '../utils/types'
 import { CreateMilestoneDetailsDto } from './dto/create-milestone-details.dto'
 import { UpdateMilestoneDetailsDto } from './dto/update-milestone-details.dto'
-import { MilestoneDetails } from './entities/milestone-details.entity'
+import { MilestoneDetailsEntity } from './entities/milestone-details.entity'
 
 @Injectable()
 export class MilestoneDetailsService {
     constructor(
-        @InjectRepository(MilestoneDetails)
-        private readonly detailsRepository: Repository<MilestoneDetails>,
+        @InjectRepository(MilestoneDetailsEntity)
+        private readonly detailsRepository: Repository<MilestoneDetailsEntity>,
     ) {}
 
-    async create(dto: CreateMilestoneDetailsDto): Promise<MilestoneDetails> {
+    async create(dto: CreateMilestoneDetailsDto): Promise<MilestoneDetailsEntity> {
         this.validateDates(dto)
 
         const details = await this.detailsRepository.create(dto)
         return this.detailsRepository.save(details)
     }
 
-    async update(dto: UpdateMilestoneDetailsDto, details: MilestoneDetails): Promise<MilestoneDetails> {
+    async update(dto: UpdateMilestoneDetailsDto, details: MilestoneDetailsEntity): Promise<MilestoneDetailsEntity> {
         const updatedDetails = { ...details, ...dto }
         this.validateDates(updatedDetails)
 
@@ -30,7 +30,7 @@ export class MilestoneDetailsService {
         return (await this.detailsRepository.findOne(details.id))!
     }
 
-    async delete(details: MilestoneDetails): Promise<void> {
+    async delete(details: MilestoneDetailsEntity): Promise<void> {
         await this.detailsRepository.remove(details)
     }
 

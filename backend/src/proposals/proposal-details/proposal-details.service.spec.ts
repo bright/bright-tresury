@@ -7,9 +7,9 @@ import { BlockchainService } from '../../blockchain/blockchain.service'
 import { BlockchainProposalStatus } from '../../blockchain/dto/blockchain-proposal.dto'
 import { IdeaProposalsService } from '../../ideas/idea-proposals/idea-proposals.service'
 import { createIdea, createSessionData } from '../../ideas/spec.helpers'
-import { Web3Address } from '../../users/web3-addresses/web3-address.entity'
+import { Web3AddressEntity } from '../../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
-import { Proposal } from '../entities/proposal.entity'
+import { ProposalEntity } from '../entities/proposal.entity'
 import { IdeaWithMilestones, ProposalsService } from '../proposals.service'
 import { createProposerSessionData, mockedBlockchainService, proposals, setUpProposalFromIdea } from '../spec.helpers'
 import { ProposalDetailsService } from './proposal-details.service'
@@ -19,7 +19,7 @@ describe('ProposalDetailsService', () => {
     const app = beforeSetupFullApp()
     const service = () => app().get(ProposalDetailsService)
 
-    const proposalsRepository = () => app().get<Repository<Proposal>>(getRepositoryToken(Proposal))
+    const proposalsRepository = () => app().get<Repository<ProposalEntity>>(getRepositoryToken(ProposalEntity))
     const proposalsService = () => app().get<ProposalsService>(ProposalsService)
     const ideaProposalsService = () => app().get<IdeaProposalsService>(IdeaProposalsService)
 
@@ -205,7 +205,7 @@ describe('ProposalDetailsService', () => {
             const proposerSessionData = await createSessionData({
                 username: 'other',
                 email: 'other@example.con',
-                web3Addresses: [new Web3Address('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
+                web3Addresses: [new Web3AddressEntity('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
             })
 
             await expect(

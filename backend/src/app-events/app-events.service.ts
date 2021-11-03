@@ -7,9 +7,9 @@ import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto
 import { isNil, Nil } from '../utils/types'
 import { NewIdeaCommentDto } from './app-event-types/idea-comment/new-idea-comment.dto'
 import { NewProposalCommentDto } from './app-event-types/proposal-comment/new-proposal-comment.dto'
-import { AppEventReceiver } from './entities/app-event-receiver.entity'
+import { AppEventReceiverEntity } from './entities/app-event-receiver.entity'
 import { AppEventType } from './entities/app-event-type'
-import { AppEvent } from './entities/app-event.entity'
+import { AppEventEntity } from './entities/app-event.entity'
 
 const logger = getLogger()
 
@@ -25,14 +25,15 @@ export interface AppEventsQuery {
 @Injectable()
 export class AppEventsService {
     constructor(
-        @InjectRepository(AppEvent) private readonly appEventRepository: Repository<AppEvent>,
-        @InjectRepository(AppEventReceiver) private readonly appEventReceiverRepository: Repository<AppEventReceiver>,
+        @InjectRepository(AppEventEntity) private readonly appEventRepository: Repository<AppEventEntity>,
+        @InjectRepository(AppEventReceiverEntity)
+        private readonly appEventReceiverRepository: Repository<AppEventReceiverEntity>,
     ) {}
 
     async findAll(
         queryParams: AppEventsQuery,
         paginated?: PaginatedParams,
-    ): Promise<{ items: AppEvent[]; total: number }> {
+    ): Promise<{ items: AppEventEntity[]; total: number }> {
         const query = this.buildFindAllQuery(queryParams)
         return PaginatedResponseDto.fromQuery(query, paginated)
     }
@@ -67,7 +68,7 @@ export class AppEventsService {
         return query
     }
 
-    async create(data: NewIdeaCommentDto | NewProposalCommentDto, userIds: string[]): Promise<AppEvent> {
+    async create(data: NewIdeaCommentDto | NewProposalCommentDto, userIds: string[]): Promise<AppEventEntity> {
         logger.info('Creating new event...', data, userIds)
         const receivers = userIds.map((userId) => this.appEventReceiverRepository.create({ userId }))
 

@@ -5,14 +5,14 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import { ForbiddenException, NotFoundException } from '@nestjs/common'
 import { SessionData } from '../../auth/session/session.decorator'
 import { BlockchainService } from '../../blockchain/blockchain.service'
-import { ProposalComment } from './entities/proposal-comment.entity'
+import { ProposalCommentEntity } from './entities/proposal-comment.entity'
 import { mockedBlockchainService } from '../spec.helpers'
 import { createUserSessionHandlerWithVerifiedEmail } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { NETWORKS } from '../../utils/spec.helpers'
 const { POLKADOT } = NETWORKS
 import { ProposalCommentsService } from './proposal-comments.service'
 import { BlockchainProposal } from '../../blockchain/dto/blockchain-proposal.dto'
-import { User } from '../../users/user.entity'
+import { UserEntity } from '../../users/user.entity'
 
 describe('ProposalCommentsServiceSpec', () => {
     const app = beforeSetupFullApp()
@@ -20,7 +20,7 @@ describe('ProposalCommentsServiceSpec', () => {
     const getProposalCommentsService = () => app.get().get(ProposalCommentsService)
 
     const getRepository = beforeAllSetup(() =>
-        app().get<Repository<ProposalComment>>(getRepositoryToken(ProposalComment)),
+        app().get<Repository<ProposalCommentEntity>>(getRepositoryToken(ProposalCommentEntity)),
     )
     let usr1SessionData: SessionData
     let proposals: BlockchainProposal[]
@@ -166,7 +166,7 @@ describe('ProposalCommentsServiceSpec', () => {
                     content: 'This is a comment',
                 },
             )
-            const usr2 = { id: '00000000-0000-0000-0000-000000000000' } as User
+            const usr2 = { id: '00000000-0000-0000-0000-000000000000' } as UserEntity
             await expect(
                 getProposalCommentsService().delete(proposal.proposalIndex, createdComment.comment.id, usr2),
             ).rejects.toThrow(ForbiddenException)
@@ -213,7 +213,7 @@ describe('ProposalCommentsServiceSpec', () => {
                     POLKADOT,
                     createdComment.comment.id,
                     { content: 'Edit' },
-                    { id: '00000000-0000-0000-0000-000000000000' } as User,
+                    { id: '00000000-0000-0000-0000-000000000000' } as UserEntity,
                 ),
             ).rejects.toThrow(ForbiddenException)
         })

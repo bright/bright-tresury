@@ -2,28 +2,28 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { Column, Entity, Generated, JoinColumn, ManyToOne, OneToMany, OneToOne } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { BaseEntity } from '../../database/base.entity'
-import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
-import { User } from '../../users/user.entity'
+import { IdeaProposalDetailsEntity } from '../../idea-proposal-details/idea-proposal-details.entity'
+import { UserEntity } from '../../users/user.entity'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
-import { IdeaComment } from '../idea-comments/entities/idea-comment.entity'
-import { IdeaMilestone } from '../idea-milestones/entities/idea-milestone.entity'
+import { IdeaCommentEntity } from '../idea-comments/entities/idea-comment.entity'
+import { IdeaMilestoneEntity } from '../idea-milestones/entities/idea-milestone.entity'
 import { IdeaNetworkStatus } from './idea-network-status'
-import { IdeaNetwork } from './idea-network.entity'
+import { IdeaNetworkEntity } from './idea-network.entity'
 import { DefaultIdeaStatus, IdeaStatus } from './idea-status'
 import { Nil } from '../../utils/types'
 
 @Entity('ideas')
-export class Idea extends BaseEntity {
+export class IdeaEntity extends BaseEntity {
     @Column({ nullable: true, type: 'text' })
     beneficiary?: string
 
-    @OneToMany(() => IdeaNetwork, (network) => network.idea, {
+    @OneToMany(() => IdeaNetworkEntity, (network) => network.idea, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
         eager: true,
     })
-    networks: IdeaNetwork[]
+    networks: IdeaNetworkEntity[]
 
     @Column({ nullable: false, type: 'integer', generated: 'increment' })
     @Generated('increment')
@@ -37,36 +37,36 @@ export class Idea extends BaseEntity {
     })
     status: IdeaStatus
 
-    @ManyToOne(() => User)
-    owner?: User
+    @ManyToOne(() => UserEntity)
+    owner?: UserEntity
 
     @Column({ nullable: false, type: 'text' })
     ownerId!: string
 
-    @OneToMany(() => IdeaMilestone, (ideaMilestone) => ideaMilestone.idea, {
+    @OneToMany(() => IdeaMilestoneEntity, (ideaMilestone) => ideaMilestone.idea, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
-    milestones?: IdeaMilestone[]
+    milestones?: IdeaMilestoneEntity[]
 
-    @OneToOne(() => IdeaProposalDetails, { eager: true })
+    @OneToOne(() => IdeaProposalDetailsEntity, { eager: true })
     @JoinColumn()
-    details: IdeaProposalDetails
+    details: IdeaProposalDetailsEntity
 
-    @OneToMany(() => IdeaComment, (ideaComment) => ideaComment.idea, {
+    @OneToMany(() => IdeaCommentEntity, (ideaComment) => ideaComment.idea, {
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
     })
-    comments: Nil<IdeaComment[]>
+    comments: Nil<IdeaCommentEntity[]>
 
     constructor(
-        networks: IdeaNetwork[],
+        networks: IdeaNetworkEntity[],
         status: IdeaStatus,
-        owner: User,
-        details: IdeaProposalDetails,
-        comments: IdeaComment[],
+        owner: UserEntity,
+        details: IdeaProposalDetailsEntity,
+        comments: IdeaCommentEntity[],
         beneficiary?: string,
         id?: string,
     ) {
@@ -82,35 +82,35 @@ export class Idea extends BaseEntity {
 
     isDraft = (): boolean => this.status === IdeaStatus.Draft
 
-    isOwner = (user: User) => {
+    isOwner = (user: UserEntity) => {
         return this.ownerId === user.id
     }
 
-    isOwnerOrThrow = (user: User) => {
+    isOwnerOrThrow = (user: UserEntity) => {
         if (!this.isOwner(user)) {
             throw new ForbiddenException('The given user cannot edit or delete this idea')
         }
     }
 
-    canEditOrThrow = (user: User) => {
+    canEditOrThrow = (user: UserEntity) => {
         this.isOwnerOrThrow(user)
         if (this.status === IdeaStatus.TurnedIntoProposal || this.status === IdeaStatus.MilestoneSubmission) {
             throw new BadRequestException('The given user cannot edit or delete this idea')
         }
     }
 
-    canEditMilestonesOrThrow = (user: User) => {
+    canEditMilestonesOrThrow = (user: UserEntity) => {
         this.isOwnerOrThrow(user)
         if (this.status === IdeaStatus.TurnedIntoProposal) {
             throw new BadRequestException('The given user cannot edit this ideas milestones')
         }
     }
 
-    canGet = (user?: User) => {
+    canGet = (user?: UserEntity) => {
         return this.status !== IdeaStatus.Draft || this.ownerId === user?.id
     }
 
-    canGetOrThrow = (user?: User) => {
+    canGetOrThrow = (user?: UserEntity) => {
         if (!this.canGet(user)) {
             throw new NotFoundException('There is no idea with such id')
         }

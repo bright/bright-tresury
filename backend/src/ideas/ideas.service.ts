@@ -8,10 +8,10 @@ import { CreateIdeaDto } from './dto/create-idea.dto'
 import { CreateIdeaNetworkDto } from './dto/create-idea-network.dto'
 import { IdeaNetworkDto } from './dto/idea-network.dto'
 import { UpdateIdeaDto } from './dto/update-idea.dto'
-import { Idea } from './entities/idea.entity'
-import { IdeaNetwork } from './entities/idea-network.entity'
-import { IdeaMilestoneNetwork } from './idea-milestones/entities/idea-milestone-network.entity'
-import { IdeaMilestone } from './idea-milestones/entities/idea-milestone.entity'
+import { IdeaEntity } from './entities/idea.entity'
+import { IdeaNetworkEntity } from './entities/idea-network.entity'
+import { IdeaMilestoneNetworkEntity } from './idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaMilestoneEntity } from './idea-milestones/entities/idea-milestone.entity'
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 import { NetworkPlanckValue } from '../utils/types'
@@ -21,16 +21,16 @@ const logger = getLogger()
 @Injectable()
 export class IdeasService {
     constructor(
-        @InjectRepository(Idea)
-        private readonly ideaRepository: Repository<Idea>,
-        @InjectRepository(IdeaNetwork)
-        private readonly ideaNetworkRepository: Repository<IdeaNetwork>,
+        @InjectRepository(IdeaEntity)
+        private readonly ideaRepository: Repository<IdeaEntity>,
+        @InjectRepository(IdeaNetworkEntity)
+        private readonly ideaNetworkRepository: Repository<IdeaNetworkEntity>,
         private readonly detailsService: IdeaProposalDetailsService,
         @InjectRepository(IdeaMilestonesRepository)
         private readonly ideaMilestoneRepository: IdeaMilestonesRepository,
     ) {}
 
-    async find(networkName?: string, sessionData?: SessionData): Promise<Idea[]> {
+    async find(networkName?: string, sessionData?: SessionData): Promise<IdeaEntity[]> {
         try {
             return networkName
                 ? await this.ideaRepository
@@ -56,7 +56,7 @@ export class IdeasService {
         }
     }
 
-    async findOne(id: string, sessionData?: SessionData): Promise<Idea> {
+    async findOne(id: string, sessionData?: SessionData): Promise<IdeaEntity> {
         const idea = await this.ideaRepository.findOne(id)
         if (!idea) {
             throw new NotFoundException('There is no idea with such id')
@@ -65,8 +65,8 @@ export class IdeasService {
         return idea
     }
 
-    async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, Idea>> {
-        const result = new Map<number, Idea>()
+    async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, IdeaEntity>> {
+        const result = new Map<number, IdeaEntity>()
 
         const ideaNetworks = await this.ideaNetworkRepository.find({
             relations: ['idea'],
@@ -76,7 +76,7 @@ export class IdeasService {
             },
         })
 
-        ideaNetworks.forEach(({ blockchainProposalId, idea }: IdeaNetwork) => {
+        ideaNetworks.forEach(({ blockchainProposalId, idea }: IdeaNetworkEntity) => {
             if (blockchainProposalId !== null && idea) {
                 result.set(blockchainProposalId, idea)
             }
@@ -85,11 +85,13 @@ export class IdeasService {
         return result
     }
 
-    async create(createIdeaDto: CreateIdeaDto, sessionData: SessionData): Promise<Idea> {
+    async create(createIdeaDto: CreateIdeaDto, sessionData: SessionData): Promise<IdeaEntity> {
         const details = await this.detailsService.create(createIdeaDto.details)
 
-        const idea = new Idea(
-            createIdeaDto.networks.map((network: CreateIdeaNetworkDto) => new IdeaNetwork(network.name, network.value)),
+        const idea = new IdeaEntity(
+            createIdeaDto.networks.map(
+                (network: CreateIdeaNetworkDto) => new IdeaNetworkEntity(network.name, network.value),
+            ),
             createIdeaDto.status ?? DefaultIdeaStatus,
             sessionData.user,
             details,
@@ -108,7 +110,7 @@ export class IdeasService {
         await this.detailsService.delete(currentIdea.details)
     }
 
-    async update(dto: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<Idea> {
+    async update(dto: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<IdeaEntity> {
         const currentIdea = await this.findOne(id, sessionData)
 
         currentIdea.canEditOrThrow(sessionData.user)
@@ -138,14 +140,14 @@ export class IdeasService {
         return (await this.ideaRepository.findOne(id))!
     }
 
-    private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestone) {
+    private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestoneEntity) {
         return dtoNetworks.map((dtoNetwork) => {
             const milestoneNetwork = milestone.networks.find((n) => n.name === dtoNetwork.name)
-            return milestoneNetwork ?? new IdeaMilestoneNetwork(dtoNetwork.name, '0' as NetworkPlanckValue)
+            return milestoneNetwork ?? new IdeaMilestoneNetworkEntity(dtoNetwork.name, '0' as NetworkPlanckValue)
         })
     }
 
-    private getIdeaNetworks(dto: UpdateIdeaDto, currentIdea: Idea) {
+    private getIdeaNetworks(dto: UpdateIdeaDto, currentIdea: IdeaEntity) {
         return dto.networks
             ? dto.networks.map((updatedNetwork: CreateIdeaNetworkDto) => {
                   const existingNetwork = currentIdea.networks.find(
@@ -157,7 +159,7 @@ export class IdeasService {
                           ...updatedNetwork,
                       }
                   }
-                  return new IdeaNetwork(updatedNetwork.name, updatedNetwork.value)
+                  return new IdeaNetworkEntity(updatedNetwork.name, updatedNetwork.value)
               })
             : currentIdea.networks
     }

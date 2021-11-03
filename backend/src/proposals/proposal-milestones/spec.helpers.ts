@@ -10,12 +10,12 @@ import { IdeaProposalDetailsService } from '../../idea-proposal-details/idea-pro
 import { MilestoneDetailsDto } from '../../milestone-details/dto/milestone-details.dto'
 import { MilestoneDetailsService } from '../../milestone-details/milestone-details.service'
 import { NETWORKS } from '../../utils/spec.helpers'
-import { Proposal } from '../entities/proposal.entity'
-import { ProposalMilestone } from './entities/proposal-milestone.entity'
+import { ProposalEntity } from '../entities/proposal.entity'
+import { ProposalMilestoneEntity } from './entities/proposal-milestone.entity'
 
 export const setUp = async (
     app: INestApplication,
-    proposalDto?: Partial<Proposal>,
+    proposalDto?: Partial<ProposalEntity>,
     detailsDto?: Partial<IdeaProposalDetailsDto>,
 ) => {
     const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app)
@@ -28,13 +28,13 @@ export const setUp = async (
 export const createProposal = async (
     app: INestApplication,
     sessionHandler: SessionHandler,
-    proposalDto?: Partial<Proposal>,
+    proposalDto?: Partial<ProposalEntity>,
     detailsDto?: Partial<IdeaProposalDetailsDto>,
 ) => {
     const detailsService = app.get<IdeaProposalDetailsService>(IdeaProposalDetailsService)
     const details = await detailsService.create({ title: 'title', ...detailsDto })
 
-    const proposalsRepository = app.get<Repository<Proposal>>(getRepositoryToken(Proposal))
+    const proposalsRepository = app.get<Repository<ProposalEntity>>(getRepositoryToken(ProposalEntity))
     const proposal = await proposalsRepository.create({
         ownerId: sessionHandler.sessionData.user.id,
         networkId: NETWORKS.POLKADOT,
@@ -47,14 +47,16 @@ export const createProposal = async (
 
 export const createProposalMilestone = async (
     app: INestApplication,
-    proposal: Proposal,
-    milestoneDto?: Partial<ProposalMilestone>,
+    proposal: ProposalEntity,
+    milestoneDto?: Partial<ProposalMilestoneEntity>,
     detailsDto?: Partial<MilestoneDetailsDto>,
 ) => {
     const detailsService = app.get<MilestoneDetailsService>(MilestoneDetailsService)
     const details = await detailsService.create({ subject: 'subject', ...detailsDto })
 
-    const proposalMilestonesRepository = app.get<Repository<ProposalMilestone>>(getRepositoryToken(ProposalMilestone))
+    const proposalMilestonesRepository = app.get<Repository<ProposalMilestoneEntity>>(
+        getRepositoryToken(ProposalMilestoneEntity),
+    )
     const milestone = await proposalMilestonesRepository.create({
         proposal,
         details,

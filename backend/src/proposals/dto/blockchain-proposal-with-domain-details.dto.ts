@@ -1,12 +1,12 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { BlockchainProposal } from '../../blockchain/dto/blockchain-proposal.dto'
-import { User } from '../../users/user.entity'
+import { UserEntity } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
-import { Proposal } from '../entities/proposal.entity'
+import { ProposalEntity } from '../entities/proposal.entity'
 
 interface IBlockchainProposalWithDomainDetails {
     blockchain: BlockchainProposal
-    entity: Nil<Proposal>
+    entity: Nil<ProposalEntity>
     isCreatedFromIdea: boolean
     isCreatedFromIdeaMilestone: boolean
     ideaId: Nil<string>
@@ -15,7 +15,7 @@ interface IBlockchainProposalWithDomainDetails {
 
 export class BlockchainProposalWithDomainDetails implements IBlockchainProposalWithDomainDetails {
     blockchain: BlockchainProposal
-    entity: Nil<Proposal>
+    entity: Nil<ProposalEntity>
     isCreatedFromIdea: boolean
     isCreatedFromIdeaMilestone: boolean
     ideaId: Nil<string>
@@ -37,20 +37,20 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
         this.ideaMilestoneId = ideaMilestoneId
     }
 
-    isOwner = (user: User) => this.blockchain.isOwner(user) || this.entity?.isOwner(user)
+    isOwner = (user: UserEntity) => this.blockchain.isOwner(user) || this.entity?.isOwner(user)
 
-    isOwnerOrThrow = (user: User) => {
+    isOwnerOrThrow = (user: UserEntity) => {
         if (!this.isOwner(user)) {
             throw new ForbiddenException('The given user cannot edit this proposal')
         }
     }
 
-    canEditOrThrow = (user: User) => {
+    canEditOrThrow = (user: UserEntity) => {
         this.isOwnerOrThrow(user)
         this.blockchain.isEditableOrThrow()
     }
 
-    canEditMilestonesOrThrow = (user: User) => {
+    canEditMilestonesOrThrow = (user: UserEntity) => {
         if (!this.entity) {
             throw new BadRequestException('You cannot edit milestones of a proposal with no details created')
         }

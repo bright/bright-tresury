@@ -4,13 +4,13 @@ import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
-import { IdeaProposalDetails } from '../../idea-proposal-details/idea-proposal-details.entity'
+import { IdeaProposalDetailsEntity } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { createSessionData } from '../../ideas/spec.helpers'
-import { Web3Address } from '../../users/web3-addresses/web3-address.entity'
+import { Web3AddressEntity } from '../../users/web3-addresses/web3-address.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { ProposalStatus } from '../dto/proposal.dto'
 import { mockedBlockchainService, setUpProposalFromIdea } from '../spec.helpers'
-import { ProposalMilestone } from './entities/proposal-milestone.entity'
+import { ProposalMilestoneEntity } from './entities/proposal-milestone.entity'
 import { ProposalMilestonesService } from './proposal-milestones.service'
 import { createProposalMilestone, setUp } from './spec.helpers'
 
@@ -19,10 +19,10 @@ describe(`ProposalMilestonesService`, () => {
 
     const service = beforeAllSetup(() => app().get<ProposalMilestonesService>(ProposalMilestonesService))
     const repository = beforeAllSetup(() =>
-        app().get<Repository<ProposalMilestone>>(getRepositoryToken(ProposalMilestone)),
+        app().get<Repository<ProposalMilestoneEntity>>(getRepositoryToken(ProposalMilestoneEntity)),
     )
     const detailsRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaProposalDetails>>(getRepositoryToken(IdeaProposalDetails)),
+        app().get<Repository<IdeaProposalDetailsEntity>>(getRepositoryToken(IdeaProposalDetailsEntity)),
     )
 
     beforeAll(() => {
@@ -236,7 +236,7 @@ describe(`ProposalMilestonesService`, () => {
             const proposerSessionData = await createSessionData({
                 username: 'other',
                 email: 'other@example.con',
-                web3Addresses: [new Web3Address('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
+                web3Addresses: [new Web3AddressEntity('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
             })
 
             await expect(
@@ -400,7 +400,7 @@ describe(`ProposalMilestonesService`, () => {
             const proposerSessionData = await createSessionData({
                 username: 'other',
                 email: 'other@example.con',
-                web3Addresses: [new Web3Address('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
+                web3Addresses: [new Web3AddressEntity('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
             })
 
             await expect(
@@ -482,7 +482,7 @@ describe(`ProposalMilestonesService`, () => {
             const proposerSessionData = await createSessionData({
                 username: 'other',
                 email: 'other@example.con',
-                web3Addresses: [new Web3Address('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
+                web3Addresses: [new Web3AddressEntity('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY', true)],
             })
 
             await expect(

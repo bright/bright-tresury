@@ -3,16 +3,16 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { v4 as uuid } from 'uuid'
 import { beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
 import { UsersService } from './users.service'
-import { User } from './user.entity'
+import { UserEntity } from './user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { CreateWeb3UserDto } from './dto/create-web3-user.dto'
-import { Web3Address } from './web3-addresses/web3-address.entity'
+import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
 
 describe(`Users Service`, () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(UsersService)
-    const getRepository = () => app.get().get(getRepositoryToken(User))
-    const getWeb3AddressRepository = () => app.get().get(getRepositoryToken(Web3Address))
+    const getRepository = () => app.get().get(getRepositoryToken(UserEntity))
+    const getWeb3AddressRepository = () => app.get().get(getRepositoryToken(Web3AddressEntity))
 
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const charlieAddress = '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q'
@@ -105,7 +105,7 @@ describe(`Users Service`, () => {
     })
 
     describe('associateEmailAccount', () => {
-        let user: User
+        let user: UserEntity
         beforeEach(async () => {
             user = await getService().create({
                 authId: uuid(),

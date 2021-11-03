@@ -5,7 +5,7 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { getLogger } from '../logging.module'
 import { CreateExtrinsicDto } from './dto/createExtrinsic.dto'
 import { UpdateExtrinsicDto } from './dto/updateExtrinsic.dto'
-import { Extrinsic, ExtrinsicStatuses } from './extrinsic.entity'
+import { ExtrinsicEntity, ExtrinsicStatuses } from './extrinsic.entity'
 import { ExtrinsicEvent } from './extrinsicEvent'
 
 const logger = getLogger()
@@ -13,11 +13,11 @@ const logger = getLogger()
 @Injectable()
 export class ExtrinsicsService {
     constructor(
-        @InjectRepository(Extrinsic) private readonly extrinsicRepository: Repository<Extrinsic>,
+        @InjectRepository(ExtrinsicEntity) private readonly extrinsicRepository: Repository<ExtrinsicEntity>,
         private readonly blockchainService: BlockchainService,
     ) {}
 
-    async findByExtrinsicHash(extrinsicHash: string): Promise<Extrinsic | undefined> {
+    async findByExtrinsicHash(extrinsicHash: string): Promise<ExtrinsicEntity | undefined> {
         return this.extrinsicRepository.findOne({ extrinsicHash })
     }
 
@@ -25,7 +25,7 @@ export class ExtrinsicsService {
         networkId: string,
         createExtrinsicDto: CreateExtrinsicDto,
         extractEvents?: (events: ExtrinsicEvent[]) => Promise<void>,
-    ): Promise<Extrinsic> {
+    ): Promise<ExtrinsicEntity> {
         logger.info(`Save extrinsic to listen for`, createExtrinsicDto)
         const extrinsic = await this.create(createExtrinsicDto)
 
@@ -40,12 +40,12 @@ export class ExtrinsicsService {
         return extrinsic
     }
 
-    async create(extrinsicDto: CreateExtrinsicDto): Promise<Extrinsic> {
-        const extrinsic = new Extrinsic(extrinsicDto.extrinsicHash, extrinsicDto.lastBlockHash, extrinsicDto.data)
+    async create(extrinsicDto: CreateExtrinsicDto): Promise<ExtrinsicEntity> {
+        const extrinsic = new ExtrinsicEntity(extrinsicDto.extrinsicHash, extrinsicDto.lastBlockHash, extrinsicDto.data)
         return await this.extrinsicRepository.save(extrinsic)
     }
 
-    async update(id: string, updateExtrinsicDto: UpdateExtrinsicDto): Promise<Extrinsic | undefined> {
+    async update(id: string, updateExtrinsicDto: UpdateExtrinsicDto): Promise<ExtrinsicEntity | undefined> {
         const extrinsic = await this.extrinsicRepository.findOne(id)
         if (!extrinsic) {
             return undefined

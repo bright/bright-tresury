@@ -7,8 +7,8 @@ import { IdeasService } from '../ideas.service'
 import { CreateIdeaMilestoneNetworkDto } from './dto/create-idea-milestone-network.dto'
 import { CreateIdeaMilestoneDto } from './dto/create-idea-milestone.dto'
 import { UpdateIdeaMilestoneDto } from './dto/update-idea-milestone.dto'
-import { IdeaMilestoneNetwork } from './entities/idea-milestone-network.entity'
-import { IdeaMilestone } from './entities/idea-milestone.entity'
+import { IdeaMilestoneNetworkEntity } from './entities/idea-milestone-network.entity'
+import { IdeaMilestoneEntity } from './entities/idea-milestone.entity'
 import { IdeaMilestonesRepository } from './idea-milestones.repository'
 
 @Injectable()
@@ -16,18 +16,18 @@ export class IdeaMilestonesService {
     constructor(
         @InjectRepository(IdeaMilestonesRepository)
         private readonly ideaMilestoneRepository: IdeaMilestonesRepository,
-        @InjectRepository(IdeaMilestoneNetwork)
-        private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetwork>,
+        @InjectRepository(IdeaMilestoneNetworkEntity)
+        private readonly ideaMilestoneNetworkRepository: Repository<IdeaMilestoneNetworkEntity>,
         private readonly ideasService: IdeasService,
         private readonly detailsService: MilestoneDetailsService,
     ) {}
 
-    async find(ideaId: string, sessionData: SessionData): Promise<IdeaMilestone[]> {
+    async find(ideaId: string, sessionData: SessionData): Promise<IdeaMilestoneEntity[]> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
         return await this.ideaMilestoneRepository.find({ idea })
     }
 
-    async findOne(ideaMilestoneId: string, sessionData?: SessionData): Promise<IdeaMilestone> {
+    async findOne(ideaMilestoneId: string, sessionData?: SessionData): Promise<IdeaMilestoneEntity> {
         const ideaMilestone = await this.ideaMilestoneRepository.findOne(ideaMilestoneId, {
             relations: ['idea'],
         })
@@ -38,8 +38,8 @@ export class IdeaMilestonesService {
         return ideaMilestone
     }
 
-    async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, IdeaMilestone>> {
-        const result = new Map<number, IdeaMilestone>()
+    async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, IdeaMilestoneEntity>> {
+        const result = new Map<number, IdeaMilestoneEntity>()
 
         const ideaMilestoneNetworks = await this.ideaMilestoneNetworkRepository.find({
             relations: ['ideaMilestone'],
@@ -58,7 +58,7 @@ export class IdeaMilestonesService {
         return result
     }
 
-    async create(ideaId: string, dto: CreateIdeaMilestoneDto, sessionData: SessionData): Promise<IdeaMilestone> {
+    async create(ideaId: string, dto: CreateIdeaMilestoneDto, sessionData: SessionData): Promise<IdeaMilestoneEntity> {
         const idea = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.canEditMilestonesOrThrow(sessionData.user)
@@ -70,7 +70,7 @@ export class IdeaMilestonesService {
             idea,
             details,
             networks: dto.networks.map(
-                ({ name, value }: CreateIdeaMilestoneNetworkDto) => new IdeaMilestoneNetwork(name, value),
+                ({ name, value }: CreateIdeaMilestoneNetworkDto) => new IdeaMilestoneNetworkEntity(name, value),
             ),
         })
         const savedIdeaMilestone = await this.ideaMilestoneRepository.save(milestone)
@@ -81,7 +81,7 @@ export class IdeaMilestonesService {
         ideaMilestoneId: string,
         dto: UpdateIdeaMilestoneDto,
         sessionData: SessionData,
-    ): Promise<IdeaMilestone> {
+    ): Promise<IdeaMilestoneEntity> {
         const currentIdeaMilestone = await this.ideaMilestoneRepository.findOne(ideaMilestoneId, {
             relations: ['idea'],
         })
@@ -97,7 +97,7 @@ export class IdeaMilestonesService {
             dto.networks &&
             dto.networks.map((updatedNetwork: CreateIdeaMilestoneNetworkDto) => {
                 const existingNetwork = currentIdeaMilestone.networks.find(
-                    (currentIdeaMilestoneNetwork: IdeaMilestoneNetwork) =>
+                    (currentIdeaMilestoneNetwork: IdeaMilestoneNetworkEntity) =>
                         currentIdeaMilestoneNetwork.id === updatedNetwork.id,
                 )
 

@@ -3,10 +3,10 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
-import { Idea } from '../ideas/entities/idea.entity'
-import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
-import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.entity'
+import { IdeaNetworkEntity } from '../ideas/entities/idea-network.entity'
+import { IdeaEntity } from '../ideas/entities/idea.entity'
+import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaMilestoneEntity } from '../ideas/idea-milestones/entities/idea-milestone.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { ProposalDto } from './dto/proposal.dto'
@@ -20,16 +20,16 @@ const baseUrl = '/api/v1/proposals'
 describe(`/api/v1/proposals`, () => {
     const app = beforeSetupFullApp()
 
-    let idea: Idea
-    let ideaWithMilestone: Idea
-    let ideaMilestone: IdeaMilestone
+    let idea: IdeaEntity
+    let ideaWithMilestone: IdeaEntity
+    let ideaMilestone: IdeaMilestoneEntity
 
     const ideaNetworkRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaNetwork>>(getRepositoryToken(IdeaNetwork)),
+        app().get<Repository<IdeaNetworkEntity>>(getRepositoryToken(IdeaNetworkEntity)),
     )
 
     const ideaMilestoneNetworkRepository = beforeAllSetup(() =>
-        app().get<Repository<IdeaMilestoneNetwork>>(getRepositoryToken(IdeaMilestoneNetwork)),
+        app().get<Repository<IdeaMilestoneNetworkEntity>>(getRepositoryToken(IdeaMilestoneNetworkEntity)),
     )
 
     const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
@@ -76,7 +76,13 @@ describe(`/api/v1/proposals`, () => {
         ideaMilestone = await createIdeaMilestone(
             ideaWithMilestone.id,
             {
-                networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue, status: IdeaMilestoneNetworkStatus.Active }],
+                networks: [
+                    {
+                        name: NETWORKS.POLKADOT,
+                        value: '100' as NetworkPlanckValue,
+                        status: IdeaMilestoneNetworkStatus.Active,
+                    },
+                ],
                 details: {
                     subject: 'ideaMilestoneSubject',
                     description: 'description',

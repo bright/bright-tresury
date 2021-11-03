@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { MilestoneDetails } from '../../milestone-details/entities/milestone-details.entity'
-import { IdeaProposalDetails, ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
+import { MilestoneDetailsEntity } from '../../milestone-details/entities/milestone-details.entity'
+import { IdeaProposalDetailsEntity, ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
 
 export class IdeaProposalDetailsDto {
     @ApiProperty({
@@ -35,7 +35,7 @@ export class IdeaProposalDetailsDto {
     })
     links?: string[]
 
-    constructor({ title, content, field, contact, portfolio, links }: IdeaProposalDetails) {
+    constructor({ title, content, field, contact, portfolio, links }: IdeaProposalDetailsEntity) {
         this.title = title
         this.content = content
         this.field = field

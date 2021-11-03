@@ -8,7 +8,7 @@ export const ideaProposalDetailsRestrictions = {
 }
 
 @Entity('idea_proposal_details')
-export class IdeaProposalDetails extends BaseEntity {
+export class IdeaProposalDetailsEntity extends BaseEntity {
     @Column({ nullable: false })
     title!: string
 

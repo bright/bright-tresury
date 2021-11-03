@@ -2,7 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { ExtrinsicDto, toExtrinsicDto } from '../../extrinsics/dto/extrinsic.dto'
 import { Nil, NetworkPlanckValue } from '../../utils/types'
 import { IdeaNetworkStatus } from '../entities/idea-network-status'
-import { IdeaNetwork } from '../entities/idea-network.entity'
+import { IdeaNetworkEntity } from '../entities/idea-network.entity'
 
 export class IdeaNetworkDto {
     @ApiProperty({
@@ -37,7 +37,7 @@ export class IdeaNetworkDto {
     })
     blockchainProposalId?: Nil<number>
 
-    constructor({ id, name, value, extrinsic, status, blockchainProposalId }: IdeaNetwork) {
+    constructor({ id, name, value, extrinsic, status, blockchainProposalId }: IdeaNetworkEntity) {
         this.id = id
         this.name = name
         this.status = status

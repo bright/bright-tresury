@@ -11,7 +11,7 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { AppEventsController } from './app-events.controller'
 import { AppEventsService } from './app-events.service'
 import { AppEventType } from './entities/app-event-type'
-import { AppEvent } from './entities/app-event.entity'
+import { AppEventEntity } from './entities/app-event.entity'
 import { createAndSaveAppEvent } from './spec.helpers'
 import { AppEventSubscriber } from './subscribers/app-event.subscriber'
 
@@ -26,7 +26,7 @@ describe('/api/v1/users/:userId/app-events/', () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
         jest.spyOn(appEventSubscriber(), 'afterInsert').mockImplementationOnce(
-            (event: InsertEvent<AppEvent>): Promise<void> => {
+            (event: InsertEvent<AppEventEntity>): Promise<void> => {
                 return Promise.resolve()
             },
         )

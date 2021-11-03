@@ -9,7 +9,7 @@ import {
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../../extrinsics/dto/updateExtrinsic.dto'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../../utils/spec.helpers'
-import { Idea } from '../../entities/idea.entity'
+import { IdeaEntity } from '../../entities/idea.entity'
 import { IdeasService } from '../../ideas.service'
 import { createIdea, createIdeaMilestone } from '../../spec.helpers'
 import { IdeaMilestoneNetworkDto } from '../dto/idea-milestone-network.dto'
@@ -73,7 +73,7 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
     })
 
     describe('POST', () => {
-        let idea: Idea
+        let idea: IdeaEntity
 
         beforeAll(() => {
             jest.spyOn(blockchainService(), 'listenForExtrinsic').mockImplementation(

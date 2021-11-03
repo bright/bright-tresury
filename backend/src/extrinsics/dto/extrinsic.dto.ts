@@ -1,4 +1,4 @@
-import { Extrinsic, ExtrinsicStatuses } from '../extrinsic.entity'
+import { ExtrinsicEntity, ExtrinsicStatuses } from '../extrinsic.entity'
 import { Allow } from 'class-validator'
 
 export class ExtrinsicDto {
@@ -16,6 +16,6 @@ export class ExtrinsicDto {
     }
 }
 
-export function toExtrinsicDto(extrinsic: Extrinsic) {
+export function toExtrinsicDto(extrinsic: ExtrinsicEntity) {
     return new ExtrinsicDto(extrinsic.extrinsicHash, extrinsic.lastBlockHash, extrinsic.data, extrinsic.status)
 }

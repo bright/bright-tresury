@@ -1,10 +1,10 @@
 import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm'
 import { v4 as uuid } from 'uuid'
-import { Comment } from '../../../comments/comment.entity'
-import { User } from '../../../users/user.entity'
+import { CommentEntity } from '../../../comments/comment.entity'
+import { UserEntity } from '../../../users/user.entity'
 
 @Entity('proposal_comments')
-export class ProposalComment {
+export class ProposalCommentEntity {
     @PrimaryColumn()
     id: string = uuid()
 
@@ -14,11 +14,11 @@ export class ProposalComment {
     @Column({ nullable: false, type: 'text' })
     networkId: string
 
-    @OneToOne(() => Comment, { eager: true })
+    @OneToOne(() => CommentEntity, { eager: true })
     @JoinColumn()
-    comment: Comment
+    comment: CommentEntity
 
-    constructor(blockchainProposalId: number, networkId: string, comment: Comment) {
+    constructor(blockchainProposalId: number, networkId: string, comment: CommentEntity) {
         this.networkId = networkId
         this.blockchainProposalId = blockchainProposalId
         this.comment = comment
@@ -30,11 +30,11 @@ export class ProposalComment {
             this.id = uuid()
         }
     }
-    canEdit = (user: User) => {
+    canEdit = (user: UserEntity) => {
         return this.comment?.canEdit(user)
     }
 
-    canEditOrThrow = (user: User) => {
+    canEditOrThrow = (user: UserEntity) => {
         return this.comment?.canEditOrThrow(user)
     }
 }

@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
-import { User } from '../../users/user.entity'
+import { UserEntity } from '../../users/user.entity'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
 
 @Entity('bounties')
@@ -29,8 +29,8 @@ export class BountyEntity extends BaseEntity {
     @Column({ nullable: false, type: 'text' })
     blockchainIndex?: Nil<number>
 
-    @ManyToOne(() => User)
-    owner?: Nil<User>
+    @ManyToOne(() => UserEntity)
+    owner?: Nil<UserEntity>
 
     @Column({ nullable: false, type: 'text' })
     ownerId!: string

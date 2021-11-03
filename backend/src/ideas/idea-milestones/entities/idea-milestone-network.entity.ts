@@ -1,16 +1,16 @@
 import { BadRequestException } from '@nestjs/common'
 import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { BaseEntity } from '../../../database/base.entity'
-import { Extrinsic } from '../../../extrinsics/extrinsic.entity'
+import { ExtrinsicEntity } from '../../../extrinsics/extrinsic.entity'
 import { defaultIdeaNetworkStatus } from '../../entities/idea-network-status'
 import { defaultIdeaMilestoneNetworkStatus, IdeaMilestoneNetworkStatus } from './idea-milestone-network-status'
-import { IdeaMilestone } from './idea-milestone.entity'
+import { IdeaMilestoneEntity } from './idea-milestone.entity'
 import { NetworkPlanckValue } from '../../../utils/types'
 
 @Entity('idea_milestone_networks')
-export class IdeaMilestoneNetwork extends BaseEntity {
-    @ManyToOne(() => IdeaMilestone, (ideaMilestone) => ideaMilestone.networks)
-    ideaMilestone?: IdeaMilestone
+export class IdeaMilestoneNetworkEntity extends BaseEntity {
+    @ManyToOne(() => IdeaMilestoneEntity, (ideaMilestone) => ideaMilestone.networks)
+    ideaMilestone?: IdeaMilestoneEntity
 
     @Column({ type: 'text' })
     name: string
@@ -18,9 +18,9 @@ export class IdeaMilestoneNetwork extends BaseEntity {
     @Column('decimal', { precision: 54, scale: 0, nullable: false, default: 0 })
     value: NetworkPlanckValue
 
-    @OneToOne(() => Extrinsic)
+    @OneToOne(() => ExtrinsicEntity)
     @JoinColumn()
-    extrinsic: Extrinsic | null
+    extrinsic: ExtrinsicEntity | null
 
     @Column({ nullable: true, type: 'integer' })
     blockchainProposalId: number | null

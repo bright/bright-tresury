@@ -2,8 +2,8 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { v4 as uuid } from 'uuid'
 import { Web3AddressesService } from './web3-addresses.service'
 import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
-import { Web3Address } from './web3-address.entity'
-import { User } from '../user.entity'
+import { Web3AddressEntity } from './web3-address.entity'
+import { UserEntity } from '../user.entity'
 import { UsersService } from '../users.service'
 import { CreateUserDto } from '../dto/create-user.dto'
 import { BadRequestException } from '@nestjs/common'
@@ -13,12 +13,12 @@ describe(`Web3 Addresses Service`, () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(Web3AddressesService)
     const getUserService = () => app.get().get(UsersService)
-    const getRepository = () => app.get().get(getRepositoryToken(Web3Address))
+    const getRepository = () => app.get().get(getRepositoryToken(Web3AddressEntity))
 
     const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
 
-    let user: User
+    let user: UserEntity
 
     beforeEach(async () => {
         await cleanDatabase()

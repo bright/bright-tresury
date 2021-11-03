@@ -3,7 +3,7 @@ import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent } f
 import { AppConfig, AppConfigToken } from '../../../config/config.module'
 import { getLogger } from '../../../logging.module'
 import { BlockchainProposalWithDomainDetails } from '../../../proposals/dto/blockchain-proposal-with-domain-details.dto'
-import { ProposalComment } from '../../../proposals/proposal-comments/entities/proposal-comment.entity'
+import { ProposalCommentEntity } from '../../../proposals/proposal-comments/entities/proposal-comment.entity'
 import { ProposalCommentsService } from '../../../proposals/proposal-comments/proposal-comments.service'
 import { ProposalsService } from '../../../proposals/proposals.service'
 import { UsersService } from '../../../users/users.service'
@@ -14,7 +14,7 @@ import { NewProposalCommentDto } from './new-proposal-comment.dto'
 const logger = getLogger()
 
 @EventSubscriber()
-export class ProposalCommentSubscriber implements EntitySubscriberInterface<ProposalComment> {
+export class ProposalCommentSubscriber implements EntitySubscriberInterface<ProposalCommentEntity> {
     constructor(
         private readonly commentsService: ProposalCommentsService,
         private readonly appEventsService: AppEventsService,
@@ -27,10 +27,10 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Prop
     }
 
     listenTo() {
-        return ProposalComment
+        return ProposalCommentEntity
     }
 
-    async afterInsert({ entity }: InsertEvent<ProposalComment>) {
+    async afterInsert({ entity }: InsertEvent<ProposalCommentEntity>) {
         logger.info(`New proposal comment created. Creating NewProposalComment app event: `, entity)
 
         const proposal = await this.proposalsService.findOne(entity.blockchainProposalId, entity.networkId)
@@ -41,7 +41,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Prop
     }
 
     private getEventDetails(
-        proposalComment: ProposalComment,
+        proposalComment: ProposalCommentEntity,
         proposal: BlockchainProposalWithDomainDetails,
     ): NewProposalCommentDto {
         const commentsUrl = `${this.appConfig.websiteUrl}/proposals/${proposalComment.blockchainProposalId}/discussion?networkId=${proposalComment.networkId}`
@@ -58,7 +58,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Prop
     }
 
     private async getReceiverIds(
-        proposalComment: ProposalComment,
+        proposalComment: ProposalCommentEntity,
         proposal: BlockchainProposalWithDomainDetails,
     ): Promise<string[]> {
         const receiverIds = (

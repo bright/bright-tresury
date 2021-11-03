@@ -1,8 +1,8 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common'
-import { User } from '../../users/user.entity'
+import { UserEntity } from '../../users/user.entity'
 
 export interface SessionData {
-    user: User
+    user: UserEntity
 }
 
 export const ReqSession = createParamDecorator(

@@ -2,23 +2,23 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { CreateCommentDto } from '../../comments/dto/create-comment.dto'
-import { IdeaComment } from './entities/idea-comment.entity'
-import { User } from '../../users/user.entity'
+import { IdeaCommentEntity } from './entities/idea-comment.entity'
+import { UserEntity } from '../../users/user.entity'
 import { IdeasService } from '../ideas.service'
 import { UpdateCommentDto } from '../../comments/dto/update-comment.dto'
-import { Comment } from '../../comments/comment.entity'
+import { CommentEntity } from '../../comments/comment.entity'
 
 @Injectable()
 export class IdeaCommentsService {
     constructor(
-        @InjectRepository(IdeaComment)
-        private readonly ideaCommentsRepository: Repository<IdeaComment>,
-        @InjectRepository(Comment)
-        private readonly commentsRepository: Repository<Comment>,
+        @InjectRepository(IdeaCommentEntity)
+        private readonly ideaCommentsRepository: Repository<IdeaCommentEntity>,
+        @InjectRepository(CommentEntity)
+        private readonly commentsRepository: Repository<CommentEntity>,
         private readonly ideasService: IdeasService,
     ) {}
 
-    async findOne(ideaId: string, commentId: string): Promise<IdeaComment> {
+    async findOne(ideaId: string, commentId: string): Promise<IdeaCommentEntity> {
         const ideaComment = await this.ideaCommentsRepository.findOne({
             relations: ['idea', 'comment', 'comment.author', 'comment.author.web3Addresses'],
             where: { comment: { id: commentId }, idea: { id: ideaId } },
@@ -29,22 +29,22 @@ export class IdeaCommentsService {
         return ideaComment
     }
 
-    async findAll(ideaId: string): Promise<IdeaComment[]> {
+    async findAll(ideaId: string): Promise<IdeaCommentEntity[]> {
         return this.ideaCommentsRepository.find({
             where: { idea: { id: ideaId } },
             relations: ['comment', 'comment.author', 'comment.author.web3Addresses'],
         })
     }
 
-    async create(ideaId: string, author: User, dto: CreateCommentDto): Promise<IdeaComment> {
+    async create(ideaId: string, author: UserEntity, dto: CreateCommentDto): Promise<IdeaCommentEntity> {
         const idea = await this.ideasService.findOne(ideaId, { user: author })
         if (idea.isDraft()) throw new BadRequestException('Could not create a comment to idea with draft status')
 
-        const comment = await this.commentsRepository.save(new Comment(author, dto.content))
-        return await this.ideaCommentsRepository.save(new IdeaComment(idea, comment))
+        const comment = await this.commentsRepository.save(new CommentEntity(author, dto.content))
+        return await this.ideaCommentsRepository.save(new IdeaCommentEntity(idea, comment))
     }
 
-    async delete(ideaId: string, commentId: string, user: User) {
+    async delete(ideaId: string, commentId: string, user: UserEntity) {
         const ideaComment = await this.findOne(ideaId, commentId)
         ideaComment.canEditOrThrow(user)
         // its ok to remove from commentsRepository only because the ideaComment will be auto removed with cascade rule
@@ -56,8 +56,8 @@ export class IdeaCommentsService {
         ideaId: string,
         commentId: string,
         updateCommentDto: UpdateCommentDto,
-        user: User,
-    ): Promise<IdeaComment> {
+        user: UserEntity,
+    ): Promise<IdeaCommentEntity> {
         const ideaComment = await this.findOne(ideaId, commentId)
         ideaComment.canEditOrThrow(user)
         await this.commentsRepository.save({

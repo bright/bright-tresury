@@ -1,10 +1,10 @@
-import { User } from '../user.entity'
+import { UserEntity } from '../user.entity'
 
 export class CreateWeb3AddressDto {
     address: string
-    user: User
+    user: UserEntity
 
-    constructor(address: string, user: User) {
+    constructor(address: string, user: UserEntity) {
         this.address = address
         this.user = user
     }

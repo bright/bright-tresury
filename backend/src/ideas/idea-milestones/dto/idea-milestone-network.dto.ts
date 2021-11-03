@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { IdeaMilestoneNetwork } from '../entities/idea-milestone-network.entity'
+import { IdeaMilestoneNetworkEntity } from '../entities/idea-milestone-network.entity'
 import { IsNotEmpty, IsNumberString, IsOptional, IsString, IsUUID, Validate } from 'class-validator'
 import { ExtrinsicDto, toExtrinsicDto } from '../../../extrinsics/dto/extrinsic.dto'
 import { IsValidNetworkConstraint } from '../../../utils/network.validator'
@@ -37,7 +37,7 @@ export class IdeaMilestoneNetworkDto {
     })
     status: IdeaMilestoneNetworkStatus
 
-    constructor({ id, name, value, extrinsic, status }: IdeaMilestoneNetwork) {
+    constructor({ id, name, value, extrinsic, status }: IdeaMilestoneNetworkEntity) {
         this.id = id
         this.name = name
         this.value = value

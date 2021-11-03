@@ -5,33 +5,33 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
 import { toCreateIdeaProposalDetailsDto } from '../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { IdeaProposalDetailsService } from '../idea-proposal-details/idea-proposal-details.service'
-import { IdeaNetwork } from '../ideas/entities/idea-network.entity'
-import { Idea } from '../ideas/entities/idea.entity'
-import { IdeaMilestoneNetwork } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
-import { IdeaMilestone } from '../ideas/idea-milestones/entities/idea-milestone.entity'
+import { IdeaNetworkEntity } from '../ideas/entities/idea-network.entity'
+import { IdeaEntity } from '../ideas/entities/idea.entity'
+import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { IdeaMilestoneEntity } from '../ideas/idea-milestones/entities/idea-milestone.entity'
 import { getLogger } from '../logging.module'
 import { MilestoneDetailsService } from '../milestone-details/milestone-details.service'
 import { Nil } from '../utils/types'
 import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-with-domain-details.dto'
-import { Proposal } from './entities/proposal.entity'
-import { ProposalMilestone } from './proposal-milestones/entities/proposal-milestone.entity'
+import { ProposalEntity } from './entities/proposal.entity'
+import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
 
 const logger = getLogger()
 
-export interface IdeaWithMilestones extends Idea {
-    milestones: IdeaMilestone[]
+export interface IdeaWithMilestones extends IdeaEntity {
+    milestones: IdeaMilestoneEntity[]
 }
 
 @Injectable()
 export class ProposalsService {
     constructor(
         private readonly blockchainService: BlockchainService,
-        @InjectRepository(Proposal)
-        private readonly proposalsRepository: Repository<Proposal>,
+        @InjectRepository(ProposalEntity)
+        private readonly proposalsRepository: Repository<ProposalEntity>,
         private readonly ideaProposalDetailsService: IdeaProposalDetailsService,
         private readonly milestoneDetailsService: MilestoneDetailsService,
-        @InjectRepository(ProposalMilestone)
-        private readonly proposalMilestonesRepository: Repository<ProposalMilestone>,
+        @InjectRepository(ProposalMilestoneEntity)
+        private readonly proposalMilestonesRepository: Repository<ProposalMilestoneEntity>,
     ) {}
 
     async find(networkId: string): Promise<BlockchainProposalWithDomainDetails[]> {
@@ -91,7 +91,7 @@ export class ProposalsService {
 
     mergeProposal(
         blockchainProposal: BlockchainProposal,
-        proposalEntity: Nil<Proposal>,
+        proposalEntity: Nil<ProposalEntity>,
     ): BlockchainProposalWithDomainDetails {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const idea = proposalEntity?.ideaNetwork?.idea ?? milestone?.idea
@@ -108,8 +108,8 @@ export class ProposalsService {
     async createFromIdea(
         ideaWithMilestones: IdeaWithMilestones,
         blockchainProposalId: number,
-        network: IdeaNetwork,
-    ): Promise<Proposal> {
+        network: IdeaNetworkEntity,
+    ): Promise<ProposalEntity> {
         const detailsDto = toCreateIdeaProposalDetailsDto(ideaWithMilestones.details)
         const details = await this.ideaProposalDetailsService.create(detailsDto)
 
@@ -127,11 +127,11 @@ export class ProposalsService {
     }
 
     async createFromMilestone(
-        idea: Idea,
+        idea: IdeaEntity,
         blockchainProposalId: number,
-        network: IdeaMilestoneNetwork,
-        ideaMilestone: IdeaMilestone,
-    ): Promise<Proposal> {
+        network: IdeaMilestoneNetworkEntity,
+        ideaMilestone: IdeaMilestoneEntity,
+    ): Promise<ProposalEntity> {
         const detailsDto = toCreateIdeaProposalDetailsDto(idea.details, ideaMilestone.details)
         const details = await this.ideaProposalDetailsService.create(detailsDto)
 
@@ -145,8 +145,11 @@ export class ProposalsService {
         return this.proposalsRepository.save(proposal)
     }
 
-    private async assignMilestones(ideaMilestones: IdeaMilestone[], proposal: Proposal): Promise<ProposalMilestone[]> {
-        const proposalMilestones: ProposalMilestone[] = []
+    private async assignMilestones(
+        ideaMilestones: IdeaMilestoneEntity[],
+        proposal: ProposalEntity,
+    ): Promise<ProposalMilestoneEntity[]> {
+        const proposalMilestones: ProposalMilestoneEntity[] = []
         ideaMilestones.sort((a, b) => a.createdAt.valueOf() - b.createdAt.valueOf())
         for (const ideaMilestone of ideaMilestones) {
             const details = await this.milestoneDetailsService.create({
