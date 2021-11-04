@@ -6,6 +6,7 @@ import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { createSessionData } from '../ideas/spec.helpers'
 import { User } from '../users/user.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
+import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
@@ -31,7 +32,7 @@ describe('BountiesService', () => {
 
     const minimalValidCreateDto: CreateBountyDto = {
         blockchainDescription: 'bc-description',
-        value: '10',
+        value: '10' as NetworkPlanckValue,
         title: 'title',
         networkId: NETWORKS.POLKADOT,
         proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
@@ -45,7 +46,7 @@ describe('BountiesService', () => {
             const result = await service().create(
                 {
                     blockchainDescription: 'bc-description',
-                    value: '10',
+                    value: '10' as NetworkPlanckValue,
                     title: 'title',
                     field: 'optimisation',
                     description: 'description',
@@ -73,7 +74,7 @@ describe('BountiesService', () => {
             const result = await service().create(
                 {
                     blockchainDescription: 'bc-description',
-                    value: '10',
+                    value: '10' as NetworkPlanckValue,
                     title: 'title',
                     field: 'optimisation',
                     description: 'description',

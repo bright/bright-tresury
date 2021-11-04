@@ -6,6 +6,7 @@ import {
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
+import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { mockListenForExtrinsic } from './spec.helpers'
@@ -34,7 +35,7 @@ describe(`/api/v1/bounties/`, () => {
 
         const minimalValidDto: CreateBountyDto = {
             blockchainDescription: 'bc-description',
-            value: '10',
+            value: '10' as NetworkPlanckValue,
             title: 'title',
             networkId: NETWORKS.POLKADOT,
             proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
