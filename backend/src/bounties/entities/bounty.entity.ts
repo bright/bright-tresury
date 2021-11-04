@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
 import { User } from '../../users/user.entity'
-import { Nil } from '../../utils/types'
+import { NetworkPlanckValue, Nil } from '../../utils/types'
 
 @Entity('bounties')
 export class BountyEntity extends BaseEntity {
@@ -9,7 +9,7 @@ export class BountyEntity extends BaseEntity {
     blockchainDescription!: string
 
     @Column('decimal', { precision: 54, scale: 0, nullable: false, default: 0 })
-    value!: string
+    value!: NetworkPlanckValue
 
     @Column({ nullable: false, type: 'text' })
     title!: string

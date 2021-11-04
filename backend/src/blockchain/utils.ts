@@ -58,15 +58,16 @@ export function extractFromBlockchainEvent(
     )
     const event = extrinsicEvents.find(({ section, method }) => section === sectionName && method === methodName)
 
-    if (event) {
-        getLogger().info('Event found')
-        const value = event?.data.find(({ name }) => name === argName)?.value
-        getLogger().info(`Found value: ${value}`)
-        return value
+    if (!event) {
+        getLogger().info(`Event not found for section: ${sectionName}, method: ${methodName}`)
+        return
     }
 
-    getLogger().info('Event not found')
-    return
+    const value = event.data.find(({ name }) => name === argName)?.value
+    getLogger().info(
+        `Event found for section: ${sectionName}, method: ${methodName}. The value for arg name: ${argName} is: ${value}`,
+    )
+    return value
 }
 
 export function extractNumberFromBlockchainEvent(
@@ -76,15 +77,15 @@ export function extractNumberFromBlockchainEvent(
     argName: string,
 ): number | undefined {
     const value = extractFromBlockchainEvent(extrinsicEvents, sectionName, methodName, argName)
-
-    if (value === undefined) {
-        return
-    }
-
     const numberValue = Number(value)
 
     if (!isNaN(numberValue)) {
         return numberValue
     }
-    getLogger().info('Found value is NaN')
+
+    if (value !== undefined && isNaN(numberValue)) {
+        getLogger().info(
+            `Found value ${value} is not a number for section: ${sectionName}, method: ${methodName}, arg name: ${argName}`,
+        )
+    }
 }

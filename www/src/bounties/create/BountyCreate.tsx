@@ -9,15 +9,13 @@ const BountyCreate = () => {
     const { t } = useTranslation()
 
     return (
-        <>
-            <Container title={t('bounty.create.title')}>
-                <BountyForm>
-                    <FormFooterButtonsContainer>
-                        <FormFooterButton type={'submit'}>{t('bounty.create.submit')}</FormFooterButton>
-                    </FormFooterButtonsContainer>
-                </BountyForm>
-            </Container>
-        </>
+        <Container title={t('bounty.create.title')}>
+            <BountyForm>
+                <FormFooterButtonsContainer>
+                    <FormFooterButton type={'submit'}>{t('bounty.create.submit')}</FormFooterButton>
+                </FormFooterButtonsContainer>
+            </BountyForm>
+        </Container>
     )
 }
 

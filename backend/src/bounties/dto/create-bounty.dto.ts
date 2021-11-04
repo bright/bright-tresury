@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumberString, IsOptional, Validate } from 'class-validator'
 import { IsValidNetworkConstraint } from '../../utils/network.validator'
-import { Nil } from '../../utils/types'
+import { NetworkPlanckValue, Nil } from '../../utils/types'
 
 export class CreateBountyDto {
     @ApiProperty({ description: 'Description of the bounty proposal stored on-chain' })
@@ -11,7 +11,7 @@ export class CreateBountyDto {
     @ApiProperty({ description: 'Value of the bounty proposal in plancks' })
     @IsNotEmpty()
     @IsNumberString({ no_symbols: true })
-    value!: string
+    value!: NetworkPlanckValue
 
     @ApiProperty({ description: 'Title of the bounty proposal' })
     @IsNotEmpty()

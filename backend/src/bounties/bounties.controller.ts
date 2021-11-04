@@ -21,7 +21,7 @@ export class BountiesController {
         description: 'Not valid data',
     })
     @UseGuards(SessionGuard)
-    async createProposal(@Body() dto: CreateBountyDto, @ReqSession() sessionData: SessionData): Promise<Extrinsic> {
+    async createBounty(@Body() dto: CreateBountyDto, @ReqSession() sessionData: SessionData): Promise<Extrinsic> {
         return this.bountiesService.listenForProposeBountyExtrinsic(dto, sessionData.user)
     }
 }
