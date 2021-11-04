@@ -1,3 +1,4 @@
+import { networkValueValidationSchema } from '../../components/form/input/networkValue/NetworkValueInput'
 import { EditIdeaDto, EditIdeaNetworkDto, IdeaDto, IdeaNetworkDto } from '../ideas.dto'
 import { toNetworkDisplayValue, toNetworkPlanckValue } from '../../util/quota.util'
 import { useNetworks } from '../../networks/useNetworks'
@@ -8,7 +9,6 @@ import { titleValidationSchema } from '../../idea-proposal-details/form/TitleInp
 import { linksValidationSchema } from '../../idea-proposal-details/form/LinksInput'
 import { isValidAddressOrEmpty } from '../../util/addressValidator'
 import { useTranslation } from 'react-i18next'
-import { networkValueValidationSchema } from './networks/NetworkInput'
 
 export interface IdeaFormValues {
     beneficiary: string
@@ -24,8 +24,8 @@ export interface IdeaFormValues {
 export type IdeaNetworkFromValues = Omit<EditIdeaNetworkDto, 'value'> & { value: NetworkDisplayValue }
 
 export default () => {
-    const {t} = useTranslation()
-    const {network, findNetwork} = useNetworks()
+    const { t } = useTranslation()
+    const { network, findNetwork } = useNetworks()
 
     const validationSchema = Yup.object({
         title: titleValidationSchema(t),
@@ -51,10 +51,12 @@ export default () => {
     })
 
     const toIdeaNetworkFromValues = (ideaNetwork: IdeaNetworkDto): IdeaNetworkFromValues => ({
-        ...ideaNetwork, value: toNetworkDisplayValue(ideaNetwork.value, findNetwork(ideaNetwork.name)!.decimals)
+        ...ideaNetwork,
+        value: toNetworkDisplayValue(ideaNetwork.value, findNetwork(ideaNetwork.name)!.decimals),
     })
     const toEditIdeaNetworkDto = (formIdeaNetwork: IdeaNetworkFromValues): EditIdeaNetworkDto => ({
-        ...formIdeaNetwork, value: toNetworkPlanckValue(formIdeaNetwork.value, findNetwork(formIdeaNetwork.name)!.decimals)!
+        ...formIdeaNetwork,
+        value: toNetworkPlanckValue(formIdeaNetwork.value, findNetwork(formIdeaNetwork.name)!.decimals)!,
     })
     const toFormValues = (idea: Nil<IdeaDto>): IdeaFormValues => {
         if (!idea) {
@@ -90,12 +92,12 @@ export default () => {
             field: values.field,
             portfolio: values.portfolio,
             links: noEmptyLinks(values.links),
-        }
+        },
     })
     return {
         validationSchema,
         extendedValidationSchema,
         toFormValues,
-        toEditIdeaDto
+        toEditIdeaDto,
     }
 }

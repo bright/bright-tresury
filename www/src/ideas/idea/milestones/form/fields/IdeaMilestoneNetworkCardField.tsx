@@ -1,3 +1,6 @@
+import React from 'react'
+import IdeaNetworkValueInput from '../../../../form/networks/IdeaNetworkValueInput'
+import IdeaNetworkValueTextField from '../../../../form/networks/IdeaNetworkValueTextField'
 import { IdeaMilestoneDto } from '../../idea.milestones.dto'
 import { IdeaDto } from '../../../../ideas.dto'
 import { useIdeaMilestone } from '../../useIdeaMilestone'
@@ -5,7 +8,6 @@ import { useNetworks } from '../../../../../networks/useNetworks'
 import NetworkCard from '../../../../../components/network/NetworkCard'
 import IdeaMilestoneNetworkStatusIndicator from '../../status/IdeaMilestoneNetworkStatusIndicator'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import NetworkInput from '../../../../form/networks/NetworkInput'
 import { IdeaMilestoneNetworkFormValues } from '../useIdeaMilestoneForm'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -52,13 +54,20 @@ const IdeaMilestoneNetworkCardField = ({
                 sublabel={network.name ?? ''}
                 className={classes.statusIndicator}
             />
-            <NetworkInput
-                inputName={inputName}
-                className={classes.networkInput}
-                value={ideaMilestoneNetwork.value}
-                networkId={ideaMilestoneNetwork.name}
-                readonly={!canEditIdeaMilestoneNetwork(ideaMilestoneNetwork.status)}
-            />
+            {canEditIdeaMilestoneNetwork(ideaMilestoneNetwork.status) ? (
+                <IdeaNetworkValueInput
+                    inputName={inputName}
+                    className={classes.networkInput}
+                    value={ideaMilestoneNetwork.value}
+                    networkId={ideaMilestoneNetwork.name}
+                />
+            ) : (
+                <IdeaNetworkValueTextField
+                    className={classes.networkInput}
+                    value={ideaMilestoneNetwork.value}
+                    networkId={ideaMilestoneNetwork.name}
+                />
+            )}
         </NetworkCard>
     )
 }

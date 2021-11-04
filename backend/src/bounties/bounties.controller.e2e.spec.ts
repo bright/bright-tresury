@@ -6,7 +6,7 @@ import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supe
 import { createUserSessionHandlerWithVerifiedEmail } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainsConnections } from '../blockchain/blockchain.module'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { BountiesBlockchainService } from '../blockchain/bounties-blockchain.service'
+import { BountiesBlockchainService } from '../blockchain/bounties/bounties-blockchain.service'
 import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { BountyEntity } from './entities/bounty.entity'

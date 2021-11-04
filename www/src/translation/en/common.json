@@ -34,6 +34,13 @@
                 "checked": "Checked",
                 "notChecked": "Not checked"
             }
+        },
+        "networkValueInput": {
+            "valueCannotBeLessThanZero": "The value cannot be less than zero",
+            "notValidNumber": "Is not a valid number",
+            "tooManyDecimals": "Too many decimals",
+            "emptyFieldError": "This field cannot be empty",
+            "moreThanZero": "Should be more than 0"
         }
     },
     "networks": {
@@ -530,6 +537,7 @@
                 "field": "Field of bounty",
                 "value": "Value",
                 "deposit": "Deposit",
+                "depositTooltip": "The deposit amount that will be bonded (partly depends on the on-chain description length)",
                 "blockchainDescription": "Description (stored on-chain)",
                 "description": "Description",
                 "fieldOptions": {

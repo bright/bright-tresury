@@ -3,7 +3,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import StyledSmallInput from '../../components/form/input/StyledSmallInput'
 import TitleInput from '../../idea-proposal-details/form/TitleInput'
-import NetworkInput from './networks/NetworkInput'
+import IdeaNetworkValueInput from './networks/IdeaNetworkValueInput'
 import { IdeaFormValues } from './useIdeaForm'
 
 const useStyles = makeStyles(() =>
@@ -32,7 +32,7 @@ const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
                 placeholder={t('idea.details.beneficiary')}
                 label={t('idea.details.beneficiary')}
             />
-            <NetworkInput
+            <IdeaNetworkValueInput
                 className={classes.inputField}
                 inputName={'currentNetwork.value'}
                 networkId={values.currentNetwork.name}

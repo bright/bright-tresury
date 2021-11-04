@@ -7,9 +7,8 @@ import FormSelect from '../../../components/select/FormSelect'
 import { Network } from '../../../networks/networks.dto'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
-import { EditIdeaNetworkDto } from '../../ideas.dto'
-import NetworkInput from './NetworkInput'
 import { IdeaNetworkFromValues } from '../useIdeaForm'
+import IdeaNetworkValueInput from './IdeaNetworkValueInput'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -90,7 +89,7 @@ const AdditionalNetworkCard = ({
                             options={availableNetworks.map((n) => n.id)}
                         />
                     </div>
-                    <NetworkInput
+                    <IdeaNetworkValueInput
                         className={classes.inputField}
                         inputName={`additionalNetworks[${index}].value`}
                         networkId={ideaNetwork.name}

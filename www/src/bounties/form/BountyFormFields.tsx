@@ -3,10 +3,16 @@ import { useTranslation } from 'react-i18next'
 import StyledInput from '../../components/form/input/StyledInput'
 import StyledSmallInput from '../../components/form/input/StyledSmallInput'
 import StyledSmallFormSelect from '../../components/select/StyledSmallFormSelect'
-import NetworkInput from '../../ideas/form/networks/NetworkInput'
-import { NetworkDisplayValue } from '../../util/types'
+import { BountyFormValues } from './BountyForm'
+import BountyNetworkValueInput from './fields/BountyNetworkValueInput'
 
-const BountyFormFields = () => {
+interface OwnProps {
+    formValues: BountyFormValues
+}
+
+export type BountyFormFieldsProps = OwnProps
+
+const BountyFormFields = ({ formValues }: BountyFormFieldsProps) => {
     const { t } = useTranslation()
 
     return (
@@ -27,8 +33,7 @@ const BountyFormFields = () => {
                     t('bounty.form.fields.fieldOptions.other'),
                 ]}
             />
-            {/*TODO TREAS-244 create a separate component to show the bond deposit value*/}
-            <NetworkInput inputName={'value'} value={'0' as NetworkDisplayValue} />
+            <BountyNetworkValueInput blockchainDescription={formValues.blockchainDescription} />
             <StyledSmallInput
                 name="blockchainDescription"
                 placeholder={t('bounty.form.fields.blockchainDescription')}

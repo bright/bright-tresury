@@ -27,6 +27,7 @@ describe('GET blockchains configurations', () => {
                 color,
                 isDefault,
                 isLiveNetwork,
+                bounties,
             } = blockchainConfiguration
             expect(typeof id).toBe('string')
             expect(typeof name).toBe('string')
@@ -47,6 +48,9 @@ describe('GET blockchains configurations', () => {
             expect(typeof color).toBe('string')
             expect(typeof isDefault).toBe('boolean')
             expect(typeof isLiveNetwork).toBe('boolean')
+            expect(typeof bounties).toBe('object')
+            expect(typeof bounties.depositBase).toBe('string')
+            expect(typeof bounties.dataDepositPerByte).toBe('string')
         }
     })
 })

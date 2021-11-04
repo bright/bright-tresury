@@ -1,5 +1,6 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
-import { transformBalance, getApi } from '../utils'
+import { BountiesBlockchainService } from '../bounties/bounties-blockchain.service'
+import { getApi } from '../utils'
 import { BlockchainsConnections } from '../blockchain.module'
 import { BN_MILLION, BN_HUNDRED } from '@polkadot/util'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration.config'
@@ -13,6 +14,7 @@ export class BlockchainConfigurationService {
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
         @Inject(BlockchainConfigToken) private readonly blockchainConfig: BlockchainConfig[],
+        private readonly bountiesBlockchainService: BountiesBlockchainService,
     ) {
         this.defaultBlockchainConfigMap = blockchainConfig.reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {})
     }
@@ -33,11 +35,14 @@ export class BlockchainConfigurationService {
         const proposalBond = api.consts.treasury.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber()
         const percentage = proposalBond ?? defaultBlockchainConfig.bond.percentage
 
+        const bounties = this.bountiesBlockchainService.getBountiesConfig(networkId)
+
         return {
             ...defaultBlockchainConfig,
             decimals,
             currency,
             bond: { minValue, percentage },
+            bounties,
         }
     }
 

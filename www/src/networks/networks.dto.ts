@@ -1,7 +1,6 @@
 import { DefinitionRpcExt } from '@polkadot/types/types'
 import { NetworkPlanckValue } from '../util/types'
 
-
 export interface Network {
     id: string
     name: string
@@ -20,4 +19,8 @@ export interface Network {
     color: string
     isDefault: boolean
     isLiveNetwork: boolean
+    bounties: {
+        depositBase: NetworkPlanckValue
+        dataDepositPerByte: NetworkPlanckValue
+    }
 }

@@ -1,5 +1,6 @@
 import * as Yup from 'yup'
 import { useTranslation } from 'react-i18next'
+import { networkValueValidationSchema } from '../../../../components/form/input/networkValue/NetworkValueInput'
 import { formatAddress } from '../../../../components/identicon/utils'
 import useMilestoneDetailsForm from '../../../../milestone-details/useMilestoneDetailsForm'
 import { useNetworks } from '../../../../networks/useNetworks'
@@ -8,7 +9,6 @@ import { IdeaDto } from '../../../ideas.dto'
 import { isValidAddressOrEmpty } from '../../../../util/addressValidator'
 import { NetworkDisplayValue, Nil } from '../../../../util/types'
 import { toNetworkDisplayValue, toNetworkPlanckValue } from '../../../../util/quota.util'
-import { networkValueValidationSchema } from '../../../form/networks/NetworkInput'
 
 export interface IdeaMilestoneFormValues {
     subject: string
@@ -20,7 +20,7 @@ export interface IdeaMilestoneFormValues {
     additionalNetworks: IdeaMilestoneNetworkFormValues[]
 }
 
-export type IdeaMilestoneNetworkFormValues = Omit<IdeaMilestoneNetworkDto, 'value'> & {value: NetworkDisplayValue}
+export type IdeaMilestoneNetworkFormValues = Omit<IdeaMilestoneNetworkDto, 'value'> & { value: NetworkDisplayValue }
 
 interface OwnProps {
     idea: IdeaDto
@@ -64,19 +64,32 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
         }),
     })
 
-    const toIdeaMilestoneNetworkFormValues = (ideaMilestoneNetworkDto: IdeaMilestoneNetworkDto): IdeaMilestoneNetworkFormValues => ({
+    const toIdeaMilestoneNetworkFormValues = (
+        ideaMilestoneNetworkDto: IdeaMilestoneNetworkDto,
+    ): IdeaMilestoneNetworkFormValues => ({
         ...ideaMilestoneNetworkDto,
-        value: toNetworkDisplayValue(ideaMilestoneNetworkDto.value, findNetwork(ideaMilestoneNetworkDto.name)!.decimals)
+        value: toNetworkDisplayValue(
+            ideaMilestoneNetworkDto.value,
+            findNetwork(ideaMilestoneNetworkDto.name)!.decimals,
+        ),
     })
-    const toIdeaMilestoneNetworkDto = (ideaMilestoneNetworkFormValues: IdeaMilestoneNetworkFormValues): IdeaMilestoneNetworkDto => ({
+    const toIdeaMilestoneNetworkDto = (
+        ideaMilestoneNetworkFormValues: IdeaMilestoneNetworkFormValues,
+    ): IdeaMilestoneNetworkDto => ({
         ...ideaMilestoneNetworkFormValues,
-        value: toNetworkPlanckValue(ideaMilestoneNetworkFormValues.value, findNetwork(ideaMilestoneNetworkFormValues.name)!.decimals)!
+        value: toNetworkPlanckValue(
+            ideaMilestoneNetworkFormValues.value,
+            findNetwork(ideaMilestoneNetworkFormValues.name)!.decimals,
+        )!,
     })
     const toIdeaMilestoneFormValues = (): IdeaMilestoneFormValues => {
-        if(!ideaMilestone) {
+        if (!ideaMilestone) {
             return {
                 beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
-                currentNetwork: { name: idea.currentNetwork.name, value: '0' as NetworkDisplayValue } as IdeaMilestoneNetworkFormValues,
+                currentNetwork: {
+                    name: idea.currentNetwork.name,
+                    value: '0' as NetworkDisplayValue,
+                } as IdeaMilestoneNetworkFormValues,
                 additionalNetworks: idea.additionalNetworks.map((n) => {
                     return { name: n.name, value: '0' as NetworkDisplayValue } as IdeaMilestoneNetworkFormValues
                 }),

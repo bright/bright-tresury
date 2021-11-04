@@ -8,7 +8,7 @@ import { Label } from '../../../components/text/Label'
 import { useNetworks } from '../../../networks/useNetworks'
 import { breakpoints } from '../../../theme/theme'
 import IdeaNetworkStatusIndicator from '../../form/networks/IdeaNetworkStatusIndicator'
-import NetworkInput from '../../form/networks/NetworkInput'
+import IdeaNetworkValueTextField from '../../form/networks/IdeaNetworkValueTextField'
 import { IdeaNetworkDto, IdeaNetworkStatus } from '../../ideas.dto'
 import { toNetworkDisplayValue } from '../../../util/quota.util'
 
@@ -63,7 +63,10 @@ const AdditionalNetworkDetailsCard = ({ ideaNetwork, isOwner }: AdditionalNetwor
                     <Label label={t('idea.details.net')} />
                     <TextField value={selectedNetwork.name} disabled={true} />
                 </FormGroup>
-                <NetworkInput networkId={ideaNetwork.name} value={toNetworkDisplayValue(ideaNetwork.value, selectedNetwork.decimals)} readonly={true} />
+                <IdeaNetworkValueTextField
+                    networkId={ideaNetwork.name}
+                    value={toNetworkDisplayValue(ideaNetwork.value, selectedNetwork.decimals)}
+                />
             </div>
         </NetworkCard>
     )

@@ -9,10 +9,11 @@ import FormFooter from '../../../components/form/footer/FormFooter'
 import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
+import { networkValueValidationSchema } from '../../../components/form/input/networkValue/NetworkValueInput'
 import AddressInfo from '../../../components/identicon/AddressInfo'
 import { Label } from '../../../components/text/Label'
 import { breakpoints } from '../../../theme/theme'
-import NetworkInput, { networkValueValidationSchema } from '../../form/networks/NetworkInput'
+import IdeaNetworkValueInput from '../../form/networks/IdeaNetworkValueInput'
 import { IDEA_QUERY_KEY_BASE, usePatchIdeaNetwork } from '../../ideas.api'
 import { IdeaDto } from '../../ideas.dto'
 import { toNetworkDisplayValue, toNetworkPlanckValue } from '../../../util/quota.util'
@@ -60,12 +61,12 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
 
     const queryClient = useQueryClient()
     const { mutateAsync: patchMutateAsync, isError } = usePatchIdeaNetwork()
-    const {network, findNetwork} = useNetworks()
+    const { network, findNetwork } = useNetworks()
 
     const onsubmit = async (values: TurnPendingIdeaIntoProposalFormValues) => {
         const ideaNetwork = {
             ...idea.currentNetwork,
-            value: toNetworkPlanckValue(values.value, network.decimals)!
+            value: toNetworkPlanckValue(values.value, network.decimals)!,
         }
         await patchMutateAsync(
             { ideaId: idea.id, ideaNetwork },
@@ -82,7 +83,7 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
     }
 
     const validationSchema = Yup.object({
-        value: networkValueValidationSchema({t, findNetwork, required: true})
+        value: networkValueValidationSchema({ t, findNetwork, required: true }),
     })
 
     return (
@@ -90,7 +91,7 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
             enableReinitialize={true}
             initialValues={{
                 name: idea.currentNetwork.name,
-                value: toNetworkDisplayValue(idea.currentNetwork.value, network.decimals)
+                value: toNetworkDisplayValue(idea.currentNetwork.value, network.decimals),
             }}
             validationSchema={validationSchema}
             onSubmit={onsubmit}
@@ -101,7 +102,7 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
                     <text className={classes.text}>{idea.details.title}</text>
                     <Label className={classes.spacing} label={t('idea.details.beneficiary')} />
                     <AddressInfo address={idea.beneficiary} ellipsed={false} />
-                    <NetworkInput
+                    <IdeaNetworkValueInput
                         className={classes.spacing}
                         inputName={'value'}
                         networkId={values.name}

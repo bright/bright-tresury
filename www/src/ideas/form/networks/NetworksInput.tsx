@@ -1,8 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import AdditionalNetworks from './AdditionalNetworks'
-import NetworkInput from './NetworkInput'
 import { IdeaNetworkFromValues } from '../useIdeaForm'
+import IdeaNetworkValueInput from './IdeaNetworkValueInput'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -24,7 +24,7 @@ const NetworksInput = ({ currentNetwork, additionalNetworks }: NetworksInputProp
 
     return (
         <>
-            <NetworkInput
+            <IdeaNetworkValueInput
                 className={classes.inputField}
                 inputName={'currentNetwork.value'}
                 networkId={currentNetwork.name}

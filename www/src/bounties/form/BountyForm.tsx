@@ -67,7 +67,7 @@ const BountyForm = ({ children }: IdeaFormProps) => {
             {({ values, handleSubmit }) => (
                 <>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <BountyFormFields />
+                        <BountyFormFields formValues={values} />
                         <FormFooter>{children}</FormFooter>
                     </form>
                     <SubmitBountyModal

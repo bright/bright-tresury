@@ -26,6 +26,10 @@ export interface BlockchainConfig {
     color: string
     isDefault: boolean
     isLiveNetwork: boolean
+    bounties: {
+        depositBase: NetworkPlanckValue
+        dataDepositPerByte: NetworkPlanckValue
+    }
 }
 
 export const blockchainConfigSchema: Schema<BlockchainConfig> = {
@@ -102,5 +106,12 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         doc: 'Is this a live network or a development one',
         default: false,
         format: booleanFormat,
+    },
+    bounties: {
+        doc: 'Bounties module configuration used by this blockchain',
+        default: {
+            depositBase: '10000000000' as NetworkPlanckValue,
+            dataDepositPerByte: '100000000' as NetworkPlanckValue,
+        },
     },
 }
