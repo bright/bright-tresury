@@ -17,6 +17,9 @@ export class IdeaNetworkEntity extends BaseEntity {
     @ManyToOne(() => IdeaEntity, (idea) => idea.networks)
     idea?: IdeaEntity
 
+    @Column({ nullable: false, type: 'text' })
+    ideaId!: string
+
     @OneToOne(() => ExtrinsicEntity)
     @JoinColumn()
     extrinsic: ExtrinsicEntity | null

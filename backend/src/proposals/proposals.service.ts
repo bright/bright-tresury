@@ -46,13 +46,7 @@ export class ProposalsService {
 
             const proposals = await this.proposalsRepository.find({
                 where: { blockchainProposalId: In(indexes), networkId },
-                relations: [
-                    'ideaNetwork',
-                    'ideaNetwork.idea',
-                    'ideaMilestoneNetwork',
-                    'ideaMilestoneNetwork.ideaMilestone',
-                    'ideaMilestoneNetwork.ideaMilestone.idea',
-                ],
+                relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
             })
 
             return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
@@ -77,13 +71,7 @@ export class ProposalsService {
 
         const proposal = await this.proposalsRepository.findOne({
             where: { blockchainProposalId, networkId },
-            relations: [
-                'ideaNetwork',
-                'ideaNetwork.idea',
-                'ideaMilestoneNetwork',
-                'ideaMilestoneNetwork.ideaMilestone',
-                'ideaMilestoneNetwork.ideaMilestone.idea',
-            ],
+            relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
         })
 
         return this.mergeProposal(blockchainProposal, proposal)
@@ -94,13 +82,13 @@ export class ProposalsService {
         proposalEntity: Nil<ProposalEntity>,
     ): BlockchainProposalWithDomainDetails {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
-        const idea = proposalEntity?.ideaNetwork?.idea ?? milestone?.idea
+        const ideaId = proposalEntity?.ideaNetwork?.ideaId ?? milestone?.ideaId
         return new BlockchainProposalWithDomainDetails({
             blockchain: blockchainProposal,
             entity: proposalEntity,
-            isCreatedFromIdea: !!idea && !milestone,
+            isCreatedFromIdea: !!ideaId && !milestone,
             isCreatedFromIdeaMilestone: !!milestone,
-            ideaId: idea?.id,
+            ideaId,
             ideaMilestoneId: milestone?.id,
         })
     }

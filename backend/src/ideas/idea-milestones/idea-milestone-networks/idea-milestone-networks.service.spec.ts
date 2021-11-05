@@ -167,8 +167,8 @@ describe('IdeaMilestoneNetworksService', () => {
                 sessionData,
             )
             expect(returnedNetworks).toHaveLength(2)
-            expect(returnedNetworks[0].value).toBe('12')
-            expect(returnedNetworks[1].value).toBe('14')
+            expect(returnedNetworks.find((n) => n.id === ideaMilestoneNetworks[0].id)!.value).toBe('12')
+            expect(returnedNetworks.find((n) => n.id === ideaMilestoneNetworks[1].id)!.value).toBe('14')
         })
 
         it('should ignore not existing network ids', async () => {
