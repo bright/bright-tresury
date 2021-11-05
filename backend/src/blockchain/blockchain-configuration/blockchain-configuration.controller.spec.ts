@@ -51,6 +51,8 @@ describe('GET blockchains configurations', () => {
             expect(typeof bounties).toBe('object')
             expect(typeof bounties.depositBase).toBe('string')
             expect(typeof bounties.dataDepositPerByte).toBe('string')
+            expect(typeof bounties.bountyValueMinimum).toBe('string')
+            expect(typeof bounties.maximumReasonLength).toBe('number')
         }
     })
 })

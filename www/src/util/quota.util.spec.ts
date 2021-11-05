@@ -1,13 +1,14 @@
 import {
     hasPositiveDigit,
     isDecimal,
+    isMin,
     isNotNegative,
-    isValidNumber, toFixedDecimals,
+    isValidNumber,
+    toFixedDecimals,
     toNetworkDisplayValue,
     toNetworkPlanckValue,
 } from './quota.util'
 import { NetworkDisplayValue, NetworkPlanckValue } from './types'
-
 
 describe('quota util', () => {
     describe('isValidNumber', () => {
@@ -42,7 +43,7 @@ describe('quota util', () => {
         test('should return true if contains at least one positive digit', () => {
             expect(hasPositiveDigit('a1d')).toBeTruthy()
         })
-        test('should return false if does not contains at least one positive digit', () => {
+        test('should return false if does not contain at least one positive digit', () => {
             expect(hasPositiveDigit('a0d')).toBeFalsy()
         })
     })
@@ -62,6 +63,20 @@ describe('quota util', () => {
             expect(isDecimal('123456')).toBeFalsy()
         })
     })
+    describe('isMin', () => {
+        test('should return true if value is larger than minimum', () => {
+            expect(isMin('123.456', '1' as NetworkPlanckValue, 5)).toBe(true)
+        })
+        test('should return true if value is equal to minimum', () => {
+            expect(isMin('123.00000', '12300000' as NetworkPlanckValue, 5)).toBe(true)
+        })
+        test('should return false if value is smaller than minimum', () => {
+            expect(isMin('0.000004', '100000000000' as NetworkPlanckValue, 12)).toBe(false)
+        })
+        test('should return false if value is not a valid number', () => {
+            expect(isMin('123.456a', '1' as NetworkPlanckValue, 5)).toBe(false)
+        })
+    })
     describe('toNetworkPlanckValue', () => {
         test('should convert to correct amount in plancks', () => {
             expect(toNetworkPlanckValue('1' as NetworkDisplayValue, 1)).toBe('10')
@@ -74,11 +89,11 @@ describe('quota util', () => {
             expect(toNetworkPlanckValue('0.01' as NetworkDisplayValue, 2)).toBe('1')
             expect(toNetworkPlanckValue('0.010' as NetworkDisplayValue, 3)).toBe('10')
         })
-        test('should remove decimals if NetworkDisplayValue to precise', () =>{
+        test('should remove decimals if NetworkDisplayValue to precise', () => {
             expect(toNetworkPlanckValue('1.11' as NetworkDisplayValue, 1)).toBe('11')
             expect(toNetworkPlanckValue('0.01' as NetworkDisplayValue, 1)).toBe('0')
         })
-        test('should return 0 for 0 NetworkDisplayValue', () =>{
+        test('should return 0 for 0 NetworkDisplayValue', () => {
             expect(toNetworkPlanckValue('0' as NetworkDisplayValue, 1)).toBe('0')
         })
         test('should return undefined for negative number', () => {

@@ -1,5 +1,5 @@
-import {NetworkDisplayValue, NetworkPlanckValue} from "./types";
-
+import BN from 'bn.js'
+import { NetworkDisplayValue, NetworkPlanckValue } from './types'
 
 export const isValidNumber = (value: string) => {
     const VALID_NUMBER_REGEXP = /^\d+(\.\d+)?$/gm
@@ -22,6 +22,15 @@ export const isCorrectDecimalPrecision = (value: string, decimals: number) => {
     const LEFT_AND_DOT_REGEXP = /^\d+\./gm
     return value.replace(LEFT_AND_DOT_REGEXP, '').length <= decimals
 }
+export const isMin = (value: string, min: NetworkPlanckValue, decimals: number): boolean => {
+    const planckValue = toNetworkPlanckValue(value as NetworkDisplayValue, decimals)
+    if (planckValue === undefined || min === undefined) {
+        return false
+    }
+    const valueBN = new BN(planckValue)
+    const minBN = new BN(min)
+    return valueBN.cmp(minBN) >= 0
+}
 
 const padWithZeros = (count: number) => '0'.repeat(count)
 const removePrecedingZeros = (text: string): string => text.replace(/^0+/gm, '')
@@ -30,7 +39,7 @@ export const toNetworkPlanckValue = (value: NetworkDisplayValue, decimals: numbe
     // check if value is a valid number ie. contains only numbers and optional single dot somewhere in the middle
     if (!isValidNumber(value)) return
     // no need to pad with zeros if value is 0
-    if(value === '0') return '0' as NetworkPlanckValue
+    if (value === '0') return '0' as NetworkPlanckValue
     // if value does not contain any decimals (numbers after the dot), lets just concatenate value with enough amount of zeros
     if (!isDecimal(value)) return `${value}${'0'.repeat(decimals)}` as NetworkPlanckValue
 
@@ -49,7 +58,8 @@ export const toNetworkPlanckValue = (value: NetworkDisplayValue, decimals: numbe
 
 export const toNetworkDisplayValue = (value: NetworkPlanckValue, decimals: number): NetworkDisplayValue => {
     if (value === '0') return '0' as NetworkDisplayValue
-    if (value.length <= decimals) return `0.${removeTrailingZeros(padWithZeros(decimals - value.length) + value)}` as NetworkDisplayValue
+    if (value.length <= decimals)
+        return `0.${removeTrailingZeros(padWithZeros(decimals - value.length) + value)}` as NetworkDisplayValue
 
     const prefix = value.substring(0, value.length - decimals)
     const suffix = value.substring(value.length - decimals)

@@ -22,12 +22,17 @@ export class BountiesBlockchainService {
     }
 
     getBountiesConfig(networkId: string): BountiesBlockchainConfigurationDto {
-        const api = getApi(this.blockchainsConnections, networkId)
-        const depositBase = api.consts.bounties.bountyDepositBase.toString() as NetworkPlanckValue
-        const dataDepositPerByte = api.consts.bounties.dataDepositPerByte.toString() as NetworkPlanckValue
+        const bountiesConsts = getApi(this.blockchainsConnections, networkId).consts.bounties
+
+        const depositBase = bountiesConsts.bountyDepositBase.toString() as NetworkPlanckValue
+        const dataDepositPerByte = bountiesConsts.dataDepositPerByte.toString() as NetworkPlanckValue
+        const bountyValueMinimum = bountiesConsts.bountyValueMinimum.toString() as NetworkPlanckValue
+        const maximumReasonLength = Number(bountiesConsts.maximumReasonLength)
         return {
             depositBase,
             dataDepositPerByte,
+            bountyValueMinimum,
+            maximumReasonLength,
         }
     }
 }

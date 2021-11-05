@@ -29,6 +29,8 @@ export interface BlockchainConfig {
     bounties: {
         depositBase: NetworkPlanckValue
         dataDepositPerByte: NetworkPlanckValue
+        maximumReasonLength: number
+        bountyValueMinimum: NetworkPlanckValue
     }
 }
 
@@ -112,6 +114,8 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         default: {
             depositBase: '10000000000' as NetworkPlanckValue,
             dataDepositPerByte: '100000000' as NetworkPlanckValue,
+            maximumReasonLength: 16384,
+            bountyValueMinimum: '100000000000' as NetworkPlanckValue,
         },
     },
 }

@@ -25,7 +25,7 @@ const useStyles = makeStyles(() =>
  * Wraps yupTestFunction with a null/undefined check => returns true if value is undefined or null
  * @param testFunction
  */
-function optional(yupTestFunction: (value: string, context: TestContext) => boolean) {
+export function optional(yupTestFunction: (value: string, context: TestContext) => boolean) {
     return function (value: string | undefined, context: TestContext) {
         if (value === undefined || value === null) return true
         return yupTestFunction(value, context)
@@ -35,17 +35,25 @@ function optional(yupTestFunction: (value: string, context: TestContext) => bool
 interface NetworkValueYupValidation {
     t: (key: string) => string
     findNetwork: (networkId: string) => Nil<Network>
+    decimals?: number
     required?: Nil<boolean>
 }
 
-export const networkValueValidationSchema = ({ t, findNetwork, required = false }: NetworkValueYupValidation) => {
+export const networkValueValidationSchema = ({
+    t,
+    findNetwork,
+    decimals,
+    required = false,
+}: NetworkValueYupValidation) => {
     let validationSchema = Yup.string()
         .test('is-not-negative', t('form.networkValueInput.valueCannotBeLessThanZero'), optional(isNotNegative))
         .test('is-valid-number', t('form.networkValueInput.notValidNumber'), optional(isValidNumber))
         .test(
             'correct-decimal-precision',
             t('form.networkValueInput.tooManyDecimals'),
-            optional((value, context) => isCorrectDecimalPrecision(value, findNetwork(context.parent.name)!.decimals)),
+            optional((value, context) =>
+                isCorrectDecimalPrecision(value, decimals ?? findNetwork(context.parent.name)!.decimals),
+            ),
         )
     if (required)
         validationSchema = validationSchema

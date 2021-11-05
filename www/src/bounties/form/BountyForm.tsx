@@ -4,9 +4,10 @@ import React, { PropsWithChildren } from 'react'
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import FormFooter from '../../components/form/footer/FormFooter'
+import { networkValueValidationSchema, optional } from '../../components/form/input/networkValue/NetworkValueInput'
 import { useModal } from '../../components/modal/useModal'
 import { useNetworks } from '../../networks/useNetworks'
-import { toNetworkDisplayValue } from '../../util/quota.util'
+import { isMin, toNetworkDisplayValue } from '../../util/quota.util'
 import { NetworkDisplayValue, NetworkPlanckValue } from '../../util/types'
 import SubmitBountyModal from '../create/SubmitBountyModal'
 import BountyFormFields from './BountyFormFields'
@@ -37,12 +38,18 @@ const BountyForm = ({ children }: IdeaFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const submitBountyModal = useModal()
-    const { network } = useNetworks()
+    const { network, findNetwork } = useNetworks()
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('bounty.form.emptyFieldError')),
         blockchainDescription: Yup.string().required(t('bounty.form.emptyFieldError')),
-        value: Yup.number().required(t('bounty.form.emptyFieldError')).moreThan(0, t('bounty.form.nonZeroFieldError')),
+        value: networkValueValidationSchema({ t, findNetwork, required: true, decimals: network.decimals }).test(
+            'is-min',
+            t('bounty.form.minValueError', {
+                value: toNetworkDisplayValue(network.bounties.bountyValueMinimum, network.decimals),
+            }),
+            optional((value, context) => isMin(value, network.bounties.bountyValueMinimum, network.decimals)),
+        ),
     })
 
     const initialValues: BountyFormValues = {

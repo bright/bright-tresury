@@ -36,11 +36,11 @@
             }
         },
         "networkValueInput": {
-            "valueCannotBeLessThanZero": "The value cannot be less than zero",
+            "moreThanZero": "Should be more than 0",
             "notValidNumber": "Is not a valid number",
             "tooManyDecimals": "Too many decimals",
             "emptyFieldError": "This field cannot be empty",
-            "moreThanZero": "Should be more than 0"
+            "valueCannotBeLessThanZero": "The value cannot be less than zero"
         }
     },
     "networks": {
@@ -271,10 +271,6 @@
             "form": {
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
-                "valueCannotBeLessThanZero": "The value cannot be less than zero",
-                "moreThanZero": "Should be more than 0",
-                "notValidNumber": "Is not a valid number",
-                "tooManyDecimals": "Too many decimals",
                 "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
                 "showAll": "Show all information",
                 "showLess": "Show less information",
@@ -531,7 +527,7 @@
         },
         "form": {
             "emptyFieldError": "This field cannot be empty",
-            "nonZeroFieldError": "The value must be greater than zero",
+            "minValueError": "The value must be at least {{value}}",
             "fields": {
                 "title": "Title",
                 "field": "Field of bounty",

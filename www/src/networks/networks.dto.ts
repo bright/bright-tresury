@@ -22,5 +22,7 @@ export interface Network {
     bounties: {
         depositBase: NetworkPlanckValue
         dataDepositPerByte: NetworkPlanckValue
+        bountyValueMinimum: NetworkPlanckValue
+        maximumReasonLength: number
     }
 }

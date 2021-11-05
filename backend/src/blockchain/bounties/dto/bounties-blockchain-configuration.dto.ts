@@ -11,4 +11,14 @@ export class BountiesBlockchainConfigurationDto {
         description: 'The amount in plancks held on deposit per byte within the bounty description',
     })
     dataDepositPerByte!: NetworkPlanckValue
+
+    @ApiProperty({
+        description: 'Maximum acceptable reason length',
+    })
+    maximumReasonLength!: number
+
+    @ApiProperty({
+        description: 'Minimum value in plancks for a bounty',
+    })
+    bountyValueMinimum!: NetworkPlanckValue
 }
