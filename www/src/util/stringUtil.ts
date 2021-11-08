@@ -1,3 +1,5 @@
+import BN from 'bn.js'
+
 export function ellipseTextInTheMiddle(value: string, visibleCharacters: number = 12): string {
     if (value.length > visibleCharacters && visibleCharacters > 0) {
         const prefix = value.substring(0, visibleCharacters / 2)
@@ -9,4 +11,8 @@ export function ellipseTextInTheMiddle(value: string, visibleCharacters: number 
 }
 export function singularPluralOrNull(count: number, singular: string, plural: string): string | null {
     return count ? (Math.abs(count) > 1 ? `${count}${plural}` : `${count}${singular}`) : null
+}
+
+export function getBytesLength(text: string): number {
+    return new Blob([text]).size
 }

@@ -11,10 +11,7 @@ const logger = getLogger()
 
 @Injectable()
 export class BountiesBlockchainService {
-    constructor(
-        @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
-        @Inject(BlockchainConfigToken) private readonly blockchainsConfiguration: BlockchainConfig[],
-    ) {}
+    constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections) {}
 
     static extractBountyIndex(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
         logger.info('Looking for a bounty proposal index')

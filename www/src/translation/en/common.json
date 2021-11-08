@@ -528,13 +528,14 @@
         "form": {
             "emptyFieldError": "This field cannot be empty",
             "minValueError": "The value must be at least {{value}}",
+            "maxBlockchainDescriptionLength": "The on-chain description is too long",
             "fields": {
                 "title": "Title",
                 "field": "Field of bounty",
                 "value": "Value",
                 "deposit": "Deposit",
                 "depositTooltip": "The deposit amount that will be bonded (partly depends on the on-chain description length)",
-                "blockchainDescription": "Description (stored on-chain)",
+                "blockchainDescription": "Description - this description is stored on chain (the bond will increase for each byte of this description)",
                 "description": "Description",
                 "fieldOptions": {
                     "optimisation": "Optimisation",

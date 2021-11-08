@@ -8,6 +8,7 @@ import { networkValueValidationSchema, optional } from '../../components/form/in
 import { useModal } from '../../components/modal/useModal'
 import { useNetworks } from '../../networks/useNetworks'
 import { isMin, toNetworkDisplayValue } from '../../util/quota.util'
+import { getBytesLength } from '../../util/stringUtil'
 import { NetworkDisplayValue, NetworkPlanckValue } from '../../util/types'
 import SubmitBountyModal from '../create/SubmitBountyModal'
 import BountyFormFields from './BountyFormFields'
@@ -42,13 +43,19 @@ const BountyForm = ({ children }: IdeaFormProps) => {
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('bounty.form.emptyFieldError')),
-        blockchainDescription: Yup.string().required(t('bounty.form.emptyFieldError')),
+        blockchainDescription: Yup.string()
+            .required(t('bounty.form.emptyFieldError'))
+            .test(
+                'max-bytes-length',
+                t('bounty.form.maxBlockchainDescriptionLength'),
+                optional((value) => getBytesLength(value) <= network.bounties.maximumReasonLength),
+            ),
         value: networkValueValidationSchema({ t, findNetwork, required: true, decimals: network.decimals }).test(
             'is-min',
             t('bounty.form.minValueError', {
                 value: toNetworkDisplayValue(network.bounties.bountyValueMinimum, network.decimals),
             }),
-            optional((value, context) => isMin(value, network.bounties.bountyValueMinimum, network.decimals)),
+            optional((value) => isMin(value, network.bounties.bountyValueMinimum, network.decimals)),
         ),
     })
 

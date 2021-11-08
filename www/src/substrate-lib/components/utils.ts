@@ -2,7 +2,6 @@ import { ApiPromise } from '@polkadot/api'
 import { web3FromSource } from '@polkadot/extension-dapp'
 import { KeyringPair } from '@polkadot/keyring/types'
 import { Keyring } from '@polkadot/ui-keyring'
-import { BN_TEN } from '@polkadot/util'
 import BN from 'bn.js'
 import { InputParam } from './SubmittingTransaction'
 
@@ -39,11 +38,7 @@ export const getFromAcct = async (
 }
 
 export const transformParams = (inputParams: InputParam[]): any[] => {
-    const trimmedParams = inputParams.map((inputParam: InputParam) => {
-        return { ...inputParam, value: inputParam.value.trim() }
-    })
-
-    return trimmedParams.reduce((memo: any[], { type = 'string', value }) => {
+    return inputParams.reduce((memo: any[], { type = 'string', value }) => {
         if (value == null || value === '') {
             return memo
         }

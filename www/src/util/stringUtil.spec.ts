@@ -1,4 +1,4 @@
-import { ellipseTextInTheMiddle, singularPluralOrNull } from './stringUtil'
+import { ellipseTextInTheMiddle, getBytesLength, singularPluralOrNull } from './stringUtil'
 
 describe('stringUtil', () => {
     describe('transform params', () => {
@@ -45,6 +45,21 @@ describe('stringUtil', () => {
         it('-2 as plural', () => {
             const text = singularPluralOrNull(-2, SINGULAR, PLURAL)
             expect(text).toBe(`-2${PLURAL}`)
+        })
+    })
+
+    describe('getBytesLength', () => {
+        it('should return 1 for ascii chars', () => {
+            const length = getBytesLength('a')
+            expect(length).toBe(1)
+        })
+        it('should return 2 for chars with diacritics', () => {
+            const length = getBytesLength('ż')
+            expect(length).toBe(2)
+        })
+        it('should return 4 for emoji', () => {
+            const length = getBytesLength('😋')
+            expect(length).toBe(4)
         })
     })
 })
