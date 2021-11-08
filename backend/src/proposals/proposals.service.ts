@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
@@ -15,6 +15,9 @@ import { Nil } from '../utils/types'
 import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-with-domain-details.dto'
 import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
+import { PolkassemblyService } from '../polkassembly/polkassembly.service'
+import { PolkassemblyProposalDto } from '../polkassembly/polkassembly-proposal.dto'
+
 
 const logger = getLogger()
 
@@ -32,6 +35,8 @@ export class ProposalsService {
         private readonly milestoneDetailsService: MilestoneDetailsService,
         @InjectRepository(ProposalMilestoneEntity)
         private readonly proposalMilestonesRepository: Repository<ProposalMilestoneEntity>,
+        @Inject(PolkassemblyService)
+        private readonly polkassemblyService: PolkassemblyService,
     ) {}
 
     async find(networkId: string): Promise<BlockchainProposalWithDomainDetails[]> {
@@ -44,14 +49,18 @@ export class ProposalsService {
 
             const indexes = blockchainProposals.map(({ proposalIndex }: BlockchainProposal) => proposalIndex)
 
-            const proposals = await this.proposalsRepository.find({
-                where: { blockchainProposalId: In(indexes), networkId },
-                relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
-            })
+            const [postgresProposals, polkassemblyProposals] = await Promise.all([
+                this.proposalsRepository.find({
+                    where: { blockchainProposalId: In(indexes), networkId },
+                    relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
+                }),
+                this.polkassemblyService.getTreasuryProposals(indexes, networkId)
+            ])
 
             return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
-                const proposal = proposals.find((p) => p.blockchainProposalId === blockchainProposal.proposalIndex)
-                return this.mergeProposal(blockchainProposal, proposal)
+                const proposal = postgresProposals.find((p) => p.blockchainProposalId === blockchainProposal.proposalIndex)
+                const polkassemblyProposal = polkassemblyProposals.find((pp: any) => pp.proposalIndex === blockchainProposal.proposalIndex)
+                return this.mergeProposal(blockchainProposal, proposal, polkassemblyProposal)
             })
         } catch (err) {
             logger.error(err)
@@ -69,17 +78,21 @@ export class ProposalsService {
             throw new NotFoundException('Proposal with the given id in the given network not found')
         }
 
-        const proposal = await this.proposalsRepository.findOne({
-            where: { blockchainProposalId, networkId },
-            relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
-        })
+        const [postgresProposal, polkassemblyProposal] = await Promise.all([
+            this.proposalsRepository.findOne({
+                where: { blockchainProposalId, networkId },
+                relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
+            }),
+            this.polkassemblyService.getTreasuryProposal(blockchainProposalId, networkId)
+        ])
 
-        return this.mergeProposal(blockchainProposal, proposal)
+        return this.mergeProposal(blockchainProposal, postgresProposal, polkassemblyProposal)
     }
 
     mergeProposal(
         blockchainProposal: BlockchainProposal,
         proposalEntity: Nil<ProposalEntity>,
+        polkassemblyProposal?: Nil<PolkassemblyProposalDto>
     ): BlockchainProposalWithDomainDetails {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const ideaId = proposalEntity?.ideaNetwork?.ideaId ?? milestone?.ideaId
@@ -87,6 +100,7 @@ export class ProposalsService {
             blockchain: blockchainProposal,
             entity: proposalEntity,
             isCreatedFromIdea: !!ideaId && !milestone,
+            polkassembly: polkassemblyProposal,
             isCreatedFromIdeaMilestone: !!milestone,
             ideaId,
             ideaMilestoneId: milestone?.id,

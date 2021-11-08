@@ -16,6 +16,9 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Url pointing to the blockchain node' })
     url: string
 
+    @ApiProperty({ description: 'Url used to connect to polkassembly GraphQL server' })
+    polkassemblyUrl: string
+
     @ApiProperty({
         description:
             'Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.',
@@ -61,6 +64,7 @@ export class BlockchainConfigurationDto {
         id,
         name,
         url,
+        polkassemblyUrl,
         types,
         rpc,
         developmentKeyring,
@@ -76,6 +80,7 @@ export class BlockchainConfigurationDto {
         this.id = id
         this.name = name
         this.url = url
+        this.polkassemblyUrl = polkassemblyUrl
         this.types = types
         this.rpc = rpc
         this.developmentKeyring = developmentKeyring

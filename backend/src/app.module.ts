@@ -24,6 +24,7 @@ import { StatsModule } from './stats/stats.module'
 import { UserSettingsModule } from './users/user-settings/user-settings.module'
 import { UsersModule } from './users/users.module'
 import { BountiesModule } from './bounties/bounties.module'
+import { PolkassemblyModule } from './polkassembly/polkassembly.module'
 
 @Module({
     imports: [
@@ -38,6 +39,7 @@ import { BountiesModule } from './bounties/bounties.module'
         EmailsModule,
         CachingModule,
         StatsModule,
+        PolkassemblyModule,
         IdeaProposalDetailsModule,
         MilestoneDetailsModule,
         AppEventsModule,

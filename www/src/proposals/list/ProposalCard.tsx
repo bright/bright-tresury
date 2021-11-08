@@ -35,7 +35,7 @@ interface OwnProps {
 export type ProposalCardProps = OwnProps
 
 const ProposalCard = ({
-    proposal: { proposalIndex, status, details, value, beneficiary, proposer },
+    proposal: { proposalIndex, status, details, value, beneficiary, proposer, polkassembly },
 }: ProposalCardProps) => {
     const classes = useStyles()
     const {network} = useNetworks()
@@ -53,7 +53,7 @@ const ProposalCard = ({
             <Divider />
 
             <CardDetails>
-                <CardTitle title={details?.title} />
+                <CardTitle title={details?.title ?? polkassembly?.title} />
                 <NetworkValue value={toNetworkDisplayValue(value, network.decimals)} />
             </CardDetails>
 

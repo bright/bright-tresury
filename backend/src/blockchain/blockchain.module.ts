@@ -104,6 +104,6 @@ export class PolkadotApiModule implements OnModuleDestroy {
     imports: [PolkadotApiModule, ConfigModule],
     controllers: [BlockchainConfigurationController],
     providers: [BlockchainService, BlockchainConfigurationService],
-    exports: [BlockchainService],
+    exports: [BlockchainService, BlockchainConfigurationService],
 })
 export class BlockchainModule {}

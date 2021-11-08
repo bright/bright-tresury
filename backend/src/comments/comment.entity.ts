@@ -1,4 +1,3 @@
-import { string0To255 } from 'aws-sdk/clients/customerprofiles'
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { ForbiddenException } from '@nestjs/common'
 import { BaseEntity } from '../database/base.entity'

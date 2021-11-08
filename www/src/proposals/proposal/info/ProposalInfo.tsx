@@ -9,12 +9,15 @@ import { useProposal } from '../useProposals'
 import ProposalDetails from './details/ProposalDetails'
 import AddProposalDetails from './form/AddProposalDetails'
 import EditProposalDetails from './form/EditProposalDetails'
+import ReactMarkdown from 'react-markdown'
 
 const useStyles = makeStyles(() =>
     createStyles({
         spacer: {
             marginTop: '2em',
         },
+
+        markdownImg: {width: '100%'}
     }),
 )
 
@@ -24,7 +27,7 @@ interface OwnProps {
 
 export type ProposalInfoProps = OwnProps
 
-const ProposalInfo = ({ proposal: { proposer, beneficiary }, proposal }: ProposalInfoProps) => {
+const ProposalInfo = ({ proposal: { proposer, beneficiary, polkassembly }, proposal }: ProposalInfoProps) => {
     const successfullyLoadedItemClasses = useSuccessfullyLoadedItemStyles()
     const classes = useStyles()
 
@@ -41,7 +44,16 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary }, proposal }: Proposa
             return <EditProposalDetails proposal={proposal} />
         }
     }
-
+    const renderPolkassemblyContent = () => {
+        if(!polkassembly?.content)
+            return
+        // TODO: add hide/show
+        return (
+            <ReactMarkdown components={{ img: ({node, ...props}) => <img className={classes.markdownImg} {...props}/> }}>
+                {polkassembly.content}
+            </ReactMarkdown>
+        )
+    }
     return (
         <div className={successfullyLoadedItemClasses.content}>
             <Label label={t('proposal.content.info.proposer')} />
@@ -49,6 +61,7 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary }, proposal }: Proposa
             <Label className={classes.spacer} label={t('proposal.content.info.beneficiary')} />
             <AddressInfo address={beneficiary.address} ellipsed={false} />
             {renderDetails()}
+            {renderPolkassemblyContent()}
         </div>
     )
 }

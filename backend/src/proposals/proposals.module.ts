@@ -19,6 +19,7 @@ import { ProposalCommentsController } from './proposal-comments/proposal-comment
 import { ProposalCommentsService } from './proposal-comments/proposal-comments.service'
 import { CommentEntity } from '../comments/comment.entity'
 import { ProposalCommentEntity } from './proposal-comments/entities/proposal-comment.entity'
+import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
 
 @Module({
     imports: [
@@ -28,6 +29,7 @@ import { ProposalCommentEntity } from './proposal-comments/entities/proposal-com
         SessionModule,
         IdeaProposalDetailsModule,
         MilestoneDetailsModule,
+        PolkassemblyModule,
         TypeOrmModule.forFeature([ProposalEntity, ProposalMilestoneEntity, ProposalCommentEntity, CommentEntity]),
     ],
     controllers: [

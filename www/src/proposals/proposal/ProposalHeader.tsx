@@ -76,7 +76,7 @@ const ProposalHeader = ({ proposal, searchParamName }: ProposalHeaderProps) => {
                     <ProposalStatusIndicator status={proposal.status} />
                 </Status>
                 <Title>
-                    <OptionalTitle title={proposal.details?.title} />
+                    <OptionalTitle title={proposal.details?.title ?? proposal.polkassembly?.title} />
                 </Title>
             </BasicInfo>
 

@@ -3,10 +3,12 @@ import { BlockchainProposal } from '../../blockchain/dto/blockchain-proposal.dto
 import { UserEntity } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
 import { ProposalEntity } from '../entities/proposal.entity'
+import { PolkassemblyProposalDto } from '../../polkassembly/polkassembly-proposal.dto'
 
 interface IBlockchainProposalWithDomainDetails {
     blockchain: BlockchainProposal
     entity: Nil<ProposalEntity>
+    polkassembly?: Nil<PolkassemblyProposalDto>
     isCreatedFromIdea: boolean
     isCreatedFromIdeaMilestone: boolean
     ideaId: Nil<string>
@@ -16,6 +18,7 @@ interface IBlockchainProposalWithDomainDetails {
 export class BlockchainProposalWithDomainDetails implements IBlockchainProposalWithDomainDetails {
     blockchain: BlockchainProposal
     entity: Nil<ProposalEntity>
+    polkassembly: Nil<PolkassemblyProposalDto>
     isCreatedFromIdea: boolean
     isCreatedFromIdeaMilestone: boolean
     ideaId: Nil<string>
@@ -24,6 +27,7 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
     constructor({
         blockchain,
         entity,
+        polkassembly,
         isCreatedFromIdea,
         isCreatedFromIdeaMilestone,
         ideaId,
@@ -31,6 +35,7 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
     }: IBlockchainProposalWithDomainDetails) {
         this.blockchain = blockchain
         this.entity = entity
+        this.polkassembly = polkassembly
         this.isCreatedFromIdea = isCreatedFromIdea
         this.isCreatedFromIdeaMilestone = isCreatedFromIdeaMilestone
         this.ideaId = ideaId

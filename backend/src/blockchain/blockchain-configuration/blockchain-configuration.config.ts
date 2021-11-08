@@ -11,6 +11,7 @@ export interface BlockchainConfig {
     id: string
     name: string
     url: string
+    polkassemblyUrl: string
     types: any
     rpc: any
     developmentKeyring: boolean
@@ -41,6 +42,11 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     url: {
         doc: 'Url used to connect to Substrate node',
         default: 'ws://substrate:9944',
+        format: stringFormat,
+    },
+    polkassemblyUrl: {
+        doc: 'Url used to connect to polkassembly GraphQL server',
+        default: '',
         format: stringFormat,
     },
     types: {
