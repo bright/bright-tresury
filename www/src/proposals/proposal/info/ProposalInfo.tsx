@@ -1,5 +1,5 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
@@ -10,6 +10,7 @@ import ProposalDetails from './details/ProposalDetails'
 import AddProposalDetails from './form/AddProposalDetails'
 import EditProposalDetails from './form/EditProposalDetails'
 import ReactMarkdown from 'react-markdown'
+import Button from '../../../components/button/Button'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -17,7 +18,12 @@ const useStyles = makeStyles(() =>
             marginTop: '2em',
         },
 
-        markdownImg: {width: '100%'}
+        markdownImg: {
+            width: '100%'
+        },
+        polkassemblyButton: {
+            marginTop: '2em'
+        }
     }),
 )
 
@@ -33,7 +39,8 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary, polkassembly }, propo
 
     const { t } = useTranslation()
     const { canEdit } = useProposal(proposal)
-
+    const [showPolkassemblyDescription, setShowPolkassemblyDescription] = useState(!Boolean(proposal.details))
+    const toggleShowPolkassemblyDescription = () => setShowPolkassemblyDescription(!showPolkassemblyDescription)
     const renderDetails = () => {
         if (!canEdit) {
             return <ProposalDetails proposal={proposal} />
@@ -47,11 +54,29 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary, polkassembly }, propo
     const renderPolkassemblyContent = () => {
         if(!polkassembly?.content)
             return
-        // TODO: add hide/show
+
         return (
-            <ReactMarkdown components={{ img: ({node, ...props}) => <img className={classes.markdownImg} {...props}/> }}>
-                {polkassembly.content}
-            </ReactMarkdown>
+            <>
+                <Button
+                    onClick={toggleShowPolkassemblyDescription}
+                    variant="text"
+                    color="primary"
+                    className={classes.polkassemblyButton}
+                >
+                    {t(
+                        showPolkassemblyDescription
+                            ? 'proposal.details.polkassemblyDescription.hide'
+                            : 'proposal.details.polkassemblyDescription.show'
+                    )}
+                </Button>
+                {
+                    showPolkassemblyDescription
+                        ? <ReactMarkdown components={{ img: ({node, ...props}) => <img className={classes.markdownImg} {...props}/> }}>
+                            {polkassembly.content}
+                        </ReactMarkdown>
+                        : null
+                }
+            </>
         )
     }
     return (

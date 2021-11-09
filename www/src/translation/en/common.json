@@ -462,11 +462,15 @@
             "field": "Field of Proposal",
             "content": "Reason of Proposal",
             "noProposalDetails": {
-                "cannotEdit": "No proposal description have been added.",
+                "cannotEdit": "No proposal description have been added to Bright Treasury module.",
                 "askToAddDescription": "No proposal description have been added yet. You can ask the owner to add description in the Discussion tab.",
                 "canAdd": "Looks like you have created this proposal. Would you Like to add details? Detailed description will allow our community appreciate the proposal more and understand it better.",
                 "addDetails": "+ Add details",
                 "hideDetails": "Hide details"
+            },
+            "polkassemblyDescription": {
+                "show": "Show description fetched from Polkassembly",
+                "hide": "Hide description fetched from Polkassembly"
             },
             "form": {
                 "edit": "Save"
