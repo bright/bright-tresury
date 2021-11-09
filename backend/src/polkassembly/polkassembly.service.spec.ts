@@ -6,9 +6,12 @@ describe('proposal-polkassembly.service', () => {
     const app = beforeSetupFullApp()
     const getService = () => app().get(PolkassemblyService)
     it('findOne', async () => {
-        await getService().getTreasuryProposal(72, NETWORKS.POLKADOT)
+        const proposal = await getService().getProposal(72, NETWORKS.POLKADOT)
+        expect(proposal).toBeUndefined()
     })
     it('find', async () => {
-        await getService().getTreasuryProposals([72],NETWORKS.POLKADOT)
+        const proposals = await getService().getProposals([72],NETWORKS.POLKADOT)
+        expect(Array.isArray(proposals)).toBe(true)
+        expect(proposals).toHaveLength(0)
     })
 })

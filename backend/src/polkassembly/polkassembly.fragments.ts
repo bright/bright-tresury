@@ -24,7 +24,7 @@ query TreasuryProposalPosts ($ids:[Int!]) {
         }
 }
 `
-// TODO: add polkassembly.service implementations for those query fragments
+// TODO: add polkassembly.service implementations for those bounties query fragments
 export const BountyPost = gql`
     query BountyPostAndComments ($id: Int!) {
         posts(where: {onchain_link: {onchain_bounty_id: {_eq: $id}}}) {

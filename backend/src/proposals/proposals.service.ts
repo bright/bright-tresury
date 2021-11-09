@@ -54,7 +54,7 @@ export class ProposalsService {
                     where: { blockchainProposalId: In(indexes), networkId },
                     relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
                 }),
-                this.polkassemblyService.getTreasuryProposals(indexes, networkId)
+                this.polkassemblyService.getProposals(indexes, networkId)
             ])
 
             return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
@@ -83,7 +83,7 @@ export class ProposalsService {
                 where: { blockchainProposalId, networkId },
                 relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
             }),
-            this.polkassemblyService.getTreasuryProposal(blockchainProposalId, networkId)
+            this.polkassemblyService.getProposal(blockchainProposalId, networkId)
         ])
 
         return this.mergeProposal(blockchainProposal, postgresProposal, polkassemblyProposal)
