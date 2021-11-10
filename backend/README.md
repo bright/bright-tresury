@@ -94,27 +94,34 @@ pub const TermDuration: BlockNumber = 7 * DAYS;
 
 Change it to some smaller value like `3 * MINUTES`.
 
--   SpendPeriod
+-   Treasury and Bounties
 
 ```rust
-pub const SpendPeriod: BlockNumber = 24 * DAYS;
+    pub const SpendPeriod: BlockNumber = 7 * MINUTES;
+    pub const BountyDepositPayoutDelay: BlockNumber = 3 * MINUTES;
+	pub const BountyUpdatePeriod: BlockNumber = 30 * MINUTES;
 ```
-
-Change it to some smaller value like `7 * MINUTES`.
 
 ### Tips & tricks
 
--   Council memebrs
+1. Bootstrap your local blockchain
+
+There is a script to create some presets:
+
+-   create council: `node bootstrap.js 1`. After executing wait until the candidates become members
+-   create and reject a proposal to fill in the pot and create some bounties (closed and approved): `node bootstrap.js 2`. After this step wait until one of the bounties gets funded (the spend period ends).
+
+2. Council memebrs
 
 To be able to approve or reject the tresury proposals, you need to add some council members. Use [Polkadot JS Apps](https://polkadot.js.org/apps).
 
 Go to _Governance_ -> _Council_ tab. _Submit candidacy_ of three accounts. _Vote_ for all three accounts. Wait until the term period ends and the accounts become council members.
 
--   Fill the tresury pot
+3. Fill the tresury pot
 
 If you want to add some tokens to the tresury, one easy way would be to submit a proposal for some large amount of tokens and reject it. The bond gets slashed and the tokens go to the tresury.
 
--   Unexpeced epoch change
+4. Unexpeced epoch change
 
 If you run your local node you may encounter "Unexpected epoch change" error. The only way to fix it is to purge the chain:
 
