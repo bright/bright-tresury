@@ -13,8 +13,27 @@ import CardHeader from '../../components/card/components/CardHeader'
 import CardDetails from '../../components/card/components/CardDetails'
 import CardTitle from '../../components/card/components/CardTitle'
 import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
+import OwnerInfo from './OwnerInfo'
 import { IdeaContentType } from '../idea/Idea'
 import { toNetworkDisplayValue } from '../../util/quota.util'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { breakpoints } from '../../theme/theme'
+
+const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        usersInfoContainer: {
+            display: 'flex',
+            flexDirection: 'row',
+            width: '100%',
+            justifyContent: 'space-between',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                flexDirection: 'column',
+                justifyContent: 'center',
+                alignItems: 'flex-start',
+            },
+        },
+    }),
+)
 
 interface OwnProps {
     idea: IdeaDto
@@ -30,11 +49,13 @@ const IdeaCard = ({
         currentNetwork,
         additionalNetworks,
         beneficiary,
+        owner,
     },
     idea,
 }: IdeaCardProps) => {
     const { t } = useTranslation()
     const { network, networks: contextNetworks } = useNetworks()
+    const classes = useStyles()
 
     const networks = contextNetworks.filter((contextNetwork) =>
         [...additionalNetworks, currentNetwork].find((ideaNetwork) => ideaNetwork.name === contextNetwork.id),
@@ -59,7 +80,10 @@ const IdeaCard = ({
 
             <Divider />
 
-            <AddressInfoWithLabel label={t('idea.list.card.beneficiary')} address={beneficiary} />
+            <div className={classes.usersInfoContainer}>
+                <AddressInfoWithLabel label={t('idea.list.card.beneficiary')} address={beneficiary} />
+                <OwnerInfo owner={owner} />
+            </div>
         </NetworkCard>
     )
 }

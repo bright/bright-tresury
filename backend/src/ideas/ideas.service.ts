@@ -46,9 +46,12 @@ export class IdeasService {
                           }),
                       )
                       .leftJoinAndSelect('idea.networks', 'network')
+                      .leftJoinAndSelect('idea.owner', 'owner')
+                      .leftJoinAndSelect('owner.web3Addresses', 'web3Addresses')
                       .getMany()
                 : await this.ideaRepository.find({
                       where: [{ status: Not(IdeaStatus.Draft) }, { ownerId: sessionData?.user.id }],
+                      relations: ['owner', 'owner.web3Addresses'],
                   })
         } catch (error) {
             logger.error(error)
@@ -57,7 +60,9 @@ export class IdeasService {
     }
 
     async findOne(id: string, sessionData?: SessionData): Promise<IdeaEntity> {
-        const idea = await this.ideaRepository.findOne(id)
+        const idea = await this.ideaRepository.findOne(id, {
+            relations: ['owner', 'owner.web3Addresses'],
+        })
         if (!idea) {
             throw new NotFoundException('There is no idea with such id')
         }
@@ -100,7 +105,7 @@ export class IdeasService {
         )
 
         const createdIdea = await this.ideaRepository.save(idea)
-        return (await this.ideaRepository.findOne(createdIdea.id))!
+        return (await this.findOne(createdIdea.id))!
     }
 
     async delete(id: string, sessionData: SessionData) {
@@ -137,7 +142,7 @@ export class IdeasService {
             )
         }
 
-        return (await this.ideaRepository.findOne(id))!
+        return (await this.findOne(id))!
     }
 
     private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestoneEntity) {

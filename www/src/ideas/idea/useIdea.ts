@@ -16,7 +16,7 @@ export const useIdea = (idea: Nil<IdeaDto>): UseIdeaResult => {
     const { isUserSignedInAndVerified, user } = useAuth()
 
     const isOwner = useMemo(() => {
-        return isUserSignedInAndVerified && idea?.ownerId === user?.id
+        return isUserSignedInAndVerified && idea?.owner.userId === user?.id
     }, [isUserSignedInAndVerified, idea, user])
 
     const isIdeaEditable = useMemo(() => {

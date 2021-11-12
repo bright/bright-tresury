@@ -45,7 +45,10 @@ describe(`/api/v1/ideas`, () => {
 
         it('should return ideas for selected network', async (done) => {
             await createIdea(
-                { details: { title: 'Test title1' }, networks: [{ name: NETWORKS.KUSAMA, value: '15' as NetworkPlanckValue }] },
+                {
+                    details: { title: 'Test title1' },
+                    networks: [{ name: NETWORKS.KUSAMA, value: '15' as NetworkPlanckValue }],
+                },
                 sessionHandler.sessionData,
             )
             await createIdea(
@@ -59,7 +62,10 @@ describe(`/api/v1/ideas`, () => {
                 sessionHandler.sessionData,
             )
             await createIdea(
-                { details: { title: 'Test title3' }, networks: [{ name: NETWORKS.POLKADOT, value: '11' as NetworkPlanckValue }] },
+                {
+                    details: { title: 'Test title3' },
+                    networks: [{ name: NETWORKS.POLKADOT, value: '11' as NetworkPlanckValue }],
+                },
                 sessionHandler.sessionData,
             )
 
@@ -304,7 +310,10 @@ describe(`/api/v1/ideas`, () => {
             const result = await sessionHandler.authorizeRequest(
                 request(app())
                     .post(baseUrl)
-                    .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }] }),
+                    .send({
+                        details: { title: 'Test title' },
+                        networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
+                    }),
             )
 
             const ideasService = app.get().get(IdeasService)
@@ -395,7 +404,10 @@ describe(`/api/v1/ideas`, () => {
                 .authorizeRequest(
                     request(app())
                         .post(baseUrl)
-                        .send({ details: { title: 'Test title' }, networks: [{ name: NETWORKS.POLKADOT, value: '-1' }] }),
+                        .send({
+                            details: { title: 'Test title' },
+                            networks: [{ name: NETWORKS.POLKADOT, value: '-1' }],
+                        }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })

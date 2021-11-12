@@ -1,14 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { UserEntity } from '../../users/user.entity'
-import { Nil } from '../../utils/types'
+import { UserEntity } from '../users/user.entity'
+import { Nil } from './types'
 import { InternalServerErrorException } from '@nestjs/common'
 
-export class CommentAuthorDto {
+export class AuthorDto {
     @ApiProperty({ description: 'User Id' })
     userId: string
-    @ApiPropertyOptional({ description: 'Username of the user who create the comment' })
+    @ApiPropertyOptional({ description: 'Username' })
     username?: string
-    @ApiPropertyOptional({ description: 'Primary web3 address of the user who create the comment' })
+    @ApiPropertyOptional({ description: 'Primary web3 address of the user' })
     web3address?: string
     @ApiProperty({ description: 'True if user signed up with email&password, False if web3 account was used' })
     isEmailPasswordEnabled: boolean

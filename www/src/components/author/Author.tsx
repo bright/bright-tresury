@@ -1,8 +1,9 @@
 import React from 'react'
-import { formatAddress } from '../../../components/identicon/utils'
+import { formatAddress } from '../identicon/utils'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { useNetworks } from '../../../networks/useNetworks'
-import { CommentAuthorDto } from '../comment.dto'
+import { useNetworks } from '../../networks/useNetworks'
+import { ClassNameProps } from '../props/className.props'
+import { AuthorDto } from '../../util/author.dto'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         author: {
@@ -14,9 +15,9 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    author: Pick<CommentAuthorDto, 'isEmailPasswordEnabled' | 'username' | 'web3address'>
+    author: Pick<AuthorDto, 'isEmailPasswordEnabled' | 'username' | 'web3address'>
 }
-export type AuthorProps = OwnProps
+export type AuthorProps = OwnProps & ClassNameProps
 const Author = ({ author: { isEmailPasswordEnabled, username, web3address } }: AuthorProps) => {
     const classes = useStyles()
     const { network } = useNetworks()

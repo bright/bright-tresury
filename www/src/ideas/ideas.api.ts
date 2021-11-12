@@ -12,6 +12,7 @@ import {
     TurnIdeaIntoProposalDto,
 } from './ideas.dto'
 import { NetworkPlanckValue } from '../util/types'
+import { AuthorDto } from '../util/author.dto'
 
 export const IDEAS_API_PATH = '/ideas'
 
@@ -21,7 +22,7 @@ interface ApiIdeaDto {
     beneficiary: string
     networks: IdeaNetworkDto[]
     status: IdeaStatus
-    ownerId: string
+    owner: AuthorDto
     details: IdeaProposalDetailsDto
 }
 

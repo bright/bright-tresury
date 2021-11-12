@@ -1,5 +1,6 @@
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
-import { NetworkDisplayValue, NetworkPlanckValue, Nil } from '../util/types'
+import { NetworkPlanckValue, Nil } from '../util/types'
+import { AuthorDto } from '../util/author.dto'
 
 export interface IdeaDto {
     id: string
@@ -8,7 +9,7 @@ export interface IdeaDto {
     currentNetwork: IdeaNetworkDto
     additionalNetworks: IdeaNetworkDto[]
     status: IdeaStatus
-    ownerId: string
+    owner: AuthorDto
     details: IdeaProposalDetailsDto
 }
 

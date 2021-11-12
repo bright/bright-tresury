@@ -334,7 +334,8 @@
                 "pending": "Pending",
                 "milestoneSubmission": "Milestone Submission",
                 "statusClosed": "Closed",
-                "beneficiary": "(Beneficiary)"
+                "beneficiary": "(Beneficiary)",
+                "proposer": "(Proposer)"
             },
             "filters": {
                 "all": "All",

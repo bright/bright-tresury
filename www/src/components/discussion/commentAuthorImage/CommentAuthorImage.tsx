@@ -3,7 +3,7 @@ import Avatar from '../../avatar/Avatar'
 import clsx from 'clsx'
 import Identicon from '../../identicon/Identicon'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { CommentAuthorDto } from '../comment.dto'
+import { AuthorDto } from '../../../util/author.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    author: CommentAuthorDto
+    author: AuthorDto
 }
 export type CommentAuthorImageProps = OwnProps
 

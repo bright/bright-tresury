@@ -176,11 +176,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
                 {isUserSignedInAndVerified && user && withDiscussion ? (
-                    <PrivateIdeaContentTypeTabs
-                        userId={user.id}
-                        ideaId={idea.id}
-                        ideaTabsConfig={ideaTabsConfig}
-                    />
+                    <PrivateIdeaContentTypeTabs userId={user.id} ideaId={idea.id} ideaTabsConfig={ideaTabsConfig} />
                 ) : (
                     <IdeaContentTypeTabs ideaTabsConfig={ideaTabsConfig} />
                 )}

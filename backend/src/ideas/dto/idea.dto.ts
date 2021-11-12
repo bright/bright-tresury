@@ -4,12 +4,16 @@ import { IdeaEntity } from '../entities/idea.entity'
 import { IdeaMilestoneDto } from '../idea-milestones/dto/idea-milestone.dto'
 import { IdeaStatus } from '../entities/idea-status'
 import { IdeaNetworkDto } from './idea-network.dto'
+import { AuthorDto } from '../../utils/author.dto'
 
 export class IdeaDto {
     @ApiProperty({
         description: 'Id of the idea',
     })
     id!: string
+
+    @ApiProperty({ description: 'Information about comment author', type: AuthorDto })
+    owner: AuthorDto
 
     @ApiPropertyOptional({
         description: 'Blockchain address of the idea beneficiary',
@@ -40,23 +44,17 @@ export class IdeaDto {
     milestones!: IdeaMilestoneDto[]
 
     @ApiProperty({
-        description: 'Id of the user owning the idea',
-        type: [IdeaMilestoneDto],
-    })
-    ownerId: string
-
-    @ApiProperty({
         description: 'Details of the idea',
         type: [IdeaProposalDetailsDto],
     })
     details: IdeaProposalDetailsDto
 
-    constructor({ id, status, networks, ordinalNumber, ownerId, beneficiary, details }: IdeaEntity) {
+    constructor({ id, status, networks, ordinalNumber, owner, beneficiary, details }: IdeaEntity) {
         this.id = id
         this.status = status
         this.networks = networks ? networks.map((ideaNetwork) => new IdeaNetworkDto(ideaNetwork)) : []
         this.ordinalNumber = ordinalNumber
-        this.ownerId = ownerId
+        this.owner = new AuthorDto(owner)
         this.beneficiary = beneficiary
         this.details = new IdeaProposalDetailsDto(details)
     }
