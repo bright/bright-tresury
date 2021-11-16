@@ -1,6 +1,6 @@
 import { Time } from '@polkadot/util/types'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
-import { NetworkPlanckValue, Nil } from '../util/types'
+import { AccountInfo, NetworkPlanckValue, Nil } from '../util/types'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -11,7 +11,7 @@ export enum ProposalStatus {
 }
 export interface PolkassemblyProposalDto {
     proposalIndex: number
-    title: string,
+    title: string
     content: string
 }
 export interface ProposalDto {
@@ -45,16 +45,6 @@ export interface ProposalMotionEnd {
     endBlock: number
     remainingBlocks: number
     timeLeft: Time
-}
-
-export interface AccountInfo {
-    address: string
-    display?: string
-    email?: string
-    legal?: string
-    riot?: string
-    twitter?: string
-    web?: string
 }
 
 export enum ProposalMotionMethod {

@@ -13,53 +13,41 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             display: 'flex',
             flexDirection: 'row',
-        },
-        reward: {
-            flex: 1,
-        },
-        deposit: {
-            flex: 1,
-            marginLeft: '32px',
+            gap: '32px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginLeft: '18px',
+                gap: '18px',
             },
+            flexWrap: 'wrap',
+        },
+        item: {
+            flex: 1,
         },
     }),
 )
 
 interface OwnProps {
-    rewardValue: NetworkPlanckValue
-    bondValue?: Nil<NetworkPlanckValue>
+    values: {
+        label: string
+        value: NetworkPlanckValue
+    }[]
 }
-export type NetworkRewardDepositProps = OwnProps
-const NetworkRewardDeposit = ({ rewardValue, bondValue }: NetworkRewardDepositProps) => {
-    const classes = useStyles()
-    const { t } = useTranslation()
-    const { network } = useNetworks()
 
-    let resolvedBondValue = bondValue
-    if (!resolvedBondValue) {
-        resolvedBondValue = rewardValue
-            ? calculateBondValue(rewardValue, network.bond.percentage, network.bond.minValue)
-            : ('0' as NetworkPlanckValue)
-    }
+export type NetworkRewardDepositProps = OwnProps
+const NetworkRewardDeposit = ({ values }: NetworkRewardDepositProps) => {
+    const classes = useStyles()
+    const { network } = useNetworks()
 
     return (
         <div className={classes.root}>
-            <div className={classes.reward}>
-                <Amount
-                    amount={toNetworkDisplayValue(rewardValue, network.decimals)}
-                    currency={network.currency}
-                    label={t('idea.content.info.reward')}
-                />
-            </div>
-            <div className={classes.deposit}>
-                <Amount
-                    amount={toNetworkDisplayValue(resolvedBondValue, network.decimals)}
-                    currency={network.currency}
-                    label={t('idea.content.info.deposit')}
-                />
-            </div>
+            {values.map((value) => (
+                <div className={classes.item}>
+                    <Amount
+                        amount={toNetworkDisplayValue(value.value, network.decimals)}
+                        currency={network.currency}
+                        label={value.label}
+                    />
+                </div>
+            ))}
         </div>
     )
 }

@@ -1,5 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useAuth } from '../../auth/AuthContext'
 import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
 import { Nil } from '../../util/types'
@@ -35,14 +37,19 @@ export type AddressInfoProps = OwnProps
 
 const AddressInfo = ({ address, ellipsed = true }: AddressInfoProps) => {
     const classes = useStyles()
+    const { t } = useTranslation()
     const { network } = useNetworks()
+    const { user } = useAuth()
 
     const addressFragment = useMemo(() => formatAddress(address, network.ss58Format, ellipsed), [address])
+    const label = user?.web3Addresses?.find((web3Address) => web3Address.address === address)
+        ? t('common.you')
+        : addressFragment
 
     return (
         <div className={classes.root}>
             {address ? <Identicon address={address} /> : null}
-            <div className={classes.address}>{addressFragment}</div>
+            <div className={classes.address}>{label}</div>
         </div>
     )
 }

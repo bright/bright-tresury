@@ -18,7 +18,6 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 marginBottom: '24px',
                 marginRight: 0,
-                justifyContent: 'center',
             },
         },
     }),

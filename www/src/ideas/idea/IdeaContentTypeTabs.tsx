@@ -19,8 +19,9 @@ const IdeaContentTypeTabs = ({ ideaTabsConfig }: IdeaContentTypeTabsProps) => {
         label: t(ideaTabConfig.translationKey),
         path: ideaTabConfig.getUrl(url),
         svg: ideaTabConfig.svg,
-        filterName: '',
+        filterName: ideaTabConfig.ideaContentType,
         notificationsCount: ideaTabConfig.notificationsCount ?? 0,
+        isDefault: ideaTabConfig.isDefault,
     }))
 
     return (

@@ -40,7 +40,7 @@ const Proposal = () => {
         >
             {proposal ? (
                 <div className={classes.root}>
-                    <ProposalHeader searchParamName={ProposalContentType.Info} proposal={proposal} />
+                    <ProposalHeader proposal={proposal} />
                     <Switch>
                         <Route exact={true} path={path}>
                             <ProposalInfo proposal={proposal} />

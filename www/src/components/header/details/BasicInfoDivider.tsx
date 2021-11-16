@@ -7,9 +7,9 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             height: '20px',
-            marginLeft: '2em',
+            margin: '0 2em',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginLeft: '1em',
+                margin: '0 1em',
             },
         },
     }),

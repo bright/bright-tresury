@@ -1,10 +1,9 @@
 import AddressInfoWithLabel from '../../../components/identicon/AddressInfoWithLabel'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { Theme } from '@material-ui/core'
-import { AccountInfo } from '../../proposals.dto'
+import { AccountInfo } from '../../../util/types'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         vote: {
             display: 'flex',

@@ -1,5 +1,6 @@
+import { AccountInfo } from '../../util/types'
 import { ProposalFilter } from './ProposalStatusFilters'
-import { AccountInfo, ProposalDto, ProposalStatus } from '../proposals.dto'
+import { ProposalDto, ProposalStatus } from '../proposals.dto'
 import { AuthContextUser } from '../../auth/AuthContext'
 
 /** TODO: adjust when there will be more statuses supported on backend

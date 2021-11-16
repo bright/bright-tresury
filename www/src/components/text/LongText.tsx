@@ -1,6 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
-import Placeholder from '../../components/text/Placeholder'
+import Placeholder from './Placeholder'
 import { Nil } from '../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>

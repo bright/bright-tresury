@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next'
 import Link from '../../components/link/Link'
 import { Label } from '../../components/text/Label'
 import Placeholder from '../../components/text/Placeholder'
+import ShortText from '../../components/text/ShortText'
 import { breakpoints } from '../../theme/theme'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details.dto'
-import LongText from './LongText'
+import LongText from '../../components/text/LongText'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -53,9 +54,7 @@ const IdeaProposalDetails = ({ details }: IdeaProposalDetailsProps) => {
         <div>
             <div className={classes.spacing}>
                 <Label label={t('ideaProposalDetails.field')} />
-                <text className={classes.text}>
-                    {details.field || <Placeholder value={t('ideaProposalDetails.field')} />}
-                </text>
+                <ShortText text={details.field} placeholder={t('ideaProposalDetails.field')} />
             </div>
             <div className={classes.spacing}>
                 <Label label={t('ideaProposalDetails.content')} />

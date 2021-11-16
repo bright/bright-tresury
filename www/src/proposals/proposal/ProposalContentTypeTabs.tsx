@@ -69,8 +69,9 @@ export const ProposalContentTypeTabs = ({ discussionNotificationsCount = 0 }: Pr
             label: getTranslation(contentType),
             path: `${url}/${contentType}`,
             svg: getIcon(contentType),
-            filterName: '',
+            filterName: contentType,
             notificationsCount: getNotificationsCount(contentType),
+            isDefault: contentType === ProposalContentType.Info,
         }
     })
 

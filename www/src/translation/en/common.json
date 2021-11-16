@@ -10,7 +10,8 @@
             "second": "s",
             "seconds": "s"
         },
-        "na": "N/A"
+        "na": "N/A",
+        "you": "You"
     },
     "components": {
         "timeSelect": {
@@ -518,6 +519,15 @@
         }
     },
     "bounty": {
+        "indexPrefix": "Bounty #",
+        "status": {
+            "proposed": "Proposed",
+            "approved": "Approved",
+            "funded": "Funded",
+            "curatorProposed": "Curator proposed",
+            "active": "Active",
+            "pendingPayout": "Pending payout"
+        },
         "list": {
             "createBounty": "+ Create Bounty"
         },
@@ -549,6 +559,26 @@
                     "other": "Other"
                 }
             }
+        },
+        "content": {
+            "infoLabel": "Info",
+            "milestonesLabel": "Milestones",
+            "discussionLabel": "Discussion"
+        },
+        "info": {
+            "proposer": "Proposer",
+            "description": "Description",
+            "field": "Field of bounty",
+            "onChainDescription": "On-chain description",
+            "reward": "Reward",
+            "deposit": "Deposit",
+            "curatorsFee": "Curator's fee",
+            "curatorsDeposit": "Curator's deposit",
+            "curator": "Curator",
+            "proposedCurator": "Proposed curator",
+            "expiryDate": "Expires in",
+            "unlockDate": "Payout unlocks in",
+            "beneficiary": "Beneficiary"
         }
     },
     "ideaProposalDetails": {
@@ -664,6 +694,7 @@
         "errorOccurredWhileLoadingProposalMilestones": "An error occurred while loading proposal milestones.",
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
         "errorOccurredWhileLoadingProposalComments": "An error occurred while loading proposal comments.",
+        "errorOccurredWhileLoadingBounty": "An error occurred while loading bounty.",
         "somethingWentWrong": "Ooops... Something went wrong."
     },
     "loading": {
@@ -676,6 +707,7 @@
         "proposalMilestones": "We're loading the proposal milestones. It may take a moment. Bear with us.",
         "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us.",
         "stats": "We're loading the statistics. It may take a moment. Bear with us.",
-        "proposalComments": "We're loading the proposal comments. It may take a moment. Bear with us."
+        "proposalComments": "We're loading the proposal comments. It may take a moment. Bear with us.",
+        "bounty": "We're loading the bounty. It may take a moment. Bear with us."
     }
 }

@@ -10,11 +10,10 @@ import BasicInfo from '../../components/header/BasicInfo'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import HeaderContainer from '../../components/header/details/HeaderContainer'
 import NetworkValues from '../../components/header/details/NetworkValues'
-import Status from '../../components/header/details/Status'
 import Title from '../../components/header/details/Title'
 import FlexBreakLine from '../../components/header/FlexBreakLine'
 import HeaderTabs from '../../components/header/HeaderTabs'
-import NetworkRewardDeposit from '../../components/network/NetworkRewardDeposit'
+import ProposalNetworkRewardDeposit from '../../components/network/ProposalNetworkRewardDeposit'
 import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 import OptionalTitle from '../../components/text/OptionalTitle'
 import { ROUTE_TURN_IDEA } from '../../routes/routes'
@@ -156,15 +155,13 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
             <BasicInfo>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
                 <BasicInfoDivider />
-                <Status>
-                    <IdeaStatusIndicator idea={idea} />
-                </Status>
+                <IdeaStatusIndicator idea={idea} />
                 <Title>
                     <OptionalTitle title={idea.details.title} />
                 </Title>
             </BasicInfo>
             <NetworkValues className={classes.networkValues}>
-                <NetworkRewardDeposit rewardValue={networkValue} />
+                <ProposalNetworkRewardDeposit rewardValue={networkValue} />
             </NetworkValues>
             <div className={classes.tabletViewContainer}>
                 <CloseButton

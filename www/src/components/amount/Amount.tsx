@@ -38,6 +38,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 fontSize: '12px',
                 marginLeft: 0,
             },
+            whiteSpace: 'nowrap',
         },
     }),
 )
@@ -54,9 +55,7 @@ const Amount = ({ amount, currency, label, ...props }: AmountProps) => {
     const classes = useStyles()
     return (
         <div {...props} className={classes.root}>
-            <div className={classes.amount}>
-                {`${amount} ${currency}`}
-            </div>
+            <div className={classes.amount}>{`${amount} ${currency}`}</div>
             {label && <div className={classes.label}>{label}</div>}
         </div>
     )

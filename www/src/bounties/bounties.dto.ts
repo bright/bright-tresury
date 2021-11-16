@@ -1,16 +1,71 @@
-import { NetworkPlanckValue, Nil } from '../util/types'
+import { Time } from '@polkadot/util/types'
+import { AccountInfo, NetworkPlanckValue, Nil } from '../util/types'
 
-export interface BountyDto {
-    id: string
-    blockchainIndex: number
-    blockchainSubject: string
-    value: NetworkPlanckValue
-    deposit: string
-    subject: string
-    field: string
-    reason: string
-    proposer: string
+export enum BountyStatus {
+    Proposed = 'proposed',
+    Approved = 'approved',
+    Funded = 'funded',
+    CuratorProposed = 'curator-proposed',
+    Active = 'active',
+    PendingPayout = 'pending-payout',
 }
+
+interface ProposedBounty {
+    status: BountyStatus.Proposed
+}
+
+interface ApprovedBounty {
+    status: BountyStatus.Approved
+}
+
+interface FundedBounty {
+    status: BountyStatus.Funded
+}
+
+interface CuratorProposedBounty {
+    status: BountyStatus.CuratorProposed
+    curatorsFee: NetworkPlanckValue
+    curator: AccountInfo
+}
+
+interface ActiveBounty {
+    status: BountyStatus.Active
+    curatorsFee: NetworkPlanckValue
+    curator: AccountInfo
+    updateDue: Time
+}
+
+interface PendingPayoutBounty {
+    status: BountyStatus.PendingPayout
+    curatorsFee: NetworkPlanckValue
+    curator: AccountInfo
+    beneficiary: AccountInfo
+    unlockAt: Time
+}
+
+interface BaseBountyDto {
+    id?: Nil<string>
+    blockchainIndex: number
+    blockchainDescription: string
+    value: NetworkPlanckValue
+    deposit: NetworkPlanckValue
+    curatorDeposit: NetworkPlanckValue
+    proposer: AccountInfo
+
+    title?: Nil<string>
+    field?: Nil<string>
+    description?: Nil<string>
+}
+
+type ExtendedBountyDto =
+    | ProposedBounty
+    | ApprovedBounty
+    | FundedBounty
+    | CuratorProposedBounty
+    | ActiveBounty
+    | PendingPayoutBounty
+
+export type BountyDto = BaseBountyDto & ExtendedBountyDto
 
 export interface CreateBountyDto {
     blockchainDescription: string

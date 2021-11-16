@@ -6,7 +6,7 @@ import { breakpoints } from '../../theme/theme'
 import ProposalIndex from '../list/ProposalIndex'
 import ProposalStatusIndicator from '../status/ProposalStatusIndicator'
 import { ProposalDto } from '../proposals.dto'
-import NetworkRewardDeposit from '../../components/network/NetworkRewardDeposit'
+import ProposalNetworkRewardDeposit from '../../components/network/ProposalNetworkRewardDeposit'
 import { useHistory } from 'react-router-dom'
 import OptionalTitle from '../../components/text/OptionalTitle'
 import HeaderContainer from '../../components/header/details/HeaderContainer'
@@ -16,7 +16,6 @@ import FlexBreakLine from '../../components/header/FlexBreakLine'
 import HeaderTabs from '../../components/header/HeaderTabs'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import Title from '../../components/header/details/Title'
-import Status from '../../components/header/details/Status'
 import CloseButton from '../../components/closeIcon/CloseButton'
 import PrivateProposalContentTypeTabs from './PrivateProposalContentTypeTabs'
 
@@ -51,12 +50,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     proposal: ProposalDto
-    searchParamName: string
 }
 
 export type ProposalHeaderProps = OwnProps
 
-const ProposalHeader = ({ proposal, searchParamName }: ProposalHeaderProps) => {
+const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
     const classes = useStyles()
     const history = useHistory()
     const { user, isUserSignedInAndVerified } = useAuth()
@@ -72,16 +70,14 @@ const ProposalHeader = ({ proposal, searchParamName }: ProposalHeaderProps) => {
             <BasicInfo>
                 <ProposalIndex proposalIndex={proposal.proposalIndex} />
                 <BasicInfoDivider />
-                <Status>
-                    <ProposalStatusIndicator status={proposal.status} />
-                </Status>
+                <ProposalStatusIndicator status={proposal.status} />
                 <Title>
                     <OptionalTitle title={proposal.details?.title ?? proposal.polkassembly?.title} />
                 </Title>
             </BasicInfo>
 
             <NetworkValues className={classes.networkValues}>
-                <NetworkRewardDeposit rewardValue={proposal.value} bondValue={proposal.bond} />
+                <ProposalNetworkRewardDeposit rewardValue={proposal.value} bondValue={proposal.bond} />
             </NetworkValues>
 
             <FlexBreakLine className={classes.flexBreakLine} />

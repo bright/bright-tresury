@@ -34,6 +34,7 @@ const IDEA_CONTENT_TYPE_BUILDER: { [key in IdeaContentType]: IdeaTabConfig } = {
                 <IdeaDetails idea={idea} />
             </Route>
         ),
+        isDefault: true,
     },
     [IdeaContentType.Milestones]: {
         ideaContentType: IdeaContentType.Milestones,
@@ -65,6 +66,7 @@ export interface IdeaTabConfig {
     svg: string
     getUrl: (baseUrl: string) => string
     getRoute: (basePath: string, idea: IdeaDto) => JSX.Element
+    isDefault?: boolean
     notificationsCount?: Nil<number>
 }
 interface OwnProps {

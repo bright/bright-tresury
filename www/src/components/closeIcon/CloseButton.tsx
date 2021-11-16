@@ -10,8 +10,9 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             alignSelf: 'self-start',
-            margin: '0 0 2em 2em',
+            margin: '-12px 0 2em 2em',
             [theme.breakpoints.down(breakpoints.tablet)]: {
+                marginTop: '18px',
                 position: 'relative',
                 left: '20px',
                 bottom: '15px',

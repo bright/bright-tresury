@@ -13,6 +13,7 @@ import SignUp from './auth/sign-up/SignUp'
 import Web3SignUpSuccess from './auth/sign-up/web3/Web3SignUpSuccess'
 import EmailNotVerified from './auth/verifyEmail/EmailNotVerified'
 import VerifyEmail from './auth/verifyEmail/VerifyEmail'
+import BountyLoader from './bounties/bounty/BountyLoader'
 import IdeaCreate from './ideas/create/IdeaCreate'
 import Ideas from './ideas/Ideas'
 import Main from './main/Main'
@@ -25,6 +26,7 @@ import Route from './routes/Route'
 import {
     ROUTE_ACCOUNT,
     ROUTE_BOUNTIES,
+    ROUTE_BOUNTY,
     ROUTE_EMAIL_NOT_VERIFIED,
     ROUTE_IDEA,
     ROUTE_IDEAS,
@@ -90,6 +92,7 @@ function AppRoutes() {
                 <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal} />
                 <Route exact={true} path={ROUTE_BOUNTIES} component={Bounties} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_BOUNTY} component={BountyCreate} requireVerified={true} />
+                <Route exact={false} path={ROUTE_BOUNTY} component={BountyLoader} />
                 <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate} requireVerified={true} />
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />

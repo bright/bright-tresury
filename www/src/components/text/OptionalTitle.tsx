@@ -1,6 +1,7 @@
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
+import { Nil } from '../../util/types'
 import Placeholder from '../text/Placeholder'
 import { useTranslation } from 'react-i18next'
 
@@ -26,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    title?: string
+    title?: Nil<string>
 }
 
 export type OptionalTitleProps = OwnProps
