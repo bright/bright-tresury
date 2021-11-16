@@ -105,7 +105,7 @@ export class IdeasService {
         )
 
         const createdIdea = await this.ideaRepository.save(idea)
-        return (await this.findOne(createdIdea.id))!
+        return (await this.findOne(createdIdea.id, sessionData))!
     }
 
     async delete(id: string, sessionData: SessionData) {
@@ -142,7 +142,7 @@ export class IdeasService {
             )
         }
 
-        return (await this.findOne(id))!
+        return (await this.findOne(id, sessionData))!
     }
 
     private getMilestoneNetworks(dtoNetworks: CreateIdeaNetworkDto[], milestone: IdeaMilestoneEntity) {
