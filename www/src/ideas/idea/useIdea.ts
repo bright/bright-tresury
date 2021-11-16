@@ -16,7 +16,7 @@ export const useIdea = (idea: Nil<IdeaDto>): UseIdeaResult => {
     const { isUserSignedInAndVerified, user } = useAuth()
 
     const isOwner = useMemo(() => {
-        return isUserSignedInAndVerified && idea?.owner.userId === user?.id
+        return isUserSignedInAndVerified && idea?.owner?.userId === user?.id
     }, [isUserSignedInAndVerified, idea, user])
 
     const isIdeaEditable = useMemo(() => {
@@ -36,10 +36,10 @@ export const useIdea = (idea: Nil<IdeaDto>): UseIdeaResult => {
         [idea],
     )
 
-    const canEditIdeaMilestones = useMemo(
-        () => isOwner && isIdeaMilestonesEditable,
-        [isIdeaMilestonesEditable, isOwner],
-    )
+    const canEditIdeaMilestones = useMemo(() => isOwner && isIdeaMilestonesEditable, [
+        isIdeaMilestonesEditable,
+        isOwner,
+    ])
 
     const canTurnIntoProposal = useMemo(
         () => !!idea && isOwner && (idea.status === IdeaStatus.Active || idea.status === IdeaStatus.Pending),

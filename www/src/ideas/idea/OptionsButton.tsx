@@ -18,15 +18,10 @@ import { IdeaDto } from '../ideas.dto'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            order: 6,
-            marginRight: '20px',
-            display: 'flex',
-            justifyContent: 'center',
+            marginRight: '-12px',
+            alignSelf: 'flex-end',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                position: 'relative',
-                left: '20px',
-                bottom: '10px',
-                margin: '0',
+                marginBottom: '20px',
             },
         },
     }),

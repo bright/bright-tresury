@@ -1,7 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { breakpoints } from '../../../theme/theme'
 import React, { PropsWithChildren } from 'react'
-import { HeaderContainerProps } from '../details/HeaderContainer'
+import { breakpoints } from '../../../theme/theme'
 
 export const headerListHorizontalMargin = '32px'
 export const mobileHeaderListHorizontalMargin = '18px'
@@ -28,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 export type HeaderListContainerProps = PropsWithChildren<{}>
-const HeaderListContainer = ({ children }: HeaderContainerProps) => {
+const HeaderListContainer = ({ children }: HeaderListContainerProps) => {
     const classes = useStyles()
     return <div className={classes.root}>{children}</div>
 }

@@ -64,9 +64,7 @@ const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
     }
 
     return (
-        <HeaderContainer>
-            <CloseButton onClose={navigateToList} className={classes.closeIcon} />
-
+        <HeaderContainer onClose={navigateToList}>
             <BasicInfo>
                 <ProposalIndex proposalIndex={proposal.proposalIndex} />
                 <BasicInfoDivider />

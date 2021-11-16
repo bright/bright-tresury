@@ -33,6 +33,9 @@ export const theme = {
         warning: {
             main: '#FF0000',
         },
+        success: {
+            main: '#009840',
+        },
         status: {
             draft: '#B159A9',
             active: '#0E65F2',

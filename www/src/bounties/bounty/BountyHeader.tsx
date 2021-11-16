@@ -1,10 +1,10 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import clsx from 'clsx'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import CloseButton from '../../components/closeIcon/CloseButton'
+import { SuccessButton, WarningButton } from '../../components/button/Button'
 import BasicInfo from '../../components/header/BasicInfo'
+import ActionButtons from '../../components/header/details/ActionButtons'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import HeaderContainer from '../../components/header/details/HeaderContainer'
 import NetworkValues from '../../components/header/details/NetworkValues'
@@ -35,16 +35,16 @@ const useStyles = makeStyles((theme: Theme) =>
                 order: 3,
             },
         },
-        closeIcon: {
-            order: 3,
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                order: 2,
-            },
-        },
         contentTypeTabs: {
             order: 4,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 5,
+            },
+        },
+        actionButtons: {
+            order: 6,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                order: 2,
             },
         },
     }),
@@ -68,8 +68,7 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
     }
 
     return (
-        <HeaderContainer>
-            <CloseButton onClose={navigateToList} className={clsx(classes.closeIcon)} />
+        <HeaderContainer onClose={navigateToList}>
             <BasicInfo>
                 <OrdinalNumber prefix={t('bounty.indexPrefix')} ordinalNumber={bounty.blockchainIndex} />
                 <BasicInfoDivider />
@@ -85,6 +84,14 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
             <HeaderTabs className={classes.contentTypeTabs}>
                 <BountyContentTypeTabs bountyTabsConfig={bountyTabsConfig} />
             </HeaderTabs>
+            <ActionButtons className={classes.actionButtons}>
+                <WarningButton variant="contained" color="primary" onClick={() => {}}>
+                    {t('bounty.header.reject')}
+                </WarningButton>
+                <SuccessButton variant="contained" color="primary" onClick={() => {}}>
+                    {t('bounty.header.accept')}
+                </SuccessButton>
+            </ActionButtons>
         </HeaderContainer>
     )
 }

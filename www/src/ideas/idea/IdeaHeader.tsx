@@ -7,6 +7,7 @@ import { useAuth } from '../../auth/AuthContext'
 import Button from '../../components/button/Button'
 import CloseButton from '../../components/closeIcon/CloseButton'
 import BasicInfo from '../../components/header/BasicInfo'
+import ActionButtons from '../../components/header/details/ActionButtons'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import HeaderContainer from '../../components/header/details/HeaderContainer'
 import NetworkValues from '../../components/header/details/NetworkValues'
@@ -30,94 +31,32 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         flexBreakLine: {
             order: 3,
-        },
-        networkValues: {
-            order: 2,
-            marginRight: '-40px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 4,
             },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                order: 2,
-            },
         },
-        closeIcon: {
-            order: 3,
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                order: 2,
-            },
-        },
-        closeIconOnTablet: {
+        networkValues: {
+            order: 2,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                display: 'none',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                display: 'none',
+                order: 5,
             },
         },
         contentTypeTabs: {
             order: 4,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                order: 5,
+                order: 6,
             },
         },
-        turnIntoProposal: {
-            order: 5,
-            display: 'flex',
-            justifyContent: 'flex-end',
-            marginBottom: '5px',
-            flexGrow: 1,
-            [theme.breakpoints.up(breakpoints.mobile)]: {
-                alignSelf: 'flex-end',
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                position: 'fixed',
-                padding: 16,
-                background: theme.palette.background.default,
-                bottom: '-30px',
-                left: 0,
-                right: 0,
-                display: 'flex',
-                justifyContent: 'center',
-                width: '100vw',
-                zIndex: 1,
-            },
+        actionButtons: {
+            order: 6,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 2,
-                flexGrow: 'unset',
-                marginBottom: '25px',
-                marginRight: '5px',
-            },
-        },
-        turnIntoProposalButton: {
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                width: '100%',
-            },
-        },
-        tabletViewContainer: {
-            display: 'none',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'flex-end',
-            [theme.breakpoints.down(breakpoints.tablet)]: {
-                display: 'flex',
-                order: 3,
-            },
-            [theme.breakpoints.down(breakpoints.mobile)]: {
-                display: 'flex',
-                order: 1,
             },
         },
         optionsButton: {
-            order: 6,
-            marginRight: '20px',
-            display: 'flex',
-            justifyContent: 'center',
-        },
-        formatIconOnTablet: {
+            order: 7,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginRight: '0',
-                alignSelf: 'center',
+                order: 3,
             },
         },
     }),
@@ -150,8 +89,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
         ({ ideaContentType }) => ideaContentType === IdeaContentType.Discussion,
     )
     return (
-        <HeaderContainer>
-            <CloseButton onClose={navigateToList} className={clsx(classes.closeIcon, classes.closeIconOnTablet)} />
+        <HeaderContainer onClose={navigateToList}>
             <BasicInfo>
                 <OrdinalNumber prefix={t('idea.ordinalNumberPrefix')} ordinalNumber={idea.ordinalNumber} />
                 <BasicInfoDivider />
@@ -163,13 +101,6 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
             <NetworkValues className={classes.networkValues}>
                 <ProposalNetworkRewardDeposit rewardValue={networkValue} />
             </NetworkValues>
-            <div className={classes.tabletViewContainer}>
-                <CloseButton
-                    onClose={navigateToList}
-                    className={clsx(classes.closeIcon, classes.formatIconOnTablet)}
-                ></CloseButton>
-                {isOwner ? <OptionsButton className={classes.formatIconOnTablet} idea={idea} /> : null}
-            </div>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
                 {isUserSignedInAndVerified && user && withDiscussion ? (
@@ -179,18 +110,13 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
                 )}
             </HeaderTabs>
             {canTurnIntoProposal && (
-                <div className={classes.turnIntoProposal}>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        className={classes.turnIntoProposalButton}
-                        onClick={navigateToTurnIntoProposal}
-                    >
+                <ActionButtons className={classes.actionButtons}>
+                    <Button variant="contained" color="primary" onClick={navigateToTurnIntoProposal}>
                         {t('idea.details.header.turnIntoProposal')}
                     </Button>
-                </div>
+                </ActionButtons>
             )}
-            {isOwner ? <OptionsButton className={classes.closeIconOnTablet} idea={idea} /> : null}
+            {isOwner ? <OptionsButton className={classes.optionsButton} idea={idea} /> : null}
         </HeaderContainer>
     )
 }

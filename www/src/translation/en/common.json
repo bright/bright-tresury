@@ -565,6 +565,10 @@
             "milestonesLabel": "Milestones",
             "discussionLabel": "Discussion"
         },
+        "header": {
+            "accept": "Accept",
+            "reject": "Reject"
+        },
         "info": {
             "proposer": "Proposer",
             "description": "Description",

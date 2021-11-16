@@ -11,12 +11,16 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             alignSelf: 'self-start',
             margin: '-12px 0 2em 2em',
+            position: 'absolute',
+            top: '32px',
+            right: '32px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                marginTop: '18px',
-                position: 'relative',
-                left: '20px',
-                bottom: '15px',
-                margin: '0',
+                top: '24px',
+                right: '30px',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                top: '24px',
+                right: '16px',
             },
         },
     }),

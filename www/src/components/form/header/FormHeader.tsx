@@ -1,8 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import {ROUTE_ROOT} from "../../../routes/routes";
-import CloseButton from "../../closeIcon/CloseButton";
+import { ROUTE_ROOT } from '../../../routes/routes'
+import CloseButton from '../../closeIcon/CloseButton'
 import { Header } from '../../text/Header'
 
 const useStyles = makeStyles(() =>
@@ -11,6 +11,7 @@ const useStyles = makeStyles(() =>
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
+            position: 'relative',
         },
     }),
 )
@@ -26,8 +27,7 @@ const FormHeader = ({ title }: FormHeaderProps) => {
     const goBack = () => {
         if (history.length > 1) {
             history.goBack()
-        }
-        else {
+        } else {
             history.replace(ROUTE_ROOT)
         }
     }
@@ -35,7 +35,7 @@ const FormHeader = ({ title }: FormHeaderProps) => {
     return (
         <div className={classes.headerContainer}>
             <Header>{title}</Header>
-            <CloseButton onClose={goBack}/>
+            <CloseButton onClose={goBack} />
         </div>
     )
 }

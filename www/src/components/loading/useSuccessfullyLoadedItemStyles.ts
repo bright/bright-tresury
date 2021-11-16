@@ -14,7 +14,7 @@ export const useSuccessfullyLoadedItemStyles = makeStyles((theme: Theme) =>
                 padding: '2em 1.5em 3em 1.5em',
             },
             [theme.breakpoints.down(breakpoints.mobile)]: {
-                padding: '1em 1.5em 4em 1em',
+                padding: '1em 1.5em 10em 1em',
             },
         },
     }),

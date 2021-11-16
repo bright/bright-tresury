@@ -1,4 +1,10 @@
-import { Button as MaterialButton, ButtonProps as MaterialButtonProps, createStyles, Theme } from '@material-ui/core'
+import {
+    Button as MaterialButton,
+    ButtonProps as MaterialButtonProps,
+    createStyles,
+    styled,
+    Theme,
+} from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { breakpoints } from '../../theme/theme'
@@ -50,5 +56,13 @@ const Button = ({ children, variant, backgroundColor, ...props }: ButtonProps) =
         </MaterialButton>
     )
 }
+
+export const SuccessButton = styled(Button)(({ theme }) => ({
+    backgroundColor: theme.palette.success.main,
+}))
+
+export const WarningButton = styled(Button)(({ theme }) => ({
+    backgroundColor: theme.palette.warning.main,
+}))
 
 export default Button

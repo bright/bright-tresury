@@ -1,12 +1,14 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import React, { PropsWithChildren } from 'react'
 import { breakpoints } from '../../../theme/theme'
+import CloseButton from '../../closeIcon/CloseButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             background: theme.palette.background.default,
-            padding: '32px 32px 24px 42px',
+            padding: '32px 80px 24px 42px',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 padding: '24px 2.2em 24px 2.2em',
             },
@@ -19,14 +21,23 @@ const useStyles = makeStyles((theme: Theme) =>
             justifyContent: 'space-between',
             alignItems: 'center',
             flexWrap: 'wrap',
+            position: 'relative',
         },
     }),
 )
 
-interface OwnProps {}
+interface OwnProps {
+    onClose: () => void
+}
 export type HeaderContainerProps = PropsWithChildren<OwnProps>
-const HeaderContainer = ({ children }: HeaderContainerProps) => {
+
+const HeaderContainer = ({ onClose, children }: HeaderContainerProps) => {
     const classes = useStyles()
-    return <div className={classes.root}>{children}</div>
+    return (
+        <div className={classes.root}>
+            <CloseButton onClose={onClose} />
+            {children}
+        </div>
+    )
 }
 export default HeaderContainer
