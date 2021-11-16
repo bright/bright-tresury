@@ -97,7 +97,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
             }
         }
         return {
-            beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
+            beneficiary: formatAddress(ideaMilestone.beneficiary, network.ss58Format, false),
             currentNetwork: toIdeaMilestoneNetworkFormValues(ideaMilestone.currentNetwork),
             additionalNetworks: ideaMilestone.additionalNetworks.map(toIdeaMilestoneNetworkFormValues),
             ...detailsInitialValues,
