@@ -54,6 +54,11 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
 
     return (
         <div className={loadedClasses.content}>
+            {canEditIdea ? (
+                <FormFooterButtonsContainer>
+                    <FormFooterButton onClick={navigateToEdit}>{t('idea.details.edit')}</FormFooterButton>
+                </FormFooterButtonsContainer>
+            ) : null}
             <Label label={t('idea.details.beneficiary')} />
             {idea.beneficiary ? (
                 <AddressInfo address={idea.beneficiary} ellipsed={false} />
@@ -67,11 +72,6 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
                     <AdditionalNetworkDetailsCard ideaNetwork={additionalNetwork} isOwner={isOwner} />
                 ))}
             </div>
-            {canEditIdea ? (
-                <FormFooterButtonsContainer>
-                    <FormFooterButton onClick={navigateToEdit}>{t('idea.details.edit')}</FormFooterButton>
-                </FormFooterButtonsContainer>
-            ) : null}
         </div>
     )
 }
