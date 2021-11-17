@@ -6,7 +6,7 @@ import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supe
 import { createUserSessionHandlerWithVerifiedEmail } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainsConnections } from '../blockchain/blockchain.module'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { BountiesBlockchainService } from '../blockchain/bounties/bounties-blockchain.service'
+import { BountiesBlockchainService } from '../blockchain/blockchain-bounties/bounties-blockchain.service'
 import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { BountyEntity } from './entities/bounty.entity'
@@ -26,7 +26,7 @@ describe(`/api/v1/bounties/`, () => {
         await cleanAuthorizationDatabase()
     })
 
-    describe('POST', () => {
+    describe('create a bounty (POST) and fetch all bounties (GET)', () => {
         it(`should find extrinsic and create a bounty entity`, async (done) => {
             const api = getApi(blockchainsConnections(), NETWORKS.POLKADOT)
             const keyring = new Keyring({ type: 'sr25519' })
@@ -40,7 +40,7 @@ describe(`/api/v1/bounties/`, () => {
                 .authorizeRequest(
                     request(app()).post(baseUrl).send({
                         blockchainDescription: 'bc-description',
-                        value: '10',
+                        value: '1000000000000',
                         title: 'title',
                         networkId: NETWORKS.POLKADOT,
                         proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
@@ -60,7 +60,16 @@ describe(`/api/v1/bounties/`, () => {
                         const bounty = (await bountiesRepository().findOne({ title: 'title' }))!
                         expect(bounty).toBeDefined()
                         expect(bounty.blockchainIndex).toBe(bountyIndex)
-                        expect(bounty.value).toBe('10')
+                        expect(bounty.value).toBe('1000000000000')
+
+                        const {body: bountiesDtos} = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
+                        const lastBounty = bountiesDtos[bountiesDtos.length-1]
+                        expect(lastBounty.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+                        expect(lastBounty.value).toBe('1000000000000')
+                        expect(lastBounty.bond).toBe('10200000000')
+                        expect(lastBounty.status).toBe('Proposed')
+                        expect(lastBounty.title).toBe('title')
+
                         done()
                     }, 2000)
                 }

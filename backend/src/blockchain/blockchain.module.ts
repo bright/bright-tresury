@@ -7,7 +7,7 @@ import { BlockchainService } from './blockchain.service'
 import { ApiInterfaceEvents } from '@polkadot/api/types'
 import { BlockchainConfigurationController } from './blockchain-configuration/blockchain-configuration.controller'
 import { BlockchainConfigurationService } from './blockchain-configuration/blockchain-configuration.service'
-import { BountiesBlockchainService } from './bounties/bounties-blockchain.service'
+import { BountiesBlockchainService } from './blockchain-bounties/bounties-blockchain.service'
 
 const logger = getLogger()
 export interface BlockchainsConnections {
@@ -105,6 +105,6 @@ export class PolkadotApiModule implements OnModuleDestroy {
     imports: [PolkadotApiModule, ConfigModule],
     controllers: [BlockchainConfigurationController],
     providers: [BlockchainService, BlockchainConfigurationService, BountiesBlockchainService],
-    exports: [BlockchainService, BlockchainConfigurationService],
+    exports: [BlockchainService, BlockchainConfigurationService, BountiesBlockchainService],
 })
 export class BlockchainModule {}

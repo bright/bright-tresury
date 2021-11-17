@@ -42,6 +42,6 @@ export function toBlockchainAccountInfo(
     getLogger().info('toBlockchainAccountInfo:', deriveAccountRegistration)
     return new BlockchainAccountInfo({
         address,
-        ...(deriveAccountRegistration || {}),
+        ...(deriveAccountRegistration ?? {}),
     })
 }

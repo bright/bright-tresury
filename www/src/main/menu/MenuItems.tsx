@@ -43,7 +43,7 @@ export const MENU_ITEMS: MenuItem[] = [
         path: ROUTE_TIPS,
     },
     {
-        translationKey: 'menu.bounties',
+        translationKey: 'menu.blockchain-bounties',
         svg: bountySvg,
         svgHighlighted: bountyHighlightedSvg,
         path: ROUTE_BOUNTIES,

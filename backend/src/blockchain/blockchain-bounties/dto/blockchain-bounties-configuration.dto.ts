@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { NetworkPlanckValue } from '../../../utils/types'
 
-export class BountiesBlockchainConfigurationDto {
+export class BlockchainBountiesConfigurationDto {
     @ApiProperty({
         description: 'The amount in plancks held on deposit for placing a bounty proposal',
     })

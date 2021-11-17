@@ -3,7 +3,7 @@ import { apiGet, apiPost } from '../api'
 import { NetworkPlanckValue } from '../util/types'
 import { BountyDto, BountyExtrinsicDto, BountyStatus, CreateBountyDto } from './bounties.dto'
 
-export const BOUNTIES_API_PATH = '/bounties'
+export const BOUNTIES_API_PATH = '/blockchain-bounties'
 
 // GET ONE
 

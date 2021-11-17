@@ -5,9 +5,10 @@ import { ExtrinsicsModule } from '../extrinsics/extrinsics.module'
 import { BountiesController } from './bounties.controller'
 import { BountiesService } from './bounties.service'
 import { BountyEntity } from './entities/bounty.entity'
+import { BlockchainModule } from '../blockchain/blockchain.module'
 
 @Module({
-    imports: [TypeOrmModule.forFeature([BountyEntity]), SessionModule, ExtrinsicsModule],
+    imports: [TypeOrmModule.forFeature([BountyEntity]), SessionModule, ExtrinsicsModule, BlockchainModule],
     controllers: [BountiesController],
     providers: [BountiesService],
 })

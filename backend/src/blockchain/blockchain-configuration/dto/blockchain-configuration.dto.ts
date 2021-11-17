@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BlockchainConfig } from '../blockchain-configuration.config'
 import { NetworkPlanckValue } from '../../../utils/types'
-import { BountiesBlockchainConfigurationDto } from '../../bounties/dto/bounties-blockchain-configuration.dto'
+import { BlockchainBountiesConfigurationDto } from '../../blockchain-bounties/dto/blockchain-bounties-configuration.dto'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({
@@ -61,8 +61,8 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Is this a live network or a development one' })
     isLiveNetwork: boolean
 
-    @ApiProperty({ description: 'Bounties module configuration', type: BountiesBlockchainConfigurationDto })
-    bounties: BountiesBlockchainConfigurationDto
+    @ApiProperty({ description: 'Bounties module configuration', type: BlockchainBountiesConfigurationDto })
+    bounties: BlockchainBountiesConfigurationDto
 
     constructor({
         id,

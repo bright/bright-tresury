@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
-import { BountiesBlockchainService } from '../bounties/bounties-blockchain.service'
+import { BountiesBlockchainService } from '../blockchain-bounties/bounties-blockchain.service'
 import { getApi } from '../utils'
 import { BlockchainsConnections } from '../blockchain.module'
 import { BN_MILLION, BN_HUNDRED } from '@polkadot/util'
