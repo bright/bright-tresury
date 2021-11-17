@@ -19,7 +19,7 @@ import { extractTime } from '@polkadot/util'
 const logger = getLogger()
 
 @Injectable()
-export class BountiesBlockchainService {
+export class BlockchainBountiesService {
     constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
                 private readonly blockchainService: BlockchainService) {}
 
@@ -48,9 +48,9 @@ export class BountiesBlockchainService {
         const blockTime = this.blockchainService.getBlockTime(networkId) // time for processing one block
         const bountiesDerived = await api.derive.bounties.bounties() // blockchain-bounties currently hold in blockchain
 
-        const proposersAddresses = BountiesBlockchainService.getProposersAddresses(bountiesDerived) // all proposers addresses
-        const curatorsAddresses = BountiesBlockchainService.getCuratorsAddresses(bountiesDerived) // all curators addresses (if exists)
-        const beneficiariesAddresses = BountiesBlockchainService.getBeneficiariesAddresses(bountiesDerived) // all beneficiaries addresses (if exists)
+        const proposersAddresses = BlockchainBountiesService.getProposersAddresses(bountiesDerived) // all proposers addresses
+        const curatorsAddresses = BlockchainBountiesService.getCuratorsAddresses(bountiesDerived) // all curators addresses (if exists)
+        const beneficiariesAddresses = BlockchainBountiesService.getBeneficiariesAddresses(bountiesDerived) // all beneficiaries addresses (if exists)
 
         const identities = await this.blockchainService.getIdentities(networkId, [
             ...proposersAddresses, ...curatorsAddresses, ...beneficiariesAddresses
@@ -58,7 +58,7 @@ export class BountiesBlockchainService {
 
         return bountiesDerived.map(({index, description, bounty}) => {
             const proposerAddress = bounty.proposer.toString()
-            const {status, data: bountyStatusData } = BountiesBlockchainService.getBountyStatusData(bounty.status)!
+            const {status, data: bountyStatusData } = BlockchainBountiesService.getBountyStatusData(bounty.status)!
             const {curator, updateDue, unlockAt, beneficiary} = bountyStatusData ?? {}
             const curatorAddress = curator?.toString()
             const beneficiaryAddress = beneficiary?.toString()
@@ -69,9 +69,9 @@ export class BountiesBlockchainService {
                 value: bounty.value.toString() as NetworkPlanckValue,
                 fee: bounty.fee.toString() as NetworkPlanckValue,
                 curator: curator ? toBlockchainAccountInfo(curatorAddress, identities.get(curatorAddress)): undefined,
-                updateDue: BountiesBlockchainService.getBlockchainTimeLeft(bestNumber, updateDue, blockTime),
+                updateDue: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, updateDue, blockTime),
                 beneficiary: beneficiary ? toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress)): undefined,
-                unlockAt: BountiesBlockchainService.getBlockchainTimeLeft(bestNumber, unlockAt, blockTime),
+                unlockAt: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, unlockAt, blockTime),
                 curatorDeposit: bounty.curatorDeposit.toString() as NetworkPlanckValue,
                 bond: bounty.bond.toString() as NetworkPlanckValue,
                 status: status!
@@ -92,14 +92,14 @@ export class BountiesBlockchainService {
 
     private static getCuratorsAddresses(bountiesDerived: DeriveBounties): string[] {
         return bountiesDerived.map(({bounty}) => {
-            const { data } = BountiesBlockchainService.getBountyStatusData(bounty.status) || {}
+            const { data } = BlockchainBountiesService.getBountyStatusData(bounty.status) || {}
             return data?.curator?.toString()
         }).filter(curator => curator !== undefined)
     }
 
     private static getBeneficiariesAddresses(bountiesDerived: DeriveBounties): string[] {
         return bountiesDerived.map(({bounty}) => {
-            const { data } = BountiesBlockchainService.getBountyStatusData(bounty.status) || {}
+            const { data } = BlockchainBountiesService.getBountyStatusData(bounty.status) || {}
             return data?.beneficiary?.toString()
         }).filter(beneficiary => beneficiary !== undefined)
     }

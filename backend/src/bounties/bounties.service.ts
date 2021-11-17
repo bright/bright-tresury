@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { BountiesBlockchainService } from '../blockchain/blockchain-bounties/bounties-blockchain.service'
+import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
@@ -19,7 +19,7 @@ export class BountiesService {
     constructor(
         @InjectRepository(BountyEntity) private readonly repository: Repository<BountyEntity>,
         private readonly extrinsicsService: ExtrinsicsService,
-        private readonly bountiesBlockchainService: BountiesBlockchainService
+        private readonly bountiesBlockchainService: BlockchainBountiesService
     ) {}
 
     create(dto: CreateBountyDto, user: UserEntity): Promise<BountyEntity> {
@@ -35,7 +35,7 @@ export class BountiesService {
     async listenForProposeBountyExtrinsic(dto: CreateBountyDto, user: UserEntity): Promise<ExtrinsicEntity> {
         logger.info(`Start listening for a propose bounty extrinsic...`)
         const callback = async (events: ExtrinsicEvent[]) => {
-            const bountyIndex = BountiesBlockchainService.extractBountyIndex(events)
+            const bountyIndex = BlockchainBountiesService.extractBountyIndex(events)
             if (bountyIndex !== undefined) {
                 logger.info(`Bounty index found ${bountyIndex}. Creating bounty entity`)
                 await this.create({ ...dto, blockchainIndex: bountyIndex }, user)

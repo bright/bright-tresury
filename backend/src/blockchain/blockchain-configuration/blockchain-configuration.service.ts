@@ -1,5 +1,5 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common'
-import { BountiesBlockchainService } from '../blockchain-bounties/bounties-blockchain.service'
+import { BlockchainBountiesService } from '../blockchain-bounties/blockchain-bounties.service'
 import { getApi } from '../utils'
 import { BlockchainsConnections } from '../blockchain.module'
 import { BN_MILLION, BN_HUNDRED } from '@polkadot/util'
@@ -14,7 +14,7 @@ export class BlockchainConfigurationService {
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
         @Inject(BlockchainConfigToken) private readonly blockchainConfig: BlockchainConfig[],
-        private readonly bountiesBlockchainService: BountiesBlockchainService,
+        private readonly bountiesBlockchainService: BlockchainBountiesService,
     ) {
         this.defaultBlockchainConfigMap = blockchainConfig.reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {})
     }

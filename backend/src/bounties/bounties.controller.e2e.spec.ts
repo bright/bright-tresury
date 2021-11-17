@@ -6,7 +6,7 @@ import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supe
 import { createUserSessionHandlerWithVerifiedEmail } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainsConnections } from '../blockchain/blockchain.module'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { BountiesBlockchainService } from '../blockchain/blockchain-bounties/bounties-blockchain.service'
+import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { BountyEntity } from './entities/bounty.entity'
@@ -53,7 +53,7 @@ describe(`/api/v1/bounties/`, () => {
             await extrinsic.send(async (result) => {
                 if (result.isInBlock) {
                     const applyExtrinsicEvents = BlockchainService.getApplyExtrinsicEvents(result.events)
-                    const bountyIndex = BountiesBlockchainService.extractBountyIndex(applyExtrinsicEvents)
+                    const bountyIndex = BlockchainBountiesService.extractBountyIndex(applyExtrinsicEvents)
 
                     // wait until the extrinsic is found, read and bounty is saved
                     setTimeout(async () => {
