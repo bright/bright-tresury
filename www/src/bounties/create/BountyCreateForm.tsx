@@ -10,8 +10,8 @@ import { useNetworks } from '../../networks/useNetworks'
 import { isMin, toNetworkDisplayValue } from '../../util/quota.util'
 import { getBytesLength } from '../../util/stringUtil'
 import { NetworkDisplayValue, NetworkPlanckValue } from '../../util/types'
-import SubmitBountyModal from '../create/SubmitBountyModal'
-import BountyFormFields from './BountyFormFields'
+import SubmitBountyModal from './SubmitBountyModal'
+import BountyCreateFormFields from './BountyCreateFormFields'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface BountyFormValues {
+export interface BountyCreateFormValues {
     blockchainDescription: string
     value: NetworkDisplayValue
     title: string
@@ -33,9 +33,9 @@ export interface BountyFormValues {
 
 interface OwnProps {}
 
-export type IdeaFormProps = PropsWithChildren<OwnProps>
+export type BountyCreateFormProps = PropsWithChildren<OwnProps>
 
-const BountyForm = ({ children }: IdeaFormProps) => {
+const BountyCreateForm = ({ children }: BountyCreateFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const submitBountyModal = useModal()
@@ -59,7 +59,7 @@ const BountyForm = ({ children }: IdeaFormProps) => {
         ),
     })
 
-    const initialValues: BountyFormValues = {
+    const initialValues: BountyCreateFormValues = {
         blockchainDescription: '',
         value: toNetworkDisplayValue('0' as NetworkPlanckValue, network.decimals),
         title: '',
@@ -81,7 +81,7 @@ const BountyForm = ({ children }: IdeaFormProps) => {
             {({ values, handleSubmit }) => (
                 <>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <BountyFormFields formValues={values} />
+                        <BountyCreateFormFields formValues={values} />
                         <FormFooter>{children}</FormFooter>
                     </form>
                     <SubmitBountyModal
@@ -95,4 +95,4 @@ const BountyForm = ({ children }: IdeaFormProps) => {
     )
 }
 
-export default BountyForm
+export default BountyCreateForm

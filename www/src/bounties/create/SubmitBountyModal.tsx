@@ -9,12 +9,12 @@ import SubmittingTransaction, { ExtrinsicDetails } from '../../substrate-lib/com
 import { toNetworkPlanckValue } from '../../util/quota.util'
 import { useCreateBounty } from '../bounties.api'
 import { CreateBountyDto } from '../bounties.dto'
-import { BountyFormValues } from '../form/BountyForm'
+import { BountyCreateFormValues } from './BountyCreateForm'
 
 interface OwnProps {
     open: boolean
     onClose: () => void
-    bounty: BountyFormValues
+    bounty: BountyCreateFormValues
 }
 
 export type SubmitBountyModalProps = OwnProps

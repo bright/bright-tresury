@@ -2,19 +2,26 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import clsx from 'clsx'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
+import { generatePath, useHistory } from 'react-router-dom'
+import Button from '../../../components/button/Button'
 import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 import { Label } from '../../../components/text/Label'
 import LongText from '../../../components/text/LongText'
 import ShortText from '../../../components/text/ShortText'
+import { ROUTE_EDIT_BOUNTY } from '../../../routes/routes'
 import { breakpoints } from '../../../theme/theme'
 import { timeToString } from '../../../util/dateUtil'
 import { BountyDto, BountyStatus } from '../../bounties.dto'
+import { useBounty } from '../useBounty'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        fields: {
             width: '70%',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 width: '100%',
@@ -33,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) =>
         spacing: {
             marginTop: '2em',
         },
+        editButton: {
+            alignSelf: 'end',
+        },
     }),
 )
 
@@ -47,69 +57,70 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
     const loadedClasses = useSuccessfullyLoadedItemStyles()
     const { t } = useTranslation()
     const history = useHistory()
+    const { canEdit } = useBounty(bounty)
 
-    // TODO in TREAS-261
-    // const navigateToEdit = () => {
-    //     history.push(generatePath(ROUTE_EDIT_IDEA, { bountyId: bounty.id }))
-    // }
+    const navigateToEdit = () => {
+        history.push(generatePath(ROUTE_EDIT_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
+    }
 
     return (
         <div className={clsx(loadedClasses.content, classes.root)}>
-            {/*TODO TREAS-261*/}
-            {/*{canEditBounty ? (*/}
-            {/*    <FormFooterButtonsContainer>*/}
-            {/*        <FormFooterButton onClick={navigateToEdit}>{t('bounty.details.edit')}</FormFooterButton>*/}
-            {/*    </FormFooterButtonsContainer>*/}
-            {/*) : null}*/}
-            <div className={classes.addresses}>
-                <div>
-                    <Label label={t('bounty.info.proposer')} />
-                    <AddressInfo address={bounty.proposer.address} ellipsed={true} />
-                </div>
-                {bounty.status === BountyStatus.CuratorProposed ? (
+            {canEdit && (
+                <Button className={classes.editButton} variant="contained" color="primary" onClick={navigateToEdit}>
+                    {t('bounty.info.editButton')}
+                </Button>
+            )}
+            <div className={classes.fields}>
+                <div className={classes.addresses}>
                     <div>
-                        <Label label={t('bounty.info.proposedCurator')} />
-                        <AddressInfo address={bounty.curator.address} ellipsed={true} />
+                        <Label label={t('bounty.info.proposer')} />
+                        <AddressInfo address={bounty.proposer.address} ellipsed={true} />
                     </div>
-                ) : null}
-                {bounty.status === BountyStatus.Active || bounty.status === BountyStatus.PendingPayout ? (
-                    <div>
-                        <Label label={t('bounty.info.curator')} />
-                        <AddressInfo address={bounty.curator.address} ellipsed={true} />
+                    {bounty.status === BountyStatus.CuratorProposed ? (
+                        <div>
+                            <Label label={t('bounty.info.proposedCurator')} />
+                            <AddressInfo address={bounty.curator.address} ellipsed={true} />
+                        </div>
+                    ) : null}
+                    {bounty.status === BountyStatus.Active || bounty.status === BountyStatus.PendingPayout ? (
+                        <div>
+                            <Label label={t('bounty.info.curator')} />
+                            <AddressInfo address={bounty.curator.address} ellipsed={true} />
+                        </div>
+                    ) : null}
+                    {bounty.status === BountyStatus.PendingPayout ? (
+                        <div>
+                            <Label label={t('bounty.info.beneficiary')} />
+                            <AddressInfo address={bounty.beneficiary.address} ellipsed={true} />
+                        </div>
+                    ) : null}
+                </div>
+                {bounty.status === BountyStatus.Active ? (
+                    <div className={classes.spacing}>
+                        {/*TODO style date*/}
+                        <Label label={t('bounty.info.expiryDate')} />
+                        <ShortText text={timeToString(bounty.updateDue, t)} placeholder={t('bounty.info.expiryDate')} />
                     </div>
                 ) : null}
                 {bounty.status === BountyStatus.PendingPayout ? (
-                    <div>
-                        <Label label={t('bounty.info.beneficiary')} />
-                        <AddressInfo address={bounty.beneficiary.address} ellipsed={true} />
+                    <div className={classes.spacing}>
+                        {/*TODO style date*/}
+                        <Label label={t('bounty.info.unlockDate')} />
+                        <ShortText text={timeToString(bounty.unlockAt, t)} placeholder={t('bounty.info.unlockDate')} />
                     </div>
                 ) : null}
-            </div>
-            {bounty.status === BountyStatus.Active ? (
                 <div className={classes.spacing}>
-                    {/*TODO style date*/}
-                    <Label label={t('bounty.info.expiryDate')} />
-                    <ShortText text={timeToString(bounty.updateDue, t)} placeholder={t('bounty.info.expiryDate')} />
+                    <Label label={t('bounty.info.field')} />
+                    <ShortText text={bounty.field} placeholder={t('bounty.info.field')} />
                 </div>
-            ) : null}
-            {bounty.status === BountyStatus.PendingPayout ? (
                 <div className={classes.spacing}>
-                    {/*TODO style date*/}
-                    <Label label={t('bounty.info.unlockDate')} />
-                    <ShortText text={timeToString(bounty.unlockAt, t)} placeholder={t('bounty.info.unlockDate')} />
+                    <Label label={t('bounty.info.description')} />
+                    <LongText text={bounty.description} placeholder={t('bounty.info.description')} />
                 </div>
-            ) : null}
-            <div className={classes.spacing}>
-                <Label label={t('bounty.info.field')} />
-                <ShortText text={bounty.field} placeholder={t('bounty.info.field')} />
-            </div>
-            <div className={classes.spacing}>
-                <Label label={t('bounty.info.description')} />
-                <LongText text={bounty.description} placeholder={t('bounty.info.description')} />
-            </div>
-            <div className={classes.spacing}>
-                <Label label={t('bounty.info.onChainDescription')} />
-                <ShortText text={bounty.blockchainDescription} placeholder={t('bounty.info.onChainDescription')} />
+                <div className={classes.spacing}>
+                    <Label label={t('bounty.info.onChainDescription')} />
+                    <ShortText text={bounty.blockchainDescription} placeholder={t('bounty.info.onChainDescription')} />
+                </div>
             </div>
         </div>
     )

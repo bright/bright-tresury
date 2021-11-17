@@ -547,6 +547,7 @@
             "emptyFieldError": "This field cannot be empty",
             "minValueError": "The value must be at least {{value}}",
             "maxBlockchainDescriptionLength": "The on-chain description is too long",
+            "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
             "fields": {
                 "title": "Title",
                 "field": "Field of bounty",
@@ -555,6 +556,7 @@
                 "depositTooltip": "The deposit amount that will be bonded (partly depends on the on-chain description length)",
                 "blockchainDescription": "Description - this description is stored on chain (the bond will increase for each byte of this description)",
                 "description": "Description",
+                "beneficiary": "Beneficiary",
                 "fieldOptions": {
                     "optimisation": "Optimisation",
                     "treasury": "Treasury",
@@ -586,6 +588,7 @@
             "expiryDate": "Expires in",
             "unlockDate": "Payout unlocks in",
             "beneficiary": "Beneficiary",
+            "editButton": "Edit",
             "curatorActions": {
                 "acceptModal": {
                     "title": "You are about to accept the curator's role",
@@ -598,6 +601,11 @@
                     "eventDescription": "event curator rejected finished"
                 }
             }
+        },
+        "edit": {
+            "cannotEditBounty": "You cannot edit this bounty",
+            "title": "Edit bounty",
+            "save": "Save"
         }
     },
     "ideaProposalDetails": {

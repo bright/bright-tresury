@@ -1,13 +1,14 @@
 import React from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
-import discussionIcon from '../../assets/discussion.svg'
 import infoIcon from '../../assets/info.svg'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import PrivateRoute from '../../routes/PrivateRoute'
 import Route from '../../routes/Route'
+import { ROUTE_EDIT_BOUNTY } from '../../routes/routes'
 import { Nil } from '../../util/types'
 import { BountyDto } from '../bounties.dto'
 import BountyHeader from './BountyHeader'
+import BountyEdit from './edit/BountyEdit'
 import BountyInfo from './info/BountyInfo'
 
 export enum BountyContentType {
@@ -66,12 +67,19 @@ const Bounty = ({ bounty }: BountyProps) => {
 
     return (
         <div className={classes.root}>
-            <BountyHeader bounty={bounty} bountyTabsConfig={bountyTabsConfig} />
             <Switch>
-                <Route exact={true} path={path}>
-                    <BountyInfo bounty={bounty} />
-                </Route>
-                {routes}
+                <PrivateRoute requireVerified={true} exact={true} path={ROUTE_EDIT_BOUNTY}>
+                    <BountyEdit bounty={bounty} />
+                </PrivateRoute>
+                <>
+                    <BountyHeader bounty={bounty} bountyTabsConfig={bountyTabsConfig} />
+                    <Switch>
+                        <Route exact={true} path={path}>
+                            <BountyInfo bounty={bounty} />
+                        </Route>
+                        {routes}
+                    </Switch>
+                </>
             </Switch>
         </div>
     )

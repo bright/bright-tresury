@@ -51,10 +51,12 @@ interface BaseBountyDto {
     deposit: NetworkPlanckValue
     curatorDeposit: NetworkPlanckValue
     proposer: AccountInfo
+    beneficiary: AccountInfo
 
     title?: Nil<string>
     field?: Nil<string>
     description?: Nil<string>
+    ownerId?: string
 }
 
 type ExtendedBountyDto =
@@ -77,6 +79,15 @@ export interface CreateBountyDto {
     proposer: string
     extrinsicHash: string
     lastBlockHash: string
+}
+
+export interface EditBountyDto {
+    blockchainIndex: number
+    networkId: string
+    title: string
+    field?: Nil<string>
+    description?: Nil<string>
+    beneficiary?: string
 }
 
 export interface BountyExtrinsicDto {

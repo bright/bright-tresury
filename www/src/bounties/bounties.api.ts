@@ -1,7 +1,7 @@
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { apiGet, apiPost } from '../api'
+import { apiGet, apiPatch, apiPost } from '../api'
 import { NetworkPlanckValue } from '../util/types'
-import { BountyDto, BountyExtrinsicDto, BountyStatus, CreateBountyDto } from './bounties.dto'
+import { BountyDto, BountyExtrinsicDto, BountyStatus, CreateBountyDto, EditBountyDto } from './bounties.dto'
 
 export const BOUNTIES_API_PATH = '/bounties'
 
@@ -62,6 +62,16 @@ async function createBounty(data: CreateBountyDto): Promise<BountyExtrinsicDto> 
 
 export const useCreateBounty = () => {
     return useMutation(createBounty)
+}
+
+// PATCH
+
+async function patchBounty(data: EditBountyDto): Promise<BountyDto> {
+    return apiPatch<BountyDto>(`${BOUNTIES_API_PATH}/${data.blockchainIndex}`, data)
+}
+
+export const usePatchBounty = () => {
+    return useMutation(patchBounty)
 }
 
 // GET ALL
