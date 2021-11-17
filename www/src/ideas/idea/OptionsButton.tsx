@@ -13,6 +13,7 @@ import { useModal } from '../../components/modal/useModal'
 import DeleteIdeaModal from './DeleteIdeaModal'
 import { useMenu } from '../../hook/useMenu'
 import { useIdea } from './useIdea'
+import { IdeaDto } from '../ideas.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,7 +34,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     className: string
-    idea: any
+    idea: IdeaDto
 }
 
 export type OptionsButtonProps = OwnProps

@@ -171,7 +171,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
                     onClose={navigateToList}
                     className={clsx(classes.closeIcon, classes.formatIconOnTablet)}
                 ></CloseButton>
-                {isOwner ? <OptionsButton className={classes.formatIconOnTablet} idea={idea.id} /> : null}
+                {isOwner ? <OptionsButton className={classes.formatIconOnTablet} idea={idea} /> : null}
             </div>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
