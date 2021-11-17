@@ -16,7 +16,6 @@ import FlexBreakLine from '../../components/header/FlexBreakLine'
 import HeaderTabs from '../../components/header/HeaderTabs'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import Title from '../../components/header/details/Title'
-import CloseButton from '../../components/closeIcon/CloseButton'
 import PrivateProposalContentTypeTabs from './PrivateProposalContentTypeTabs'
 
 const useStyles = makeStyles((theme: Theme) =>

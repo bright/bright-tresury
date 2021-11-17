@@ -18,7 +18,11 @@ const ExtrinsicFailed = ({ error, onOk }: ExtrinsicFailedProps) => {
     return (
         <TransactionModal
             title={t('substrate.extrinsicError.title')}
-            subtitle={t([`substrate.extrinsicError.subtitle.${error.section}.${error.name}`, error.description])}
+            subtitle={t([
+                `substrate.extrinsicError.subtitle.${error.section}.${error.name}`,
+                `substrate.extrinsicError.subtitle.general.${error.description}`,
+                error.description,
+            ])}
             imgSrc={cautionImg}
             buttons={
                 <Button color="primary" onClick={onOk}>

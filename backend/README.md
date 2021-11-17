@@ -109,7 +109,8 @@ Change it to some smaller value like `3 * MINUTES`.
 There is a script to create some presets:
 
 -   create council: `node bootstrap.js 1`. After executing wait until the candidates become members
--   create and reject a proposal to fill in the pot and create some bounties (closed and approved): `node bootstrap.js 2`. After this step wait until one of the bounties gets funded (the spend period ends).
+-   create and reject a proposal to fill in the pot and create some bounties (funded and approved): `node bootstrap.js 2`. After this step wait until one of the bounties gets funded (the spend period ends).
+    -propose some curator and accept them to have funded bounty with curator voting and an active bounty: `node bootstrap.js 3`.
 
 2. Council memebrs
 

@@ -582,7 +582,19 @@
             "proposedCurator": "Proposed curator",
             "expiryDate": "Expires in",
             "unlockDate": "Payout unlocks in",
-            "beneficiary": "Beneficiary"
+            "beneficiary": "Beneficiary",
+            "curatorActions": {
+                "acceptModal": {
+                    "title": "You are about to accept the curator's role",
+                    "warningMessage": "In order to accept the curator's role you need to have a <strong>deposit amount</strong> available on your account. Please note, that if you act maliciously, <strong>you may loose the deposit</strong>. The deposit will be refund upon successful bounty payout.",
+                    "eventDescription": "event curator accepted finished"
+                },
+                "rejectModal": {
+                    "title": "You are about to reject the curator's role",
+                    "warningMessage": "We take this as a sign that you are unable to do your job and willingly give up. The community could slash you, but for now they allow you to recover your deposit and exit without issue. (The community may want to change this if it is abused.)",
+                    "eventDescription": "event curator rejected finished"
+                }
+            }
         }
     },
     "ideaProposalDetails": {
@@ -683,6 +695,9 @@
                 "unspecific": "Something went wrong, you may try again later",
                 "treasury": {
                     "InsufficientProposersBalance": "Proposer's balance is too low."
+                },
+                "general": {
+                    "BadOrigin": "You are not allowed to perform this action."
                 }
             },
             "ok": "Ok"

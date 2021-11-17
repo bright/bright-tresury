@@ -2,7 +2,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { SuccessButton, WarningButton } from '../../components/button/Button'
 import BasicInfo from '../../components/header/BasicInfo'
 import ActionButtons from '../../components/header/details/ActionButtons'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
@@ -19,6 +18,7 @@ import BountyNetworkRewardDeposit from '../components/BountyNetworkRewardDeposit
 import BountyStatusIndicator from '../components/BountyStatusIndicator'
 import { BountyTabConfig } from './Bounty'
 import BountyContentTypeTabs from './BountyContentTypeTabs'
+import CuratorActionButtons from './info/curator-actions/CuratorActionButtons'
 import { useBounty } from './useBounty'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -85,12 +85,7 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
                 <BountyContentTypeTabs bountyTabsConfig={bountyTabsConfig} />
             </HeaderTabs>
             <ActionButtons className={classes.actionButtons}>
-                <WarningButton variant="contained" color="primary" onClick={() => {}}>
-                    {t('bounty.header.reject')}
-                </WarningButton>
-                <SuccessButton variant="contained" color="primary" onClick={() => {}}>
-                    {t('bounty.header.accept')}
-                </SuccessButton>
+                <CuratorActionButtons bounty={bounty} />
             </ActionButtons>
         </HeaderContainer>
     )

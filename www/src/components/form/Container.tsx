@@ -18,6 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 padding: '1em 1.5em 4em 1em',
             },
+            position: 'relative',
         },
     }),
 )

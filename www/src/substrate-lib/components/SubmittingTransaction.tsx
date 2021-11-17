@@ -57,7 +57,7 @@ interface OwnProps {
     onClose: () => void
     onSuccess?: () => void
     txAttrs: TxAttrs
-    onTransactionSigned: (data: ExtrinsicDetails) => Promise<void>
+    onTransactionSigned?: (data: ExtrinsicDetails) => Promise<void>
     title: string
     instruction: string | JSX.Element
 }
@@ -131,11 +131,13 @@ const SubmittingTransaction = ({
 
         const signedBlock = await api.rpc.chain.getBlock()
         try {
-            await onTransactionSigned({
-                extrinsicHash: txExecute.hash.toString(),
-                lastBlockHash: signedBlock.hash.toString(),
-                signerAddress: address,
-            })
+            if (onTransactionSigned) {
+                await onTransactionSigned({
+                    extrinsicHash: txExecute.hash.toString(),
+                    lastBlockHash: signedBlock.hash.toString(),
+                    signerAddress: address,
+                })
+            }
             // send the transaction
             await txExecute.send(txResHandler).catch(txErrHandler)
         } catch (error) {

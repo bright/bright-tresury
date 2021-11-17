@@ -74,7 +74,7 @@ const getDevAccounts = () => {
 const createMotionVoteAndClose = async (api, call) => {
     const { ALICE, BOB } = getDevAccounts()
     console.log('Bob creates a motion')
-    await signAndSend(api.tx.council.propose(2, call, 10), BOB)
+    await signAndSend(api.tx.council.propose(2, call, 100), BOB)
 
     const motions = (await api.query.council.proposals()).toJSON()
     const hash = motions[motions.length - 1]
@@ -86,7 +86,7 @@ const createMotionVoteAndClose = async (api, call) => {
     console.log('Bob votes aye')
     await signAndSend(api.tx.council.vote(hash, index, true), BOB)
     console.log('Bob closes the motion')
-    await signAndSend(api.tx.council.close(hash, index, 1000450000, 10), BOB)
+    await signAndSend(api.tx.council.close(hash, index, 1000450000, 100), BOB)
 }
 
 /**
@@ -127,14 +127,38 @@ const proposalsProposeAndReject = async (api) => {
  * Propose a bounty and approve it
  * @param api
  */
-const bountiesProposeAndAccept = async (api) => {
+const bountiesProposeAndAccept = async (api, description) => {
     const { DAVE } = getDevAccounts()
     console.log('Dave proposes a bounty to approve')
-    await signAndSend(api.tx.bounties.proposeBounty(1250000000000, 'bounty to approve'), DAVE)
+    await signAndSend(api.tx.bounties.proposeBounty(1250000000000, description), DAVE)
     const bountyIndex = (await api.query.bounties.bountyCount()).toHuman() - 1
     console.log(`Bounty index is: ${bountyIndex}`)
 
     const call = api.tx.bounties.approveBounty(bountyIndex)
+    await createMotionVoteAndClose(api, call)
+}
+
+/**
+ * Propose a curator and do not vote
+ * @param api
+ */
+const bountiesProposeCurator = async (api, bountyIndex) => {
+    const { DAVE, BOB } = getDevAccounts()
+    console.log('Propose dave as a curator')
+
+    const call = api.tx.bounties.proposeCurator(bountyIndex, DAVE.address, '125000000000')
+    await signAndSend(api.tx.council.propose(2, call, 100), BOB)
+}
+
+/**
+ * Propose a curator and accept it for a funded bounty
+ * @param api
+ */
+const bountiesProposeCuratorAndVote = async (api, bountyIndex) => {
+    const { DAVE } = getDevAccounts()
+    console.log('Propose dave as a curator')
+
+    const call = api.tx.bounties.proposeCurator(bountyIndex, DAVE.address, '125000000000')
     await createMotionVoteAndClose(api, call)
 }
 
@@ -145,7 +169,7 @@ const bountiesProposeAndAccept = async (api) => {
 const bountiesProposeAndAcceptVeryExpensive = async (api) => {
     const { DAVE } = getDevAccounts()
     console.log('Dave proposes a very expensive bounty')
-    await signAndSend(api.tx.bounties.proposeBounty('1250000000000000000', 'expensive bounty'), DAVE)
+    await signAndSend(api.tx.bounties.proposeBounty('1250000000000000000', 'expensive bounty to approve'), DAVE)
     const bountyIndex = (await api.query.bounties.bountyCount()).toHuman() - 1
     console.log(`Bounty index is: ${bountyIndex}`)
 
@@ -165,8 +189,14 @@ const bountiesProposeAndAcceptVeryExpensive = async (api) => {
         // step 2 - create and reject a proposal to fill in the pot and create some bounties (approved & funded)
         // after this step wait until one of the bounties gets funded (the spend period ends)
         await proposalsProposeAndReject(polkadot)
-        await bountiesProposeAndAccept(polkadot)
+        await bountiesProposeAndAccept(polkadot, 'bounty to fund')
+        await bountiesProposeAndAccept(polkadot, 'bounty to propose curator')
         await bountiesProposeAndAcceptVeryExpensive(polkadot)
+    } else if (args[0] === '3') {
+        // step 3 - propose curator and vote to have an funded bounty with curator voting and an active
+        // after this step wait until one of the bounties gets funded (the spend period ends)
+        await bountiesProposeCurator(polkadot, 1)
+        await bountiesProposeCuratorAndVote(polkadot, 2)
     }
 
     process.exit(0)
