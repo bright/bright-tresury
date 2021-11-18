@@ -89,6 +89,7 @@ export class BlockchainBountiesService {
         const proposersAddresses = BlockchainBountiesService.getProposersAddresses(bountiesDerived) // all proposers addresses
         const curatorsAddresses = BlockchainBountiesService.getCuratorsAddresses(bountiesDerived) // all curators addresses (if exists)
         const beneficiariesAddresses = BlockchainBountiesService.getBeneficiariesAddresses(bountiesDerived) // all beneficiaries addresses (if exists)
+        console.log([...proposersAddresses, ...curatorsAddresses, ...beneficiariesAddresses])
         return [...proposersAddresses, ...curatorsAddresses, ...beneficiariesAddresses]
     }
 
@@ -106,15 +107,16 @@ export class BlockchainBountiesService {
     private static getCuratorsAddresses(bountiesDerived: DeriveBounties): string[] {
         return bountiesDerived
             .map(({bounty}) => BlockchainBountiesService.getBountyStatusData(bounty.status))
-            .filter(({data}) => data?.curator !== undefined)
-            .map(curator => curator.toString())
+            .filter(({ data }) => data?.curator !== undefined)
+            .map(({data}) => data!.curator.toString())
+
     }
 
     private static getBeneficiariesAddresses(bountiesDerived: DeriveBounties): string[] {
         return bountiesDerived
             .map(({bounty}) => BlockchainBountiesService.getBountyStatusData(bounty.status))
-            .filter(({data}) => data?.beneficiary !== undefined)
-            .map(beneficiary => beneficiary.toString())
+            .filter(({ data }) => data?.beneficiary !== undefined)
+            .map(({data}) => data!.beneficiary!.toString())
     }
 
     private static getBountyStatusData(bountyStatus: PalletBountiesBountyStatus): {status: BlockchainBountyStatus, data?: BountyStatusData} {

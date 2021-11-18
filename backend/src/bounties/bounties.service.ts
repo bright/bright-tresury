@@ -53,17 +53,12 @@ export class BountiesService {
             this.repository.find({ where: {networkId} })
         ])
 
-        const blockchainIndexToBlockchainBounty = bountiesBlockchain.reduce((acc, bountyBlockchain) => {
-            return {...acc, [bountyBlockchain.index.toString()]: bountyBlockchain}
-        }, {} as {[key: string]: BlockchainBountyDto})
-
         const blockchainIndexToEntityBounty = bountiesEntities.reduce((acc, bountyEntity) => {
             return {...acc, [bountyEntity.blockchainIndex.toString()]: bountyEntity}
         }, {} as {[key: string]: BountyEntity})
 
-        return Object.keys(blockchainIndexToBlockchainBounty).map((blockchainIndex: string) => new BountyDto(
-            blockchainIndexToBlockchainBounty[blockchainIndex],
-            blockchainIndexToEntityBounty[blockchainIndex]
+        return bountiesBlockchain.map(bountyBlockchain => new BountyDto(
+            bountyBlockchain, blockchainIndexToEntityBounty[bountyBlockchain.index]
         ))
     }
 
