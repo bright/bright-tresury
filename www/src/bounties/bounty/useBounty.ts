@@ -29,7 +29,9 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
     const isProposer =
         !!bounty && !!user?.web3Addresses.find((web3Address) => web3Address.address === bounty.proposer.address)
     const isBeneficiary =
-        !!bounty && !!user?.web3Addresses.find((web3Address) => web3Address.address === bounty.beneficiary.address)
+        !!bounty &&
+        isPendingPayout &&
+        !!user?.web3Addresses.find((web3Address) => web3Address.address === bounty.beneficiary.address)
 
     const canReject = isCurator && (isCuratorProposed || isActive)
 

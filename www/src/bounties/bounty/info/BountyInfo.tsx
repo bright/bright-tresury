@@ -1,23 +1,21 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import clsx from 'clsx'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath, useHistory } from 'react-router-dom'
-import Button from '../../../components/button/Button'
 import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 import { Label } from '../../../components/text/Label'
 import LongText from '../../../components/text/LongText'
+import Placeholder from '../../../components/text/Placeholder'
 import ShortText from '../../../components/text/ShortText'
 import { ROUTE_EDIT_BOUNTY } from '../../../routes/routes'
-import { breakpoints } from '../../../theme/theme'
 import { timeToString } from '../../../util/dateUtil'
 import { BountyDto, BountyStatus } from '../../bounties.dto'
 import { useBounty } from '../useBounty'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         addresses: {
             display: 'flex',
@@ -82,23 +80,25 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
                         <AddressInfo address={bounty.curator.address} ellipsed={true} />
                     </div>
                 ) : null}
-                {bounty.status === BountyStatus.PendingPayout ? (
+                {bounty.status === BountyStatus.PendingPayout || bounty.status === BountyStatus.Active ? (
                     <div>
                         <Label label={t('bounty.info.beneficiary')} />
-                        <AddressInfo address={bounty.beneficiary.address} ellipsed={true} />
+                        {bounty.beneficiary ? (
+                            <AddressInfo address={bounty.beneficiary.address} ellipsed={true} />
+                        ) : (
+                            <Placeholder value={t('bounty.info.beneficiary')} />
+                        )}
                     </div>
                 ) : null}
             </div>
             {bounty.status === BountyStatus.Active ? (
                 <div className={classes.spacing}>
-                    {/*TODO style date*/}
                     <Label label={t('bounty.info.expiryDate')} />
                     <ShortText text={timeToString(bounty.updateDue, t)} placeholder={t('bounty.info.expiryDate')} />
                 </div>
             ) : null}
             {bounty.status === BountyStatus.PendingPayout ? (
                 <div className={classes.spacing}>
-                    {/*TODO style date*/}
                     <Label label={t('bounty.info.unlockDate')} />
                     <ShortText text={timeToString(bounty.unlockAt, t)} placeholder={t('bounty.info.unlockDate')} />
                 </div>

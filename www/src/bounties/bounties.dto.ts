@@ -51,8 +51,8 @@ interface BaseBountyDto {
     deposit: NetworkPlanckValue
     curatorDeposit: NetworkPlanckValue
     proposer: AccountInfo
-    beneficiary: AccountInfo
 
+    beneficiary?: AccountInfo
     title?: Nil<string>
     field?: Nil<string>
     description?: Nil<string>
