@@ -17,6 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 paddingLeft: 0,
                 paddingRight: 0,
                 paddingBottom: '8px',
+                justifyContent: 'space-around',
             },
             display: 'flex',
             flexDirection: 'row',

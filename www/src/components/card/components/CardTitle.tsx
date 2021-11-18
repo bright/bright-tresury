@@ -3,6 +3,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { breakpoints } from '../../../theme/theme'
 import Placeholder from '../../text/Placeholder'
+import { Nil } from '../../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -31,7 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    title?: string
+    title?: Nil<string>
 }
 
 export type CardTitleProps = OwnProps

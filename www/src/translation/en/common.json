@@ -529,6 +529,9 @@
             "pendingPayout": "Pending payout"
         },
         "list": {
+            "proposer": "(Proposer)",
+            "curator": "(Curator)",
+            "curatorProposed": "(Curator Proposed)",
             "createBounty": "+ Create Bounty"
         },
         "create": {
@@ -705,6 +708,7 @@
     },
     "errors": {
         "errorOccurredWhileLoadingIdeas": "An error occurred while loading ideas.",
+        "errorOccurredWhileLoadingBounties": "An error occurred while loading bounties.",
         "errorOccurredWhileLoadingProposals": "An error occurred while loading proposals.",
         "errorOccurredWhileLoadingIdea": "An error occurred while loading idea.",
         "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
@@ -718,6 +722,7 @@
     },
     "loading": {
         "ideas": "We're loading the ideas. It may take a moment. Bear with us.",
+        "bounties": "We're loading the bounties. It may take a moment. Bear with us.",
         "idea": "We're loading the idea. It may take a moment. Bear with us.",
         "ideaMilestones": "We're loading the idea milestones. It may take a moment. Bear with us.",
         "ideaComments": "We're loading the idea comments. It may take a moment. Bear with us.",
