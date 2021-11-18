@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
@@ -22,11 +22,10 @@ export class BountiesService {
         private readonly bountiesBlockchainService: BlockchainBountiesService
     ) {}
 
-    create(dto: CreateBountyDto, user: UserEntity): Promise<BountyEntity> {
+    create(dto: Omit<CreateBountyDto, 'blockchainIndex'> & { blockchainIndex: number }, user: UserEntity): Promise<BountyEntity> {
         logger.info(`Creating a bounty entity for index`)
         const bounty = this.repository.create({
             ...dto,
-            blockchainIndex: dto.blockchainIndex!,
             owner: user
         })
         return this.repository.save(bounty)
@@ -62,11 +61,20 @@ export class BountiesService {
             return {...acc, [bountyEntity.blockchainIndex.toString()]: bountyEntity}
         }, {} as {[key: string]: BountyEntity})
 
-        const blockchainIndexes = new Set<string>([...Object.keys(blockchainIndexToBlockchainBounty), ...Object.keys(blockchainIndexToEntityBounty)])
-
-        return [...blockchainIndexes].map((blockchainIndex: string) => new BountyDto(
+        return Object.keys(blockchainIndexToBlockchainBounty).map((blockchainIndex: string) => new BountyDto(
             blockchainIndexToBlockchainBounty[blockchainIndex],
             blockchainIndexToEntityBounty[blockchainIndex]
         ))
+    }
+
+    async getBounty(blockchainIndex: number, networkId: string): Promise<BountyDto> {
+        const [bountiesBlockchain, bountyEntity] = await Promise.all([
+            this.bountiesBlockchainService.getBounties(networkId),
+            this.repository.findOne({ where: {networkId, blockchainIndex } })
+        ])
+        const bountyBlockchain = bountiesBlockchain.find((bounty: BlockchainBountyDto) => bounty.index === blockchainIndex)
+        if(!bountyBlockchain)
+            throw new NotFoundException(`Bounty with blockchainIndex not found: ${blockchainIndex}`)
+        return new BountyDto(bountyBlockchain, bountyEntity)
     }
 }

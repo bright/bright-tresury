@@ -99,7 +99,7 @@ describe('BountiesService', () => {
 
         it('should assign owner id', async () => {
             const { user } = await setUp()
-            const result = await service().create(minimalValidCreateDto, user)
+            const result = await service().create({...minimalValidCreateDto, blockchainIndex: 0}, user)
             const saved = (await repository().findOne(result.id))!
             expect(saved.ownerId).toBe(user.id)
         })
