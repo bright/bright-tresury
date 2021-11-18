@@ -1,5 +1,5 @@
 import { Body, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from '@nestjs/common'
-import { ApiBadRequestResponse, ApiCreatedResponse, ApiTags } from '@nestjs/swagger'
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { SessionGuard } from '../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
@@ -16,11 +16,19 @@ export class BountiesController {
     constructor(private bountiesService: BountiesService) {}
 
     @Get()
+    @ApiOkResponse({
+        description: 'Respond with current bounties for the given network',
+        type: [BountyDto],
+    })
     async getBounties(@Query() { network }: NetworkNameQuery): Promise<BountyDto[]> {
         return this.bountiesService.getBounties(network)
     }
 
     @Get(':bountyIndex')
+    @ApiOkResponse({
+        description: 'Respond with bounty for the given index in the given network',
+        type: BountyDto,
+    })
     async getBounty(
         @Param() { bountyIndex }: BountyParam,
         @Query() { network }: NetworkNameQuery
