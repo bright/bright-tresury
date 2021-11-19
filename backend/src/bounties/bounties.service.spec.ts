@@ -162,4 +162,14 @@ describe('BountiesService', () => {
             expect(spy).not.toHaveBeenCalled()
         })
     })
+    describe('getBounties', () => {
+        it('', () => {
+
+        })
+    })
+    describe('getBounty', () => {
+        it('', () => {
+
+        })
+    })
 })

@@ -1,7 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
@@ -11,6 +10,7 @@ import { CreateBountyDto } from './dto/create-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
 import { BlockchainBountyDto } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
 import { BountyDto } from './dto/bounty.dto'
+import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 
 const logger = getLogger()
 
@@ -57,7 +57,7 @@ export class BountiesService {
             return {...acc, [bountyEntity.blockchainIndex.toString()]: bountyEntity}
         }, {} as {[key: string]: BountyEntity})
 
-        return bountiesBlockchain.map(bountyBlockchain => new BountyDto(
+        return bountiesBlockchain.map((bountyBlockchain:BlockchainBountyDto) => new BountyDto(
             bountyBlockchain, blockchainIndexToEntityBounty[bountyBlockchain.index]
         ))
     }

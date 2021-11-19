@@ -23,6 +23,7 @@ async function getBounty(bountyIndex: string, network: string): Promise<BountyDt
     //     beneficiary: { address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
     //     unlockDate: '2022-03-09',
     // })
+    /*
     return Promise.resolve({
         id: 'f695f755-0584-40fb-bb45-804153427d2e',
         blockchainIndex: 2,
@@ -42,7 +43,9 @@ async function getBounty(bountyIndex: string, network: string): Promise<BountyDt
         beneficiary: undefined, //{ address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
         unlockAt: { days: 1, hours: 1, minutes: 1, seconds: 1, milliseconds: 1 },
     })
-    // return apiGet<BountyDto>(`${BOUNTIES_API_PATH}/${bountyIndex}?network=${network}`)
+     */
+    console.log('getBounty', bountyIndex)
+    return apiGet<BountyDto>(`${BOUNTIES_API_PATH}/${bountyIndex}?network=${network}`)
 }
 
 export const BOUNTY_QUERY_KEY_BASE = 'bounty'
@@ -77,7 +80,8 @@ export const usePatchBounty = () => {
 // GET ALL
 
 async function getBounties(network: string): Promise<BountyDto[]> {
-    // const bounties = await apiGet<BountyDto[]>(`${BOUNTIES_API_PATH}?network=${network}`)
+    return apiGet<BountyDto[]>(`${BOUNTIES_API_PATH}?network=${network}`)
+    /*
     return Promise.resolve(
         [
             {
@@ -133,7 +137,9 @@ async function getBounties(network: string): Promise<BountyDto[]> {
         //     beneficiary: { address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
         //     unlockDate: '2022-03-09',
         // }
-    )
+        )
+     */
+
 }
 
 export const BOUNTIES_QUERY_KEY_BASE = 'bounties'

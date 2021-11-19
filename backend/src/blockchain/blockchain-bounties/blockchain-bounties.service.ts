@@ -89,7 +89,6 @@ export class BlockchainBountiesService {
         const proposersAddresses = BlockchainBountiesService.getProposersAddresses(bountiesDerived) // all proposers addresses
         const curatorsAddresses = BlockchainBountiesService.getCuratorsAddresses(bountiesDerived) // all curators addresses (if exists)
         const beneficiariesAddresses = BlockchainBountiesService.getBeneficiariesAddresses(bountiesDerived) // all beneficiaries addresses (if exists)
-        console.log([...proposersAddresses, ...curatorsAddresses, ...beneficiariesAddresses])
         return [...proposersAddresses, ...curatorsAddresses, ...beneficiariesAddresses]
     }
 

@@ -10,7 +10,6 @@ import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { mockListenForExtrinsic } from './spec.helpers'
-import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import {
     BlockchainBountyDto,
     BlockchainBountyStatus,
@@ -18,6 +17,7 @@ import {
 import { Repository } from 'typeorm'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { BountyEntity } from './entities/bounty.entity'
+import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 
 const baseUrl = `/api/v1/bounties/`
 
@@ -114,20 +114,6 @@ describe(`/api/v1/bounties/`, () => {
                 minimalValidDto,
                 expect.objectContaining({ id: sessionHandler.sessionData.user.id }),
             )
-        })
-
-        it(`should return ${HttpStatus.BAD_REQUEST} for no blockchain description`, async () => {
-            const { sessionHandler } = await setUp()
-            return sessionHandler
-                .authorizeRequest(
-                    request(app())
-                        .post(baseUrl)
-                        .send({
-                            ...minimalValidDto,
-                            blockchainDescription: undefined,
-                        }),
-                )
-                .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for no blockchain description`, async () => {
@@ -256,10 +242,6 @@ describe(`/api/v1/bounties/`, () => {
     })
 
     describe('GET /bounties get all bounties', () => {
-
-        it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId`, async () => {
-            return request(app()).get(baseUrl).expect(HttpStatus.BAD_REQUEST)
-        })
         it('should return current bounties', async () => {
             await bountiesRepository().save(bountiesRepository().create({
                 blockchainDescription: 'bc-description-2',
@@ -317,6 +299,12 @@ describe(`/api/v1/bounties/`, () => {
             expect(bountyDto.field).toBeUndefined()
             expect(bountyDto.description).toBeUndefined()
         })
+        it(`should return ${HttpStatus.BAD_REQUEST} for no networkId`, async () => {
+            return request(app()).get(baseUrl).expect(HttpStatus.BAD_REQUEST)
+        })
+        it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId`, async () => {
+            return request(app()).get(`${baseUrl}?network=non-existing`).expect(HttpStatus.BAD_REQUEST)
+        })
     })
     describe('GET /bounties/:bountyIndex get single bounty', () =>{
         it('should return correct bounty', async () => {
@@ -333,11 +321,14 @@ describe(`/api/v1/bounties/`, () => {
             expect(bountyDto.field).toBeUndefined()
             expect(bountyDto.description).toBeUndefined()
         })
-        it(`should return ${HttpStatus.NOT_FOUND} status code for non existing bounty`, async () => {
-            return request(app()).get(`${baseUrl}2?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.NOT_FOUND)
+        it(`should return ${HttpStatus.BAD_REQUEST} status code for bounty id not being a number`, async () => {
+            return request(app()).get(`${baseUrl}AB?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.BAD_REQUEST)
         })
         it(`should return ${HttpStatus.BAD_REQUEST} status code for non existing network id`, async () => {
             return request(app()).get(`${baseUrl}0?network=non-existing`).expect(HttpStatus.BAD_REQUEST)
+        })
+        it(`should return ${HttpStatus.BAD_REQUEST} status code for no network id`, async () => {
+            return request(app()).get(`${baseUrl}0`).expect(HttpStatus.BAD_REQUEST)
         })
     })
 })

@@ -2,12 +2,12 @@ import { Time } from '@polkadot/util/types'
 import { AccountInfo, NetworkPlanckValue, Nil } from '../util/types'
 
 export enum BountyStatus {
-    Proposed = 'proposed',
-    Approved = 'approved',
-    Funded = 'funded',
-    CuratorProposed = 'curator-proposed',
-    Active = 'active',
-    PendingPayout = 'pending-payout',
+    Proposed = 'Proposed',
+    Approved = 'Approved',
+    Funded = 'Funded',
+    CuratorProposed = 'CuratorProposed',
+    Active = 'Active',
+    PendingPayout = 'PendingPayout',
 }
 
 interface ProposedBounty {
@@ -24,20 +24,20 @@ interface FundedBounty {
 
 interface CuratorProposedBounty {
     status: BountyStatus.CuratorProposed
-    curatorsFee: NetworkPlanckValue
+    curatorFee: NetworkPlanckValue
     curator: AccountInfo
 }
 
 interface ActiveBounty {
     status: BountyStatus.Active
-    curatorsFee: NetworkPlanckValue
+    curatorFee: NetworkPlanckValue
     curator: AccountInfo
     updateDue: Time
 }
 
 interface PendingPayoutBounty {
     status: BountyStatus.PendingPayout
-    curatorsFee: NetworkPlanckValue
+    curatorFee: NetworkPlanckValue
     curator: AccountInfo
     beneficiary: AccountInfo
     unlockAt: Time
@@ -48,7 +48,7 @@ interface BaseBountyDto {
     blockchainIndex: number
     blockchainDescription: string
     value: NetworkPlanckValue
-    deposit: NetworkPlanckValue
+    bond: NetworkPlanckValue
     curatorDeposit: NetworkPlanckValue
     proposer: AccountInfo
 
