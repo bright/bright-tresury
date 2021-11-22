@@ -606,8 +606,9 @@
                 },
                 "claimPayoutModal": {
                     "title": "You are about to claim the payout",
-                    "warningMessage": "We are happy that you've made it to this point. Thanks for your work to support the community. Please make sure to use the beneficiary address to sign this transaction.",
-                    "eventDescription": "event claim payout finished"
+                    "warningMessage": "We're happy that you've made it to this point! Thanks for your work to support the community. Submit the transaction to claim the payout.",
+                    "eventDescription": "event claim payout finished",
+                    "successMessage": "Congratulations, you have just claimed the payout! The bounty was closed."
                 }
             }
         },

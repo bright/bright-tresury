@@ -209,29 +209,31 @@ const bountiesProposeAndAcceptVeryExpensive = async (api) => {
         // step 1 - create a council. after executing wait until the candidates become members
         await submitCouncilAndVote(polkadot)
     } else if (args[0] === '2') {
-        // step 2 - create and reject a proposal to fill in the pot and create some bounties (approved & funded)
-        // after this step wait until one of the bounties gets funded (the spend period ends)
+        // step 2 - create and reject a proposal to fill in the pot (it will happen after spend period ends)
         await proposalsProposeAndReject(polkadot) // 0
-        await bountiesProposeAndAcceptVeryExpensive(polkadot) // 1
-        await bountiesProposeAndAccept(polkadot, 'bounty funded') // 2
-        await bountiesProposeAndAccept(polkadot, 'bounty with curator voting') // 3
-        await bountiesProposeAndAccept(polkadot, 'bounty curator proposed') // 4
-        await bountiesProposeAndAccept(polkadot, 'bounty active') // 5
-        await bountiesProposeAndAccept(polkadot, 'bounty pending payout') //6
     } else if (args[0] === '3') {
+        // step 2 - create some bounties (approved & funded)
+        // after this step wait until the bounties gets funded (the spend period ends)
+        await bountiesProposeAndAcceptVeryExpensive(polkadot) // 0
+        await bountiesProposeAndAccept(polkadot, 'bounty 2') // 1
+        await bountiesProposeAndAccept(polkadot, 'bounty with curator voting') // 2
+        await bountiesProposeAndAccept(polkadot, 'bounty curator proposed') // 3
+        await bountiesProposeAndAccept(polkadot, 'bounty active') // 4
+        await bountiesProposeAndAccept(polkadot, 'bounty pending payout') //5
+    } else if (args[0] === '4') {
         // step 3 - propose curator and vote to have an funded bounty with curator voting and an active
         // after this step wait until one of the bounties gets funded (the spend period ends)
         // Funded with curator voting
-        await bountiesProposeCurator(polkadot, 3)
+        await bountiesProposeCurator(polkadot, 2)
         // CuratorProposed
-        await bountiesProposeCuratorAndVote(polkadot, 4)
+        await bountiesProposeCuratorAndVote(polkadot, 3)
         // Active
+        await bountiesProposeCuratorAndVote(polkadot, 4)
+        await bountiesAcceptCurator(polkadot, 4)
+        // PendingPayout
         await bountiesProposeCuratorAndVote(polkadot, 5)
         await bountiesAcceptCurator(polkadot, 5)
-        // PendingPayout
-        await bountiesProposeCuratorAndVote(polkadot, 6)
-        await bountiesAcceptCurator(polkadot, 6)
-        await bountiesAward(polkadot, 6)
+        await bountiesAward(polkadot, 5)
     } else if (args[0] === 'approved') {
         await bountiesProposeAndAcceptVeryExpensive(polkadot)
     } else if (args[0] === 'funded') {

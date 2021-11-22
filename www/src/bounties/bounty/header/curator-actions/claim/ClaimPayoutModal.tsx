@@ -4,6 +4,7 @@ import { useHistory } from 'react-router-dom'
 import Modal from '../../../../../components/modal/Modal'
 import Strong from '../../../../../components/strong/Strong'
 import { ROUTE_BOUNTIES } from '../../../../../routes/routes'
+import { useSnackNotifications } from '../../../../../snack-notifications/useSnackNotifications'
 import SubmittingTransaction from '../../../../../substrate-lib/components/SubmittingTransaction'
 import { BountyDto } from '../../../../bounties.dto'
 
@@ -18,8 +19,11 @@ export type ClaimPayoutModalProps = OwnProps
 const ClaimPayoutModal = ({ open, onClose, bounty }: ClaimPayoutModalProps) => {
     const { t } = useTranslation()
     const history = useHistory()
+    const snackNotifications = useSnackNotifications()
 
     const onSuccess = async () => {
+        snackNotifications.setLabel(t('bounty.info.curatorActions.claimPayoutModal.successMessage'))
+        snackNotifications.open()
         history.push(ROUTE_BOUNTIES)
     }
 

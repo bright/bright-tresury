@@ -42,6 +42,7 @@ import {
     ROUTE_STATS,
     ROUTE_VERIFY_EMAIL,
 } from './routes/routes'
+import SnackNotificationsContextProvider from './snack-notifications/SnackNotificationsContext'
 import Stats from './stats/Stats'
 import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContext'
 import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
@@ -114,11 +115,13 @@ function App() {
                     <NetworksContextProvider>
                         <AuthContextProvider>
                             <ThemeWrapper>
-                                <SubstrateContextProvider>
-                                    <AccountsContextProvider>
-                                        <AppRoutes />
-                                    </AccountsContextProvider>
-                                </SubstrateContextProvider>
+                                <SnackNotificationsContextProvider>
+                                    <SubstrateContextProvider>
+                                        <AccountsContextProvider>
+                                            <AppRoutes />
+                                        </AccountsContextProvider>
+                                    </SubstrateContextProvider>
+                                </SnackNotificationsContextProvider>
                             </ThemeWrapper>
                         </AuthContextProvider>
                     </NetworksContextProvider>
