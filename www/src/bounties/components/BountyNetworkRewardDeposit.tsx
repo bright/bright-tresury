@@ -9,7 +9,6 @@ interface OwnProps {
 export type NetworkRewardDepositProps = OwnProps
 const ProposalNetworkRewardDeposit = ({ bounty }: NetworkRewardDepositProps) => {
     const { t } = useTranslation()
-    debugger
     const reward = { value: bounty.value, label: t('bounty.info.reward') }
     const deposit =
         bounty.status === BountyStatus.CuratorProposed ||

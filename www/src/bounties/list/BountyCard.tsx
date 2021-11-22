@@ -43,7 +43,6 @@ const BountyCard = ({ bounty }: BountyCardProps) => {
     const { t } = useTranslation()
     const { network } = useNetworks()
     const classes = useStyles()
-    debugger
     return (
         <NetworkCard
             redirectTo={`${generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex })}/${
