@@ -5,12 +5,15 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { createSessionData } from '../ideas/spec.helpers'
 import { UserEntity } from '../users/user.entity'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
-import { mockListenForExtrinsic, mockListenForExtrinsicWithNoEvent } from './spec.helpers'
+import { blockchainBounties, mockListenForExtrinsic, mockListenForExtrinsicWithNoEvent } from './spec.helpers'
+import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
+import { BlockchainBountyStatus } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
+import { NotFoundException } from '@nestjs/common'
 
 describe('BountiesService', () => {
     const app = beforeSetupFullApp()
@@ -163,13 +166,38 @@ describe('BountiesService', () => {
         })
     })
     describe('getBounties', () => {
-        it('', () => {
+        beforeAll(() => {
+            jest.spyOn(app().get(BlockchainBountiesService), 'getBounties')
+                .mockImplementation(async (networkId) => blockchainBounties)
+        })
 
+        it('should return two bounties', async () => {
+            const bountiesTuples = await service().getBounties(NETWORKS.POLKADOT)
+            expect(Array.isArray(bountiesTuples)).toBe(true)
+            expect(bountiesTuples).toHaveLength(2)
         })
     })
     describe('getBounty', () => {
-        it('', () => {
+        beforeAll(() => {
+            jest.spyOn(app().get(BlockchainBountiesService), 'getBounties')
+                .mockImplementation(async (networkId) => blockchainBounties)
+        })
+        it('should return correct bounty tuple', async () => {
+            const [blockchainBounty, bountyEntity] = await service().getBounty(0, NETWORKS.POLKADOT)
+            expect(blockchainBounty).toBeDefined()
+            expect(bountyEntity).toBeUndefined()
 
+            expect(blockchainBounty.index).toBe(0)
+            expect(blockchainBounty.description).toBe('bc-description-1')
+            expect(blockchainBounty.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(blockchainBounty.value).toBe('10000')
+            expect(blockchainBounty.fee).toBe('100')
+            expect(blockchainBounty.curatorDeposit).toBe('0')
+            expect(blockchainBounty.bond).toBe('10')
+            expect(blockchainBounty.status).toBe(BlockchainBountyStatus.Proposed)
+        })
+        it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
+            return expect(service().getBounty(5, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)
         })
     })
 })

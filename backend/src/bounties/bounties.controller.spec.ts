@@ -9,7 +9,7 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { CreateBountyDto } from './dto/create-bounty.dto'
-import { mockListenForExtrinsic } from './spec.helpers'
+import { blockchainBounties, mockListenForExtrinsic } from './spec.helpers'
 import {
     BlockchainBountyDto,
     BlockchainBountyStatus,
@@ -18,6 +18,7 @@ import { Repository } from 'typeorm'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { BountyEntity } from './entities/bounty.entity'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
+import { BountyDto } from './dto/bounty.dto'
 
 const baseUrl = `/api/v1/bounties/`
 
@@ -28,18 +29,8 @@ describe(`/api/v1/bounties/`, () => {
     const bountiesRepository = beforeAllSetup(() => app().get<Repository<BountyEntity>>(getRepositoryToken(BountyEntity)))
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainBountiesService), 'getBounties').mockImplementation(async (networkId) => [
-            new BlockchainBountyDto({
-                index: 0,
-                description: 'bc-description',
-                proposer: { address: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5' },
-                value: '10000' as NetworkPlanckValue,
-                fee: '100' as NetworkPlanckValue,
-                curatorDeposit: '0' as NetworkPlanckValue,
-                bond: '10' as NetworkPlanckValue,
-                status: BlockchainBountyStatus.Proposed
-            })
-        ])
+        jest.spyOn(app().get(BlockchainBountiesService), 'getBounties')
+            .mockImplementation(async (networkId) => blockchainBounties)
     })
     beforeEach(async () => {
         await cleanDatabase()
@@ -244,7 +235,7 @@ describe(`/api/v1/bounties/`, () => {
     describe('GET /bounties get all bounties', () => {
         it('should return current bounties', async () => {
             await bountiesRepository().save(bountiesRepository().create({
-                blockchainDescription: 'bc-description-2',
+                blockchainDescription: 'bc-description-1',
                 value: '1',
                 title: 'bounty-title',
                 field: 'field',
@@ -254,13 +245,14 @@ describe(`/api/v1/bounties/`, () => {
                 blockchainIndex: 0
             }))
 
-            const bountiesDtos = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
+            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
             expect(Array.isArray(bountiesDtos)).toBe(true)
-            expect(bountiesDtos).toHaveLength(1)
+            expect(bountiesDtos).toHaveLength(2)
 
-            const [bountyDto] = bountiesDtos
+            const bountyDto = bountiesDtos.find(({blockchainIndex}) => blockchainIndex === 0)!
+            expect(bountyDto).toBeDefined()
             expect(bountyDto.blockchainIndex).toBe(0)
-            expect(bountyDto.blockchainDescription).toBe('bc-description')
+            expect(bountyDto.blockchainDescription).toBe('bc-description-1')
             expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(bountyDto.value).toBe('10000')
             expect(bountyDto.curatorFee).toBe('100')
@@ -273,22 +265,23 @@ describe(`/api/v1/bounties/`, () => {
         })
         it('should return only bounties that are in blockchain', async () => {
             await bountiesRepository().save(bountiesRepository().create({
-                blockchainDescription: 'bc-description-2',
+                blockchainDescription: 'bc-description-entity',
                 value: '1',
-                title: 'bounty-title',
+                title: 'bounty-entity-title',
                 field: 'field',
                 description: 'db-description',
                 networkId: NETWORKS.POLKADOT,
                 proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
                 blockchainIndex: 2
             }))
-            const bountiesDtos = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
+            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
             expect(Array.isArray(bountiesDtos)).toBe(true)
-            expect(bountiesDtos).toHaveLength(1)
+            expect(bountiesDtos).toHaveLength(2)
 
-            const [bountyDto] = bountiesDtos
+            const bountyDto = bountiesDtos.find(({blockchainIndex}) => blockchainIndex === 0)!
+            expect(bountyDto).toBeDefined()
             expect(bountyDto.blockchainIndex).toBe(0)
-            expect(bountyDto.blockchainDescription).toBe('bc-description')
+            expect(bountyDto.blockchainDescription).toBe('bc-description-1')
             expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(bountyDto.value).toBe('10000')
             expect(bountyDto.curatorFee).toBe('100')
@@ -310,7 +303,7 @@ describe(`/api/v1/bounties/`, () => {
         it('should return correct bounty', async () => {
             const bountyDto = (await request(app()).get(`${baseUrl}0?network=${NETWORKS.POLKADOT}`)).body
             expect(bountyDto.blockchainIndex).toBe(0)
-            expect(bountyDto.blockchainDescription).toBe('bc-description')
+            expect(bountyDto.blockchainDescription).toBe('bc-description-1')
             expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(bountyDto.value).toBe('10000')
             expect(bountyDto.curatorFee).toBe('100')

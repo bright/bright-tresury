@@ -10,6 +10,7 @@ import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { BountyEntity } from './entities/bounty.entity'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
+import { BountyDto } from './dto/bounty.dto'
 
 const baseUrl = `/api/v1/bounties/`
 
@@ -62,13 +63,14 @@ describe(`/api/v1/bounties/`, () => {
                         expect(bounty.blockchainIndex).toBe(bountyIndex)
                         expect(bounty.value).toBe('1000000000000')
 
-                        const {body: bountiesDtos} = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
-                        const lastBounty = bountiesDtos[bountiesDtos.length-1]
-                        expect(lastBounty.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
-                        expect(lastBounty.value).toBe('1000000000000')
-                        expect(lastBounty.bond).toBe('10200000000')
-                        expect(lastBounty.status).toBe('Proposed')
-                        expect(lastBounty.title).toBe('title')
+                        const {body: bountiesDtos}: {body: BountyDto[]} = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
+                        const bountyDto = bountiesDtos.find(({blockchainIndex}) => bounty.blockchainIndex === blockchainIndex)!
+                        expect(bountyDto).toBeDefined()
+                        expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+                        expect(bountyDto.value).toBe('1000000000000')
+                        expect(bountyDto.bond).toBe('10200000000')
+                        expect(bountyDto.status).toBe('Proposed')
+                        expect(bountyDto.title).toBe('title')
 
                         done()
                     }, 2000)

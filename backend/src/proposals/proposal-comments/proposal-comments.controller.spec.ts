@@ -127,8 +127,6 @@ describe('Proposal comments', () => {
         const { comment } = await proposalCommentsService().create(0, POLKADOT, user, {
             content: 'This is a comment',
         })
-        console.log('comment.id:', comment.id)
-        console.log('findAll', await proposalCommentsService().findAll(0, POLKADOT))
         await sessionHandler.authorizeRequest(
             request(app()).delete(`/api/v1/proposals/0/comments/${comment.id}`).expect(HttpStatus.OK),
         )

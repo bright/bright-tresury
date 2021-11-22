@@ -47,7 +47,7 @@ export class BountiesService {
         )
     }
 
-    async getBounties(networkId: string): Promise<BountyDto[]> {
+    async getBounties(networkId: string): Promise<[BlockchainBountyDto, BountyEntity?][]> {
         const [bountiesBlockchain, bountiesEntities] = await Promise.all([
             this.bountiesBlockchainService.getBounties(networkId),
             this.repository.find({ where: {networkId} })
@@ -57,12 +57,12 @@ export class BountiesService {
             return {...acc, [bountyEntity.blockchainIndex.toString()]: bountyEntity}
         }, {} as {[key: string]: BountyEntity})
 
-        return bountiesBlockchain.map((bountyBlockchain:BlockchainBountyDto) => new BountyDto(
-            bountyBlockchain, blockchainIndexToEntityBounty[bountyBlockchain.index]
-        ))
+        return bountiesBlockchain.map((bountyBlockchain:BlockchainBountyDto) =>
+            [bountyBlockchain, blockchainIndexToEntityBounty[bountyBlockchain.index]]
+        )
     }
 
-    async getBounty(blockchainIndex: number, networkId: string): Promise<BountyDto> {
+    async getBounty(blockchainIndex: number, networkId: string): Promise<[BlockchainBountyDto, BountyEntity?]> {
         const [bountiesBlockchain, bountyEntity] = await Promise.all([
             this.bountiesBlockchainService.getBounties(networkId),
             this.repository.findOne({ where: {networkId, blockchainIndex } })
@@ -70,6 +70,6 @@ export class BountiesService {
         const bountyBlockchain = bountiesBlockchain.find((bounty: BlockchainBountyDto) => bounty.index === blockchainIndex)
         if(!bountyBlockchain)
             throw new NotFoundException(`Bounty with blockchainIndex not found: ${blockchainIndex}`)
-        return new BountyDto(bountyBlockchain, bountyEntity)
+        return [bountyBlockchain, bountyEntity]
     }
 }

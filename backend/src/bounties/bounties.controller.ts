@@ -21,7 +21,10 @@ export class BountiesController {
         type: [BountyDto],
     })
     async getBounties(@Query() { network }: NetworkNameQuery): Promise<BountyDto[]> {
-        return this.bountiesService.getBounties(network)
+        const bounties = await this.bountiesService.getBounties(network)
+        return bounties.map(
+            ([bountyBlockchain, bountyEntity]) =>  new BountyDto(bountyBlockchain, bountyEntity)
+        )
     }
 
     @Get(':bountyIndex')
@@ -33,7 +36,8 @@ export class BountiesController {
         @Param() { bountyIndex }: BountyParam,
         @Query() { network }: NetworkNameQuery
     ): Promise<BountyDto> {
-        return this.bountiesService.getBounty(Number(bountyIndex), network)
+        const [bountyBlockchain, bountyEntity] = await this.bountiesService.getBounty(Number(bountyIndex), network)
+        return new BountyDto(bountyBlockchain, bountyEntity)
     }
 
     @Post()
