@@ -63,7 +63,8 @@ const getDevAccounts = () => {
     const BOB = keyring.addFromUri('//Bob')
     const CHARLIE = keyring.addFromUri('//Charlie')
     const DAVE = keyring.addFromUri('//Dave')
-    return { ALICE, BOB, CHARLIE, DAVE, keyring }
+    const EVE = keyring.addFromUri('//Eve')
+    return { ALICE, BOB, CHARLIE, DAVE, EVE, keyring }
 }
 
 /**
@@ -163,13 +164,35 @@ const bountiesProposeCuratorAndVote = async (api, bountyIndex) => {
 }
 
 /**
+ * Accept a curator
+ * @param api
+ */
+const bountiesAcceptCurator = async (api, bountyIndex) => {
+    const { DAVE } = getDevAccounts()
+    console.log('Dave accepts curator role')
+
+    await signAndSend(api.tx.bounties.acceptCurator(bountyIndex), DAVE)
+}
+
+/**
+ * Award bounty
+ * @param api
+ */
+const bountiesAward = async (api, bountyIndex) => {
+    const { DAVE, EVE } = getDevAccounts()
+    console.log('Dave awards bounty to Eve')
+
+    await signAndSend(api.tx.bounties.awardBounty(bountyIndex, EVE.address), DAVE)
+}
+
+/**
  * Propose a very expensive bounty which should never get funded and approve it. It should stuck in "Approved" status
  * @param api
  */
 const bountiesProposeAndAcceptVeryExpensive = async (api) => {
     const { DAVE } = getDevAccounts()
     console.log('Dave proposes a very expensive bounty')
-    await signAndSend(api.tx.bounties.proposeBounty('1250000000000000000', 'expensive bounty to approve'), DAVE)
+    await signAndSend(api.tx.bounties.proposeBounty('1250000000000000000', 'expensive bounty approved'), DAVE)
     const bountyIndex = (await api.query.bounties.bountyCount()).toHuman() - 1
     console.log(`Bounty index is: ${bountyIndex}`)
 
@@ -188,15 +211,44 @@ const bountiesProposeAndAcceptVeryExpensive = async (api) => {
     } else if (args[0] === '2') {
         // step 2 - create and reject a proposal to fill in the pot and create some bounties (approved & funded)
         // after this step wait until one of the bounties gets funded (the spend period ends)
-        await proposalsProposeAndReject(polkadot)
-        await bountiesProposeAndAccept(polkadot, 'bounty to fund')
-        await bountiesProposeAndAccept(polkadot, 'bounty to propose curator')
-        await bountiesProposeAndAcceptVeryExpensive(polkadot)
+        await proposalsProposeAndReject(polkadot) // 0
+        await bountiesProposeAndAcceptVeryExpensive(polkadot) // 1
+        await bountiesProposeAndAccept(polkadot, 'bounty funded') // 2
+        await bountiesProposeAndAccept(polkadot, 'bounty with curator voting') // 3
+        await bountiesProposeAndAccept(polkadot, 'bounty curator proposed') // 4
+        await bountiesProposeAndAccept(polkadot, 'bounty active') // 5
+        await bountiesProposeAndAccept(polkadot, 'bounty pending payout') //6
     } else if (args[0] === '3') {
         // step 3 - propose curator and vote to have an funded bounty with curator voting and an active
         // after this step wait until one of the bounties gets funded (the spend period ends)
-        await bountiesProposeCurator(polkadot, 1)
-        await bountiesProposeCuratorAndVote(polkadot, 2)
+        // Funded with curator voting
+        await bountiesProposeCurator(polkadot, 3)
+        // CuratorProposed
+        await bountiesProposeCuratorAndVote(polkadot, 4)
+        // Active
+        await bountiesProposeCuratorAndVote(polkadot, 5)
+        await bountiesAcceptCurator(polkadot, 5)
+        // PendingPayout
+        await bountiesProposeCuratorAndVote(polkadot, 6)
+        await bountiesAcceptCurator(polkadot, 6)
+        await bountiesAward(polkadot, 6)
+    } else if (args[0] === 'approved') {
+        await bountiesProposeAndAcceptVeryExpensive(polkadot)
+    } else if (args[0] === 'funded') {
+        await bountiesProposeAndAccept(polkadot, args[1] ?? 'title')
+    } else if (args[0] === 'curatorProposed') {
+        await bountiesProposeCuratorAndVote(polkadot, args[1] ?? 0)
+    } else if (args[0] === 'curatorProposed') {
+        await bountiesProposeCuratorAndVote(polkadot, args[1] ?? 0)
+    } else if (args[0] === 'active') {
+        const index = args[1] ?? 0
+        await bountiesProposeCuratorAndVote(polkadot, index)
+        await bountiesAcceptCurator(polkadot, index)
+    } else if (args[0] === 'pendingPayout') {
+        const index = args[1] ?? 0
+        await bountiesProposeCuratorAndVote(polkadot, index)
+        await bountiesAcceptCurator(polkadot, index)
+        await bountiesAward(polkadot, index)
     }
 
     process.exit(0)

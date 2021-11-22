@@ -7,7 +7,7 @@ import Route from '../../routes/Route'
 import { ROUTE_EDIT_BOUNTY } from '../../routes/routes'
 import { Nil } from '../../util/types'
 import { BountyDto } from '../bounties.dto'
-import BountyHeader from './BountyHeader'
+import BountyHeader from './header/BountyHeader'
 import BountyEdit from './edit/BountyEdit'
 import BountyInfo from './info/BountyInfo'
 

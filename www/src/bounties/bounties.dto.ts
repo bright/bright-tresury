@@ -32,7 +32,7 @@ interface ActiveBounty {
     status: BountyStatus.Active
     curatorFee: NetworkPlanckValue
     curator: AccountInfo
-    updateDue: Time
+    updateDue?: Time
 }
 
 interface PendingPayoutBounty {
@@ -40,7 +40,7 @@ interface PendingPayoutBounty {
     curatorFee: NetworkPlanckValue
     curator: AccountInfo
     beneficiary: AccountInfo
-    unlockAt: Time
+    unlockAt?: Time
 }
 
 interface BaseBountyDto {

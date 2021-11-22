@@ -2,13 +2,12 @@ import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useQueryClient } from 'react-query'
 import { useHistory } from 'react-router-dom'
-import Modal from '../../../../components/modal/Modal'
-import Strong from '../../../../components/strong/Strong'
-import { useNetworks } from '../../../../networks/useNetworks'
-import SubmittingTransaction from '../../../../substrate-lib/components/SubmittingTransaction'
-import { BOUNTY_QUERY_KEY_BASE, useGetBounty } from '../../../bounties.api'
-import { BountyDto } from '../../../bounties.dto'
-import { useBounty } from '../../useBounty'
+import Modal from '../../../../../components/modal/Modal'
+import Strong from '../../../../../components/strong/Strong'
+import { useNetworks } from '../../../../../networks/useNetworks'
+import SubmittingTransaction from '../../../../../substrate-lib/components/SubmittingTransaction'
+import { BOUNTY_QUERY_KEY_BASE, useGetBounty } from '../../../../bounties.api'
+import { BountyDto } from '../../../../bounties.dto'
 
 interface OwnProps {
     open: boolean
@@ -16,9 +15,9 @@ interface OwnProps {
     bounty: BountyDto
 }
 
-export type AcceptCuratorModalProps = OwnProps
+export type RejectCuratorModalProps = OwnProps
 
-const AcceptCuratorModal = ({ open, onClose, bounty }: AcceptCuratorModalProps) => {
+const RejectCuratorModal = ({ open, onClose, bounty }: RejectCuratorModalProps) => {
     const { t } = useTranslation()
     const { network } = useNetworks()
     const { refetch } = useGetBounty({ bountyIndex: bounty.blockchainIndex.toString(), network: network.id })
@@ -27,7 +26,6 @@ const AcceptCuratorModal = ({ open, onClose, bounty }: AcceptCuratorModalProps) 
         await refetch()
         onClose()
     }
-
     return (
         <Modal
             open={open}
@@ -38,11 +36,11 @@ const AcceptCuratorModal = ({ open, onClose, bounty }: AcceptCuratorModalProps) 
             maxWidth={'sm'}
         >
             <SubmittingTransaction
-                title={t('bounty.info.curatorActions.acceptModal.title')}
+                title={t('bounty.info.curatorActions.rejectModal.title')}
                 instruction={
                     <Trans
                         id="modal-description"
-                        i18nKey="bounty.info.curatorActions.acceptModal.warningMessage"
+                        i18nKey="bounty.info.curatorActions.rejectModal.warningMessage"
                         components={{
                             strong: <Strong color={'primary'} />,
                         }}
@@ -52,9 +50,9 @@ const AcceptCuratorModal = ({ open, onClose, bounty }: AcceptCuratorModalProps) 
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'bounties',
-                    callable: 'acceptCurator',
+                    callable: 'unassignCurator',
                     eventMethod: 'BountyBecameActive',
-                    eventDescription: t('bounty.info.curatorActions.acceptModal.eventDescription'),
+                    eventDescription: t('bounty.info.curatorActions.rejectModal.eventDescription'),
                     inputParams: [
                         {
                             name: 'bountyId',
@@ -67,4 +65,4 @@ const AcceptCuratorModal = ({ open, onClose, bounty }: AcceptCuratorModalProps) 
     )
 }
 
-export default AcceptCuratorModal
+export default RejectCuratorModal

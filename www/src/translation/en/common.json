@@ -572,7 +572,9 @@
         },
         "header": {
             "accept": "Accept",
-            "reject": "Reject"
+            "reject": "Reject",
+            "claimPayout": "Claim Payout",
+            "edit": "Edit bounty"
         },
         "info": {
             "proposer": "Proposer",
@@ -586,7 +588,9 @@
             "curator": "Curator",
             "proposedCurator": "Proposed curator",
             "expiryDate": "Expires in",
+            "expired": "Bounty has expired!",
             "unlockDate": "Payout unlocks in",
+            "payoutUnlocked": "The bounty payout is unlocked!",
             "beneficiary": "Beneficiary",
             "editButton": "Edit",
             "curatorActions": {
@@ -599,6 +603,11 @@
                     "title": "You are about to reject the curator's role",
                     "warningMessage": "We take this as a sign that you are unable to do your job and willingly give up. The community could slash you, but for now they allow you to recover your deposit and exit without issue. (The community may want to change this if it is abused.)",
                     "eventDescription": "event curator rejected finished"
+                },
+                "claimPayoutModal": {
+                    "title": "You are about to claim the payout",
+                    "warningMessage": "We are happy that you've made it to this point. Thanks for your work to support the community. Please make sure to use the beneficiary address to sign this transaction.",
+                    "eventDescription": "event claim payout finished"
                 }
             }
         },

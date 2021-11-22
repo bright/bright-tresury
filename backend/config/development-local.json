@@ -15,7 +15,7 @@
             "name": "Development 1",
             "url": "ws://localhost:9944",
             "developmentKeyring": true,
-            "ss58Format": 42,
+            "ss58Format": 0,
             "genesisHash": "",
             "bond": {
                 "minValue": "1000000000000",

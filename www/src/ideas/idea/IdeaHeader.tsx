@@ -22,7 +22,7 @@ import { breakpoints } from '../../theme/theme'
 import { IdeaDto } from '../ideas.dto'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
 import PrivateIdeaContentTypeTabs from './PrivateIdeaContentTypeTabs'
-import OptionsButton from './OptionsButton'
+import IdeaOptionsButton from './IdeaOptionsButton'
 import IdeaStatusIndicator from './status/IdeaStatusIndicator'
 import { useIdea } from './useIdea'
 import { IdeaContentType, IdeaTabConfig } from './Idea'
@@ -116,7 +116,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
                     </Button>
                 </ActionButtons>
             )}
-            {isOwner ? <OptionsButton className={classes.optionsButton} idea={idea} /> : null}
+            {isOwner ? <IdeaOptionsButton className={classes.optionsButton} idea={idea} /> : null}
         </HeaderContainer>
     )
 }

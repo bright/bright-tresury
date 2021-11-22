@@ -8,7 +8,7 @@
             "name": "Development 2",
             "url": "wss://testing.treasury.brightinventions.pl:9944",
             "developmentKeyring": true,
-            "ss58Format": 42,
+            "ss58Format": 0,
             "genesisHash": "",
             "bond": {
                 "minValue": "1000000000000",
@@ -24,7 +24,7 @@
             "name": "Development 1",
             "url": "wss://stage.treasury.brightinventions.pl:9944",
             "developmentKeyring": true,
-            "ss58Format": 42,
+            "ss58Format": 0,
             "genesisHash": "",
             "bond": {
                 "minValue": "1000000000000",

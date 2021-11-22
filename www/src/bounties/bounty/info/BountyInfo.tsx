@@ -94,13 +94,24 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
             {bounty.status === BountyStatus.Active ? (
                 <div className={classes.spacing}>
                     <Label label={t('bounty.info.expiryDate')} />
-                    <ShortText text={timeToString(bounty.updateDue, t)} placeholder={t('bounty.info.expiryDate')} />
+                    {bounty.updateDue ? (
+                        <ShortText text={timeToString(bounty.updateDue, t)} placeholder={t('bounty.info.expiryDate')} />
+                    ) : (
+                        <ShortText text={t('bounty.info.expired')} placeholder={t('bounty.info.expired')} />
+                    )}
                 </div>
             ) : null}
             {bounty.status === BountyStatus.PendingPayout ? (
                 <div className={classes.spacing}>
                     <Label label={t('bounty.info.unlockDate')} />
-                    <ShortText text={timeToString(bounty.unlockAt, t)} placeholder={t('bounty.info.unlockDate')} />
+                    {bounty.unlockAt ? (
+                        <ShortText text={timeToString(bounty.unlockAt, t)} placeholder={t('bounty.info.unlockDate')} />
+                    ) : (
+                        <ShortText
+                            text={t('bounty.info.payoutUnlocked')}
+                            placeholder={t('bounty.info.payoutUnlocked')}
+                        />
+                    )}
                 </div>
             ) : null}
             <div className={classes.spacing}>

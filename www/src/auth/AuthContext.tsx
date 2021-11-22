@@ -3,12 +3,14 @@ import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import { encodeAddress } from '@polkadot/util-crypto'
 import { useNetworks } from '../networks/useNetworks'
+import { compareWeb3Address } from '../util/web3address.util'
 
 export interface AuthContextState {
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
     isUserSignedInAndVerified: boolean
+    hasWeb3AddressAssigned: (address: string) => boolean
 
     setIsUserSignedIn: (isUserSignedIn: boolean) => void
     refreshJwt: () => void
@@ -68,6 +70,9 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
 
     const isUserSignedInAndVerified = useMemo(() => isUserSignedIn && isUserVerified, [isUserSignedIn, isUserVerified])
 
+    const hasWeb3AddressAssigned = (address: string) =>
+        !!user?.web3Addresses.find((web3Address) => compareWeb3Address(web3Address.address, address))
+
     return (
         <AuthContext.Provider
             value={{
@@ -77,6 +82,7 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
                 isUserSignedInAndVerified,
                 setIsUserSignedIn,
                 refreshJwt,
+                hasWeb3AddressAssigned,
             }}
             children={children}
         />

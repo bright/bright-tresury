@@ -2,24 +2,25 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import BasicInfo from '../../components/header/BasicInfo'
-import ActionButtons from '../../components/header/details/ActionButtons'
-import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
-import HeaderContainer from '../../components/header/details/HeaderContainer'
-import NetworkValues from '../../components/header/details/NetworkValues'
-import Title from '../../components/header/details/Title'
-import FlexBreakLine from '../../components/header/FlexBreakLine'
-import HeaderTabs from '../../components/header/HeaderTabs'
-import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
-import OptionalTitle from '../../components/text/OptionalTitle'
-import { breakpoints } from '../../theme/theme'
-import { BountyDto } from '../bounties.dto'
-import BountyNetworkRewardDeposit from '../components/BountyNetworkRewardDeposit'
-import BountyStatusIndicator from '../components/BountyStatusIndicator'
-import { BountyTabConfig } from './Bounty'
-import BountyContentTypeTabs from './BountyContentTypeTabs'
-import CuratorActionButtons from './info/curator-actions/CuratorActionButtons'
-import { useBounty } from './useBounty'
+import BasicInfo from '../../../components/header/BasicInfo'
+import ActionButtons from '../../../components/header/details/ActionButtons'
+import BasicInfoDivider from '../../../components/header/details/BasicInfoDivider'
+import HeaderContainer from '../../../components/header/details/HeaderContainer'
+import NetworkValues from '../../../components/header/details/NetworkValues'
+import Title from '../../../components/header/details/Title'
+import FlexBreakLine from '../../../components/header/FlexBreakLine'
+import HeaderTabs from '../../../components/header/HeaderTabs'
+import OrdinalNumber from '../../../components/ordinalNumber/OrdinalNumber'
+import OptionalTitle from '../../../components/text/OptionalTitle'
+import { breakpoints } from '../../../theme/theme'
+import { BountyDto } from '../../bounties.dto'
+import BountyNetworkRewardDeposit from '../../components/BountyNetworkRewardDeposit'
+import BountyStatusIndicator from '../../components/BountyStatusIndicator'
+import { BountyTabConfig } from '../Bounty'
+import BountyContentTypeTabs from '../BountyContentTypeTabs'
+import BountyActionButtons from './curator-actions/BountyActionButtons'
+import { useBounty } from '../useBounty'
+import BountyOptionsButton from './options-menu/BountyOptionsButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,6 +48,12 @@ const useStyles = makeStyles((theme: Theme) =>
                 order: 2,
             },
         },
+        optionsButton: {
+            order: 7,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                order: 3,
+            },
+        },
     }),
 )
 
@@ -61,7 +68,7 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
-    const {} = useBounty(bounty)
+    const { isProposer, isCurator } = useBounty(bounty)
 
     const navigateToList = () => {
         history.goBack()
@@ -85,8 +92,9 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
                 <BountyContentTypeTabs bountyTabsConfig={bountyTabsConfig} />
             </HeaderTabs>
             <ActionButtons className={classes.actionButtons}>
-                <CuratorActionButtons bounty={bounty} />
+                <BountyActionButtons bounty={bounty} />
             </ActionButtons>
+            {isProposer || isCurator ? <BountyOptionsButton className={classes.optionsButton} bounty={bounty} /> : null}
         </HeaderContainer>
     )
 }

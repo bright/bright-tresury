@@ -1,8 +1,8 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { WarningButton } from '../../../../components/button/Button'
-import { useModal } from '../../../../components/modal/useModal'
-import { BountyDto } from '../../../bounties.dto'
+import { WarningButton } from '../../../../../components/button/Button'
+import { useModal } from '../../../../../components/modal/useModal'
+import { BountyDto } from '../../../../bounties.dto'
 import RejectCuratorModal from './RejectCuratorModal'
 
 interface OwnProps {

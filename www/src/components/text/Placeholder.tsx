@@ -20,7 +20,7 @@ export type PlaceHolderProps = OwnProps
 
 const Placeholder = ({ value, className }: PlaceHolderProps) => {
     const classes = useStyles()
-    return <div className={className ?? classes.default}>{value}</div>
+    return <p className={className ?? classes.default}>{value}</p>
 }
 
 export default Placeholder

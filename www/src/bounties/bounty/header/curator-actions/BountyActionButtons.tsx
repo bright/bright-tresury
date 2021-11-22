@@ -2,8 +2,9 @@ import React from 'react'
 import ActionButtons, { ActionButtonsProps } from '../../../../components/header/details/ActionButtons'
 import { BountyDto } from '../../../bounties.dto'
 import { useBounty } from '../../useBounty'
-import CuratorAcceptButton from './CuratorAcceptButton'
-import CuratorRejectButton from './CuratorRejectButton'
+import CuratorAcceptButton from './accept/CuratorAcceptButton'
+import ClaimPayoutButton from './claim/ClaimPayoutButton'
+import CuratorRejectButton from './reject/CuratorRejectButton'
 
 interface OwnProps {
     bounty: BountyDto
@@ -11,10 +12,9 @@ interface OwnProps {
 
 export type CuratorActionButtonsProps = OwnProps & ActionButtonsProps
 
-const CuratorActionButtons = ({ bounty, ...props }: CuratorActionButtonsProps) => {
-    const { canReject, canAccept } = useBounty(bounty)
-
-    if (!canAccept && !canReject) {
+const BountyActionButtons = ({ bounty, ...props }: CuratorActionButtonsProps) => {
+    const { canReject, canAccept, canClaimPayout } = useBounty(bounty)
+    if (!canAccept && !canReject && !canClaimPayout) {
         return null
     }
 
@@ -22,8 +22,9 @@ const CuratorActionButtons = ({ bounty, ...props }: CuratorActionButtonsProps) =
         <ActionButtons {...props}>
             {canReject ? <CuratorRejectButton bounty={bounty} /> : null}
             {canAccept ? <CuratorAcceptButton bounty={bounty} /> : null}
+            {canClaimPayout ? <ClaimPayoutButton bounty={bounty} /> : null}
         </ActionButtons>
     )
 }
 
-export default CuratorActionButtons
+export default BountyActionButtons

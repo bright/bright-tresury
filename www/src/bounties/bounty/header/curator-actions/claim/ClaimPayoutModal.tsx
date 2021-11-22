@@ -1,13 +1,11 @@
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useQueryClient } from 'react-query'
 import { useHistory } from 'react-router-dom'
-import Modal from '../../../../components/modal/Modal'
-import Strong from '../../../../components/strong/Strong'
-import { useNetworks } from '../../../../networks/useNetworks'
-import SubmittingTransaction from '../../../../substrate-lib/components/SubmittingTransaction'
-import { BOUNTY_QUERY_KEY_BASE, useGetBounty } from '../../../bounties.api'
-import { BountyDto } from '../../../bounties.dto'
+import Modal from '../../../../../components/modal/Modal'
+import Strong from '../../../../../components/strong/Strong'
+import { ROUTE_BOUNTIES } from '../../../../../routes/routes'
+import SubmittingTransaction from '../../../../../substrate-lib/components/SubmittingTransaction'
+import { BountyDto } from '../../../../bounties.dto'
 
 interface OwnProps {
     open: boolean
@@ -15,17 +13,16 @@ interface OwnProps {
     bounty: BountyDto
 }
 
-export type RejectCuratorModalProps = OwnProps
+export type ClaimPayoutModalProps = OwnProps
 
-const RejectCuratorModal = ({ open, onClose, bounty }: RejectCuratorModalProps) => {
+const ClaimPayoutModal = ({ open, onClose, bounty }: ClaimPayoutModalProps) => {
     const { t } = useTranslation()
-    const { network } = useNetworks()
-    const { refetch } = useGetBounty({ bountyIndex: bounty.blockchainIndex.toString(), network: network.id })
+    const history = useHistory()
 
     const onSuccess = async () => {
-        await refetch()
-        onClose()
+        history.push(ROUTE_BOUNTIES)
     }
+
     return (
         <Modal
             open={open}
@@ -36,11 +33,11 @@ const RejectCuratorModal = ({ open, onClose, bounty }: RejectCuratorModalProps) 
             maxWidth={'sm'}
         >
             <SubmittingTransaction
-                title={t('bounty.info.curatorActions.rejectModal.title')}
+                title={t('bounty.info.curatorActions.claimPayoutModal.title')}
                 instruction={
                     <Trans
                         id="modal-description"
-                        i18nKey="bounty.info.curatorActions.rejectModal.warningMessage"
+                        i18nKey="bounty.info.curatorActions.claimPayoutModal.warningMessage"
                         components={{
                             strong: <Strong color={'primary'} />,
                         }}
@@ -50,9 +47,9 @@ const RejectCuratorModal = ({ open, onClose, bounty }: RejectCuratorModalProps) 
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'bounties',
-                    callable: 'unassignCurator',
-                    eventMethod: 'BountyBecameActive',
-                    eventDescription: t('bounty.info.curatorActions.rejectModal.eventDescription'),
+                    callable: 'claimBounty',
+                    eventMethod: 'BountyClaimed',
+                    eventDescription: t('bounty.info.curatorActions.claimPayoutModal.eventDescription'),
                     inputParams: [
                         {
                             name: 'bountyId',
@@ -65,4 +62,4 @@ const RejectCuratorModal = ({ open, onClose, bounty }: RejectCuratorModalProps) 
     )
 }
 
-export default RejectCuratorModal
+export default ClaimPayoutModal

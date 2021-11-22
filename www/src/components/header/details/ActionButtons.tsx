@@ -6,15 +6,12 @@ import { ClassNameProps } from '../../props/className.props'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        turnIntoProposal: {
+        root: {
             display: 'flex',
             justifyContent: 'flex-end',
-            marginBottom: '5px',
+            alignItem: 'center',
             flexGrow: 1,
             gap: '18px',
-            [theme.breakpoints.up(breakpoints.mobile)]: {
-                alignSelf: 'flex-end',
-            },
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 flexDirection: 'column-reverse',
                 position: 'fixed',
@@ -40,6 +37,6 @@ interface OwnProps {}
 export type ActionButtonsProps = PropsWithChildren<OwnProps> & ClassNameProps
 const ActionButtons = ({ children, className }: ActionButtonsProps) => {
     const classes = useStyles()
-    return <div className={clsx(classes.turnIntoProposal, className)}>{children}</div>
+    return <div className={clsx(classes.root, className)}>{children}</div>
 }
 export default ActionButtons

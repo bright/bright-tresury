@@ -31,20 +31,19 @@ const useStyles = makeStyles((theme: Theme) => {
 interface OwnProps {
     address: Nil<string>
     ellipsed?: boolean
+    showYou?: boolean
 }
 
 export type AddressInfoProps = OwnProps
 
-const AddressInfo = ({ address, ellipsed = true }: AddressInfoProps) => {
+const AddressInfo = ({ address, ellipsed = true, showYou = true }: AddressInfoProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { network } = useNetworks()
-    const { user } = useAuth()
+    const { hasWeb3AddressAssigned } = useAuth()
 
     const addressFragment = useMemo(() => formatAddress(address, network.ss58Format, ellipsed), [address])
-    const label = user?.web3Addresses?.find((web3Address) => web3Address.address === address)
-        ? t('common.you')
-        : addressFragment
+    const label = address && hasWeb3AddressAssigned(address) && showYou ? t('common.you') : addressFragment
 
     return (
         <div className={classes.root}>
