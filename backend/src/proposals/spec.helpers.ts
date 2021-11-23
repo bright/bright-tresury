@@ -14,14 +14,13 @@ import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { CreateIdeaDto } from '../ideas/dto/create-idea.dto'
 import { IdeaNetworkEntity } from '../ideas/entities/idea-network.entity'
 import { CreateIdeaMilestoneDto } from '../ideas/idea-milestones/dto/create-idea-milestone.dto'
-import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
-import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
-import { getLogger } from '../logging.module'
-import { Web3AddressEntity } from '../users/web3-addresses/web3-address.entity'
-import { NETWORKS } from '../utils/spec.helpers'
-import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
+import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/idea-milestone-network.entity'
+import { createIdea, createIdeaMilestone, createWeb3SessionData } from '../ideas/spec.helpers'
+import { getLogger } from '../logging.module'
+import { NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
+import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 
 const makeMotion = (
     hash: string,
@@ -114,9 +113,7 @@ export const mockedBlockchainService = {
 }
 
 export const createProposerSessionData = (proposal: BlockchainProposal) =>
-    createSessionData({
-        web3Addresses: [new Web3AddressEntity(proposal.proposer.address, true)],
-    })
+    createWeb3SessionData(proposal.proposer.address)
 
 export const setUpIdea = async (
     app: INestApplication,

@@ -82,8 +82,6 @@ export interface CreateBountyDto {
 }
 
 export interface EditBountyDto {
-    blockchainIndex: number
-    networkId: string
     title: string
     field?: Nil<string>
     description?: Nil<string>

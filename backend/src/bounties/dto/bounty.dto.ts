@@ -75,17 +75,22 @@ export class BountyDto {
     status: BlockchainBountyStatus
 
     @ApiPropertyOptional({
-        description: 'Bounty title stored in the Bright Treasury module'
+        description: 'Id of a user who created bounty details',
+    })
+    ownerId?: Nil<string>
+
+    @ApiPropertyOptional({
+        description: 'Bounty title stored in the Bright Treasury module',
     })
     title?: Nil<string>
 
     @ApiPropertyOptional({
-        description: 'Bounty field stored in the Bright Treasury module'
+        description: 'Bounty field stored in the Bright Treasury module',
     })
     field?: Nil<string>
 
     @ApiPropertyOptional({
-        description: 'Bounty description stored in the Bright Treasury module'
+        description: 'Bounty description stored in the Bright Treasury module',
     })
     description?: Nil<string>
 
@@ -104,6 +109,7 @@ export class BountyDto {
         this.updateDue = bountyBlockchain.updateDue
         this.status = bountyBlockchain.status
 
+        this.ownerId = bountyEntity?.ownerId
         this.title = bountyEntity?.title
         this.description = bountyEntity?.description
         this.field = bountyEntity?.field

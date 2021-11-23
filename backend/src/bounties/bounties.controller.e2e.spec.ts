@@ -58,19 +58,34 @@ describe(`/api/v1/bounties/`, () => {
 
                     // wait until the extrinsic is found, read and bounty is saved
                     setTimeout(async () => {
-                        const bounty = (await bountiesRepository().findOne({ title: 'title' }))!
-                        expect(bounty).toBeDefined()
-                        expect(bounty.blockchainIndex).toBe(bountyIndex)
-                        expect(bounty.value).toBe('1000000000000')
+                        // GET
+                        const { body: bountiesDtos }: { body: BountyDto[] } = await request(app()).get(
+                            `${baseUrl}?network=${NETWORKS.POLKADOT}`,
+                        )
 
-                        const {body: bountiesDtos}: {body: BountyDto[]} = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
-                        const bountyDto = bountiesDtos.find(({blockchainIndex}) => bounty.blockchainIndex === blockchainIndex)!
+                        const bountyDto = bountiesDtos.find(({ blockchainIndex }) => blockchainIndex === bountyIndex)!
                         expect(bountyDto).toBeDefined()
                         expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
                         expect(bountyDto.value).toBe('1000000000000')
                         expect(bountyDto.bond).toBe('10200000000')
                         expect(bountyDto.status).toBe('Proposed')
                         expect(bountyDto.title).toBe('title')
+
+                        // UPDATE
+                        await sessionHandler
+                            .authorizeRequest(
+                                request(app())
+                                    .patch(`${baseUrl}${bountyIndex}?network=${NETWORKS.POLKADOT}`)
+                                    .send({ title: 'new title' }),
+                            )
+                            .expect(HttpStatus.OK)
+
+                        // GET single
+                        const { body: singleBounty } = await request(app()).get(
+                            `${baseUrl}${bountyIndex}?network=${NETWORKS.POLKADOT}`,
+                        )
+                        expect(singleBounty).toBeDefined()
+                        expect(singleBounty.title).toBe('new title')
 
                         done()
                     }, 2000)

@@ -6,13 +6,13 @@ import { UserEntity } from '../users/user.entity'
 import { Web3AddressEntity } from '../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp } from '../utils/spec.helpers'
 import { CreateIdeaDto } from './dto/create-idea.dto'
-import { IdeaEntity } from './entities/idea.entity'
-import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
-import { IdeasService } from './ideas.service'
 import { IdeaStatus } from './entities/idea-status'
-import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
-import { IdeaMilestoneEntity } from './idea-milestones/entities/idea-milestone.entity'
+import { IdeaEntity } from './entities/idea.entity'
 import { CreateIdeaMilestoneDto } from './idea-milestones/dto/create-idea-milestone.dto'
+import { IdeaMilestoneEntity } from './idea-milestones/entities/idea-milestone.entity'
+import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
+import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
+import { IdeasService } from './ideas.service'
 
 export async function createIdea(
     idea: Partial<CreateIdeaDto>,
@@ -52,6 +52,14 @@ export async function saveIdeaMilestone(
     const repository: IdeaMilestonesRepository =
         ideaMilestoneRepository ?? beforeSetupFullApp().get().get(IdeaMilestonesRepository)
     return await repository.save(ideaMilestone)
+}
+
+export async function createWeb3SessionData(address: string) {
+    return createSessionData({
+        email: `${address}@example.com`,
+        username: address,
+        web3Addresses: [new Web3AddressEntity(address, true)],
+    })
 }
 
 export async function createSessionData(

@@ -1,6 +1,8 @@
+import { encodeAddress } from '@polkadot/keyring'
 import { Column, Entity, OneToMany } from 'typeorm'
-import { BaseEntity } from '../database/base.entity'
 import { v4 as uuid } from 'uuid'
+import { BaseEntity } from '../database/base.entity'
+import { isNil, Nil } from '../utils/types'
 import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
 
 @Entity('users')
@@ -44,5 +46,17 @@ export class UserEntity extends BaseEntity {
         this.web3Addresses = web3Addresses
         this.id = id ?? uuid()
         this.isEmailNotificationEnabled = isEmailNotificationEnabled
+    }
+
+    static hasWeb3Address = (user: UserEntity, addressToFind: Nil<string>): boolean => {
+        if (isNil(addressToFind)) {
+            return false
+        }
+        try {
+            const encodedAddressToFind = encodeAddress(addressToFind!)
+            return !!user.web3Addresses?.find(({ address }) => encodedAddressToFind === encodeAddress(address))
+        } catch {
+            return false
+        }
     }
 }

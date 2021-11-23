@@ -31,8 +31,14 @@ export const useCreateBounty = () => {
 
 // PATCH
 
-async function patchBounty(data: EditBountyDto): Promise<BountyDto> {
-    return apiPatch<BountyDto>(`${BOUNTIES_API_PATH}/${data.blockchainIndex}`, data)
+interface PatchBountyParams {
+    bountyIndex: string
+    network: string
+    data: EditBountyDto
+}
+
+async function patchBounty({ bountyIndex, network, data }: PatchBountyParams): Promise<BountyDto> {
+    return apiPatch<BountyDto>(`${BOUNTIES_API_PATH}/${bountyIndex}?network=${network}`, data)
 }
 
 export const usePatchBounty = () => {

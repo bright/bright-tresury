@@ -1,19 +1,36 @@
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
+import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
+import {
+    BlockchainBountyDto,
+    BlockchainBountyStatus,
+} from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
-import { createSessionData } from '../ideas/spec.helpers'
+import { createSessionData, createWeb3SessionData } from '../ideas/spec.helpers'
 import { UserEntity } from '../users/user.entity'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
-import { CreateBountyDto } from './dto/create-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
-import { blockchainBounties, mockListenForExtrinsic, mockListenForExtrinsicWithNoEvent } from './spec.helpers'
-import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
-import { BlockchainBountyStatus } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
-import { NotFoundException } from '@nestjs/common'
+import {
+    blockchainBounty0,
+    blockchainBounty1,
+    blockchainBountyActive,
+    blockchainBountyApproved,
+    blockchainBountyCuratorProposed,
+    blockchainBountyFunded,
+    blockchainBountyPendingPayout,
+    createBountyEntity,
+    createCuratorSessionData,
+    createProposerSessionData,
+    minimalValidCreateDto,
+    mockGetBounties,
+    mockListenForExtrinsic,
+    mockListenForExtrinsicWithNoEvent,
+} from './spec.helpers'
 
 describe('BountiesService', () => {
     const app = beforeSetupFullApp()
@@ -31,16 +48,6 @@ describe('BountiesService', () => {
     const setUp = async () => {
         const { user } = await createSessionData()
         return { user }
-    }
-
-    const minimalValidCreateDto: CreateBountyDto = {
-        blockchainDescription: 'bc-description',
-        value: '10' as NetworkPlanckValue,
-        title: 'title',
-        networkId: NETWORKS.POLKADOT,
-        proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
-        extrinsicHash: '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
-        lastBlockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
     }
 
     describe('create', () => {
@@ -102,7 +109,7 @@ describe('BountiesService', () => {
 
         it('should assign owner id', async () => {
             const { user } = await setUp()
-            const result = await service().create({...minimalValidCreateDto, blockchainIndex: 0}, user)
+            const result = await service().create({ ...minimalValidCreateDto, blockchainIndex: 0 }, user)
             const saved = (await repository().findOne(result.id))!
             expect(saved.ownerId).toBe(user.id)
         })
@@ -165,22 +172,176 @@ describe('BountiesService', () => {
             expect(spy).not.toHaveBeenCalled()
         })
     })
+
+    describe('update', () => {
+        beforeAll(() => {
+            mockGetBounties(app().get(BlockchainBountiesService))
+        })
+
+        const setUpUpdate = async (blockchainBounty: BlockchainBountyDto = blockchainBounty0) => {
+            const { user } = await createSessionData()
+            const bountyEntity = await createBountyEntity(service(), user, { blockchainIndex: blockchainBounty.index })
+            return {
+                user,
+                bountyEntity,
+            }
+        }
+
+        it('should return updated bounty entity', async () => {
+            const { user, bountyEntity } = await setUpUpdate()
+            const [blockchain, entity] = await service().update(
+                bountyEntity.blockchainIndex,
+                bountyEntity.networkId,
+                {
+                    title: 'new title',
+                    field: 'new field',
+                    description: 'new description',
+                },
+                user,
+            )
+            expect(blockchain.index).toBe(bountyEntity.blockchainIndex)
+            expect(entity!.title).toBe('new title')
+            expect(entity!.field).toBe('new field')
+            expect(entity!.description).toBe('new description')
+        })
+
+        it('should update bounty entity', async () => {
+            const { user, bountyEntity } = await setUpUpdate()
+            await service().update(
+                bountyEntity.blockchainIndex,
+                bountyEntity.networkId,
+                {
+                    title: 'new title',
+                    field: 'new field',
+                    description: 'new description',
+                },
+                user,
+            )
+            const saved = (await repository().findOne(bountyEntity.id))!
+            expect(saved.title).toBe('new title')
+            expect(saved.field).toBe('new field')
+            expect(saved.description).toBe('new description')
+        })
+
+        it('should update throw NotFoundException when no entity', async () => {
+            const { user } = await setUpUpdate(blockchainBounty0)
+            return expect(service().update(blockchainBounty1.index, NETWORKS.POLKADOT, {}, user)).rejects.toThrow(
+                NotFoundException,
+            )
+        })
+
+        it('should update throw NotFoundException when no blockchain bounty', async () => {
+            const { user } = await setUpUpdate({ index: 100 } as BlockchainBountyDto)
+            return expect(service().update(100, NETWORKS.POLKADOT, {}, user)).rejects.toThrow(NotFoundException)
+        })
+
+        describe('called by', () => {
+            it('not owner, curator, proposer should throw ForbiddenException', async () => {
+                const { user, bountyEntity } = await setUpUpdate()
+                const otherUser = await createWeb3SessionData('12TpXjttC29ZBEwHqdmbEtXJ9JSR9NZm2nxsrMwfXUHoxX6U')
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, otherUser.user),
+                ).rejects.toThrow(ForbiddenException)
+            })
+
+            it('owner should resolve', async () => {
+                const { user, bountyEntity } = await setUpUpdate()
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
+                ).resolves.toBeDefined()
+            })
+
+            it('curator should resolve when has curator', async () => {
+                const { bountyEntity } = await setUpUpdate(blockchainBountyCuratorProposed)
+                const curator = await createCuratorSessionData(blockchainBountyCuratorProposed)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, curator.user),
+                ).resolves.toBeDefined()
+            })
+
+            it('curator should throw ForbiddenException when no curator', async () => {
+                const { bountyEntity } = await setUpUpdate(blockchainBountyApproved)
+                const curator = await createWeb3SessionData('12TpXjttC29ZBEwHqdmbEtXJ9JSR9NZm2nxsrMwfXUHoxX6U')
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, curator.user),
+                ).rejects.toThrow(ForbiddenException)
+            })
+
+            it('proposer should resolve', async () => {
+                const { bountyEntity } = await setUpUpdate()
+                const proposer = await createProposerSessionData(blockchainBounty0)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, proposer.user),
+                ).resolves.toBeDefined()
+            })
+        })
+        describe('when status', () => {
+            it('PendingPayout should throw BadRequestException', async () => {
+                const { user, bountyEntity } = await setUpUpdate(blockchainBountyPendingPayout)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
+                ).rejects.toThrow(BadRequestException)
+            })
+
+            it('Proposed should resolve', async () => {
+                const { user, bountyEntity } = await setUpUpdate(blockchainBounty0)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
+                ).resolves.toBeDefined()
+            })
+            it('Approved should resolve', async () => {
+                const { user, bountyEntity } = await setUpUpdate(blockchainBountyApproved)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
+                ).resolves.toBeDefined()
+            })
+            it('Funded should resolve', async () => {
+                const { user, bountyEntity } = await setUpUpdate(blockchainBountyFunded)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
+                ).resolves.toBeDefined()
+            })
+            it('CuratorProposed should resolve', async () => {
+                const { user, bountyEntity } = await setUpUpdate(blockchainBountyCuratorProposed)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
+                ).resolves.toBeDefined()
+            })
+            it('Active should resolve', async () => {
+                const { user, bountyEntity } = await setUpUpdate(blockchainBountyActive)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
+                ).resolves.toBeDefined()
+            })
+        })
+    })
+
     describe('getBounties', () => {
         beforeAll(() => {
-            jest.spyOn(app().get(BlockchainBountiesService), 'getBounties')
-                .mockImplementation(async (networkId) => blockchainBounties)
+            mockGetBounties(app().get(BlockchainBountiesService))
         })
 
         it('should return two bounties', async () => {
             const bountiesTuples = await service().getBounties(NETWORKS.POLKADOT)
             expect(Array.isArray(bountiesTuples)).toBe(true)
-            expect(bountiesTuples).toHaveLength(2)
+            expect(bountiesTuples).toHaveLength(7)
         })
     })
+
     describe('getBounty', () => {
         beforeAll(() => {
-            jest.spyOn(app().get(BlockchainBountiesService), 'getBounties')
-                .mockImplementation(async (networkId) => blockchainBounties)
+            mockGetBounties(app().get(BlockchainBountiesService))
         })
         it('should return correct bounty tuple', async () => {
             const [blockchainBounty, bountyEntity] = await service().getBounty(0, NETWORKS.POLKADOT)
@@ -197,7 +358,7 @@ describe('BountiesService', () => {
             expect(blockchainBounty.status).toBe(BlockchainBountyStatus.Proposed)
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBounty(5, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)
+            return expect(service().getBounty(100, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)
         })
     })
 })

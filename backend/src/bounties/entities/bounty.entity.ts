@@ -1,3 +1,4 @@
+import { ForbiddenException } from '@nestjs/common'
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
 import { UserEntity } from '../../users/user.entity'
@@ -34,4 +35,14 @@ export class BountyEntity extends BaseEntity {
 
     @Column({ nullable: false, type: 'text' })
     ownerId!: string
+
+    isOwner(user: UserEntity) {
+        return this.ownerId === user.id
+    }
+
+    isOwnerOrThrow = (user: UserEntity) => {
+        if (!this.isOwner(user)) {
+            throw new ForbiddenException('The given user cannot edit this bounty')
+        }
+    }
 }

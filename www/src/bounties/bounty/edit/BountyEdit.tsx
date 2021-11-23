@@ -31,13 +31,15 @@ const BountyEdit = ({ bounty }: BountyEditProps) => {
     const submit = async (formBounty: BountyEditFormValues) => {
         const data: EditBountyDto = {
             ...formBounty,
-            networkId: network.id,
         }
-        await mutateAsync(data, {
-            onSuccess: () => {
-                history.push(generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
+        await mutateAsync(
+            { bountyIndex: formBounty.blockchainIndex.toString(), network: network.id, data },
+            {
+                onSuccess: () => {
+                    history.push(generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
+                },
             },
-        })
+        )
     }
 
     if (!canEdit) {
