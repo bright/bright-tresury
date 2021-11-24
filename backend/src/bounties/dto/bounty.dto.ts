@@ -104,7 +104,9 @@ export class BountyDto {
         this.curatorDeposit = bountyBlockchain.curatorDeposit
         this.curatorFee = bountyBlockchain.fee
         this.curator = bountyBlockchain.curator
-        this.beneficiary = bountyBlockchain.beneficiary
+        this.beneficiary =
+            bountyBlockchain.beneficiary ??
+            (bountyEntity?.beneficiary ? { address: bountyEntity.beneficiary } : undefined)
         this.unlockAt = bountyBlockchain.unlockAt
         this.updateDue = bountyBlockchain.updateDue
         this.status = bountyBlockchain.status

@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks'
+import { AuthorDto } from '../../../util/author.dto'
 import { IdeaDto, IdeaNetworkStatus, IdeaStatus } from '../../ideas.dto'
 import * as useIdea from '../useIdea'
 import { UseIdeaResult } from '../useIdea'
@@ -37,7 +38,7 @@ describe('useIdeaMilestone', () => {
         },
         additionalNetworks: [],
         status: IdeaStatus.Active,
-        ownerId: '5cd895d2-8b44-4d39-b580-b338018cd5a5',
+        owner: { userId: '5cd895d2-8b44-4d39-b580-b338018cd5a5' } as AuthorDto,
         details: {
             title: 'title',
             content: 'content',
@@ -193,21 +194,15 @@ describe('useIdeaMilestone', () => {
 
         it('should return true when status is active', () => {
             const { canEditIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
-            expect(
-                canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.Active),
-            ).toBe(true)
+            expect(canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.Active)).toBe(true)
         })
         it('should return true when status is pending', () => {
             const { canEditIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
-            expect(
-                canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.Pending),
-            ).toBe(true)
+            expect(canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.Pending)).toBe(true)
         })
         it('should return false when status is turned into proposal', () => {
             const { canEditIdeaMilestoneNetwork } = renderHookUseIdeaMilestone({ ...idea })
-            expect(
-                canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.TurnedIntoProposal),
-            ).toBe(false)
+            expect(canEditIdeaMilestoneNetwork(IdeaMilestoneNetworkStatus.TurnedIntoProposal)).toBe(false)
         })
     })
 

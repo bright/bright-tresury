@@ -158,6 +158,7 @@ export const blockchainBountyPendingPayout = new BlockchainBountyDto({
     description: 'bc-description-2',
     proposer: { address: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5' },
     curator: { address: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3' },
+    beneficiary: { address: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3' },
     value: '10000' as NetworkPlanckValue,
     fee: '100' as NetworkPlanckValue,
     curatorDeposit: '0' as NetworkPlanckValue,

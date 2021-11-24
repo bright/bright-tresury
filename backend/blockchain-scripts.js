@@ -215,11 +215,11 @@ const bountiesProposeAndAcceptVeryExpensive = async (api) => {
         // step 2 - create some bounties (approved & funded)
         // after this step wait until the bounties gets funded (the spend period ends)
         await bountiesProposeAndAcceptVeryExpensive(polkadot) // 0
-        await bountiesProposeAndAccept(polkadot, 'bounty 2') // 1
-        await bountiesProposeAndAccept(polkadot, 'bounty with curator voting') // 2
-        await bountiesProposeAndAccept(polkadot, 'bounty curator proposed') // 3
-        await bountiesProposeAndAccept(polkadot, 'bounty active') // 4
-        await bountiesProposeAndAccept(polkadot, 'bounty pending payout') //5
+        await bountiesProposeAndAccept(polkadot, 'bounty 1') // 1
+        await bountiesProposeAndAccept(polkadot, 'bounty 2') // 2
+        await bountiesProposeAndAccept(polkadot, 'bounty 3') // 3
+        await bountiesProposeAndAccept(polkadot, 'bounty 4') // 4
+        await bountiesProposeAndAccept(polkadot, 'bounty 5') //5
     } else if (args[0] === '4') {
         // step 3 - propose curator and vote to have an funded bounty with curator voting and an active
         // after this step wait until one of the bounties gets funded (the spend period ends)

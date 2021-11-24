@@ -196,6 +196,7 @@ describe('BountiesService', () => {
                     title: 'new title',
                     field: 'new field',
                     description: 'new description',
+                    beneficiary: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
                 },
                 user,
             )
@@ -203,6 +204,7 @@ describe('BountiesService', () => {
             expect(entity!.title).toBe('new title')
             expect(entity!.field).toBe('new field')
             expect(entity!.description).toBe('new description')
+            expect(entity!.beneficiary).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
         })
 
         it('should update bounty entity', async () => {
@@ -214,6 +216,7 @@ describe('BountiesService', () => {
                     title: 'new title',
                     field: 'new field',
                     description: 'new description',
+                    beneficiary: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
                 },
                 user,
             )
@@ -221,6 +224,7 @@ describe('BountiesService', () => {
             expect(saved.title).toBe('new title')
             expect(saved.field).toBe('new field')
             expect(saved.description).toBe('new description')
+            expect(saved.beneficiary).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
         })
 
         it('should update throw NotFoundException when no entity', async () => {

@@ -1,15 +1,12 @@
 import { HttpStatus } from '@nestjs/common'
-import { getRepositoryToken } from '@nestjs/typeorm'
 import { Keyring } from '@polkadot/api'
-import { Repository } from 'typeorm'
 import { cleanAuthorizationDatabase } from '../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { createUserSessionHandlerWithVerifiedEmail } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
+import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { BlockchainsConnections } from '../blockchain/blockchain.module'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
-import { BountyEntity } from './entities/bounty.entity'
-import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { BountyDto } from './dto/bounty.dto'
 
 const baseUrl = `/api/v1/bounties/`
@@ -17,9 +14,6 @@ const baseUrl = `/api/v1/bounties/`
 describe(`/api/v1/bounties/`, () => {
     const app = beforeSetupFullApp()
 
-    const bountiesRepository = beforeAllSetup(() =>
-        app().get<Repository<BountyEntity>>(getRepositoryToken(BountyEntity)),
-    )
     const blockchainsConnections = beforeAllSetup(() => app().get<BlockchainsConnections>('PolkadotApi'))
 
     beforeEach(async () => {
@@ -88,7 +82,7 @@ describe(`/api/v1/bounties/`, () => {
                         expect(singleBounty.title).toBe('new title')
 
                         done()
-                    }, 2000)
+                    }, 4000)
                 }
             })
         })

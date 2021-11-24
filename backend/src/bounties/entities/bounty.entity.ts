@@ -27,6 +27,9 @@ export class BountyEntity extends BaseEntity {
     @Column({ nullable: false, type: 'text' })
     proposer!: string
 
+    @Column({ nullable: true, type: 'text' })
+    beneficiary?: Nil<string>
+
     @Column({ nullable: false, type: 'text' })
     blockchainIndex!: number
 
