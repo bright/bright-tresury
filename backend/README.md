@@ -97,10 +97,23 @@ Change it to some smaller value like `3 * MINUTES`.
 -   Treasury and Bounties
 
 ```rust
-    pub const SpendPeriod: BlockNumber = 7 * MINUTES;
+    pub const TermDuration: BlockNumber = 3 * MINUTES;
     pub const BountyDepositPayoutDelay: BlockNumber = 3 * MINUTES;
-	pub const BountyUpdatePeriod: BlockNumber = 30 * MINUTES;
+    pub const BountyUpdatePeriod: BlockNumber = 30 * MINUTES;
+    pub const SpendPeriod: BlockNumber = 7 * MINUTES;
 ```
+
+### Create testing Polkadot image and push it to AWS ECR (with short periods defined above)
+
+-   Get the latest code
+-   Change params according to previous point (Genesis config)
+-   Build polkadot
+-   run docker image build script: `scripts/dockerfiles/polkadot/build.sh`
+-   run `docker images` and find newly created image id
+-   tag the image for ECR `docker tag ${docker_image_id} public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:${version_number}`
+-   authenticate docker to be able to push to ECR`aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x2h8r1m3`
+-   push the image `docker push public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:${version_number}`
+-   update image version in deploy.sh `PolkadotImage` param value
 
 ### Tips & tricks
 

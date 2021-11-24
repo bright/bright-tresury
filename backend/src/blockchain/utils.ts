@@ -51,11 +51,9 @@ export function extractFromBlockchainEvent(
     extrinsicEvents: ExtrinsicEvent[],
     sectionName: string,
     methodName: string,
-    argName: string,
+    argIndex: number,
 ): string | undefined {
-    getLogger().info(
-        `Extracting event from extrinsicEvents with section: ${sectionName}, method: ${methodName}, arg name: ${argName}`,
-    )
+    getLogger().info(`Looking for event with section: ${sectionName}, method: ${methodName} in events`, extrinsicEvents)
     const event = extrinsicEvents.find(({ section, method }) => section === sectionName && method === methodName)
 
     if (!event) {
@@ -63,9 +61,11 @@ export function extractFromBlockchainEvent(
         return
     }
 
-    const value = event.data.find(({ name }) => name === argName)?.value
+    getLogger().info(`Event found for section: ${sectionName}, method: ${methodName}, arg index: ${argIndex}:`, event)
+
+    const value = event.data[argIndex]?.value
     getLogger().info(
-        `Event found for section: ${sectionName}, method: ${methodName}. The value for arg name: ${argName} is: ${value}`,
+        `The value for arg index: ${argIndex} in event for section: ${sectionName}, method: ${methodName} is: ${value}`,
     )
     return value
 }
@@ -74,9 +74,9 @@ export function extractNumberFromBlockchainEvent(
     extrinsicEvents: ExtrinsicEvent[],
     sectionName: string,
     methodName: string,
-    argName: string,
+    argIndex: number,
 ): number | undefined {
-    const value = extractFromBlockchainEvent(extrinsicEvents, sectionName, methodName, argName)
+    const value = extractFromBlockchainEvent(extrinsicEvents, sectionName, methodName, argIndex)
     const numberValue = Number(value)
 
     if (!isNaN(numberValue)) {
@@ -85,7 +85,7 @@ export function extractNumberFromBlockchainEvent(
 
     if (value !== undefined && isNaN(numberValue)) {
         getLogger().info(
-            `Found value ${value} is not a number for section: ${sectionName}, method: ${methodName}, arg name: ${argName}`,
+            `Found value ${value} is not a number for section: ${sectionName}, method: ${methodName}, arg index: ${argIndex}`,
         )
     }
 }

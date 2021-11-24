@@ -64,7 +64,7 @@ describe(`Blockchain service`, () => {
                         method: 'Proposed',
                         data: [
                             {
-                                name: 'ProposalIndex',
+                                name: 'u32',
                                 value: `${expectedProposalId}`,
                             },
                         ],
@@ -74,11 +74,11 @@ describe(`Blockchain service`, () => {
                         method: 'Reserved',
                         data: [
                             {
-                                name: 'AccountId',
+                                name: 'AccountId32',
                                 value: aliceAddress,
                             },
                             {
-                                name: 'Balance',
+                                name: 'u128',
                                 value: '1000000000000',
                             },
                         ],
@@ -118,10 +118,11 @@ describe(`Blockchain service`, () => {
                         (e) => e.section === 'system' && e.method === 'ExtrinsicFailed',
                     )
                     expect(errorEvent).toBeDefined()
-                    expect(errorEvent!.data).toContainEqual({
-                        name: 'DispatchError',
-                        value: 'BadOrigin',
-                    })
+                    expect(errorEvent!.data).toContainEqual(
+                        expect.objectContaining({
+                            value: 'BadOrigin',
+                        }),
+                    )
                     done()
                 },
             )

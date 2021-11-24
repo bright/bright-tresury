@@ -62,6 +62,7 @@ export class BlockchainService implements OnModuleDestroy {
             )
             if (extrinsic) {
                 logger.info(`Block with extrinsic ${extrinsicHash} found.`)
+
                 const events = (await api.query.system.events.at(header.hash)) as EventRecord[]
                 logger.info(`All extrinsic events.`, events)
                 await this.callUnsub()
@@ -187,7 +188,7 @@ export class BlockchainService implements OnModuleDestroy {
 
     extractProposalIndex(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
         logger.info('Looking for a blockchain proposal index')
-        return extractNumberFromBlockchainEvent(extrinsicEvents, 'treasury', 'Proposed', 'ProposalIndex')
+        return extractNumberFromBlockchainEvent(extrinsicEvents, 'treasury', 'Proposed', 0)
     }
 
     async getStats(networkId: string): Promise<StatsDto> {

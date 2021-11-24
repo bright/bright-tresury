@@ -192,6 +192,9 @@ export default cloudform({
         AppImage: new StringParameter({
             Description: 'Repository, image and tag of the app to deploy',
         }),
+        PolkadotImage: new StringParameter({
+            Description: 'Repository, image and tag of the polkadot node image',
+        }),
         SSHFrom: new StringParameter({
             Description: 'Lockdown SSH access to the bastion host (default can be accessed from anywhere)',
             MinLength: 9,
@@ -899,7 +902,7 @@ export default cloudform({
                     Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
                     Cpu: 100,
                     Essential: true,
-                    Image: 'parity/polkadot:v0.9.7',
+                    Image: Fn.Ref('PolkadotImage'),
                     Command: ['--rpc-external', '--ws-external', '--dev'],
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {

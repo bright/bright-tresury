@@ -13,7 +13,7 @@ services:
         restart: unless-stopped
     local-development-polkadot-1:
         container_name: local-development-polkadot-1
-        image: parity/polkadot:v0.9.9
+        image: public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:v0.9.13
         ports:
             - '9944:9944'
         command: --rpc-external --ws-external --dev
@@ -22,7 +22,7 @@ services:
         restart: unless-stopped
     local-development-polkadot-2:
         container_name: local-development-polkadot-2
-        image: parity/polkadot:v0.9.9
+        image: public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:v0.9.13
         ports:
             - '9955:9944'
         command: --rpc-external --ws-external --dev

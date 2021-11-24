@@ -43,7 +43,7 @@
         "@nestjs/swagger": "5.1.4",
         "@nestjs/testing": "8.1.2",
         "@nestjs/typeorm": "8.0.2",
-        "@polkadot/api": "6.5.2",
+        "@polkadot/api": "6.9.2",
         "@types/bunyan": "^1.8.6",
         "@types/convict": "^6.0.1",
         "@types/debug": "^4.1.5",

@@ -28,12 +28,14 @@ interface BountyStatusData {
 
 @Injectable()
 export class BlockchainBountiesService {
-    constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
-                private readonly blockchainService: BlockchainService) {}
+    constructor(
+        @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
+        private readonly blockchainService: BlockchainService,
+    ) {}
 
     static extractBountyIndex(extrinsicEvents: ExtrinsicEvent[]): number | undefined {
         logger.info('Looking for a bounty proposal index')
-        return extractNumberFromBlockchainEvent(extrinsicEvents, 'bounties', 'BountyProposed', 'BountyIndex')
+        return extractNumberFromBlockchainEvent(extrinsicEvents, 'bounties', 'BountyProposed', 0)
     }
 
     getBountiesConfig(networkId: string): BlockchainBountiesConfigurationDto {
@@ -65,12 +67,12 @@ export class BlockchainBountiesService {
         const blockTime = this.blockchainService.getBlockTime(networkId) // time for processing one block
         const identities = await this.blockchainService.getIdentities(
             networkId,
-            BlockchainBountiesService.getAllAddresses(deriveBounties)
+            BlockchainBountiesService.getAllAddresses(deriveBounties),
         ) // fetch proposers, curators and beneficiaries identities
-        return deriveBounties.map(({index, description, bounty}) => {
+        return deriveBounties.map(({ index, description, bounty }) => {
             const proposerAddress = bounty.proposer.toString()
-            const {status, data: bountyStatusData } = BlockchainBountiesService.getBountyStatusData(bounty.status)
-            const {curator, updateDue, unlockAt, beneficiary} = bountyStatusData ?? {}
+            const { status, data: bountyStatusData } = BlockchainBountiesService.getBountyStatusData(bounty.status)
+            const { curator, updateDue, unlockAt, beneficiary } = bountyStatusData ?? {}
             const curatorAddress = curator?.toString()
             const beneficiaryAddress = beneficiary?.toString()
             return new BlockchainBountyDto({
@@ -79,15 +81,18 @@ export class BlockchainBountiesService {
                 proposer: toBlockchainAccountInfo(proposerAddress, identities.get(proposerAddress)),
                 value: bounty.value.toString() as NetworkPlanckValue,
                 fee: bounty.fee.toString() as NetworkPlanckValue,
-                curator: curatorAddress ? toBlockchainAccountInfo(curatorAddress, identities.get(curatorAddress)): undefined,
+                curator: curatorAddress
+                    ? toBlockchainAccountInfo(curatorAddress, identities.get(curatorAddress))
+                    : undefined,
                 updateDue: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, updateDue, blockTime),
-                beneficiary: beneficiaryAddress ? toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress)): undefined,
+                beneficiary: beneficiaryAddress
+                    ? toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress))
+                    : undefined,
                 unlockAt: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, unlockAt, blockTime),
                 curatorDeposit: bounty.curatorDeposit.toString() as NetworkPlanckValue,
                 bond: bounty.bond.toString() as NetworkPlanckValue,
-                status
+                status,
             })
-
         })
     }
 
@@ -99,38 +104,43 @@ export class BlockchainBountiesService {
     }
 
     private static getBlockchainTimeLeft(currentBlock: BlockNumber, futureBlock: Nil<BlockNumber>, blockTime: BN) {
-        if(!futureBlock || futureBlock.cmp(currentBlock) !== 1)
-            return
+        if (!futureBlock || futureBlock.cmp(currentBlock) !== 1) return
         const blocksLeft = futureBlock.sub(currentBlock)
         return extractTime(Math.abs(blocksLeft.mul(blockTime).toNumber()))
-
     }
     private static getProposersAddresses(bountiesDerived: DeriveBounties): string[] {
-        return bountiesDerived.map(bountyDerived => bountyDerived.bounty.proposer.toString())
+        return bountiesDerived.map((bountyDerived) => bountyDerived.bounty.proposer.toString())
     }
 
     private static getCuratorsAddresses(bountiesDerived: DeriveBounties): string[] {
         return bountiesDerived
-            .map(({bounty}) => BlockchainBountiesService.getBountyStatusData(bounty.status))
+            .map(({ bounty }) => BlockchainBountiesService.getBountyStatusData(bounty.status))
             .filter(({ data }) => data?.curator !== undefined)
-            .map(({data}) => data!.curator.toString())
-
+            .map(({ data }) => data!.curator.toString())
     }
 
     private static getBeneficiariesAddresses(bountiesDerived: DeriveBounties): string[] {
         return bountiesDerived
-            .map(({bounty}) => BlockchainBountiesService.getBountyStatusData(bounty.status))
+            .map(({ bounty }) => BlockchainBountiesService.getBountyStatusData(bounty.status))
             .filter(({ data }) => data?.beneficiary !== undefined)
-            .map(({data}) => data!.beneficiary!.toString())
+            .map(({ data }) => data!.beneficiary!.toString())
     }
 
-    private static getBountyStatusData(bountyStatus: PalletBountiesBountyStatus): {status: BlockchainBountyStatus, data?: BountyStatusData} {
+    private static getBountyStatusData(
+        bountyStatus: PalletBountiesBountyStatus,
+    ): { status: BlockchainBountyStatus; data?: BountyStatusData } {
         const proposed = bountyStatus.isProposed ? { status: BlockchainBountyStatus.Proposed } : null
         const approved = bountyStatus.isApproved ? { status: BlockchainBountyStatus.Approved } : null
         const funded = bountyStatus.isFunded ? { status: BlockchainBountyStatus.Funded } : null
-        const curatorProposed = bountyStatus.isCuratorProposed ? { status: BlockchainBountyStatus.CuratorProposed, data: bountyStatus.asCuratorProposed } : null
-        const active = bountyStatus.isActive ? { status: BlockchainBountyStatus.Active, data: bountyStatus.asActive } : null
-        const pendingPayout = bountyStatus.isPendingPayout ? { status: BlockchainBountyStatus.PendingPayout, data: bountyStatus.asPendingPayout } : null
+        const curatorProposed = bountyStatus.isCuratorProposed
+            ? { status: BlockchainBountyStatus.CuratorProposed, data: bountyStatus.asCuratorProposed }
+            : null
+        const active = bountyStatus.isActive
+            ? { status: BlockchainBountyStatus.Active, data: bountyStatus.asActive }
+            : null
+        const pendingPayout = bountyStatus.isPendingPayout
+            ? { status: BlockchainBountyStatus.PendingPayout, data: bountyStatus.asPendingPayout }
+            : null
         return proposed ?? approved ?? funded ?? curatorProposed ?? active ?? pendingPayout!
     }
 
