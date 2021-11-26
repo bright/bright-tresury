@@ -279,10 +279,15 @@ export default cloudform({
         },
         ECS: {
             production: {
-                InstanceType: 't2.small',
+                InstanceType: 't2.medium',
                 ContainerName: `${ProjectName}-app-production`,
                 ContainerPort: '3000',
-                Memory: '900',
+                Memory: '1000',
+                SubstrateContainerName: `${ProjectName}-substrate-production`,
+                SubstrateHttpContainerPort: '9933',
+                SubstrateWsContainerPort: '9944',
+                AuthCoreContainerName: `${ProjectName}-auth-production`,
+                AuthCoreHttpContainerPort: '3567',
                 DesiredTasksCount: 1,
             },
             qa: {
