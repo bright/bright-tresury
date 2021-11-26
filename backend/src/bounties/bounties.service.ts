@@ -41,7 +41,7 @@ export class BountiesService {
         user: UserEntity,
     ): Promise<[BlockchainBountyDto, BountyEntity?]> {
         logger.info(`Update a bounty entity for index in network by user`, blockchainIndex, networkId, user)
-        const [bountyBlockchain, bountyEntity] = await this.getBounty(blockchainIndex, networkId)
+        const [bountyBlockchain, bountyEntity] = await this.getBounty(networkId, blockchainIndex)
 
         if (!bountyEntity) {
             throw new NotFoundException(`Bounty entity with blockchainIndex not found: ${blockchainIndex}`)
@@ -54,7 +54,7 @@ export class BountiesService {
         bountyBlockchain.isEditableOrThrow()
 
         await this.repository.save({ ...bountyEntity, ...dto })
-        return await this.getBounty(blockchainIndex, networkId)
+        return await this.getBounty(networkId, blockchainIndex)
     }
 
     async listenForProposeBountyExtrinsic(dto: CreateBountyDto, user: UserEntity): Promise<ExtrinsicEntity> {
@@ -89,17 +89,11 @@ export class BountiesService {
         ])
     }
 
-    async getBounty(blockchainIndex: number, networkId: string): Promise<[BlockchainBountyDto, BountyEntity?]> {
-        const [bountiesBlockchain, bountyEntity] = await Promise.all([
-            this.bountiesBlockchainService.getBounties(networkId),
-            this.repository.findOne({ where: { networkId, blockchainIndex } }),
+    async getBounty(networkId: string, blockchainIndex: number): Promise<[BlockchainBountyDto, BountyEntity?]> {
+        const [bountyBlockchain, bountyEntity] = await Promise.all([
+            this.bountiesBlockchainService.getBounty(networkId, blockchainIndex),
+            this.repository.findOne({ where: {networkId, blockchainIndex } })
         ])
-        const bountyBlockchain = bountiesBlockchain.find(
-            (bounty: BlockchainBountyDto) => bounty.index === blockchainIndex,
-        )
-        if (!bountyBlockchain) {
-            throw new NotFoundException(`Bounty with blockchainIndex not found: ${blockchainIndex}`)
-        }
         return [bountyBlockchain, bountyEntity]
     }
 

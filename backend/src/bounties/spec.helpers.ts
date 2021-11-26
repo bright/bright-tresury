@@ -179,7 +179,31 @@ export const blockchainBounties = [
 
 export const blockchainDeriveBounties = [
     {
-        "description": "Council Alert App",
-        "index": 0,
-    } as unknown as DeriveBounty
+        index: 0,
+        description: 'bc-description-1',
+        bounty: {
+            proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
+            value: '10000',
+            fee: '100',
+            curatorDeposit: '0',
+            bond: '10',
+            status: {
+                isProposed: true
+            }
+        }
+    } as unknown as DeriveBounty,
+    {
+        index: 1,
+        description: 'bc-description-2',
+        bounty: {
+            proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
+            value: '10000',
+            fee: '100',
+            curatorDeposit: '0',
+            bond: '10',
+            status: {
+                isProposed: true
+            }
+        }
+    } as unknown as DeriveBounty,
 ] as DeriveBounties

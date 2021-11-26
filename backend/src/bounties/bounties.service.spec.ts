@@ -28,7 +28,6 @@ import {
     createProposerSessionData,
     minimalValidCreateDto,
     mockGetBounties,
-    blockchainBounties,
     blockchainDeriveBounties,
     mockListenForExtrinsic,
     mockListenForExtrinsicWithNoEvent
@@ -336,6 +335,8 @@ describe('BountiesService', () => {
     describe('getBounties', () => {
         beforeAll(() => {
             mockGetBounties(app().get(BlockchainBountiesService))
+            jest.spyOn(app().get(BlockchainBountiesService), 'getDeriveBounties')
+                .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
         })
 
         it('should return two bounties', async () => {
@@ -348,9 +349,11 @@ describe('BountiesService', () => {
     describe('getBounty', () => {
         beforeAll(() => {
             mockGetBounties(app().get(BlockchainBountiesService))
+            jest.spyOn(app().get(BlockchainBountiesService), 'getDeriveBounties')
+                .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
         })
         it('should return correct bounty tuple', async () => {
-            const [blockchainBounty, bountyEntity] = await service().getBounty(0, NETWORKS.POLKADOT)
+            const [blockchainBounty, bountyEntity] = await service().getBounty(NETWORKS.POLKADOT, 0)
             expect(blockchainBounty).toBeDefined()
             expect(bountyEntity).toBeUndefined()
 
@@ -364,7 +367,7 @@ describe('BountiesService', () => {
             expect(blockchainBounty.status).toBe(BlockchainBountyStatus.Proposed)
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBounty(100, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)
+            return expect(service().getBounty( NETWORKS.POLKADOT, 5)).rejects.toThrow(NotFoundException)
         })
     })
 
@@ -374,7 +377,7 @@ describe('BountiesService', () => {
                 .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBountyMotions(NETWORKS.POLKADOT, 1)).rejects.toThrow(NotFoundException)
+            return expect(service().getBountyMotions(NETWORKS.POLKADOT, 2)).rejects.toThrow(NotFoundException)
         })
     })
 })

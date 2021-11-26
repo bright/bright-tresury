@@ -24,6 +24,7 @@ import {
     createBountyEntity,
     minimalValidCreateDto,
     mockGetBounties,
+    blockchainDeriveBounties,
     mockListenForExtrinsic,
 } from './spec.helpers'
 
@@ -37,9 +38,15 @@ describe(`/api/v1/bounties/`, () => {
         app().get<Repository<BountyEntity>>(getRepositoryToken(BountyEntity)),
     )
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
+
     const blockchainBountiesService = beforeAllSetup(() =>
         app().get<BlockchainBountiesService>(BlockchainBountiesService),
     )
+
+    beforeAll(() => {
+        jest.spyOn(app().get(BlockchainBountiesService), 'getDeriveBounties')
+            .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
+    })
 
     beforeEach(async () => {
         await cleanDatabase()

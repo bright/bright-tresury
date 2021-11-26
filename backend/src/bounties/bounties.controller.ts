@@ -40,7 +40,7 @@ export class BountiesController {
         type: BountyDto,
     })
     async getBounty(@Param() { bountyIndex }: BountyParam, @Query() { network }: NetworkNameQuery): Promise<BountyDto> {
-        const [bountyBlockchain, bountyEntity] = await this.bountiesService.getBounty(Number(bountyIndex), network)
+        const [bountyBlockchain, bountyEntity] = await this.bountiesService.getBounty(network, Number(bountyIndex))
         return new BountyDto(bountyBlockchain, bountyEntity)
     }
 
