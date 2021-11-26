@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { getLogger } from '../../logging.module'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
@@ -7,14 +7,16 @@ import { extractNumberFromBlockchainEvent, getApi } from '../utils'
 import { BlockchainBountiesConfigurationDto } from './dto/blockchain-bounties-configuration.dto'
 import { BlockchainBountyDto, BlockchainBountyStatus } from './dto/blockchain-bounty.dto'
 import { BlockchainService } from '../blockchain.service'
-import { toBlockchainAccountInfo } from '../dto/blockchain-account-info.dto'
+import { BlockchainAccountInfo, toBlockchainAccountInfo } from '../dto/blockchain-account-info.dto'
 import { PalletBountiesBountyStatus } from '@polkadot/types/lookup'
-import { DeriveBounties } from '@polkadot/api-derive/types'
-import { BlockNumber } from '@polkadot/types/interfaces'
+import { DeriveBounties, DeriveCollectiveProposal } from '@polkadot/api-derive/types'
+import { BlockNumber, Hash, Proposal, Votes } from '@polkadot/types/interfaces'
 import BN from 'bn.js'
 import { extractTime } from '@polkadot/util'
 import { AccountId32 } from '@polkadot/types/interfaces/runtime'
 import { u32 } from '@polkadot/types'
+import { BlockchainMotionDto, toBlockchainMotion } from '../dto/blockchain-motion.dto'
+import * as net from 'net'
 
 const logger = getLogger()
 
@@ -51,10 +53,9 @@ export class BlockchainBountiesService {
         }
     }
     async getBounties(networkId: string): Promise<BlockchainBountyDto[]> {
-        const api = getApi(this.blockchainsConnections, networkId)
-        const bestNumber = await api.derive.chain.bestNumber() // current block number
+        const bestNumber = await this.blockchainService.getCurrentBlockNumber(networkId) // time for processing one block
         const blockTime = this.blockchainService.getBlockTime(networkId) // time for processing one block
-        const bountiesDerived = await api.derive.bounties.bounties() // blockchain-bounties currently hold in blockchain
+        const bountiesDerived = await this.getDeriveBounties(networkId) // blockchain-bounties currently hold in blockchain
 
         const identities = await this.blockchainService.getIdentities(
             networkId,
@@ -126,5 +127,38 @@ export class BlockchainBountiesService {
         const active = bountyStatus.isActive ? { status: BlockchainBountyStatus.Active, data: bountyStatus.asActive } : null
         const pendingPayout = bountyStatus.isPendingPayout ? { status: BlockchainBountyStatus.PendingPayout, data: bountyStatus.asPendingPayout } : null
         return proposed ?? approved ?? funded ?? curatorProposed ?? active ?? pendingPayout!
+    }
+
+    async getDeriveBounties(networkId: string) {
+        const api = getApi(this.blockchainsConnections, networkId)
+        return api.derive.bounties.bounties()
+    }
+
+    private async getDeriveBounty(networkId: string, index:number) {
+        const deriveBounties = await this.getDeriveBounties(networkId)
+        const deriveBounty = deriveBounties.find((db) => Number(db.index.toString()) === index)
+        if(!deriveBounty)
+            throw new NotFoundException(`Bounty with given index was not found: ${index}`)
+        return deriveBounty
+    }
+    private static getVoters(motions: DeriveCollectiveProposal[]): string[] {
+        const voters = motions.map( (motion) => [
+            ...(motion.votes?.ayes?.map(accountId => accountId.toHuman()) ?? []),
+            ...(motion.votes?.nays?.map(accountId => accountId.toHuman()) ?? [])
+        ]).reduce((acc, motionVoters) => {
+            motionVoters.forEach(voter => acc.add(voter))
+            return acc
+        }, new Set<string>())
+        return [...voters]
+    }
+    async getMotions( networkId: string, index: number): Promise<BlockchainMotionDto[]> {
+        const deriveBounty = await this.getDeriveBounty(networkId, index)
+        const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
+        const motions = deriveBounty.proposals
+        const identities = await this.blockchainService.getIdentities(
+            networkId, BlockchainBountiesService.getVoters(motions)
+        ) // fetch proposers, curators and beneficiaries identities
+        const toBlockchainMotionEnd = (endBlock: BlockNumber) => this.blockchainService.getRemainingTime(networkId, currentBlockNumber, endBlock)
+        return motions.map(motion => toBlockchainMotion(motion, identities, toBlockchainMotionEnd))
     }
 }

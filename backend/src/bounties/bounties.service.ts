@@ -102,4 +102,8 @@ export class BountiesService {
         }
         return [bountyBlockchain, bountyEntity]
     }
+
+    getBountyMotions(networkId: string, blockchainIndex: number) {
+        return this.bountiesBlockchainService.getMotions(networkId, blockchainIndex)
+    }
 }

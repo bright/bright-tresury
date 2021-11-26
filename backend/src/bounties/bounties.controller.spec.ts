@@ -463,4 +463,15 @@ describe(`/api/v1/bounties/`, () => {
             return request(app()).get(`${baseUrl}0`).expect(HttpStatus.BAD_REQUEST)
         })
     })
+    describe('GET /bounties/:bountyIndex/motions get single bounty motions', () =>{
+        it(`should return ${HttpStatus.BAD_REQUEST} status code for bounty id not being a number`, async () => {
+            return request(app()).get(`${baseUrl}AB/motions?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.BAD_REQUEST)
+        })
+        it(`should return ${HttpStatus.BAD_REQUEST} status code for non existing network id`, async () => {
+            return request(app()).get(`${baseUrl}0/motions?network=non-existing`).expect(HttpStatus.BAD_REQUEST)
+        })
+        it(`should return ${HttpStatus.BAD_REQUEST} status code for no network id`, async () => {
+            return request(app()).get(`${baseUrl}0/motions`).expect(HttpStatus.BAD_REQUEST)
+        })
+    })
 })

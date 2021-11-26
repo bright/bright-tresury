@@ -12,6 +12,7 @@ import { NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { CreateBountyDto } from './dto/create-bounty.dto'
+import { DeriveBounties, DeriveBounty } from '@polkadot/api-derive/types'
 
 // listen for extrinsic
 export const updateExtrinsicDto: UpdateExtrinsicDto = {
@@ -175,3 +176,10 @@ export const blockchainBounties = [
     blockchainBountyActive,
     blockchainBountyPendingPayout,
 ]
+
+export const blockchainDeriveBounties = [
+    {
+        "description": "Council Alert App",
+        "index": 0,
+    } as unknown as DeriveBounty
+] as DeriveBounties

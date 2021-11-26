@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BlockchainTimeLeft } from './blockchain-time-left.dto'
 
-export class BlockchainProposalMotionEnd {
+export class BlockchainMotionEndDto {
     @ApiProperty({ description: 'Block number when voting for this proposal motion ends' })
     endBlock: number
     @ApiProperty({ description: 'Amount of blocks that is left to mine until voting for this proposal motion ends' })
@@ -12,7 +12,7 @@ export class BlockchainProposalMotionEnd {
     })
     timeLeft: BlockchainTimeLeft
 
-    constructor({ endBlock, remainingBlocks, timeLeft }: BlockchainProposalMotionEnd) {
+    constructor({ endBlock, remainingBlocks, timeLeft }: BlockchainMotionEndDto) {
         this.endBlock = endBlock
         this.remainingBlocks = remainingBlocks
         this.timeLeft = timeLeft

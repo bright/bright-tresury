@@ -1,12 +1,12 @@
 import { BlockchainAccountInfo, toBlockchainAccountInfo } from './blockchain-account-info.dto'
-import { BlockchainProposalMotionEnd } from './blockchain-proposal-motion-end.dto'
+import { BlockchainMotionEndDto } from './blockchain-motion-end.dto'
 import { DeriveAccountRegistration, DeriveCollectiveProposal } from '@polkadot/api-derive/types'
 import { AccountId, BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { Nil } from '../../utils/types'
 import { Vec } from '@polkadot/types'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
-export class BlockchainProposalMotion {
+export class BlockchainMotionDto {
     @ApiProperty({ description: 'Hash of the motion' })
     hash: string
 
@@ -28,10 +28,10 @@ export class BlockchainProposalMotion {
     })
     threshold: Nil<number>
 
-    @ApiPropertyOptional({ description: 'Motion end information', type: BlockchainProposalMotionEnd })
-    motionEnd: Nil<BlockchainProposalMotionEnd>
+    @ApiPropertyOptional({ description: 'Motion end information', type: BlockchainMotionEndDto })
+    motionEnd?: Nil<BlockchainMotionEndDto>
 
-    constructor({ hash, method, ayes, nays, motionIndex, threshold, motionEnd }: BlockchainProposalMotion) {
+    constructor({ hash, method, ayes, nays, motionIndex, threshold, motionEnd }: BlockchainMotionDto) {
         this.hash = hash
         this.method = method
         this.ayes = ayes
@@ -42,16 +42,16 @@ export class BlockchainProposalMotion {
     }
 }
 
-export function toBlockchainProposalMotion(
+export function toBlockchainMotion(
     council: DeriveCollectiveProposal,
     identities: Map<string, DeriveAccountRegistration>,
-    toBlockchainProposalMotionEnd: (endBlock: BlockNumber) => BlockchainProposalMotionEnd,
-): BlockchainProposalMotion {
+    toBlockchainMotionEnd: (endBlock: BlockNumber) => BlockchainMotionEndDto,
+): BlockchainMotionDto {
     const toStringVotesArray = (votesVector: Vec<AccountId>): string[] =>
         votesVector.toArray().map((accountId) => accountId.toHuman())
     const { hash, proposal, votes } = council
     if (votes === null) {
-        return new BlockchainProposalMotion({
+        return new BlockchainMotionDto({
             hash: hash.toString(),
             method: proposal.method,
             ayes: null,
@@ -61,7 +61,7 @@ export function toBlockchainProposalMotion(
             motionEnd: null,
         })
     }
-    return new BlockchainProposalMotion({
+    return new BlockchainMotionDto({
         hash: hash.toString(),
         method: proposal.method,
         ayes: toStringVotesArray(votes.ayes).map((address) =>
@@ -72,6 +72,6 @@ export function toBlockchainProposalMotion(
         ),
         motionIndex: votes.index.toNumber(),
         threshold: votes.threshold.toNumber(),
-        motionEnd: toBlockchainProposalMotionEnd(votes.end),
+        motionEnd: toBlockchainMotionEnd(votes.end),
     })
 }

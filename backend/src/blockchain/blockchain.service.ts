@@ -10,7 +10,7 @@ import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { getProposers, getBeneficiaries, getVoters, getApi, extractNumberFromBlockchainEvent } from './utils'
 import BN from 'bn.js'
-import { BlockchainProposalMotionEnd } from './dto/blockchain-proposal-motion-end.dto'
+import { BlockchainMotionEndDto } from './dto/blockchain-motion-end.dto'
 import { BlockchainsConnections } from './blockchain.module'
 import { AccountId } from '@polkadot/types/interfaces/runtime'
 import { BN_MILLION, BN_ZERO, u8aConcat } from '@polkadot/util'
@@ -125,10 +125,10 @@ export class BlockchainService implements OnModuleDestroy {
         networkId: string,
         currentBlockNumber: BlockNumber,
         futureBlockNumber: BlockNumber,
-    ): BlockchainProposalMotionEnd {
+    ): BlockchainMotionEndDto {
         const remainingBlocks = futureBlockNumber.sub(currentBlockNumber)
         const timeLeft = this.blocksToTime(networkId, remainingBlocks)
-        return new BlockchainProposalMotionEnd({
+        return new BlockchainMotionEndDto({
             endBlock: futureBlockNumber.toNumber(),
             remainingBlocks: remainingBlocks.toNumber(),
             timeLeft,
@@ -163,7 +163,7 @@ export class BlockchainService implements OnModuleDestroy {
 
         // make a function that will compute remaining voting time
         const currentBlockNumber = await api.derive.chain.bestNumber()
-        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainProposalMotionEnd =>
+        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainMotionEndDto =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
         return [
             ...proposals.map((derivedProposal) =>
@@ -294,5 +294,10 @@ export class BlockchainService implements OnModuleDestroy {
             availableBalance,
             nextFoundsBurn,
         }
+    }
+
+    async getCurrentBlockNumber(networkId: string) {
+        const api = getApi(this.blockchainsConnections, networkId)
+        return api.derive.chain.bestNumber() // current block number
     }
 }

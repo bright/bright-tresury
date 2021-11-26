@@ -17,6 +17,7 @@ import { CreateBountyDto } from './dto/create-bounty.dto'
 import { UpdateBountyDto } from './dto/update-bounty.dto'
 import { BountyDto } from './dto/bounty.dto'
 import { BountyParam } from './bounty.param'
+import { BlockchainMotionDto } from '../blockchain/dto/blockchain-motion.dto'
 
 @ControllerApiVersion('/bounties', ['v1'])
 @ApiTags('bounties')
@@ -41,6 +42,19 @@ export class BountiesController {
     async getBounty(@Param() { bountyIndex }: BountyParam, @Query() { network }: NetworkNameQuery): Promise<BountyDto> {
         const [bountyBlockchain, bountyEntity] = await this.bountiesService.getBounty(Number(bountyIndex), network)
         return new BountyDto(bountyBlockchain, bountyEntity)
+    }
+
+
+    @Get(':bountyIndex/motions')
+    @ApiOkResponse({
+        description: 'Respond with bounty motions for the given index in the given network',
+        type: [BlockchainMotionDto],
+    })
+    async getBountyMotions(
+        @Param() { bountyIndex }: BountyParam,
+        @Query() { network }: NetworkNameQuery
+    ): Promise<BlockchainMotionDto[]> {
+        return this.bountiesService.getBountyMotions(network, Number(bountyIndex))
     }
 
     @Post()

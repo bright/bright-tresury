@@ -28,8 +28,10 @@ import {
     createProposerSessionData,
     minimalValidCreateDto,
     mockGetBounties,
+    blockchainBounties,
+    blockchainDeriveBounties,
     mockListenForExtrinsic,
-    mockListenForExtrinsicWithNoEvent,
+    mockListenForExtrinsicWithNoEvent
 } from './spec.helpers'
 
 describe('BountiesService', () => {
@@ -363,6 +365,16 @@ describe('BountiesService', () => {
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
             return expect(service().getBounty(100, NETWORKS.POLKADOT)).rejects.toThrow(NotFoundException)
+        })
+    })
+
+    describe('getBountyMotions', () => {
+        beforeAll(() => {
+            jest.spyOn(app().get(BlockchainBountiesService), 'getDeriveBounties')
+                .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
+        })
+        it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
+            return expect(service().getBountyMotions(NETWORKS.POLKADOT, 1)).rejects.toThrow(NotFoundException)
         })
     })
 })

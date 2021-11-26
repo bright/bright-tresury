@@ -98,14 +98,15 @@ const createMotionVoteAndClose = async (api, call) => {
 const submitCouncilAndVote = async (api) => {
     const { ALICE, BOB, CHARLIE, DAVE } = getDevAccounts()
     const D125 = 125000000000
+    const elections = api.tx.electionsPhragmen ?? api.tx.phragmenElection
     console.log('submitCandidacy: alice')
-    await signAndSend(api.tx.phragmenElection.submitCandidacy(0), ALICE)
+    await signAndSend(elections.submitCandidacy(0), ALICE)
     console.log('submitCandidacy: bob')
-    await signAndSend(api.tx.phragmenElection.submitCandidacy(1), BOB)
+    await signAndSend(elections.submitCandidacy(1), BOB)
     console.log('submitCandidacy: charlie')
-    await signAndSend(api.tx.phragmenElection.submitCandidacy(2), CHARLIE)
+    await signAndSend(elections.submitCandidacy(2), CHARLIE)
     console.log('vote')
-    await signAndSend(api.tx.phragmenElection.vote([ALICE.address, BOB.address, CHARLIE.address], D125), DAVE)
+    await signAndSend(elections.vote([ALICE.address, BOB.address, CHARLIE.address], D125), DAVE)
 }
 
 /**
