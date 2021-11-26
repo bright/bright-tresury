@@ -312,7 +312,7 @@ export default cloudform({
         },
         Certificates: {
             production: {
-                ARN: '',
+                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/04a1b302-0b85-4fcb-a4da-772890c4ec54`,
             },
             qa: {
                 ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/2c1526f9-9f90-4d75-91c9-6d44178f531d`,
