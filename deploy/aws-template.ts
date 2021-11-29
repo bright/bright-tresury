@@ -83,9 +83,8 @@ const Resources = {
 
     // load balancer
     ECSALB: 'ECSALB',
-    ALBHttpsListener: 'ALBHttpsListener',
     ALBHttpListener: 'ALBHttpListener',
-    ECSALBListenerRule: 'ECSALBListenerRule',
+    ALBHttpsListener: 'ALBHttpsListener',
     ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
     // substrate
     SubstrateHttpListener: 'SubstrateHttpListener',
@@ -1036,7 +1035,7 @@ export default cloudform({
                 },
             ],
             ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-            Priority: 2,
+            Priority: 1,
         }).dependsOn(Resources.ALBHttpListener),
 
         [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
