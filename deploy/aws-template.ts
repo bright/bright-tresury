@@ -83,9 +83,14 @@ const Resources = {
 
     // load balancer
     ECSALB: 'ECSALB',
+
     ALBHttpListener: 'ALBHttpListener',
+    ECSALBHttpListenerRule1: 'ECSALBHttpListenerRule1',
+    ECSALBHttpListenerRule2: 'ECSALBHttpListenerRule2',
+
     ALBHttpsListener: 'ALBHttpsListener',
-    ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
+    ECSALBHttpsListenerRule1: 'ECSALBHttpsListenerRule1',
+
     // substrate
     SubstrateHttpListener: 'SubstrateHttpListener',
     SubstrateWssListener: 'SubstrateWssListener',
@@ -1014,7 +1019,7 @@ export default cloudform({
             Protocol: 'HTTP',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSALBHttpListenerRule1]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: 'redirect',
@@ -1038,7 +1043,7 @@ export default cloudform({
             Priority: 1,
         }).dependsOn(Resources.ALBHttpListener),
 
-        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSALBHttpListenerRule2]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: 'redirect',
@@ -1081,7 +1086,7 @@ export default cloudform({
             Protocol: 'HTTPS',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSALBHttpsListenerRule1]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: 'redirect',
