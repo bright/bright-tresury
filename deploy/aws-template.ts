@@ -85,11 +85,11 @@ const Resources = {
     ECSALB: 'ECSALB',
 
     ALBHttpListener: 'ALBHttpListener',
-    ECSALBHttpListenerRule1: 'ECSALBHttpListenerRule1',
-    ECSALBHttpListenerRule2: 'ECSALBHttpListenerRule2',
+    ECSALBHttpListenerRedirectRule1: 'ECSALBHttpListenerRedirectRule1',
+    ECSALBHttpListenerRedirectRule2: 'ECSALBHttpListenerRedirectRule2',
 
     ALBHttpsListener: 'ALBHttpsListener',
-    ECSALBHttpsListenerRule1: 'ECSALBHttpsListenerRule1',
+    ECSALBHttpsListenerRedirectRule1: 'ECSALBHttpsListenerRedirectRule1',
 
     // substrate
     SubstrateHttpListener: 'SubstrateHttpListener',
@@ -1019,7 +1019,7 @@ export default cloudform({
             Protocol: 'HTTP',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.ECSALBHttpListenerRule1]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSALBHttpListenerRedirectRule1]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: 'redirect',
@@ -1043,7 +1043,7 @@ export default cloudform({
             Priority: 1,
         }).dependsOn(Resources.ALBHttpListener),
 
-        [Resources.ECSALBHttpListenerRule2]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSALBHttpListenerRedirectRule2]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: 'redirect',
@@ -1086,7 +1086,7 @@ export default cloudform({
             Protocol: 'HTTPS',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.ECSALBHttpsListenerRule1]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSALBHttpsListenerRedirectRule1]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: 'redirect',
@@ -1107,7 +1107,7 @@ export default cloudform({
                 },
             ],
             ListenerArn: Fn.Ref(Resources.ALBHttpsListener),
-            Priority: 2,
+            Priority: 1,
         }).dependsOn(Resources.ALBHttpsListener),
         // listener https end
 
