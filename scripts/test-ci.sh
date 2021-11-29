@@ -8,9 +8,9 @@ docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.test.yml \
     build --no-cache
 
-#docker-compose \
-#    --file ${PROJECT_DIR}/deploy/docker-compose.test.yml \
-#    run backend-test-ci
+docker-compose \
+    --file ${PROJECT_DIR}/deploy/docker-compose.test.yml \
+    run backend-test-ci
 
 docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.test.yml \
