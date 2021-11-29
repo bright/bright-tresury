@@ -1,5 +1,4 @@
 {
-    "APP_NAME": "Bright Treasury",
     "API_URL": "http://localhost:3001",
     "WEBSITE_URL": "http://localhost:3000"
 }
