@@ -16,7 +16,7 @@ import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-w
 import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
-import { PolkassemblyProposalDto } from '../polkassembly/polkassembly-proposal.dto'
+import { PolkassemblyPostDto } from '../polkassembly/polkassembly-post.dto'
 
 
 const logger = getLogger()
@@ -92,7 +92,7 @@ export class ProposalsService {
     mergeProposal(
         blockchainProposal: BlockchainProposal,
         proposalEntity: Nil<ProposalEntity>,
-        polkassemblyProposal?: Nil<PolkassemblyProposalDto>
+        polkassemblyProposal?: Nil<PolkassemblyPostDto>
     ): BlockchainProposalWithDomainDetails {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const ideaId = proposalEntity?.ideaNetwork?.ideaId ?? milestone?.ideaId

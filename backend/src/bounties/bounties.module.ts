@@ -6,9 +6,10 @@ import { BountiesController } from './bounties.controller'
 import { BountiesService } from './bounties.service'
 import { BountyEntity } from './entities/bounty.entity'
 import { BlockchainModule } from '../blockchain/blockchain.module'
+import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
 
 @Module({
-    imports: [TypeOrmModule.forFeature([BountyEntity]), SessionModule, ExtrinsicsModule, BlockchainModule],
+    imports: [TypeOrmModule.forFeature([BountyEntity]), SessionModule, ExtrinsicsModule, BlockchainModule, PolkassemblyModule],
     controllers: [BountiesController],
     providers: [BountiesService],
 })

@@ -31,7 +31,8 @@ export class BountiesController {
     })
     async getBounties(@Query() { network }: NetworkNameQuery): Promise<BountyDto[]> {
         const bounties = await this.bountiesService.getBounties(network)
-        return bounties.map(([bountyBlockchain, bountyEntity]) => new BountyDto(bountyBlockchain, bountyEntity))
+        return bounties.map(([bountyBlockchain, bountyEntity, bountyPolkassemblyPost]) =>
+            new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost))
     }
 
     @Get(':bountyIndex')
@@ -40,8 +41,8 @@ export class BountiesController {
         type: BountyDto,
     })
     async getBounty(@Param() { bountyIndex }: BountyParam, @Query() { network }: NetworkNameQuery): Promise<BountyDto> {
-        const [bountyBlockchain, bountyEntity] = await this.bountiesService.getBounty(network, Number(bountyIndex))
-        return new BountyDto(bountyBlockchain, bountyEntity)
+        const [bountyBlockchain, bountyEntity, bountyPolkassemblyPost] = await this.bountiesService.getBounty(network,Number(bountyIndex))
+        return new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost)
     }
 
 
@@ -90,12 +91,12 @@ export class BountiesController {
         @Query() { network }: NetworkNameQuery,
         @ReqSession() sessionData: SessionData,
     ): Promise<BountyDto> {
-        const [bountyBlockchain, bountyEntity] = await this.bountiesService.update(
+        const [bountyBlockchain, bountyEntity, bountyPolkassemblyPost] = await this.bountiesService.update(
             Number(bountyIndex),
             network,
             dto,
             sessionData.user,
         )
-        return new BountyDto(bountyBlockchain, bountyEntity)
+        return new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost)
     }
 }

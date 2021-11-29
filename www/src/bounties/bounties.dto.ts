@@ -57,6 +57,8 @@ interface BaseBountyDto {
     field?: Nil<string>
     description?: Nil<string>
     ownerId?: string
+
+    polkassembly:
 }
 
 type ExtendedBountyDto =

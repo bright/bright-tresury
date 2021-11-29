@@ -9,7 +9,7 @@ export enum ProposalStatus {
     Rewarded = 'rewarded',
     Closed = 'closed',
 }
-export interface PolkassemblyProposalDto {
+export interface PolkassemblyPostDto {
     proposalIndex: number
     title: string
     content: string
@@ -28,7 +28,7 @@ export interface ProposalDto {
     ideaMilestoneId?: string
     ownerId?: string
     details?: IdeaProposalDetailsDto
-    polkassembly?: PolkassemblyProposalDto
+    polkassembly?: PolkassemblyPostDto
 }
 
 export interface ProposalMotion {

@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
+import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
@@ -11,6 +11,9 @@ import { UserEntity } from '../users/user.entity'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { UpdateBountyDto } from './dto/update-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
+import { PolkassemblyService } from '../polkassembly/polkassembly.service'
+import { PolkassemblyPostDto } from '../polkassembly/polkassembly-post.dto'
+import { Nil } from '../utils/types'
 
 const logger = getLogger()
 
@@ -20,6 +23,8 @@ export class BountiesService {
         @InjectRepository(BountyEntity) private readonly repository: Repository<BountyEntity>,
         private readonly extrinsicsService: ExtrinsicsService,
         private readonly bountiesBlockchainService: BlockchainBountiesService,
+        @Inject(PolkassemblyService)
+        private readonly polkassemblyService: PolkassemblyService
     ) {}
 
     create(
@@ -39,7 +44,7 @@ export class BountiesService {
         networkId: string,
         dto: UpdateBountyDto,
         user: UserEntity,
-    ): Promise<[BlockchainBountyDto, BountyEntity?]> {
+    ): Promise<[BlockchainBountyDto, Nil<BountyEntity>, Nil<PolkassemblyPostDto>]> {
         logger.info(`Update a bounty entity for index in network by user`, blockchainIndex, networkId, user)
         const [bountyBlockchain, bountyEntity] = await this.getBounty(networkId, blockchainIndex)
 
@@ -73,11 +78,13 @@ export class BountiesService {
         )
     }
 
-    async getBounties(networkId: string): Promise<[BlockchainBountyDto, BountyEntity?][]> {
+    async getBounties(networkId: string): Promise<[BlockchainBountyDto, Nil<BountyEntity>, Nil<PolkassemblyPostDto>][]> {
         const [bountiesBlockchain, bountiesEntities] = await Promise.all([
             this.bountiesBlockchainService.getBounties(networkId),
             this.repository.find({ where: { networkId } }),
         ])
+        const blockchainIndexes = bountiesBlockchain.map((bountyBlockchain => bountyBlockchain.index))
+        const bountiesPosts = await this.polkassemblyService.getBounties(blockchainIndexes, networkId)
 
         const blockchainIndexToEntityBounty = bountiesEntities.reduce((acc, bountyEntity) => {
             return { ...acc, [bountyEntity.blockchainIndex.toString()]: bountyEntity }
@@ -86,15 +93,17 @@ export class BountiesService {
         return bountiesBlockchain.map((bountyBlockchain: BlockchainBountyDto) => [
             bountyBlockchain,
             blockchainIndexToEntityBounty[bountyBlockchain.index],
+            bountiesPosts.find(post => post.blockchainIndex === bountyBlockchain.index)
         ])
     }
 
-    async getBounty(networkId: string, blockchainIndex: number): Promise<[BlockchainBountyDto, BountyEntity?]> {
+    async getBounty(networkId: string, blockchainIndex: number): Promise<[BlockchainBountyDto, Nil<BountyEntity>, Nil<PolkassemblyPostDto>]> {
         const [bountyBlockchain, bountyEntity] = await Promise.all([
             this.bountiesBlockchainService.getBounty(networkId, blockchainIndex),
             this.repository.findOne({ where: {networkId, blockchainIndex } })
         ])
-        return [bountyBlockchain, bountyEntity]
+        const bountyPost = await this.polkassemblyService.getBounty(blockchainIndex, networkId)
+        return [bountyBlockchain, bountyEntity, bountyPost]
     }
 
     getBountyMotions(networkId: string, blockchainIndex: number) {
