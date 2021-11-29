@@ -1,9 +1,5 @@
 {
     "APP_NAME": "Bright Treasury",
     "API_URL": "http://localhost:3001",
-    "WEBSITE_URL": "http://localhost:3000",
-    "PROVIDER_SOCKET": "ws://localhost:9944",
-    "NETWORK_NAME": "localhost",
-    "NETWORK_CURRENCY": "LOC",
-    "NETWORK_COLOR": "#E6007A"
+    "WEBSITE_URL": "http://localhost:3000"
 }

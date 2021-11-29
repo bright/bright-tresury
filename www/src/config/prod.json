@@ -1,9 +1,5 @@
 {
     "APP_NAME": "treasury-prod",
     "API_URL": "https://treasury.brightinventions.pl",
-    "WEBSITE_URL": "https://treasury.brightinventions.pl",
-    "PROVIDER_SOCKET": "wss://treasury.brightinventions.pl:9944",
-    "NETWORK_NAME": "localhost",
-    "NETWORK_CURRENCY": "LOC",
-    "NETWORK_COLOR": "#E6007A"
+    "WEBSITE_URL": "https://treasury.brightinventions.pl"
 }
