@@ -335,8 +335,6 @@ describe('BountiesService', () => {
     describe('getBounties', () => {
         beforeAll(() => {
             mockGetBounties(app().get(BlockchainBountiesService))
-            jest.spyOn(app().get(BlockchainBountiesService), 'getDeriveBounties')
-                .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
         })
 
         it('should return two bounties', async () => {
@@ -349,8 +347,6 @@ describe('BountiesService', () => {
     describe('getBounty', () => {
         beforeAll(() => {
             mockGetBounties(app().get(BlockchainBountiesService))
-            jest.spyOn(app().get(BlockchainBountiesService), 'getDeriveBounties')
-                .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
         })
         it('should return correct bounty tuple', async () => {
             const [blockchainBounty, bountyEntity] = await service().getBounty(NETWORKS.POLKADOT, 0)
@@ -367,17 +363,16 @@ describe('BountiesService', () => {
             expect(blockchainBounty.status).toBe(BlockchainBountyStatus.Proposed)
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBounty( NETWORKS.POLKADOT, 5)).rejects.toThrow(NotFoundException)
+            return expect(service().getBounty( NETWORKS.POLKADOT, 99)).rejects.toThrow(NotFoundException)
         })
     })
 
     describe('getBountyMotions', () => {
         beforeAll(() => {
-            jest.spyOn(app().get(BlockchainBountiesService), 'getDeriveBounties')
-                .mockImplementation(async (networkId) => Promise.resolve(blockchainDeriveBounties))
+            mockGetBounties(app().get(BlockchainBountiesService))
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBountyMotions(NETWORKS.POLKADOT, 2)).rejects.toThrow(NotFoundException)
+            return expect(service().getBountyMotions(NETWORKS.POLKADOT,99)).rejects.toThrow(NotFoundException)
         })
     })
 })
