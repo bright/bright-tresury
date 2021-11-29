@@ -188,10 +188,6 @@ export default cloudform({
         AppImage: new StringParameter({
             Description: 'Repository, image and tag of the app to deploy',
         }),
-        // EtherumNodeUrl: new StringParameter({
-        //     Description: 'Etherum node url',
-        //     NoEcho: true,
-        // }),
         SSHFrom: new StringParameter({
             Description: 'Lockdown SSH access to the bastion host (default can be accessed from anywhere)',
             MinLength: 9,
@@ -324,6 +320,20 @@ export default cloudform({
             },
             stage: {
                 ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/f6dc8c53-2cda-434e-b52a-2d3f6df313d6`,
+            },
+        },
+        Hosts: {
+            prod: {
+                withWWW: 'www.treasury.brightinventions.pl',
+                withoutWWW: 'treasury.brightinventions.pl',
+            },
+            qa: {
+                withWWW: 'www.testing.treasury.brightinventions.pl',
+                withoutWWW: 'testing.treasury.brightinventions.pl',
+            },
+            stage: {
+                withWWW: 'www.stage.treasury.brightinventions.pl',
+                withoutWWW: 'stage.treasury.brightinventions.pl',
             },
         },
     },
@@ -992,6 +1002,69 @@ export default cloudform({
             SecurityGroups: [Fn.Ref(Resources.HttpHttpsServerSecurityGroup)],
         }).dependsOn(Resources.HttpHttpsServerSecurityGroup),
 
+        // listener http start
+        [Resources.ALBHttpListener]: new ElasticLoadBalancingV2.Listener({
+            DefaultActions: [
+                {
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
+                },
+            ],
+            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
+            Port: 80,
+            Protocol: 'HTTP',
+        }).dependsOn(Resources.ECSServiceRole),
+
+        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: 'redirect',
+                    RedirectConfig: {
+                        Host: '#{host}',
+                        Path: '/#{path}',
+                        Port: '443',
+                        Protocol: 'HTTPS',
+                        Query: '#{query}',
+                        StatusCode: 'HTTP_301',
+                    },
+                },
+            ],
+            Conditions: [
+                {
+                    Field: 'host-header',
+                    Values: [Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW')],
+                },
+            ],
+            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
+            Priority: 2,
+        }).dependsOn(Resources.ALBHttpListener),
+
+        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: 'redirect',
+                    RedirectConfig: {
+                        Host: Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW'),
+                        Path: '/#{path}',
+                        Port: '443',
+                        Protocol: 'HTTPS',
+                        Query: '#{query}',
+                        StatusCode: 'HTTP_301',
+                    },
+                },
+            ],
+            Conditions: [
+                {
+                    Field: 'host-header',
+                    Values: [Fn.FindInMap('Hosts', DeployEnv, 'withWWW')],
+                },
+            ],
+            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
+            Priority: 2,
+        }).dependsOn(Resources.ALBHttpListener),
+        // listener http end
+
+        // listener https start
         [Resources.ALBHttpsListener]: new ElasticLoadBalancingV2.Listener({
             Certificates: [
                 {
@@ -1009,19 +1082,32 @@ export default cloudform({
             Protocol: 'HTTPS',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.ALBHttpListener]: new ElasticLoadBalancingV2.Listener({
-            DefaultActions: [
+        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
                 {
-                    Type: 'forward',
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
+                    Type: 'redirect',
+                    RedirectConfig: {
+                        Host: Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW'),
+                        Path: '/#{path}',
+                        Port: '443',
+                        Protocol: 'HTTPS',
+                        Query: '#{query}',
+                        StatusCode: 'HTTP_301',
+                    },
                 },
             ],
-            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
-            Port: 80,
-            Protocol: 'HTTP',
-        }).dependsOn(Resources.ECSServiceRole),
+            Conditions: [
+                {
+                    Field: 'host-header',
+                    Values: [Fn.FindInMap('Hosts', DeployEnv, 'withWWW')],
+                },
+            ],
+            ListenerArn: Fn.Ref(Resources.ALBHttpsListener),
+            Priority: 2,
+        }).dependsOn(Resources.ALBHttpsListener),
+        // listener https end
 
-        // region substrate
+        // listener substrate http start
         [Resources.SubstrateHttpListener]: new ElasticLoadBalancingV2.Listener({
             DefaultActions: [
                 {
@@ -1034,66 +1120,6 @@ export default cloudform({
             Protocol: 'HTTP',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.SubstrateWssListener]: new ElasticLoadBalancingV2.Listener({
-            Certificates: [
-                {
-                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN'),
-                },
-            ],
-            DefaultActions: [
-                {
-                    Type: 'forward',
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
-                },
-            ],
-            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
-            Port: 9944,
-            Protocol: 'HTTPS',
-        }).dependsOn(Resources.ECSServiceRole),
-        // endregion
-
-        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
-            Actions: [
-                {
-                    Type: 'redirect',
-                    RedirectConfig: {
-                        Host: '#{host}',
-                        Path: '/#{path}',
-                        Port: '443',
-                        Protocol: 'HTTPS',
-                        Query: '#{query}',
-                        StatusCode: 'HTTP_302',
-                    },
-                },
-            ],
-            Conditions: [
-                {
-                    Field: 'path-pattern',
-                    Values: ['/'],
-                },
-            ],
-            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-            Priority: 2,
-        }).dependsOn(Resources.ALBHttpListener),
-
-        [Resources.ECSALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
-            Actions: [
-                {
-                    Type: 'forward',
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
-                },
-            ],
-            Conditions: [
-                {
-                    Field: 'path-pattern',
-                    Values: ['/'],
-                },
-            ],
-            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-            Priority: 1,
-        }).dependsOn(Resources.ALBHttpListener),
-
-        // region substrate
         [Resources.ECSSubstrateHttpListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
@@ -1110,6 +1136,25 @@ export default cloudform({
             ListenerArn: Fn.Ref(Resources.SubstrateHttpListener),
             Priority: 1,
         }).dependsOn(Resources.SubstrateHttpListener),
+        // listener substrate http end
+
+        // listener substrate wss listener start
+        [Resources.SubstrateWssListener]: new ElasticLoadBalancingV2.Listener({
+            Certificates: [
+                {
+                    CertificateArn: Fn.FindInMap('Certificates', DeployEnv, 'ARN'),
+                },
+            ],
+            DefaultActions: [
+                {
+                    Type: 'forward',
+                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
+                },
+            ],
+            LoadBalancerArn: Fn.Ref(Resources.ECSALB),
+            Port: 9944,
+            Protocol: 'HTTPS',
+        }).dependsOn(Resources.ECSServiceRole),
 
         [Resources.ECSSubstrateWssListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
@@ -1127,7 +1172,7 @@ export default cloudform({
             ListenerArn: Fn.Ref(Resources.SubstrateWssListener),
             Priority: 1,
         }).dependsOn(Resources.SubstrateWssListener),
-        // endregion
+        // listener substrate wss listener end
 
         [Resources.ECSAppTargetGroup]: new ElasticLoadBalancingV2.TargetGroup({
             HealthCheckIntervalSeconds: 20,
