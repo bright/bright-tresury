@@ -11,7 +11,7 @@ import { BountyDto } from './dto/bounty.dto'
 
 const baseUrl = `/api/v1/bounties/`
 
-describe(`/api/v1/bounties/`, () => {
+describe.skip(`/api/v1/bounties/`, () => {
     const app = beforeSetupFullApp()
 
     const blockchainsConnections = beforeAllSetup(() => app().get<BlockchainsConnections>('PolkadotApi'))
