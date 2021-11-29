@@ -16,6 +16,7 @@ import { ROUTE_BOUNTIES, ROUTE_BOUNTY } from '../../routes/routes'
 import { BountyContentType } from '../bounty/Bounty'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
+import BountyStatusIndicator from '../components/BountyStatusIndicator'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -51,6 +52,7 @@ const BountyCard = ({ bounty }: BountyCardProps) => {
         >
             <CardHeader>
                 <OrdinalNumber prefix={t('bounty.indexPrefix')} ordinalNumber={bounty.blockchainIndex} />
+                <BountyStatusIndicator status={bounty.status} />
             </CardHeader>
 
             <Divider />

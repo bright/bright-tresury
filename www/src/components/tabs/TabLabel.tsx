@@ -25,9 +25,6 @@ const useStyles = makeStyles((theme: Theme) =>
             whiteSpace: 'nowrap',
             display: 'flex',
         },
-        labelIcon: {
-            marginRight: '10px',
-        },
         selected: {
             border: `solid 2px ${theme.palette.primary.main}`,
         },
@@ -82,7 +79,7 @@ const TabLabel = ({ label, filterName, svg, path, isDefault, searchParamName, no
                 isActive={isActive}
                 activeClassName={classes.selected}
             >
-                <TabLabelImg svg={svg} notificationsCount={notificationsCount} />
+                {svg ? <TabLabelImg svg={svg} notificationsCount={notificationsCount} /> : null}
                 {label}
             </NavLink>
         </ButtonBase>

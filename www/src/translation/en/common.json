@@ -532,7 +532,17 @@
             "proposer": "(Proposer)",
             "curator": "(Curator)",
             "curatorProposed": "(Curator Proposed)",
-            "createBounty": "+ Create Bounty"
+            "createBounty": "+ Create Bounty",
+            "filters": {
+                "all": "All",
+                "mine": "Mine",
+                "proposed": "Proposed",
+                "approved": "Approved",
+                "funded": "Funded",
+                "curatorProposed": "Curator Proposed",
+                "active": "Active",
+                "pendingPayout": "Pending Payout"
+            }
         },
         "create": {
             "title": "Create Bounty",
