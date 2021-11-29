@@ -183,7 +183,7 @@ export default cloudform({
     Parameters: {
         DeployEnv: new StringParameter({
             Description: 'Deploy environment name',
-            AllowedValues: ['production', 'qa', 'stage'],
+            AllowedValues: ['prod', 'qa', 'stage'],
         }),
         AppImage: new StringParameter({
             Description: 'Repository, image and tag of the app to deploy',
@@ -220,8 +220,8 @@ export default cloudform({
             },
         },
         DatabaseMapping: {
-            production: {
-                BackendDBInstanceIdentifier: `${ProjectName}-production`,
+            prod: {
+                BackendDBInstanceIdentifier: `${ProjectName}-prod`,
                 BackendInstanceType: 'db.t2.micro',
                 BackendStorageType: 'gp2',
                 BackendAllocatedStorage: 10,
@@ -249,8 +249,8 @@ export default cloudform({
             },
         },
         AuthCoreDatabaseMapping: {
-            production: {
-                AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-production`,
+            prod: {
+                AuthCoreDBInstanceIdentifier: `${ProjectName}-${Resources.AuthCoreDbSuffix}-prod`,
                 AuthCoreInstanceType: 'db.t2.micro',
                 AuthCoreStorageType: 'gp2',
                 AuthCoreAllocatedStorage: 10,
@@ -278,15 +278,15 @@ export default cloudform({
             },
         },
         ECS: {
-            production: {
+            prod: {
                 InstanceType: 't2.medium',
-                ContainerName: `${ProjectName}-app-production`,
+                ContainerName: `${ProjectName}-app-prod`,
                 ContainerPort: '3000',
                 Memory: '1000',
-                SubstrateContainerName: `${ProjectName}-substrate-production`,
+                SubstrateContainerName: `${ProjectName}-substrate-prod`,
                 SubstrateHttpContainerPort: '9933',
                 SubstrateWsContainerPort: '9944',
-                AuthCoreContainerName: `${ProjectName}-auth-production`,
+                AuthCoreContainerName: `${ProjectName}-auth-prod`,
                 AuthCoreHttpContainerPort: '3567',
                 DesiredTasksCount: 1,
             },
@@ -316,7 +316,7 @@ export default cloudform({
             },
         },
         Certificates: {
-            production: {
+            prod: {
                 ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/04a1b302-0b85-4fcb-a4da-772890c4ec54`,
             },
             qa: {

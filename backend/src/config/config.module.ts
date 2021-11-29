@@ -24,7 +24,7 @@ import { notEmptyArrayFormat } from './formats/not-empty-array.format'
 import { AuthConfig, authConfigSchema, AuthConfigToken } from '../auth/auth.config'
 
 interface EnvConfig {
-    deployEnv: 'production' | 'development' | 'development-local' | 'stage' | 'qa' | 'test' | 'test-local'
+    deployEnv: 'prod' | 'development' | 'development-local' | 'stage' | 'qa' | 'test' | 'test-local'
     port: number
     appName: string
     apiUrl: string
@@ -43,16 +43,7 @@ export type AppConfig = EnvConfig & {
 const configSchema = convict<AppConfig>({
     deployEnv: {
         doc: 'The application environment.',
-        format: [
-            'production',
-            'development',
-            'development-local',
-            'development-docker',
-            'stage',
-            'qa',
-            'test',
-            'test-local',
-        ],
+        format: ['prod', 'development', 'development-local', 'development-docker', 'stage', 'qa', 'test', 'test-local'],
         default: 'development',
         env: 'DEPLOY_ENV',
     },

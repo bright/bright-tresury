@@ -96,7 +96,7 @@ const SignAndSubmitForm = ({ txAttrs, onCancel, onSubmit }: SignAndSubmitFormPro
         We do not want anybody to be able to submit transactions to live networks from environments other than production (like staging, testing, development).
         We want to prevent from accidentally submitting transaction and loosing real founds
          */
-    const isLiveNetworkOnNonProductionEnv = network.isLiveNetwork && config.env !== 'production'
+    const isLiveNetworkOnNonProductionEnv = network.isLiveNetwork && config.env !== 'prod'
 
     return (
         <div ref={contextRef} className={classes.root}>

@@ -38,7 +38,7 @@
         }
     ],
     "auth": {
-        "coreUrl": "http://treasury-auth-production:3567",
+        "coreUrl": "http://treasury-auth-prod:3567",
         "cookieSecure": true
     },
     "emails": {
