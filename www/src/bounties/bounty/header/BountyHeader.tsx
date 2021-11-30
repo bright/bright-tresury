@@ -81,7 +81,7 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
                 <BasicInfoDivider />
                 <BountyStatusIndicator status={bounty.status} />
                 <Title>
-                    <OptionalTitle title={bounty.title || bounty.blockchainDescription} />
+                    <OptionalTitle title={bounty.title ?? bounty.polkassembly?.title ?? bounty.blockchainDescription} />
                 </Title>
             </BasicInfo>
             <NetworkValues className={classes.networkValues}>

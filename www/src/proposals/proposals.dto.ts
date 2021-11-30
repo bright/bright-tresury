@@ -1,6 +1,7 @@
 import { Time } from '@polkadot/util/types'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
 import { AccountInfo, NetworkPlanckValue, Nil } from '../util/types'
+import { PolkassemblyPostDto } from '../components/polkassemblyDescription/polkassembly-post.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -9,11 +10,7 @@ export enum ProposalStatus {
     Rewarded = 'rewarded',
     Closed = 'closed',
 }
-export interface PolkassemblyPostDto {
-    proposalIndex: number
-    title: string
-    content: string
-}
+
 export interface ProposalDto {
     proposalIndex: number
     proposer: AccountInfo

@@ -12,7 +12,7 @@ import NetworkValue from '../../components/network/NetworkValue'
 import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import { BountyDto, BountyStatus } from '../bounties.dto'
 import { generatePath } from 'react-router-dom'
-import { ROUTE_BOUNTIES, ROUTE_BOUNTY } from '../../routes/routes'
+import { ROUTE_BOUNTY } from '../../routes/routes'
 import { BountyContentType } from '../bounty/Bounty'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
@@ -58,7 +58,7 @@ const BountyCard = ({ bounty }: BountyCardProps) => {
             <Divider />
 
             <CardDetails>
-                <CardTitle title={bounty.title ?? bounty.blockchainDescription} />
+                <CardTitle title={bounty.title ?? bounty.polkassembly?.title ?? bounty.blockchainDescription} />
                 <NetworkValue value={toNetworkDisplayValue(bounty.value, network.decimals)} />
             </CardDetails>
 

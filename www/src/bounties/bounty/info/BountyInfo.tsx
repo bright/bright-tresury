@@ -14,8 +14,7 @@ import { ROUTE_EDIT_BOUNTY } from '../../../routes/routes'
 import { timeToString } from '../../../util/dateUtil'
 import { BountyDto, BountyStatus } from '../../bounties.dto'
 import { useBounty } from '../useBounty'
-import Button from '../../../components/button/Button'
-import ReactMarkdown from 'react-markdown'
+import PolkassemblyDescription from '../../../components/polkassemblyDescription/PolkassemblyDescription'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -50,35 +49,7 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
     const navigateToEdit = () => {
         history.push(generatePath(ROUTE_EDIT_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
     }
-    const {polkassembly} = bounty
-    const renderPolkassemblyContent = () => {
-        if(!polkassembly?.content)
-            return
 
-        return (
-            <>
-                <Button
-                    onClick={toggleShowPolkassemblyDescription}
-                    variant="text"
-                    color="primary"
-                    className={classes.polkassemblyButton}
-                >
-                    {t(
-                        showPolkassemblyDescription
-                            ? 'proposal.details.polkassemblyDescription.hide'
-                            : 'proposal.details.polkassemblyDescription.show'
-                    )}
-                </Button>
-                {
-                    showPolkassemblyDescription
-                        ? <ReactMarkdown components={{ img: ({node, ...props}) => <img className={classes.markdownImg} {...props}/> }}>
-                            {polkassembly.content}
-                        </ReactMarkdown>
-                        : null
-                }
-            </>
-        )
-    }
     return (
         <div className={loadedClasses.content}>
             {canEdit && (
@@ -156,7 +127,7 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
                 <Label label={t('bounty.info.onChainDescription')} />
                 <ShortText text={bounty.blockchainDescription} placeholder={t('bounty.info.onChainDescription')} />
             </div>
-            {renderPolkassemblyContent()}
+            <PolkassemblyDescription polkassemblyPostDto={bounty.polkassembly} initialShow={!bounty.description}/>
         </div>
     )
 }

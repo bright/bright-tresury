@@ -1,5 +1,6 @@
 import { Time } from '@polkadot/util/types'
 import { AccountInfo, NetworkPlanckValue, Nil } from '../util/types'
+import { PolkassemblyPostDto } from '../components/polkassemblyDescription/polkassembly-post.dto'
 
 export enum BountyStatus {
     Proposed = 'Proposed',
@@ -58,7 +59,7 @@ interface BaseBountyDto {
     description?: Nil<string>
     ownerId?: string
 
-    polkassembly:
+    polkassembly?: Nil<PolkassemblyPostDto>
 }
 
 type ExtendedBountyDto =

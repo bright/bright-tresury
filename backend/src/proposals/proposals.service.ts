@@ -59,7 +59,7 @@ export class ProposalsService {
 
             return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
                 const proposal = postgresProposals.find((p) => p.blockchainProposalId === blockchainProposal.proposalIndex)
-                const polkassemblyProposal = polkassemblyProposals.find((pp: any) => pp.proposalIndex === blockchainProposal.proposalIndex)
+                const polkassemblyProposal = polkassemblyProposals.find((pp: PolkassemblyPostDto) => pp.blockchainIndex === blockchainProposal.proposalIndex)
                 return this.mergeProposal(blockchainProposal, proposal, polkassemblyProposal)
             })
         } catch (err) {
