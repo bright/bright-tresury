@@ -24,7 +24,7 @@ const onReadyHandler = (id: string) => {
 }
 
 const onErrorHandler = (id: string, error: any) => {
-    logger.warn(`Cannot connect to ${id} substrate node with error ${error}`)
+    logger.warn(`Cannot connect to ${id} substrate node with error ${JSON.stringify(error)}`)
 }
 
 const onDisconnectedHandler = (id: string, error: any) => {
