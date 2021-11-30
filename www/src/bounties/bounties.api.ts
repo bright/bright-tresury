@@ -31,7 +31,7 @@ export const useCreateBounty = () => {
 
 // PATCH
 
-interface PatchBountyParams {
+export interface PatchBountyParams {
     bountyIndex: string
     network: string
     data: EditBountyDto

@@ -6,11 +6,13 @@ export interface UseBountyResult {
     canEdit: boolean
     canAccept: boolean
     canReject: boolean
+    canAward: boolean
     canClaimPayout: boolean
     isCurator: boolean
     isOwner: boolean
     isProposer: boolean
     isBeneficiary: boolean
+    hasDetails: boolean
 }
 
 export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
@@ -35,19 +37,25 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
 
     const canAccept = isCurator && isCuratorProposed
 
+    const canAward = isCurator && isActive
+
     const canEdit =
         (isOwner || isProposer || isCurator) && (isProposed || isApproved || isFunded || isCuratorProposed || isActive)
 
     const canClaimPayout = isBeneficiary && isPendingPayout && !bounty.unlockAt
 
+    const hasDetails = !!bounty?.ownerId
+
     return {
         canReject,
         canAccept,
         canEdit,
+        canAward,
         canClaimPayout,
         isCurator,
         isOwner,
         isProposer,
         isBeneficiary,
+        hasDetails,
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import ActionButtons, { ActionButtonsProps } from '../../../../components/header/details/ActionButtons'
-import { BountyDto } from '../../../bounties.dto'
+import { BountyDto, BountyStatus } from '../../../bounties.dto'
 import { useBounty } from '../../useBounty'
 import CuratorAcceptButton from './accept/CuratorAcceptButton'
 import ClaimPayoutButton from './claim/ClaimPayoutButton'
@@ -20,7 +20,9 @@ const BountyActionButtons = ({ bounty, ...props }: CuratorActionButtonsProps) =>
 
     return (
         <ActionButtons {...props}>
-            {canReject ? <CuratorRejectButton bounty={bounty} /> : null}
+            {canReject && bounty.status === BountyStatus.CuratorProposed ? (
+                <CuratorRejectButton bounty={bounty} />
+            ) : null}
             {canAccept ? <CuratorAcceptButton bounty={bounty} /> : null}
             {canClaimPayout ? <ClaimPayoutButton bounty={bounty} /> : null}
         </ActionButtons>

@@ -6,12 +6,11 @@ import Container from '../../../components/form/Container'
 import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
-import { useNetworks } from '../../../networks/useNetworks'
 import { ROUTE_BOUNTY } from '../../../routes/routes'
-import { usePatchBounty } from '../../bounties.api'
-import { BountyDto, EditBountyDto } from '../../bounties.dto'
+import { PatchBountyParams, usePatchBounty } from '../../bounties.api'
+import { BountyDto } from '../../bounties.dto'
 import { useBounty } from '../useBounty'
-import BountyEditForm, { BountyEditFormValues } from './BountyEditForm'
+import BountyEditForm from './BountyEditForm'
 
 interface OwnProps {
     bounty: BountyDto
@@ -22,24 +21,17 @@ export type BountyEditProps = OwnProps
 const BountyEdit = ({ bounty }: BountyEditProps) => {
     const { t } = useTranslation()
     const history = useHistory()
-    const { network } = useNetworks()
 
     const { mutateAsync, isError, isLoading } = usePatchBounty()
 
     const { canEdit } = useBounty(bounty)
 
-    const submit = async (formBounty: BountyEditFormValues) => {
-        const data: EditBountyDto = {
-            ...formBounty,
-        }
-        await mutateAsync(
-            { bountyIndex: formBounty.blockchainIndex.toString(), network: network.id, data },
-            {
-                onSuccess: () => {
-                    history.push(generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
-                },
+    const submit = async (params: PatchBountyParams) => {
+        await mutateAsync(params, {
+            onSuccess: () => {
+                history.push(generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
             },
-        )
+        })
     }
 
     if (!canEdit) {

@@ -1,21 +1,12 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
-import React, { PropsWithChildren, useState } from 'react'
-import { useTranslation } from 'react-i18next'
-import * as Yup from 'yup'
-import Button from '../../components/button/Button'
+import React, { PropsWithChildren } from 'react'
+import InvertFoldedButton from '../../components/form/fold/InvertFoldedButton'
+import { useFold } from '../../components/form/fold/useFold'
 import FormFooter from '../../components/form/footer/FormFooter'
-import { formatAddress } from '../../components/identicon/utils'
-import { linksValidationSchema } from '../../idea-proposal-details/form/LinksInput'
-import { titleValidationSchema } from '../../idea-proposal-details/form/TitleInput'
-import { Network } from '../../networks/networks.dto'
-import { useNetworks } from '../../networks/useNetworks'
-import { isValidAddressOrEmpty } from '../../util/addressValidator'
-import { NetworkDisplayValue, Nil } from '../../util/types'
-import { EditIdeaDto, EditIdeaNetworkDto, IdeaDto, IdeaNetworkDto } from '../ideas.dto'
+import { EditIdeaDto, IdeaDto } from '../ideas.dto'
 import FoldedIdeaFormFields from './FoldedIdeaFormFields'
 import IdeaFormFields from './IdeaFormFields'
-import { toNetworkDisplayValue } from '../../util/quota.util'
 import useIdeaForm, { IdeaFormValues } from './useIdeaForm'
 
 const useStyles = makeStyles(() =>
@@ -43,15 +34,8 @@ export type IdeaFormProps = PropsWithChildren<OwnProps>
 
 const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: IdeaFormProps) => {
     const classes = useStyles()
-    const { t } = useTranslation()
-    const [folded, setFolded] = useState(!!foldable)
-    const {
-        validationSchema,
-        extendedValidationSchema,
-        toFormValues,
-        toEditIdeaDto
-    } = useIdeaForm()
-
+    const { folded, invertFolded } = useFold(!!foldable)
+    const { validationSchema, extendedValidationSchema, toFormValues, toEditIdeaDto } = useIdeaForm()
 
     const onFormikSubmit = (formIdea: IdeaFormValues) => onSubmit(toEditIdeaDto(formIdea))
 
@@ -65,16 +49,7 @@ const IdeaForm = ({ idea, onSubmit, extendedValidation, foldable, children }: Id
             {({ values, handleSubmit }) => (
                 <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
                     {folded ? <FoldedIdeaFormFields values={values} /> : <IdeaFormFields values={values} />}
-                    {foldable && (
-                        <Button
-                            className={classes.foldButton}
-                            variant="text"
-                            color="primary"
-                            onClick={() => setFolded(!folded)}
-                        >
-                            {folded ? t('idea.details.form.showAll') : t('idea.details.form.showLess')}
-                        </Button>
-                    )}
+                    {foldable && <InvertFoldedButton folded={folded} invertFolded={invertFolded} />}
                     <FormFooter>{children}</FormFooter>
                 </form>
             )}

@@ -5,12 +5,13 @@ import discussionIcon from '../../assets/discussion.svg'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import PrivateRoute from '../../routes/PrivateRoute'
 import Route from '../../routes/Route'
-import { ROUTE_EDIT_BOUNTY } from '../../routes/routes'
+import { ROUTE_AWARD_BOUNTY, ROUTE_EDIT_BOUNTY } from '../../routes/routes'
 import { Nil } from '../../util/types'
 import { BountyDto } from '../bounties.dto'
 import BountyDiscussion from './discussion/BountyDiscussion'
 import BountyHeader from './header/BountyHeader'
 import BountyEdit from './edit/BountyEdit'
+import BountyAward from './header/curator-actions/award/BountyAward'
 import BountyInfo from './info/BountyInfo'
 
 export enum BountyContentType {
@@ -70,6 +71,9 @@ const Bounty = ({ bounty }: BountyProps) => {
             <Switch>
                 <PrivateRoute requireVerified={true} exact={true} path={ROUTE_EDIT_BOUNTY}>
                     <BountyEdit bounty={bounty} />
+                </PrivateRoute>
+                <PrivateRoute requireVerified={true} exact={true} path={ROUTE_AWARD_BOUNTY}>
+                    <BountyAward bounty={bounty} />
                 </PrivateRoute>
                 <>
                     <BountyHeader bounty={bounty} bountyTabsConfig={bountyTabsConfig} />

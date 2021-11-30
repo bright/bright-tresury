@@ -42,6 +42,10 @@
             "tooManyDecimals": "Too many decimals",
             "emptyFieldError": "This field cannot be empty",
             "valueCannotBeLessThanZero": "The value cannot be less than zero"
+        },
+        "fold": {
+            "showAll": "Show all information",
+            "showLess": "Show less information"
         }
     },
     "networks": {
@@ -273,8 +277,6 @@
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
                 "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
-                "showAll": "Show all information",
-                "showLess": "Show less information",
                 "networks": {
                     "reward": "Reward",
                     "bond": {
@@ -583,7 +585,8 @@
             "accept": "Accept",
             "reject": "Reject",
             "claimPayout": "Claim Payout",
-            "edit": "Edit bounty"
+            "edit": "Edit bounty",
+            "award": "Award bounty"
         },
         "info": {
             "proposer": "Proposer",
@@ -618,6 +621,11 @@
                     "warningMessage": "We're happy that you've made it to this point! Thanks for your work to support the community. Submit the transaction to claim the payout.",
                     "eventDescription": "event claim payout finished",
                     "successMessage": "Congratulations, you have just claimed the payout! The bounty was closed."
+                },
+                "awardModal": {
+                    "title": "You are about to award the bounty",
+                    "warningMessage": "You will now award the bounty to: <strong>{{beneficiary}}</strong><br/> Please notice that you will not be able to change the beneficiary address once chosen.",
+                    "eventDescription": "event bounty awarded finished"
                 }
             }
         },
@@ -625,6 +633,11 @@
             "cannotEditBounty": "You cannot edit this bounty",
             "title": "Edit bounty",
             "save": "Save"
+        },
+        "award": {
+            "cannotAwardBounty": "You cannot award this bounty",
+            "title": "Award bounty",
+            "save": "Award"
         }
     },
     "ideaProposalDetails": {
