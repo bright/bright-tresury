@@ -38,8 +38,11 @@ export class BlockchainBountiesService {
         return extractNumberFromBlockchainEvent(extrinsicEvents, 'bounties', 'BountyProposed', 0)
     }
 
-    getBountiesConfig(networkId: string): BlockchainBountiesConfigurationDto {
+    getBountiesConfig(networkId: string): BlockchainBountiesConfigurationDto | undefined {
         const bountiesConsts = getApi(this.blockchainsConnections, networkId).consts.bounties
+        if (!bountiesConsts) {
+            return
+        }
 
         const depositBase = bountiesConsts.bountyDepositBase.toString() as NetworkPlanckValue
         const dataDepositPerByte = bountiesConsts.dataDepositPerByte.toString() as NetworkPlanckValue
@@ -149,31 +152,34 @@ export class BlockchainBountiesService {
         return api.derive.bounties.bounties()
     }
 
-    private async getDeriveBounty(networkId: string, index:number) {
+    private async getDeriveBounty(networkId: string, index: number) {
         const deriveBounties = await this.getDeriveBounties(networkId)
         const deriveBounty = deriveBounties.find((db) => Number(db.index.toString()) === index)
-        if(!deriveBounty)
-            throw new NotFoundException(`Bounty with given blockchain index was not found: ${index}`)
+        if (!deriveBounty) throw new NotFoundException(`Bounty with given blockchain index was not found: ${index}`)
         return deriveBounty
     }
     private static getVoters(motions: DeriveCollectiveProposal[]): string[] {
-        const voters = motions.map( (motion) => [
-            ...(motion.votes?.ayes?.map(accountId => accountId.toHuman()) ?? []),
-            ...(motion.votes?.nays?.map(accountId => accountId.toHuman()) ?? [])
-        ]).reduce((acc, motionVoters) => {
-            motionVoters.forEach(voter => acc.add(voter))
-            return acc
-        }, new Set<string>())
+        const voters = motions
+            .map((motion) => [
+                ...(motion.votes?.ayes?.map((accountId) => accountId.toHuman()) ?? []),
+                ...(motion.votes?.nays?.map((accountId) => accountId.toHuman()) ?? []),
+            ])
+            .reduce((acc, motionVoters) => {
+                motionVoters.forEach((voter) => acc.add(voter))
+                return acc
+            }, new Set<string>())
         return [...voters]
     }
-    async getMotions( networkId: string, index: number): Promise<BlockchainMotionDto[]> {
+    async getMotions(networkId: string, index: number): Promise<BlockchainMotionDto[]> {
         const deriveBounty = await this.getDeriveBounty(networkId, index)
         const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
         const motions = deriveBounty.proposals
         const identities = await this.blockchainService.getIdentities(
-            networkId, BlockchainBountiesService.getVoters(motions)
+            networkId,
+            BlockchainBountiesService.getVoters(motions),
         ) // fetch proposers, curators and beneficiaries identities
-        const toBlockchainMotionEnd = (endBlock: BlockNumber) => this.blockchainService.getRemainingTime(networkId, currentBlockNumber, endBlock)
-        return motions.map(motion => toBlockchainMotion(motion, identities, toBlockchainMotionEnd))
+        const toBlockchainMotionEnd = (endBlock: BlockNumber) =>
+            this.blockchainService.getRemainingTime(networkId, currentBlockNumber, endBlock)
+        return motions.map((motion) => toBlockchainMotion(motion, identities, toBlockchainMotionEnd))
     }
 }

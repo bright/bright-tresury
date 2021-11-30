@@ -35,7 +35,7 @@ export class BlockchainConfigurationService {
         const proposalBond = api.consts.treasury?.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber()
         const percentage = proposalBond ?? defaultBlockchainConfig.bond.percentage
 
-        const bounties = this.bountiesBlockchainService.getBountiesConfig(networkId)
+        const bounties = this.bountiesBlockchainService.getBountiesConfig(networkId) ?? defaultBlockchainConfig.bounties
 
         return {
             ...defaultBlockchainConfig,

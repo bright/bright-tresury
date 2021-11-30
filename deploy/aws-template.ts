@@ -50,8 +50,6 @@ const Resources = {
     BackendDBInstance: 'BackendDBInstance',
     BackendDBEC2SecurityGroup: 'BackendDBEC2SecurityGroup',
 
-    // test
-
     // authorization core database
     AuthCoreDBInstance: 'AuthCoreDBInstance',
     AuthCoreDbSuffix: 'authorization',
@@ -85,16 +83,11 @@ const Resources = {
 
     // load balancer
     ECSALB: 'ECSALB',
-
     ALBHttpListener: 'ALBHttpListener',
-    // ECSALBHttpListenerRedirectRule1: 'ECSALBHttpListenerRedirectRule1',
-    // ECSALBHttpListenerRedirectRule2: 'ECSALBHttpListenerRedirectRule2',
-
+    ECSALBHttpListenerRedirectRule1: 'ECSALBHttpListenerRedirectRule1',
+    ECSALBHttpListenerRedirectRule2: 'ECSALBHttpListenerRedirectRule2',
     ALBHttpsListener: 'ALBHttpsListener',
-    // ECSALBHttpsListenerRedirectRule1: 'ECSALBHttpsListenerRedirectRule1',
-
-    ECSALBListenerRule: 'ECSALBListenerRule',
-    ECSALBRedirectListenerRule: 'ECSALBRedirectListenerRule',
+    ECSALBHttpsListenerRedirectRule1: 'ECSALBHttpsListenerRedirectRule1',
 
     // substrate
     SubstrateHttpListener: 'SubstrateHttpListener',
@@ -1027,7 +1020,7 @@ export default cloudform({
             Protocol: 'HTTP',
         }).dependsOn(Resources.ECSServiceRole),
 
-        [Resources.ECSALBRedirectListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
+        [Resources.ECSALBHttpListenerRedirectRule1]: new ElasticLoadBalancingV2.ListenerRule({
             Actions: [
                 {
                     Type: 'redirect',
@@ -1037,84 +1030,43 @@ export default cloudform({
                         Port: '443',
                         Protocol: 'HTTPS',
                         Query: '#{query}',
-                        StatusCode: 'HTTP_302',
+                        StatusCode: 'HTTP_301',
                     },
                 },
             ],
             Conditions: [
                 {
-                    Field: 'path-pattern',
-                    Values: ['/'],
-                },
-            ],
-            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-            Priority: 2,
-        }).dependsOn(Resources.ALBHttpListener),
-
-        [Resources.ECSALBListenerRule]: new ElasticLoadBalancingV2.ListenerRule({
-            Actions: [
-                {
-                    Type: 'forward',
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
-                },
-            ],
-            Conditions: [
-                {
-                    Field: 'path-pattern',
-                    Values: ['/'],
+                    Field: 'host-header',
+                    Values: [Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW')],
                 },
             ],
             ListenerArn: Fn.Ref(Resources.ALBHttpListener),
             Priority: 1,
         }).dependsOn(Resources.ALBHttpListener),
 
-        // [Resources.ECSALBHttpListenerRedirectRule1]: new ElasticLoadBalancingV2.ListenerRule({
-        //     Actions: [
-        //         {
-        //             Type: 'redirect',
-        //             RedirectConfig: {
-        //                 Host: '#{host}',
-        //                 Path: '/#{path}',
-        //                 Port: '443',
-        //                 Protocol: 'HTTPS',
-        //                 Query: '#{query}',
-        //                 StatusCode: 'HTTP_301',
-        //             },
-        //         },
-        //     ],
-        //     Conditions: [
-        //         {
-        //             Field: 'host-header',
-        //             Values: [Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW')],
-        //         },
-        //     ],
-        //     ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-        //     Priority: 1,
-        // }).dependsOn(Resources.ALBHttpListener),
-        //
-        // [Resources.ECSALBHttpListenerRedirectRule2]: new ElasticLoadBalancingV2.ListenerRule({
-        //     Actions: [
-        //         {
-        //             Type: 'redirect',
-        //             RedirectConfig: {
-        //                 Host: Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW'),
-        //                 Path: '/#{path}',
-        //                 Port: '443',
-        //                 Protocol: 'HTTPS',
-        //                 Query: '#{query}',
-        //                 StatusCode: 'HTTP_301',
-        //             },
-        //         },
-        //     ],
-        //     Conditions: [
-        //         {
-        //             Field: 'host-header',
-        //             Values: [Fn.FindInMap('Hosts', DeployEnv, 'withWWW')],
-        //         },
-        //     ],
-        //     ListenerArn: Fn.Ref(Resources.ALBHttpListener),
-        //     Priority: 2,
-        // }).dependsOn(Resources.ALBHttpListener),
+        [Resources.ECSALBHttpListenerRedirectRule2]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: 'redirect',
+                    RedirectConfig: {
+                        Host: Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW'),
+                        Path: '/#{path}',
+                        Port: '443',
+                        Protocol: 'HTTPS',
+                        Query: '#{query}',
+                        StatusCode: 'HTTP_301',
+                    },
+                },
+            ],
+            Conditions: [
+                {
+                    Field: 'host-header',
+                    Values: [Fn.FindInMap('Hosts', DeployEnv, 'withWWW')],
+                },
+            ],
+            ListenerArn: Fn.Ref(Resources.ALBHttpListener),
+            Priority: 2,
+        }).dependsOn(Resources.ALBHttpListener),
         // listener http end
 
         // listener https start
@@ -1135,29 +1087,29 @@ export default cloudform({
             Protocol: 'HTTPS',
         }).dependsOn(Resources.ECSServiceRole),
 
-        // [Resources.ECSALBHttpsListenerRedirectRule1]: new ElasticLoadBalancingV2.ListenerRule({
-        //     Actions: [
-        //         {
-        //             Type: 'redirect',
-        //             RedirectConfig: {
-        //                 Host: Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW'),
-        //                 Path: '/#{path}',
-        //                 Port: '443',
-        //                 Protocol: 'HTTPS',
-        //                 Query: '#{query}',
-        //                 StatusCode: 'HTTP_301',
-        //             },
-        //         },
-        //     ],
-        //     Conditions: [
-        //         {
-        //             Field: 'host-header',
-        //             Values: [Fn.FindInMap('Hosts', DeployEnv, 'withWWW')],
-        //         },
-        //     ],
-        //     ListenerArn: Fn.Ref(Resources.ALBHttpsListener),
-        //     Priority: 1,
-        // }).dependsOn(Resources.ALBHttpsListener),
+        [Resources.ECSALBHttpsListenerRedirectRule1]: new ElasticLoadBalancingV2.ListenerRule({
+            Actions: [
+                {
+                    Type: 'redirect',
+                    RedirectConfig: {
+                        Host: Fn.FindInMap('Hosts', DeployEnv, 'withoutWWW'),
+                        Path: '/#{path}',
+                        Port: '443',
+                        Protocol: 'HTTPS',
+                        Query: '#{query}',
+                        StatusCode: 'HTTP_301',
+                    },
+                },
+            ],
+            Conditions: [
+                {
+                    Field: 'host-header',
+                    Values: [Fn.FindInMap('Hosts', DeployEnv, 'withWWW')],
+                },
+            ],
+            ListenerArn: Fn.Ref(Resources.ALBHttpsListener),
+            Priority: 1,
+        }).dependsOn(Resources.ALBHttpsListener),
         // listener https end
 
         // listener substrate http start
