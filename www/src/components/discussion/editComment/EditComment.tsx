@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
         editCommentRow: {
             backgroundColor: theme.palette.background.default,
             borderRadius: '8px',
-        }
+        },
     }),
 )
 
@@ -19,10 +19,11 @@ interface OwnProps {
     onCancelClick: () => any
     value: string
     error?: Nil<string>
+    isLoading: boolean
 }
 export type EditCommentProps = OwnProps
 
-const EditComment = ({ onSendClick, onCancelClick, value, error }: EditCommentProps) => {
+const EditComment = ({ onSendClick, onCancelClick, value, error, isLoading }: EditCommentProps) => {
     const classes = useStyles()
     const [commentContent, setCommentContent] = useState(value)
     return (
@@ -32,6 +33,7 @@ const EditComment = ({ onSendClick, onCancelClick, value, error }: EditCommentPr
                 onCancelClick={onCancelClick}
                 onSendClick={() => onSendClick(commentContent)}
                 error={error}
+                isLoading={isLoading}
             />
         </div>
     )

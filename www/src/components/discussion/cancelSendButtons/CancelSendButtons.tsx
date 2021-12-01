@@ -30,9 +30,10 @@ interface OwnProps {
     onCancelClick: () => unknown
     onSendClick: () => unknown
     error?: Nil<string>
+    isLoading: boolean
 }
 export type CancelSendButtonsProps = OwnProps
-const CancelSendButtons = ({ onCancelClick, onSendClick, error }: CancelSendButtonsProps) => {
+const CancelSendButtons = ({ onCancelClick, onSendClick, error, isLoading }: CancelSendButtonsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     return (
@@ -41,7 +42,13 @@ const CancelSendButtons = ({ onCancelClick, onSendClick, error }: CancelSendButt
             <Button onClick={onCancelClick} className={clsx(classes.button, classes.cancel)}>
                 {t('discussion.cancelComment')}
             </Button>
-            <Button variant="contained" color="primary" className={classes.button} onClick={onSendClick}>
+            <Button
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                onClick={onSendClick}
+                disabled={isLoading}
+            >
                 {t('discussion.sendComment')}
             </Button>
         </div>

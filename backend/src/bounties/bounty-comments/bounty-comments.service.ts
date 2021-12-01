@@ -17,6 +17,14 @@ export class BountyCommentsService {
         private readonly bountiesService: BountiesService,
     ) {}
 
+    async getAll(blockchainBountyId: number, networkId: string): Promise<BountyCommentEntity[]> {
+        await this.bountiesService.getBounty(networkId, blockchainBountyId)
+        return this.bountyCommentsRepository.find({
+            where: { blockchainBountyId, networkId },
+            relations: ['comment', 'comment.author', 'comment.author.web3Addresses'],
+        })
+    }
+
     async create(
         blockchainBountyId: number,
         { content, networkId }: CreateBountyCommentDto,

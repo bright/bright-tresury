@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     comment: CommentDto
+    isLoading: boolean
 
     saveEditComment: (content: string) => Promise<void>
     cancelEditComment: () => void
@@ -65,6 +66,7 @@ const DisplayComment = ({
     editError,
     deleteComment,
     deleteError,
+    isLoading,
 }: DisplayCommentProps) => {
     const { author, createdAt, updatedAt, content } = comment
     const classes = useStyles()
@@ -103,6 +105,7 @@ const DisplayComment = ({
                     onCancelClick={onCancelClick}
                     value={content}
                     error={editError}
+                    isLoading={isLoading}
                 />
             ) : (
                 <CommentContent content={content} />

@@ -22,10 +22,11 @@ interface OwnProps {
     onSendClick: (commentContent: string) => Promise<void>
     onCancelClick?: Nil<() => void>
     error?: Nil<string>
+    isLoading: boolean
 }
 export type EnterCommentProps = OwnProps
 
-const EnterComment = ({ onSendClick, error, onCancelClick }: EnterCommentProps) => {
+const EnterComment = ({ onSendClick, error, onCancelClick, isLoading }: EnterCommentProps) => {
     const classes = useStyles()
     const [focus, setFocus] = useState(false)
     const [commentContent, setCommentContent] = useState('')
@@ -53,6 +54,7 @@ const EnterComment = ({ onSendClick, error, onCancelClick }: EnterCommentProps) 
                     onCancelClick={onEnterCommentCancelClick}
                     onSendClick={onEnterCommentSendClick}
                     error={error}
+                    isLoading={isLoading}
                 />
             </Collapse>
         </div>

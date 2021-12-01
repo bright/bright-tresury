@@ -14,7 +14,7 @@ export type EnterProposalCommentProps = OwnProps
 const EnterProposalComment = ({ proposalIndex }: EnterProposalCommentProps) => {
     const { t } = useTranslation()
     const { network } = useNetworks()
-    const { mutateAsync: createProposalComment, isError, reset } = useCreateProposalComment()
+    const { mutateAsync: createProposalComment, isError, reset, isLoading } = useCreateProposalComment()
 
     const queryClient = useQueryClient()
     const onSendClick = async (commentContent: string) => {
@@ -37,6 +37,7 @@ const EnterProposalComment = ({ proposalIndex }: EnterProposalCommentProps) => {
             onSendClick={onSendClick}
             onCancelClick={reset}
             error={isError ? t('discussion.sendCommentError') : undefined}
+            isLoading={isLoading}
         />
     )
 }

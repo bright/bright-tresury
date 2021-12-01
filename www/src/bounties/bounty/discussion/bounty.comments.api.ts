@@ -19,7 +19,7 @@ export const BOUNTY_COMMENTS_QUERY_KEY_BASE = 'bountyComments'
 
 export const useGetBountyComments = (bountyIndex: number, network: string, options?: UseQueryOptions<CommentDto[]>) => {
     return useQuery(
-        [BOUNTY_COMMENTS_QUERY_KEY_BASE, bountyIndex],
+        [BOUNTY_COMMENTS_QUERY_KEY_BASE, bountyIndex, network],
         () => getBountyComments(bountyIndex, network),
         options,
     )

@@ -9,7 +9,13 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { blockchainBounty0, mockGetBounties } from '../spec.helpers'
 import { BountyCommentsService } from './bounty-comments.service'
 
-const getBaseUrl = (blockchainIndex: number) => `/api/v1/bounties/${blockchainIndex}/comments`
+const getBaseUrl = (blockchainIndex: any, networkId?: string) => {
+    let baseUrl = `/api/v1/bounties/${blockchainIndex}/comments`
+    if (networkId) {
+        baseUrl = `${baseUrl}?network=${networkId}`
+    }
+    return baseUrl
+}
 
 describe('/api/v1/bounties/:blockchainIndex/comments', () => {
     const app = beforeSetupFullApp()
@@ -17,6 +23,16 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
     const blockchainBountiesService = beforeAllSetup(() =>
         app().get<BlockchainBountiesService>(BlockchainBountiesService),
     )
+
+    const setUp = async () => {
+        const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+        const commentForBounty0 = await bountyCommentsService().create(
+            blockchainBounty0.index,
+            { networkId: NETWORKS.POLKADOT, content: 'some content' },
+            sessionHandler.sessionData.user,
+        )
+        return { sessionHandler, commentForBounty0 }
+    }
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -31,12 +47,39 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
         jest.clearAllMocks()
     })
 
-    describe('POST', () => {
-        const setUp = async () => {
-            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
-            return { sessionHandler }
-        }
+    describe('GET', () => {
+        it(`should return ${HttpStatus.OK}`, async () => {
+            const { sessionHandler } = await setUp()
+            return sessionHandler
+                .authorizeRequest(request(app()).get(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT)))
+                .expect(HttpStatus.OK)
+        })
 
+        it('should return comments with content, author and dates', async () => {
+            const { commentForBounty0 } = await setUp()
+            const { body } = await request(app()).get(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT))
+
+            expect(body).toHaveLength(1)
+            expect(body[0].content).toBe(commentForBounty0.comment.content)
+            expect(body[0].author.userId).toBe(commentForBounty0.comment.authorId)
+            expect(body[0].createdAt).toBeDefined()
+            expect(body[0].updatedAt).toBe(body[0].createdAt)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not number bountyIndex`, async () => {
+            return request(app()).get(getBaseUrl('aa', NETWORKS.POLKADOT)).expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for no networkId`, async () => {
+            return request(app()).get(getBaseUrl(blockchainBounty0.index)).expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId`, async () => {
+            return request(app()).get(getBaseUrl(blockchainBounty0.index, 'not-valid')).expect(HttpStatus.BAD_REQUEST)
+        })
+    })
+
+    describe('POST', () => {
         it(`should return ${HttpStatus.CREATED} for valid data`, async () => {
             const { sessionHandler } = await setUp()
             return sessionHandler
@@ -86,6 +129,15 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
             return sessionHandler
                 .authorizeRequest(
                     request(app()).post(getBaseUrl(blockchainBounty0.index)).send({ networkId: NETWORKS.POLKADOT }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not number bountyIndex`, async () => {
+            const { sessionHandler } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app()).post(getBaseUrl('aa')).send({ content: 'content', networkId: NETWORKS.POLKADOT }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })

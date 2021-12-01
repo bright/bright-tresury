@@ -4,6 +4,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         commentContent: {
             marginTop: '16px',
+            whiteSpace: 'pre-wrap',
         },
     }),
 )

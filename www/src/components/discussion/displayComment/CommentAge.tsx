@@ -30,10 +30,15 @@ const CommentAge = ({ createdAt, updatedAt }: CommentAgeProps) => {
 
         const timestamp = updatedAt > createdAt ? updatedAt : createdAt
         const ageMs = Date.now() - timestamp
-        if (ageMs < 60 * 1000) return t('lessThanMinuteAgo')
-        const extractedTime = { ...extractTime(ageMs), seconds: 0 } // we don't want to show "seconds ago"
+        let time = ''
+        if (ageMs < 60 * 1000) {
+            time = t('lessThanMinuteAgo')
+        } else {
+            const extractedTime = { ...extractTime(ageMs), seconds: 0 } // we don't want to show "seconds ago"
+            time = timeToString(extractedTime, t)
+        }
 
-        return `${title} ${timeToString(extractedTime, t)} ${t('ago')}`
+        return `${title} ${time} ${t('ago')}`
     }, [updatedAt, createdAt, t])
 
     return <div className={classes.age}>{commentAge}</div>

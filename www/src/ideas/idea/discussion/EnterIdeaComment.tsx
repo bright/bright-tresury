@@ -12,7 +12,7 @@ export type EnterIdeaCommentProps = OwnProps
 
 const EnterIdeaComment = ({ ideaId }: EnterIdeaCommentProps) => {
     const { t } = useTranslation()
-    const { mutateAsync: createIdeaComment, isError, reset } = useCreateIdeaComment()
+    const { mutateAsync: createIdeaComment, isError, reset, isLoading } = useCreateIdeaComment()
 
     const queryClient = useQueryClient()
     const onSendClick = async (commentContent: string) => {
@@ -35,6 +35,7 @@ const EnterIdeaComment = ({ ideaId }: EnterIdeaCommentProps) => {
             onSendClick={onSendClick}
             onCancelClick={reset}
             error={isError ? t('discussion.sendCommentError') : undefined}
+            isLoading={isLoading}
         />
     )
 }

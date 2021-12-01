@@ -237,7 +237,7 @@
     "copy": "Copy",
     "copied": "Copied !",
     "ago": "ago",
-    "lessThanMinuteAgo": "less than a minute ago",
+    "lessThanMinuteAgo": "less than a minute",
     "discussion": {
         "edit": "Edit",
         "delete": "Delete",
@@ -745,6 +745,7 @@
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
         "errorOccurredWhileLoadingProposalComments": "An error occurred while loading proposal comments.",
         "errorOccurredWhileLoadingBounty": "An error occurred while loading bounty.",
+        "errorOccurredWhileLoadingBountyComments": "An error occurred while loading bounty comments.",
         "somethingWentWrong": "Ooops... Something went wrong."
     },
     "loading": {
@@ -759,6 +760,7 @@
         "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us.",
         "stats": "We're loading the statistics. It may take a moment. Bear with us.",
         "proposalComments": "We're loading the proposal comments. It may take a moment. Bear with us.",
-        "bounty": "We're loading the bounty. It may take a moment. Bear with us."
+        "bounty": "We're loading the bounty. It may take a moment. Bear with us.",
+        "bountyComments": "We're loading the bounty comments. It may take a moment. Bear with us."
     }
 }

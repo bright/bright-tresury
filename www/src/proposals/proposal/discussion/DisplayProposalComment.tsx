@@ -23,11 +23,13 @@ const DisplayProposalComment = ({ proposalIndex, comment }: DisplayProposalComme
         mutateAsync: deleteProposalComment,
         isError: isDeleteProposalCommentError,
         reset: deleteReset,
+        isLoading: deleteIsLoading,
     } = useDeleteProposalComment()
     const {
         mutateAsync: editProposalComment,
         isError: isEditProposalCommentError,
         reset: editReset,
+        isLoading: editIsLoading,
     } = useEditProposalComment()
     const queryClient = useQueryClient()
     const deleteComment = async () => {
@@ -65,6 +67,7 @@ const DisplayProposalComment = ({ proposalIndex, comment }: DisplayProposalComme
             editError={isEditProposalCommentError ? t('discussion.editError') : undefined}
             deleteComment={deleteComment}
             deleteError={isDeleteProposalCommentError ? t('discussion.deleteError') : undefined}
+            isLoading={deleteIsLoading || editIsLoading}
         />
     )
 }

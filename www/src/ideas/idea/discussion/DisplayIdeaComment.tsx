@@ -13,8 +13,17 @@ export type DisplayIdeaCommentProps = OwnProps
 
 const DisplayIdeaComment = ({ ideaId, comment }: DisplayIdeaCommentProps) => {
     const { t } = useTranslation()
-    const { mutateAsync: deleteIdeaComment, isError: isDeleteIdeaCommentError } = useDeleteIdeaComment()
-    const { mutateAsync: editIdeaComment, isError: isEditIdeaCommentError, reset: editReset } = useEditIdeaComment()
+    const {
+        mutateAsync: deleteIdeaComment,
+        isError: isDeleteIdeaCommentError,
+        isLoading: deleteIsLoading,
+    } = useDeleteIdeaComment()
+    const {
+        mutateAsync: editIdeaComment,
+        isError: isEditIdeaCommentError,
+        reset: editReset,
+        isLoading: editIsLoading,
+    } = useEditIdeaComment()
     const queryClient = useQueryClient()
     const deleteComment = async () => {
         await deleteIdeaComment(
@@ -49,6 +58,7 @@ const DisplayIdeaComment = ({ ideaId, comment }: DisplayIdeaCommentProps) => {
             editError={isEditIdeaCommentError ? t('discussion.editError') : undefined}
             deleteComment={deleteComment}
             deleteError={isDeleteIdeaCommentError ? t('discussion.deleteError') : undefined}
+            isLoading={deleteIsLoading || editIsLoading}
         />
     )
 }
