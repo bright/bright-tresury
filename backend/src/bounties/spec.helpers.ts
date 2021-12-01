@@ -79,7 +79,9 @@ export const createBountyEntity = (service: BountiesService, user: UserEntity, c
 // bounty blockchain
 
 export async function mockGetBounties(service: BlockchainBountiesService) {
-    jest.spyOn(service, 'getDeriveBounties').mockImplementation(async (networkId) => blockchainDeriveBounties)
+    jest.spyOn(service, 'getDeriveBounties').mockImplementation(async (networkId) =>
+        Promise.resolve(blockchainDeriveBounties),
+    )
 }
 
 export const createProposerSessionData = (bounty: BlockchainBountyDto) => createWeb3SessionData(bounty.proposer.address)
@@ -99,7 +101,7 @@ export const blockchainBounty0 = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Proposed,
 })
-const blockchainDeriveBounty0 = {
+const blockchainDeriveBounty0 = ({
     index: 0,
     description: 'bc-description-1',
     bounty: {
@@ -109,10 +111,10 @@ const blockchainDeriveBounty0 = {
         curatorDeposit: '0',
         bond: '10',
         status: {
-            isProposed: true
-        }
-    }
-} as unknown as DeriveBounty
+            isProposed: true,
+        },
+    },
+} as unknown) as DeriveBounty
 
 export const blockchainBounty1 = new BlockchainBountyDto({
     index: 1,
@@ -124,7 +126,7 @@ export const blockchainBounty1 = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Proposed,
 })
-const blockchainDeriveBounty1 = {
+const blockchainDeriveBounty1 = ({
     index: 1,
     description: 'bc-description-2',
     bounty: {
@@ -134,10 +136,10 @@ const blockchainDeriveBounty1 = {
         curatorDeposit: '0',
         bond: '10',
         status: {
-            isProposed: true
-        }
-    }
-} as unknown as DeriveBounty
+            isProposed: true,
+        },
+    },
+} as unknown) as DeriveBounty
 
 export const blockchainBountyApproved = new BlockchainBountyDto({
     index: 2,
@@ -149,7 +151,7 @@ export const blockchainBountyApproved = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Approved,
 })
-const blockchainDeriveBountyApproved = {
+const blockchainDeriveBountyApproved = ({
     index: 2,
     description: 'bc-description-2',
     bounty: {
@@ -159,10 +161,10 @@ const blockchainDeriveBountyApproved = {
         curatorDeposit: '0',
         bond: '10',
         status: {
-            isApproved: true
-        }
-    }
-} as unknown as DeriveBounty
+            isApproved: true,
+        },
+    },
+} as unknown) as DeriveBounty
 
 export const blockchainBountyFunded = new BlockchainBountyDto({
     index: 3,
@@ -174,7 +176,7 @@ export const blockchainBountyFunded = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Funded,
 })
-const blockchainDeriveBountyFunded = {
+const blockchainDeriveBountyFunded = ({
     index: 3,
     description: 'bc-description-2',
     bounty: {
@@ -184,10 +186,10 @@ const blockchainDeriveBountyFunded = {
         curatorDeposit: '0',
         bond: '10',
         status: {
-            isFunded: true
-        }
-    }
-} as unknown as DeriveBounty
+            isFunded: true,
+        },
+    },
+} as unknown) as DeriveBounty
 
 export const blockchainBountyCuratorProposed = new BlockchainBountyDto({
     index: 4,
@@ -200,7 +202,7 @@ export const blockchainBountyCuratorProposed = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.CuratorProposed,
 })
-const blockchainDeriveBountyCuratorProposed = {
+const blockchainDeriveBountyCuratorProposed = ({
     index: 4,
     description: 'bc-description-2',
     bounty: {
@@ -211,10 +213,10 @@ const blockchainDeriveBountyCuratorProposed = {
         bond: '10',
         status: {
             isCuratorProposed: true,
-            asCuratorProposed: { curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3'}
-        }
-    }
-} as unknown as DeriveBounty
+            asCuratorProposed: { curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3' },
+        },
+    },
+} as unknown) as DeriveBounty
 
 export const blockchainBountyActive = new BlockchainBountyDto({
     index: 5,
@@ -227,7 +229,7 @@ export const blockchainBountyActive = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Active,
 })
-const blockchainDeriveBountyActive = {
+const blockchainDeriveBountyActive = ({
     index: 5,
     description: 'bc-description-2',
     bounty: {
@@ -238,10 +240,10 @@ const blockchainDeriveBountyActive = {
         bond: '10',
         status: {
             isActive: true,
-            asActive: { curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3', updateDue: undefined }
-        }
-    }
-} as unknown as DeriveBounty
+            asActive: { curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3', updateDue: undefined },
+        },
+    },
+} as unknown) as DeriveBounty
 
 export const blockchainBountyPendingPayout = new BlockchainBountyDto({
     index: 6,
@@ -255,7 +257,7 @@ export const blockchainBountyPendingPayout = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.PendingPayout,
 })
-const blockchainDeriveBountyPendingPayout = {
+const blockchainDeriveBountyPendingPayout = ({
     index: 6,
     description: 'bc-description-2',
     bounty: {
@@ -269,11 +271,11 @@ const blockchainDeriveBountyPendingPayout = {
             asPendingPayout: {
                 curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3',
                 beneficiary: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3',
-                unlockAt: undefined
-            }
-        }
-    }
-} as unknown as DeriveBounty
+                unlockAt: undefined,
+            },
+        },
+    },
+} as unknown) as DeriveBounty
 export const blockchainBounties = [
     blockchainBounty0,
     blockchainBounty1,

@@ -28,9 +28,8 @@ import {
     createProposerSessionData,
     minimalValidCreateDto,
     mockGetBounties,
-    blockchainDeriveBounties,
     mockListenForExtrinsic,
-    mockListenForExtrinsicWithNoEvent
+    mockListenForExtrinsicWithNoEvent,
 } from './spec.helpers'
 
 describe('BountiesService', () => {
@@ -228,14 +227,14 @@ describe('BountiesService', () => {
             expect(saved.beneficiary).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
         })
 
-        it('should update throw NotFoundException when no entity', async () => {
+        it('should throw NotFoundException when no entity', async () => {
             const { user } = await setUpUpdate(blockchainBounty0)
             return expect(service().update(blockchainBounty1.index, NETWORKS.POLKADOT, {}, user)).rejects.toThrow(
                 NotFoundException,
             )
         })
 
-        it('should update throw NotFoundException when no blockchain bounty', async () => {
+        it('should throw NotFoundException when no blockchain bounty', async () => {
             const { user } = await setUpUpdate({ index: 100 } as BlockchainBountyDto)
             return expect(service().update(100, NETWORKS.POLKADOT, {}, user)).rejects.toThrow(NotFoundException)
         })
@@ -363,7 +362,7 @@ describe('BountiesService', () => {
             expect(blockchainBounty.status).toBe(BlockchainBountyStatus.Proposed)
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBounty( NETWORKS.POLKADOT, 99)).rejects.toThrow(NotFoundException)
+            return expect(service().getBounty(NETWORKS.POLKADOT, 99)).rejects.toThrow(NotFoundException)
         })
     })
 
@@ -372,7 +371,7 @@ describe('BountiesService', () => {
             mockGetBounties(app().get(BlockchainBountiesService))
         })
         it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBountyMotions(NETWORKS.POLKADOT,99)).rejects.toThrow(NotFoundException)
+            return expect(service().getBountyMotions(NETWORKS.POLKADOT, 99)).rejects.toThrow(NotFoundException)
         })
     })
 })

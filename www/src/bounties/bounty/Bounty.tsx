@@ -1,20 +1,21 @@
 import React from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
 import infoIcon from '../../assets/info.svg'
+import discussionIcon from '../../assets/discussion.svg'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import PrivateRoute from '../../routes/PrivateRoute'
 import Route from '../../routes/Route'
 import { ROUTE_EDIT_BOUNTY } from '../../routes/routes'
 import { Nil } from '../../util/types'
 import { BountyDto } from '../bounties.dto'
+import BountyDiscussion from './discussion/BountyDiscussion'
 import BountyHeader from './header/BountyHeader'
 import BountyEdit from './edit/BountyEdit'
 import BountyInfo from './info/BountyInfo'
 
 export enum BountyContentType {
     Info = 'info',
-    // TODO add discussion
-    // Discussion = 'discussion',
+    Discussion = 'discussion',
 }
 
 const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]: BountyTabConfig } = {
@@ -30,18 +31,17 @@ const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]: BountyTabConfig
         ),
         isDefault: true,
     },
-    // TODO add discussion
-    // [BountyContentType.Discussion]: {
-    //     bountyContentType: BountyContentType.Discussion,
-    //     translationKey: 'bounty.content.discussionLabel',
-    //     svg: discussionIcon,
-    //     getUrl: (baseUrl: string) => `${baseUrl}/${BountyContentType.Discussion}`,
-    //     getRoute: (basePath: string, bounty: BountyDto) => (
-    //         <Route key={BountyContentType.Discussion} exact={true} path={`${basePath}/${BountyContentType.Discussion}`}>
-    //             <BountyDiscussion bounty={bounty} />
-    //         </Route>
-    //     ),
-    // },
+    [BountyContentType.Discussion]: {
+        bountyContentType: BountyContentType.Discussion,
+        translationKey: 'bounty.content.discussionLabel',
+        svg: discussionIcon,
+        getUrl: (baseUrl: string) => `${baseUrl}/${BountyContentType.Discussion}`,
+        getRoute: (basePath: string, bounty: BountyDto) => (
+            <Route key={BountyContentType.Discussion} exact={true} path={`${basePath}/${BountyContentType.Discussion}`}>
+                <BountyDiscussion bountyIndex={bounty.blockchainIndex} />
+            </Route>
+        ),
+    },
 }
 
 export interface BountyTabConfig {
