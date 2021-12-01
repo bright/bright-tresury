@@ -51,6 +51,7 @@ import ThemeWrapper from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
 import IdeaLoader from './ideas/idea/IdeaLoader'
 import BountyCreate from './bounties/create/BountyCreate'
+import config from './config'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -67,6 +68,8 @@ function AppRoutes() {
     useEffect(() => {
         i18next.changeLanguage(getTranslation()).then()
     })
+
+    const isNonProductionEnv = config.env !== 'prod' && config.env !== 'qa'
 
     return (
         <Main>
@@ -91,9 +94,16 @@ function AppRoutes() {
                 <Route exact={true} path={ROUTE_STATS} component={Stats} />
                 <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
                 <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal} />
-                <Route exact={true} path={ROUTE_BOUNTIES} component={Bounties} />
-                <PrivateRoute exact={true} path={ROUTE_NEW_BOUNTY} component={BountyCreate} requireVerified={true} />
-                <Route exact={false} path={ROUTE_BOUNTY} component={BountyLoader} />
+                {isNonProductionEnv ? <Route exact={true} path={ROUTE_BOUNTIES} component={Bounties} /> : null}
+                {isNonProductionEnv ? (
+                    <PrivateRoute
+                        exact={true}
+                        path={ROUTE_NEW_BOUNTY}
+                        component={BountyCreate}
+                        requireVerified={true}
+                    />
+                ) : null}
+                {isNonProductionEnv ? <Route exact={false} path={ROUTE_BOUNTY} component={BountyLoader} /> : null}
                 <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate} requireVerified={true} />
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />

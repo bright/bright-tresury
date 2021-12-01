@@ -9,6 +9,7 @@ import tipsHighlightedSvg from '../../assets/menu_tips_highlighted.svg'
 import bountySvg from '../../assets/menu_bounty.svg'
 import bountyHighlightedSvg from '../../assets/menu_bounty_highlighted.svg'
 import { ROUTE_BOUNTIES, ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_STATS, ROUTE_TIPS } from '../../routes/routes'
+import config from '../../config'
 
 export interface MenuItem {
     translationKey: string
@@ -16,6 +17,21 @@ export interface MenuItem {
     svgHighlighted: string
     path: string
 }
+
+const MENU_ITEMS_ADDITIONAL: MenuItem[] = [
+    {
+        translationKey: 'menu.tips',
+        svg: tipsSvg,
+        svgHighlighted: tipsHighlightedSvg,
+        path: ROUTE_TIPS,
+    },
+    {
+        translationKey: 'menu.bounties',
+        svg: bountySvg,
+        svgHighlighted: bountyHighlightedSvg,
+        path: ROUTE_BOUNTIES,
+    },
+]
 
 export const MENU_ITEMS: MenuItem[] = [
     {
@@ -36,16 +52,4 @@ export const MENU_ITEMS: MenuItem[] = [
         svgHighlighted: proposalsHighlightedSvg,
         path: ROUTE_PROPOSALS,
     },
-    {
-        translationKey: 'menu.tips',
-        svg: tipsSvg,
-        svgHighlighted: tipsHighlightedSvg,
-        path: ROUTE_TIPS,
-    },
-    {
-        translationKey: 'menu.bounties',
-        svg: bountySvg,
-        svgHighlighted: bountyHighlightedSvg,
-        path: ROUTE_BOUNTIES,
-    },
-]
+].concat(config.env === 'prod' || config.env === 'qa' ? [] : MENU_ITEMS_ADDITIONAL)
