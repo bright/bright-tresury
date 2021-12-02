@@ -3,14 +3,14 @@ import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { BOUNTIES_API_PATH } from '../../bounties.api'
 import { CommentDto, CreateCommentDto, EditCommentDto } from '../../../components/discussion/comment.dto'
 
-const getBountyCommentsApiBasePath = (bountyIndex: number) => {
-    return `${BOUNTIES_API_PATH}/${bountyIndex}/comments`
+const getBountyCommentsApiBasePath = (bountyIndex: number, networkId: string, commentId: string = '') => {
+    return `${BOUNTIES_API_PATH}/${bountyIndex}/comments/${commentId}?network=${networkId}`
 }
 
 // GET ALL
 
 async function getBountyComments(bountyIndex: number, network: string): Promise<CommentDto[]> {
-    const result = await apiGet<CommentDto[]>(`${getBountyCommentsApiBasePath(bountyIndex)}?network=${network}`)
+    const result = await apiGet<CommentDto[]>(`${getBountyCommentsApiBasePath(bountyIndex, network)}`)
     result.sort((a, b) => b.createdAt - a.createdAt)
     return result
 }
@@ -34,7 +34,7 @@ export interface CreateBountyCommentParams {
 }
 
 function createBountyComment({ bountyIndex, network, data }: CreateBountyCommentParams) {
-    return apiPost<CommentDto>(`${getBountyCommentsApiBasePath(bountyIndex)}`, { ...data, networkId: network })
+    return apiPost<CommentDto>(`${getBountyCommentsApiBasePath(bountyIndex, network)}`, data)
 }
 
 export const useCreateBountyComment = () => {
@@ -51,7 +51,7 @@ export interface EditBountyCommentParams {
 }
 
 function editBountyComment({ bountyIndex, commentId, network, data }: EditBountyCommentParams) {
-    return apiPatch<CommentDto>(`${getBountyCommentsApiBasePath(bountyIndex)}/${commentId}`, { ...data, network })
+    return apiPatch<CommentDto>(getBountyCommentsApiBasePath(bountyIndex, network, commentId), data)
 }
 
 export function useEditBountyComment() {
@@ -61,11 +61,12 @@ export function useEditBountyComment() {
 // DELETE
 export interface DeleteBountyCommentParams {
     bountyIndex: number
+    network: string
     commentId: string
 }
 
-function deleteBountyComment({ bountyIndex, commentId }: DeleteBountyCommentParams): Promise<void> {
-    return apiDelete(`${getBountyCommentsApiBasePath(bountyIndex)}/${commentId}`)
+function deleteBountyComment({ bountyIndex, commentId, network }: DeleteBountyCommentParams): Promise<void> {
+    return apiDelete(getBountyCommentsApiBasePath(bountyIndex, network, commentId))
 }
 
 export const useDeleteBountyComment = () => {

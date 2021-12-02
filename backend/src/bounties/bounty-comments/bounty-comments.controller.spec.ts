@@ -9,13 +9,8 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { blockchainBounty0, mockGetBounties } from '../spec.helpers'
 import { BountyCommentsService } from './bounty-comments.service'
 
-const getBaseUrl = (blockchainIndex: any, networkId?: string) => {
-    let baseUrl = `/api/v1/bounties/${blockchainIndex}/comments`
-    if (networkId) {
-        baseUrl = `${baseUrl}?network=${networkId}`
-    }
-    return baseUrl
-}
+const getBaseUrl = (blockchainIndex: any, networkId: string, commentId: string = '') =>
+    `/api/v1/bounties/${blockchainIndex}/comments/${commentId}?network=${networkId}`
 
 describe('/api/v1/bounties/:blockchainIndex/comments', () => {
     const app = beforeSetupFullApp()
@@ -28,7 +23,8 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
         const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
         const commentForBounty0 = await bountyCommentsService().create(
             blockchainBounty0.index,
-            { networkId: NETWORKS.POLKADOT, content: 'some content' },
+            NETWORKS.POLKADOT,
+            { content: 'some content' },
             sessionHandler.sessionData.user,
         )
         return { sessionHandler, commentForBounty0 }
@@ -71,7 +67,7 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for no networkId`, async () => {
-            return request(app()).get(getBaseUrl(blockchainBounty0.index)).expect(HttpStatus.BAD_REQUEST)
+            return request(app()).get(getBaseUrl(blockchainBounty0.index, '')).expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId`, async () => {
@@ -84,9 +80,8 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
             const { sessionHandler } = await setUp()
             return sessionHandler
                 .authorizeRequest(
-                    request(app()).post(getBaseUrl(blockchainBounty0.index)).send({
+                    request(app()).post(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT)).send({
                         content: 'the content',
-                        networkId: NETWORKS.POLKADOT,
                     }),
                 )
                 .expect(HttpStatus.CREATED)
@@ -95,9 +90,8 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
         it('should return a comment with content, author and dates', async () => {
             const { sessionHandler } = await setUp()
             const { body } = await sessionHandler.authorizeRequest(
-                request(app()).post(getBaseUrl(blockchainBounty0.index)).send({
+                request(app()).post(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT)).send({
                     content: 'the content',
-                    networkId: NETWORKS.POLKADOT,
                 }),
             )
             expect(body.content).toBe('the content')
@@ -111,15 +105,15 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
             const spy = jest.spyOn(bountyCommentsService(), 'create')
 
             await sessionHandler.authorizeRequest(
-                request(app()).post(getBaseUrl(blockchainBounty0.index)).send({
+                request(app()).post(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT)).send({
                     content: 'the content',
-                    networkId: NETWORKS.POLKADOT,
                 }),
             )
 
             expect(spy).toHaveBeenCalledWith(
                 blockchainBounty0.index,
-                { content: 'the content', networkId: NETWORKS.POLKADOT },
+                NETWORKS.POLKADOT,
+                { content: 'the content' },
                 expect.objectContaining({ id: sessionHandler.sessionData.user.id }),
             )
         })
@@ -127,25 +121,23 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
         it(`should return ${HttpStatus.BAD_REQUEST} for no comment content`, async () => {
             const { sessionHandler } = await setUp()
             return sessionHandler
-                .authorizeRequest(
-                    request(app()).post(getBaseUrl(blockchainBounty0.index)).send({ networkId: NETWORKS.POLKADOT }),
-                )
+                .authorizeRequest(request(app()).post(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT)).send({}))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not number bountyIndex`, async () => {
             const { sessionHandler } = await setUp()
             return sessionHandler
-                .authorizeRequest(
-                    request(app()).post(getBaseUrl('aa')).send({ content: 'content', networkId: NETWORKS.POLKADOT }),
-                )
+                .authorizeRequest(request(app()).post(getBaseUrl('aa', NETWORKS.POLKADOT)).send({ content: 'content' }))
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for no networkId`, async () => {
             const { sessionHandler } = await setUp()
             return sessionHandler
-                .authorizeRequest(request(app()).post(getBaseUrl(blockchainBounty0.index)).send({ content: 'content' }))
+                .authorizeRequest(
+                    request(app()).post(getBaseUrl(blockchainBounty0.index, '')).send({ content: 'content' }),
+                )
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
@@ -153,17 +145,15 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
             const { sessionHandler } = await setUp()
             return sessionHandler
                 .authorizeRequest(
-                    request(app())
-                        .post(getBaseUrl(blockchainBounty0.index))
-                        .send({ content: 'content', networkId: 'not-valid' }),
+                    request(app()).post(getBaseUrl(blockchainBounty0.index, 'not-valid')).send({ content: 'content' }),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })
 
         it(`should return ${HttpStatus.FORBIDDEN} for not authorized request`, async () => {
             return request(app())
-                .post(getBaseUrl(blockchainBounty0.index))
-                .send({ content: 'content', networkId: NETWORKS.POLKADOT })
+                .post(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT))
+                .send({ content: 'content' })
                 .expect(HttpStatus.FORBIDDEN)
         })
 
@@ -173,8 +163,195 @@ describe('/api/v1/bounties/:blockchainIndex/comments', () => {
             return notVerifiedUserSessionHandler
                 .authorizeRequest(
                     request(app())
-                        .post(getBaseUrl(blockchainBounty0.index))
-                        .send({ content: 'content', networkId: NETWORKS.POLKADOT }),
+                        .post(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT))
+                        .send({ content: 'content' }),
+                )
+                .expect(HttpStatus.FORBIDDEN)
+        })
+    })
+
+    describe('PATCH', () => {
+        it(`should return ${HttpStatus.OK} for valid data`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .patch(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id))
+                        .send({
+                            content: 'the new content',
+                        }),
+                )
+                .expect(HttpStatus.OK)
+        })
+
+        it('should return an updated comment with content, author and dates', async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+
+            const { body } = await sessionHandler.authorizeRequest(
+                request(app())
+                    .patch(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id))
+                    .send({
+                        content: 'the new content',
+                    }),
+            )
+
+            expect(body.content).toBe('the new content')
+            expect(body.author.userId).toBe(sessionHandler.sessionData.user.id)
+            expect(body.createdAt).toBeDefined()
+            expect(body.updatedAt).toBeGreaterThan(body.createdAt)
+        })
+
+        it(`should call update comment method of bounty comments service`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            const spy = jest.spyOn(bountyCommentsService(), 'update')
+
+            await sessionHandler.authorizeRequest(
+                request(app())
+                    .patch(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id))
+                    .send({
+                        content: 'the new content',
+                    }),
+            )
+
+            expect(spy).toHaveBeenCalledWith(
+                blockchainBounty0.index,
+                NETWORKS.POLKADOT,
+                commentForBounty0.comment.id,
+                { content: 'the new content' },
+                expect.objectContaining({ id: sessionHandler.sessionData.user.id }),
+            )
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not number bountyIndex`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .patch(getBaseUrl('aa', NETWORKS.POLKADOT, commentForBounty0.comment.id))
+                        .send({ content: 'content' }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for no networkId`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .patch(getBaseUrl(blockchainBounty0.index, '', commentForBounty0.comment.id))
+                        .send({ content: 'content' }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .patch(getBaseUrl(blockchainBounty0.index, 'not-valid', commentForBounty0.comment.id))
+                        .send({ content: 'content' }),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.FORBIDDEN} for not authorized request`, async () => {
+            const { commentForBounty0 } = await setUp()
+            return request(app())
+                .patch(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id))
+                .send({ content: 'content' })
+                .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it(`should return ${HttpStatus.FORBIDDEN} for not verified user`, async () => {
+            const { commentForBounty0 } = await setUp()
+            const notVerifiedUserSessionHandler = await createUserSessionHandler(app(), 'other@example.com', 'other')
+
+            return notVerifiedUserSessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .patch(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id))
+                        .send({ content: 'content' }),
+                )
+                .expect(HttpStatus.FORBIDDEN)
+        })
+    })
+
+    describe('DELETE', () => {
+        it(`should return ${HttpStatus.OK} for valid data`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app()).delete(
+                        getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id),
+                    ),
+                )
+                .expect(HttpStatus.OK)
+        })
+
+        it(`should call delete comment method of bounty comments service`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            const spy = jest.spyOn(bountyCommentsService(), 'delete')
+
+            await sessionHandler.authorizeRequest(
+                request(app()).delete(
+                    getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id),
+                ),
+            )
+
+            expect(spy).toHaveBeenCalledWith(
+                blockchainBounty0.index,
+                NETWORKS.POLKADOT,
+                commentForBounty0.comment.id,
+                expect.objectContaining({ id: sessionHandler.sessionData.user.id }),
+            )
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not number bountyIndex`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app()).delete(getBaseUrl('aa', NETWORKS.POLKADOT, commentForBounty0.comment.id)),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for no networkId`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app()).delete(getBaseUrl(blockchainBounty0.index, '', commentForBounty0.comment.id)),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId`, async () => {
+            const { sessionHandler, commentForBounty0 } = await setUp()
+            return sessionHandler
+                .authorizeRequest(
+                    request(app()).delete(
+                        getBaseUrl(blockchainBounty0.index, 'not-valid', commentForBounty0.comment.id),
+                    ),
+                )
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.FORBIDDEN} for not authorized request`, async () => {
+            const { commentForBounty0 } = await setUp()
+            return request(app())
+                .delete(getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id))
+                .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it(`should return ${HttpStatus.FORBIDDEN} for not verified user`, async () => {
+            const { commentForBounty0 } = await setUp()
+            const notVerifiedUserSessionHandler = await createUserSessionHandler(app(), 'other@example.com', 'other')
+
+            return notVerifiedUserSessionHandler
+                .authorizeRequest(
+                    request(app()).delete(
+                        getBaseUrl(blockchainBounty0.index, NETWORKS.POLKADOT, commentForBounty0.comment.id),
+                    ),
                 )
                 .expect(HttpStatus.FORBIDDEN)
         })

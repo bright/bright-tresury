@@ -31,7 +31,7 @@ const DisplayBountyComment = ({ bountyIndex, comment }: DisplayBountyCommentProp
 
     const deleteComment = async () => {
         await deleteBountyComment(
-            { bountyIndex, commentId: comment.id },
+            { bountyIndex, commentId: comment.id, network: network.id },
             {
                 onSuccess: async () => {
                     await queryClient.refetchQueries([BOUNTY_COMMENTS_QUERY_KEY_BASE, bountyIndex, network.id])

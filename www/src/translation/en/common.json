@@ -254,8 +254,8 @@
         "noComments": "There are no comments yet. Be the first to start the discussion.",
         "thumbsUpAlt": "Thumbs Up",
         "thumbsDownAlt": "Thumbs Down",
-        "deleteError": "Something went wrong when deleting this comment...",
-        "editError": "Something went wrong when updating this comment..."
+        "deleteError": "Something went wrong when deleting this comment.",
+        "editError": "Something went wrong when updating this comment."
     },
     "idea": {
         "copyLink": "Copy Link",
