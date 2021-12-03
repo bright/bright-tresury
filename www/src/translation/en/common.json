@@ -431,14 +431,7 @@
             "infoLabel": "Info",
             "milestonesLabel": "Milestones",
             "discussionLabel": "Discussion",
-            "votingLabel": "Voting",
-            "info": {
-                "proposer": "Proposer",
-                "beneficiary": "Beneficiary",
-                "fieldOfIdea": "Field of idea",
-                "reasonForIdea": "Reason for idea",
-                "description": "Description"
-            }
+            "votingLabel": "Voting"
         },
         "list": {
             "introduceIdea": "To create a proposal, <a>first introduce your idea</a>",
@@ -463,14 +456,16 @@
             }
         },
         "details": {
+            "edit": "Edit",
+            "add": "Add details",
             "field": "Field of Proposal",
             "content": "Reason of Proposal",
+            "proposer": "Proposer",
+            "beneficiary": "Beneficiary",
             "noProposalDetails": {
                 "cannotEdit": "No proposal description have been added to Bright Treasury module.",
                 "askToAddDescription": "No proposal description have been added yet. You can ask the owner to add description in the Discussion tab.",
-                "canAdd": "Looks like you have created this proposal. Would you Like to add details? Detailed description will allow our community appreciate the proposal more and understand it better.",
-                "addDetails": "+ Add details",
-                "hideDetails": "Hide details"
+                "canEdit": "Looks like you have created this proposal. Would you Like to add details? Detailed description will allow our community appreciate the proposal more and understand it better."
             },
             "polkassemblyDescription": {
                 "show": "Show description fetched from Polkassembly",

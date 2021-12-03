@@ -1,13 +1,11 @@
-import { Theme } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import InformationTip from '../../../../components/info/InformationTip'
-import IdeaProposalDetails from '../../../../idea-proposal-details/details/IdeaProposalDetails'
 import { ProposalDto } from '../../../proposals.dto'
 import { useProposal } from '../../useProposals'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             marginTop: '2em',
@@ -20,12 +18,12 @@ interface OwnProps {
     proposal: ProposalDto
 }
 
-export type ProposalDetailsProps = OwnProps
+export type NoProposalDetailsProps = OwnProps
 
-const ProposalDetails = ({ proposal: { details }, proposal }: ProposalDetailsProps) => {
+const NoProposalDetails = ({ proposal }: NoProposalDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { isEditable } = useProposal(proposal)
+    const { isEditable, canEdit } = useProposal(proposal)
 
     const informationTipLabel = isEditable
         ? t('proposal.details.noProposalDetails.askToAddDescription')
@@ -33,8 +31,12 @@ const ProposalDetails = ({ proposal: { details }, proposal }: ProposalDetailsPro
 
     return (
         <div className={classes.root}>
-            {details ? <IdeaProposalDetails details={details} /> : <InformationTip label={informationTipLabel} />}
+            {canEdit ? (
+                <InformationTip label={t('proposal.details.noProposalDetails.canEdit')} />
+            ) : (
+                <InformationTip label={informationTipLabel} />
+            )}
         </div>
     )
 }
-export default ProposalDetails
+export default NoProposalDetails
