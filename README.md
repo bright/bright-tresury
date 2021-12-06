@@ -14,10 +14,10 @@ This repo contains:
 
 We have a testing environment set up. You can register and play with the app:
 
--   the front end app: [https://testing.treasury.brightinventions.pl/](https://testing.treasury.brightinventions.pl/)
--   the backend api: [https://testing.treasury.brightinventions.pl/api/health](https://testing.treasury.brightinventions.pl/api/health)
--   the backend api documentation: [https://testing.treasury.brightinventions.pl/api/documentation/](https://testing.treasury.brightinventions.pl/api/documentation/)
--   the Polkadot node (in development mode): wss://testing.treasury.brightinventions.pl:9944. You can access it with Polkadot JS Apps [https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Ftesting.treasury.brightinventions.pl%3A9944#/council](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Ftesting.treasury.brightinventions.pl%3A9944#/council).
+-   the front end app: [https://testing.treasury.bright.dev/](https://testing.treasury.bright.dev/)
+-   the backend api: [https://testing.treasury.bright.dev/api/health](https://testing.treasury.bright.dev/api/health)
+-   the backend api documentation: [https://testing.treasury.bright.dev/api/documentation/](https://testing.treasury.bright.dev/api/documentation/)
+-   the Polkadot node (in development mode): wss://testing.treasury.bright.dev:9944. You can access it with Polkadot JS Apps [https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Ftesting.treasury.bright.dev%3A9944#/council](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Ftesting.treasury.bright.dev%3A9944#/council).
 
 ## Running
 

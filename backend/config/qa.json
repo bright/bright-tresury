@@ -1,12 +1,12 @@
 {
-    "apiUrl": "https://testing.treasury.brightinventions.pl:3000",
-    "websiteUrl": "https://testing.treasury.brightinventions.pl",
+    "apiUrl": "https://testing.treasury.bright.dev:3000",
+    "websiteUrl": "https://testing.treasury.bright.dev",
     "port": 3000,
     "blockchain": [
         {
             "id": "development-2",
             "name": "Development 2",
-            "url": "wss://testing.treasury.brightinventions.pl:9944",
+            "url": "wss://testing.treasury.bright.dev:9944",
             "developmentKeyring": true,
             "ss58Format": 0,
             "genesisHash": "",
@@ -22,7 +22,7 @@
         {
             "id": "development-1",
             "name": "Development 1",
-            "url": "wss://stage.treasury.brightinventions.pl:9944",
+            "url": "wss://stage.treasury.bright.dev:9944",
             "developmentKeyring": true,
             "ss58Format": 0,
             "genesisHash": "",

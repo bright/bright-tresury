@@ -318,27 +318,27 @@ export default cloudform({
         },
         Certificates: {
             prod: {
-                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/04a1b302-0b85-4fcb-a4da-772890c4ec54`,
+                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/794edd6c-d975-419d-9edf-a64bb36be4bf`,
             },
             qa: {
-                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/2c1526f9-9f90-4d75-91c9-6d44178f531d`,
+                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/567bba6c-a31e-4a18-8fec-790df9ba5a24`,
             },
             stage: {
-                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/f6dc8c53-2cda-434e-b52a-2d3f6df313d6`,
+                ARN: `arn:aws:acm:eu-central-1:${Resources.RootAwsAccountId}:certificate/2f502a2a-c879-41bb-800f-11462f618212`,
             },
         },
         Hosts: {
             prod: {
-                withWWW: 'www.treasury.brightinventions.pl',
-                withoutWWW: 'treasury.brightinventions.pl',
+                withWWW: 'www.treasury.bright.dev',
+                withoutWWW: 'treasury.bright.dev',
             },
             qa: {
-                withWWW: 'www.testing.treasury.brightinventions.pl',
-                withoutWWW: 'testing.treasury.brightinventions.pl',
+                withWWW: 'www.testing.treasury.bright.dev',
+                withoutWWW: 'testing.treasury.bright.dev',
             },
             stage: {
-                withWWW: 'www.stage.treasury.brightinventions.pl',
-                withoutWWW: 'stage.treasury.brightinventions.pl',
+                withWWW: 'www.stage.treasury.bright.dev',
+                withoutWWW: 'stage.treasury.bright.dev',
             },
         },
     },
