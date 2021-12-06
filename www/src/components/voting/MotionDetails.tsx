@@ -1,8 +1,8 @@
-import CardDetails from '../../../components/card/components/CardDetails'
+import CardDetails from '../card/components/CardDetails'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
-import { AccountInfo, Nil } from '../../../util/types'
+import { AccountInfo, Nil } from '../../util/types'
 import Vote, { VoteType } from './Vote'
 
 const useStyles = makeStyles((theme: Theme) =>

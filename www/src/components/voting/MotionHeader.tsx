@@ -1,13 +1,13 @@
 import React from 'react'
-import CardHeader from '../../../components/card/components/CardHeader'
-import ayeIcon from '../../../assets/aye.svg'
-import nayIcon from '../../../assets/nay.svg'
+import CardHeader from '../card/components/CardHeader'
+import ayeIcon from '../../assets/aye.svg'
+import nayIcon from '../../assets/nay.svg'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import { Nil } from '../../../util/types'
-import { formatNumber } from '../../../util/numberUtil'
-import { timeToString } from '../../../util/dateUtil'
-import { ProposalMotionEnd } from '../../proposals.dto'
+import { Nil } from '../../util/types'
+import { formatNumber } from '../../util/numberUtil'
+import { timeToString } from '../../util/dateUtil'
+import { BountyMotionMethod, MotionEnd, ProposalMotionMethod } from './MotionDto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export interface MotionHeaderProps {
-    method: string
-    motionEnd: Nil<ProposalMotionEnd>
+    method: ProposalMotionMethod | BountyMotionMethod
+    motionEnd: Nil<MotionEnd>
     ayesCount: Nil<number>
     naysCount: Nil<number>
 }
@@ -52,18 +52,41 @@ export interface MotionHeaderProps {
 const MotionHeader = ({ method, ayesCount, naysCount, motionEnd }: MotionHeaderProps) => {
     const styles = useStyles()
     const { t } = useTranslation()
-    const isApprovalMotion = method === 'approveProposal'
+    const isApprovalMotion = [
+        ProposalMotionMethod.Approve,
+        BountyMotionMethod.ApproveBounty,
+        BountyMotionMethod.ProposeCurator,
+    ].includes(method)
+
     const { endBlock, timeLeft } = motionEnd || {}
 
     const endBlockStr = endBlock ? `#${formatNumber(endBlock)}` : t('common.na')
     const timeStr = timeLeft ? timeToString(timeLeft, t) : ''
+
+    const getMethodTranslationKey = (method: ProposalMotionMethod | BountyMotionMethod) => {
+        switch (method) {
+            case BountyMotionMethod.ApproveBounty:
+                return t('bounty.voting.method.approveBounty')
+            case BountyMotionMethod.CloseBounty:
+                return t('bounty.voting.method.closeBounty')
+            case BountyMotionMethod.ProposeCurator:
+                return t('bounty.voting.method.proposeCurator')
+            case BountyMotionMethod.RejectCurator:
+                return t('bounty.voting.method.rejectCurator')
+            case ProposalMotionMethod.Approve:
+                return t('proposal.voting.motion')
+            case ProposalMotionMethod.Reject:
+                return t('proposal.voting.motion')
+        }
+    }
 
     return (
         <CardHeader>
             <div className={styles.root}>
                 <div className={styles.upperRow}>
                     <strong>
-                        {t('proposal.voting.motion')} <img src={isApprovalMotion ? ayeIcon : nayIcon} alt={''} />{' '}
+                        {getMethodTranslationKey(method as ProposalMotionMethod | BountyMotionMethod)}{' '}
+                        <img src={isApprovalMotion ? ayeIcon : nayIcon} alt={''} />{' '}
                     </strong>
                     <div>
                         <strong className={styles.voteCount}>

@@ -1,7 +1,7 @@
-import AddressInfoWithLabel from '../../../components/identicon/AddressInfoWithLabel'
+import AddressInfoWithLabel from '../identicon/AddressInfoWithLabel'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { AccountInfo } from '../../../util/types'
+import { AccountInfo } from '../../util/types'
 
 const useStyles = makeStyles(() =>
     createStyles({

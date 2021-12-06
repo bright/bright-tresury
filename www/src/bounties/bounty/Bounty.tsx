@@ -1,6 +1,7 @@
 import React from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
 import infoIcon from '../../assets/info.svg'
+import voting from '../../assets/voting.svg'
 import discussionIcon from '../../assets/discussion.svg'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import PrivateRoute from '../../routes/PrivateRoute'
@@ -13,10 +14,12 @@ import BountyHeader from './header/BountyHeader'
 import BountyEdit from './edit/BountyEdit'
 import BountyAward from './header/curator-actions/award/BountyAward'
 import BountyInfo from './info/BountyInfo'
+import BountyVoting from './voting/BountyVoting'
 
 export enum BountyContentType {
     Info = 'info',
     Discussion = 'discussion',
+    Voting = 'voting',
 }
 
 const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]: BountyTabConfig } = {
@@ -40,6 +43,17 @@ const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]: BountyTabConfig
         getRoute: (basePath: string, bounty: BountyDto) => (
             <Route key={BountyContentType.Discussion} exact={true} path={`${basePath}/${BountyContentType.Discussion}`}>
                 <BountyDiscussion bountyIndex={bounty.blockchainIndex} />
+            </Route>
+        ),
+    },
+    [BountyContentType.Voting]: {
+        bountyContentType: BountyContentType.Voting,
+        translationKey: 'bounty.content.votingLabel',
+        svg: voting,
+        getUrl: (baseUrl: string) => `${baseUrl}/${BountyContentType.Voting}`,
+        getRoute: (basePath: string, bounty: BountyDto) => (
+            <Route key={BountyContentType.Voting} exact={true} path={`${basePath}/${BountyContentType.Voting}`}>
+                <BountyVoting bounty={bounty} />
             </Route>
         ),
     },

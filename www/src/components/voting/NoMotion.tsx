@@ -1,12 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { generatePath } from 'react-router-dom'
-import proposalNoMotion from '../../../assets/proposal_no_motion.svg'
-import  RouterLink  from "../../../components/link/RouterLink";
-import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
-import { ROUTE_PROPOSAL } from '../../../routes/routes'
-import { ProposalContentType } from '../ProposalContentTypeTabs'
+import proposalNoMotion from '../../assets/proposal_no_motion.svg'
+import RouterLink from '../link/RouterLink'
+import { useSuccessfullyLoadedItemStyles } from '../loading/useSuccessfullyLoadedItemStyles'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,17 +30,18 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export interface NoMotionProps {
-    proposalIndex: number
+    title: string
+    toDiscussion: string
 }
 
-const NoMotion = ({ proposalIndex }: NoMotionProps) => {
+const NoMotion = ({ title, toDiscussion }: NoMotionProps) => {
     const { t } = useTranslation()
     const styles = useStyles()
     const successfullyLoadedItemStyles = useSuccessfullyLoadedItemStyles()
-    const toDiscussion = `${generatePath(ROUTE_PROPOSAL, { proposalIndex })}/${ProposalContentType.Discussion}`
+
     return (
         <div className={`${styles.root} ${successfullyLoadedItemStyles.content}`}>
-            <h3 className={styles.header}>{t('proposal.voting.noMotion.title')}</h3>
+            <h3 className={styles.header}>{title}</h3>
             <p className={styles.body}>
                 {t('proposal.voting.noMotion.body1')}
                 <br />

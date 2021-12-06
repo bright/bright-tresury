@@ -579,7 +579,8 @@
         },
         "content": {
             "infoLabel": "Info",
-            "discussionLabel": "Discussion"
+            "discussionLabel": "Discussion",
+            "votingLabel": "Voting"
         },
         "header": {
             "accept": "Accept",
@@ -627,6 +628,17 @@
                     "warningMessage": "You will now award the bounty to: <strong>{{beneficiary}}</strong><br/> Please notice that you will not be able to change the beneficiary address once chosen.",
                     "eventDescription": "event bounty awarded finished"
                 }
+            }
+        },
+        "voting": {
+            "method": {
+                "approveBounty": "Approve Bounty",
+                "closeBounty": "Close Bounty",
+                "proposeCurator": "Propose Curator",
+                "rejectCurator": "Reject Curator"
+            },
+            "noMotion": {
+                "title": "No one has voted on the bounty yet"
             }
         },
         "edit": {

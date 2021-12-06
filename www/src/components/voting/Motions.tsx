@@ -1,8 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import MotionCard from './MotionCard'
 import React from 'react'
-import { ProposalMotion } from '../../proposals.dto'
-import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import { useSuccessfullyLoadedItemStyles } from '../loading/useSuccessfullyLoadedItemStyles'
+import { MotionDto } from './MotionDto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,12 +17,15 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export interface MotionsProp {
-    motions: ProposalMotion[]
+    motions: MotionDto[]
 }
 
 const Motions = ({ motions }: MotionsProp) => {
     const styles = useStyles()
     const successfullyLoadedItemStyles = useSuccessfullyLoadedItemStyles()
+    if (!motions) {
+        return null
+    }
     return (
         <div className={`${styles.root} ${successfullyLoadedItemStyles.content}`}>
             {motions.map((motion) => (

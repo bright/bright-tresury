@@ -1,10 +1,10 @@
 import React from 'react'
-import Divider from '../../../components/divider/Divider'
+import Divider from '../divider/Divider'
 import MotionHeader from './MotionHeader'
 import MotionDetails from './MotionDetails'
 import { Paper, Theme } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { ProposalMotion } from '../../proposals.dto'
+import { MotionDto } from './MotionDto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 export interface MotionCardProps {
-    motion: ProposalMotion
+    motion: MotionDto
 }
 
 const MotionCard = ({ motion }: MotionCardProps) => {

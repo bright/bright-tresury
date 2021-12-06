@@ -1,7 +1,7 @@
 import React from 'react'
 import { ProposalDto } from '../../proposals.dto'
-import NoMotion from './NoMotion'
-import Motions from './Motions'
+import Motions from '../../../components/voting/Motions'
+import NoProposalMotion from './NoProposalMotion'
 
 export interface ProposalVotingProps {
     proposal: ProposalDto
@@ -11,7 +11,7 @@ const ProposalVoting = ({ proposal }: ProposalVotingProps) => {
     return proposal.motions?.length ? (
         <Motions motions={proposal.motions} />
     ) : (
-        <NoMotion proposalIndex={proposal.proposalIndex} />
+        <NoProposalMotion blockchainIndex={proposal.proposalIndex} />
     )
 }
 
