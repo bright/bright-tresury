@@ -7,6 +7,7 @@ import clsx from 'clsx'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
+            overflow: 'auto',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 paddingBottom: 0,
             },
