@@ -5,6 +5,7 @@ import menuDrawing from '../../assets/menu_drawing.svg'
 import treasuryLabeledLogo from '../../assets/treasury_labeled_logo.svg'
 import { useTranslation } from 'react-i18next'
 import Button from '../../components/button/Button'
+import Link from '../../components/link/Link'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,6 +26,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         learnMoreButton: {
             marginTop: 20,
+            backgroundColor: theme.palette.secondary.main,
+            color: theme.palette.primary.main,
+            fontWeight: 600,
+            borderRadius: '8px',
+            padding: '.5em 2em',
         },
         logo: {
             marginTop: 30,
@@ -42,10 +48,12 @@ const MenuAppInfo = () => {
         <div className={classes.root}>
             <img className={classes.drawing} src={menuDrawing} alt={''} />
             <div className={classes.whatForLabel}>{t('menu.whatForLabel')}</div>
-            {/*TODO: add learn more behaviour*/}
-            <Button className={classes.learnMoreButton} variant="contained" color="secondary">
+            <Link
+                className={classes.learnMoreButton}
+                href="https://brightinventions.pl/blog/bright-treasury-is-now-live/"
+            >
                 {t('menu.learnMoreLabel')}
-            </Button>
+            </Link>
             <img className={classes.logo} src={treasuryLabeledLogo} alt={t('menu.logo')} />
         </div>
     )
