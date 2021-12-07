@@ -11,7 +11,7 @@ import { AppEventType } from '../../entities/app-event-type'
 
 describe('New proposal comment app event e2e', () => {
     const app = beforeSetupFullApp()
-    const getIdeaCommentsService = () => app.get().get(ProposalCommentsService)
+    const getBountyCommentsService = () => app.get().get(ProposalCommentsService)
 
     beforeAll(() => {
         jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
@@ -39,7 +39,7 @@ describe('New proposal comment app event e2e', () => {
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            const createdComment = await getIdeaCommentsService().create(
+            const createdComment = await getBountyCommentsService().create(
                 proposal.blockchainProposalId,
                 proposal.networkId,
                 user1.user,
@@ -67,7 +67,7 @@ describe('New proposal comment app event e2e', () => {
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
                 content: 'This is a comment',
             })
 
@@ -84,7 +84,7 @@ describe('New proposal comment app event e2e', () => {
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getIdeaCommentsService().create(proposal.proposalIndex, NETWORKS.POLKADOT, user1.user, {
+            await getBountyCommentsService().create(proposal.proposalIndex, NETWORKS.POLKADOT, user1.user, {
                 content: 'This is a comment',
             })
 
@@ -95,21 +95,21 @@ describe('New proposal comment app event e2e', () => {
             const { proposal } = await setUp()
 
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
                 content: 'This is a comment',
             })
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
                 content: 'This is a comment2',
             })
 
             const user2 = await createSessionData({ username: 'user2', email: 'user2@example.com' })
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user2.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user2.user, {
                 content: 'This is a comment 3',
             })
 
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
             const user3 = await createSessionData({ username: 'user3', email: 'user3@example.com' })
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user3.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user3.user, {
                 content: 'This is a comment',
             })
             expect(spy).toHaveBeenLastCalledWith(
@@ -122,7 +122,7 @@ describe('New proposal comment app event e2e', () => {
             const { proposal, idea, sessionHandler: ideaOwner } = await setUp()
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getIdeaCommentsService().create(
+            await getBountyCommentsService().create(
                 proposal.blockchainProposalId,
                 proposal.networkId,
                 ideaOwner.sessionData.user,
@@ -142,28 +142,28 @@ describe('New proposal comment app event e2e', () => {
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getIdeaCommentsService().create(proposal.proposalIndex, NETWORKS.POLKADOT, proposer.user, {
+            await getBountyCommentsService().create(proposal.proposalIndex, NETWORKS.POLKADOT, proposer.user, {
                 content: 'This is a comment',
             })
 
-            expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([proposer]))
+            expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([proposer.user]))
         })
 
-        it('should not create NewIdeaComment event for the commenter', async () => {
+        it('should not create NewProposalComment event for the commenter', async () => {
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
             const { proposal } = await setUp()
 
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user1.user, {
                 content: 'This is a comment 1',
             })
 
             const user2 = await createSessionData({ username: 'user2', email: 'user2@example.com' })
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user2.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user2.user, {
                 content: 'This is a comment 2',
             })
 
-            await getIdeaCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user2.user, {
+            await getBountyCommentsService().create(proposal.blockchainProposalId, proposal.networkId, user2.user, {
                 content: 'This is a comment 3',
             })
             expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([user2.user.id]))

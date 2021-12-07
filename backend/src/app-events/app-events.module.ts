@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { SessionModule } from '../auth/session/session.module'
 import { SuperTokensModule } from '../auth/supertokens/supertokens.module'
+import { BountiesModule } from '../bounties/bounties.module'
 import { ConfigModule } from '../config/config.module'
 import { DatabaseModule } from '../database/database.module'
 import { EmailsModule } from '../emails/emails.module'
@@ -10,6 +11,7 @@ import { ProposalsModule } from '../proposals/proposals.module'
 import { UsersModule } from '../users/users.module'
 import { AppEventNotificationsService } from './app-event-notifications/app-event-notifications.service'
 import { EmailNotificationsService } from './app-event-notifications/email-notifications/email-notifications.service'
+import { BountyCommentSubscriber } from './app-event-types/bounty-comment/bounty-comment.subscriber'
 import { IdeaCommentSubscriber } from './app-event-types/idea-comment/idea-comment.subscriber'
 import { ProposalCommentSubscriber } from './app-event-types/proposal-comment/proposal-comment.subscriber'
 import { AppEventsService } from './app-events.service'
@@ -27,6 +29,7 @@ import { AppEventsController } from './app-events.controller'
         SuperTokensModule,
         IdeasModule,
         ProposalsModule,
+        BountiesModule,
         ConfigModule,
         SessionModule,
     ],
@@ -37,6 +40,7 @@ import { AppEventsController } from './app-events.controller'
         EmailNotificationsService,
         IdeaCommentSubscriber,
         ProposalCommentSubscriber,
+        BountyCommentSubscriber,
     ],
     exports: [AppEventsService],
     controllers: [AppEventsController],

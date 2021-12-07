@@ -3,6 +3,7 @@ import { SuperTokensService } from '../../../auth/supertokens/supertokens.servic
 import { EmailsService } from '../../../emails/emails.service'
 import { EmailTemplates } from '../../../emails/templates/templates'
 import { getLogger } from '../../../logging.module'
+import { NewBountyCommentDto } from '../../app-event-types/bounty-comment/new-bounty-comment.dto'
 import { NewIdeaCommentDto } from '../../app-event-types/idea-comment/new-idea-comment.dto'
 import { UserEntity } from '../../../users/user.entity'
 import { UsersService } from '../../../users/users.service'
@@ -81,6 +82,8 @@ export class EmailNotificationsService {
                 return this.getNewIdeaCommentEmailDetails(appEvent.data)
             case AppEventType.NewProposalComment:
                 return this.getNewProposalCommentEmailDetails(appEvent.data)
+            case AppEventType.NewBountyComment:
+                return this.getNewBountyCommentEmailDetails(appEvent.data)
             default:
                 // for exhaustiveness check - should never get here if all data types are coverd
                 return appEvent.data
@@ -108,6 +111,20 @@ export class EmailNotificationsService {
             subject,
             text,
             template: EmailTemplates.NewProposalCommentTemplate,
+            data,
+        }
+    }
+
+    private getNewBountyCommentEmailDetails(data: NewBountyCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Bounty ${data.bountyBlockchainId} - new comments`
+        const text = `You have a new comment in Bounty ${data.bountyBlockchainId} ${
+            data.bountyTitle ?? ''
+        }. You can see them here: ${data.commentsUrl}`
+
+        return {
+            subject,
+            text,
+            template: EmailTemplates.NewBountyCommentTemplate,
             data,
         }
     }

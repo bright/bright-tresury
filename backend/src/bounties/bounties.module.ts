@@ -22,5 +22,6 @@ import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
     ],
     controllers: [BountiesController, BountyCommentsController],
     providers: [BountiesService, BountyCommentsService],
+    exports: [BountyCommentsService, BountiesService],
 })
 export class BountiesModule {}
