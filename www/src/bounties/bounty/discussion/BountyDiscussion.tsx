@@ -1,5 +1,6 @@
 import React from 'react'
 import { useAuth } from '../../../auth/AuthContext'
+import PrivateBountyDiscussion from './PrivateBountyDiscussion'
 import PublicBountyDiscussion from './PublicBountyDiscussion'
 
 interface OwnProps {
@@ -10,13 +11,13 @@ const BountyDiscussion = ({ bountyIndex }: BountyDiscussionProps) => {
     const { user, isUserSignedIn } = useAuth()
 
     return (
-        // TODO in TREAS-203 <>
-        //     {user && isUserSignedIn ? (
-        //         <PrivateBountyDiscussion proposalIndex={proposalIndex} userId={user.id} />
-        //     ) : (
-        <PublicBountyDiscussion bountyIndex={bountyIndex} />
-        //     )}
-        // </>
+        <>
+            {user && isUserSignedIn ? (
+                <PrivateBountyDiscussion bountyIndex={bountyIndex} userId={user.id} />
+            ) : (
+                <PublicBountyDiscussion bountyIndex={bountyIndex} />
+            )}
+        </>
     )
 }
 

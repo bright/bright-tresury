@@ -10,6 +10,7 @@ import { useMenu } from '../../../hook/useMenu'
 import { breakpoints } from '../../../theme/theme'
 import { useGetUnreadAppEvents } from './app-events.api'
 import { AppEventDto, AppEventType } from './app-events.dto'
+import BountyDiscussion from './menu-items/BountyDiscussion'
 import IdeaDiscussion from './menu-items/IdeaDiscussion'
 import ProposalDiscussion from './menu-items/ProposalDiscussion'
 import NotificationsButton from './NotificationsButton'
@@ -63,6 +64,8 @@ const Notifications = ({ userId, className }: NotificationsProps) => {
                 return <IdeaDiscussion data={data} closeMenu={handleClose} />
             case AppEventType.NewProposalComment:
                 return <ProposalDiscussion data={data} closeMenu={handleClose} />
+            case AppEventType.NewBountyComment:
+                return <BountyDiscussion data={data} closeMenu={handleClose} />
             default:
                 return null
         }

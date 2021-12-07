@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath } from 'react-router-dom'
-import proposalSvg from '../../../../assets/menu_proposals_highlighted.svg'
-import { ROUTE_PROPOSAL } from '../../../../routes/routes'
-import { NewProposalCommentData } from '../app-events.dto'
+import bountySvg from '../../../../assets/menu_bounty_highlighted.svg'
+import { ROUTE_BOUNTY } from '../../../../routes/routes'
+import { NewBountyCommentData } from '../app-events.dto'
 import NotificationsItemDescription from './components/NotificationsItemDescription'
 import NotificationsItemTitle from './components/NotificationsItemTitle'
 import NotificationsMenuItem from './components/NotificationsMenuItem'
@@ -11,34 +11,34 @@ import NotificationsMenuItemHeader from './components/NotificationsMenuItemHeade
 import { IdeaContentType } from '../../../../ideas/idea/Idea'
 
 interface OwnProps {
-    data: NewProposalCommentData
+    data: NewBountyCommentData
     closeMenu: () => void
 }
 
-export type ProposalDiscussionProps = OwnProps
+export type BountyDiscussionProps = OwnProps
 
-const ProposalDiscussion = ({ data, closeMenu }: ProposalDiscussionProps) => {
+const BountyDiscussion = ({ data, closeMenu }: BountyDiscussionProps) => {
     const { t } = useTranslation()
 
     return (
         <NotificationsMenuItem
             closeMenu={closeMenu}
-            redirectTo={`${generatePath(ROUTE_PROPOSAL, { proposalIndex: data.proposalBlockchainId })}/${
+            redirectTo={`${generatePath(ROUTE_BOUNTY, { bountyIndex: data.bountyBlockchainId })}/${
                 IdeaContentType.Discussion
             }`}
             networkId={data.networkId}
         >
             <NotificationsMenuItemHeader
-                iconSvg={proposalSvg}
-                title={t('topBar.notifications.menuItems.proposalDiscussion.title')}
-                goTo={t('topBar.notifications.menuItems.proposalDiscussion.goTo')}
+                iconSvg={bountySvg}
+                title={t('topBar.notifications.menuItems.bountyDiscussion.title')}
+                goTo={t('topBar.notifications.menuItems.bountyDiscussion.goTo')}
             />
-            <NotificationsItemTitle ordinalNumber={data.proposalBlockchainId} title={data.proposalTitle} />
+            <NotificationsItemTitle ordinalNumber={data.bountyBlockchainId} title={data.bountyTitle} />
             <NotificationsItemDescription
-                description={t('topBar.notifications.menuItems.proposalDiscussion.description')}
+                description={t('topBar.notifications.menuItems.bountyDiscussion.description')}
             />
         </NotificationsMenuItem>
     )
 }
 
-export default ProposalDiscussion
+export default BountyDiscussion

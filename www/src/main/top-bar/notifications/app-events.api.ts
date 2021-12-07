@@ -91,6 +91,23 @@ export const useGetProposalDiscussionAppEvents = (
     )
 }
 
+export const BOUNTY_DISCUSSION_APP_EVENTS_QUERY_KEY_BASE = 'bounty_discussion_app_events'
+export const useGetBountyDiscussionAppEvents = (
+    params: { userId: string; bountyIndex: number; networkId: string } & PaginationRequestParams,
+    options?: UseQueryOptions<PaginationResponseDto<AppEventDto>>,
+) => {
+    return useQuery(
+        [BOUNTY_DISCUSSION_APP_EVENTS_QUERY_KEY_BASE],
+        () =>
+            getAppEvents({
+                ...params,
+                appEventType: AppEventType.NewBountyComment,
+                isRead: false,
+            }),
+        options,
+    )
+}
+
 // PATCH
 
 export interface ReadAppEventsApiParams {

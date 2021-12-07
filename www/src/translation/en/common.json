@@ -85,6 +85,11 @@
                     "title": "Proposal Discussion",
                     "goTo": "Go to Discussion",
                     "description": "There are new messages in the proposal discussion"
+                },
+                "bountyDiscussion": {
+                    "title": "Bounty Discussion",
+                    "goTo": "Go to Discussion",
+                    "description": "There are new messages in the bounty discussion"
                 }
             }
         }
