@@ -40,7 +40,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
     const validationSchema = Yup.object().shape({
         beneficiary: Yup.string().test(
             'validate-address',
-            t('idea.milestones.modal.form.wrongBeneficiaryAddressError'),
+            t('form.web3AddressInput.wrongWeb3AddressError'),
             (address) => isValidAddressOrEmpty(address, network.ss58Format),
         ),
         currentNetwork: Yup.object().shape({
@@ -56,7 +56,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
     const extendedValidationSchema = Yup.object().shape({
         beneficiary: Yup.string()
             .required(t('idea.milestones.modal.form.emptyFieldError'))
-            .test('validate-address', t('idea.milestones.modal.form.wrongBeneficiaryAddressError'), (address) =>
+            .test('validate-address', t('form.web3AddressInput.wrongWeb3AddressError'), (address) =>
                 isValidAddressOrEmpty(address, network.ss58Format),
             ),
         currentNetwork: Yup.object().shape({

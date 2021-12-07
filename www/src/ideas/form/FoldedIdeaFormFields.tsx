@@ -1,8 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import StyledSmallInput from '../../components/form/input/StyledSmallInput'
 import TitleInput from '../../idea-proposal-details/form/TitleInput'
+import BeneficiaryField from './fields/BeneficiaryField'
 import IdeaNetworkValueInput from './networks/IdeaNetworkValueInput'
 import { IdeaFormValues } from './useIdeaForm'
 
@@ -27,11 +27,7 @@ const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
     return (
         <>
             <TitleInput />
-            <StyledSmallInput
-                name="beneficiary"
-                placeholder={t('idea.details.beneficiary')}
-                label={t('idea.details.beneficiary')}
-            />
+            <BeneficiaryField />
             <IdeaNetworkValueInput
                 className={classes.inputField}
                 inputName={'currentNetwork.value'}

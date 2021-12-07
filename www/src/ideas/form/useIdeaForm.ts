@@ -30,9 +30,13 @@ export default () => {
     const validationSchema = Yup.object({
         title: titleValidationSchema(t),
         links: linksValidationSchema(t),
-        beneficiary: Yup.string().test('validate-address', t('idea.details.form.wrongBeneficiaryError'), (address) => {
-            return isValidAddressOrEmpty(address, network.ss58Format)
-        }),
+        beneficiary: Yup.string().test(
+            'validate-address',
+            t('form.web3AddressInput.wrongWeb3AddressError'),
+            (address) => {
+                return isValidAddressOrEmpty(address, network.ss58Format)
+            },
+        ),
         additionalNetworks: Yup.array().of(
             Yup.object().shape({
                 value: networkValueValidationSchema({ t, findNetwork }),

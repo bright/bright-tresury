@@ -8,8 +8,8 @@ const TitleField = () => {
         <StyledSmallInput
             name="beneficiary"
             description={t('form.web3AddressInput.description')}
-            placeholder={t('bounty.form.fields.beneficiary')}
-            label={t('bounty.form.fields.beneficiary')}
+            placeholder={t('idea.details.beneficiary')}
+            label={t('idea.details.beneficiary')}
         />
     )
 }
