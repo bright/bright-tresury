@@ -6,6 +6,8 @@ import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import { EventName } from '../../../components/polkassemblyDescription/polkassembly-post.dto'
+import PolkassemblyDescription from '../../../components/polkassemblyDescription/PolkassemblyDescription'
 import { Label } from '../../../components/text/Label'
 import LongText from '../../../components/text/LongText'
 import Placeholder from '../../../components/text/Placeholder'
@@ -14,7 +16,7 @@ import { ROUTE_EDIT_BOUNTY } from '../../../routes/routes'
 import { timeToString } from '../../../util/dateUtil'
 import { BountyDto, BountyStatus } from '../../bounties.dto'
 import { useBounty } from '../useBounty'
-import PolkassemblyDescription from '../../../components/polkassemblyDescription/PolkassemblyDescription'
+import ExpiryDate from './components/ExpiryDate'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -92,16 +94,7 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
                     </div>
                 ) : null}
             </div>
-            {bounty.status === BountyStatus.Active ? (
-                <div className={classes.spacing}>
-                    <Label label={t('bounty.info.expiryDate')} />
-                    {bounty.updateDue ? (
-                        <ShortText text={timeToString(bounty.updateDue, t)} placeholder={t('bounty.info.expiryDate')} />
-                    ) : (
-                        <ShortText text={t('bounty.info.expired')} placeholder={t('bounty.info.expired')} />
-                    )}
-                </div>
-            ) : null}
+            <ExpiryDate bounty={bounty} className={classes.spacing} />
             {bounty.status === BountyStatus.PendingPayout ? (
                 <div className={classes.spacing}>
                     <Label label={t('bounty.info.unlockDate')} />
@@ -127,7 +120,7 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
                 <Label label={t('bounty.info.onChainDescription')} />
                 <ShortText text={bounty.blockchainDescription} placeholder={t('bounty.info.onChainDescription')} />
             </div>
-            <PolkassemblyDescription polkassemblyPostDto={bounty.polkassembly} initialShow={!bounty.description}/>
+            <PolkassemblyDescription polkassemblyPostDto={bounty.polkassembly} initialShow={!bounty.description} />
         </div>
     )
 }

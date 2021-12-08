@@ -22,11 +22,9 @@ const AwardMenuItem = ({ bounty }: AwardMenuItemProps) => {
     }
 
     return (
-        <>
-            <MenuItem key={'Award'} onClick={onClick} disabled={!canAward}>
-                {t('bounty.header.award')}
-            </MenuItem>
-        </>
+        <MenuItem key={'Award'} onClick={onClick} disabled={!canAward}>
+            {t('bounty.header.award')}
+        </MenuItem>
     )
 }
 

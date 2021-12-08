@@ -7,7 +7,7 @@ import {
 import { BountyEntity } from '../entities/bounty.entity'
 import { BlockchainTimeLeft } from '../../blockchain/dto/blockchain-time-left.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { PolkassemblyPostDto } from '../../polkassembly/polkassembly-post.dto'
+import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
 
 export class BountyDto {
     @ApiProperty({
@@ -97,11 +97,15 @@ export class BountyDto {
 
     @ApiPropertyOptional({
         description: 'Bounty data kept in polkassembly server',
-        type: PolkassemblyPostDto
+        type: PolkassemblyPostDto,
     })
     polkassembly?: Nil<PolkassemblyPostDto>
 
-    constructor(bountyBlockchain: BlockchainBountyDto, bountyEntity: Nil<BountyEntity>, bountyPolkassemblyPost: Nil<PolkassemblyPostDto>) {
+    constructor(
+        bountyBlockchain: BlockchainBountyDto,
+        bountyEntity: Nil<BountyEntity>,
+        bountyPolkassemblyPost: Nil<PolkassemblyPostDto>,
+    ) {
         this.id = bountyEntity?.id
         this.blockchainIndex = bountyBlockchain.index
         this.blockchainDescription = bountyBlockchain.description

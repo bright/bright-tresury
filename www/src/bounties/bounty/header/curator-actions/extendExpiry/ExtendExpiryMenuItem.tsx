@@ -22,11 +22,9 @@ const ExtendExpiryMenuItem = ({ bounty }: ExtendExpiryMenuItemProps) => {
     }
 
     return (
-        <>
-            <MenuItem key={'ExtendExpiry'} onClick={onClick} disabled={!canExtendExpiry}>
-                {t('bounty.header.extendExpiry')}
-            </MenuItem>
-        </>
+        <MenuItem key={'ExtendExpiry'} onClick={onClick} disabled={!canExtendExpiry}>
+            {t('bounty.header.extendExpiry')}
+        </MenuItem>
     )
 }
 

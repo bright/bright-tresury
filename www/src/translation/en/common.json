@@ -617,6 +617,7 @@
             "proposedCurator": "Proposed curator",
             "expiryDate": "Expires in",
             "expired": "Bounty has expired!",
+            "lastExtended": "Last extended on",
             "unlockDate": "Payout unlocks in",
             "payoutUnlocked": "The bounty payout is unlocked!",
             "beneficiary": "Beneficiary",

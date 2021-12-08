@@ -13,3 +13,7 @@ export function timeToString({ days, hours, minutes, seconds }: Time, t: TFuncti
         .slice(0, 2)
         .join(' ')
 }
+
+export function dateToString(date: Date): string {
+    return date.toLocaleString()
+}

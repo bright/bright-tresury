@@ -1,8 +1,8 @@
 import { gql } from 'graphql-request'
 
 export const TreasuryProposalPost = gql`
-query TreasuryProposalPost ($id:Int!) {
-        posts(where: {onchain_link: {onchain_treasury_proposal_id: {_eq: $id}}}) {
+    query TreasuryProposalPost($id: Int!) {
+        posts(where: { onchain_link: { onchain_treasury_proposal_id: { _eq: $id } } }) {
             content
             id
             title
@@ -10,11 +10,11 @@ query TreasuryProposalPost ($id:Int!) {
                 onchain_treasury_proposal_id
             }
         }
-}
+    }
 `
 export const TreasuryProposalPosts = gql`
-query TreasuryProposalPosts ($ids:[Int!]) {
-        posts(where: {onchain_link: {onchain_treasury_proposal_id: {_in: $ids}}}) {
+    query TreasuryProposalPosts($ids: [Int!]) {
+        posts(where: { onchain_link: { onchain_treasury_proposal_id: { _in: $ids } } }) {
             content
             id
             title
@@ -22,24 +22,33 @@ query TreasuryProposalPosts ($ids:[Int!]) {
                 onchain_treasury_proposal_id
             }
         }
-}
+    }
 `
-// TODO: add polkassembly.service implementations for those blockchain-bounties query fragments
+
 export const BountyPost = gql`
-    query BountyPostAndComments ($id: Int!) {
-        posts(where: {onchain_link: {onchain_bounty_id: {_eq: $id}}}) {
+    query BountyPostAndComments($id: Int!) {
+        posts(where: { onchain_link: { onchain_bounty_id: { _eq: $id } } }) {
             title
             content
             onchain_link {
                 onchain_bounty_id
+                onchain_bounty {
+                    bountyStatus {
+                        status
+                        blockNumber {
+                            number
+                            startDateTime
+                        }
+                    }
+                }
             }
         }
     }
-`;
+`
 
 export const BountyPosts = gql`
-    query BountyPostAndComments ($ids:[Int!]) {
-        posts(where: {onchain_link: {onchain_bounty_id: {_in: $ids}}}) {
+    query BountyPostAndComments($ids: [Int!]) {
+        posts(where: { onchain_link: { onchain_bounty_id: { _in: $ids } } }) {
             title
             content
             onchain_link {
@@ -47,4 +56,4 @@ export const BountyPosts = gql`
             }
         }
     }
-`;
+`

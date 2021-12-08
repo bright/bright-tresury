@@ -9,7 +9,7 @@ const ExtendRemarkField = () => {
             name="remark"
             placeholder={t('bounty.form.fields.extendRemark')}
             label={t('bounty.form.fields.extendRemark')}
-            // description={t('bounty.form.fields.extendRemarkDescription')}
+            description={t('bounty.form.fields.extendRemarkDescription')}
         />
     )
 }

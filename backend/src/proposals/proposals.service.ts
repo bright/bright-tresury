@@ -16,8 +16,7 @@ import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-w
 import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
-import { PolkassemblyPostDto } from '../polkassembly/polkassembly-post.dto'
-
+import { PolkassemblyPostDto } from '../polkassembly/dto/polkassembly-post.dto'
 
 const logger = getLogger()
 
@@ -54,12 +53,16 @@ export class ProposalsService {
                     where: { blockchainProposalId: In(indexes), networkId },
                     relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
                 }),
-                this.polkassemblyService.getProposals(indexes, networkId)
+                this.polkassemblyService.getProposals(indexes, networkId),
             ])
 
             return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
-                const proposal = postgresProposals.find((p) => p.blockchainProposalId === blockchainProposal.proposalIndex)
-                const polkassemblyProposal = polkassemblyProposals.find((pp: PolkassemblyPostDto) => pp.blockchainIndex === blockchainProposal.proposalIndex)
+                const proposal = postgresProposals.find(
+                    (p) => p.blockchainProposalId === blockchainProposal.proposalIndex,
+                )
+                const polkassemblyProposal = polkassemblyProposals.find(
+                    (pp: PolkassemblyPostDto) => pp.blockchainIndex === blockchainProposal.proposalIndex,
+                )
                 return this.mergeProposal(blockchainProposal, proposal, polkassemblyProposal)
             })
         } catch (err) {
@@ -83,7 +86,7 @@ export class ProposalsService {
                 where: { blockchainProposalId, networkId },
                 relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
             }),
-            this.polkassemblyService.getProposal(blockchainProposalId, networkId)
+            this.polkassemblyService.getProposal(blockchainProposalId, networkId),
         ])
 
         return this.mergeProposal(blockchainProposal, postgresProposal, polkassemblyProposal)
@@ -92,7 +95,7 @@ export class ProposalsService {
     mergeProposal(
         blockchainProposal: BlockchainProposal,
         proposalEntity: Nil<ProposalEntity>,
-        polkassemblyProposal?: Nil<PolkassemblyPostDto>
+        polkassemblyProposal?: Nil<PolkassemblyPostDto>,
     ): BlockchainProposalWithDomainDetails {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const ideaId = proposalEntity?.ideaNetwork?.ideaId ?? milestone?.ideaId
