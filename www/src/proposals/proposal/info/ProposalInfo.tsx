@@ -1,15 +1,18 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React, { useState } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { generatePath, useHistory } from 'react-router-dom'
+import FormFooterButton from '../../../components/form/footer/FormFooterButton'
+import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import PolkassemblyDescription from '../../../components/polkassemblyDescription/PolkassemblyDescription'
 import { Label } from '../../../components/text/Label'
+import IdeaProposalDetails from '../../../idea-proposal-details/details/IdeaProposalDetails'
+import { ROUTE_EDIT_PROPOSAL } from '../../../routes/routes'
 import { ProposalDto } from '../../proposals.dto'
 import { useProposal } from '../useProposals'
-import ProposalDetails from './details/ProposalDetails'
-import AddProposalDetails from './form/AddProposalDetails'
-import EditProposalDetails from './form/EditProposalDetails'
-import PolkassemblyDescription from '../../../components/polkassemblyDescription/PolkassemblyDescription'
+import NoProposalDetails from './details/NoProposalDetails'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -18,11 +21,11 @@ const useStyles = makeStyles(() =>
         },
 
         markdownImg: {
-            width: '100%'
+            width: '100%',
         },
         polkassemblyButton: {
-            marginTop: '2em'
-        }
+            marginTop: '2em',
+        },
     }),
 )
 
@@ -38,26 +41,33 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary, polkassembly }, propo
 
     const { t } = useTranslation()
     const { canEdit } = useProposal(proposal)
+    const history = useHistory()
 
-    const renderDetails = () => {
-        if (!canEdit) {
-            return <ProposalDetails proposal={proposal} />
-        }
-        if (!proposal.details) {
-            return <AddProposalDetails proposal={proposal} />
-        } else {
-            return <EditProposalDetails proposal={proposal} />
-        }
+    const navigateToEdit = () => {
+        history.push(generatePath(ROUTE_EDIT_PROPOSAL, { proposalIndex: proposal.proposalIndex }))
     }
 
     return (
         <div className={successfullyLoadedItemClasses.content}>
-            <Label label={t('proposal.content.info.proposer')} />
+            {canEdit ? (
+                <FormFooterButtonsContainer>
+                    {proposal.details ? (
+                        <FormFooterButton onClick={navigateToEdit}>{t('proposal.details.edit')}</FormFooterButton>
+                    ) : (
+                        <FormFooterButton onClick={navigateToEdit}>{t('proposal.details.add')}</FormFooterButton>
+                    )}
+                </FormFooterButtonsContainer>
+            ) : null}
+            <Label label={t('proposal.details.proposer')} />
             <AddressInfo address={proposer.address} ellipsed={false} />
-            <Label className={classes.spacer} label={t('proposal.content.info.beneficiary')} />
+            <Label className={classes.spacer} label={t('proposal.details.beneficiary')} />
             <AddressInfo address={beneficiary.address} ellipsed={false} />
-            {renderDetails()}
-            <PolkassemblyDescription polkassemblyPostDto={polkassembly} initialShow={!proposal.details}/>
+            {proposal.details ? (
+                <IdeaProposalDetails details={proposal.details} />
+            ) : (
+                <NoProposalDetails proposal={proposal} />
+            )}
+            <PolkassemblyDescription polkassemblyPostDto={polkassembly} initialShow={!proposal.details} />
         </div>
     )
 }

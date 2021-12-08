@@ -1,6 +1,6 @@
 {
-    "apiUrl": "https://treasury.brightinventions.pl:3000",
-    "websiteUrl": "https://treasury.brightinventions.pl",
+    "apiUrl": "https://treasury.bright.dev:3000",
+    "websiteUrl": "https://treasury.bright.dev",
     "port": 3000,
     "blockchain": [
         {
