@@ -18,13 +18,12 @@ const PrivateIdeaContentTypeTabs = ({ userId, ideaId, ideaTabsConfig }: PrivateI
         pageSize: 100,
         pageNumber: 1,
     })
-    ideaTabsConfig = ideaTabsConfig.map(ideaTabConfig => {
-        if (ideaTabConfig.ideaContentType !== IdeaContentType.Discussion)
-            return ideaTabConfig
-        return {...ideaTabConfig, notificationsCount: data?.total}
+    const mappedIdeaTabsConfig = ideaTabsConfig.map((ideaTabConfig) => {
+        if (ideaTabConfig.ideaContentType !== IdeaContentType.Discussion) return ideaTabConfig
+        return { ...ideaTabConfig, notificationsCount: data?.total }
     })
 
-    return <IdeaContentTypeTabs ideaTabsConfig={ideaTabsConfig} />
+    return <IdeaContentTypeTabs ideaTabsConfig={mappedIdeaTabsConfig} />
 }
 
 export default PrivateIdeaContentTypeTabs

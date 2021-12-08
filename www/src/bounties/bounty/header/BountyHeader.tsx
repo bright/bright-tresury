@@ -2,6 +2,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
+import { useAuth } from '../../../auth/AuthContext'
 import BasicInfo from '../../../components/header/BasicInfo'
 import ActionButtons from '../../../components/header/details/ActionButtons'
 import BasicInfoDivider from '../../../components/header/details/BasicInfoDivider'
@@ -18,6 +19,7 @@ import BountyNetworkRewardDeposit from '../../components/BountyNetworkRewardDepo
 import BountyStatusIndicator from '../../components/BountyStatusIndicator'
 import { BountyTabConfig } from '../Bounty'
 import BountyContentTypeTabs from '../BountyContentTypeTabs'
+import PrivateBountyContentTypeTabs from '../PrivateBountyContentTypeTabs'
 import BountyActionButtons from './curator-actions/BountyActionButtons'
 import { useBounty } from '../useBounty'
 import BountyOptionsButton from './options-menu/BountyOptionsButton'
@@ -69,6 +71,7 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
     const { t } = useTranslation()
     const history = useHistory()
     const { isProposer, isCurator } = useBounty(bounty)
+    const { user } = useAuth()
 
     const navigateToList = () => {
         history.goBack()
@@ -89,7 +92,15 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
             </NetworkValues>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
-                <BountyContentTypeTabs bountyTabsConfig={bountyTabsConfig} />
+                {user ? (
+                    <PrivateBountyContentTypeTabs
+                        bountyTabsConfig={bountyTabsConfig}
+                        userId={user.id}
+                        bountyIndex={bounty.blockchainIndex}
+                    />
+                ) : (
+                    <BountyContentTypeTabs bountyTabsConfig={bountyTabsConfig} />
+                )}
             </HeaderTabs>
             <ActionButtons className={classes.actionButtons}>
                 <BountyActionButtons bounty={bounty} />

@@ -5,10 +5,8 @@ import { getLogger } from '../logging.module'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
 import { isNil, Nil } from '../utils/types'
-import { NewIdeaCommentDto } from './app-event-types/idea-comment/new-idea-comment.dto'
-import { NewProposalCommentDto } from './app-event-types/proposal-comment/new-proposal-comment.dto'
 import { AppEventReceiverEntity } from './entities/app-event-receiver.entity'
-import { AppEventType } from './entities/app-event-type'
+import { AppEventData, AppEventType } from './entities/app-event-type'
 import { AppEventEntity } from './entities/app-event.entity'
 
 const logger = getLogger()
@@ -68,7 +66,7 @@ export class AppEventsService {
         return query
     }
 
-    async create(data: NewIdeaCommentDto | NewProposalCommentDto, userIds: string[]): Promise<AppEventEntity> {
+    async create(data: AppEventData, userIds: string[]): Promise<AppEventEntity> {
         logger.info('Creating new event...', data, userIds)
         const receivers = userIds.map((userId) => this.appEventReceiverRepository.create({ userId }))
 

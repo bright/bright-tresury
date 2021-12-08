@@ -32,21 +32,23 @@ export type TabsProps = OwnProps
 const Tabs = ({ values, searchParamName }: TabsProps) => {
     const classes = useStyles()
     return (
-        <div className={classes.root}>
-            {values
-                ? values.map(({ label, path, svg, isDefault, filterName, notificationsCount }) => (
-                      <TabLabel
-                          key={label}
-                          isDefault={isDefault}
-                          label={label}
-                          svg={svg}
-                          path={path}
-                          filterName={filterName}
-                          searchParamName={searchParamName}
-                          notificationsCount={notificationsCount}
-                      />
-                  ))
-                : null}
+        <div>
+            <div className={classes.root}>
+                {values
+                    ? values.map(({ label, path, svg, isDefault, filterName, notificationsCount }) => (
+                          <TabLabel
+                              key={label}
+                              isDefault={isDefault}
+                              label={label}
+                              svg={svg}
+                              path={path}
+                              filterName={filterName}
+                              searchParamName={searchParamName}
+                              notificationsCount={notificationsCount}
+                          />
+                      ))
+                    : null}
+            </div>
         </div>
     )
 }

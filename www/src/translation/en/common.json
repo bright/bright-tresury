@@ -46,6 +46,10 @@
         "fold": {
             "showAll": "Show all information",
             "showLess": "Show less information"
+        },
+        "web3AddressInput": {
+            "description": "Web3 account address needs to be encoded in the network acceptable format",
+            "wrongWeb3AddressError": "Please provide the address in the network acceptable format"
         }
     },
     "networks": {
@@ -85,6 +89,11 @@
                     "title": "Proposal Discussion",
                     "goTo": "Go to Discussion",
                     "description": "There are new messages in the proposal discussion"
+                },
+                "bountyDiscussion": {
+                    "title": "Bounty Discussion",
+                    "goTo": "Go to Discussion",
+                    "description": "There are new messages in the bounty discussion"
                 }
             }
         }
@@ -276,7 +285,6 @@
             "form": {
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
-                "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
                 "networks": {
                     "reward": "Reward",
                     "bond": {
@@ -364,7 +372,6 @@
                 "editMilestone": "Edit Milestone",
                 "form": {
                     "emptyFieldError": "This field cannot be empty",
-                    "wrongBeneficiaryAddressError": "Wrong beneficiary address (please provide encoded address)",
                     "nonZeroFieldError": "The value must be greater than zero",
                     "valueCannotBeLessThanZero": "The value cannot be less than zero",
                     "beneficiary": "Beneficiary",
@@ -554,7 +561,6 @@
             "emptyFieldError": "This field cannot be empty",
             "minValueError": "The value must be at least {{value}}",
             "maxBlockchainDescriptionLength": "The on-chain description is too long",
-            "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
             "fields": {
                 "title": "Title",
                 "field": "Field of bounty",

@@ -66,6 +66,7 @@ const IdeaMilestoneFormFields = ({
                 name="beneficiary"
                 label={t(`${translationKeyPrefix}.beneficiary`)}
                 placeholder={t(`${translationKeyPrefix}.beneficiary`)}
+                description={t('form.web3AddressInput.description')}
                 disabled={!canEdit}
                 textFieldColorScheme={TextFieldColorScheme.Dark}
             />

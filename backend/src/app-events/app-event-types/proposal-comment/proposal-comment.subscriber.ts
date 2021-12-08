@@ -67,7 +67,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Prop
 
         // add idea owner
         if (proposal.entity) {
-            const ownerId = receiverIds.push(proposal.entity.ownerId)
+            receiverIds.push(proposal.entity.ownerId)
         }
 
         // add proposer
