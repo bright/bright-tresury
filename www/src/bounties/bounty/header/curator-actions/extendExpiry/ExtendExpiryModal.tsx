@@ -4,22 +4,25 @@ import { generatePath, useHistory } from 'react-router-dom'
 import Modal from '../../../../../components/modal/Modal'
 import Strong from '../../../../../components/strong/Strong'
 import { ROUTE_BOUNTY } from '../../../../../routes/routes'
+import { useSnackNotifications } from '../../../../../snack-notifications/useSnackNotifications'
 import SubmittingTransaction from '../../../../../substrate-lib/components/SubmittingTransaction'
 
 interface OwnProps {
     open: boolean
     onClose: () => void
-    beneficiary: string
     blockchainIndex: number
+    remark: string
 }
 
-export type AwardModalProps = OwnProps
+export type ExtendExpiryModalProps = OwnProps
 
-const AwardModal = ({ open, onClose, beneficiary, blockchainIndex }: AwardModalProps) => {
+const ExtendExpiryModal = ({ open, onClose, blockchainIndex, remark }: ExtendExpiryModalProps) => {
     const { t } = useTranslation()
     const history = useHistory()
+    const snackNotifications = useSnackNotifications()
 
     const onSuccess = async () => {
+        snackNotifications.open(t('bounty.info.curatorActions.extendExpiry.successMessage'))
         history.push(generatePath(ROUTE_BOUNTY, { bountyIndex: blockchainIndex }))
     }
 
@@ -33,14 +36,11 @@ const AwardModal = ({ open, onClose, beneficiary, blockchainIndex }: AwardModalP
             maxWidth={'sm'}
         >
             <SubmittingTransaction
-                title={t('bounty.info.curatorActions.awardModal.title')}
+                title={t('bounty.info.curatorActions.extendExpiry.title')}
                 instruction={
                     <Trans
                         id="modal-description"
-                        i18nKey="bounty.info.curatorActions.awardModal.warningMessage"
-                        values={{
-                            beneficiary: beneficiary,
-                        }}
+                        i18nKey="bounty.info.curatorActions.extendExpiry.warningMessage"
                         components={{
                             strong: <Strong color={'primary'} />,
                         }}
@@ -50,17 +50,17 @@ const AwardModal = ({ open, onClose, beneficiary, blockchainIndex }: AwardModalP
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'bounties',
-                    callable: 'awardBounty',
-                    eventMethod: 'BountyAwarded',
-                    eventDescription: t('bounty.info.curatorActions.awardModal.eventDescription'),
+                    callable: 'extendBountyExpiry',
+                    eventMethod: 'BountyExtended',
+                    eventDescription: t('bounty.info.curatorActions.extendExpiry.eventDescription'),
                     inputParams: [
                         {
                             name: 'bountyId',
                             value: blockchainIndex.toString(),
                         },
                         {
-                            name: 'beneficiary',
-                            value: beneficiary,
+                            name: 'remark',
+                            value: remark,
                         },
                     ],
                 }}
@@ -69,4 +69,4 @@ const AwardModal = ({ open, onClose, beneficiary, blockchainIndex }: AwardModalP
     )
 }
 
-export default AwardModal
+export default ExtendExpiryModal

@@ -8,6 +8,8 @@ import { useMenu } from '../../../../hook/useMenu'
 import { ROUTE_AWARD_BOUNTY, ROUTE_EDIT_BOUNTY } from '../../../../routes/routes'
 import { BountyDto, BountyStatus } from '../../../bounties.dto'
 import { useBounty } from '../../useBounty'
+import AwardMenuItem from '../curator-actions/award/AwardMenuItem'
+import ExtendExpiryMenuItem from '../curator-actions/extendExpiry/ExtendExpiryMenuItem'
 import CuratorRejectMenuItem from '../curator-actions/reject/CuratorRejectMenuItem'
 
 interface OwnProps {
@@ -20,14 +22,10 @@ const BountyOptionsButton = ({ className, bounty }: BountyOptionsButtonProps) =>
     const { t } = useTranslation()
     const history = useHistory()
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
-    const { canEdit, canAward, canReject } = useBounty(bounty)
+    const { canEdit, canReject } = useBounty(bounty)
 
     const onEditClick = () => {
         history.push(generatePath(ROUTE_EDIT_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
-    }
-
-    const onAwardClick = () => {
-        history.push(generatePath(ROUTE_AWARD_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
     }
 
     return (
@@ -42,9 +40,8 @@ const BountyOptionsButton = ({ className, bounty }: BountyOptionsButtonProps) =>
                 <MenuItem key={'Edit'} onClick={onEditClick} disabled={!canEdit}>
                     {t('bounty.header.edit')}
                 </MenuItem>
-                <MenuItem key={'Award'} onClick={onAwardClick} disabled={!canAward}>
-                    {t('bounty.header.award')}
-                </MenuItem>
+                <AwardMenuItem bounty={bounty} />
+                <ExtendExpiryMenuItem bounty={bounty} />
                 {canReject && bounty.status !== BountyStatus.CuratorProposed ? (
                     <CuratorRejectMenuItem bounty={bounty} />
                 ) : null}

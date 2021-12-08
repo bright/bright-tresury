@@ -20,7 +20,7 @@ const CuratorRejectMenuItem = ({ bounty }: CuratorRejectMenuItemProps) => {
     return (
         <>
             <MenuItem key={'Reject'} onClick={open} disabled={!canReject}>
-                {t('bounty.header.reject')}
+                {t('bounty.header.rejectCuratorRole')}
             </MenuItem>
             <RejectCuratorModal open={visible} onClose={close} bounty={bounty} />
         </>

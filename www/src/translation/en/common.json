@@ -580,6 +580,8 @@
                 "blockchainDescription": "Description - this description is stored on chain (the bond will increase for each byte of this description)",
                 "description": "Description",
                 "beneficiary": "Beneficiary",
+                "extendRemark": "Remark",
+                "extendRemarkDescription": "Explain why you need to extend the expiry date. This information will be included in a transaction (but not stored on-chain)",
                 "fieldOptions": {
                     "optimisation": "Optimisation",
                     "treasury": "Treasury",
@@ -596,7 +598,9 @@
         "header": {
             "accept": "Accept",
             "reject": "Reject",
+            "rejectCuratorRole": "Reject curator role",
             "claimPayout": "Claim Payout",
+            "extendExpiry": "Extend expiry date",
             "edit": "Edit bounty",
             "award": "Award bounty"
         },
@@ -638,6 +642,12 @@
                     "title": "You are about to award the bounty",
                     "warningMessage": "You will now award the bounty to: <strong>{{beneficiary}}</strong><br/> Please notice that you will not be able to change the beneficiary address once chosen.",
                     "eventDescription": "event bounty awarded finished"
+                },
+                "extendExpiry": {
+                    "title": "You are about to extend the bounty",
+                    "warningMessage": "The expiry date will be extended. The remark will be included in a transaction, but not stored on-chain. Make sure to choose the curator account to sign this transaction.",
+                    "eventDescription": "event bounty extended finished",
+                    "successMessage": "The bounty expiry date has been extended"
                 }
             }
         },
@@ -661,6 +671,11 @@
             "cannotAwardBounty": "You cannot award this bounty",
             "title": "Award bounty",
             "save": "Award"
+        },
+        "extendExpiry": {
+            "cannotExtendExpiry": "You cannot extend expiry date of this bounty",
+            "title": "Extend expiry date",
+            "save": "Submit"
         }
     },
     "ideaProposalDetails": {

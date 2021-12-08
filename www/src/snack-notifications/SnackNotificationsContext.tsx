@@ -4,9 +4,8 @@ import { useModal } from '../components/modal/useModal'
 
 interface State {
     visible: boolean
-    open: () => void
+    open: (label: string) => void
     close: () => void
-    setLabel: (label: string) => void
 }
 
 export const SnackNotificationsContext = React.createContext<State | undefined>(undefined)
@@ -19,8 +18,13 @@ const SnackNotificationsContextProvider = ({ children }: SnackNotificationsConte
     const { visible, open, close } = useModal()
     const [label, setLabel] = useState('')
 
+    const setLabelAndOpen = (label: string) => {
+        setLabel(label)
+        open()
+    }
+
     return (
-        <SnackNotificationsContext.Provider value={{ visible, open, close, setLabel }}>
+        <SnackNotificationsContext.Provider value={{ visible, open: setLabelAndOpen, close }}>
             {children}
             <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

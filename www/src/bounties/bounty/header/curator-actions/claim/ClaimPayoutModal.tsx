@@ -22,8 +22,7 @@ const ClaimPayoutModal = ({ open, onClose, bounty }: ClaimPayoutModalProps) => {
     const snackNotifications = useSnackNotifications()
 
     const onSuccess = async () => {
-        snackNotifications.setLabel(t('bounty.info.curatorActions.claimPayoutModal.successMessage'))
-        snackNotifications.open()
+        snackNotifications.open(t('bounty.info.curatorActions.claimPayoutModal.successMessage'))
         history.push(ROUTE_BOUNTIES)
     }
 

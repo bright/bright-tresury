@@ -17,6 +17,7 @@ export interface UseBountyEditResult {
     initialValues: BountyEditFormValues
     validationSchema: any
     beneficiaryValidationSchema: any
+    remarkValidationSchema: any
     patchParams: (formValues: BountyEditFormValues) => PatchBountyParams
 }
 
@@ -26,15 +27,17 @@ export const useBountyEdit = (bounty: BountyDto): UseBountyEditResult => {
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('bounty.form.emptyFieldError')),
-        beneficiary: Yup.string(),
+        beneficiary: Yup.string().test('validate-address', t('form.web3AddressInput.wrongWeb3AddressError'), (address) => {
+            return isValidAddressOrEmpty(address, network.ss58Format)
+        }),
     })
 
     const beneficiaryValidationSchema = Yup.object({
-        beneficiary: Yup.string()
-            .required(t('bounty.form.emptyFieldError'))
-            .test('validate-address', t('form.web3AddressInput.wrongWeb3AddressError'), (address) => {
-                return isValidAddressOrEmpty(address, network.ss58Format)
-            }),
+        beneficiary: Yup.string().required(t('bounty.form.emptyFieldError')),
+    })
+
+    const remarkValidationSchema = Yup.object({
+        remark: Yup.string().required(t('bounty.form.emptyFieldError')),
     })
 
     const initialValues: BountyEditFormValues = {
@@ -54,6 +57,7 @@ export const useBountyEdit = (bounty: BountyDto): UseBountyEditResult => {
     return {
         validationSchema,
         beneficiaryValidationSchema,
+        remarkValidationSchema,
         initialValues,
         patchParams,
     }

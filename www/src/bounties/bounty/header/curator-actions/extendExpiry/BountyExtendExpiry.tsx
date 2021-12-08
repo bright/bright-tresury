@@ -5,56 +5,57 @@ import FormFooterButton from '../../../../../components/form/footer/FormFooterBu
 import FormFooterButtonsContainer from '../../../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterErrorBox from '../../../../../components/form/footer/FormFooterErrorBox'
 import { useModal } from '../../../../../components/modal/useModal'
+import { Nil } from '../../../../../util/types'
 import { PatchBountyParams, usePatchBounty } from '../../../../bounties.api'
 import { BountyDto } from '../../../../bounties.dto'
 import { useBounty } from '../../../useBounty'
-import AwardModal from './AwardModal'
-import BountyAwardForm from './form/BountyAwardForm'
+import ExtendExpiryModal from './ExtendExpiryModal'
+import BountyExtendExpiryForm from './form/BountyExtendExpiryForm'
 
 interface OwnProps {
     bounty: BountyDto
 }
 
-export type BountyAwardProps = OwnProps
+export type BountyExtendExpiryProps = OwnProps
 
-const BountyAward = ({ bounty }: BountyAwardProps) => {
+const BountyExtendExpiry = ({ bounty }: BountyExtendExpiryProps) => {
     const { t } = useTranslation()
     const { mutateAsync, isError, isLoading } = usePatchBounty()
-    const [beneficiary, setBeneficiary] = useState(bounty.beneficiary?.address)
-    const { canAward, hasDetails } = useBounty(bounty)
+    const [remark, setRemark] = useState<Nil<string>>()
+    const { canExtendExpiry, hasDetails } = useBounty(bounty)
     const { visible, open, close } = useModal()
 
-    const submit = async (params: PatchBountyParams) => {
+    const submit = async (params: PatchBountyParams, remark: string) => {
         if (hasDetails) {
             await mutateAsync(params, {})
         }
-        setBeneficiary(params.data.beneficiary)
+        setRemark(remark)
         open()
     }
 
-    if (!canAward) {
-        return <Container error={t('bounty.award.cannotEditBounty')} />
+    if (!canExtendExpiry) {
+        return <Container error={t('bounty.extendExpiry.cannotExtendExpiry')} />
     }
 
     return (
-        <Container title={t('bounty.award.title')}>
-            <BountyAwardForm bounty={bounty} onSubmit={submit}>
+        <Container title={t('bounty.extendExpiry.title')}>
+            <BountyExtendExpiryForm bounty={bounty} onSubmit={submit}>
                 {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
                 <FormFooterButtonsContainer>
                     <FormFooterButton type={'submit'} variant={'contained'} disabled={isLoading}>
-                        {t('bounty.award.save')}
+                        {t('bounty.extendExpiry.save')}
                     </FormFooterButton>
                 </FormFooterButtonsContainer>
-            </BountyAwardForm>
-            {beneficiary ? (
-                <AwardModal
+            </BountyExtendExpiryForm>
+            {remark ? (
+                <ExtendExpiryModal
                     open={visible}
                     onClose={close}
-                    beneficiary={beneficiary}
+                    remark={remark}
                     blockchainIndex={bounty.blockchainIndex}
                 />
             ) : null}
         </Container>
     )
 }
-export default BountyAward
+export default BountyExtendExpiry

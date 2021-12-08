@@ -156,11 +156,11 @@ const bountiesProposeCurator = async (api, bountyIndex) => {
  * Propose a curator and accept it for a funded bounty
  * @param api
  */
-const bountiesProposeCuratorAndVote = async (api, bountyIndex) => {
+const bountiesProposeCuratorAndVote = async (api, bountyIndex, curator) => {
     const { DAVE } = getDevAccounts()
     console.log('Propose dave as a curator')
 
-    const call = api.tx.bounties.proposeCurator(bountyIndex, DAVE.address, '125000000000')
+    const call = api.tx.bounties.proposeCurator(bountyIndex, curator ?? DAVE.address, '125000000000')
     await createMotionVoteAndClose(api, call)
 }
 
@@ -240,9 +240,7 @@ const bountiesProposeAndAcceptVeryExpensive = async (api) => {
     } else if (args[0] === 'funded') {
         await bountiesProposeAndAccept(polkadot, args[1] ?? 'title')
     } else if (args[0] === 'curatorProposed') {
-        await bountiesProposeCuratorAndVote(polkadot, args[1] ?? 0)
-    } else if (args[0] === 'curatorProposed') {
-        await bountiesProposeCuratorAndVote(polkadot, args[1] ?? 0)
+        await bountiesProposeCuratorAndVote(polkadot, args[1] ?? 0, args[2])
     } else if (args[0] === 'active') {
         const index = args[1] ?? 0
         await bountiesProposeCuratorAndVote(polkadot, index)
