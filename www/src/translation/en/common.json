@@ -111,7 +111,7 @@
     "account": {
         "title": "Account",
         "emailPassword": {
-            "username": "Username",
+            "username": "Displayed name",
             "login": "Login",
             "resetPassword": "ResetPassword",
             "addEmailCredentials": "Add Email Credentials",
@@ -169,12 +169,12 @@
             "emailSignUp": {
                 "form": {
                     "username": {
-                        "label": "Username",
-                        "placeholder": "Enter your username"
+                        "label": "Displayed name",
+                        "placeholder": "Enter your username to be displayed"
                     },
                     "login": {
-                        "label": "Login",
-                        "placeholder": "Enter your email",
+                        "label": "Login (email address)",
+                        "placeholder": "Enter your email address",
                         "emailError": "Please see if your email address is correct"
                     },
                     "password": {
