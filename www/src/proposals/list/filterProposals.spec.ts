@@ -33,26 +33,6 @@ describe('filter proposals', () => {
 
         expect(filterProposals(proposals, ProposalFilter.Submitted)).toStrictEqual([proposals[1], proposals[3]])
     })
-    test('filter proposals by rejected', () => {
-        const proposals = [
-            createProposal(ProposalStatus.Approved),
-            createProposal(ProposalStatus.Submitted),
-            createProposal(ProposalStatus.Rejected),
-            createProposal(ProposalStatus.Rejected),
-        ]
-
-        expect(filterProposals(proposals, ProposalFilter.Rejected)).toStrictEqual([proposals[2], proposals[3]])
-    })
-    test('filter proposals by rewarded', () => {
-        const proposals = [
-            createProposal(ProposalStatus.Approved),
-            createProposal(ProposalStatus.Rewarded),
-            createProposal(ProposalStatus.Rewarded),
-            createProposal(ProposalStatus.Rejected),
-        ]
-
-        expect(filterProposals(proposals, ProposalFilter.Rewarded)).toStrictEqual([proposals[1], proposals[2]])
-    })
 })
 
 function createProposal(status: ProposalStatus, ownerId?: string, proposerAddress?: string): ProposalDto {
@@ -73,6 +53,7 @@ describe(`filter by ${ProposalFilter.Mine}`, () => {
         isWeb3: true,
         web3Addresses: [
             {
+                encodedAddress: '1H6V3BJ6r1wU8BScdT4NwmmXCXAQFSqRCMDsFsGTpgnjCd47',
                 address: '1H6V3BJ6r1wU8BScdT4NwmmXCXAQFSqRCMDsFsGTpgnjCd47',
                 isPrimary: true,
             },
@@ -88,6 +69,7 @@ describe(`filter by ${ProposalFilter.Mine}`, () => {
         isWeb3: true,
         web3Addresses: [
             {
+                encodedAddress: '1O6V3BJ6r1wU1BScdT4NwwwyYZYWQFSqRCMDsFsGTpgnjCd92',
                 address: '1O6V3BJ6r1wU1BScdT4NwwwyYZYWQFSqRCMDsFsGTpgnjCd92',
                 isPrimary: true,
             },
@@ -135,6 +117,7 @@ describe(`isProposalMadeByUser`, () => {
         isWeb3: true,
         web3Addresses: [
             {
+                encodedAddress: '1H6V3BJ6r1wU8BScdT4NwmmXCXAQFSqRCMDsFsGTpgnjCd47',
                 address: '1H6V3BJ6r1wU8BScdT4NwmmXCXAQFSqRCMDsFsGTpgnjCd47',
                 isPrimary: true,
             },
@@ -150,6 +133,7 @@ describe(`isProposalMadeByUser`, () => {
         isWeb3: true,
         web3Addresses: [
             {
+                encodedAddress: '1O6V3BJ6r1wU1BScdT4NwwwyYZYWQFSqRCMDsFsGTpgnjCd92',
                 address: '1O6V3BJ6r1wU1BScdT4NwwwyYZYWQFSqRCMDsFsGTpgnjCd92',
                 isPrimary: true,
             },

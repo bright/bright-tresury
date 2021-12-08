@@ -69,7 +69,7 @@ describe('/api/v1/users/:userId/app-events/', () => {
                     isRead: true,
                     appEventType: AppEventType.NewIdeaComment,
                 }),
-                { pageSize: 10, pageNumber: 2, offset: 10 },
+                { pageSize: 10, pageNumber: 2 },
             )
         })
 

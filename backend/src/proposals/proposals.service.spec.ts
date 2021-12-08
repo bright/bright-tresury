@@ -12,6 +12,8 @@ import { ProposalsService } from './proposals.service'
 import { mockedBlockchainService, setUpIdea, setUpIdeaWithMilestone } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
 import { NetworkPlanckValue } from '../utils/types'
+import { PaginatedParams } from '../utils/pagination/paginated.param'
+import { TimeFrame } from '../utils/time-frame.query'
 
 describe('ProposalsService', () => {
     const app = beforeSetupFullApp()
@@ -51,7 +53,8 @@ describe('ProposalsService', () => {
             await proposalsService().createFromIdea(idea, 0, ideaNetwork)
             await proposalsService().createFromMilestone(ideaWithMilestone, 1, ideaMilestoneNetwork, ideaMilestone)
 
-            const proposals = await proposalsService().find(NETWORKS.POLKADOT)
+            const paginated = await proposalsService().find(NETWORKS.POLKADOT, TimeFrame.OnChain, new PaginatedParams({}))
+            const proposals = paginated.items
             expect(proposals).toHaveLength(4)
 
             const proposal1 = proposals.find(({ blockchain: { proposalIndex } }) => proposalIndex === 0)

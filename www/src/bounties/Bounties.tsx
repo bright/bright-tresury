@@ -1,15 +1,16 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import BountiesHeader from './BountiesHeader'
-import BountiesList from './list/BountiesList'
-import { useGetBounties } from './bounties.api'
-import { useNetworks } from '../networks/useNetworks'
+import { useLocation } from 'react-router-dom'
+import { BountyDefaultFilter, BountyFilter, BountyFilterSearchParamName } from './list/BountyStatusFilters'
+import { TimeFrame } from '../components/select/TimeSelect'
 import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
-import { useLocation } from 'react-router-dom'
-import { useAuth } from '../auth/AuthContext'
+import { useGetBounties } from './bounties.api'
+import { useNetworks } from '../networks/useNetworks'
 import { filterBounties } from './list/filterBounties'
-import { BountyDefaultFilter, BountyFilter, BountyFilterSearchParamName } from './list/BountyStatusFilters'
+import BountiesList from './list/BountiesList'
+import LoadMore from '../components/loadMore/LoadMore'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -22,11 +23,21 @@ const useStyles = makeStyles(() =>
 const Bounties = () => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { network } = useNetworks()
     const { search } = useLocation()
-    const { user } = useAuth()
+    const { network } = useNetworks()
 
-    const { status, data: bounties, refetch } = useGetBounties(network.id)
+    const [timeFrame, setTimeFrame] = useState(TimeFrame.OnChain)
+
+    const onTimeFrameChange = (newTimeFrame: TimeFrame) => {
+        remove()
+        setTimeFrame(newTimeFrame)
+    }
+
+    const { status, data, remove, isLoading, fetchNextPage } = useGetBounties(network.id, timeFrame)
+
+    const bounties = data?.pages.map(page => page.items).flat() ?? []
+    const total = data?.pages[0].total ?? 0
+    const canLoadMore = bounties.length < total
 
     const selectedFilter = useMemo(() => {
         const filterParam = new URLSearchParams(search).get(BountyFilterSearchParamName)
@@ -35,18 +46,23 @@ const Bounties = () => {
 
     const filteredBounties = useMemo(() => {
         return bounties ? filterBounties(bounties, selectedFilter) : []
-    }, [bounties, selectedFilter, user])
-
+    }, [selectedFilter, bounties])
+    const isCurrentSpendPeriod = timeFrame === TimeFrame.OnChain
     return (
         <div className={classes.root}>
-            <BountiesHeader selectedFilter={selectedFilter} />
+            <BountiesHeader selectedFilter={selectedFilter} selectedTimeFrame={timeFrame} onTimeFrameChange={onTimeFrameChange}/>
             <LoadingWrapper
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingBounties')}
                 loadingText={t('loading.bounties')}
             >
-                <BountiesList bounties={filteredBounties} />
             </LoadingWrapper>
+            <BountiesList
+                bounties={isCurrentSpendPeriod ? filteredBounties : bounties}
+                disableCards={!isCurrentSpendPeriod}
+                showStatus={isCurrentSpendPeriod}
+            />
+            { canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
         </div>
     )
 }

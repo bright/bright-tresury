@@ -16,7 +16,10 @@ import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-w
 import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
-import { PolkassemblyPostDto } from '../polkassembly/dto/polkassembly-post.dto'
+import { PaginatedParams } from '../utils/pagination/paginated.param'
+import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
+import { TimeFrame } from '../utils/time-frame.query'
+import { PolkassemblyTreasuryProposalPostDto } from '../polkassembly/dto/treasury-proposal-post.dto'
 
 const logger = getLogger()
 
@@ -38,39 +41,82 @@ export class ProposalsService {
         private readonly polkassemblyService: PolkassemblyService,
     ) {}
 
-    async find(networkId: string): Promise<BlockchainProposalWithDomainDetails[]> {
+    async find(
+        networkId: string,
+        timeFrame: TimeFrame,
+        paginatedParams: PaginatedParams
+    ): Promise<PaginatedResponseDto<BlockchainProposalWithDomainDetails>> {
         try {
-            const blockchainProposals = await this.blockchainService.getProposals(networkId)
-
-            if (blockchainProposals.length === 0) {
-                return []
-            }
-
-            const indexes = blockchainProposals.map(({ proposalIndex }: BlockchainProposal) => proposalIndex)
-
-            const [postgresProposals, polkassemblyProposals] = await Promise.all([
-                this.proposalsRepository.find({
-                    where: { blockchainProposalId: In(indexes), networkId },
-                    relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
-                }),
-                this.polkassemblyService.getProposals(indexes, networkId),
-            ])
-
-            return blockchainProposals.map((blockchainProposal: BlockchainProposal) => {
-                const proposal = postgresProposals.find(
-                    (p) => p.blockchainProposalId === blockchainProposal.proposalIndex,
-                )
-                const polkassemblyProposal = polkassemblyProposals.find(
-                    (pp: PolkassemblyPostDto) => pp.blockchainIndex === blockchainProposal.proposalIndex,
-                )
-                return this.mergeProposal(blockchainProposal, proposal, polkassemblyProposal)
-            })
-        } catch (err) {
-            logger.error(err)
-            return []
+            if (timeFrame === TimeFrame.OnChain) {
+                return this.findOnChain(networkId, paginatedParams)
+            } else if (timeFrame === TimeFrame.History) {
+                return this.findOffChain(networkId, paginatedParams)
+            } else
+                return PaginatedResponseDto.empty()
+        } catch (error) {
+            logger.error(error)
+            return PaginatedResponseDto.empty()
         }
     }
+    private async findOnChain(
+        networkId: string,
+        paginatedParams: PaginatedParams
+    ) {
+        const allBlockchainProposals = await this.blockchainService.getProposals(networkId)
+        const blockchainIndexes = allBlockchainProposals
+            .sort((bp1, bp2) => bp2.proposalIndex - bp1.proposalIndex)
+            .map(bp => bp.proposalIndex)
+        if(!blockchainIndexes.length)
+            return PaginatedResponseDto.empty()
+        const paginatedBlockchainIndexes: number[] = blockchainIndexes.slice(paginatedParams.offset, paginatedParams.offset+paginatedParams.pageSize)
+        const databaseProposals = await this.proposalsRepository.find({
+            where: { blockchainProposalId: In(paginatedBlockchainIndexes), networkId },
+            relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
+        })
+        const polkassemblyProposalsPosts = await this.polkassemblyService.getProposals({
+            indexes: paginatedBlockchainIndexes,
+            networkId,
+            onChain: true
+        })
 
+        const items = paginatedBlockchainIndexes.map(blockchainIndex => {
+            const blockchainProposal = allBlockchainProposals.find(bp => bp.proposalIndex === blockchainIndex)!
+            const entity = databaseProposals.find(dp => dp.blockchainProposalId === blockchainIndex)
+            const polkassemblyProposal = polkassemblyProposalsPosts.find(pp => pp.blockchainIndex === blockchainIndex)
+            return this.mergeProposal(blockchainProposal, entity, polkassemblyProposal)
+        })
+        const total = allBlockchainProposals.length
+        return {items, total}
+    }
+
+    private async findOffChain(
+        networkId: string,
+        paginatedParams: PaginatedParams
+    ) {
+        const allBlockchainProposals = await this.blockchainService.getProposals(networkId)
+        const blockchainIndexes = allBlockchainProposals
+            .sort((bp1, bp2) => bp2.proposalIndex - bp1.proposalIndex)
+            .map(bp => bp.proposalIndex)
+        const polkassemblyProposalsPosts = await this.polkassemblyService.getProposals({
+            indexes: blockchainIndexes,
+            networkId,
+            onChain: false,
+            paginatedParams,
+        })
+        const offChainBlockchainIndexes: number[] = polkassemblyProposalsPosts.map(pp => pp.blockchainIndex)
+        const databaseProposals = await this.proposalsRepository.find({
+            where: { blockchainProposalId: In(offChainBlockchainIndexes), networkId },
+            relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
+        })
+        const items = offChainBlockchainIndexes.map(blockchainIndex => {
+            const polkassemblyProposal = polkassemblyProposalsPosts.find(pp => pp.blockchainIndex === blockchainIndex)!
+            const blockchainProposal = polkassemblyProposal.asBlockchainProposal()
+            const entity = databaseProposals.find(dp => dp.blockchainProposalId === blockchainIndex)
+            return this.mergeProposal(blockchainProposal, entity, polkassemblyProposal)
+        })
+        const total = await this.getTotalProposalsCount(networkId) - allBlockchainProposals.length
+        return {items, total}
+    }
     async findOne(blockchainProposalId: number, networkId: string): Promise<BlockchainProposalWithDomainDetails> {
         const proposals = await this.blockchainService.getProposals(networkId)
 
@@ -95,7 +141,7 @@ export class ProposalsService {
     mergeProposal(
         blockchainProposal: BlockchainProposal,
         proposalEntity: Nil<ProposalEntity>,
-        polkassemblyProposal?: Nil<PolkassemblyPostDto>,
+        polkassemblyProposal?: Nil<PolkassemblyTreasuryProposalPostDto>,
     ): BlockchainProposalWithDomainDetails {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const ideaId = proposalEntity?.ideaNetwork?.ideaId ?? milestone?.ideaId
@@ -170,5 +216,9 @@ export class ProposalsService {
             proposalMilestones.push(await this.proposalMilestonesRepository.save(proposalMilestone))
         }
         return proposalMilestones
+    }
+
+    getTotalProposalsCount(networkId: string) {
+        return this.blockchainService.getTotalProposalsCount(networkId)
     }
 }

@@ -19,10 +19,6 @@ export function filterProposals(
             return proposals.filter((proposal) => proposal.status === ProposalStatus.Submitted)
         case ProposalFilter.Approved:
             return proposals.filter((proposal) => proposal.status === ProposalStatus.Approved)
-        case ProposalFilter.Rejected:
-            return proposals.filter((proposal) => proposal.status === ProposalStatus.Rejected)
-        case ProposalFilter.Rewarded:
-            return proposals.filter((proposal) => proposal.status === ProposalStatus.Rewarded)
     }
 }
 

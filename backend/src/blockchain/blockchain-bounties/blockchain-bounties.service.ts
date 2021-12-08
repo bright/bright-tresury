@@ -182,4 +182,10 @@ export class BlockchainBountiesService {
             this.blockchainService.getRemainingTime(networkId, currentBlockNumber, endBlock)
         return motions.map((motion) => toBlockchainMotion(motion, identities, toBlockchainMotionEnd))
     }
+
+    async getTotalBountiesCount(networkId: string) {
+        const api = getApi(this.blockchainsConnections, networkId)
+        const count = await api.query.bounties.bountyCount()
+        return count.toNumber()
+    }
 }

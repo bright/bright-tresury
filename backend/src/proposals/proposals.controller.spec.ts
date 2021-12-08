@@ -14,6 +14,7 @@ import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { mockedBlockchainService } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
 import { NetworkPlanckValue } from '../utils/types'
+import { BountyDto } from '../bounties/dto/bounty.dto'
 
 const baseUrl = '/api/v1/proposals'
 
@@ -107,7 +108,7 @@ describe(`/api/v1/proposals`, () => {
         it('should return proposals for given network', async () => {
             const result = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
 
-            const body = result.body as ProposalDto[]
+            const body = result.body.items as ProposalDto[]
 
             expect(body).toHaveLength(4)
 
@@ -181,6 +182,31 @@ describe(`/api/v1/proposals`, () => {
                 threshold: 2,
                 motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
             })
+        })
+        it('should return correctly paginated response - first page', async () => {
+            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=2`))
+            const { items, total}: {items: ProposalDto[], total: number} = response.body
+            expect(Array.isArray(items)).toBe(true)
+            expect(items).toHaveLength(2)
+            expect(total).toBe(4)
+            expect(items.find(proposal => proposal.proposalIndex === 3)).toBeDefined()
+            expect(items.find(proposal => proposal.proposalIndex === 2)).toBeDefined()
+        })
+        it('should return correctly paginated response - seconds page', async () => {
+            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=2&pageSize=2`))
+            const { items, total}: {items: ProposalDto[], total: number} = response.body
+            expect(Array.isArray(items)).toBe(true)
+            expect(items).toHaveLength(2)
+            expect(total).toBe(4)
+            expect(items.find(bounty => bounty.proposalIndex === 1)).toBeDefined()
+            expect(items.find(bounty => bounty.proposalIndex === 0)).toBeDefined()
+        })
+        it('should return no more than pageNumber*pageSize data in response', async () => {
+            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=200`))
+            const { items, total}: {items: ProposalDto[], total: number} = response.body
+            expect(Array.isArray(items)).toBe(true)
+            expect(items).toHaveLength(4)
+            expect(total).toBe(4)
         })
     })
 

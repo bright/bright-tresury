@@ -12,11 +12,13 @@ import NetworkValue from '../../components/network/NetworkValue'
 import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import { BountyDto, BountyStatus } from '../bounties.dto'
 import { generatePath } from 'react-router-dom'
-import { ROUTE_BOUNTY } from '../../routes/routes'
+import { ROUTE_BOUNTY, ROUTE_PROPOSAL } from '../../routes/routes'
 import { BountyContentType } from '../bounty/Bounty'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
 import BountyStatusIndicator from '../components/BountyStatusIndicator'
+import { ProposalContentType } from '../../proposals/proposal/ProposalContentTypeTabs'
+import { Nil } from '../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,23 +38,26 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     bounty: BountyDto
+    disable?: boolean
+    showStatus?: boolean
 }
 
 export type BountyCardProps = OwnProps
 
-const BountyCard = ({ bounty }: BountyCardProps) => {
+const BountyCard = ({ bounty, disable = false, showStatus = true }: BountyCardProps) => {
     const { t } = useTranslation()
     const { network } = useNetworks()
     const classes = useStyles()
+
+    const redirectTo = `${generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex })}/${BountyContentType.Info}`
+
     return (
         <NetworkCard
-            redirectTo={`${generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex })}/${
-                BountyContentType.Info
-            }`}
+            redirectTo={disable ? undefined : redirectTo}
         >
             <CardHeader>
                 <OrdinalNumber prefix={t('bounty.indexPrefix')} ordinalNumber={bounty.blockchainIndex} />
-                <BountyStatusIndicator status={bounty.status} />
+                { showStatus ? <BountyStatusIndicator status={bounty.status} /> : null }
             </CardHeader>
 
             <Divider />

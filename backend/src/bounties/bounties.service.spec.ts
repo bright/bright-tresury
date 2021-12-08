@@ -31,6 +31,8 @@ import {
     mockListenForExtrinsic,
     mockListenForExtrinsicWithNoEvent,
 } from './spec.helpers'
+import { TimeFrame } from '../utils/time-frame.query'
+import { PaginatedParams } from '../utils/pagination/paginated.param'
 
 describe('BountiesService', () => {
     const app = beforeSetupFullApp()
@@ -333,10 +335,15 @@ describe('BountiesService', () => {
             mockGetBounties(app().get(BlockchainBountiesService))
         })
 
-        it('should return two bounties', async () => {
-            const bountiesTuples = await service().getBounties(NETWORKS.POLKADOT)
-            expect(Array.isArray(bountiesTuples)).toBe(true)
-            expect(bountiesTuples).toHaveLength(7)
+        it('should return seven bounties', async () => {
+            const paginatedBounties = await service().find(
+                NETWORKS.POLKADOT,
+                TimeFrame.OnChain,
+                new PaginatedParams({pageSize: '10', pageNumber: '1'})
+            )
+            const bounties = paginatedBounties.items
+            expect(Array.isArray(bounties)).toBe(true)
+            expect(bounties).toHaveLength(7)
         })
     })
 

@@ -9,7 +9,7 @@ import { makeStyles, Theme } from '@material-ui/core'
 import { createStyles } from '@material-ui/core/styles'
 import { breakpoints } from '../theme/theme'
 import clsx from 'clsx'
-import { TimeSelect } from '../components/select/TimeSelect'
+import TimeSelect, { TimeFrame } from '../components/select/TimeSelect'
 import HeaderListTabs from '../components/header/list/HeaderListTabs'
 import BountyStatusFilters, { BountyFilter } from './list/BountyStatusFilters'
 import PaperFilterBackground from '../components/header/list/PaperFilterBackground'
@@ -75,11 +75,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     selectedFilter: BountyFilter
+    selectedTimeFrame: TimeFrame
+    onTimeFrameChange: (newTimeFrame: TimeFrame) => any
 }
 
 export type BountiesHeaderProps = OwnProps
 
-const BountiesHeader = ({ selectedFilter }: BountiesHeaderProps) => {
+const BountiesHeader = ({ selectedFilter, selectedTimeFrame, onTimeFrameChange }: BountiesHeaderProps) => {
     const { t } = useTranslation()
     const history = useHistory()
     const classes = useStyles()
@@ -97,19 +99,28 @@ const BountiesHeader = ({ selectedFilter }: BountiesHeaderProps) => {
             </BasicInfo>
             <FlexBreakLine className={classes.flexBreakLine} />
             <TimeSelectWrapper className={clsx(classes.displayOnMobile, classes.timeSelectWrapper)}>
-                <TimeSelect />
+                <TimeSelect onTimeFrameChange={onTimeFrameChange} />
             </TimeSelectWrapper>
             <PaperFilterBackground className={clsx(classes.displayOnMobile, classes.paperBackground)} />
             <HeaderListTabs className={clsx(classes.statusFilters, classes.displayOnMobile)}>
-                <BountyStatusFilters selectedFilter={selectedFilter} />
+                {
+                    selectedTimeFrame === TimeFrame.OnChain
+                        ? <BountyStatusFilters selectedFilter={selectedFilter} />
+                        : null
+                }
+
             </HeaderListTabs>
             <div className={classes.buttonsContainer}>
                 <TimeSelectWrapper className={clsx(classes.timeSelectWrapper)}>
-                    <TimeSelect />
+                    <TimeSelect onTimeFrameChange={onTimeFrameChange} />
                 </TimeSelectWrapper>
                 <PaperFilterBackground className={classes.paperBackground} />
                 <HeaderListTabs className={classes.statusFilters}>
-                    <BountyStatusFilters selectedFilter={selectedFilter} />
+                    {
+                        selectedTimeFrame === TimeFrame.OnChain
+                            ? <BountyStatusFilters selectedFilter={selectedFilter} />
+                            : null
+                    }
                 </HeaderListTabs>
             </div>
         </HeaderListContainer>

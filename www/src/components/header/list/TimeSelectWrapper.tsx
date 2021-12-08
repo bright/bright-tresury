@@ -3,7 +3,7 @@ import { breakpoints } from '../../../theme/theme'
 import React, { PropsWithChildren } from 'react'
 import { ClassNameProps } from '../../props/className.props'
 import clsx from 'clsx'
-import { headerListHorizontalMargin, mobileHeaderListHorizontalMargin } from './HeaderListContainer'
+import { mobileHeaderListHorizontalMargin } from './HeaderListContainer'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

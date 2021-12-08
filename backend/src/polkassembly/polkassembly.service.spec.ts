@@ -1,5 +1,6 @@
 import { beforeSetupFullApp, NETWORKS } from '../utils/spec.helpers'
 import { PolkassemblyService } from './polkassembly.service'
+import { PaginatedParams } from '../utils/pagination/paginated.param'
 
 
 describe('polkassembly service', () => {
@@ -11,7 +12,12 @@ describe('polkassembly service', () => {
             expect(proposal).toBeUndefined()
         })
         it('find', async () => {
-            const proposals = await getService().getProposals([72],NETWORKS.POLKADOT)
+            const proposals = await getService().getProposals({
+                indexes: [72],
+                networkId: NETWORKS.POLKADOT,
+                onChain: true,
+                paginatedParams: new PaginatedParams({})
+            })
             expect(Array.isArray(proposals)).toBe(true)
             expect(proposals).toHaveLength(0)
         })
@@ -22,7 +28,12 @@ describe('polkassembly service', () => {
             expect(bounty).toBeUndefined()
         })
         it('find', async () => {
-            const bounties = await getService().getBounties([72],NETWORKS.POLKADOT)
+            const bounties = await getService().getBounties({
+                indexes: [72],
+                networkId: NETWORKS.POLKADOT,
+                onChain: true,
+                paginatedParams: new PaginatedParams({})
+            })
             expect(Array.isArray(bounties)).toBe(true)
             expect(bounties).toHaveLength(0)
         })

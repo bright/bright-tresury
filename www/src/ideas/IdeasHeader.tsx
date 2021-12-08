@@ -6,7 +6,7 @@ import { breakpoints } from '../theme/theme'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_NEW_IDEA } from '../routes/routes'
 import { useHistory } from 'react-router-dom'
-import { TimeSelect } from '../components/select/TimeSelect'
+import TimeSelect, { TimeFrame } from '../components/select/TimeSelect'
 import HeaderListContainer, { mobileHeaderListHorizontalMargin } from '../components/header/list/HeaderListContainer'
 import BasicInfo from '../components/header/BasicInfo'
 import FlexBreakLine from '../components/header/FlexBreakLine'
@@ -95,17 +95,11 @@ const IdeasHeader = ({ selectedFilter }: IdeasHeaderProps) => {
                 </Button>
             </BasicInfo>
             <FlexBreakLine className={classes.flexBreakLine} />
-            <TimeSelectWrapper className={clsx(classes.displayOnMobile, classes.timeSelectWrapper)}>
-                <TimeSelect />
-            </TimeSelectWrapper>
             <PaperFilterBackground className={clsx(classes.displayOnMobile, classes.paperBackground)} />
             <HeaderListTabs className={clsx(classes.statusFilters, classes.displayOnMobile)}>
                 <IdeaStatusFilters selectedFilter={selectedFilter} />
             </HeaderListTabs>
             <div className={classes.buttonsContainer}>
-                <TimeSelectWrapper className={classes.timeSelectWrapper}>
-                    <TimeSelect />
-                </TimeSelectWrapper>
                 <PaperFilterBackground className={classes.paperBackground} />
                 <HeaderListTabs className={classes.statusFilters}>
                     <IdeaStatusFilters selectedFilter={selectedFilter} />

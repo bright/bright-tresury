@@ -30,12 +30,16 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     proposal: ProposalDto
+    disable?: boolean
+    showStatus?: boolean
 }
 
 export type ProposalCardProps = OwnProps
 
 const ProposalCard = ({
     proposal: { proposalIndex, status, details, value, beneficiary, proposer, polkassembly },
+    disable = false,
+    showStatus = true
 }: ProposalCardProps) => {
     const classes = useStyles()
     const {network} = useNetworks()
@@ -44,10 +48,10 @@ const ProposalCard = ({
     const redirectTo = `${generatePath(ROUTE_PROPOSAL, { proposalIndex })}/${ProposalContentType.Info}`
 
     return (
-        <NetworkCard redirectTo={redirectTo}>
+        <NetworkCard redirectTo={disable ? undefined : redirectTo}>
             <CardHeader>
                 <ProposalIndex proposalIndex={proposalIndex} />
-                <ProposalStatusIndicator status={status} />
+                { showStatus ? <ProposalStatusIndicator status={status} /> : null }
             </CardHeader>
 
             <Divider />

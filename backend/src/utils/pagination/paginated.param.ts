@@ -22,11 +22,16 @@ export class PaginatedQueryParams {
 export class PaginatedParams {
     pageNumber: number
     pageSize: number
-    offset: number
 
     constructor({ pageNumber, pageSize }: PaginatedQueryParams) {
         this.pageNumber = Number(pageNumber ?? 1)
         this.pageSize = Math.min(Number(pageSize ?? 50), 1000)
-        this.offset = this.pageSize * (this.pageNumber - 1)
+    }
+
+    get offset(): number {
+        return this.pageSize * (this.pageNumber - 1)
+    }
+    get limit(): number {
+        return this.pageNumber*this.pageSize
     }
 }

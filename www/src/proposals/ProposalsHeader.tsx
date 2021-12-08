@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../theme/theme'
 import { Trans } from 'react-i18next'
 import ProposalStatusFilters, { ProposalFilter } from './list/ProposalStatusFilters'
 import { ROUTE_NEW_IDEA } from '../routes/routes'
-import { TimeSelect } from '../components/select/TimeSelect'
+import TimeSelect, { TimeFrame } from '../components/select/TimeSelect'
 import BasicInfo from '../components/header/BasicInfo'
 import FlexBreakLine from '../components/header/FlexBreakLine'
 import HeaderListContainer from '../components/header/list/HeaderListContainer'
@@ -64,11 +64,13 @@ const useStyles = makeStyles((theme: Theme) => {
 
 interface OwnProps {
     selectedFilter: ProposalFilter
+    selectedTimeFrame: TimeFrame
+    onTimeFrameChange: (newTimeFrame: TimeFrame) => any
 }
 
 export type ProposalsHeaderProps = OwnProps
 
-const ProposalsHeader = ({ selectedFilter }: ProposalsHeaderProps) => {
+const ProposalsHeader = ({ selectedFilter, selectedTimeFrame, onTimeFrameChange }: ProposalsHeaderProps) => {
     const classes = useStyles()
 
     return (
@@ -83,19 +85,28 @@ const ProposalsHeader = ({ selectedFilter }: ProposalsHeaderProps) => {
             </BasicInfo>
             <FlexBreakLine className={classes.flexBreakLine} />
             <TimeSelectWrapper className={clsx(classes.displayOnMobile, classes.timeSelectWrapper)}>
-                <TimeSelect />
+                <TimeSelect onTimeFrameChange={onTimeFrameChange}/>
             </TimeSelectWrapper>
             <PaperFilterBackground className={clsx(classes.displayOnMobile, classes.paperBackground)} />
             <HeaderListTabs className={clsx(classes.statusFilters, classes.displayOnMobile)}>
-                <ProposalStatusFilters selectedFilter={selectedFilter} />
+                {
+                    selectedTimeFrame === TimeFrame.OnChain
+                        ? <ProposalStatusFilters selectedFilter={selectedFilter} />
+                        : null
+                }
             </HeaderListTabs>
+
             <div className={classes.buttonsContainer}>
                 <TimeSelectWrapper className={classes.timeSelectWrapper}>
-                    <TimeSelect />
+                    <TimeSelect onTimeFrameChange={onTimeFrameChange}/>
                 </TimeSelectWrapper>
                 <PaperFilterBackground className={classes.paperBackground} />
                 <HeaderListTabs className={classes.statusFilters}>
-                    <ProposalStatusFilters selectedFilter={selectedFilter} />
+                {
+                    selectedTimeFrame === TimeFrame.OnChain
+                        ? <ProposalStatusFilters selectedFilter={selectedFilter} />
+                        : null
+                }
                 </HeaderListTabs>
             </div>
         </HeaderListContainer>

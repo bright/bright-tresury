@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNetworks } from '../networks/useNetworks'
 import { useGetIdeas } from './ideas.api'
@@ -9,6 +9,7 @@ import IdeasList from './list/IdeasList'
 import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../auth/AuthContext'
+import { TimeFrame } from '../components/select/TimeSelect'
 
 const Ideas = () => {
     const { t } = useTranslation()

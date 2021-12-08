@@ -7,6 +7,7 @@ import { breakpoints } from '../../theme/theme'
 import { ROUTE_PROPOSALS } from '../../routes/routes'
 import NavSelect from '../../components/select/NavSelect'
 import { useAuth } from '../../auth/AuthContext'
+import { TimeFrame } from '../../components/select/TimeSelect'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -25,9 +26,7 @@ export enum ProposalFilter {
     All = 'all',
     Mine = 'mine',
     Submitted = 'submitted',
-    Approved = 'approved',
-    Rejected = 'rejected',
-    Rewarded = 'rewarded',
+    Approved = 'approved'
 }
 
 const getFilterValues = (isUserSignedIn: boolean): ProposalFilter[] => {
@@ -59,10 +58,6 @@ const ProposalStatusFilters = ({ selectedFilter }: ProposalStatusFiltersProps) =
                 return t('proposal.list.filters.submitted')
             case ProposalFilter.Approved:
                 return t('proposal.list.filters.approved')
-            case ProposalFilter.Rejected:
-                return t('proposal.list.filters.rejected')
-            case ProposalFilter.Rewarded:
-                return t('proposal.list.filters.rewarded')
         }
     }
 

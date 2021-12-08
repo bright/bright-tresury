@@ -15,7 +15,8 @@
     },
     "components": {
         "timeSelect": {
-            "currentSpendTime": "Current Spend Time"
+            "onChain": "On-chain",
+            "history": "History"
         },
         "network": {
             "rewardDeposit": {
@@ -33,7 +34,8 @@
             "subtitle": "Any changes you have made will be lost",
             "discard": "Discard",
             "close": "Close the form"
-        }
+        },
+        "loadMore": "Load more..."
     },
     "form": {
         "header": {
@@ -475,9 +477,7 @@
                 "all": "All",
                 "mine": "Mine",
                 "submitted": "Submitted",
-                "approved": "Approved",
-                "rejected": "Rejected",
-                "rewarded": "Rewarded"
+                "approved": "Approved"
             }
         },
         "details": {
@@ -741,7 +741,8 @@
             "leftOfSpendingPeriod": "Left of Spending Period",
             "available": "Available",
             "nextBurn": "Next Burn"
-        }
+        },
+        "currentSpendPeriod": "Current Spend Period"
     },
     "substrate": {
         "form": {

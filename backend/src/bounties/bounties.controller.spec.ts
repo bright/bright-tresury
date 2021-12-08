@@ -358,7 +358,7 @@ describe(`/api/v1/bounties/`, () => {
                 }),
             )
 
-            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
+            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body.items
             expect(Array.isArray(bountiesDtos)).toBe(true)
             expect(bountiesDtos).toHaveLength(7)
 
@@ -377,6 +377,33 @@ describe(`/api/v1/bounties/`, () => {
             expect(bountyDto.field).toBe('field')
             expect(bountyDto.description).toBe('db-description')
         })
+
+        it('should return correctly paginated response - first page', async () => {
+            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=2`))
+            const { items, total}: {items: BountyDto[], total: number} = response.body
+            expect(Array.isArray(items)).toBe(true)
+            expect(items).toHaveLength(2)
+            expect(total).toBe(7)
+            expect(items.find(bounty => bounty.blockchainIndex === 6)).toBeDefined()
+            expect(items.find(bounty => bounty.blockchainIndex === 5)).toBeDefined()
+        })
+        it('should return correctly paginated response - seconds page', async () => {
+            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=2&pageSize=2`))
+            const { items, total}: {items: BountyDto[], total: number} = response.body
+            expect(Array.isArray(items)).toBe(true)
+            expect(items).toHaveLength(2)
+            expect(total).toBe(7)
+            expect(items.find(bounty => bounty.blockchainIndex === 4)).toBeDefined()
+            expect(items.find(bounty => bounty.blockchainIndex === 3)).toBeDefined()
+        })
+        it('should return no more than pageNumber*pageSize data in response', async () => {
+            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=200`))
+            const { items, total}: {items: BountyDto[], total: number} = response.body
+            expect(Array.isArray(items)).toBe(true)
+            expect(items).toHaveLength(7)
+            expect(total).toBe(7)
+        })
+
         it('should return only bounties that are in blockchain', async () => {
             await bountiesRepository().save(
                 bountiesRepository().create({
@@ -387,7 +414,7 @@ describe(`/api/v1/bounties/`, () => {
                     blockchainIndex: 100,
                 }),
             )
-            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
+            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body.items
 
             const bountyDto = bountiesDtos.find(({ blockchainIndex }) => blockchainIndex === 100)
             expect(bountyDto).toBeUndefined()

@@ -7,6 +7,7 @@ import { BlockchainMotionDto } from '../../blockchain/dto/blockchain-motion.dto'
 import { BlockchainProposalWithDomainDetails } from './blockchain-proposal-with-domain-details.dto'
 import { NetworkPlanckValue } from '../../utils/types'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
+import { PolkassemblyTreasuryProposalPostDto } from '../../polkassembly/dto/treasury-proposal-post.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -78,9 +79,9 @@ export class ProposalDto {
 
     @ApiPropertyOptional({
         description: 'Proposal data kept in polkassembly server',
-        type: PolkassemblyPostDto,
+        type: PolkassemblyTreasuryProposalPostDto,
     })
-    polkassembly?: Nil<PolkassemblyPostDto>
+    polkassembly?: Nil<PolkassemblyTreasuryProposalPostDto>
     constructor({
         blockchain: { proposalIndex, proposer, beneficiary, value, bond, motions, status },
         entity,

@@ -2,7 +2,7 @@ import { BadRequestException, ForbiddenException, Inject, Injectable } from '@ne
 import { InjectRepository } from '@nestjs/typeorm'
 import { plainToClass } from 'class-transformer'
 import { validateOrReject } from 'class-validator'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { BlockchainBountyDto } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
@@ -17,8 +17,17 @@ import { BountyEntity } from './entities/bounty.entity'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
 import { PolkassemblyPostDto } from '../polkassembly/dto/polkassembly-post.dto'
 import { Nil } from '../utils/types'
+import { PaginatedParams } from '../utils/pagination/paginated.param'
+import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
+import { TimeFrame } from '../utils/time-frame.query'
 
 const logger = getLogger()
+
+interface Bounty {
+    blockchain: BlockchainBountyDto
+    entity?: Nil<BountyEntity>
+    polkassembly?: Nil<PolkassemblyPostDto>
+}
 
 @Injectable()
 export class BountiesService {
@@ -86,28 +95,74 @@ export class BountiesService {
             callback,
         )
     }
-
-    async getBounties(
+    async find(
         networkId: string,
-    ): Promise<[BlockchainBountyDto, Nil<BountyEntity>, Nil<PolkassemblyPostDto>][]> {
-        const [bountiesBlockchain, bountiesEntities] = await Promise.all([
-            this.bountiesBlockchainService.getBounties(networkId),
-            this.repository.find({ where: { networkId } }),
-        ])
-        const blockchainIndexes = bountiesBlockchain.map((bountyBlockchain) => bountyBlockchain.index)
-        const bountiesPosts = await this.polkassemblyService.getBounties(blockchainIndexes, networkId)
-
-        const blockchainIndexToEntityBounty = bountiesEntities.reduce((acc, bountyEntity) => {
-            return { ...acc, [bountyEntity.blockchainIndex.toString()]: bountyEntity }
-        }, {} as { [key: string]: BountyEntity })
-
-        return bountiesBlockchain.map((bountyBlockchain: BlockchainBountyDto) => [
-            bountyBlockchain,
-            blockchainIndexToEntityBounty[bountyBlockchain.index],
-            bountiesPosts.find((post) => post.blockchainIndex === bountyBlockchain.index),
-        ])
+        timeFrame: TimeFrame,
+        paginatedParams: PaginatedParams
+    ): Promise<PaginatedResponseDto<Bounty>> {
+        try {
+            if (timeFrame === TimeFrame.OnChain) {
+                return this.findOnChain(networkId, paginatedParams)
+            } else if (timeFrame === TimeFrame.History) {
+                return this.findOffChain(networkId, paginatedParams)
+            } else
+                return PaginatedResponseDto.empty()
+        } catch (error) {
+            logger.error(error)
+            return PaginatedResponseDto.empty()
+        }
     }
 
+    private async findOnChain(
+        networkId: string,
+        paginatedParams: PaginatedParams
+    ): Promise<PaginatedResponseDto<Bounty>> {
+        const bountiesBlockchain = await this.bountiesBlockchainService.getBounties(networkId)
+        const blockchainIndexes = bountiesBlockchain
+            .sort((bb1, bb2) => bb2.index - bb1.index)
+            .map(bountyBlockchain => bountyBlockchain.index)
+        if (!blockchainIndexes.length)
+            return PaginatedResponseDto.empty()
+        const paginatedBlockchainIndexes: number[] = blockchainIndexes.slice(paginatedParams.offset, paginatedParams.offset+paginatedParams.pageSize)
+        const databaseBounties = await this.repository.find({where: {networkId, blockchainIndex: In(paginatedBlockchainIndexes)}})
+        const bountiesPosts = await this.polkassemblyService.getBounties({
+            indexes: paginatedBlockchainIndexes,
+            networkId,
+            onChain: true
+        })
+        const items = paginatedBlockchainIndexes.map(blockchainIndex => ({
+            blockchain: bountiesBlockchain.find( bb => bb.index === blockchainIndex )!,
+            entity: databaseBounties.find( db => db.blockchainIndex === blockchainIndex ),
+            polkassembly: bountiesPosts.find( bp => bp.blockchainIndex === blockchainIndex )
+        }))
+        const total = bountiesBlockchain.length
+        return {items, total}
+    }
+
+    private async findOffChain(
+        networkId: string,
+        paginatedParams: PaginatedParams
+    ): Promise<PaginatedResponseDto<Bounty>> {
+        const bountiesBlockchain = await this.bountiesBlockchainService.getBounties(networkId)
+        const blockchainIndexes = bountiesBlockchain
+            .sort((bb1, bb2) => bb2.index - bb1.index)
+            .map(bountyBlockchain => bountyBlockchain.index)
+        const bountiesPosts = await this.polkassemblyService.getBounties({
+            indexes: blockchainIndexes,
+            networkId,
+            onChain: false,
+            paginatedParams,
+        })
+        const offChainBlockchainIndexes = bountiesPosts.map(bp => bp.blockchainIndex)
+        const databaseBounties = await this.repository.find({where: {networkId, blockchainIndex: In(offChainBlockchainIndexes)}})
+        const items = offChainBlockchainIndexes.map(blockchainIndex => ({
+            blockchain: bountiesPosts.find( bp => bp.blockchainIndex === blockchainIndex )!.asBlockchainBountyDto(),
+            entity: databaseBounties.find( db => db.blockchainIndex === blockchainIndex ),
+            polkassembly: bountiesPosts.find( bp => bp.blockchainIndex === blockchainIndex )
+        }))
+        const total = (await this.getTotalBountiesCount(networkId)) - bountiesBlockchain.length
+        return {items, total}
+    }
     async getBounty(
         networkId: string,
         blockchainIndex: number,
@@ -122,5 +177,9 @@ export class BountiesService {
 
     getBountyMotions(networkId: string, blockchainIndex: number) {
         return this.bountiesBlockchainService.getMotions(networkId, blockchainIndex)
+    }
+
+    getTotalBountiesCount(networkId: string) {
+        return this.bountiesBlockchainService.getTotalBountiesCount(networkId)
     }
 }

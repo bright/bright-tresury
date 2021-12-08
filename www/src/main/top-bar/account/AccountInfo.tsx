@@ -20,6 +20,8 @@ import { filterIdeas } from '../../../ideas/list/filterIdeas'
 import { useGetProposals } from '../../../proposals/proposals.api'
 import { filterProposals } from '../../../proposals/list/filterProposals'
 import { ProposalFilter } from '../../../proposals/list/ProposalStatusFilters'
+import { TimeFrame } from '../../../components/select/TimeSelect'
+import { ProposalDto } from '../../../proposals/proposals.dto'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -36,7 +38,8 @@ const AccountInfo = () => {
     const { user } = useAuth()
     const { network } = useNetworks()
     const { data: ideas } = useGetIdeas(network.id)
-    const { data: proposals } = useGetProposals(network.id)
+    const {data} = useGetProposals(network.id, TimeFrame.OnChain, 100)
+    const proposals = data?.pages.map(page => page.items).flat() ?? []
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 

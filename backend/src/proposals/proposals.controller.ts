@@ -6,6 +6,9 @@ import { ProposalDto } from './dto/proposal.dto'
 import { ProposalsParam } from './proposals.param'
 import { ProposalsService } from './proposals.service'
 import { NetworkNameQuery } from '../utils/network-name.query'
+import { PaginatedParams, PaginatedQueryParams } from '../utils/pagination/paginated.param'
+import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
+import { TimeFrame, TimeFrameQuery } from '../utils/time-frame.query'
 
 const logger = getLogger()
 
@@ -17,12 +20,20 @@ export class ProposalsController {
     @Get()
     @ApiOkResponse({
         description: 'Respond with proposals for the given network',
-        type: [ProposalDto],
+        type: PaginatedResponseDto,
     })
-    async getProposals(@Query() { network }: NetworkNameQuery): Promise<ProposalDto[]> {
-        logger.info(`Getting proposals for network: ${network}`)
-        const proposals = await this.proposalsService.find(network)
-        return proposals.map((proposal) => new ProposalDto(proposal))
+    async getProposals(
+        @Query() { network }: NetworkNameQuery,
+        @Query() { timeFrame = TimeFrame.OnChain }: TimeFrameQuery,
+        @Query() { pageNumber, pageSize }: PaginatedQueryParams,
+    ): Promise<PaginatedResponseDto<ProposalDto>> {
+        logger.info(`Getting proposals for network: ${network} ${timeFrame}`)
+        const paginatedParams = new PaginatedParams({pageNumber, pageSize})
+        const { items, total } = await this.proposalsService.find(network, timeFrame, paginatedParams)
+        return {
+            items: items.map( withDomainDetails => new ProposalDto(withDomainDetails)),
+            total
+        }
     }
 
     @Get(':proposalIndex')

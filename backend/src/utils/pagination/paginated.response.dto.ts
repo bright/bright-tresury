@@ -30,4 +30,7 @@ export class PaginatedResponseDto<T> {
 
         return response
     }
+    static empty() {
+        return { items: [], total: 0 }
+    }
 }
