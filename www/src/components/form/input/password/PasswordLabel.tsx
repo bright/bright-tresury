@@ -9,6 +9,7 @@ const useStyles = makeStyles(() =>
         root: {
             display: 'flex',
             justifyContent: 'space-between',
+            width: '100%',
         },
         icon: {
             padding: 0,
