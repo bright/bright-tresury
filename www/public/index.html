@@ -15,17 +15,24 @@
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
         <meta name="keywords" content="Treasury, Blockchain, Polkadot, Kusama, Bright Inventions" />
-        <title>Bright Treasury</title>
 
-        <!-- Global site tag (gtag.js) - Google Analytics -->
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-DLGXGRLB7Q"></script>
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-DLGXGRLB7Q');
-        </script>
+        <% if (REACT_APP_DEPLOY_ENV !== 'prod') { %>
+            <!-- avoid being crawled -->
+            <meta name="robots" content="noindex" />
+        <% } %>
 
+        <% if (REACT_APP_DEPLOY_ENV === 'prod') { %>
+            <!-- Global site tag (gtag.js) - Google Analytics -->
+            <script async src=“https://www.googletagmanager.com/gtag/js?id=G-DLGXGRLB7Q”></script>
+            <script>
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', 'G-DLGXGRLB7Q');
+            </script>
+        <% } %>
+
+        <title>Bright Treasury - <%= JSON.stringify(process.env, null, 0) %> - %REACT_APP_DEPLOY_ENV%></title>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
