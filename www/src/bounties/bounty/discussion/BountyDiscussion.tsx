@@ -8,11 +8,11 @@ interface OwnProps {
 }
 export type BountyDiscussionProps = OwnProps
 const BountyDiscussion = ({ bountyIndex }: BountyDiscussionProps) => {
-    const { user, isUserSignedIn } = useAuth()
+    const { user, isUserSignedInAndVerified } = useAuth()
 
     return (
         <>
-            {user && isUserSignedIn ? (
+            {user && isUserSignedInAndVerified ? (
                 <PrivateBountyDiscussion bountyIndex={bountyIndex} userId={user.id} />
             ) : (
                 <PublicBountyDiscussion bountyIndex={bountyIndex} />

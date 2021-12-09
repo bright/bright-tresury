@@ -10,11 +10,11 @@ interface OwnProps {
 export type IdeaDiscussionProps = OwnProps
 
 const IdeaDiscussion = ({ idea }: IdeaDiscussionProps) => {
-    const { user, isUserSignedIn } = useAuth()
+    const { user, isUserSignedInAndVerified } = useAuth()
 
     return (
         <>
-            {user && isUserSignedIn ? (
+            {user && isUserSignedInAndVerified ? (
                 <PrivateIdeaDiscussion idea={idea} userId={user.id} />
             ) : (
                 <PublicIdeaDiscussion idea={idea} />

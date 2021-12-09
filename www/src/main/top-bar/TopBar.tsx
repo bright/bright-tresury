@@ -43,12 +43,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const TopBar = () => {
     const classes = useStyles()
-    const { isUserSignedIn, user } = useAuth()
+    const { user, isUserSignedInAndVerified, isUserSignedIn } = useAuth()
 
     return (
         <div className={classes.root}>
             <NetworkPicker className={classes.networks} />
-            {isUserSignedIn && user ? <Notifications userId={user.id} className={classes.notifications} /> : null}
+            {isUserSignedInAndVerified && user ? (
+                <Notifications userId={user.id} className={classes.notifications} />
+            ) : null}
             {isUserSignedIn ? <AccountInfo /> : <SignInButton />}
         </div>
     )

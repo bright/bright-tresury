@@ -8,11 +8,11 @@ interface OwnProps {
 }
 export type ProposalDiscussionProps = OwnProps
 const ProposalDiscussion = ({ proposalIndex }: ProposalDiscussionProps) => {
-    const { user, isUserSignedIn } = useAuth()
+    const { user, isUserSignedInAndVerified } = useAuth()
 
     return (
         <>
-            {user && isUserSignedIn ? (
+            {user && isUserSignedInAndVerified ? (
                 <PrivateProposalDiscussion proposalIndex={proposalIndex} userId={user.id} />
             ) : (
                 <PublicProposalDiscussion proposalIndex={proposalIndex} />
