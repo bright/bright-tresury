@@ -41,6 +41,8 @@ import {
     ROUTE_SIGNUP_WEB3_SUCCESS,
     ROUTE_STATS,
     ROUTE_VERIFY_EMAIL,
+    ROUTE_PRIVACY,
+    ROUTE_TERMS,
 } from './routes/routes'
 import SnackNotificationsContextProvider from './snack-notifications/SnackNotificationsContext'
 import Stats from './stats/Stats'
@@ -52,6 +54,8 @@ import { getTranslation } from './translation/translationStorage'
 import IdeaLoader from './ideas/idea/IdeaLoader'
 import BountyCreate from './bounties/create/BountyCreate'
 import config from './config'
+import Privacy from './components/privacy/Privacy'
+import Terms from './components/terms/Terms'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -108,6 +112,8 @@ function AppRoutes() {
                 <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate} requireVerified={true} />
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />
                 <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
+                <Route exact={true} path={ROUTE_PRIVACY} component={Privacy} />
+                <Route exact={true} path={ROUTE_TERMS} component={Terms} />
             </Switch>
         </Main>
     )

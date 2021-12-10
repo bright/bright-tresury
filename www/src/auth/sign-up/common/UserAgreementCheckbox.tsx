@@ -3,7 +3,8 @@ import CheckboxInput from '../../../components/form/input/CheckboxInput'
 import React from 'react'
 import * as Yup from 'yup'
 import { TFunction } from 'i18next'
-import UnderlinedLink from '../../../components/link/UnderlinedLink'
+import { ROUTE_TERMS } from '../../../routes/routes'
+import NormalRouterLink from '../../../components/link/NormalRouterLink'
 
 export const GetUserAgreementYupSchema = (t: TFunction) => {
     return { userAgreement: Yup.boolean().isTrue(t('auth.signUp.userAgreement.emptyFieldError')) }
@@ -17,7 +18,7 @@ export const UserAgreementCheckbox: React.FC = () => {
                 <Trans
                     id="privacy-notice"
                     i18nKey="auth.signUp.userAgreement.label"
-                    components={{ a: <UnderlinedLink href="" /> }}
+                    components={{ a: <NormalRouterLink to={ROUTE_TERMS} /> }}
                 />
             }
         />

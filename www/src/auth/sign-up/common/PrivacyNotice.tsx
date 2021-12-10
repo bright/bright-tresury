@@ -1,7 +1,8 @@
 import { Trans } from 'react-i18next'
 import { Label } from '../../../components/text/Label'
 import React from 'react'
-import UnderlinedLink from '../../../components/link/UnderlinedLink'
+import { ROUTE_PRIVACY } from '../../../routes/routes'
+import NormalRouterLink from '../../../components/link/NormalRouterLink'
 
 export const PrivacyNotice: React.FC = () => {
     return (
@@ -10,7 +11,7 @@ export const PrivacyNotice: React.FC = () => {
                 <Trans
                     id="privacy-notice"
                     i18nKey="auth.signUp.privacyNotice"
-                    components={{ a: <UnderlinedLink href="/" /> }}
+                    components={{ a: <NormalRouterLink to={ROUTE_PRIVACY} /> }}
                 />
             }
         />
