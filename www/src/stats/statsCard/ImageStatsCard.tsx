@@ -10,7 +10,7 @@ const useStyles = makeStyles((theme) =>
     createStyles({
         content: {
             padding: '12px 36px 12px 15px',
-            justifyContent: 'space-between',
+            justifyContent: 'space-around',
         },
         image: {
             width: '142px',
