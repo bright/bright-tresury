@@ -3,17 +3,22 @@
     "name": "Bright Treasury",
     "icons": [
         {
-            "src": "treasury_logo.ico",
+            "src": "icons/logo.svg",
+            "type": "image/svg+xml",
+            "sizes": "512x512"
+        },
+        {
+            "src": "icons/logo.ico",
             "sizes": "64x64 32x32 24x24 16x16",
             "type": "image/x-icon"
         },
         {
-            "src": "treasury_logo_192.png",
+            "src": "icons/logo_192.png",
             "type": "image/png",
             "sizes": "192x192"
         },
         {
-            "src": "treasury_logo_512.png",
+            "src": "icons/logo_512.png",
             "type": "image/png",
             "sizes": "512x512"
         }
