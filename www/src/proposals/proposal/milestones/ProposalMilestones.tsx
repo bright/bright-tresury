@@ -11,15 +11,16 @@ import ProposalMilestoneCreate from './create/ProposalMilestoneCreate'
 import NoProposalMilestonesInfo from './list/NoProposalMilestonesInfo'
 import ProposalMilestonesList from './list/ProposalMilestonesList'
 import { useGetProposalMilestones } from './proposal.milestones.api'
+import { isProposalMadeByUser } from '../../list/filterProposals'
+import { useAuth } from '../../../auth/AuthContext'
 
 interface OwnProps {
     proposal: ProposalDto
-    canEdit: boolean
 }
 
 export type ProposalMilestonesProps = OwnProps
 
-const ProposalMilestones = ({ proposal, canEdit }: ProposalMilestonesProps) => {
+const ProposalMilestones = ({ proposal }: ProposalMilestonesProps) => {
     const classes = useSuccessfullyLoadedItemStyles()
     const { t } = useTranslation()
     const { network } = useNetworks()
@@ -28,6 +29,10 @@ const ProposalMilestones = ({ proposal, canEdit }: ProposalMilestonesProps) => {
         network: network.id,
     })
     const { visible, open, close } = useModal()
+
+    const { user } = useAuth()
+
+    const canEdit = proposal ? isProposalMadeByUser(proposal, user) : false
 
     return (
         <LoadingWrapper

@@ -17,6 +17,7 @@ import HeaderTabs from '../../components/header/HeaderTabs'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import Title from '../../components/header/details/Title'
 import PrivateProposalContentTypeTabs from './PrivateProposalContentTypeTabs'
+import { ProposalTabConfig } from './Proposal'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -49,11 +50,12 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     proposal: ProposalDto
+    proposalTabsConfig: ProposalTabConfig[]
 }
 
 export type ProposalHeaderProps = OwnProps
 
-const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
+const ProposalHeader = ({ proposal, proposalTabsConfig }: ProposalHeaderProps) => {
     const classes = useStyles()
     const history = useHistory()
     const { user, isUserSignedInAndVerified } = useAuth()
@@ -81,9 +83,13 @@ const ProposalHeader = ({ proposal }: ProposalHeaderProps) => {
 
             <HeaderTabs className={classes.contentTypeTabs}>
                 {isUserSignedInAndVerified && user ? (
-                    <PrivateProposalContentTypeTabs userId={user.id} proposalIndex={proposal.proposalIndex} />
+                    <PrivateProposalContentTypeTabs
+                        userId={user.id}
+                        proposalIndex={proposal.proposalIndex}
+                        proposalTabsConfig={proposalTabsConfig}
+                    />
                 ) : (
-                    <ProposalContentTypeTabs />
+                    <ProposalContentTypeTabs proposalTabsConfig={proposalTabsConfig} />
                 )}
             </HeaderTabs>
         </HeaderContainer>
