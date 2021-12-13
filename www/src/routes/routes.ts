@@ -23,7 +23,7 @@ export const ROUTE_NEW_BOUNTY = '/bounties/new'
 export const ROUTE_EDIT_BOUNTY = '/bounties/:bountyIndex/edit'
 export const ROUTE_AWARD_BOUNTY = '/bounties/:bountyIndex/award'
 export const ROUTE_BOUNTY = '/bounties/:bountyIndex'
-export const ROUTE_BOUNTY_DISCUSSION = ':bountyIndex/discussion'
+export const ROUTE_BOUNTY_DISCUSSION = '/bounties/:bountyIndex/discussion'
 // endregion
 // region Auth
 export const ROUTE_SIGNUP = '/auth/signup'

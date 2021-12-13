@@ -2,15 +2,15 @@ import React from 'react'
 import NoMotion from '../../../components/voting/NoMotion'
 import { useTranslation } from 'react-i18next'
 import { generatePath } from 'react-router-dom'
-import { ROUTE_BOUNTIES, ROUTE_BOUNTY_DISCUSSION } from '../../../routes/routes'
+import { ROUTE_BOUNTY_DISCUSSION } from '../../../routes/routes'
 
-export interface NoProposalMotionProps {
+export interface NoBountyMotionProps {
     blockchainIndex: number
 }
 
-const NoBountyMotion = ({ blockchainIndex }: NoProposalMotionProps) => {
+const NoBountyMotion = ({ blockchainIndex }: NoBountyMotionProps) => {
     const { t } = useTranslation()
-    const toDiscussionLink = `${generatePath(ROUTE_BOUNTIES, { blockchainIndex })}/${ROUTE_BOUNTY_DISCUSSION}`
+    const toDiscussionLink = generatePath(ROUTE_BOUNTY_DISCUSSION, { bountyIndex: blockchainIndex })
 
     return <NoMotion title={t('bounty.voting.noMotion.title')} toDiscussion={toDiscussionLink} />
 }

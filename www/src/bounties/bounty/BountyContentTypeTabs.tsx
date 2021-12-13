@@ -1,7 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Tabs, { TabEntry } from '../../components/tabs/Tabs'
-
 import { BountyTabConfig } from './Bounty'
 import { useRouteMatch } from 'react-router-dom'
 

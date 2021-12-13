@@ -285,6 +285,7 @@
             "form": {
                 "emptyFieldError": "This field cannot be empty",
                 "nonZeroFieldError": "The value must be greater than zero",
+                "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
                 "networks": {
                     "reward": "Reward",
                     "bond": {
@@ -372,6 +373,7 @@
                 "editMilestone": "Edit Milestone",
                 "form": {
                     "emptyFieldError": "This field cannot be empty",
+                    "wrongBeneficiaryAddressError": "Wrong beneficiary address (please provide encoded address)",
                     "nonZeroFieldError": "The value must be greater than zero",
                     "valueCannotBeLessThanZero": "The value cannot be less than zero",
                     "beneficiary": "Beneficiary",
@@ -438,7 +440,14 @@
             "infoLabel": "Info",
             "milestonesLabel": "Milestones",
             "discussionLabel": "Discussion",
-            "votingLabel": "Voting"
+            "votingLabel": "Voting",
+            "info": {
+                "proposer": "Proposer",
+                "beneficiary": "Beneficiary",
+                "fieldOfIdea": "Field of idea",
+                "reasonForIdea": "Reason for idea",
+                "description": "Description"
+            }
         },
         "list": {
             "introduceIdea": "To create a proposal, <a>first introduce your idea</a>",
@@ -561,6 +570,7 @@
             "emptyFieldError": "This field cannot be empty",
             "minValueError": "The value must be at least {{value}}",
             "maxBlockchainDescriptionLength": "The on-chain description is too long",
+            "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
             "fields": {
                 "title": "Title",
                 "field": "Field of bounty",
@@ -639,7 +649,7 @@
                 "rejectCurator": "Reject Curator"
             },
             "noMotion": {
-                "title": "No one has voted on the bounty yet"
+                "title": "No one is voting now"
             }
         },
         "edit": {

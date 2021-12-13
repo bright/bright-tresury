@@ -63,7 +63,7 @@ const MotionHeader = ({ method, ayesCount, naysCount, motionEnd }: MotionHeaderP
     const endBlockStr = endBlock ? `#${formatNumber(endBlock)}` : t('common.na')
     const timeStr = timeLeft ? timeToString(timeLeft, t) : ''
 
-    const getMethodTranslationKey = (method: ProposalMotionMethod | BountyMotionMethod) => {
+    const getMethodName = (method: ProposalMotionMethod | BountyMotionMethod) => {
         switch (method) {
             case BountyMotionMethod.ApproveBounty:
                 return t('bounty.voting.method.approveBounty')
@@ -85,7 +85,7 @@ const MotionHeader = ({ method, ayesCount, naysCount, motionEnd }: MotionHeaderP
             <div className={styles.root}>
                 <div className={styles.upperRow}>
                     <strong>
-                        {getMethodTranslationKey(method as ProposalMotionMethod | BountyMotionMethod)}{' '}
+                        {getMethodName(method as ProposalMotionMethod | BountyMotionMethod)}{' '}
                         <img src={isApprovalMotion ? ayeIcon : nayIcon} alt={''} />{' '}
                     </strong>
                     <div>
