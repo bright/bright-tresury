@@ -16,14 +16,14 @@
 
         <meta name="keywords" content="Treasury, Blockchain, Polkadot, Kusama, Bright Inventions" />
 
-        <% if (REACT_APP_DEPLOY_ENV !== 'prod') { %>
+        <% if (process.env.REACT_APP_DEPLOY_ENV !== 'prod') { %>
             <!-- avoid being crawled -->
             <meta name="robots" content="noindex" />
         <% } %>
 
-        <% if (REACT_APP_DEPLOY_ENV === 'prod') { %>
+        <% if (process.env.REACT_APP_DEPLOY_ENV === 'prod') { %>
             <!-- Global site tag (gtag.js) - Google Analytics -->
-            <script async src=“https://www.googletagmanager.com/gtag/js?id=G-DLGXGRLB7Q”></script>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=G-DLGXGRLB7Q"></script>
             <script>
                 window.dataLayer = window.dataLayer || [];
                 function gtag(){dataLayer.push(arguments);}
@@ -32,7 +32,7 @@
             </script>
         <% } %>
 
-        <title>Bright Treasury - <%= JSON.stringify(process.env, null, 0) %> - %REACT_APP_DEPLOY_ENV%></title>
+        <title>Bright Treasury</title>
     </head>
     <body>
         <noscript>You need to enable JavaScript to run this app.</noscript>
