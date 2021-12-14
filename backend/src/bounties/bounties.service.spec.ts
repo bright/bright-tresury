@@ -55,26 +55,18 @@ describe('BountiesService', () => {
             const { user } = await setUp()
             const result = await service().create(
                 {
-                    blockchainDescription: 'bc-description',
-                    value: '10' as NetworkPlanckValue,
                     title: 'title',
                     field: 'optimisation',
                     description: 'description',
                     networkId: NETWORKS.POLKADOT,
-                    proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
-                    extrinsicHash: '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
-                    lastBlockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
                     blockchainIndex: 3,
                 },
                 user,
             )
-            expect(result.blockchainDescription).toBe('bc-description')
-            expect(result.value).toBe('10')
             expect(result.title).toBe('title')
             expect(result.field).toBe('optimisation')
             expect(result.description).toBe('description')
             expect(result.networkId).toBe(NETWORKS.POLKADOT)
-            expect(result.proposer).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(result.blockchainIndex).toBe(3)
             expect(result.owner).toMatchObject<UserEntity>(user)
         })
@@ -83,27 +75,19 @@ describe('BountiesService', () => {
             const { user } = await setUp()
             const result = await service().create(
                 {
-                    blockchainDescription: 'bc-description',
-                    value: '10' as NetworkPlanckValue,
                     title: 'title',
                     field: 'optimisation',
                     description: 'description',
                     networkId: NETWORKS.POLKADOT,
-                    proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
-                    extrinsicHash: '0x9bcdab6b6f5a0c4a4f17174fe80af7c8f58dd0aecc20fc49d6abee0522787a41',
-                    lastBlockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
                     blockchainIndex: 3,
                 },
                 user,
             )
             const saved = (await repository().findOne(result.id))!
-            expect(saved.blockchainDescription).toBe('bc-description')
-            expect(saved.value).toBe('10')
             expect(saved.title).toBe('title')
             expect(saved.field).toBe('optimisation')
             expect(saved.description).toBe('description')
             expect(saved.networkId).toBe(NETWORKS.POLKADOT)
-            expect(saved.proposer).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(saved.blockchainIndex).toBe(3)
         })
 
@@ -227,11 +211,24 @@ describe('BountiesService', () => {
             expect(saved.beneficiary).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
         })
 
-        it('should throw NotFoundException when no entity', async () => {
-            const { user } = await setUpUpdate(blockchainBounty0)
-            return expect(service().update(blockchainBounty1.index, NETWORKS.POLKADOT, {}, user)).rejects.toThrow(
-                NotFoundException,
-            )
+        it('should create new entity if no entity', async () => {
+            const proposer = await createProposerSessionData(blockchainBounty0)
+            await service().update(blockchainBounty0.index, NETWORKS.POLKADOT, { title: 'title' }, proposer.user)
+
+            const saved = (await repository().findOne({
+                blockchainIndex: blockchainBounty0.index,
+                networkId: NETWORKS.POLKADOT,
+            }))!
+            expect(saved.ownerId).toBe(proposer.user.id)
+            expect(saved.title).toBe('title')
+        })
+
+        it('should throw BadRequestException if no entity and no title in dto', async () => {
+            const proposer = await createProposerSessionData(blockchainBounty0)
+
+            return expect(
+                service().update(blockchainBounty0.index, NETWORKS.POLKADOT, {}, proposer.user),
+            ).rejects.toThrow(BadRequestException)
         })
 
         it('should throw NotFoundException when no blockchain bounty', async () => {

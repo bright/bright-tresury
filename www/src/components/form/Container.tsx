@@ -1,5 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React, { PropsWithChildren } from 'react'
+import { useTranslation } from 'react-i18next'
 import { breakpoints } from '../../theme/theme'
 import Error from '../error/Error'
 import FormHeader from './header/FormHeader'
@@ -20,6 +21,10 @@ const useStyles = makeStyles((theme: Theme) =>
             },
             position: 'relative',
         },
+        error: {
+            marginLeft: '0',
+            marginTop: '40px',
+        },
     }),
 )
 
@@ -32,11 +37,12 @@ export type ContainerProps = PropsWithChildren<OwnProps>
 
 const Container = ({ title, error, children }: ContainerProps) => {
     const classes = useStyles()
+    const { t } = useTranslation()
 
     return (
         <div className={classes.root}>
-            {title ? <FormHeader title={title} /> : null}
-            {error ? <Error text={error} /> : null}
+            <FormHeader title={title ?? t('form.header.errorTitle')} />
+            {error ? <Error text={error} className={classes.error} /> : null}
             {children}
         </div>
     )

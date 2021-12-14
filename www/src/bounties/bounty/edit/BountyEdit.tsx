@@ -24,7 +24,7 @@ const BountyEdit = ({ bounty }: BountyEditProps) => {
 
     const { mutateAsync, isError, isLoading } = usePatchBounty()
 
-    const { canEdit } = useBounty(bounty)
+    const { canEdit, hasDetails } = useBounty(bounty)
 
     const submit = async (params: PatchBountyParams) => {
         await mutateAsync(params, {
@@ -39,7 +39,7 @@ const BountyEdit = ({ bounty }: BountyEditProps) => {
     }
 
     return (
-        <Container title={t('bounty.edit.title')}>
+        <Container title={hasDetails ? t('bounty.edit.titleEdit') : t('bounty.edit.titleAddDetails')}>
             <BountyEditForm bounty={bounty} onSubmit={submit}>
                 {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
                 <FormFooterButtonsContainer>

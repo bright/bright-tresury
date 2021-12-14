@@ -46,7 +46,7 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
     const loadedClasses = useSuccessfullyLoadedItemStyles()
     const { t } = useTranslation()
     const history = useHistory()
-    const { canEdit } = useBounty(bounty)
+    const { canEdit, hasDetails } = useBounty(bounty)
 
     const navigateToEdit = () => {
         history.push(generatePath(ROUTE_EDIT_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
@@ -62,7 +62,7 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
                         color="primary"
                         onClick={navigateToEdit}
                     >
-                        {t('bounty.info.editButton')}
+                        {hasDetails ? t('bounty.info.editButton') : t('bounty.info.addDetailsButton')}
                     </FormFooterButton>
                 </FormFooterButtonsContainer>
             )}

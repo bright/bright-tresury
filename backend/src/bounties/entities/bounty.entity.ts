@@ -7,12 +7,6 @@ import { NetworkPlanckValue, Nil } from '../../utils/types'
 @Entity('bounties')
 export class BountyEntity extends BaseEntity {
     @Column({ nullable: false, type: 'text' })
-    blockchainDescription!: string
-
-    @Column('decimal', { precision: 54, scale: 0, nullable: false, default: 0 })
-    value!: NetworkPlanckValue
-
-    @Column({ nullable: false, type: 'text' })
     title!: string
 
     @Column({ nullable: true, type: 'text' })
@@ -23,9 +17,6 @@ export class BountyEntity extends BaseEntity {
 
     @Column({ nullable: false, type: 'text' })
     networkId!: string
-
-    @Column({ nullable: false, type: 'text' })
-    proposer!: string
 
     @Column({ nullable: true, type: 'text' })
     beneficiary?: Nil<string>

@@ -1,5 +1,7 @@
-import { ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { plainToClass } from 'class-transformer'
+import { validateOrReject } from 'class-validator'
 import { Repository } from 'typeorm'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { BlockchainBountyDto } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
@@ -9,6 +11,7 @@ import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { getLogger } from '../logging.module'
 import { UserEntity } from '../users/user.entity'
 import { CreateBountyDto } from './dto/create-bounty.dto'
+import { ListenForBountyDto } from './dto/listen-for-bounty.dto'
 import { UpdateBountyDto } from './dto/update-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
@@ -27,10 +30,7 @@ export class BountiesService {
         private readonly polkassemblyService: PolkassemblyService,
     ) {}
 
-    create(
-        dto: Omit<CreateBountyDto, 'blockchainIndex'> & { blockchainIndex: number },
-        user: UserEntity,
-    ): Promise<BountyEntity> {
+    create(dto: CreateBountyDto, user: UserEntity): Promise<BountyEntity> {
         logger.info(`Creating a bounty entity for index`)
         const bounty = this.repository.create({
             ...dto,
@@ -48,21 +48,30 @@ export class BountiesService {
         logger.info(`Update a bounty entity for index in network by user`, blockchainIndex, networkId, user)
         const [bountyBlockchain, bountyEntity] = await this.getBounty(networkId, blockchainIndex)
 
-        if (!bountyEntity) {
-            throw new NotFoundException(`Bounty entity with blockchainIndex not found: ${blockchainIndex}`)
-        }
-
-        if (!bountyEntity.isOwner(user) && !bountyBlockchain.isOwner(user)) {
+        if (!bountyEntity?.isOwner(user) && !bountyBlockchain.isOwner(user)) {
             throw new ForbiddenException('The given user cannot edit this bounty')
         }
 
         bountyBlockchain.isEditableOrThrow()
 
-        await this.repository.save({ ...bountyEntity, ...dto })
+        if (!bountyEntity) {
+            try {
+                // construct CreateBountyDto object and validate
+                const createDto = plainToClass(CreateBountyDto, { ...dto, blockchainIndex, networkId })
+                await validateOrReject(createDto)
+
+                // create bounty with validated dto
+                await this.create(createDto, user)
+            } catch (e: any) {
+                throw new BadRequestException(e.message)
+            }
+        } else {
+            await this.repository.save({ ...bountyEntity, ...dto })
+        }
         return await this.getBounty(networkId, blockchainIndex)
     }
 
-    async listenForProposeBountyExtrinsic(dto: CreateBountyDto, user: UserEntity): Promise<ExtrinsicEntity> {
+    async listenForProposeBountyExtrinsic(dto: ListenForBountyDto, user: UserEntity): Promise<ExtrinsicEntity> {
         logger.info(`Start listening for a propose bounty extrinsic...`)
         const callback = async (events: ExtrinsicEvent[]) => {
             const bountyIndex = BlockchainBountiesService.extractBountyIndex(events)

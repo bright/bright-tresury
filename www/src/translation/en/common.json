@@ -30,6 +30,9 @@
         "informationIcon": "Information icon"
     },
     "form": {
+        "header": {
+            "errorTitle": "An error has occurred"
+        },
         "inputs": {
             "checkbox": {
                 "checked": "Checked",
@@ -602,6 +605,7 @@
             "claimPayout": "Claim Payout",
             "extendExpiry": "Extend expiry date",
             "edit": "Edit bounty",
+            "addDetails": "Add details",
             "award": "Award bounty"
         },
         "info": {
@@ -622,6 +626,7 @@
             "payoutUnlocked": "The bounty payout is unlocked!",
             "beneficiary": "Beneficiary",
             "editButton": "Edit",
+            "addDetailsButton": "Add details",
             "curatorActions": {
                 "acceptModal": {
                     "title": "You are about to accept the curator's role",
@@ -665,7 +670,8 @@
         },
         "edit": {
             "cannotEditBounty": "You cannot edit this bounty",
-            "title": "Edit bounty",
+            "titleEdit": "Edit bounty",
+            "titleAddDetails": "Add details",
             "save": "Save"
         },
         "award": {

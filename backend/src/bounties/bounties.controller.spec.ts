@@ -17,6 +17,7 @@ import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { BountyDto } from './dto/bounty.dto'
 import { CreateBountyDto } from './dto/create-bounty.dto'
+import { ListenForBountyDto } from './dto/listen-for-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
 import {
     blockchainBounty0,
@@ -57,7 +58,7 @@ describe(`/api/v1/bounties/`, () => {
     })
 
     describe('POST', () => {
-        const minimalValidDto: CreateBountyDto = {
+        const minimalValidDto: ListenForBountyDto = {
             blockchainDescription: 'bc-description',
             value: '10' as NetworkPlanckValue,
             title: 'title',
@@ -348,13 +349,10 @@ describe(`/api/v1/bounties/`, () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             await bountiesRepository().save(
                 bountiesRepository().create({
-                    blockchainDescription: 'bc-description-1',
-                    value: '1',
                     title: 'bounty-title',
                     field: 'field',
                     description: 'db-description',
                     networkId: NETWORKS.POLKADOT,
-                    proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
                     blockchainIndex: 0,
                     owner: sessionHandler.sessionData.user,
                 }),
@@ -382,13 +380,10 @@ describe(`/api/v1/bounties/`, () => {
         it('should return only bounties that are in blockchain', async () => {
             await bountiesRepository().save(
                 bountiesRepository().create({
-                    blockchainDescription: 'bc-description-entity',
-                    value: '1',
                     title: 'bounty-entity-title',
                     field: 'field',
                     description: 'db-description',
                     networkId: NETWORKS.POLKADOT,
-                    proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
                     blockchainIndex: 100,
                 }),
             )

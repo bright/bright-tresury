@@ -9,15 +9,15 @@ import {
 } from '@nestjs/swagger'
 import { SessionGuard } from '../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
+import { BlockchainMotionDto } from '../blockchain/dto/blockchain-motion.dto'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { NetworkNameQuery } from '../utils/network-name.query'
 import { BountiesService } from './bounties.service'
-import { CreateBountyDto } from './dto/create-bounty.dto'
-import { UpdateBountyDto } from './dto/update-bounty.dto'
-import { BountyDto } from './dto/bounty.dto'
 import { BountyParam } from './bounty.param'
-import { BlockchainMotionDto } from '../blockchain/dto/blockchain-motion.dto'
+import { BountyDto } from './dto/bounty.dto'
+import { ListenForBountyDto } from './dto/listen-for-bounty.dto'
+import { UpdateBountyDto } from './dto/update-bounty.dto'
 
 @ControllerApiVersion('/bounties', ['v1'])
 @ApiTags('bounties')
@@ -31,8 +31,10 @@ export class BountiesController {
     })
     async getBounties(@Query() { network }: NetworkNameQuery): Promise<BountyDto[]> {
         const bounties = await this.bountiesService.getBounties(network)
-        return bounties.map(([bountyBlockchain, bountyEntity, bountyPolkassemblyPost]) =>
-            new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost))
+        return bounties.map(
+            ([bountyBlockchain, bountyEntity, bountyPolkassemblyPost]) =>
+                new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost),
+        )
     }
 
     @Get(':bountyIndex')
@@ -41,10 +43,12 @@ export class BountiesController {
         type: BountyDto,
     })
     async getBounty(@Param() { bountyIndex }: BountyParam, @Query() { network }: NetworkNameQuery): Promise<BountyDto> {
-        const [bountyBlockchain, bountyEntity, bountyPolkassemblyPost] = await this.bountiesService.getBounty(network,Number(bountyIndex))
+        const [bountyBlockchain, bountyEntity, bountyPolkassemblyPost] = await this.bountiesService.getBounty(
+            network,
+            Number(bountyIndex),
+        )
         return new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost)
     }
-
 
     @Get(':bountyIndex/motions')
     @ApiOkResponse({
@@ -53,7 +57,7 @@ export class BountiesController {
     })
     async getBountyMotions(
         @Param() { bountyIndex }: BountyParam,
-        @Query() { network }: NetworkNameQuery
+        @Query() { network }: NetworkNameQuery,
     ): Promise<BlockchainMotionDto[]> {
         return this.bountiesService.getBountyMotions(network, Number(bountyIndex))
     }
@@ -67,7 +71,10 @@ export class BountiesController {
         description: 'Not valid data',
     })
     @UseGuards(SessionGuard)
-    async createBounty(@Body() dto: CreateBountyDto, @ReqSession() sessionData: SessionData): Promise<ExtrinsicEntity> {
+    async createBounty(
+        @Body() dto: ListenForBountyDto,
+        @ReqSession() sessionData: SessionData,
+    ): Promise<ExtrinsicEntity> {
         return this.bountiesService.listenForProposeBountyExtrinsic(dto, sessionData.user)
     }
 

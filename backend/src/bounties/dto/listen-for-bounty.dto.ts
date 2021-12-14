@@ -1,10 +1,18 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IsNotEmpty, IsNumberString, IsOptional, Validate } from 'class-validator'
-import { IsValidAddress } from '../../utils/address/address.validator'
 import { IsValidNetworkConstraint } from '../../utils/network.validator'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
 
-export class CreateBountyDto {
+export class ListenForBountyDto {
+    @ApiProperty({ description: 'Description of the bounty proposal stored on-chain' })
+    @IsNotEmpty()
+    blockchainDescription!: string
+
+    @ApiProperty({ description: 'Value of the bounty proposal in plancks' })
+    @IsNotEmpty()
+    @IsNumberString({ no_symbols: true })
+    value!: NetworkPlanckValue
+
     @ApiProperty({ description: 'Title of the bounty proposal' })
     @IsNotEmpty()
     title!: string
@@ -17,33 +25,20 @@ export class CreateBountyDto {
     @IsOptional()
     description?: Nil<string>
 
-    @ApiPropertyOptional({ description: 'Beneficiary of the bounty proposal' })
-    @IsOptional()
-    @IsValidAddress()
-    beneficiary?: Nil<string>
-
     @ApiProperty({ description: 'Network in which the bounty is proposed' })
     @IsNotEmpty()
     @Validate(IsValidNetworkConstraint)
     networkId!: string
 
-    @ApiProperty({ description: 'Blockchain index of the bounty proposal' })
+    @ApiProperty({ description: 'Proposer of the bounty' })
     @IsNotEmpty()
-    blockchainIndex!: number
+    proposer!: string
 
-    constructor(
-        title: string,
-        field: Nil<string>,
-        description: Nil<string>,
-        beneficiary: Nil<string>,
-        networkId: string,
-        blockchainIndex: number,
-    ) {
-        this.title = title
-        this.field = field
-        this.description = description
-        this.beneficiary = beneficiary
-        this.networkId = networkId
-        this.blockchainIndex = blockchainIndex
-    }
+    @ApiProperty({ description: 'Hash of extrinsic which creates bounty proposal' })
+    @IsNotEmpty()
+    extrinsicHash!: string
+
+    @ApiProperty({ description: 'Hash of last seen block' })
+    @IsNotEmpty()
+    lastBlockHash!: string
 }
