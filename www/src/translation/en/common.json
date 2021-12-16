@@ -279,7 +279,7 @@
         "details": {
             "beneficiary": "Beneficiary",
             "field": "Field of Idea",
-            "content": "Reason of Idea",
+            "content": "About the project",
             "net": "Net",
             "additionalNets": "Additional Nets",
             "edit": "Edit",
@@ -448,7 +448,7 @@
                 "proposer": "Proposer",
                 "beneficiary": "Beneficiary",
                 "fieldOfIdea": "Field of idea",
-                "reasonForIdea": "Reason for idea",
+                "reasonForIdea": "About the project",
                 "description": "Description"
             }
         },
@@ -478,7 +478,7 @@
             "edit": "Edit",
             "add": "Add details",
             "field": "Field of Proposal",
-            "content": "Reason of Proposal",
+            "content": "About the project",
             "proposer": "Proposer",
             "beneficiary": "Beneficiary",
             "noProposalDetails": {
@@ -694,9 +694,9 @@
             "transactions": "Transactions",
             "other": "Other"
         },
-        "content": "Reason",
-        "contact": "Proposer's information",
-        "portfolio": "Portfolio",
+        "content": "About the project",
+        "contact": "The Team behind it",
+        "portfolio": "Costs and budget",
         "links": "Links",
         "form": {
             "linkPlaceholder": "Add external link to your proposal here",
