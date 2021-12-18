@@ -1,14 +1,16 @@
-import { BadRequestException, ForbiddenException, Inject, Injectable } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { plainToClass } from 'class-transformer'
 import { validateOrReject } from 'class-validator'
 import { In, Repository } from 'typeorm'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { BlockchainBountyDto } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
+import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { getLogger } from '../logging.module'
+import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 import { UserEntity } from '../users/user.entity'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { ListenForBountyDto } from './dto/listen-for-bounty.dto'
@@ -175,8 +177,18 @@ export class BountiesService {
         return [bountyBlockchain, bountyEntity, bountyPost]
     }
 
-    getBountyMotions(networkId: string, blockchainIndex: number) {
-        return this.bountiesBlockchainService.getMotions(networkId, blockchainIndex)
+    async getBountyMotions(
+        networkId: string,
+        blockchainIndex: number,
+    ): Promise<(ProposedMotionDto | ExecutedMotionDto)[]> {
+        let blockchainMotions: ProposedMotionDto[] = []
+        try {
+            blockchainMotions = await this.bountiesBlockchainService.getMotions(networkId, blockchainIndex)
+        } catch (err) {
+            logger.info('Error when looking for motions')
+        }
+        const polkassemblyMotions = await this.polkassemblyService.getBountyMotions(blockchainIndex, networkId)
+        return [...blockchainMotions, ...polkassemblyMotions]
     }
 
     getTotalBountiesCount(networkId: string) {

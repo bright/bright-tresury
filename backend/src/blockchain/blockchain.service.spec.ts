@@ -7,6 +7,8 @@ import { beforeAllSetup, NETWORKS } from '../utils/spec.helpers'
 import { BlockchainModule, BlockchainsConnections } from './blockchain.module'
 import BN from 'bn.js'
 import { BlockchainService } from './blockchain.service'
+import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
+import { MotionTimeType } from './dto/motion-time.dto'
 import { BN_TEN, getApi } from './utils'
 import { ApiTypes } from '@polkadot/api/types'
 import { SubmittableExtrinsic } from '@polkadot/api/submittable/types'
@@ -162,9 +164,10 @@ describe(`Blockchain service`, () => {
             const futureBlockNumber = currentBlockNumber.add(new BN(1))
             const remainingTime = service().getRemainingTime(NETWORKS.POLKADOT, currentBlockNumber, futureBlockNumber)
 
-            expect(remainingTime.endBlock).toBe(futureBlockNumber.toNumber())
-            expect(remainingTime.remainingBlocks).toBe(1)
-            expect(remainingTime.timeLeft.seconds).toBe(6) // assuming that time for one block is 6 seconds
+            expect(remainingTime.type).toBe(MotionTimeType.Future)
+            expect(remainingTime.blockNo).toBe(futureBlockNumber.toNumber())
+            expect(remainingTime.blocksCount).toBe(1)
+            expect(remainingTime.time.seconds).toBe(6) // assuming that time for one block is 6 seconds
         }, 60000)
     })
     describe('getProposals', () => {

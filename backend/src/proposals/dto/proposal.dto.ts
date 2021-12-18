@@ -3,7 +3,7 @@ import { BlockchainProposalStatus } from '../../blockchain/dto/blockchain-propos
 import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
 import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
 import { Nil } from '../../utils/types'
-import { BlockchainMotionDto } from '../../blockchain/dto/blockchain-motion.dto'
+import { ProposedMotionDto } from '../../blockchain/dto/proposed-motion.dto'
 import { BlockchainProposalWithDomainDetails } from './blockchain-proposal-with-domain-details.dto'
 import { NetworkPlanckValue } from '../../utils/types'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
@@ -56,9 +56,9 @@ export class ProposalDto {
 
     @ApiProperty({
         description: 'Motions submitted to approve or reject this proposal',
-        type: [BlockchainMotionDto],
+        type: [ProposedMotionDto],
     })
-    motions: BlockchainMotionDto[]
+    motions: ProposedMotionDto[]
 
     @ApiPropertyOptional({ description: 'Id of a corresponding idea' })
     ideaId?: Nil<string>

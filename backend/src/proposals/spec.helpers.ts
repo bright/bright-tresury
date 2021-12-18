@@ -7,9 +7,11 @@ import {
     SessionHandler,
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info.dto'
-import { BlockchainMotionDto } from '../blockchain/dto/blockchain-motion.dto'
+import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { BlockchainProposal, BlockchainProposalStatus } from '../blockchain/dto/blockchain-proposal.dto'
 import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
+import { MotionTimeType } from '../blockchain/dto/motion-time.dto'
+import { MotionMethod, MotionStatus, ProposalMotionMethod } from '../blockchain/dto/motion.dto'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { CreateIdeaDto } from '../ideas/dto/create-idea.dto'
 import { IdeaNetworkEntity } from '../ideas/entities/idea-network.entity'
@@ -24,18 +26,19 @@ import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 
 const makeMotion = (
     hash: string,
-    method: string,
+    method: MotionMethod,
     motionIndex: number,
     ayes: BlockchainAccountInfo[],
     nays: BlockchainAccountInfo[],
-): BlockchainMotionDto => ({
+): ProposedMotionDto => ({
+    status: MotionStatus.Proposed,
     hash,
     method,
     motionIndex,
     ayes,
     nays,
     threshold: 2,
-    motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } as BlockchainTimeLeft },
+    motionEnd: { type: MotionTimeType.Future, blockNo: 1, blocksCount: 1, time: { seconds: 6 } as BlockchainTimeLeft },
 })
 
 export const proposals = [
@@ -45,7 +48,7 @@ export const proposals = [
         { address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
         '1' as NetworkPlanckValue,
         '100' as NetworkPlanckValue,
-        [makeMotion('hash_0_0', 'approveProposal', 0, [], [])] as BlockchainMotionDto[],
+        [makeMotion('hash_0_0', ProposalMotionMethod.Approve, 0, [], [])] as ProposedMotionDto[],
         BlockchainProposalStatus.Proposal,
     ),
 
@@ -55,7 +58,7 @@ export const proposals = [
         { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
         '2000' as NetworkPlanckValue,
         '40' as NetworkPlanckValue,
-        [makeMotion('hash_1_0', 'approveProposal', 1, [], [])] as BlockchainMotionDto[],
+        [makeMotion('hash_1_0', ProposalMotionMethod.Approve, 1, [], [])] as ProposedMotionDto[],
         BlockchainProposalStatus.Proposal,
     ),
     new BlockchainProposal(
@@ -66,7 +69,7 @@ export const proposals = [
         '1000' as NetworkPlanckValue,
         '20' as NetworkPlanckValue,
 
-        [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainMotionDto[],
+        [makeMotion('hash_3_0', ProposalMotionMethod.Approve, 2, [], [])] as ProposedMotionDto[],
         BlockchainProposalStatus.Proposal,
     ),
     new BlockchainProposal(
@@ -76,7 +79,7 @@ export const proposals = [
 
         '1000' as NetworkPlanckValue,
         '20' as NetworkPlanckValue,
-        [makeMotion('hash_3_0', 'approveProposal', 2, [], [])] as BlockchainMotionDto[],
+        [makeMotion('hash_3_0', ProposalMotionMethod.Approve, 2, [], [])] as ProposedMotionDto[],
         BlockchainProposalStatus.Approval,
     ),
 ]

@@ -1,8 +1,8 @@
-import CardDetails from '../card/components/CardDetails'
+import CardDetails from '../../../card/components/CardDetails'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
-import { AccountInfo, Nil } from '../../util/types'
+import { AccountInfo, Nil } from '../../../../util/types'
 import Vote, { VoteType } from './Vote'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -16,10 +16,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface MotionDetailsProps {
+interface OwnProps {
     ayes: Nil<AccountInfo[]>
     nays: Nil<AccountInfo[]>
 }
+
+export type MotionDetailsProps = OwnProps
 
 const MotionDetails = ({ ayes, nays }: MotionDetailsProps) => {
     ayes = ayes || []
@@ -34,8 +36,8 @@ const MotionDetails = ({ ayes, nays }: MotionDetailsProps) => {
     return (
         <CardDetails>
             <div className={styles.root}>
-                {ayes.map((aye: AccountInfo) => renderVote(aye, VoteType.AYE))}
-                {nays.map((nay: AccountInfo) => renderVote(nay, VoteType.NAY))}
+                {ayes.map((aye: AccountInfo) => renderVote(aye, VoteType.Aye))}
+                {nays.map((nay: AccountInfo) => renderVote(nay, VoteType.Nay))}
             </div>
         </CardDetails>
     )

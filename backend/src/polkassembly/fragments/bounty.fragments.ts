@@ -2,9 +2,9 @@ import { gql } from 'graphql-request'
 
 const onchainLinkBounty = gql`
     fragment onchainLinkBounty on onchain_links {
-        id,
-        proposer_address,
-        onchain_bounty_id,
+        id
+        proposer_address
+        onchain_bounty_id
         onchain_bounty(where: {}) {
             id
             proposer
@@ -27,22 +27,20 @@ const onchainLinkBounty = gql`
     }
 `
 const bountyPost = gql`
-fragment bountyPost on posts {
-    content
-    id
-    title
-    onchain_link {
-        ...onchainLinkBounty
+    fragment bountyPost on posts {
+        content
+        id
+        title
+        onchain_link {
+            ...onchainLinkBounty
+        }
     }
-}
-${onchainLinkBounty}
+    ${onchainLinkBounty}
 `
 
 export const OneBountyPost = gql`
-    query BountyPostAndComments ($id: Int!) {
-        posts(
-            where: {onchain_link: {onchain_bounty_id: {_eq: $id}}}
-        ) {
+    query BountyPostAndComments($id: Int!) {
+        posts(where: { onchain_link: { onchain_bounty_id: { _eq: $id } } }) {
             ...bountyPost
         }
     }
@@ -50,12 +48,12 @@ export const OneBountyPost = gql`
 `
 
 export const OnChainBountyPosts = gql`
-    query OnChainBountyPostAndComments ($offset: Int! = 0, $limit: Int! = 1000, $ids:[Int!]) {
+    query OnChainBountyPostAndComments($offset: Int! = 0, $limit: Int! = 1000, $ids: [Int!]) {
         posts(
             offset: $offset
             limit: $limit
-            where: {onchain_link: {onchain_bounty_id: {_in: $ids}}}
-            order_by: {onchain_link: {onchain_bounty_id: desc}}
+            where: { onchain_link: { onchain_bounty_id: { _in: $ids } } }
+            order_by: { onchain_link: { onchain_bounty_id: desc } }
         ) {
             ...bountyPost
         }
@@ -64,12 +62,12 @@ export const OnChainBountyPosts = gql`
 `
 
 export const OffChainBountyPosts = gql`
-    query OffChainBountyPostAndComments ($offset: Int! = 0, $limit: Int! = 1000, $ids:[Int!]) {
+    query OffChainBountyPostAndComments($offset: Int! = 0, $limit: Int! = 1000, $ids: [Int!]) {
         posts(
             offset: $offset
             limit: $limit
-            where: {onchain_link: {onchain_bounty_id: {_is_null: false, _nin: $ids}}}
-            order_by: {onchain_link: {onchain_bounty_id: desc}}
+            where: { onchain_link: { onchain_bounty_id: { _is_null: false, _nin: $ids } } }
+            order_by: { onchain_link: { onchain_bounty_id: desc } }
         ) {
             ...bountyPost
         }

@@ -4,8 +4,8 @@ import { UserEntity } from '../../users/user.entity'
 import { transformBalance } from '../utils'
 import { BlockchainAccountInfo, toBlockchainAccountInfo } from './blockchain-account-info.dto'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import { BlockchainMotionDto, toBlockchainMotion } from './blockchain-motion.dto'
-import { BlockchainMotionEndDto } from './blockchain-motion-end.dto'
+import { ProposedMotionDto, toBlockchainMotion } from './proposed-motion.dto'
+import { MotionTimeDto } from './motion-time.dto'
 import { encodeAddress } from '@polkadot/keyring'
 import { NetworkPlanckValue } from '../../utils/types'
 
@@ -20,14 +20,14 @@ export class BlockchainProposal {
     beneficiary: BlockchainAccountInfo
     value: NetworkPlanckValue
     bond: NetworkPlanckValue
-    motions: BlockchainMotionDto[]
+    motions: ProposedMotionDto[]
     status: BlockchainProposalStatus
 
     static create(
         derivedProposal: DeriveTreasuryProposal,
         status: BlockchainProposalStatus,
         identities: Map<string, DeriveAccountRegistration>,
-        toBlockchainProposalMotionEnd: (endBlock: BlockNumber) => BlockchainMotionEndDto,
+        toBlockchainProposalMotionEnd: (endBlock: BlockNumber) => MotionTimeDto,
     ): BlockchainProposal {
         const { id, council, proposal } = derivedProposal
         const proposerAddress = proposal.proposer.toHuman()
@@ -38,9 +38,7 @@ export class BlockchainProposal {
         const beneficiary = toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress))
         const value = proposal.value.toString() as NetworkPlanckValue
         const bond = proposal.bond.toString() as NetworkPlanckValue
-        const motions = council.map((motion) =>
-            toBlockchainMotion(motion, identities, toBlockchainProposalMotionEnd),
-        )
+        const motions = council.map((motion) => toBlockchainMotion(motion, identities, toBlockchainProposalMotionEnd))
         return new this(proposalIndex, proposer, beneficiary, value, bond, motions, status)
     }
 
@@ -50,7 +48,7 @@ export class BlockchainProposal {
         beneficiary: BlockchainAccountInfo,
         value: NetworkPlanckValue,
         bond: NetworkPlanckValue,
-        motions: BlockchainMotionDto[],
+        motions: ProposedMotionDto[],
         status: BlockchainProposalStatus,
     ) {
         this.proposalIndex = proposalIndex

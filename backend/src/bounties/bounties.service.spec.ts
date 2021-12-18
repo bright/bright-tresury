@@ -374,8 +374,9 @@ describe('BountiesService', () => {
         beforeAll(() => {
             mockGetBounties(app().get(BlockchainBountiesService))
         })
-        it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
-            return expect(service().getBountyMotions(NETWORKS.POLKADOT, 99)).rejects.toThrow(NotFoundException)
+        it('should return empty array when no bounty in blockchain and no motion in polkassembly', async () => {
+            const result = await service().getBountyMotions(NETWORKS.POLKADOT, 99)
+            expect(result).toHaveLength(0)
         })
     })
 })

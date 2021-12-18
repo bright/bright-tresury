@@ -29,10 +29,12 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface NoMotionProps {
+interface OwnProps {
     title: string
     toDiscussion: string
 }
+
+export type NoMotionProps = OwnProps
 
 const NoMotion = ({ title, toDiscussion }: NoMotionProps) => {
     const { t } = useTranslation()
@@ -43,13 +45,13 @@ const NoMotion = ({ title, toDiscussion }: NoMotionProps) => {
         <div className={`${styles.root} ${successfullyLoadedItemStyles.content}`}>
             <h3 className={styles.header}>{title}</h3>
             <p className={styles.body}>
-                {t('proposal.voting.noMotion.body1')}
+                {t('voting.noMotion.body1')}
                 <br />
-                {t('proposal.voting.noMotion.body2')}
+                {t('voting.noMotion.body2')}
             </p>
             <img className={styles.image} src={proposalNoMotion} alt={''} />
             <span className={styles.link}>
-                <RouterLink to={toDiscussion}>{t('proposal.voting.noMotion.visitDiscussions')}</RouterLink>
+                <RouterLink to={toDiscussion}>{t('voting.noMotion.visitDiscussions')}</RouterLink>
             </span>
         </div>
     )

@@ -15,7 +15,7 @@ import BN from 'bn.js'
 import { extractTime } from '@polkadot/util'
 import { AccountId32 } from '@polkadot/types/interfaces/runtime'
 import { u32 } from '@polkadot/types'
-import { BlockchainMotionDto, toBlockchainMotion } from '../dto/blockchain-motion.dto'
+import { ProposedMotionDto, toBlockchainMotion } from '../dto/proposed-motion.dto'
 
 const logger = getLogger()
 
@@ -170,7 +170,7 @@ export class BlockchainBountiesService {
             }, new Set<string>())
         return [...voters]
     }
-    async getMotions(networkId: string, index: number): Promise<BlockchainMotionDto[]> {
+    async getMotions(networkId: string, index: number): Promise<ProposedMotionDto[]> {
         const deriveBounty = await this.getDeriveBounty(networkId, index)
         const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
         const motions = deriveBounty.proposals

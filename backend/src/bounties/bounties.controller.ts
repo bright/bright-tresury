@@ -9,8 +9,9 @@ import {
 } from '@nestjs/swagger'
 import { SessionGuard } from '../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
-import { BlockchainMotionDto } from '../blockchain/dto/blockchain-motion.dto'
+import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
+import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { NetworkNameQuery } from '../utils/network-name.query'
 import { BountiesService } from './bounties.service'
@@ -66,12 +67,12 @@ export class BountiesController {
     @Get(':bountyIndex/motions')
     @ApiOkResponse({
         description: 'Respond with bounty motions for the given index in the given network',
-        type: [BlockchainMotionDto],
+        type: [ProposedMotionDto],
     })
     async getBountyMotions(
         @Param() { bountyIndex }: BountyParam,
         @Query() { network }: NetworkNameQuery,
-    ): Promise<BlockchainMotionDto[]> {
+    ): Promise<(ProposedMotionDto | ExecutedMotionDto)[]> {
         return this.bountiesService.getBountyMotions(network, Number(bountyIndex))
     }
 

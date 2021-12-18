@@ -127,13 +127,14 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal1!.ideaMilestoneId).toBeUndefined()
             expect(proposal1!.motions).toBeDefined()
             expect(proposal1!.motions[0]).toEqual({
+                status: 'Proposed',
                 hash: 'hash_0_0',
                 method: 'approveProposal',
                 motionIndex: 0,
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
+                motionEnd: { blockNo: 1, blocksCount: 1, time: { seconds: 6 }, type: 'future' },
             })
 
             const proposal2 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 1)
@@ -151,13 +152,14 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
             expect(proposal2!.motions).toBeDefined()
             expect(proposal2!.motions[0]).toEqual({
+                status: 'Proposed',
                 hash: 'hash_1_0',
                 method: 'approveProposal',
                 motionIndex: 1,
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
+                motionEnd: { blockNo: 1, blocksCount: 1, time: { seconds: 6 }, type: 'future' },
             })
 
             const proposal3 = body.find(({ proposalIndex }: ProposalDto) => proposalIndex === 3)
@@ -174,13 +176,14 @@ describe(`/api/v1/proposals`, () => {
             expect(proposal3!.ideaMilestoneId).toBeUndefined()
             expect(proposal3!.motions).toBeDefined()
             expect(proposal3!.motions[0]).toEqual({
+                status: 'Proposed',
                 hash: 'hash_3_0',
                 method: 'approveProposal',
                 motionIndex: 2,
                 ayes: [],
                 nays: [],
                 threshold: 2,
-                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
+                motionEnd: { blockNo: 1, blocksCount: 1, time: { seconds: 6 }, type: 'future' },
             })
         })
         it('should return correctly paginated response - first page', async () => {
@@ -239,15 +242,6 @@ describe(`/api/v1/proposals`, () => {
             expect(body.value).toBe('1')
             expect(body.status).toBe('submitted')
             expect(body.motions).toBeDefined()
-            expect(body.motions[0]).toEqual({
-                hash: 'hash_0_0',
-                method: 'approveProposal',
-                motionIndex: 0,
-                ayes: [],
-                nays: [],
-                threshold: 2,
-                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
-            })
 
             expect(body.isCreatedFromIdea).toBe(true)
             expect(body.isCreatedFromIdeaMilestone).toBe(false)
@@ -274,15 +268,6 @@ describe(`/api/v1/proposals`, () => {
             expect(body.value).toBe('2000')
             expect(body.status).toBe('submitted')
             expect(body.motions).toBeDefined()
-            expect(body.motions[0]).toEqual({
-                hash: 'hash_1_0',
-                method: 'approveProposal',
-                motionIndex: 1,
-                ayes: [],
-                nays: [],
-                threshold: 2,
-                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
-            })
 
             expect(body.ideaId).toBe(ideaWithMilestone.id)
             expect(body.ideaMilestoneId).toBe(ideaMilestone.id)
@@ -309,15 +294,6 @@ describe(`/api/v1/proposals`, () => {
             expect(body.value).toBe('1000')
             expect(body.status).toBe('approved')
             expect(body.motions).toBeDefined()
-            expect(body.motions[0]).toEqual({
-                hash: 'hash_3_0',
-                method: 'approveProposal',
-                motionIndex: 2,
-                ayes: [],
-                nays: [],
-                threshold: 2,
-                motionEnd: { endBlock: 1, remainingBlocks: 1, timeLeft: { seconds: 6 } },
-            })
 
             expect(body.isCreatedFromIdea).toBe(false)
             expect(body.isCreatedFromIdeaMilestone).toBe(false)

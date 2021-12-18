@@ -1,25 +1,24 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
+import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import Extrinsic from '@polkadot/types/extrinsic/Extrinsic'
 import { EventRecord, Header } from '@polkadot/types/interfaces'
-import { extractTime } from '@polkadot/util'
+import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
+import { AccountId } from '@polkadot/types/interfaces/runtime'
+import { BN_MILLION, BN_ZERO, extractTime, u8aConcat } from '@polkadot/util'
+import BN from 'bn.js'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { getLogger } from '../logging.module'
-import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
-import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
-import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import { getProposers, getBeneficiaries, getVoters, getApi, extractNumberFromBlockchainEvent } from './utils'
-import BN from 'bn.js'
-import { BlockchainMotionEndDto } from './dto/blockchain-motion-end.dto'
-import { BlockchainsConnections } from './blockchain.module'
-import { AccountId } from '@polkadot/types/interfaces/runtime'
-import { BN_MILLION, BN_ZERO, u8aConcat } from '@polkadot/util'
-import { StatsDto } from '../stats/stats.dto'
 import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
 import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calculations.dto'
-import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
-import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
+import { StatsDto } from '../stats/stats.dto'
 import { NetworkPlanckValue } from '../utils/types'
+import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
+import { BlockchainsConnections } from './blockchain.module'
+import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
+import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
+import { MotionTimeDto, MotionTimeType } from './dto/motion-time.dto'
+import { extractNumberFromBlockchainEvent, getApi, getBeneficiaries, getProposers, getVoters } from './utils'
 
 const logger = getLogger()
 
@@ -126,14 +125,33 @@ export class BlockchainService implements OnModuleDestroy {
         networkId: string,
         currentBlockNumber: BlockNumber,
         futureBlockNumber: BlockNumber,
-    ): BlockchainMotionEndDto {
-        const remainingBlocks = futureBlockNumber.sub(currentBlockNumber)
-        const timeLeft = this.blocksToTime(networkId, remainingBlocks)
-        return new BlockchainMotionEndDto({
-            endBlock: futureBlockNumber.toNumber(),
-            remainingBlocks: remainingBlocks.toNumber(),
-            timeLeft,
+    ): MotionTimeDto {
+        return new MotionTimeDto({
+            type: MotionTimeType.Future,
+            blockNo: futureBlockNumber.toNumber(),
+            ...this.getTime(networkId, currentBlockNumber, futureBlockNumber),
         })
+    }
+
+    getPastTime(networkId: string, currentBlockNumber: BlockNumber, pastBlockNumber: BlockNumber | BN): MotionTimeDto {
+        return {
+            type: MotionTimeType.Past,
+            blockNo: pastBlockNumber.toNumber(),
+            ...this.getTime(networkId, pastBlockNumber, currentBlockNumber),
+        }
+    }
+
+    getTime(
+        networkId: string,
+        firstBlockNumber: BlockNumber | BN,
+        secondBlockNumber: BlockNumber | BN,
+    ): Omit<MotionTimeDto, 'type' | 'blockNo'> {
+        const remainingBlocks = secondBlockNumber.sub(firstBlockNumber)
+        const timeLeft = this.blocksToTime(networkId, remainingBlocks)
+        return {
+            blocksCount: remainingBlocks.toNumber(),
+            time: timeLeft,
+        }
     }
 
     async getProposals(networkId: string): Promise<BlockchainProposal[]> {
@@ -164,7 +182,7 @@ export class BlockchainService implements OnModuleDestroy {
 
         // make a function that will compute remaining voting time
         const currentBlockNumber = await api.derive.chain.bestNumber()
-        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): BlockchainMotionEndDto =>
+        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): MotionTimeDto =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
         return [
             ...proposals.map((derivedProposal) =>

@@ -1,7 +1,7 @@
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
 import { AccountInfo, NetworkPlanckValue } from '../util/types'
 import { PolkassemblyPostDto } from '../components/polkassemblyDescription/polkassembly-post.dto'
-import { MotionDto } from '../components/voting/MotionDto'
+import { MotionDto } from '../components/voting/motion.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',

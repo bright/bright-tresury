@@ -1,7 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { apiGet, apiPatch, apiPost } from '../api'
 import { BountyDto, BountyExtrinsicDto, CreateBountyDto, EditBountyDto } from './bounties.dto'
-import { MotionDto } from '../components/voting/MotionDto'
+import { MotionDto } from '../components/voting/motion.dto'
 import { getPaginationQueryParams, PaginationRequestParams } from '../util/pagination/pagination.request.params'
 import { PaginationResponseDto } from '../util/pagination/pagination.response.dto'
 import { TimeFrame } from '../components/select/TimeSelect'

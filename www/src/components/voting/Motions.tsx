@@ -1,14 +1,12 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import MotionCard from './MotionCard'
+import MotionCard from './card/MotionCard'
 import React from 'react'
 import { useSuccessfullyLoadedItemStyles } from '../loading/useSuccessfullyLoadedItemStyles'
-import { MotionDto } from './MotionDto'
+import { MotionDto } from './motion.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            maxWidth: '505px',
-            minWidth: '360px',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'spaceBetween',
@@ -16,11 +14,13 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-export interface MotionsProp {
+interface OwnProps {
     motions: MotionDto[]
 }
 
-const Motions = ({ motions }: MotionsProp) => {
+export type MotionsProps = OwnProps
+
+const Motions = ({ motions }: MotionsProps) => {
     const styles = useStyles()
     const successfullyLoadedItemStyles = useSuccessfullyLoadedItemStyles()
     if (!motions) {

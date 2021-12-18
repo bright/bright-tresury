@@ -281,6 +281,35 @@
         "deleteError": "Something went wrong when deleting this comment.",
         "editError": "Something went wrong when updating this comment."
     },
+    "voting": {
+        "past": {
+            "started": "Started",
+            "ended": "Ended"
+        },
+        "future": {
+            "end": "Voting end"
+        },
+        "noMotion": {
+            "body1": "While waiting for motions from Councils, you can go to the discussion tab",
+            "body2": "to make sure that no aspect of the topic has slipped away from you or the community",
+            "visitDiscussions": "Visit discussions"
+        },
+        "method": {
+            "motion": "Motion",
+            "approveBounty": "Approve Bounty",
+            "closeBounty": "Close Bounty",
+            "proposeCurator": "Propose Curator",
+            "rejectCurator": "Reject Curator"
+        },
+        "status": {
+            "approved": "Approved",
+            "disapproved": "Rejected"
+        },
+        "vote": {
+            "aye": "Aye",
+            "nay": "Nay"
+        }
+    },
     "idea": {
         "copyLink": "Copy Link",
         "ordinalNumberPrefix": "Idea - ",
@@ -501,13 +530,8 @@
             }
         },
         "voting": {
-            "motion": "Motion",
-            "votingEnd": "Voting end - ",
             "noMotion": {
-                "title": "No one has voted on the proposal yet",
-                "body1": "While waiting for motions from Councils, you can go to the discussion tab",
-                "body2": "to make sure that no aspect of the topic has slipped away from you or the community",
-                "visitDiscussions": "Visit discussions"
+                "title": "No one has voted on the proposal yet"
             }
         },
         "milestones": {
@@ -664,12 +688,6 @@
             }
         },
         "voting": {
-            "method": {
-                "approveBounty": "Approve Bounty",
-                "closeBounty": "Close Bounty",
-                "proposeCurator": "Propose Curator",
-                "rejectCurator": "Reject Curator"
-            },
             "noMotion": {
                 "title": "No one is voting now"
             }
