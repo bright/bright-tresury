@@ -29,9 +29,9 @@ const MotionTitle = ({ method }: MotionTitleProps) => {
             case BountyMotionMethod.RejectCurator:
                 return t('voting.method.rejectCurator')
             case ProposalMotionMethod.Approve:
-                return t('voting.motion')
+                return t('voting.method.motion')
             case ProposalMotionMethod.Reject:
-                return t('voting.motion')
+                return t('voting.method.motion')
         }
     }, [method, t])
 

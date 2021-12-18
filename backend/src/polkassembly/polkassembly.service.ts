@@ -6,7 +6,6 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { MotionTimeDto } from '../blockchain/dto/motion-time.dto'
 import { getLogger } from '../logging.module'
 import { Nil } from '../utils/types'
-
 import {
     OffChainTreasuryProposalPosts,
     OnChainTreasuryProposalPosts,
@@ -49,6 +48,10 @@ export class PolkassemblyService {
         const client = this.graphQLClients[networkId]
         if (!client) return
         return client.request(query, variables)
+    }
+
+    async getProposalMotions(proposalIndex: number, networkId: string): Promise<ExecutedMotionDto[]> {
+        return this.getMotions('proposal_id', proposalIndex.toString(), networkId)
     }
 
     async getBountyMotions(bountyIndex: number, networkId: string): Promise<ExecutedMotionDto[]> {

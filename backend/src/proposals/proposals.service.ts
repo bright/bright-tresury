@@ -20,6 +20,8 @@ import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
 import { TimeFrame } from '../utils/time-frame.query'
 import { PolkassemblyTreasuryProposalPostDto } from '../polkassembly/dto/treasury-proposal-post.dto'
+import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
+import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 
 const logger = getLogger()
 
@@ -220,5 +222,12 @@ export class ProposalsService {
 
     getTotalProposalsCount(networkId: string) {
         return this.blockchainService.getTotalProposalsCount(networkId)
+    }
+
+    async getProposalMotions(
+        networkId: string,
+        blockchainIndex: number,
+    ): Promise<(ProposedMotionDto | ExecutedMotionDto)[]> {
+        return this.polkassemblyService.getProposalMotions(blockchainIndex, networkId)
     }
 }

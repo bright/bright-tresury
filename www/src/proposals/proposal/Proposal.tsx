@@ -13,7 +13,7 @@ import LoadingWrapper from '../../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import ProposalHeader from './ProposalHeader'
-import { ProposalDto, ProposalStatus } from '../proposals.dto'
+import { ProposalDto } from '../proposals.dto'
 import infoIcon from '../../assets/info.svg'
 import milestonesIcon from '../../assets/milestones.svg'
 import discussionIcon from '../../assets/discussion.svg'
@@ -101,15 +101,12 @@ const Proposal = () => {
 
     const { status, data: proposal } = useGetProposal(proposalIndex, network.id)
 
-    const proposalContentTypes =
-        proposal?.status === ProposalStatus.Submitted
-            ? [
-                  ProposalContentType.Info,
-                  ProposalContentType.Milestones,
-                  ProposalContentType.Discussion,
-                  ProposalContentType.Voting,
-              ]
-            : [ProposalContentType.Info, ProposalContentType.Milestones, ProposalContentType.Discussion]
+    const proposalContentTypes = [
+        ProposalContentType.Info,
+        ProposalContentType.Milestones,
+        ProposalContentType.Discussion,
+        ProposalContentType.Voting,
+    ]
 
     const proposalTabsConfig = proposalContentTypes.map(
         (proposalContentType) => PROPOSAL_CONTENT_TYPE_BUILDER[proposalContentType],

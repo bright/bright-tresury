@@ -22,7 +22,6 @@ export class ExecutedMotionDto extends MotionDto {
             : isDisapproved
             ? MotionStatus.Disapproved
             : MotionStatus.Proposed
-        // todo
         const executed = schema.motionStatus.find((status) => status.status === 'Executed')
         if (executed) {
             this.motionEnd = toMotionTime(new BN(executed.blockNumber.number))
