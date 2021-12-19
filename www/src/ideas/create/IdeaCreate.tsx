@@ -33,7 +33,7 @@ const IdeaCreate = () => {
     const dontActivate = () => setActivate(false)
 
     return (
-        <Container title={t('idea.introduceTitle')}>
+        <Container title={t('idea.introduceTitle')} showWarningOnClose={true}>
             <IdeaForm onSubmit={submit}>
                 {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
 

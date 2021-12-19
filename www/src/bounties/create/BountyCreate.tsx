@@ -9,7 +9,7 @@ const BountyCreate = () => {
     const { t } = useTranslation()
 
     return (
-        <Container title={t('bounty.create.title')}>
+        <Container title={t('bounty.create.title')} showWarningOnClose={true}>
             <BountyCreateForm>
                 <FormFooterButtonsContainer>
                     <FormFooterButton type={'submit'}>{t('bounty.create.submit')}</FormFooterButton>

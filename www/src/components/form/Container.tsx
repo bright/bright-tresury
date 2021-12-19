@@ -31,17 +31,18 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     title?: string
     error?: string
+    showWarningOnClose?: boolean
 }
 
 export type ContainerProps = PropsWithChildren<OwnProps>
 
-const Container = ({ title, error, children }: ContainerProps) => {
+const Container = ({ title, error, children, showWarningOnClose }: ContainerProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
     return (
         <div className={classes.root}>
-            <FormHeader title={title ?? t('form.header.errorTitle')} />
+            <FormHeader title={title ?? t('form.header.errorTitle')} showWarningOnClose={showWarningOnClose} />
             {error ? <Error text={error} className={classes.error} /> : null}
             {children}
         </div>

@@ -27,7 +27,13 @@
             "empty": "Empty radio box icon",
             "checked": "Checked radio box icon"
         },
-        "informationIcon": "Information icon"
+        "informationIcon": "Information icon",
+        "warningModal": {
+            "title": "Are you sure you want to close the form?",
+            "subtitle": "Any changes you have made will be lost",
+            "discard": "Discard",
+            "close": "Close the form"
+        }
     },
     "form": {
         "header": {

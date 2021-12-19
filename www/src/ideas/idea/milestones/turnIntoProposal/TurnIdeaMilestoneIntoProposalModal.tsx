@@ -22,6 +22,8 @@ import FormFooterButtonsContainer from '../../../../components/form/footer/FormF
 import { useIdeaMilestone } from '../useIdeaMilestone'
 import { useNetworks } from '../../../../networks/useNetworks'
 import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
+import WarningModal from '../../../../components/modal/WarningModal'
+import { useModal } from '../../../../components/modal/useModal'
 
 const useStyles = makeStyles(
     createStyles({
@@ -58,13 +60,12 @@ const TurnIdeaMilestoneIntoProposalModal = ({
     const { network } = useNetworks()
     const { canEdit, canEditAnyIdeaMilestoneNetwork } = useIdeaMilestone(idea, ideaMilestone)
     const queryClient = useQueryClient()
+    const warningModal = useModal()
     const { mutateAsync: patchIdeaMilestone, isError: isPatchIdeaMilestoneError } = usePatchIdeaMilestone()
-    const {
-        mutateAsync: patchIdeaMilestoneNetworks,
-        isError: isPatchIdeaMilestoneNetworksError,
-    } = usePatchIdeaMilestoneNetworks()
+    const { mutateAsync: patchIdeaMilestoneNetworks, isError: isPatchIdeaMilestoneNetworksError } =
+        usePatchIdeaMilestoneNetworks()
 
-    const {toIdeaMilestoneDto, toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({idea, ideaMilestone})
+    const { toIdeaMilestoneDto, toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({ idea, ideaMilestone })
     const submitPatchIdeaMilestone = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
         const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = toIdeaMilestoneDto(ideaMilestoneFromValues)
         await patchIdeaMilestone(
@@ -103,9 +104,9 @@ const TurnIdeaMilestoneIntoProposalModal = ({
         additionalNetworks,
     }: IdeaMilestoneFormValues) => {
         const ideaMilestoneNetworks = [currentNetwork, ...additionalNetworks]
-        const networksToUpdate = ideaMilestoneNetworks.filter(
-            ({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal,
-        ).map(toIdeaMilestoneNetworkDto)
+        const networksToUpdate = ideaMilestoneNetworks
+            .filter(({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal)
+            .map(toIdeaMilestoneNetworkDto)
 
         await patchIdeaMilestoneNetworks(
             { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: { items: networksToUpdate } },
@@ -126,52 +127,60 @@ const TurnIdeaMilestoneIntoProposalModal = ({
         return
     }
 
+    const handleOpenModal = () => {
+        onClose()
+        warningModal.close()
+    }
+
     return (
-        <Modal
-            open={open}
-            onClose={onClose}
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
-            fullWidth={true}
-            maxWidth={'xs'}
-        >
-            <>
-                <h2 id="modal-title" className={classes.title}>
-                    <Trans
-                        i18nKey="idea.milestones.turnIntoProposal.areYouSureYouWantToTurnIdeaMilestoneIntoProposal"
-                        values={{
-                            ideaMilestoneSubject: ideaMilestone.details.subject,
-                        }}
-                    />
-                </h2>
+        <>
+            <Modal
+                open={open}
+                onClose={warningModal.open}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+                fullWidth={true}
+                maxWidth={'xs'}
+            >
+                <>
+                    <h2 id="modal-title" className={classes.title}>
+                        <Trans
+                            i18nKey="idea.milestones.turnIntoProposal.areYouSureYouWantToTurnIdeaMilestoneIntoProposal"
+                            values={{
+                                ideaMilestoneSubject: ideaMilestone.details.subject,
+                            }}
+                        />
+                    </h2>
 
-                <p id="modal-description" className={classes.description}>
-                    {t('idea.milestones.turnIntoProposal.makeSureYouHaveAllDataCorrectBeforeTurnIntoProposal')}
-                </p>
+                    <p id="modal-description" className={classes.description}>
+                        {t('idea.milestones.turnIntoProposal.makeSureYouHaveAllDataCorrectBeforeTurnIntoProposal')}
+                    </p>
 
-                <IdeaMilestoneForm
-                    idea={idea}
-                    ideaMilestone={ideaMilestone}
-                    folded={true}
-                    extendedValidation={true}
-                    onSubmit={onSubmit}
-                >
-                    {isPatchIdeaMilestoneError || isPatchIdeaMilestoneNetworksError ? (
-                        <FormFooterErrorBox error={t('errors.somethingWentWrong')} />
-                    ) : null}
+                    <IdeaMilestoneForm
+                        idea={idea}
+                        ideaMilestone={ideaMilestone}
+                        folded={true}
+                        extendedValidation={true}
+                        onSubmit={onSubmit}
+                    >
+                        {isPatchIdeaMilestoneError || isPatchIdeaMilestoneNetworksError ? (
+                            <FormFooterErrorBox error={t('errors.somethingWentWrong')} />
+                        ) : null}
 
-                    <FormFooterButtonsContainer>
-                        <FormFooterButton type={'submit'} variant={'contained'}>
-                            {t('idea.details.header.turnIntoProposal')}
-                        </FormFooterButton>
+                        <FormFooterButtonsContainer>
+                            <FormFooterButton type={'submit'} variant={'contained'}>
+                                {t('idea.details.header.turnIntoProposal')}
+                            </FormFooterButton>
 
-                        <FormFooterButton type={'button'} variant={'text'} onClick={onClose}>
-                            {t('idea.milestones.modal.form.buttons.cancel')}
-                        </FormFooterButton>
-                    </FormFooterButtonsContainer>
-                </IdeaMilestoneForm>
-            </>
-        </Modal>
+                            <FormFooterButton type={'button'} variant={'text'} onClick={onClose}>
+                                {t('idea.milestones.modal.form.buttons.cancel')}
+                            </FormFooterButton>
+                        </FormFooterButtonsContainer>
+                    </IdeaMilestoneForm>
+                </>
+            </Modal>
+            <WarningModal open={warningModal.visible} onClose={warningModal.close} handleFormClose={handleOpenModal} />
+        </>
     )
 }
 

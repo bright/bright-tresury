@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { useModal } from '../../../components/modal/useModal'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 import { useNetworks } from '../../../networks/useNetworks'
+import WarningModal from '../../../components/modal/WarningModal'
 
 interface OwnProps {
     idea: IdeaDto
@@ -26,6 +27,7 @@ const IdeaMilestones = ({ idea }: IdeaMilestonesProps) => {
     const createModal = useModal()
     const { network: currentNetwork } = useNetworks()
     const { status, data: ideaMilestones } = useGetIdeaMilestones(idea.id, currentNetwork.id)
+    const warningModal = useModal()
 
     const { canEditIdeaMilestones } = useIdea(idea)
 
@@ -45,6 +47,7 @@ const IdeaMilestones = ({ idea }: IdeaMilestonesProps) => {
                     <IdeaMilestoneCreateModal open={createModal.visible} idea={idea} onClose={createModal.close} />
                 </div>
             ) : null}
+            <WarningModal open={warningModal.visible} onClose={warningModal.close} />
         </LoadingWrapper>
     )
 }

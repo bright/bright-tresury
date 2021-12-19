@@ -10,6 +10,8 @@ import { IDEA_MILESTONES_QUERY_KEY_BASE, useCreateIdeaMilestone } from '../idea.
 import { useQueryClient } from 'react-query'
 import { CreateIdeaMilestoneDto } from '../idea.milestones.dto'
 import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
+import WarningModal from '../../../../components/modal/WarningModal'
+import { useModal } from '../../../../components/modal/useModal'
 
 interface OwnProps {
     open: boolean
@@ -23,8 +25,9 @@ const IdeaMilestoneCreateModal = ({ open, idea, onClose }: IdeaMilestoneCreateMo
     const { t } = useTranslation()
 
     const { mutateAsync, isError } = useCreateIdeaMilestone()
-    const { toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({idea})
+    const { toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({ idea })
     const queryClient = useQueryClient()
+    const warningModal = useModal()
 
     const submit = async ({
         beneficiary,
@@ -57,22 +60,36 @@ const IdeaMilestoneCreateModal = ({ open, idea, onClose }: IdeaMilestoneCreateMo
             },
         )
     }
+
+    const handleOpenModal = () => {
+        onClose()
+        warningModal.close()
+    }
     return (
-        <Modal open={open} onClose={onClose} aria-labelledby="modal-title" fullWidth={true} maxWidth={'md'}>
-            <IdeaMilestoneForm idea={idea} onSubmit={submit}>
-                {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
+        <>
+            <Modal
+                open={open}
+                onClose={warningModal.open}
+                aria-labelledby="modal-title"
+                fullWidth={true}
+                maxWidth={'md'}
+            >
+                <IdeaMilestoneForm idea={idea} onSubmit={submit}>
+                    {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
 
-                <FormFooterButtonsContainer>
-                    <FormFooterButton type={'submit'} variant={'contained'}>
-                        {t('idea.milestones.modal.form.buttons.create')}
-                    </FormFooterButton>
+                    <FormFooterButtonsContainer>
+                        <FormFooterButton type={'submit'} variant={'contained'}>
+                            {t('idea.milestones.modal.form.buttons.create')}
+                        </FormFooterButton>
 
-                    <FormFooterButton type={'button'} variant={'text'} onClick={onClose}>
-                        {t('idea.milestones.modal.form.buttons.cancel')}
-                    </FormFooterButton>
-                </FormFooterButtonsContainer>
-            </IdeaMilestoneForm>
-        </Modal>
+                        <FormFooterButton type={'button'} variant={'text'} onClick={onClose}>
+                            {t('idea.milestones.modal.form.buttons.cancel')}
+                        </FormFooterButton>
+                    </FormFooterButtonsContainer>
+                </IdeaMilestoneForm>
+            </Modal>
+            <WarningModal open={warningModal.visible} onClose={warningModal.close} handleFormClose={handleOpenModal} />
+        </>
     )
 }
 

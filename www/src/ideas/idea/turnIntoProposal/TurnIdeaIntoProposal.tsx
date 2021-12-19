@@ -33,7 +33,7 @@ const TurnIdeaIntoProposal = ({ idea }: TurnIdeaIntoProposalProps) => {
     }
 
     return (
-        <Container title={t('idea.turnIntoProposal.title')}>
+        <Container title={t('idea.turnIntoProposal.title')} showWarningOnClose={true}>
             {idea ? (
                 <>
                     {idea.status === IdeaStatus.Pending ? (

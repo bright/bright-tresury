@@ -21,6 +21,7 @@ import { theme } from '../../../../theme/theme'
 import { useModal } from '../../../../components/modal/useModal'
 import DeleteIdeaMilestoneModal from './DeleteIdeaMilestoneModal'
 import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
+import WarningModal from '../../../../components/modal/WarningModal'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -63,12 +64,11 @@ const IdeaMilestoneModal = ({
     const classes = useStyles()
     const deleteIdeaMilestoneModal = useModal()
     const queryClient = useQueryClient()
+    const warningModal = useModal()
     const { mutateAsync: patchIdeaMilestone, isError: isPatchIdeaMilestoneError } = usePatchIdeaMilestone()
-    const {
-        mutateAsync: patchIdeaMilestoneNetworks,
-        isError: isPatchIdeaMilestoneNetworksError,
-    } = usePatchIdeaMilestoneNetworks()
-    const {toIdeaMilestoneDto, toIdeaMilestoneNetworkDto} = useIdeaMilestoneForm({ idea, ideaMilestone })
+    const { mutateAsync: patchIdeaMilestoneNetworks, isError: isPatchIdeaMilestoneNetworksError } =
+        usePatchIdeaMilestoneNetworks()
+    const { toIdeaMilestoneDto, toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({ idea, ideaMilestone })
     const submitPatchIdeaMilestone = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
         const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = toIdeaMilestoneDto(ideaMilestoneFromValues)
 
@@ -93,9 +93,9 @@ const IdeaMilestoneModal = ({
         additionalNetworks,
     }: IdeaMilestoneFormValues) => {
         const ideaMilestoneNetworks = [currentNetwork, ...additionalNetworks]
-        const networksToUpdate = ideaMilestoneNetworks.filter(
-            ({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal,
-        ).map(toIdeaMilestoneNetworkDto)
+        const networksToUpdate = ideaMilestoneNetworks
+            .filter(({ status }) => status !== IdeaMilestoneNetworkStatus.TurnedIntoProposal)
+            .map(toIdeaMilestoneNetworkDto)
 
         await patchIdeaMilestoneNetworks(
             { ideaId: idea.id, ideaMilestoneId: ideaMilestone.id, data: { items: networksToUpdate } },
@@ -114,54 +114,68 @@ const IdeaMilestoneModal = ({
         return
     }
 
+    const handleOpenModal = () => {
+        onClose()
+        warningModal.close()
+    }
+
     return (
-        <Modal open={open} onClose={onClose} aria-labelledby="modal-title" fullWidth={true} maxWidth={'md'}>
-            <IdeaMilestoneForm
-                idea={idea}
-                ideaMilestone={ideaMilestone}
-                onTurnIntoProposalClick={onTurnIntoProposalClick}
-                onSubmit={onSubmit}
+        <>
+            <Modal
+                open={open}
+                onClose={warningModal.open}
+                aria-labelledby="modal-title"
+                fullWidth={true}
+                maxWidth={'md'}
             >
-                {isPatchIdeaMilestoneError || isPatchIdeaMilestoneNetworksError ? (
-                    <FormFooterErrorBox error={t('errors.somethingWentWrong')} />
-                ) : null}
-                <FormFooterButtonsContainer>
-                    <div className={classes.buttonsContainer}>
-                        <FormFooterButton
-                            className={classes.cancelButton}
-                            type={'button'}
-                            variant={'text'}
-                            onClick={onClose}
-                        >
-                            {t('idea.milestones.modal.form.buttons.cancel')}
-                        </FormFooterButton>
-                        {canEdit || canEditAnyIdeaMilestoneNetwork ? (
-                            <FormFooterButton type={'submit'} variant={'contained'}>
-                                {t('idea.milestones.modal.form.buttons.save')}
+                <IdeaMilestoneForm
+                    idea={idea}
+                    ideaMilestone={ideaMilestone}
+                    onTurnIntoProposalClick={onTurnIntoProposalClick}
+                    onSubmit={onSubmit}
+                >
+                    {isPatchIdeaMilestoneError || isPatchIdeaMilestoneNetworksError ? (
+                        <FormFooterErrorBox error={t('errors.somethingWentWrong')} />
+                    ) : null}
+                    <FormFooterButtonsContainer>
+                        <div className={classes.buttonsContainer}>
+                            <FormFooterButton
+                                className={classes.cancelButton}
+                                type={'button'}
+                                variant={'text'}
+                                onClick={onClose}
+                            >
+                                {t('idea.milestones.modal.form.buttons.cancel')}
+                            </FormFooterButton>
+                            {canEdit || canEditAnyIdeaMilestoneNetwork ? (
+                                <FormFooterButton type={'submit'} variant={'contained'}>
+                                    {t('idea.milestones.modal.form.buttons.save')}
+                                </FormFooterButton>
+                            ) : null}
+                        </div>
+                        {canEdit ? (
+                            <FormFooterButton
+                                className={classes.removeMilestone}
+                                onClick={deleteIdeaMilestoneModal.open}
+                                type={'button'}
+                                variant={'text'}
+                                disabled={!canEdit}
+                            >
+                                {t('idea.milestones.modal.form.buttons.removeMilestone')}
                             </FormFooterButton>
                         ) : null}
-                    </div>
-                    {canEdit ? (
-                        <FormFooterButton
-                            className={classes.removeMilestone}
-                            onClick={deleteIdeaMilestoneModal.open}
-                            type={'button'}
-                            variant={'text'}
-                            disabled={!canEdit}
-                        >
-                            {t('idea.milestones.modal.form.buttons.removeMilestone')}
-                        </FormFooterButton>
-                    ) : null}
-                    <DeleteIdeaMilestoneModal
-                        idea={idea}
-                        ideaMilestone={ideaMilestone}
-                        open={deleteIdeaMilestoneModal.visible}
-                        onClose={deleteIdeaMilestoneModal.close}
-                        onIdeaMilestoneModalClose={onClose}
-                    />
-                </FormFooterButtonsContainer>
-            </IdeaMilestoneForm>
-        </Modal>
+                        <DeleteIdeaMilestoneModal
+                            idea={idea}
+                            ideaMilestone={ideaMilestone}
+                            open={deleteIdeaMilestoneModal.visible}
+                            onClose={deleteIdeaMilestoneModal.close}
+                            onIdeaMilestoneModalClose={onClose}
+                        />
+                    </FormFooterButtonsContainer>
+                </IdeaMilestoneForm>
+            </Modal>
+            <WarningModal open={warningModal.visible} onClose={warningModal.close} handleFormClose={handleOpenModal} />
+        </>
     )
 }
 

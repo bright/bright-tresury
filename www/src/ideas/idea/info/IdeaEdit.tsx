@@ -45,11 +45,11 @@ const IdeaEdit = ({ idea }: IdeaEditProps) => {
     const dontActivate = () => setActivate(false)
 
     if (!canEditIdea) {
-        return <Container error={t('idea.details.cannotEditIdea')} />
+        return <Container error={t('idea.details.cannotEditIdea')} showWarningOnClose={false} />
     }
 
     return (
-        <Container title={t('idea.details.editTitle')}>
+        <Container title={t('idea.details.editTitle')} showWarningOnClose={true}>
             <IdeaForm idea={idea} onSubmit={submit}>
                 {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
                 <FormFooterButtonsContainer>

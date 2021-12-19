@@ -39,7 +39,10 @@ const BountyEdit = ({ bounty }: BountyEditProps) => {
     }
 
     return (
-        <Container title={hasDetails ? t('bounty.edit.titleEdit') : t('bounty.edit.titleAddDetails')}>
+        <Container
+            title={hasDetails ? t('bounty.edit.titleEdit') : t('bounty.edit.titleAddDetails')}
+            showWarningOnClose={true}
+        >
             <BountyEditForm bounty={bounty} onSubmit={submit}>
                 {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
                 <FormFooterButtonsContainer>
