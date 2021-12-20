@@ -8,7 +8,7 @@ const DescriptionField = () => {
         <StyledInput
             name="description"
             multiline={true}
-            rows={8}
+            rows={20}
             label={t('bounty.form.fields.description')}
             placeholder={t('bounty.form.fields.description')}
         />

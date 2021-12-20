@@ -14,7 +14,7 @@ const ContactInput = (props: ContactInputProps) => {
         <StyledInput
             name="contact"
             multiline={true}
-            rows={4}
+            rows={20}
             label={t('ideaProposalDetails.contact')}
             placeholder={t('ideaProposalDetails.contact')}
             {...props}

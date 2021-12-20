@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
             fontWeight: 400,
             width: '100%',
             resize: 'vertical',
+            whiteSpace: 'pre-wrap',
         },
     }),
 )
@@ -33,7 +34,7 @@ const LongText = ({ text, placeholder }: LongTextProps) => {
     return (
         <>
             {text ? (
-                <textarea value={text} className={classes.longText} disabled={true} />
+                <div className={classes.longText}>{text}</div>
             ) : (
                 <div className={classes.longText}>
                     <Placeholder value={placeholder} />

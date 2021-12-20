@@ -14,7 +14,7 @@ const PortfolioInput = (props: PortfolioInputProps) => {
         <StyledInput
             name="portfolio"
             multiline={true}
-            rows={4}
+            rows={20}
             label={t('ideaProposalDetails.portfolio')}
             placeholder={t('ideaProposalDetails.portfolio')}
             {...props}

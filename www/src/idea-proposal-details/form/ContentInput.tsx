@@ -14,7 +14,7 @@ const ContentInput = (props: ContentInputProps) => {
         <StyledInput
             name="content"
             multiline={true}
-            rows={8}
+            rows={20}
             label={t('ideaProposalDetails.content')}
             placeholder={t('ideaProposalDetails.content')}
             {...props}
