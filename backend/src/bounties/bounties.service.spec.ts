@@ -10,9 +10,9 @@ import {
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { createSessionData, createWeb3SessionData } from '../ideas/spec.helpers'
+import { PolkassemblyService } from '../polkassembly/polkassembly.service'
 import { UserEntity } from '../users/user.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
-import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { BountyEntity } from './entities/bounty.entity'
 import {
@@ -28,6 +28,7 @@ import {
     createProposerSessionData,
     minimalValidCreateDto,
     mockGetBounties,
+    mockGetPolkassemblyBounty,
     mockListenForExtrinsic,
     mockListenForExtrinsicWithNoEvent,
 } from './spec.helpers'
@@ -40,6 +41,7 @@ describe('BountiesService', () => {
     const service = beforeAllSetup(() => app().get<BountiesService>(BountiesService))
     const repository = beforeAllSetup(() => app().get<Repository<BountyEntity>>(getRepositoryToken(BountyEntity)))
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
+    const polkassemblyService = beforeAllSetup(() => app().get<PolkassemblyService>(PolkassemblyService))
     const extrinsicsService = beforeAllSetup(() => app().get<ExtrinsicsService>(ExtrinsicsService))
 
     beforeEach(async () => {
@@ -175,7 +177,7 @@ describe('BountiesService', () => {
 
         it('should return updated bounty entity', async () => {
             const { user, bountyEntity } = await setUpUpdate()
-            const [blockchain, entity] = await service().update(
+            const { blockchain, entity } = await service().update(
                 bountyEntity.blockchainIndex,
                 bountyEntity.networkId,
                 {
@@ -339,7 +341,7 @@ describe('BountiesService', () => {
             const paginatedBounties = await service().find(
                 NETWORKS.POLKADOT,
                 TimeFrame.OnChain,
-                new PaginatedParams({pageSize: '10', pageNumber: '1'})
+                new PaginatedParams({ pageSize: '10', pageNumber: '1' }),
             )
             const bounties = paginatedBounties.items
             expect(Array.isArray(bounties)).toBe(true)
@@ -352,21 +354,33 @@ describe('BountiesService', () => {
             mockGetBounties(app().get(BlockchainBountiesService))
         })
         it('should return correct bounty tuple', async () => {
-            const [blockchainBounty, bountyEntity] = await service().getBounty(NETWORKS.POLKADOT, 0)
-            expect(blockchainBounty).toBeDefined()
-            expect(bountyEntity).toBeUndefined()
+            const bounty = await service().getBounty(NETWORKS.POLKADOT, 0)
+            expect(bounty.blockchain).toBeDefined()
+            expect(bounty.entity).toBeUndefined()
 
-            expect(blockchainBounty.index).toBe(0)
-            expect(blockchainBounty.description).toBe('bc-description-1')
-            expect(blockchainBounty.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
-            expect(blockchainBounty.value).toBe('10000')
-            expect(blockchainBounty.fee).toBe('100')
-            expect(blockchainBounty.curatorDeposit).toBe('0')
-            expect(blockchainBounty.bond).toBe('10')
-            expect(blockchainBounty.status).toBe(BlockchainBountyStatus.Proposed)
+            expect(bounty.blockchain.index).toBe(0)
+            expect(bounty.blockchain.description).toBe('bc-description-1')
+            expect(bounty.blockchain.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(bounty.blockchain.value).toBe('10000')
+            expect(bounty.blockchain.fee).toBe('100')
+            expect(bounty.blockchain.curatorDeposit).toBe('0')
+            expect(bounty.blockchain.bond).toBe('10')
+            expect(bounty.blockchain.status).toBe(BlockchainBountyStatus.Proposed)
         })
-        it('should throw NotFoundException when asking for bounty with wrong blockchainIndex', async () => {
+
+        it('should throw NotFoundException when no bounty on-chain and in polkassembly', async () => {
+            await mockGetPolkassemblyBounty(polkassemblyService())
             return expect(service().getBounty(NETWORKS.POLKADOT, 99)).rejects.toThrow(NotFoundException)
+        })
+
+        it('should return polkassembly data when no bounty on-chain', async () => {
+            await mockGetPolkassemblyBounty(polkassemblyService())
+            const bounty = await service().getBounty(NETWORKS.POLKADOT, 10)
+
+            expect(bounty.blockchain).toBeDefined()
+            expect(bounty.blockchain.index).toBe(10)
+            expect(bounty.entity).toBeUndefined()
+            expect(bounty.polkassembly).toBeDefined()
         })
     })
 

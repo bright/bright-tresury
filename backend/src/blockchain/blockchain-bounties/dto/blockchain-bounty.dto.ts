@@ -11,6 +11,9 @@ export enum BlockchainBountyStatus {
     CuratorProposed = 'CuratorProposed',
     Active = 'Active',
     PendingPayout = 'PendingPayout',
+    Claimed = 'Claimed',
+    Rejected = 'Rejected',
+    Unknown = 'Unknown',
 }
 
 export class BlockchainBountyDto {

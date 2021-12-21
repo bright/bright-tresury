@@ -35,7 +35,7 @@ const Bounties = () => {
 
     const { status, data, remove, isLoading, fetchNextPage } = useGetBounties(network.id, timeFrame)
 
-    const bounties = data?.pages.map(page => page.items).flat() ?? []
+    const bounties = data?.pages.map((page) => page.items).flat() ?? []
     const total = data?.pages[0].total ?? 0
     const canLoadMore = bounties.length < total
 
@@ -50,19 +50,20 @@ const Bounties = () => {
     const isCurrentSpendPeriod = timeFrame === TimeFrame.OnChain
     return (
         <div className={classes.root}>
-            <BountiesHeader selectedFilter={selectedFilter} selectedTimeFrame={timeFrame} onTimeFrameChange={onTimeFrameChange}/>
+            <BountiesHeader
+                selectedFilter={selectedFilter}
+                selectedTimeFrame={timeFrame}
+                onTimeFrameChange={onTimeFrameChange}
+            />
             <LoadingWrapper
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingBounties')}
                 loadingText={t('loading.bounties')}
             >
+                <BountiesList bounties={isCurrentSpendPeriod ? filteredBounties : bounties} />
             </LoadingWrapper>
-            <BountiesList
-                bounties={isCurrentSpendPeriod ? filteredBounties : bounties}
-                disableCards={!isCurrentSpendPeriod}
-                showStatus={isCurrentSpendPeriod}
-            />
-            { canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
+
+            {canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
         </div>
     )
 }

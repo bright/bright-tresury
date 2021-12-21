@@ -7,6 +7,10 @@ import {
     BlockchainBountyDto,
     BlockchainBountyStatus,
 } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
+import { PolkassemblyBountyPostDto } from '../polkassembly/dto/bounty-post.dto'
+import { PolkassemblyPostEventDto } from '../polkassembly/dto/polkassembly-post-event.dto'
+import { PolkassemblyService } from '../polkassembly/polkassembly.service'
+import { PolkassemblyBountyPostSchema } from '../polkassembly/schemas/bounty-post.schema'
 import { UserEntity } from '../users/user.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
@@ -294,3 +298,57 @@ export const blockchainDeriveBounties = [
     blockchainDeriveBountyActive,
     blockchainDeriveBountyPendingPayout,
 ] as DeriveBounties
+
+// bounty polkassembly
+
+const bountySchema: PolkassemblyBountyPostSchema = {
+    id: 0,
+    title: 'polkassembly title',
+    content: 'polkassembly content',
+    onchain_link: {
+        id: 0,
+        proposer_address: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
+        onchain_bounty_id: 0,
+        onchain_bounty: [
+            {
+                id: 0,
+                bountyId: 0,
+                proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
+                value: '100',
+                fee: '10',
+                curatorDeposit: '10',
+                bond: '10',
+                curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3',
+                beneficiary: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3',
+                bountyStatus: [
+                    {
+                        id: '0',
+                        status: 'BountyRejected',
+                        blockNumber: {
+                            startDateTime: 0,
+                            number: 0,
+                        },
+                    },
+                ],
+            },
+        ],
+    },
+}
+
+export const polkassemblyBounty0 = new PolkassemblyBountyPostDto(bountySchema)
+export const polkassemblyBounty10 = new PolkassemblyBountyPostDto({
+    ...bountySchema,
+    onchain_link: {
+        ...bountySchema.onchain_link,
+        onchain_bounty_id: 10,
+        onchain_bounty: [{ ...bountySchema.onchain_link.onchain_bounty[0], bountyId: 10 }],
+    },
+})
+
+export const polkassemblyBounties = [polkassemblyBounty0, polkassemblyBounty10]
+
+export async function mockGetPolkassemblyBounty(service: PolkassemblyService) {
+    jest.spyOn(service, 'getBounty').mockImplementation(async (bountyIndex: number, networkId: string) =>
+        Promise.resolve(polkassemblyBounties.find((b) => b.blockchainIndex === bountyIndex)),
+    )
+}

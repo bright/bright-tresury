@@ -26,6 +26,12 @@ const BountyStatusIndicator = ({ status }: BountyStatusIndicatorProps) => {
                 return 'bounty.status.active'
             case BountyStatus.PendingPayout:
                 return 'bounty.status.pendingPayout'
+            case BountyStatus.Claimed:
+                return 'bounty.status.claimed'
+            case BountyStatus.Rejected:
+                return 'bounty.status.rejected'
+            case BountyStatus.Unknown:
+                return ''
         }
     }
 
@@ -43,7 +49,17 @@ const BountyStatusIndicator = ({ status }: BountyStatusIndicatorProps) => {
                 return '#0E65F2'
             case BountyStatus.PendingPayout:
                 return '#01D55A'
+            case BountyStatus.Claimed:
+                return '#009840'
+            case BountyStatus.Rejected:
+                return '#FF0000'
+            case BountyStatus.Unknown:
+                return '#000000'
         }
+    }
+
+    if (status === BountyStatus.Unknown) {
+        return null
     }
 
     return <Status label={t(getStatusTranslationKey())} color={getStatusColor()} />

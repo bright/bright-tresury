@@ -572,7 +572,9 @@
             "funded": "Funded",
             "curatorProposed": "Curator proposed",
             "active": "Active",
-            "pendingPayout": "Pending payout"
+            "pendingPayout": "Pending payout",
+            "claimed": "Claimed",
+            "rejected": "Rejected"
         },
         "list": {
             "proposer": "(Proposer)",
@@ -707,6 +709,9 @@
             "cannotExtendExpiry": "You cannot extend expiry date of this bounty",
             "title": "Extend expiry date",
             "save": "Submit"
+        },
+        "discussion": {
+            "bountyClosed": "This bounty is already closed."
         }
     },
     "ideaProposalDetails": {

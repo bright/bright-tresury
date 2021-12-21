@@ -9,8 +9,8 @@ import NoComments from '../../../components/discussion/noComments/NoComments'
 import LoadingWrapper from '../../../components/loading/LoadingWrapper'
 import { useNetworks } from '../../../networks/useNetworks'
 import { useGetBountyComments } from './bounty.comments.api'
-import DisplayBountyComment from './DisplayBountyComment'
-import EnterBountyComment from './EnterBountyComment'
+import DisplayBountyComment from './components/DisplayBountyComment'
+import EnterBountyComment from './components/EnterBountyComment'
 
 interface OwnProps {
     bountyIndex: number

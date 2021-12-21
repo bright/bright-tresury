@@ -5,14 +5,12 @@ import BountyCard from './BountyCard'
 
 interface OwnProps {
     bounties?: BountyDto[]
-    disableCards?: boolean
-    showStatus?: boolean
 }
 
 export type BountyListProps = OwnProps
 
-const BountiesList = ({ bounties, disableCards = false, showStatus = true }: BountyListProps) => {
-    const renderCard = (bounty: BountyDto) => <BountyCard bounty={bounty} disable={disableCards} showStatus={showStatus}/>
+const BountiesList = ({ bounties }: BountyListProps) => {
+    const renderCard = (bounty: BountyDto) => <BountyCard bounty={bounty} />
 
     return <Grid items={bounties?.sort((a, b) => b.blockchainIndex - a.blockchainIndex)} renderItem={renderCard} />
 }

@@ -36,18 +36,19 @@ export class BountiesController {
         description: 'Respond with current bounties for the given network',
         type: PaginatedResponseDto,
     })
-
     async getBounties(
         @Query() { network }: NetworkNameQuery,
-        @Query() { timeFrame = TimeFrame.OnChain}: TimeFrameQuery,
-        @Query() { pageNumber, pageSize }: PaginatedQueryParams
+        @Query() { timeFrame = TimeFrame.OnChain }: TimeFrameQuery,
+        @Query() { pageNumber, pageSize }: PaginatedQueryParams,
     ): Promise<PaginatedResponseDto<BountyDto>> {
-        logger.info(`Getting bounties for network: ${network} ${timeFrame} pageNumber: ${pageNumber} pageSize: ${pageSize}`)
-        const paginatedParams = new PaginatedParams({pageNumber, pageSize})
+        logger.info(
+            `Getting bounties for network: ${network} ${timeFrame} pageNumber: ${pageNumber} pageSize: ${pageSize}`,
+        )
+        const paginatedParams = new PaginatedParams({ pageNumber, pageSize })
         const { items, total } = await this.bountiesService.find(network, timeFrame, paginatedParams)
         return {
-            items: items.map(({blockchain, entity, polkassembly}) => new BountyDto(blockchain, entity, polkassembly)),
-            total
+            items: items.map((bounty) => new BountyDto(bounty)),
+            total,
         }
     }
 
@@ -57,11 +58,8 @@ export class BountiesController {
         type: BountyDto,
     })
     async getBounty(@Param() { bountyIndex }: BountyParam, @Query() { network }: NetworkNameQuery): Promise<BountyDto> {
-        const [bountyBlockchain, bountyEntity, bountyPolkassemblyPost] = await this.bountiesService.getBounty(
-            network,
-            Number(bountyIndex),
-        )
-        return new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost)
+        const bounty = await this.bountiesService.getBounty(network, Number(bountyIndex))
+        return new BountyDto(bounty)
     }
 
     @Get(':bountyIndex/motions')
@@ -112,12 +110,7 @@ export class BountiesController {
         @Query() { network }: NetworkNameQuery,
         @ReqSession() sessionData: SessionData,
     ): Promise<BountyDto> {
-        const [bountyBlockchain, bountyEntity, bountyPolkassemblyPost] = await this.bountiesService.update(
-            Number(bountyIndex),
-            network,
-            dto,
-            sessionData.user,
-        )
-        return new BountyDto(bountyBlockchain, bountyEntity, bountyPolkassemblyPost)
+        const bounty = await this.bountiesService.update(Number(bountyIndex), network, dto, sessionData.user)
+        return new BountyDto(bounty)
     }
 }

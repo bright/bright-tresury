@@ -1,13 +1,10 @@
-import { NetworkPlanckValue, Nil } from '../../utils/types'
-import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
-import {
-    BlockchainBountyDto,
-    BlockchainBountyStatus,
-} from '../../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
-import { BountyEntity } from '../entities/bounty.entity'
-import { BlockchainTimeLeft } from '../../blockchain/dto/blockchain-time-left.dto'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
+import { BlockchainBountyStatus } from '../../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
+import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
+import { BlockchainTimeLeft } from '../../blockchain/dto/blockchain-time-left.dto'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
+import { NetworkPlanckValue, Nil } from '../../utils/types'
+import { Bounty } from '../bounties.service'
 
 export class BountyDto {
     @ApiProperty({
@@ -101,31 +98,25 @@ export class BountyDto {
     })
     polkassembly?: Nil<PolkassemblyPostDto>
 
-    constructor(
-        bountyBlockchain: BlockchainBountyDto,
-        bountyEntity: Nil<BountyEntity>,
-        bountyPolkassemblyPost: Nil<PolkassemblyPostDto>,
-    ) {
-        this.id = bountyEntity?.id
-        this.blockchainIndex = bountyBlockchain.index
-        this.blockchainDescription = bountyBlockchain.description
-        this.proposer = bountyBlockchain.proposer
-        this.value = bountyBlockchain.value
-        this.bond = bountyBlockchain.bond
-        this.curatorDeposit = bountyBlockchain.curatorDeposit
-        this.curatorFee = bountyBlockchain.fee
-        this.curator = bountyBlockchain.curator
-        this.beneficiary =
-            bountyBlockchain.beneficiary ??
-            (bountyEntity?.beneficiary ? { address: bountyEntity.beneficiary } : undefined)
-        this.unlockAt = bountyBlockchain.unlockAt
-        this.updateDue = bountyBlockchain.updateDue
-        this.status = bountyBlockchain.status
+    constructor({ blockchain, entity, polkassembly }: Bounty) {
+        this.id = entity?.id
+        this.blockchainIndex = blockchain.index
+        this.blockchainDescription = blockchain.description
+        this.proposer = blockchain.proposer
+        this.value = blockchain.value
+        this.bond = blockchain.bond
+        this.curatorDeposit = blockchain.curatorDeposit
+        this.curatorFee = blockchain.fee
+        this.curator = blockchain.curator
+        this.beneficiary = blockchain.beneficiary ?? (entity?.beneficiary ? { address: entity.beneficiary } : undefined)
+        this.unlockAt = blockchain.unlockAt
+        this.updateDue = blockchain.updateDue
+        this.status = blockchain.status
 
-        this.ownerId = bountyEntity?.ownerId
-        this.title = bountyEntity?.title
-        this.description = bountyEntity?.description
-        this.field = bountyEntity?.field
-        this.polkassembly = bountyPolkassemblyPost
+        this.ownerId = entity?.ownerId
+        this.title = entity?.title
+        this.description = entity?.description
+        this.field = entity?.field
+        this.polkassembly = polkassembly
     }
 }

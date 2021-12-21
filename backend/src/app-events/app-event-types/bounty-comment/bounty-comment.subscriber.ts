@@ -35,12 +35,9 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Bounty
     async afterInsert({ entity }: InsertEvent<BountyCommentEntity>) {
         logger.info(`New bounty comment created. Creating NewBountyComment app event: `, entity)
 
-        const [bountyBlockchain, bountyEntity] = await this.bountiesService.getBounty(
-            entity.networkId,
-            entity.blockchainBountyId,
-        )
-        const receiverIds = await this.getReceiverIds(entity, bountyBlockchain, bountyEntity)
-        const data = this.getEventDetails(entity, bountyBlockchain, bountyEntity)
+        const bounty = await this.bountiesService.getBounty(entity.networkId, entity.blockchainBountyId)
+        const receiverIds = await this.getReceiverIds(entity, bounty.blockchain, bounty.entity)
+        const data = this.getEventDetails(entity, bounty.blockchain, bounty.entity)
 
         await this.appEventsService.create(data, receiverIds)
     }

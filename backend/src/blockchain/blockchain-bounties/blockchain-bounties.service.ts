@@ -59,8 +59,11 @@ export class BlockchainBountiesService {
         const deriveBounties = await this.getDeriveBounties(networkId) // blockchain-bounty currently hold in blockchain
         return this.toBlockchainBountyDto(deriveBounties, networkId)
     }
-    async getBounty(networkId: string, index: number): Promise<BlockchainBountyDto> {
+    async getBounty(networkId: string, index: number): Promise<Nil<BlockchainBountyDto>> {
         const deriveBounty = await this.getDeriveBounty(networkId, index) // blockchain-bounty currently hold in blockchain
+        if (!deriveBounty) {
+            return null
+        }
         const [blockchainBountyDto] = await this.toBlockchainBountyDto([deriveBounty], networkId)
         return blockchainBountyDto
     }
@@ -152,10 +155,9 @@ export class BlockchainBountiesService {
         return api.derive.bounties.bounties()
     }
 
-    private async getDeriveBounty(networkId: string, index: number) {
+    private async getDeriveBounty(networkId: string, index: number): Promise<Nil<DeriveBounty>> {
         const deriveBounties = await this.getDeriveBounties(networkId)
         const deriveBounty = deriveBounties.find((db) => Number(db.index.toString()) === index)
-        if (!deriveBounty) throw new NotFoundException(`Bounty with given blockchain index was not found: ${index}`)
         return deriveBounty
     }
     private static getVoters(motions: DeriveCollectiveProposal[]): string[] {
@@ -170,8 +172,12 @@ export class BlockchainBountiesService {
             }, new Set<string>())
         return [...voters]
     }
+
     async getMotions(networkId: string, index: number): Promise<ProposedMotionDto[]> {
         const deriveBounty = await this.getDeriveBounty(networkId, index)
+        if (!deriveBounty) {
+            return []
+        }
         const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
         const motions = deriveBounty.proposals
         const identities = await this.blockchainService.getIdentities(

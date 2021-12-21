@@ -1,11 +1,11 @@
+import { getLogger } from '../../logging.module'
 import { NetworkPlanckValue } from '../../utils/types'
 import { PolkassemblyPostEventDto } from './polkassembly-post-event.dto'
 import {
     BlockchainBountyDto,
     BlockchainBountyStatus,
 } from '../../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
-import { PolkassemblyBountyPostSchema } from '../schemas/bounty-post.schema'
-
+import { OffchainPolkassemblyBountyStatus, PolkassemblyBountyPostSchema } from '../schemas/bounty-post.schema'
 
 export class PolkassemblyBountyPostDto {
     title: string
@@ -18,7 +18,7 @@ export class PolkassemblyBountyPostDto {
     bond: NetworkPlanckValue
     curatorAddress: string
     beneficiaryAddress: string
-    bountyStatus: string
+    bountyStatus: OffchainPolkassemblyBountyStatus
     events: PolkassemblyPostEventDto[]
 
     constructor(post: PolkassemblyBountyPostSchema) {
@@ -34,25 +34,39 @@ export class PolkassemblyBountyPostDto {
         this.curatorAddress = onchainBounty?.curator
         this.beneficiaryAddress = onchainBounty?.beneficiary
         this.bountyStatus = onchainBounty?.bountyStatus[0]?.status
-        this.events = onchainBounty?.bountyStatus?.map((bountyStatus: any) =>
-            new PolkassemblyPostEventDto({
-                eventName: bountyStatus.status,
-                blockNumber: bountyStatus.blockNumber.number,
-                blockDateTime: bountyStatus.blockNumber.startDateTime,
-            }))
+        this.events = onchainBounty?.bountyStatus?.map(
+            (bountyStatus: any) =>
+                new PolkassemblyPostEventDto({
+                    eventName: bountyStatus.status,
+                    blockNumber: bountyStatus.blockNumber.number,
+                    blockDateTime: bountyStatus.blockNumber.startDateTime,
+                }),
+        )
     }
+
     asBlockchainBountyDto() {
         return new BlockchainBountyDto({
             index: this.blockchainIndex,
             description: '',
-            proposer: {address: this.proposerAddress},
+            proposer: { address: this.proposerAddress },
             value: this.value,
             bond: this.bond,
             curatorDeposit: this.curatorDeposit,
-            curator: {address: this.curatorAddress},
-            beneficiary: {address: this.beneficiaryAddress},
+            curator: { address: this.curatorAddress },
+            beneficiary: { address: this.beneficiaryAddress },
             fee: this.fee,
-            status: this.bountyStatus as BlockchainBountyStatus
+            status: this.getBlockchainStatus(),
         })
+    }
+
+    private getBlockchainStatus() {
+        switch (this.bountyStatus) {
+            case 'BountyClaimed':
+                return BlockchainBountyStatus.Claimed
+            case 'BountyRejected':
+                return BlockchainBountyStatus.Rejected
+        }
+        getLogger().info(`Unknown bounty status found for bounty index`, this.bountyStatus, this.blockchainIndex)
+        return BlockchainBountyStatus.Unknown
     }
 }

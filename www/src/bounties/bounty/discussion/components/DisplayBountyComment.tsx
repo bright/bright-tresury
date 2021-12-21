@@ -1,10 +1,10 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import DisplayComment from '../../../components/discussion/displayComment/DisplayComment'
-import { BOUNTY_COMMENTS_QUERY_KEY_BASE, useDeleteBountyComment, useEditBountyComment } from './bounty.comments.api'
+import DisplayComment from '../../../../components/discussion/displayComment/DisplayComment'
+import { BOUNTY_COMMENTS_QUERY_KEY_BASE, useDeleteBountyComment, useEditBountyComment } from '../bounty.comments.api'
 import { useQueryClient } from 'react-query'
-import { CommentDto } from '../../../components/discussion/comment.dto'
-import { useNetworks } from '../../../networks/useNetworks'
+import { CommentDto } from '../../../../components/discussion/comment.dto'
+import { useNetworks } from '../../../../networks/useNetworks'
 
 interface OwnProps {
     bountyIndex: number

@@ -18,7 +18,7 @@ export interface PolkassemblyBountyPostSchema {
             beneficiary: string
             bountyStatus: {
                 id: string
-                status: string
+                status: OffchainPolkassemblyBountyStatus
                 blockNumber: {
                     startDateTime: number
                     number: number
@@ -27,3 +27,5 @@ export interface PolkassemblyBountyPostSchema {
         }[]
     }
 }
+
+export type OffchainPolkassemblyBountyStatus = 'BountyClaimed' | 'BountyRejected'

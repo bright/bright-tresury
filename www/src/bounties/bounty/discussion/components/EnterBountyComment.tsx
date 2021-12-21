@@ -1,9 +1,9 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import EnterComment from '../../../components/discussion/enterComment/EnterComment'
+import EnterComment from '../../../../components/discussion/enterComment/EnterComment'
 import { useQueryClient } from 'react-query'
-import { useNetworks } from '../../../networks/useNetworks'
-import { BOUNTY_COMMENTS_QUERY_KEY_BASE, useCreateBountyComment } from './bounty.comments.api'
+import { useNetworks } from '../../../../networks/useNetworks'
+import { BOUNTY_COMMENTS_QUERY_KEY_BASE, useCreateBountyComment } from '../bounty.comments.api'
 
 interface OwnProps {
     bountyIndex: number

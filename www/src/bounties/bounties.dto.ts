@@ -9,6 +9,9 @@ export enum BountyStatus {
     CuratorProposed = 'CuratorProposed',
     Active = 'Active',
     PendingPayout = 'PendingPayout',
+    Claimed = 'Claimed',
+    Rejected = 'Rejected',
+    Unknown = 'Unknown',
 }
 
 interface ProposedBounty {
@@ -37,11 +40,15 @@ interface ActiveBounty {
 }
 
 interface PendingPayoutBounty {
-    status: BountyStatus.PendingPayout
+    status: BountyStatus.PendingPayout | BountyStatus.Claimed
     curatorFee: NetworkPlanckValue
     curator: AccountInfo
     beneficiary: AccountInfo
     unlockAt?: Time
+}
+
+interface RejectedBounty {
+    status: BountyStatus.Rejected
 }
 
 interface BaseBountyDto {
@@ -69,6 +76,7 @@ type ExtendedBountyDto =
     | CuratorProposedBounty
     | ActiveBounty
     | PendingPayoutBounty
+    | RejectedBounty
 
 export type BountyDto = BaseBountyDto & ExtendedBountyDto
 
