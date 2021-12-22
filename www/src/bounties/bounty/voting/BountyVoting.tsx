@@ -20,7 +20,7 @@ const BountyVoting = ({ bounty }: BountyVotingProps) => {
     return (
         <LoadingWrapper
             status={status}
-            errorText={t('errors.errorOccurredWhileLoadingBountiesMotions')}
+            errorText={t('errors.errorOccurredWhileLoadingBountiesVoting')}
             loadingText={t('loading.bountiesVoting')}
         >
             {bountyVoting?.length ? (

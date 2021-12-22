@@ -589,7 +589,9 @@
                 "funded": "Funded",
                 "curatorProposed": "Curator Proposed",
                 "active": "Active",
-                "pendingPayout": "Pending Payout"
+                "pendingPayout": "Pending Payout",
+                "claimed": "Claimed",
+                "rejected": "Rejected"
             }
         },
         "create": {
@@ -824,6 +826,7 @@
     "errors": {
         "errorOccurredWhileLoadingIdeas": "An error occurred while loading ideas.",
         "errorOccurredWhileLoadingBounties": "An error occurred while loading bounties.",
+        "errorOccurredWhileLoadingBountiesVoting": "An error occurred while loading bounties voting.",
         "errorOccurredWhileLoadingProposals": "An error occurred while loading proposals.",
         "errorOccurredWhileLoadingIdea": "An error occurred while loading idea.",
         "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
@@ -849,6 +852,7 @@
         "stats": "We're loading the statistics. It may take a moment. Bear with us.",
         "proposalComments": "We're loading the proposal comments. It may take a moment. Bear with us.",
         "bounty": "We're loading the bounty. It may take a moment. Bear with us.",
-        "bountyComments": "We're loading the bounty comments. It may take a moment. Bear with us."
+        "bountyComments": "We're loading the bounty comments. It may take a moment. Bear with us.",
+        "bountiesVoting": "We're loading the bounty voting. It may take a moment. Bear with us."
     }
 }

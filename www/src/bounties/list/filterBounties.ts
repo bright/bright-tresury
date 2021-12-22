@@ -20,5 +20,9 @@ export function filterBounties(bounties: BountyDto[], filter: BountyFilter): Bou
             return bounties.filter((bounty) => bounty.status === BountyStatus.Active)
         case BountyFilter.PendingPayout:
             return bounties.filter((bounty) => bounty.status === BountyStatus.PendingPayout)
+        case BountyFilter.Claimed:
+            return bounties.filter((bounty) => bounty.status === BountyStatus.Claimed)
+        case BountyFilter.Rejected:
+            return bounties.filter((bounty) => bounty.status === BountyStatus.Rejected)
     }
 }

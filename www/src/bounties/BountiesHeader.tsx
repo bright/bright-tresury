@@ -103,12 +103,10 @@ const BountiesHeader = ({ selectedFilter, selectedTimeFrame, onTimeFrameChange }
             </TimeSelectWrapper>
             <PaperFilterBackground className={clsx(classes.displayOnMobile, classes.paperBackground)} />
             <HeaderListTabs className={clsx(classes.statusFilters, classes.displayOnMobile)}>
-                {
-                    selectedTimeFrame === TimeFrame.OnChain
-                        ? <BountyStatusFilters selectedFilter={selectedFilter} />
-                        : null
-                }
-
+                {/*TODO remove this condition when selectedTimeFrame param in url - task TREAS-313*/}
+                {selectedTimeFrame === TimeFrame.OnChain ? (
+                    <BountyStatusFilters selectedFilter={selectedFilter} selectedTimeFrame={selectedTimeFrame} />
+                ) : null}
             </HeaderListTabs>
             <div className={classes.buttonsContainer}>
                 <TimeSelectWrapper className={clsx(classes.timeSelectWrapper)}>
@@ -116,11 +114,10 @@ const BountiesHeader = ({ selectedFilter, selectedTimeFrame, onTimeFrameChange }
                 </TimeSelectWrapper>
                 <PaperFilterBackground className={classes.paperBackground} />
                 <HeaderListTabs className={classes.statusFilters}>
-                    {
-                        selectedTimeFrame === TimeFrame.OnChain
-                            ? <BountyStatusFilters selectedFilter={selectedFilter} />
-                            : null
-                    }
+                    {/*TODO remove this condition when selectedTimeFrame param in url - task TREAS-313*/}
+                    {selectedTimeFrame === TimeFrame.OnChain ? (
+                        <BountyStatusFilters selectedFilter={selectedFilter} selectedTimeFrame={selectedTimeFrame} />
+                    ) : null}
                 </HeaderListTabs>
             </div>
         </HeaderListContainer>
