@@ -3,7 +3,7 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import { createUserSessionHandler } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
-import { mockedBlockchainService, proposals } from '../spec.helpers'
+import { mockGetProposalAndGetProposals, proposals } from '../spec.helpers'
 import { createProposalMilestone, setUp } from './spec.helpers'
 import { v4 as uuid } from 'uuid'
 
@@ -15,9 +15,7 @@ describe('/api/v1/proposals/:proposalIndex/milestones', () => {
     const app = beforeSetupFullApp()
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
     })
 
     beforeEach(async () => {

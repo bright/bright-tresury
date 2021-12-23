@@ -52,17 +52,17 @@ export const usePatchBounty = () => {
 
 // GET ALL
 
-async function getBounties(network: string, timeFrame: TimeFrame, pageNumber: number): Promise<PaginationResponseDto<BountyDto>> {
-    const url = `${BOUNTIES_API_PATH}?network=${network}&timeFrame=${timeFrame}${getPaginationQueryParams({pageNumber, pageSize: 10})}`
+async function getBounties(network: string, timeFrame: TimeFrame, pageNumber: number, pageSize: number = 10): Promise<PaginationResponseDto<BountyDto>> {
+    const url = `${BOUNTIES_API_PATH}?network=${network}&timeFrame=${timeFrame}${getPaginationQueryParams({pageNumber, pageSize})}`
     return apiGet<PaginationResponseDto<BountyDto>>(url)
 }
 
 export const BOUNTIES_QUERY_KEY_BASE = 'bounties'
 
-export const useGetBounties = (network: string, timeFrame: TimeFrame) => {
+export const useGetBounties = (network: string, timeFrame: TimeFrame, pageSize?: number) => {
     return useInfiniteQuery(
         [BOUNTIES_QUERY_KEY_BASE, network, timeFrame],
-        ({pageParam}) => getBounties(network, timeFrame, pageParam),
+        ({pageParam}) => getBounties(network, timeFrame, pageParam, pageSize),
         {
             getNextPageParam: (lastPage, allPages) => allPages.length+1,
         }

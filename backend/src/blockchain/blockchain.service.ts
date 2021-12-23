@@ -1,24 +1,30 @@
 import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
-import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import Extrinsic from '@polkadot/types/extrinsic/Extrinsic'
 import { EventRecord, Header } from '@polkadot/types/interfaces'
-import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { AccountId } from '@polkadot/types/interfaces/runtime'
 import { BN_MILLION, BN_ZERO, extractTime, u8aConcat } from '@polkadot/util'
 import BN from 'bn.js'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { getLogger } from '../logging.module'
+import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
+import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
+import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
+import {
+    getApi,
+    extractNumberFromBlockchainEvent,
+    getAccounts, accountIdToAddress,
+} from './utils'
+import { BlockchainsConnections } from './blockchain.module'
+import { StatsDto } from '../stats/stats.dto'
 import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
 import { GetSpendPeriodCalculationsDto } from '../stats/get-spend-period-calculations.dto'
-import { StatsDto } from '../stats/stats.dto'
-import { NetworkPlanckValue } from '../utils/types'
+import { NetworkPlanckValue, Nil } from '../utils/types'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration/blockchain-configuration.config'
-import { BlockchainsConnections } from './blockchain.module'
-import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
 import { MotionTimeDto, MotionTimeType } from './dto/motion-time.dto'
-import { extractNumberFromBlockchainEvent, getApi, getBeneficiaries, getProposers, getVoters } from './utils'
+import { DeriveTreasuryProposal } from '@polkadot/api-derive/types'
+
 
 const logger = getLogger()
 
@@ -154,54 +160,63 @@ export class BlockchainService implements OnModuleDestroy {
         }
     }
 
+    async getDeriveProposals(networkId: string) {
+        const api = getApi(this.blockchainsConnections, networkId)
+        const { proposals: proposedProposals, approvals: approvedProposals } = await api.derive.treasury.proposals()
+        return [
+            ...proposedProposals.map((proposal: DeriveTreasuryProposal) => ({...proposal, status: BlockchainProposalStatus.Proposal})),
+            ...approvedProposals.map((proposal: DeriveTreasuryProposal) => ({...proposal, status: BlockchainProposalStatus.Approval}))
+        ]
+    }
+
+    async getDeriveProposal(networkId: string, blockchainIndex: number) {
+        const proposals = await this.getDeriveProposals(networkId)
+        return proposals.find((proposal) => proposal.id.toNumber() === blockchainIndex)
+    }
+
+    async getProposal(networkId: string, blockchainIndex: number): Promise<Nil<BlockchainProposal>> {
+        logger.info(`Getting proposal from blockchain for networkId: ${networkId}`)
+        const blockchainProposal = await this.getDeriveProposal(networkId, blockchainIndex)
+        if(!blockchainProposal)
+            return
+        const accounts = getAccounts(blockchainProposal)
+        const uniqueAddresses = new Set(accounts.map(accountIdToAddress))
+        const identities = await this.getIdentities(networkId, Array.from(uniqueAddresses))
+        const currentBlockNumber = await getApi(this.blockchainsConnections, networkId).derive.chain.bestNumber()
+        const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): MotionTimeDto =>
+            this.getRemainingTime(networkId, currentBlockNumber, endBlock)
+        return BlockchainProposal.create(
+            blockchainProposal,
+            blockchainProposal.status,
+            identities,
+            toBlockchainProposalMotionEnd
+        )
+    }
+
     async getProposals(networkId: string): Promise<BlockchainProposal[]> {
         logger.info(`Getting proposals from blockchain for networkId: ${networkId}`)
         const api = getApi(this.blockchainsConnections, networkId)
-        const { proposals, proposalCount, approvals } = await api.derive.treasury.proposals()
 
-        const proposalCountNumber = proposalCount.toNumber()
+        const blockchainProposals = await this.getDeriveProposals(networkId)
+
+        const proposalCountNumber = blockchainProposals.length
         logger.info(`ProposalCount is ${proposalCountNumber}.`)
         if (proposalCountNumber === 0) {
             return []
         }
 
-        logger.info('Getting voters')
-
         // get unique (set) accountIds as strings (toHuman) from ongoing proposals and approvals
-        const addresses = new Set(
-            [
-                ...getProposers(proposals),
-                ...getProposers(approvals),
-                ...getBeneficiaries(proposals),
-                ...getBeneficiaries(approvals),
-                ...getVoters(proposals),
-                ...getVoters(approvals),
-            ].map((accountId) => accountId.toHuman()),
-        )
-        const identities = await this.getIdentities(networkId, Array.from(addresses))
+        const accounts = blockchainProposals.map(blockchainProposal => getAccounts(blockchainProposal)).flat()
+        const uniqueAddresses = new Set(accounts.map(accountIdToAddress))
+        const identities = await this.getIdentities(networkId, Array.from(uniqueAddresses))
 
         // make a function that will compute remaining voting time
         const currentBlockNumber = await api.derive.chain.bestNumber()
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): MotionTimeDto =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
-        return [
-            ...proposals.map((derivedProposal) =>
-                BlockchainProposal.create(
-                    derivedProposal,
-                    BlockchainProposalStatus.Proposal,
-                    identities,
-                    toBlockchainProposalMotionEnd,
-                ),
-            ),
-            ...approvals.map((derivedProposal) =>
-                BlockchainProposal.create(
-                    derivedProposal,
-                    BlockchainProposalStatus.Approval,
-                    identities,
-                    toBlockchainProposalMotionEnd,
-                ),
-            ),
-        ]
+        return blockchainProposals.map((deriveProposal) =>
+            BlockchainProposal.create(deriveProposal, deriveProposal.status, identities, toBlockchainProposalMotionEnd)
+        )
     }
 
     extractProposalIndex(extrinsicEvents: ExtrinsicEvent[]): number | undefined {

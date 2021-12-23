@@ -6,7 +6,11 @@ import {
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
-import { mockedBlockchainService, proposals, setUpProposalFromIdea } from '../spec.helpers'
+import {
+    mockGetProposalAndGetProposals,
+    proposals,
+    setUpProposalFromIdea,
+} from '../spec.helpers'
 
 const baseUrl = (blockchainProposalId: number, network: string) =>
     `/api/v1/proposals/${blockchainProposalId}/details?network=${network}`
@@ -15,9 +19,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
     const app = beforeSetupFullApp()
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
     })
 
     beforeEach(async () => {

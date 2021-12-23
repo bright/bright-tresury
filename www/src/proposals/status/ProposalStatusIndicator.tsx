@@ -24,6 +24,8 @@ const ProposalStatusIndicator = ({ status }: ProposalStatusIndicatorProps) => {
                 return 'proposal.list.card.statusRejected'
             case ProposalStatus.Rewarded:
                 return 'proposal.list.card.statusRewarded'
+            case ProposalStatus.Unknown:
+                return ''
         }
     }
 
@@ -39,6 +41,8 @@ const ProposalStatusIndicator = ({ status }: ProposalStatusIndicatorProps) => {
                 return '#1B1D1C'
             case ProposalStatus.Rewarded:
                 return '#2FD3AE'
+            case ProposalStatus.Unknown:
+                return ''
         }
     }
 

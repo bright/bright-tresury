@@ -11,7 +11,7 @@ import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spe
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { ProposalDto } from './dto/proposal.dto'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
-import { mockedBlockchainService } from './spec.helpers'
+import { mockedBlockchainService, mockGetProposalAndGetProposals } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
 import { NetworkPlanckValue } from '../utils/types'
 import { BountyDto } from '../bounties/dto/bounty.dto'
@@ -36,9 +36,7 @@ describe(`/api/v1/proposals`, () => {
     const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
     })
 
     beforeEach(async () => {

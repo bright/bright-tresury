@@ -32,12 +32,13 @@ const Bounties = () => {
         remove()
         setTimeFrame(newTimeFrame)
     }
+    const PAGE_SIZE = 10
+    const { status, data, remove, isLoading, fetchNextPage } = useGetBounties(network.id, timeFrame, PAGE_SIZE)
 
-    const { status, data, remove, isLoading, fetchNextPage } = useGetBounties(network.id, timeFrame)
+    const bounties = data?.pages?.map(page => page.items).flat() ?? []
 
-    const bounties = data?.pages.map((page) => page.items).flat() ?? []
-    const total = data?.pages[0].total ?? 0
-    const canLoadMore = bounties.length < total
+    const pageNumber = data?.pages?.length ?? 0
+    const canLoadMore = pageNumber * PAGE_SIZE === bounties.length
 
     const selectedFilter = useMemo(() => {
         const filterParam = new URLSearchParams(search).get(BountyFilterSearchParamName)

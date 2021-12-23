@@ -9,6 +9,7 @@ export enum ProposalStatus {
     Rejected = 'rejected',
     Rewarded = 'rewarded',
     Closed = 'closed',
+    Unknown = 'unknown'
 }
 
 export interface ProposalDto {

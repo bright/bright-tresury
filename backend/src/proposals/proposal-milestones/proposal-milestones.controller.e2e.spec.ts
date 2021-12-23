@@ -2,7 +2,7 @@ import { HttpStatus } from '@nestjs/common'
 import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/supertokens.database.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
-import { mockedBlockchainService, proposals } from '../spec.helpers'
+import { mockedBlockchainService, mockGetProposalAndGetProposals, proposals } from '../spec.helpers'
 import { setUp } from './spec.helpers'
 
 const baseUrl = '/api/v1/proposals'
@@ -13,11 +13,8 @@ describe('E2e tests of /api/v1/proposals/:proposalIndex/milestones', () => {
     const app = beforeSetupFullApp()
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
     })
-
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()

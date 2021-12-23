@@ -9,7 +9,11 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../
 import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
 import { ProposalsService } from './proposals.service'
-import { mockedBlockchainService, setUpIdea, setUpIdeaWithMilestone } from './spec.helpers'
+import {
+    mockGetProposalAndGetProposals, mockListenForExtrinsic,
+    setUpIdea,
+    setUpIdeaWithMilestone,
+} from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
 import { NetworkPlanckValue } from '../utils/types'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
@@ -27,13 +31,10 @@ describe('ProposalsService', () => {
     )
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
-        jest.spyOn(app().get(BlockchainService), 'listenForExtrinsic').mockImplementation(
-            mockedBlockchainService.listenForExtrinsic,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
+        mockListenForExtrinsic(app().get(BlockchainService))
     })
+
     afterAll(() => {
         jest.clearAllMocks()
     })

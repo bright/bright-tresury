@@ -10,13 +10,24 @@ import { ApiPromise } from '@polkadot/api'
 
 export const BN_TEN = new BN(10)
 
-export const vecToArray = (vec: Vec<AccountId> | undefined): AccountId[] => vec?.toArray() || []
+export const vecToArray = (vec: Vec<AccountId> | undefined): AccountId[] => vec?.toArray() ?? []
 
 const getVotersFromCouncil = (council: DeriveCollectiveProposal[]) =>
     council.reduce(
         (motionVoters, { votes }) => [...motionVoters, ...vecToArray(votes?.nays), ...vecToArray(votes?.ayes)],
         [] as AccountId[],
     )
+
+export const accountIdToAddress = (accountId: AccountId) => accountId.toHuman()
+
+export const getAccounts = (proposal: DeriveTreasuryProposal): AccountId[] => {
+    const voters = getVotersFromCouncil(proposal.council)
+    return [
+        proposal.proposal.proposer,
+        proposal.proposal.beneficiary,
+        ...voters
+    ]
+}
 
 export const getVoters = (deriveTreasuryProposals: DeriveTreasuryProposal[]): AccountId[] =>
     deriveTreasuryProposals.reduce(

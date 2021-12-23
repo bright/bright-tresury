@@ -1,7 +1,5 @@
-import { SessionModule } from '../auth/session/session.module'
+
 import { DatabaseModule } from '../database/database.module'
-import { UserSettingsController } from './user-settings/user-settings.controller'
-import { UserSettingsService } from './user-settings/user-settings.service'
 import { UserEntity } from './user.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { UsersService } from './users.service'

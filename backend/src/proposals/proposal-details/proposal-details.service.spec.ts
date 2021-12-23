@@ -11,7 +11,12 @@ import { Web3AddressEntity } from '../../users/web3-addresses/web3-address.entit
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
 import { ProposalEntity } from '../entities/proposal.entity'
 import { IdeaWithMilestones, ProposalsService } from '../proposals.service'
-import { createProposerSessionData, mockedBlockchainService, proposals, setUpProposalFromIdea } from '../spec.helpers'
+import {
+    createProposerSessionData,
+    mockGetProposalAndGetProposals,
+    proposals,
+    setUpProposalFromIdea,
+} from '../spec.helpers'
 import { ProposalDetailsService } from './proposal-details.service'
 import { NetworkPlanckValue } from '../../utils/types'
 
@@ -24,9 +29,7 @@ describe('ProposalDetailsService', () => {
     const ideaProposalsService = () => app().get<IdeaProposalsService>(IdeaProposalsService)
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
     })
 
     beforeEach(async () => {

@@ -33,11 +33,12 @@ const Proposals = () => {
     const { network } = useNetworks()
 
     const [timeFrame, setTimeFrame] = useState(TimeFrame.OnChain)
-
-    const { status, remove, isLoading, data, fetchNextPage } = useGetProposals(network.id, timeFrame)
+    const PAGE_SIZE = 10
+    const { status, remove, isLoading, data, fetchNextPage } = useGetProposals(network.id, timeFrame, PAGE_SIZE)
     const proposals = data?.pages.map(page => page.items).flat() ?? []
-    const total = data?.pages[0].total ?? 0
-    const canLoadMore = proposals.length < total
+
+    const pageNumber = data?.pages?.length ?? 0
+    const canLoadMore = pageNumber * PAGE_SIZE === proposals.length
 
     const onTimeFrameChange = (newTimeFrame: TimeFrame) => {
         remove()
@@ -63,11 +64,7 @@ const Proposals = () => {
                 errorText={t('errors.errorOccurredWhileLoadingProposals')}
                 loadingText={t('loading.proposals')}
             >
-                <ProposalsList
-                    proposals={isCurrentSpendPeriod ? filteredProposals : proposals }
-                    disableCards={!isCurrentSpendPeriod}
-                    showStatus={isCurrentSpendPeriod}
-                />
+                <ProposalsList proposals={isCurrentSpendPeriod ? filteredProposals : proposals } />
                 { canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
             </LoadingWrapper>
         </div>

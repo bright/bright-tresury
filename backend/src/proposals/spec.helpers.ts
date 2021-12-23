@@ -21,8 +21,10 @@ import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/id
 import { createIdea, createIdeaMilestone, createWeb3SessionData } from '../ideas/spec.helpers'
 import { getLogger } from '../logging.module'
 import { NETWORKS } from '../utils/spec.helpers'
-import { NetworkPlanckValue } from '../utils/types'
+import { NetworkPlanckValue, Nil } from '../utils/types'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
+import { BlockchainService } from '../blockchain/blockchain.service'
+import { updateExtrinsicWithNoEventsDto } from '../bounties/spec.helpers'
 
 const makeMotion = (
     hash: string,
@@ -84,27 +86,36 @@ export const proposals = [
     ),
 ]
 
+export const updateExtrinsicDto: UpdateExtrinsicDto = {
+    blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
+    events: [
+        {
+            section: 'treasury',
+            method: 'Proposed',
+            data: [
+                {
+                    name: 'ProposalIndex',
+                    value: '3',
+                },
+            ],
+        },
+    ],
+} as UpdateExtrinsicDto
+
 export const mockedBlockchainService = {
     listenForExtrinsic: async (
         netowkrId: string,
         extrinsicHash: string,
         cb: (updateExtrinsicDto: UpdateExtrinsicDto) => Promise<void>,
     ) => {
-        await cb({
-            blockHash: '0x6f5ff999f06b47f0c3084ab3a16113fde8840738c8b10e31d3c6567d4477ec04',
-            events: [
-                {
-                    section: 'treasury',
-                    method: 'Proposed',
-                    data: [
-                        {
-                            name: 'ProposalIndex',
-                            value: '3',
-                        },
-                    ],
-                },
-            ],
-        } as UpdateExtrinsicDto)
+        await cb(updateExtrinsicDto)
+    },
+    getProposal: async (networkId: string, blockchainIndex: number): Promise<Nil<BlockchainProposal>> => {
+        getLogger().info('Mock implementation of getProposals')
+        if (networkId !== NETWORKS.POLKADOT) {
+            return
+        }
+        return proposals.find(blockchainProposal => blockchainProposal.proposalIndex === blockchainIndex)
     },
     getProposals: async (networkId: string) => {
         getLogger().info('Mock implementation of getProposals')
@@ -113,6 +124,19 @@ export const mockedBlockchainService = {
         }
         return proposals
     },
+}
+export const mockListenForExtrinsic = (blockchainService: BlockchainService) => {
+    jest.spyOn(blockchainService, 'listenForExtrinsic').mockImplementation(
+        mockedBlockchainService.listenForExtrinsic,
+    )
+}
+export const mockGetProposalAndGetProposals = (blockchainService: BlockchainService) => {
+    jest.spyOn(blockchainService, 'getProposals').mockImplementation(
+        mockedBlockchainService.getProposals,
+    )
+    jest.spyOn(blockchainService, 'getProposal').mockImplementation(
+        mockedBlockchainService.getProposal,
+    )
 }
 
 export const createProposerSessionData = (proposal: BlockchainProposal) =>

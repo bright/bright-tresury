@@ -7,7 +7,7 @@ import {
     SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
-import { mockedBlockchainService } from '../spec.helpers'
+import { mockedBlockchainService, mockGetProposalAndGetProposals } from '../spec.helpers'
 import { ProposalCommentsService } from './proposal-comments.service'
 import { v4 as uuid } from 'uuid'
 
@@ -17,9 +17,7 @@ describe('Proposal comments', () => {
     const proposalCommentsService = beforeAllSetup(() => app().get<ProposalCommentsService>(ProposalCommentsService))
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
     })
 
     beforeEach(async () => {

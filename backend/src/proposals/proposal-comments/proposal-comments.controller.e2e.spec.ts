@@ -7,16 +7,14 @@ import {
     SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
-import { mockedBlockchainService } from '../spec.helpers'
+import { mockedBlockchainService, mockGetProposalAndGetProposals } from '../spec.helpers'
 
 describe('Proposal comments', () => {
     const app = beforeSetupFullApp()
     let sessionHandler: SessionHandler
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
     })
 
     beforeEach(async () => {

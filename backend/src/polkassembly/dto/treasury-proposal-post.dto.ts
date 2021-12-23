@@ -24,6 +24,9 @@ export class PolkassemblyTreasuryProposalPostDto {
         this.status = spendProposal?.treasuryStatus[0]?.status
     }
     asBlockchainProposal() {
+        // Note: seems like all polkassembly proposals have status 'Proposed',
+        // since we don't want to show all Proposed I am setting the status to Unknown to don't show it at all
+        // https://github.com/Premiurly/polkassembly/blob/9139de85d81a77d12b64799960069f50b0df687a/node-watcher/src/tasks/createTreasury.ts#L95
         return new BlockchainProposal(
             this.blockchainIndex,
             {address: this.proposerAddress},
@@ -31,7 +34,7 @@ export class PolkassemblyTreasuryProposalPostDto {
             this.value,
             this.bond,
             [],
-            this.status as BlockchainProposalStatus
+            BlockchainProposalStatus.Unknown
         )
     }
 }

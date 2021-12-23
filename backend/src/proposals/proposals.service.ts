@@ -119,25 +119,22 @@ export class ProposalsService {
         const total = await this.getTotalProposalsCount(networkId) - allBlockchainProposals.length
         return {items, total}
     }
-    async findOne(blockchainProposalId: number, networkId: string): Promise<BlockchainProposalWithDomainDetails> {
-        const proposals = await this.blockchainService.getProposals(networkId)
 
-        const blockchainProposal = proposals.find(
-            ({ proposalIndex }: BlockchainProposal) => proposalIndex === blockchainProposalId,
-        )
-        if (!blockchainProposal) {
+    async findOne(blockchainProposalId: number, networkId: string): Promise<BlockchainProposalWithDomainDetails> {
+        const onChain = await this.blockchainService.getProposal(networkId, blockchainProposalId)
+        const offChain = await this.polkassemblyService.getProposal(blockchainProposalId, networkId)
+
+        if (!onChain && !offChain) {
             throw new NotFoundException('Proposal with the given id in the given network not found')
         }
 
-        const [postgresProposal, polkassemblyProposal] = await Promise.all([
-            this.proposalsRepository.findOne({
-                where: { blockchainProposalId, networkId },
-                relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
-            }),
-            this.polkassemblyService.getProposal(blockchainProposalId, networkId),
-        ])
+        const blockchainProposal = onChain ?? offChain!.asBlockchainProposal()
 
-        return this.mergeProposal(blockchainProposal, postgresProposal, polkassemblyProposal)
+        const postgresProposal = await this.proposalsRepository.findOne({
+            where: { blockchainProposalId, networkId },
+            relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
+        })
+        return this.mergeProposal(blockchainProposal, postgresProposal, offChain)
     }
 
     mergeProposal(

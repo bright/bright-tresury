@@ -5,14 +5,12 @@ import Grid from '../../components/grid/Grid'
 
 interface OwnProps {
     proposals: ProposalDto[]
-    disableCards?: boolean
-    showStatus?: boolean
 }
 
 export type ProposalsListProps = OwnProps
 
-const ProposalsList = ({ proposals, disableCards = false, showStatus = true }: ProposalsListProps) => {
-    const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal} disable={disableCards} showStatus={showStatus}/>
+const ProposalsList = ({ proposals }: ProposalsListProps) => {
+    const renderCard = (proposal: ProposalDto) => <ProposalCard proposal={proposal}/>
     return <Grid items={proposals.sort((a, b) => b.proposalIndex - a.proposalIndex)} renderItem={renderCard} />
 }
 

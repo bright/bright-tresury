@@ -14,6 +14,7 @@ export enum ProposalStatus {
     Approved = 'approved',
     Rejected = 'rejected',
     Rewarded = 'rewarded',
+    Unkown = 'unknown'
 }
 
 export class ProposalDto {
@@ -105,6 +106,9 @@ export class ProposalDto {
                 break
             case BlockchainProposalStatus.Approval:
                 this.status = ProposalStatus.Approved
+                break
+            case BlockchainProposalStatus.Unknown:
+                this.status = ProposalStatus.Unkown
                 break
         }
 

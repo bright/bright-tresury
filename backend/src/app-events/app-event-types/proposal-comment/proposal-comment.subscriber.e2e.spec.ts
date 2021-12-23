@@ -3,7 +3,11 @@ import { createUserSessionHandlerWithVerifiedEmail } from '../../../auth/superto
 import { BlockchainService } from '../../../blockchain/blockchain.service'
 import { createSessionData } from '../../../ideas/spec.helpers'
 import { ProposalCommentsService } from '../../../proposals/proposal-comments/proposal-comments.service'
-import { mockedBlockchainService, setUpProposalFromIdea } from '../../../proposals/spec.helpers'
+import {
+    mockedBlockchainService,
+    mockGetProposalAndGetProposals, mockListenForExtrinsic,
+    setUpProposalFromIdea,
+} from '../../../proposals/spec.helpers'
 import { Web3AddressEntity } from '../../../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { AppEventsService } from '../../app-events.service'
@@ -14,12 +18,8 @@ describe('New proposal comment app event e2e', () => {
     const getBountyCommentsService = () => app.get().get(ProposalCommentsService)
 
     beforeAll(() => {
-        jest.spyOn(app().get(BlockchainService), 'getProposals').mockImplementation(
-            mockedBlockchainService.getProposals,
-        )
-        jest.spyOn(app().get(BlockchainService), 'listenForExtrinsic').mockImplementation(
-            mockedBlockchainService.listenForExtrinsic,
-        )
+        mockGetProposalAndGetProposals(app().get(BlockchainService))
+        mockListenForExtrinsic(app().get(BlockchainService))
     })
 
     beforeEach(async () => {
