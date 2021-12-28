@@ -77,7 +77,7 @@ const StatsHeader = ({ timeLeft }: StatsHeaderProps) => {
                 </Button>
                 <TimeSelectWrapper className={classes.timeSelectWrapper}>
                     <p className={classes.timeInfo}>
-                        {t(`status.currentSpendPeriod`)}:{' '}
+                        {t(`stats.currentSpendPeriod`)}:{' '}
                         <span className={classes.timeInfoBold}>{timeLeftLabel}</span>
                     </p>
                 </TimeSelectWrapper>
