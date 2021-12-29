@@ -24,13 +24,7 @@ const MENU_ITEMS_ADDITIONAL: MenuItem[] = [
         svg: tipsSvg,
         svgHighlighted: tipsHighlightedSvg,
         path: ROUTE_TIPS,
-    },
-    {
-        translationKey: 'menu.bounties',
-        svg: bountySvg,
-        svgHighlighted: bountyHighlightedSvg,
-        path: ROUTE_BOUNTIES,
-    },
+    }
 ]
 
 export const MENU_ITEMS: MenuItem[] = [
@@ -52,4 +46,10 @@ export const MENU_ITEMS: MenuItem[] = [
         svgHighlighted: proposalsHighlightedSvg,
         path: ROUTE_PROPOSALS,
     },
+    {
+        translationKey: 'menu.bounties',
+        svg: bountySvg,
+        svgHighlighted: bountyHighlightedSvg,
+        path: ROUTE_BOUNTIES,
+    }
 ].concat(config.env === 'prod' || config.env === 'qa' ? [] : MENU_ITEMS_ADDITIONAL)
