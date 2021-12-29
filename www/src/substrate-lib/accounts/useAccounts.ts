@@ -1,3 +1,5 @@
+import { KeyringJson$Meta } from '@polkadot/ui-keyring/types'
+import { KeypairType } from '@polkadot/util-crypto/types'
 import { useCallback, useContext, useEffect } from 'react'
 import {
     isWeb3Injected as polkadotIsWeb3Injected,
@@ -18,59 +20,81 @@ export interface UseAccountsResult {
     isWeb3Injected: boolean
 }
 
+interface AccountToLoad {
+    address: string
+    meta: KeyringJson$Meta
+    type?: KeypairType
+}
+
 export function useAccounts(): UseAccountsResult {
     const [state, dispatch] = useContext(AccountsContext)
 
     const { keyring, keyringState, accounts } = state
     const { network } = useNetworks()
 
+    const enableExtension = async () => {
+        const enable = await web3EnablePromise
+        if (!enable) {
+            await web3Enable(config.APP_NAME)
+        }
+    }
+
+    const getInjectedAccounts = async (): Promise<AccountToLoad[]> => {
+        let allAccounts = await web3Accounts({ ss58Format: network.ss58Format })
+        return allAccounts.map(({ address, meta }) => ({
+            address,
+            meta: { ...meta, name: `${meta.name} (${meta.source})` },
+        }))
+    }
+
+    const loadAccountsToKeyring = (accounts: AccountToLoad[]) => {
+        newKeyring.setSS58Format(network.ss58Format)
+        newKeyring.loadAll(
+            {
+                isDevelopment: network.developmentKeyring,
+                ss58Format: network.ss58Format,
+            },
+            accounts,
+        )
+    }
+
+    const getKeyringAccounts = (): Account[] =>
+        newKeyring.getAccounts().map((account) => {
+            const baseEncodedAddress = newKeyring.encodeAddress(account.address, 42)
+            return {
+                name: account.meta.name || '',
+                address: account.address,
+                source: account.meta.source,
+                allowedInNetwork: !account.meta.genesisHash || account.meta.genesisHash === network.genesisHash,
+                baseEncodedAddress,
+            } as Account
+        })
+
     const loadAccounts = useCallback(async () => {
         if (keyringState || !dispatch) {
             return
         }
-
         try {
-            const enable = await web3EnablePromise
-            if (!enable) {
-                await web3Enable(config.APP_NAME)
+            await enableExtension()
+
+            let injectedAccounts = await getInjectedAccounts()
+
+            // accounts already loaded or no accounts to load
+            if (newKeyring.getAccounts().length !== 0 || injectedAccounts.length === 0) {
+                return
             }
+            loadAccountsToKeyring(injectedAccounts)
 
-            let allAccounts = await web3Accounts({ ss58Format: network.ss58Format })
-            allAccounts = allAccounts.map(({ address, meta }) => ({
-                address,
-                meta: { ...meta, name: `${meta.name} (${meta.source})` },
-            }))
-
-            newKeyring.setSS58Format(network.ss58Format)
-            newKeyring.loadAll(
-                {
-                    isDevelopment: network.developmentKeyring,
-                    ss58Format: network.ss58Format,
-                },
-                allAccounts,
-            )
-
-            const keyringAccounts = newKeyring.getAccounts().map((account) => {
-                const baseEncodedAddress = newKeyring.encodeAddress(account.address, 42)
-                return {
-                    name: account.meta.name || '',
-                    address: account.address,
-                    source: account.meta.source,
-                    allowedInNetwork: !account.meta.genesisHash || account.meta.genesisHash === network.genesisHash,
-                    baseEncodedAddress,
-                } as Account
-            })
-
-            dispatch({ type: 'SET_KEYRING', keyring: newKeyring, accounts: keyringAccounts })
+            dispatch({ type: 'SET_KEYRING', keyring: newKeyring, accounts: getKeyringAccounts() })
         } catch (e) {
             console.error(e)
             dispatch({ type: 'KEYRING_ERROR' })
         }
-    }, [keyringState, dispatch])
+    }, [])
 
     useEffect(() => {
         loadAccounts()
-    }, [loadAccounts])
+    }, [])
 
     return {
         keyring,
