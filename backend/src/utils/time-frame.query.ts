@@ -1,5 +1,4 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { Nil } from './types'
 import { IsOptional } from 'class-validator'
 
 export enum TimeFrame {

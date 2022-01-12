@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { getLogger } from '../../logging.module'
 import { NetworkPlanckValue, Nil } from '../../utils/types'

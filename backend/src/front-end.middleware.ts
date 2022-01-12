@@ -2,7 +2,6 @@ import { Injectable, NestMiddleware } from '@nestjs/common'
 import { Request, Response } from 'express'
 import * as path from 'path'
 import { getLogger } from './logging.module'
-import { baseApiPath } from './main'
 
 const resolvePath = (file: string) => path.join(__dirname, `../../../www/build/${file}`)
 

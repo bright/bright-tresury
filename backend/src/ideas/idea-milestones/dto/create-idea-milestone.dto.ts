@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { ArrayMinSize, IsISO8601, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
+import { ArrayMinSize, IsNotEmpty, IsOptional, ValidateNested } from 'class-validator'
 import { Type } from 'class-transformer'
-import { CreateIdeaProposalDetailsDto } from '../../../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { CreateMilestoneDetailsDto } from '../../../milestone-details/dto/create-milestone-details.dto'
 import { TransformAddress } from '../../../utils/address/address.transform'
 import { Nil } from '../../../utils/types'

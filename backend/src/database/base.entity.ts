@@ -1,4 +1,4 @@
-import { BeforeInsert, CreateDateColumn, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm'
+import { BeforeInsert, CreateDateColumn, PrimaryColumn, UpdateDateColumn } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 
 export class BaseEntity {

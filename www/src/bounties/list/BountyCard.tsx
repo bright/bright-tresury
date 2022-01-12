@@ -12,13 +12,11 @@ import NetworkValue from '../../components/network/NetworkValue'
 import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import { BountyDto, BountyStatus } from '../bounties.dto'
 import { generatePath } from 'react-router-dom'
-import { ROUTE_BOUNTY, ROUTE_PROPOSAL } from '../../routes/routes'
+import { ROUTE_BOUNTY } from '../../routes/routes'
 import { BountyContentType } from '../bounty/Bounty'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
 import BountyStatusIndicator from '../components/BountyStatusIndicator'
-import { ProposalContentType } from '../../proposals/proposal/ProposalContentTypeTabs'
-import { Nil } from '../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

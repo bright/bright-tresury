@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
-import { IsNotEmpty, IsNumber, Validate, ValidateNested } from 'class-validator'
+import { IsNotEmpty, IsNumber, ValidateNested } from 'class-validator'
 
 export class IdeaProposalDataDto {
     @ApiProperty({ description: 'The current next proposal id', required: true })

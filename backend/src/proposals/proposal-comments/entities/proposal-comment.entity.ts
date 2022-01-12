@@ -1,4 +1,4 @@
-import { BeforeInsert, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm'
+import { BeforeInsert, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { CommentEntity } from '../../../comments/comment.entity'
 import { UserEntity } from '../../../users/user.entity'

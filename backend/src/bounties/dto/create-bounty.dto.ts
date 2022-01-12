@@ -1,8 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNotEmpty, IsNumberString, IsOptional, Validate } from 'class-validator'
+import { IsNotEmpty, IsOptional, Validate } from 'class-validator'
 import { IsValidAddress } from '../../utils/address/address.validator'
 import { IsValidNetworkConstraint } from '../../utils/network.validator'
-import { NetworkPlanckValue, Nil } from '../../utils/types'
+import { Nil } from '../../utils/types'
 
 export class CreateBountyDto {
     @ApiProperty({ description: 'Title of the bounty proposal' })

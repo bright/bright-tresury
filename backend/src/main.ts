@@ -5,7 +5,6 @@ import { createApp } from './app.module'
 import { AppConfig } from './config/config.module'
 import { getLogger } from './logging.module'
 import { generateSwaggerDocument } from './swagger'
-import { useContainer } from 'class-validator'
 
 declare const module: any
 const logger = getLogger()

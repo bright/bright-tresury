@@ -1,5 +1,4 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { MilestoneDetailsEntity } from '../../milestone-details/entities/milestone-details.entity'
 import { IdeaProposalDetailsEntity, ideaProposalDetailsRestrictions } from '../idea-proposal-details.entity'
 
 export class IdeaProposalDetailsDto {

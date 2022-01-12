@@ -7,7 +7,7 @@ import {
     SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
-import { mockedBlockchainService, mockGetProposalAndGetProposals } from '../spec.helpers'
+import { mockGetProposalAndGetProposals } from '../spec.helpers'
 
 describe('Proposal comments', () => {
     const app = beforeSetupFullApp()

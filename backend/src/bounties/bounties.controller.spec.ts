@@ -16,7 +16,6 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'
 import { BountyDto } from './dto/bounty.dto'
-import { CreateBountyDto } from './dto/create-bounty.dto'
 import { ListenForBountyDto } from './dto/listen-for-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
 import {

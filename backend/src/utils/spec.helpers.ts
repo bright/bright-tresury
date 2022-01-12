@@ -1,7 +1,6 @@
 import { INestApplication } from '@nestjs/common'
 import { ModuleMetadata } from '@nestjs/common/interfaces'
 import { Test, TestingModuleBuilder } from '@nestjs/testing'
-import { logger } from 'handlebars'
 import { memoize } from 'lodash'
 import supertest from 'supertest'
 import { getConnection } from 'typeorm'

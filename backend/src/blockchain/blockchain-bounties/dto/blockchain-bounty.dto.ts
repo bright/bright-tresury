@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { Time } from '@polkadot/util/types'
 import { UserEntity } from '../../../users/user.entity'
-import { NetworkPlanckValue, Nil } from '../../../utils/types'
+import { NetworkPlanckValue } from '../../../utils/types'
 import { BlockchainAccountInfo } from '../../dto/blockchain-account-info.dto'
 
 export enum BlockchainBountyStatus {

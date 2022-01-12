@@ -2,10 +2,9 @@ import { useInfiniteQuery, useMutation, useQuery, UseQueryOptions } from 'react-
 import { apiGet, apiPatch, apiPost } from '../api'
 import { BountyDto, BountyExtrinsicDto, CreateBountyDto, EditBountyDto } from './bounties.dto'
 import { MotionDto } from '../components/voting/motion.dto'
-import { getPaginationQueryParams, PaginationRequestParams } from '../util/pagination/pagination.request.params'
+import { getPaginationQueryParams } from '../util/pagination/pagination.request.params'
 import { PaginationResponseDto } from '../util/pagination/pagination.response.dto'
 import { TimeFrame } from '../components/select/TimeSelect'
-import { ProposalDto } from '../proposals/proposals.dto'
 
 export const BOUNTIES_API_PATH = '/bounties'
 

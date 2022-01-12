@@ -5,7 +5,6 @@ import { basename } from 'path'
 import { get as getStackTrace } from 'stack-trace'
 import { QueryRunner } from 'typeorm'
 import { Logger as TypeOrmLogger } from 'typeorm/logger/Logger'
-import { PlatformTools } from 'typeorm/platform/PlatformTools'
 import packageInfo from '../package.json'
 
 export const rootLoggerNamespace = packageInfo.name.replace('@bright/', '')

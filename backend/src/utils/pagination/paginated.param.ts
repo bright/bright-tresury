@@ -1,5 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsNumberString, IsOptional, Max } from 'class-validator'
+import { IsNumberString, IsOptional } from 'class-validator'
 
 export class PaginatedQueryParams {
     @ApiPropertyOptional({

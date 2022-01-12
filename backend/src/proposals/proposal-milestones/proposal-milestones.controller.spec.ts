@@ -3,7 +3,7 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import { createUserSessionHandler } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
-import { mockGetProposalAndGetProposals, proposals } from '../spec.helpers'
+import { mockGetProposalAndGetProposals } from '../spec.helpers'
 import { createProposalMilestone, setUp } from './spec.helpers'
 import { v4 as uuid } from 'uuid'
 

@@ -7,7 +7,7 @@ import {
     SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
-import { mockedBlockchainService, mockGetProposalAndGetProposals } from '../spec.helpers'
+import { mockGetProposalAndGetProposals } from '../spec.helpers'
 import { ProposalCommentsService } from './proposal-comments.service'
 import { v4 as uuid } from 'uuid'
 

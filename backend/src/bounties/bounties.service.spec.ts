@@ -17,7 +17,6 @@ import { BountiesService } from './bounties.service'
 import { BountyEntity } from './entities/bounty.entity'
 import {
     blockchainBounty0,
-    blockchainBounty1,
     blockchainBountyActive,
     blockchainBountyApproved,
     blockchainBountyCuratorProposed,

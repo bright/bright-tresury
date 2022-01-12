@@ -1,5 +1,3 @@
-import BN from 'bn.js'
-
 export function ellipseTextInTheMiddle(value: string, visibleCharacters: number = 12): string {
     if (value.length > visibleCharacters && visibleCharacters > 0) {
         const prefix = value.substring(0, visibleCharacters / 2)

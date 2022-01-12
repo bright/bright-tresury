@@ -4,7 +4,6 @@ import { Repository } from 'typeorm'
 import { CreateIdeaProposalDetailsDto } from './dto/create-idea-proposal-details.dto'
 import { UpdateIdeaProposalDetailsDto } from './dto/update-idea-proposal-details.dto'
 import { IdeaProposalDetailsEntity } from './idea-proposal-details.entity'
-import { IdeaEntity } from '../ideas/entities/idea.entity'
 
 @Injectable()
 export class IdeaProposalDetailsService {

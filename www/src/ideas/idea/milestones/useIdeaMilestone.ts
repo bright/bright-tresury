@@ -3,7 +3,6 @@ import { IdeaDto, IdeaStatus } from '../../ideas.dto'
 import { useIdea } from '../useIdea'
 import {
     IdeaMilestoneDto,
-    IdeaMilestoneNetworkDto,
     IdeaMilestoneNetworkStatus,
     IdeaMilestoneStatus,
 } from './idea.milestones.dto'

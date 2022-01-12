@@ -8,7 +8,6 @@ import {
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
-import { AppEventsController } from './app-events.controller'
 import { AppEventsService } from './app-events.service'
 import { AppEventType } from './entities/app-event-type'
 import { AppEventEntity } from './entities/app-event.entity'

@@ -1,5 +1,4 @@
 import { DeriveAccountRegistration } from '@polkadot/api-derive/types'
-import { getLogger } from '../../logging.module'
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class BlockchainAccountInfo {

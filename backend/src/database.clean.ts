@@ -1,6 +1,6 @@
-import { Inject, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
-import { Connection, ConnectionManager, getConnection, getConnectionManager } from 'typeorm'
+import { Connection, getConnection } from 'typeorm'
 import { ConfigModule } from './config/config.module'
 import {
     AuthorizationDatabaseName,

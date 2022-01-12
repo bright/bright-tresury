@@ -24,7 +24,6 @@ import { NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue, Nil } from '../utils/types'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { updateExtrinsicWithNoEventsDto } from '../bounties/spec.helpers'
 
 const makeMotion = (
     hash: string,

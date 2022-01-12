@@ -6,7 +6,7 @@ import { ForbiddenException, NotFoundException } from '@nestjs/common'
 import { SessionData } from '../../auth/session/session.decorator'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { ProposalCommentEntity } from './entities/proposal-comment.entity'
-import { mockedBlockchainService, mockGetProposalAndGetProposals } from '../spec.helpers'
+import { mockGetProposalAndGetProposals } from '../spec.helpers'
 import { createUserSessionHandlerWithVerifiedEmail } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { NETWORKS } from '../../utils/spec.helpers'
 const { POLKADOT } = NETWORKS

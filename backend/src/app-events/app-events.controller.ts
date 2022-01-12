@@ -1,4 +1,4 @@
-import { Body, ForbiddenException, Get, Param, Patch, Query, UseGuards } from '@nestjs/common'
+import { Body, Get, Param, Patch, Query, UseGuards } from '@nestjs/common'
 import { ApiBadRequestResponse, ApiForbiddenResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { SessionGuard } from '../auth/guards/session.guard'
 import { UserGuard } from '../auth/guards/user.guard'

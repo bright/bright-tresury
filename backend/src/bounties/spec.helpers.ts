@@ -8,7 +8,6 @@ import {
     BlockchainBountyStatus,
 } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
 import { PolkassemblyBountyPostDto } from '../polkassembly/dto/bounty-post.dto'
-import { PolkassemblyPostEventDto } from '../polkassembly/dto/polkassembly-post-event.dto'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
 import { PolkassemblyBountyPostSchema } from '../polkassembly/schemas/bounty-post.schema'
 import { UserEntity } from '../users/user.entity'
