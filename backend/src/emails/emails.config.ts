@@ -11,7 +11,7 @@ export const EmailsConfigToken = 'EmailsConfig'
 export const emailsConfigSchema: Schema<EmailsConfig> = {
     emailAddress: {
         doc: 'Email address used to send no-reply messages',
-        default: 'treasury@brightinventions.pl',
+        default: 'treasury@bright.dev',
         env: 'EMAIL_ADDRESS',
         format: stringFormat,
     } as SchemaObj<string>,
