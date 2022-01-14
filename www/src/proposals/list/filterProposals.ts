@@ -1,7 +1,7 @@
 import { AccountInfo } from '../../util/types'
-import { ProposalFilter } from './ProposalStatusFilters'
 import { ProposalDto, ProposalStatus } from '../proposals.dto'
 import { AuthContextUser } from '../../auth/AuthContext'
+import { ProposalFilter } from '../useProposalsFilter'
 
 /** TODO: adjust when there will be more statuses supported on backend
  * and authorization will be possible */

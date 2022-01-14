@@ -9,9 +9,9 @@ import { makeStyles, Theme } from '@material-ui/core'
 import { createStyles } from '@material-ui/core/styles'
 import { breakpoints } from '../theme/theme'
 import clsx from 'clsx'
-import TimeSelect, { TimeFrame } from '../components/select/TimeSelect'
+import TimeSelect from '../components/select/TimeSelect'
 import HeaderListTabs from '../components/header/list/HeaderListTabs'
-import BountyStatusFilters, { BountyFilter } from './list/BountyStatusFilters'
+import BountyStatusFilters from './list/BountyStatusFilters'
 import PaperFilterBackground from '../components/header/list/PaperFilterBackground'
 import FlexBreakLine from '../components/header/FlexBreakLine'
 import BasicInfo from '../components/header/BasicInfo'
@@ -73,15 +73,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface OwnProps {
-    selectedFilter: BountyFilter
-    selectedTimeFrame: TimeFrame
-    onTimeFrameChange: (newTimeFrame: TimeFrame) => any
-}
-
-export type BountiesHeaderProps = OwnProps
-
-const BountiesHeader = ({ selectedFilter, selectedTimeFrame, onTimeFrameChange }: BountiesHeaderProps) => {
+const BountiesHeader = () => {
     const { t } = useTranslation()
     const history = useHistory()
     const classes = useStyles()
@@ -99,25 +91,19 @@ const BountiesHeader = ({ selectedFilter, selectedTimeFrame, onTimeFrameChange }
             </BasicInfo>
             <FlexBreakLine className={classes.flexBreakLine} />
             <TimeSelectWrapper className={clsx(classes.displayOnMobile, classes.timeSelectWrapper)}>
-                <TimeSelect onTimeFrameChange={onTimeFrameChange} />
+                <TimeSelect/>
             </TimeSelectWrapper>
             <PaperFilterBackground className={clsx(classes.displayOnMobile, classes.paperBackground)} />
             <HeaderListTabs className={clsx(classes.statusFilters, classes.displayOnMobile)}>
-                {/*TODO remove this condition when selectedTimeFrame param in url - task TREAS-313*/}
-                {selectedTimeFrame === TimeFrame.OnChain ? (
-                    <BountyStatusFilters selectedFilter={selectedFilter} selectedTimeFrame={selectedTimeFrame} />
-                ) : null}
+                <BountyStatusFilters />
             </HeaderListTabs>
             <div className={classes.buttonsContainer}>
                 <TimeSelectWrapper className={clsx(classes.timeSelectWrapper)}>
-                    <TimeSelect onTimeFrameChange={onTimeFrameChange} />
+                    <TimeSelect/>
                 </TimeSelectWrapper>
                 <PaperFilterBackground className={classes.paperBackground} />
                 <HeaderListTabs className={classes.statusFilters}>
-                    {/*TODO remove this condition when selectedTimeFrame param in url - task TREAS-313*/}
-                    {selectedTimeFrame === TimeFrame.OnChain ? (
-                        <BountyStatusFilters selectedFilter={selectedFilter} selectedTimeFrame={selectedTimeFrame} />
-                    ) : null}
+                        <BountyStatusFilters />
                 </HeaderListTabs>
             </div>
         </HeaderListContainer>

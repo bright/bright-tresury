@@ -6,13 +6,11 @@ import { breakpoints } from '../theme/theme'
 import { useTranslation } from 'react-i18next'
 import { ROUTE_NEW_IDEA } from '../routes/routes'
 import { useHistory } from 'react-router-dom'
-import TimeSelect, { TimeFrame } from '../components/select/TimeSelect'
 import HeaderListContainer, { mobileHeaderListHorizontalMargin } from '../components/header/list/HeaderListContainer'
 import BasicInfo from '../components/header/BasicInfo'
 import FlexBreakLine from '../components/header/FlexBreakLine'
 import HeaderListTabs from '../components/header/list/HeaderListTabs'
 import PaperFilterBackground from '../components/header/list/PaperFilterBackground'
-import TimeSelectWrapper from '../components/header/list/TimeSelectWrapper'
 import clsx from 'clsx'
 
 const useStyles = makeStyles((theme: Theme) =>

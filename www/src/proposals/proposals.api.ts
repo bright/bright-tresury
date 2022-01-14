@@ -4,7 +4,8 @@ import { MotionDto } from '../components/voting/motion.dto'
 import { useInfiniteQuery, useQuery, UseQueryOptions } from 'react-query'
 import { getPaginationQueryParams } from '../util/pagination/pagination.request.params'
 import { PaginationResponseDto } from '../util/pagination/pagination.response.dto'
-import { TimeFrame } from '../components/select/TimeSelect'
+import { TimeFrame } from '../util/useTimeFrame'
+
 export const PROPOSALS_API_PATH = '/proposals'
 
 // GET (paginated) ALL

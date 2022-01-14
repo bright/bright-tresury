@@ -1,6 +1,6 @@
 import { BountyDto, BountyStatus } from '../bounties.dto'
-import { BountyFilter } from './BountyStatusFilters'
 import { DoesBountyBelongToUser } from '../utils/bounties.utils'
+import { BountyFilter } from '../useBountiesFilter'
 
 export function filterBounties(bounties: BountyDto[], filter: BountyFilter): BountyDto[] {
     switch (filter) {

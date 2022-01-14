@@ -1,38 +1,28 @@
-import React, { useState } from 'react'
-import Select from './Select'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
+import NavSelect  from './NavSelect'
+import useTimeFrame, { TimeFrame, TimeSelectFilterSearchParamName } from '../../util/useTimeFrame'
+import useLocationFactory from '../../util/useLocationFactory'
 
-interface OwnProps {
-    onTimeFrameChange: (newTimeFrame: TimeFrame) => any
-}
-
-export type TimeSelectProps = OwnProps
-
-export enum TimeFrame {
-    OnChain = 'OnChain',
-    History = 'History',
-}
-
-const TimeSelect = ({onTimeFrameChange}: TimeSelectProps) => {
+const TimeSelect = () => {
     const { t } = useTranslation()
-    const [value, setValue] = useState(TimeFrame.OnChain)
+    const { timeFrame } = useTimeFrame()
+    const { setSearchParam } = useLocationFactory()
 
-    const options: { [key in TimeFrame]: string } = {
-        [TimeFrame.OnChain]: 'components.timeSelect.onChain',
-        [TimeFrame.History]: 'components.timeSelect.history',
+    const options: { [key in TimeFrame]: {label: string, path: string} } = {
+        [TimeFrame.OnChain]: {
+            label: t('components.timeSelect.onChain'),
+            path: setSearchParam(TimeSelectFilterSearchParamName, TimeFrame.OnChain)
+        },
+        [TimeFrame.History]: {
+            label: t('components.timeSelect.history'),
+            path: setSearchParam(TimeSelectFilterSearchParamName, TimeFrame.History)
+        },
     }
 
     return (
-        <Select
-            value={value}
-            options={Object.keys(options)}
-            renderOption={(option: TimeFrame) => t(options[option])}
-            onChange={({ target }) => {
-                const newTimeFrame: TimeFrame = target.value as TimeFrame
-                onTimeFrameChange(newTimeFrame)
-                setValue(newTimeFrame)
-            }}
-        />
+        <NavSelect value={options[timeFrame]} options={Object.values(options)} />
     )
 }
 export default TimeSelect
+

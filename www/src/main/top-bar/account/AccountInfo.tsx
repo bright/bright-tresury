@@ -19,9 +19,9 @@ import { useGetIdeas } from '../../../ideas/ideas.api'
 import { filterIdeas } from '../../../ideas/list/filterIdeas'
 import { useGetProposals } from '../../../proposals/proposals.api'
 import { filterProposals } from '../../../proposals/list/filterProposals'
-import { ProposalFilter } from '../../../proposals/list/ProposalStatusFilters'
-import { TimeFrame } from '../../../components/select/TimeSelect'
-import { ProposalDto } from '../../../proposals/proposals.dto'
+import { TimeFrame } from '../../../util/useTimeFrame'
+import { ProposalFilter } from '../../../proposals/useProposalsFilter'
+
 
 const useStyles = makeStyles(() =>
     createStyles({

@@ -8,7 +8,6 @@ import proposalsSubmitted from '../assets/proposals_submitted.svg'
 import wallet from '../assets/wallet.svg'
 import Grid from '../components/grid/Grid'
 import { useNetworks } from '../networks/useNetworks'
-import { ProposalFilter, ProposalFilterSearchParamName } from '../proposals/list/ProposalStatusFilters'
 import { ROUTE_PROPOSALS } from '../routes/routes'
 import { toNetworkDisplayValue } from '../util/quota.util'
 import { StatsDto } from './stats.dto'
@@ -17,6 +16,7 @@ import CurrencyAmountStatsCard from './statsCard/CurrencyAmountStatsCard'
 import ImageStatsCard from './statsCard/ImageStatsCard'
 import SpendingPeriodCard from './statsCard/SpendingPeriodCard'
 import TimeStatsCard from './statsCard/TimeStatsCard'
+import { ProposalFilter, ProposalFilterSearchParamName } from '../proposals/useProposalsFilter'
 
 interface OwnProps {
     stats: StatsDto
