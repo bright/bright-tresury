@@ -3,7 +3,7 @@ import i18next from 'i18next'
 import React, { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { BrowserRouter as Router, Switch } from 'react-router-dom'
-import Bounties from './bounties/Bounties'
+import { EmailPasswordAuth } from 'supertokens-auth-react/recipe/emailpassword'
 import './App.css'
 import Account from './auth/account/Account'
 import { AuthContextProvider } from './auth/AuthContext'
@@ -13,8 +13,13 @@ import SignUp from './auth/sign-up/SignUp'
 import Web3SignUpSuccess from './auth/sign-up/web3/Web3SignUpSuccess'
 import EmailNotVerified from './auth/verifyEmail/EmailNotVerified'
 import VerifyEmail from './auth/verifyEmail/VerifyEmail'
+import Bounties from './bounties/Bounties'
 import BountyLoader from './bounties/bounty/BountyLoader'
+import BountyCreate from './bounties/create/BountyCreate'
+import Privacy from './components/privacy/Privacy'
+import Terms from './components/terms/Terms'
 import IdeaCreate from './ideas/create/IdeaCreate'
+import IdeaLoader from './ideas/idea/IdeaLoader'
 import Ideas from './ideas/Ideas'
 import Main from './main/Main'
 import NetworksContextProvider from './networks/NetworksContext'
@@ -32,6 +37,7 @@ import {
     ROUTE_IDEAS,
     ROUTE_NEW_BOUNTY,
     ROUTE_NEW_IDEA,
+    ROUTE_PRIVACY,
     ROUTE_PROPOSAL,
     ROUTE_PROPOSALS,
     ROUTE_ROOT,
@@ -40,9 +46,8 @@ import {
     ROUTE_SIGNUP_EMAIL_SUCCESS,
     ROUTE_SIGNUP_WEB3_SUCCESS,
     ROUTE_STATS,
-    ROUTE_VERIFY_EMAIL,
-    ROUTE_PRIVACY,
     ROUTE_TERMS,
+    ROUTE_VERIFY_EMAIL,
 } from './routes/routes'
 import SnackNotificationsContextProvider from './snack-notifications/SnackNotificationsContext'
 import Stats from './stats/Stats'
@@ -51,10 +56,6 @@ import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
 import { initializeSupertokens } from './supertokens'
 import ThemeWrapper from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
-import IdeaLoader from './ideas/idea/IdeaLoader'
-import BountyCreate from './bounties/create/BountyCreate'
-import Privacy from './components/privacy/Privacy'
-import Terms from './components/terms/Terms'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -75,7 +76,8 @@ function AppRoutes() {
     return (
         <Main>
             <Switch>
-                <PublicOnlyRoute exact={false} path={ROUTE_SIGNUP} component={SignUp} />
+                {/*TODO make public only route but enable history redirect inside the componenet*/}
+                <Route exact={false} path={ROUTE_SIGNUP} component={SignUp} />
                 <PublicOnlyRoute exact={false} path={ROUTE_SIGNIN} component={SignIn} />
                 <PrivateRoute
                     requireVerified={false}
@@ -124,17 +126,19 @@ function App() {
             <div className={classes.root}>
                 <Router>
                     <NetworksContextProvider>
-                        <AuthContextProvider>
-                            <ThemeWrapper>
-                                <SnackNotificationsContextProvider>
-                                    <SubstrateContextProvider>
-                                        <AccountsContextProvider>
-                                            <AppRoutes />
-                                        </AccountsContextProvider>
-                                    </SubstrateContextProvider>
-                                </SnackNotificationsContextProvider>
-                            </ThemeWrapper>
-                        </AuthContextProvider>
+                        <EmailPasswordAuth requireAuth={false}>
+                            <AuthContextProvider>
+                                <ThemeWrapper>
+                                    <SnackNotificationsContextProvider>
+                                        <SubstrateContextProvider>
+                                            <AccountsContextProvider>
+                                                <AppRoutes />
+                                            </AccountsContextProvider>
+                                        </SubstrateContextProvider>
+                                    </SnackNotificationsContextProvider>
+                                </ThemeWrapper>
+                            </AuthContextProvider>
+                        </EmailPasswordAuth>
                     </NetworksContextProvider>
                 </Router>
             </div>

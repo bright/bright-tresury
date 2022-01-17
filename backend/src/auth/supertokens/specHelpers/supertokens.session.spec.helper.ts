@@ -2,10 +2,7 @@ import { INestApplication } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Request } from 'express'
 import supertest from 'supertest'
-import {
-    createEmailVerificationToken,
-    verifyEmailUsingToken,
-} from 'supertokens-node/lib/build/recipe/emailverification'
+import { verifyEmailUsingToken, createEmailVerificationToken } from 'supertokens-node/lib/build/recipe/emailpassword'
 import { getAllSessionHandlesForUser, revokeSession } from 'supertokens-node/lib/build/recipe/session'
 import { UserEntity } from '../../../users/user.entity'
 import { request } from '../../../utils/spec.helpers'
@@ -29,6 +26,7 @@ export class SessionHandler {
             headers: {
                 cookie: this.cookies,
             },
+            method: '',
         } as Request
     }
 
@@ -77,11 +75,9 @@ export const createUserSessionHandlerWithVerifiedEmail = async (
 }
 
 export const verifyEmail = async (app: INestApplication, sessionHandler: SessionHandler) => {
-    const token = await createEmailVerificationToken(
-        sessionHandler.sessionData.user.authId,
-        sessionHandler.sessionData.user.email!,
-    )
-    await verifyEmailUsingToken(token)
+    const token = await createEmailVerificationToken(sessionHandler.sessionData.user.authId)
+    const typedToken = token as { status: 'OK'; token: string }
+    await verifyEmailUsingToken(typedToken.token)
 }
 
 export const createUserSessionHandler = async (
@@ -98,7 +94,7 @@ export const createUserSessionHandler = async (
         ],
     }
 
-    const res: any = await request(app).post(`/api/v1/signup`).send(signupData)
+    const res: any = await request(app).post(`/api/v1/auth/signup`).send(signupData)
     const user = await app.get(getRepositoryToken(UserEntity)).findOne({ email })
     return createSessionHandler(res, user)
 }

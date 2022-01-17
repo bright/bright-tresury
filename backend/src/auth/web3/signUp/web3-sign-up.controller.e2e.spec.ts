@@ -49,7 +49,9 @@ describe(`Web3 Sign Up Controller`, () => {
                 })
             const user = await getUsersService().findOneByWeb3Address(bobAddress)
             const sessionHandler = createSessionHandler(confirmSignUpResponse, user)
-            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, false)
+            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, {
+                antiCsrfCheck: false,
+            })
 
             expect(session).toBeDefined()
         })

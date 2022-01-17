@@ -28,15 +28,11 @@ const Web3SignIn = () => {
     const formikRef = useRef<any>()
     const history = useHistory()
 
-    const { setIsUserSignedIn } = useAuth()
     const { mutateAsync, isLoading, isError, error } = useWeb3SignIn()
     const { isWeb3Injected } = useAccounts()
 
     const onSubmit = async (values: Web3SignInValues) => {
         await mutateAsync(values, {
-            onSuccess: () => {
-                setIsUserSignedIn(true)
-            },
             onError: (err) => {
                 console.log(err)
                 if ((err as AxiosError).response?.status === 404) {

@@ -5,11 +5,9 @@ import { useContainer } from 'class-validator'
 import supertokens from 'supertokens-node'
 import { AppEventsModule } from './app-events/app-events.module'
 import { AppController } from './app.controller'
+import { SupertokensExceptionFilter } from './auth/auth.filter'
 import { AuthModule } from './auth/auth.module'
-import { initializeSupertokens } from './auth/supertokens/supertokens.config'
-import { SuperTokensExceptionFilter } from './auth/supertokens/supertokens.exceptionFilter'
 import { SuperTokensModule } from './auth/supertokens/supertokens.module'
-import { SuperTokensService } from './auth/supertokens/supertokens.service'
 import { BlockchainModule } from './blockchain/blockchain.module'
 import { CachingModule } from './cache/cache.module'
 import { ConfigModule } from './config/config.module'
@@ -60,17 +58,13 @@ export class AppModule implements NestModule {
 export function configureGlobalServices(app: INestApplication) {
     const config = app.get('AppConfig')
 
-    initializeSupertokens(config, app.get(SuperTokensService))
-
     app.enableCors({
         origin: config.websiteUrl,
         allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
         credentials: true,
     })
 
-    app.use(supertokens.middleware())
-    app.use(supertokens.errorHandler())
-    app.useGlobalFilters(new SuperTokensExceptionFilter())
+    app.useGlobalFilters(new SupertokensExceptionFilter())
 
     app.useGlobalPipes(
         new ValidationPipe({

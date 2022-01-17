@@ -44,6 +44,7 @@ export async function signInAndGetSessionHandler(
 
     const signedUser = await usersService.findOneByWeb3Address(address)
     const handler = createSessionHandler(confirmSignInResponse, signedUser)
-    await verifyEmail(app.get(), handler)
+    // TODO - fix when fixing skipped tests
+    // await verifyEmail(app.get(), handler)
     return handler
 }

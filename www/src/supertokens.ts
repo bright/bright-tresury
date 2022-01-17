@@ -12,7 +12,7 @@ export function initializeSupertokens() {
             appName: 'Bright Treasury App',
             apiDomain: config.API_URL,
             websiteDomain: config.WEBSITE_URL,
-            apiBasePath: '/api/v1',
+            apiBasePath: '/api/v1/auth',
         },
         recipeList: [
             EmailPassword.init({
@@ -38,6 +38,5 @@ export function initializeSupertokens() {
             }),
         ],
     })
-
-    addAxiosInterceptors(api)
+    Session.addAxiosInterceptors(api)
 }

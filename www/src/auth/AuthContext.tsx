@@ -1,7 +1,7 @@
-import * as React from 'react'
-import { PropsWithChildren, useEffect, useMemo, useState } from 'react'
-import Session from 'supertokens-auth-react/lib/build/recipe/session/session'
 import { encodeAddress } from '@polkadot/util-crypto'
+import * as React from 'react'
+import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react'
+import Session, { signOut, useSessionContext } from 'supertokens-auth-react/recipe/session'
 import { useNetworks } from '../networks/useNetworks'
 import { compareWeb3Address } from '../util/web3address.util'
 
@@ -12,8 +12,8 @@ export interface AuthContextState {
     isUserSignedInAndVerified: boolean
     hasWeb3AddressAssigned: (address: string) => boolean
 
-    setIsUserSignedIn: (isUserSignedIn: boolean) => void
-    refreshJwt: () => void
+    refreshJwt: () => Promise<void>
+    signOut: () => void
 }
 
 export interface AuthContextUser {
@@ -35,52 +35,62 @@ export interface Web3Address {
 export const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
 
 const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
-    const [user, setUser] = useState<AuthContextUser | undefined>()
-    const [isUserSignedIn, setIsUserSignedIn] = useState(Session.doesSessionExist)
     const { network } = useNetworks()
+    const { accessTokenPayload, doesSessionExist } = useSessionContext()
 
-    const refreshJwt = () => {
-        if (isUserSignedIn) {
-            Session.getJWTPayloadSecurely().then((payload: AuthContextUser) => {
-                setUser({
-                    ...payload,
-                    isWeb3: payload.web3Addresses && payload.web3Addresses.length > 0,
-                    isEmailPassword: !!payload.email,
-                    web3Addresses: payload.web3Addresses.map((web3Address) => {
-                        return {
-                            ...web3Address,
-                            encodedAddress: encodeAddress(web3Address.address, network.ss58Format),
-                        }
-                    }),
-                })
-            })
-        } else {
-            setUser(undefined)
-        }
-    }
-
-    useEffect(() => {
-        refreshJwt()
-    }, [isUserSignedIn])
+    const user: AuthContextUser | undefined = useMemo(
+        () =>
+            doesSessionExist
+                ? {
+                      ...accessTokenPayload,
+                      isWeb3: accessTokenPayload.web3Addresses && accessTokenPayload.web3Addresses.length > 0,
+                      isEmailPassword: !!accessTokenPayload.email,
+                      web3Addresses:
+                          accessTokenPayload.web3Addresses?.map((web3Address: any) => {
+                              return {
+                                  ...web3Address,
+                                  encodedAddress: encodeAddress(web3Address.address, network.ss58Format),
+                              }
+                          }) ?? [],
+                  }
+                : undefined,
+        [doesSessionExist, accessTokenPayload],
+    )
 
     const isUserVerified = useMemo(
         () => user !== undefined && (user.isWeb3 || (user.isEmailPassword && user.isEmailVerified)),
         [user],
     )
 
-    const isUserSignedInAndVerified = useMemo(() => isUserSignedIn && isUserVerified, [isUserSignedIn, isUserVerified])
+    const isUserSignedInAndVerified = useMemo(
+        () => doesSessionExist && user !== undefined && (user.isWeb3 || (user.isEmailPassword && user.isEmailVerified)),
+        [user, doesSessionExist],
+    )
 
-    const hasWeb3AddressAssigned = (address: string) =>
-        !!user?.web3Addresses.find((web3Address) => compareWeb3Address(web3Address.address, address))
+    const hasWeb3AddressAssigned = useCallback(
+        (address: string) =>
+            !!user?.web3Addresses.find((web3Address: any) => compareWeb3Address(web3Address.address, address)),
+        [user],
+    )
+
+    useEffect(() => {
+        if (doesSessionExist) {
+            refreshJwt()
+        }
+    }, [doesSessionExist])
+
+    const refreshJwt = async () => {
+        await Session.attemptRefreshingSession()
+    }
 
     return (
         <AuthContext.Provider
             value={{
                 user,
-                isUserSignedIn,
+                isUserSignedIn: doesSessionExist,
                 isUserVerified,
                 isUserSignedInAndVerified,
-                setIsUserSignedIn,
+                signOut,
                 refreshJwt,
                 hasWeb3AddressAssigned,
             }}

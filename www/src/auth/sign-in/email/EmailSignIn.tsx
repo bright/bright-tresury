@@ -31,19 +31,10 @@ const EmailSignIn = () => {
     const { t } = useTranslation()
     const classes = useStyles()
 
-    const { setIsUserSignedIn } = useAuth()
-
     const { isLoading, isError, mutateAsync, error } = useSignIn()
 
     const onSubmit = async (values: SignInValues) => {
-        await mutateAsync(values, {
-            onSuccess: () => {
-                setIsUserSignedIn(true)
-            },
-            onError: () => {
-                setIsUserSignedIn(false)
-            },
-        })
+        await mutateAsync(values)
     }
 
     const errorMessage = useMemo(() => {

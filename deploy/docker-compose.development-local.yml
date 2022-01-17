@@ -33,7 +33,7 @@ services:
         container_name: authorization
         ports:
             - '3567:3567'
-        image: supertokens/supertokens-postgresql:3.3
+        image: supertokens/supertokens-postgresql:3.7
         depends_on:
             - database
         environment:
@@ -47,7 +47,7 @@ services:
         container_name: authorization-test
         ports:
             - '3568:3567'
-        image: supertokens/supertokens-postgresql:3.3
+        image: supertokens/supertokens-postgresql:3.7
         depends_on:
             - database
         environment:

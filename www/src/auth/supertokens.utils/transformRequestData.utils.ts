@@ -33,3 +33,5 @@ function transformBasicRequestData(data: { password: string; email: string }): {
         ],
     }
 }
+
+export const supertokensRequestConfig = { headers: { rid: 'emailpassword' } }

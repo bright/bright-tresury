@@ -24,6 +24,7 @@ const SendVerifyEmailButton = (props: SendVerifyEmailButtonProps) => {
         case 'success':
             return <p>{t('auth.emailNotVerified.emailResent')}</p>
         case 'error':
+            // TODO fix - throws an error when email already verified
             return <p>{t('auth.emailNotVerified.emailSendingError')}</p>
         default:
             return (

@@ -49,13 +49,11 @@ const Web3SignUp = () => {
 
     const history = useHistory()
 
-    const { setIsUserSignedIn } = useAuth()
     const { mutateAsync, isLoading, isError, error } = useWeb3SignUp()
 
     const onSubmit = async (values: Web3SignUpValues) => {
         await mutateAsync(values, {
             onSuccess: () => {
-                setIsUserSignedIn(true)
                 history.replace(ROUTE_SIGNUP_WEB3_SUCCESS)
             },
         })

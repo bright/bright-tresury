@@ -19,15 +19,13 @@ const EmailSignUpForm = () => {
     const { t } = useTranslation()
     const { initialValues, validationSchema } = useSignUpForm()
     const history = useHistory()
-    const { setIsUserSignedIn } = useAuth()
     const { mutateAsync, isError, isLoading } = useSignUp()
     const [showError, setShowError] = useState(true)
 
     const onSubmit = async (values: SignUpValues, { setErrors }: FormikHelpers<SignUpValues>) => {
         await mutateAsync(values, {
             onSuccess: () => {
-                setIsUserSignedIn(true)
-                history.push(ROUTE_SIGNUP_EMAIL_SUCCESS)
+                history.replace(ROUTE_SIGNUP_EMAIL_SUCCESS)
             },
             onError: (err) => {
                 const formikErrors = toFormikErrors(err as FieldError)
@@ -37,7 +35,6 @@ const EmailSignUpForm = () => {
                 } else {
                     setShowError(true)
                 }
-                setIsUserSignedIn(false)
             },
         })
     }

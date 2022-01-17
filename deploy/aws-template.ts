@@ -970,7 +970,7 @@ export default cloudform({
                     ],
                     Cpu: 100,
                     Essential: true,
-                    Image: 'supertokens/supertokens-postgresql:3.3',
+                    Image: 'supertokens/supertokens-postgresql:3.7',
                     MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
                     LogConfiguration: {
                         LogDriver: 'awslogs',

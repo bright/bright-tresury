@@ -71,7 +71,7 @@
         "pg": "^8.3.3",
         "reflect-metadata": "^0.1.13",
         "stack-trace": "^0.0.10",
-        "supertokens-node": "^4.3.3",
+        "supertokens-node": "8.4.0",
         "swagger-ui-express": "^4.1.6",
         "ts-node": "^9.1.1",
         "tslint": "^6.1.3",

@@ -9,7 +9,7 @@ import {
 import { cleanAuthorizationDatabase, getAuthUser } from './supertokens/specHelpers/supertokens.database.spec.helper'
 
 describe(`Auth Controller`, () => {
-    const baseUrl = '/api/v1'
+    const baseUrl = '/api/v1/auth'
 
     const app = beforeSetupFullApp()
     const getService = () => app.get().get(SuperTokensService)
@@ -57,7 +57,9 @@ describe(`Auth Controller`, () => {
                 bobUsername,
                 superTokensSignUpUserPassword,
             )
-            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, false)
+            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, {
+                antiCsrfCheck: false,
+            })
 
             expect(session).toBeDefined()
         })
@@ -74,7 +76,7 @@ describe(`Auth Controller`, () => {
             const signInSession = await getService().getSession(
                 signInSessionHandler.getAuthorizedRequest(),
                 {} as any,
-                false,
+                { antiCsrfCheck: false },
             )
             expect(signInSession).toBeDefined()
         })
@@ -89,7 +91,9 @@ describe(`Auth Controller`, () => {
                 superTokensSignUpUserPassword,
             )
             await sessionHandler.authorizeRequest(request(app()).get(`/api/health`)).send()
-            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, false)
+            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, {
+                antiCsrfCheck: false,
+            })
             const sessionData = await session?.getSessionData()
 
             const user = await getUsersService().findOneByUsername(bobUsername)

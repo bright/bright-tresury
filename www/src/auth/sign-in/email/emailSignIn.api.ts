@@ -1,12 +1,15 @@
 import { useMutation } from 'react-query'
-import { SignInAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailpassword/types'
 import { apiPost } from '../../../api'
-import { transformSignInRequestData } from '../../supertokens.utils/transformRequestData.utils'
+import {
+    supertokensRequestConfig,
+    transformSignInRequestData,
+} from '../../supertokens.utils/transformRequestData.utils'
+import { SignInAPIResponse } from '../../supertokens.utils/types'
 import { SignInData } from './emailSignIn.dto'
 
 export function signIn(data: SignInData) {
     const requestData = transformSignInRequestData(data)
-    return apiPost<SignInAPIResponse>(`/signin`, requestData).then((response) => {
+    return apiPost<SignInAPIResponse>(`/auth/signin`, requestData, supertokensRequestConfig).then((response: any) => {
         switch (response.status) {
             case 'OK':
                 return response

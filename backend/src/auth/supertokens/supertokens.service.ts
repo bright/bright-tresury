@@ -4,28 +4,33 @@ import {
     ForbiddenException,
     HttpStatus,
     Injectable,
-    InternalServerErrorException,
     NotFoundException,
 } from '@nestjs/common'
 import { Request, Response } from 'express'
 import {
+    createEmailVerificationToken,
     createResetPasswordToken,
     getUserByEmail,
     getUserById,
+    isEmailVerified as superTokensIsEmailVerified,
     resetPasswordUsingToken,
     signIn,
     signUp as superTokensSignUp,
+    verifyEmailUsingToken,
 } from 'supertokens-node/lib/build/recipe/emailpassword'
 
-import EmailPasswordSessionError from 'supertokens-node/lib/build/recipe/emailpassword/error'
-import { TypeFormField, User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
+import { User as SuperTokensUser } from 'supertokens-node/lib/build/recipe/emailpassword/types'
 import {
     createNewSession,
     getSession as superTokensGetSession,
     updateSessionData,
 } from 'supertokens-node/lib/build/recipe/session'
 import SessionError from 'supertokens-node/lib/build/recipe/session/error'
-import Session from 'supertokens-node/lib/build/recipe/session/sessionClass'
+import {
+    SessionContainerInterface,
+    SessionContainerInterface as SessionContainer,
+    VerifySessionOptions,
+} from 'supertokens-node/lib/build/recipe/session/types'
 import { getConnection } from 'typeorm'
 import { AuthorizationDatabaseName } from '../../database/authorization/authorization.database.module'
 import { EmailsService } from '../../emails/emails.service'
@@ -35,11 +40,6 @@ import { UserEntity } from '../../users/user.entity'
 import { UsersService } from '../../users/users.service'
 import { SessionData } from '../session/session.decorator'
 import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
-import {
-    createEmailVerificationToken,
-    isEmailVerified as superTokensIsEmailVerified,
-    verifyEmailUsingToken,
-} from 'supertokens-node/lib/build/recipe/emailverification'
 
 const logger = getLogger()
 
@@ -96,14 +96,18 @@ export class SuperTokensService {
         }
     }
 
-    async createSession(res: Response, authId: string): Promise<Session> {
+    async createSession(res: Response, authId: string): Promise<SessionContainer> {
         const session = await createNewSession(res, authId)
         await this.refreshJwtPayloadBySession(session)
         return session
     }
 
-    async getSession(req: Request, res: Response, doAntiCsrfCheck?: boolean): Promise<Session | undefined> {
-        return await superTokensGetSession(req, res, doAntiCsrfCheck)
+    async getSession(
+        req: Request,
+        res: Response,
+        options?: VerifySessionOptions,
+    ): Promise<SessionContainer | undefined> {
+        return await superTokensGetSession(req, res, options)
     }
 
     async isEmailVerified(user: UserEntity): Promise<boolean> {
@@ -111,7 +115,7 @@ export class SuperTokensService {
             return false
         }
         try {
-            return superTokensIsEmailVerified(user.authId, user.email)
+            return superTokensIsEmailVerified(user.authId)
         } catch (err) {
             logger.error(err)
         }
@@ -119,13 +123,11 @@ export class SuperTokensService {
     }
 
     async signUp(email: string, password: string): Promise<SuperTokensUser> {
-        try {
-            return await superTokensSignUp(email, password)
-        } catch (error: any) {
-            throw error.type === EmailPasswordSessionError.EMAIL_ALREADY_EXISTS_ERROR
-                ? new ConflictException(error.message)
-                : new InternalServerErrorException(error.status || HttpStatus.INTERNAL_SERVER_ERROR, error.message)
+        const result = await superTokensSignUp(email, password)
+        if (result.status === 'EMAIL_ALREADY_EXISTS_ERROR') {
+            throw new ConflictException('EMAIL_ALREADY_EXISTS_ERROR')
         }
+        return result.user
     }
 
     /*
@@ -151,20 +153,17 @@ export class SuperTokensService {
     }
 
     async updatePassword(userId: string, password: string): Promise<void> {
-        const user = await getUserById(userId)
-        if (!user) {
+        const token = await createResetPasswordToken(userId)
+        if (token.status === 'UNKNOWN_USER_ID_ERROR') {
             logger.error(`Cannot found user with id ${userId}. Password NOT updated`)
             throw new NotFoundException()
         }
-
-        const token = await createResetPasswordToken(userId)
-        await resetPasswordUsingToken(token, password)
+        await resetPasswordUsingToken(token.token, password)
     }
 
-    async refreshSessionData(session: Session) {
+    async refreshSessionData(session: SessionContainerInterface) {
         logger.info('Refreshing session data...')
-        const userId = await session.getUserId()
-        const user = await this.usersService.findOneByAuthId(userId)
+        const user = await this.usersService.findOneByAuthId(session.getUserId())
         logger.info('Refreshing session data, new user:', user)
         if (!user) {
             await session.revokeSession()
@@ -174,7 +173,7 @@ export class SuperTokensService {
         }
     }
 
-    async updateSessionData(data: Partial<SessionData>, session?: Session) {
+    async updateSessionData(data: Partial<SessionData>, session?: SessionContainerInterface) {
         if (session) {
             const currentSessionData = await session.getSessionData()
             await updateSessionData(session.getHandle(), {
@@ -184,9 +183,14 @@ export class SuperTokensService {
         }
     }
 
+    async getSessionData(userId: string) {
+        const user = await this.usersService.findOneByAuthId(userId)
+        return { user }
+    }
+
     async refreshJwtPayload(req: Request, res: Response) {
         logger.info('Refreshing JWT payload and session data...')
-        const session = await this.getSession(req, res, false)
+        const session = await this.getSession(req, res, { antiCsrfCheck: false })
         logger.info('Refreshing JWT payload and session data, current session: ', session)
         if (session) {
             await this.refreshJwtPayloadBySession(session)
@@ -195,11 +199,11 @@ export class SuperTokensService {
         logger.info('JWT payload and session data refreshed')
     }
 
-    async refreshJwtPayloadBySession(session: Session) {
+    async refreshJwtPayloadBySession(session: SessionContainerInterface) {
         logger.info('Refreshing JWT payload by session data...')
         const jwtPayload = await this.getJwtPayload(session.getUserId())
         logger.info('Refreshing JWT payload by session data, new jwt payload:', jwtPayload)
-        await session?.updateJWTPayload({ ...jwtPayload })
+        await session.updateAccessTokenPayload(jwtPayload)
         logger.info('JWT payload refreshed.')
     }
 
@@ -215,26 +219,7 @@ export class SuperTokensService {
         await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
     }
 
-    getEmailForUserId = async (userId: string): Promise<string> => {
-        const user = await getUserById(userId)
-        if (!user) {
-            /*
-            Supertokens documentation does not clearly specify what this function should return if no user found for e given user id
-            Supertokens sometimes hide the errors thrown, so we log the behaviour explicitly.
-             */
-            logger.error('No user found for the given user id in getEmailForUserId function')
-            throw new NotFoundException('No user found for the giver user id')
-        }
-        return user.email
-    }
-
-    setJwtPayload = async (
-        superTokensUser: SuperTokensUser,
-        formFields: TypeFormField[],
-        action: 'signin' | 'signup',
-    ): Promise<JWTPayload> => this.getJwtPayload(superTokensUser.id)
-
-    private async getJwtPayload(authId: string): Promise<JWTPayload> {
+    async getJwtPayload(authId: string): Promise<JWTPayload> {
         const payload = {
             email: '',
             id: authId,
@@ -265,13 +250,21 @@ export class SuperTokensService {
     }
 
     async verifyEmail(authId: string, email: string) {
-        const token = await createEmailVerificationToken(authId, email)
-        await verifyEmailUsingToken(token)
+        const token = await createEmailVerificationToken(authId)
+        if (token.status === 'OK') {
+            verifyEmailUsingToken(token.token)
+        }
     }
 
     async verifyEmailByToken(req: Request, res: Response, token: string) {
         try {
-            await verifyEmailUsingToken(token)
+            const result = await verifyEmailUsingToken(token)
+
+            if (result && 'status' in result && result.status === 'EMAIL_VERIFICATION_INVALID_TOKEN_ERROR') {
+                res.status(HttpStatus.BAD_REQUEST).send(result.status)
+                return
+            }
+
             await this.refreshJwtPayload(req, res)
         } catch (e: any) {
             res.status(HttpStatus.BAD_REQUEST).send(e.message)

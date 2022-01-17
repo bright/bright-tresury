@@ -1,20 +1,24 @@
 import { useMutation } from 'react-query'
-import { SendVerifyEmailAPIResponse } from 'supertokens-auth-react/lib/build/recipe/emailverification/types'
 import { apiPost } from '../../api'
+import { supertokensRequestConfig } from '../supertokens.utils/transformRequestData.utils'
+import { SendVerifyEmailAPIResponse } from '../supertokens.utils/types'
 
 export function sendVerifyEmail() {
-    return apiPost<SendVerifyEmailAPIResponse>('/user/email/verify/token').then((response) => {
-        switch (response.status) {
-            case 'OK':
-                return response
-            case 'EMAIL_ALREADY_VERIFIED_ERROR':
-                throw new Error('EMAIL_ALREADY_VERIFIED_ERROR')
-        }
-    })
+    return apiPost<SendVerifyEmailAPIResponse>('auth/user/email/verify/token', null, supertokensRequestConfig).then(
+        (response) => {
+            debugger
+            switch (response.status) {
+                case 'OK':
+                    return response
+                case 'EMAIL_ALREADY_VERIFIED_ERROR':
+                    throw new Error('EMAIL_ALREADY_VERIFIED_ERROR')
+            }
+        },
+    )
 }
 
 function verifyEmail(token: string) {
-    return apiPost<void>(`/auth/email-password/verify/${token}`)
+    return apiPost<void>(`/auth/email-password/verify/${token}`, null)
 }
 
 export const useVerifyEmail = () => {

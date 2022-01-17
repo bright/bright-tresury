@@ -53,7 +53,7 @@ describe('EmailPasswordAssociateController', () => {
             await sessionHandler.revoke()
 
             const response = await request(app())
-                .post('/api/v1/signin')
+                .post('/api/v1/auth/signin')
                 .send({
                     formFields: [
                         {
