@@ -10,6 +10,7 @@ import { initializeSupertokens } from './auth/supertokens/supertokens.config'
 import { SuperTokensExceptionFilter } from './auth/supertokens/supertokens.exceptionFilter'
 import { SuperTokensModule } from './auth/supertokens/supertokens.module'
 import { SuperTokensService } from './auth/supertokens/supertokens.service'
+import { BlockchainModule } from './blockchain/blockchain.module'
 import { CachingModule } from './cache/cache.module'
 import { ConfigModule } from './config/config.module'
 import { DatabaseModule } from './database/database.module'
@@ -45,6 +46,7 @@ import { PolkassemblyModule } from './polkassembly/polkassembly.module'
         AppEventsModule,
         UserSettingsModule,
         BountiesModule,
+        BlockchainModule,
     ],
     exports: [],
     controllers: [AppController],

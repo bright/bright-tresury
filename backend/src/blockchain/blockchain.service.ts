@@ -1,20 +1,18 @@
-import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
+import { BadRequestException, Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
+import { ApiPromise } from '@polkadot/api'
 import Extrinsic from '@polkadot/types/extrinsic/Extrinsic'
 import { EventRecord, Header } from '@polkadot/types/interfaces'
 import { AccountId } from '@polkadot/types/interfaces/runtime'
 import { BN_MILLION, BN_ZERO, extractTime, u8aConcat } from '@polkadot/util'
 import BN from 'bn.js'
+import { ServiceStatus } from '../app.dto'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { getLogger } from '../logging.module'
 import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import {
-    getApi,
-    extractNumberFromBlockchainEvent,
-    getAccounts, accountIdToAddress,
-} from './utils'
+import { getApi, extractNumberFromBlockchainEvent, getAccounts, accountIdToAddress } from './utils'
 import { BlockchainsConnections } from './blockchain.module'
 import { StatsDto } from '../stats/stats.dto'
 import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
@@ -24,7 +22,6 @@ import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configurat
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
 import { MotionTimeDto, MotionTimeType } from './dto/motion-time.dto'
 import { DeriveTreasuryProposal } from '@polkadot/api-derive/types'
-
 
 const logger = getLogger()
 
@@ -44,6 +41,22 @@ export class BlockchainService implements OnModuleDestroy {
     async callUnsub() {
         await this.unsub?.()
         this.unsub = undefined
+    }
+
+    async healthCheck(): Promise<ServiceStatus[]> {
+        const services: ServiceStatus[] = []
+        for (const conf of this.blockchainsConfiguration) {
+            const api = getApi(this.blockchainsConnections, conf.id)
+            try {
+                await api.isReadyOrError
+                await api.derive.chain.bestNumber()
+                services.push(new ServiceStatus(conf.id, 'up'))
+            } catch (e) {
+                logger.info(`blockchain ${conf.id} healthCheck error:`, e)
+                services.push(new ServiceStatus(conf.id, 'down'))
+            }
+        }
+        return services
     }
 
     async listenForExtrinsic(
@@ -164,8 +177,14 @@ export class BlockchainService implements OnModuleDestroy {
         const api = getApi(this.blockchainsConnections, networkId)
         const { proposals: proposedProposals, approvals: approvedProposals } = await api.derive.treasury.proposals()
         return [
-            ...proposedProposals.map((proposal: DeriveTreasuryProposal) => ({...proposal, status: BlockchainProposalStatus.Proposal})),
-            ...approvedProposals.map((proposal: DeriveTreasuryProposal) => ({...proposal, status: BlockchainProposalStatus.Approval}))
+            ...proposedProposals.map((proposal: DeriveTreasuryProposal) => ({
+                ...proposal,
+                status: BlockchainProposalStatus.Proposal,
+            })),
+            ...approvedProposals.map((proposal: DeriveTreasuryProposal) => ({
+                ...proposal,
+                status: BlockchainProposalStatus.Approval,
+            })),
         ]
     }
 
@@ -177,8 +196,7 @@ export class BlockchainService implements OnModuleDestroy {
     async getProposal(networkId: string, blockchainIndex: number): Promise<Nil<BlockchainProposal>> {
         logger.info(`Getting proposal from blockchain for networkId: ${networkId}`)
         const blockchainProposal = await this.getDeriveProposal(networkId, blockchainIndex)
-        if(!blockchainProposal)
-            return
+        if (!blockchainProposal) return
         const accounts = getAccounts(blockchainProposal)
         const uniqueAddresses = new Set(accounts.map(accountIdToAddress))
         const identities = await this.getIdentities(networkId, Array.from(uniqueAddresses))
@@ -189,7 +207,7 @@ export class BlockchainService implements OnModuleDestroy {
             blockchainProposal,
             blockchainProposal.status,
             identities,
-            toBlockchainProposalMotionEnd
+            toBlockchainProposalMotionEnd,
         )
     }
 
@@ -206,7 +224,7 @@ export class BlockchainService implements OnModuleDestroy {
         }
 
         // get unique (set) accountIds as strings (toHuman) from ongoing proposals and approvals
-        const accounts = blockchainProposals.map(blockchainProposal => getAccounts(blockchainProposal)).flat()
+        const accounts = blockchainProposals.map((blockchainProposal) => getAccounts(blockchainProposal)).flat()
         const uniqueAddresses = new Set(accounts.map(accountIdToAddress))
         const identities = await this.getIdentities(networkId, Array.from(uniqueAddresses))
 
@@ -215,7 +233,7 @@ export class BlockchainService implements OnModuleDestroy {
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): MotionTimeDto =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
         return blockchainProposals.map((deriveProposal) =>
-            BlockchainProposal.create(deriveProposal, deriveProposal.status, identities, toBlockchainProposalMotionEnd)
+            BlockchainProposal.create(deriveProposal, deriveProposal.status, identities, toBlockchainProposalMotionEnd),
         )
     }
 
