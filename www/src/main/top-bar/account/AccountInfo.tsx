@@ -38,8 +38,7 @@ const AccountInfo = () => {
     const { user } = useAuth()
     const { network } = useNetworks()
     const { data: ideas } = useGetIdeas(network.id)
-    const {data} = useGetProposals(network.id, TimeFrame.OnChain, 100)
-    const proposals = data?.pages.map(page => page.items).flat() ?? []
+    const { data: proposals } = useGetProposals(network.id, TimeFrame.OnChain, 100)
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 
@@ -49,7 +48,8 @@ const AccountInfo = () => {
     }, [ideas, user])
 
     const numberOfMineProposals = useMemo(() => {
-        const mineProposals = proposals ? filterProposals(proposals, ProposalFilter.Mine, user) : []
+        const flattenProposals = proposals?.pages.map((page) => page.items).flat() ?? []
+        const mineProposals = proposals ? filterProposals(flattenProposals, ProposalFilter.Mine, user) : []
         return mineProposals.length
     }, [proposals, user])
 

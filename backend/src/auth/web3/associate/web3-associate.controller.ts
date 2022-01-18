@@ -1,4 +1,4 @@
-import { Body, HttpStatus, Post, Req, Res, UseGuards } from '@nestjs/common'
+import { Body, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common'
 import {
     ApiBadRequestResponse,
     ApiConflictResponse,
@@ -6,15 +6,14 @@ import {
     ApiOkResponse,
     ApiTags,
 } from '@nestjs/swagger'
-import { Request, Response } from 'express'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
-import { Web3AssociateService } from './web3-associate.service'
 import { SessionGuard } from '../../guards/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
+import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
 import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
-import { SuperTokensService } from '../../supertokens/supertokens.service'
 import { StartWeb3AssociateRequestDto } from './dto/start-web3-associate-request.dto'
+import { Web3AssociateService } from './web3-associate.service'
 
 @ControllerApiVersion('/auth/web3/associate', ['v1'])
 @ApiTags('auth.web3.associate')
@@ -35,6 +34,7 @@ export class Web3AssociateController {
     @ApiConflictResponse({
         description: 'Requested address already exists',
     })
+    @HttpCode(HttpStatus.OK)
     @UseGuards(SessionGuard)
     async startAssociatingAddress(
         @Body() startRequest: StartWeb3AssociateRequestDto,
@@ -44,6 +44,7 @@ export class Web3AssociateController {
     }
 
     @Post('/confirm')
+    @HttpCode(HttpStatus.OK)
     @UseGuards(SessionGuard)
     @ApiOkResponse({
         description: 'Association successfully confirmed',
@@ -59,12 +60,9 @@ export class Web3AssociateController {
     })
     async confirmAssociatingAddress(
         @Body() confirmRequest: ConfirmSignMessageRequestDto,
-        @Res() res: Response,
-        @Req() req: Request,
         @ReqSession() session: SessionData,
     ) {
         await this.web3AssociateService.confirm(confirmRequest, session)
-        await this.superTokensService.refreshJwtPayload(req, res)
-        res.status(HttpStatus.OK).send()
+        await this.superTokensService.refreshAccessTokenPayloadForUser(session.user.authId)
     }
 }

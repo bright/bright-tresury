@@ -26,7 +26,7 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
                             await superTokensService.handleCustomFormFieldsPostSignUp(response.user, input.formFields)
 
                             const sessionHandles = await Session.getAllSessionHandlesForUser(response.user.id)
-                            const payload = await superTokensService.getJwtPayload(response.user.id)
+                            const payload = await superTokensService.getAccessTokenPayload(response.user.id)
 
                             for (const handle of sessionHandles) {
                                 await Session.updateAccessTokenPayload(handle, payload)
@@ -62,7 +62,7 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
 
                         try {
                             // This goes in the access token, and is availble to read on the frontend.
-                            const payload = await superTokensService.getJwtPayload(userId)
+                            const payload = await superTokensService.getAccessTokenPayload(userId)
                             input.accessTokenPayload = {
                                 ...input.accessTokenPayload,
                                 ...payload,

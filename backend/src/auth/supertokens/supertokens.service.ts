@@ -31,6 +31,7 @@ import {
     SessionContainerInterface as SessionContainer,
     VerifySessionOptions,
 } from 'supertokens-node/lib/build/recipe/session/types'
+import Session from 'supertokens-node/recipe/session'
 import { getConnection } from 'typeorm'
 import { AuthorizationDatabaseName } from '../../database/authorization/authorization.database.module'
 import { EmailsService } from '../../emails/emails.service'
@@ -43,7 +44,7 @@ import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.
 
 const logger = getLogger()
 
-export interface JWTPayload {
+export interface AccessTokenPayload {
     id: string
     username: string
     email: string
@@ -98,7 +99,7 @@ export class SuperTokensService {
 
     async createSession(res: Response, authId: string): Promise<SessionContainer> {
         const session = await createNewSession(res, authId)
-        await this.refreshJwtPayloadBySession(session)
+        await this.refreshAccessTokenPayloadForSession(session)
         return session
     }
 
@@ -188,47 +189,36 @@ export class SuperTokensService {
         return { user }
     }
 
-    async refreshJwtPayload(req: Request, res: Response) {
-        logger.info('Refreshing JWT payload and session data...')
-        const session = await this.getSession(req, res, { antiCsrfCheck: false })
-        logger.info('Refreshing JWT payload and session data, current session: ', session)
-        if (session) {
-            await this.refreshJwtPayloadBySession(session)
-            await this.refreshSessionData(session)
-        }
-        logger.info('JWT payload and session data refreshed')
-    }
-
-    async refreshJwtPayloadBySession(session: SessionContainerInterface) {
-        logger.info('Refreshing JWT payload by session data...')
-        const jwtPayload = await this.getJwtPayload(session.getUserId())
-        logger.info('Refreshing JWT payload by session data, new jwt payload:', jwtPayload)
-        await session.updateAccessTokenPayload(jwtPayload)
-        logger.info('JWT payload refreshed.')
-    }
-
-    async verifyPassword(email: string, password: string) {
+    async refreshAccessTokenPayloadForUser(authId: string) {
+        logger.info('Refreshing access token payload for authId ', authId)
         try {
-            const result = await signIn(email, password)
-            if (result.status !== 'OK') {
-                throw new ForbiddenException('Incorrect password')
+            const sessionHandles = await Session.getAllSessionHandlesForUser(authId)
+            const payload = await this.getAccessTokenPayload(authId)
+
+            for (const handle of sessionHandles) {
+                logger.info('Refreshing access token payload for session: ', handle)
+                await Session.updateAccessTokenPayload(handle, payload)
             }
+            logger.info('Access token payload refreshed')
         } catch (e) {
-            throw new ForbiddenException('Incorrect password')
+            logger.error('Error when updating access token payload', e)
         }
     }
 
-    sendVerifyEmail = async (user: SuperTokensUser, emailVerificationURLWithToken: string): Promise<void> => {
-        await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
+    async refreshAccessTokenPayloadForSession(session: SessionContainerInterface) {
+        logger.info('Refreshing access token payload for session...')
+        const payload = await this.getAccessTokenPayload(session.getUserId())
+        await session.updateAccessTokenPayload(payload)
+        logger.info('Access token payload refreshed.')
     }
 
-    async getJwtPayload(authId: string): Promise<JWTPayload> {
+    async getAccessTokenPayload(authId: string): Promise<AccessTokenPayload> {
         const payload = {
             email: '',
             id: authId,
             username: '',
             isEmailVerified: false,
-        } as JWTPayload
+        } as AccessTokenPayload
 
         try {
             const user = await this.usersService.findOneByAuthId(authId)
@@ -252,25 +242,39 @@ export class SuperTokensService {
         return payload
     }
 
-    async verifyEmail(authId: string, email: string) {
+    async verifyPassword(email: string, password: string) {
+        try {
+            const result = await signIn(email, password)
+            if (result.status !== 'OK') {
+                throw new ForbiddenException('Incorrect password')
+            }
+        } catch (e) {
+            throw new ForbiddenException('Incorrect password')
+        }
+    }
+
+    sendVerifyEmail = async (user: SuperTokensUser, emailVerificationURLWithToken: string): Promise<void> => {
+        await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
+    }
+
+    async verifyEmail(authId: string) {
         const token = await createEmailVerificationToken(authId)
         if (token.status === 'OK') {
             return verifyEmailUsingToken(token.token)
         }
     }
 
-    async verifyEmailByToken(req: Request, res: Response, token: string) {
-        try {
-            const result = await verifyEmailUsingToken(token)
+    async verifyEmailByToken(token: string) {
+        const result = await verifyEmailUsingToken(token)
+        logger.info('Email verification finished with result: ', result)
 
-            if (result && 'status' in result && result.status === 'EMAIL_VERIFICATION_INVALID_TOKEN_ERROR') {
-                res.status(HttpStatus.BAD_REQUEST).send(result.status)
-                return
-            }
-
-            await this.refreshJwtPayload(req, res)
-        } catch (e: any) {
-            res.status(HttpStatus.BAD_REQUEST).send(e.message)
+        /* Result is either the User object (if email  successfully verified)
+         * or an object with status describing the error */
+        if (result && 'status' in result && result.status === 'EMAIL_VERIFICATION_INVALID_TOKEN_ERROR') {
+            logger.error('Verify verification invalid token')
+            throw new BadRequestException(result.status)
+        } else if (result && 'id' in result) {
+            await this.refreshAccessTokenPayloadForUser(result.id)
         }
     }
 }

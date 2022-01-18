@@ -65,12 +65,9 @@ export class EmailPasswordAssociateController {
     @HttpCode(HttpStatus.OK)
     async confirmAssociatingAddress(
         @Body() dto: ConfirmEmailPasswordAssociateRequestDto,
-        @Res() res: Response,
-        @Req() req: Request,
         @ReqSession() session: SessionData,
     ): Promise<void> {
         await this.emailPasswordAssociateService.confirm(dto, session)
-        await this.superTokensService.refreshJwtPayload(req, res)
-        res.send()
+        await this.superTokensService.refreshAccessTokenPayloadForUser(session.user.authId)
     }
 }

@@ -16,14 +16,14 @@ export function sendVerifyEmail() {
     )
 }
 
+export const useSendVerifyEmail = () => {
+    return useMutation(sendVerifyEmail)
+}
+
 function verifyEmail(token: string) {
     return apiPost<void>(`/auth/email-password/verify/${token}`, null)
 }
 
 export const useVerifyEmail = () => {
     return useMutation(verifyEmail)
-}
-
-export const useSendVerifyEmail = () => {
-    return useMutation(sendVerifyEmail)
 }

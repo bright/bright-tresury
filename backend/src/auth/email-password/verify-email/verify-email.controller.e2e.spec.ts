@@ -18,12 +18,11 @@ describe('VerifyEmailController', () => {
             const sessionHandler = await createUserSessionHandler(app())
             const user = sessionHandler.sessionData.user
             const token = ((await createEmailVerificationToken(user.authId)) as { token: string }).token
-            const response = await sessionHandler.authorizeRequest(
-                request(app()).post(`/api/v1/auth/email-password/verify/${token}`).send(),
-            )
+            const response = await request(app()).post(`/api/v1/auth/email-password/verify/${token}`).send()
 
             expect(response.statusCode).toBe(HttpStatus.OK)
         })
+
         it('fails to verify email with the wrong token', async () => {
             const sessionHandler = await createUserSessionHandler(app())
             const response = await sessionHandler.authorizeRequest(

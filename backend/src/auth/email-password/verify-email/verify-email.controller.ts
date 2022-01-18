@@ -1,7 +1,9 @@
-import { HttpStatus, Param, Post, Req, Res } from '@nestjs/common'
-import { Request, Response } from 'express'
+import { HttpCode, HttpStatus, Param, Post } from '@nestjs/common'
+import { getLogger } from '../../../logging.module'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
+
+const logger = getLogger()
 
 /*
 We need to implement our onw verify email endpoint as the SuperTokens endpoint only allows a logged in user to verify their email
@@ -10,9 +12,10 @@ We need to implement our onw verify email endpoint as the SuperTokens endpoint o
 export class VerifyEmailController {
     constructor(private readonly superTokensService: SuperTokensService) {}
 
-    @Post('/:token')
-    async verifyEmail(@Param('token') token: string, @Res() res: Response, @Req() req: Request): Promise<void> {
-        await this.superTokensService.verifyEmailByToken(req, res, token)
-        res.status(HttpStatus.OK).send()
+    @Post(':token')
+    @HttpCode(HttpStatus.OK)
+    async verifyEmail(@Param('token') token: string): Promise<void> {
+        logger.info('Verifying email address with token', token)
+        await this.superTokensService.verifyEmailByToken(token)
     }
 }
