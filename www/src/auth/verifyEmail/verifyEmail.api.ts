@@ -6,7 +6,6 @@ import { SendVerifyEmailAPIResponse } from '../supertokens.utils/types'
 export function sendVerifyEmail() {
     return apiPost<SendVerifyEmailAPIResponse>('auth/user/email/verify/token', null, supertokensRequestConfig).then(
         (response) => {
-            debugger
             switch (response.status) {
                 case 'OK':
                     return response

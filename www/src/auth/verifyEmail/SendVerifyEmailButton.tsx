@@ -8,10 +8,12 @@ export type SendVerifyEmailButtonProps = Omit<ButtonProps, 'children'>
 const SendVerifyEmailButton = (props: SendVerifyEmailButtonProps) => {
     const { t } = useTranslation()
 
-    const { mutateAsync, status } = useSendVerifyEmail()
+    const { mutateAsync, status, error } = useSendVerifyEmail()
 
     const onClick = async () => {
-        await mutateAsync()
+        try {
+            await mutateAsync()
+        } catch {}
     }
 
     switch (status) {
@@ -24,8 +26,11 @@ const SendVerifyEmailButton = (props: SendVerifyEmailButtonProps) => {
         case 'success':
             return <p>{t('auth.emailNotVerified.emailResent')}</p>
         case 'error':
-            // TODO fix - throws an error when email already verified
-            return <p>{t('auth.emailNotVerified.emailSendingError')}</p>
+            return (error as any)?.message === 'EMAIL_ALREADY_VERIFIED_ERROR' ? (
+                <p>{t('auth.emailNotVerified.emailAlreadyVerifiedError')}</p>
+            ) : (
+                <p>{t('auth.emailNotVerified.emailSendingError')}</p>
+            )
         default:
             return (
                 <Button color="primary" onClick={onClick} {...props}>
