@@ -29,7 +29,7 @@ export class Web3AddressesController {
         @Req() req: Request,
         @Res() res: Response,
     ) {
-        await this.usersService.unlinkAddress(session.user, address)
+        await this.usersService.unlinkAddress(session.user.id, address)
         await this.superTokensService.refreshJwtPayload(req, res)
         res.status(HttpStatus.OK).send()
     }
@@ -51,7 +51,7 @@ export class Web3AddressesController {
         @Req() req: Request,
         @Res() res: Response,
     ) {
-        await this.usersService.makeAddressPrimary(session.user, address)
+        await this.usersService.makeAddressPrimary(session.user.id, address)
         await this.superTokensService.refreshJwtPayload(req, res)
         res.status(HttpStatus.OK).send()
     }

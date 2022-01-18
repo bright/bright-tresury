@@ -209,7 +209,10 @@ export class SuperTokensService {
 
     async verifyPassword(email: string, password: string) {
         try {
-            await signIn(email, password)
+            const result = await signIn(email, password)
+            if (result.status !== 'OK') {
+                throw new ForbiddenException('Incorrect password')
+            }
         } catch (e) {
             throw new ForbiddenException('Incorrect password')
         }
@@ -252,7 +255,7 @@ export class SuperTokensService {
     async verifyEmail(authId: string, email: string) {
         const token = await createEmailVerificationToken(authId)
         if (token.status === 'OK') {
-            verifyEmailUsingToken(token.token)
+            return verifyEmailUsingToken(token.token)
         }
     }
 

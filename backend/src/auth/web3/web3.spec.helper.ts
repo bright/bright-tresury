@@ -1,4 +1,4 @@
-import { cleanDatabase, request } from '../../utils/spec.helpers'
+import { cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
 import { cleanAuthorizationDatabase } from '../supertokens/specHelpers/supertokens.database.spec.helper'
 import { Accessor } from '../../utils/accessor'
 import { SignatureValidator } from './signMessage/signature.validator'
@@ -25,26 +25,4 @@ export async function beforeEachWeb3E2eTest(accessor: Accessor<INestApplication>
 export async function cleanDatabases() {
     await cleanDatabase()
     await cleanAuthorizationDatabase()
-}
-
-export async function signInAndGetSessionHandler(
-    app: Accessor<INestApplication>,
-    address: string,
-): Promise<SessionHandler> {
-    const usersService = app.get().get(UsersService)
-    const user = await usersService.create(new CreateUserDto(uuid(), 'Bob', 'bob@email.com'))
-    const web3AddressesService = app.get().get(Web3AddressesService)
-    await web3AddressesService.create(new CreateWeb3AddressDto(address, user))
-
-    await request(app()).post(`/api/v1/auth/web3/signin/start`).send({ address })
-    const confirmSignInResponse = await request(app()).post(`/api/v1/auth/web3/signin/confirm`).send({
-        address,
-        signature: uuid(),
-    })
-
-    const signedUser = await usersService.findOneByWeb3Address(address)
-    const handler = createSessionHandler(confirmSignInResponse, signedUser)
-    // TODO - fix when fixing skipped tests
-    // await verifyEmail(app.get(), handler)
-    return handler
 }

@@ -5,7 +5,7 @@ import { cleanAuthorizationDatabase } from '../../supertokens/specHelpers/supert
 import { createUserSessionHandler } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
 import { HttpStatus } from '@nestjs/common'
 
-describe.skip('VerifyEmailController', () => {
+describe('VerifyEmailController', () => {
     const app = beforeSetupFullApp()
 
     beforeEach(async () => {
@@ -17,7 +17,7 @@ describe.skip('VerifyEmailController', () => {
         it('successfully verifies email with the correct token', async () => {
             const sessionHandler = await createUserSessionHandler(app())
             const user = sessionHandler.sessionData.user
-            const token = await createEmailVerificationToken(user.authId)
+            const token = ((await createEmailVerificationToken(user.authId)) as { token: string }).token
             const response = await sessionHandler.authorizeRequest(
                 request(app()).post(`/api/v1/auth/email-password/verify/${token}`).send(),
             )

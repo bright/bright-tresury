@@ -9,7 +9,7 @@ import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-messag
 import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
 import { HttpStatus } from '@nestjs/common'
 
-describe.skip(`Web3 Associate Controller`, () => {
+describe(`Web3 Associate Controller`, () => {
     const app = beforeSetupFullApp()
     const getUsersService = () => app.get().get(UsersService)
 

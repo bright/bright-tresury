@@ -1,9 +1,10 @@
 import { UsersService } from '../../../users/users.service'
 import { beforeSetupFullApp, request } from '../../../utils/spec.helpers'
-import { beforeEachWeb3E2eTest, signInAndGetSessionHandler } from '../web3.spec.helper'
+import { createWeb3SessionHandler } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
+import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
 import { HttpStatus } from '@nestjs/common'
 
-describe.skip(`Web3 Addresses Controller`, () => {
+describe(`Web3 Addresses Controller`, () => {
     const app = beforeSetupFullApp()
     const getUsersService = () => app.get().get(UsersService)
 
@@ -16,8 +17,7 @@ describe.skip(`Web3 Addresses Controller`, () => {
 
     describe('delete', () => {
         it('should delete address', async () => {
-            // TODO fix
-            const sessionHandler = await signInAndGetSessionHandler(app, bobAddress)
+            const sessionHandler = await createWeb3SessionHandler(app(), bobAddress)
             await getUsersService().associateWeb3Address(sessionHandler.sessionData.user, charlieAddress)
 
             await sessionHandler.authorizeRequest(
@@ -38,7 +38,7 @@ describe.skip(`Web3 Addresses Controller`, () => {
 
     describe('make primary', () => {
         it('should make address primary', async () => {
-            const sessionHandler = await signInAndGetSessionHandler(app, bobAddress)
+            const sessionHandler = await createWeb3SessionHandler(app(), bobAddress)
             await getUsersService().associateWeb3Address(sessionHandler.sessionData.user, charlieAddress)
 
             await sessionHandler.authorizeRequest(

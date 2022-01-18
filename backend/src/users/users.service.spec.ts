@@ -372,7 +372,7 @@ describe(`Users Service`, () => {
             await getService().createWeb3User({
                 authId: uuid(),
                 username: 'Bob',
-                web3Address: web3Address,
+                web3Address,
             })
             await getService().createWeb3User({
                 authId: uuid(),
@@ -488,7 +488,7 @@ describe(`Users Service`, () => {
             const userAfterAssociating = await getService().associateWeb3Address(user, bobAddress)
             expect(userAfterAssociating.web3Addresses!.length).toBe(2)
 
-            await getService().unlinkAddress(userAfterAssociating, bobAddress)
+            await getService().unlinkAddress(userAfterAssociating.id, bobAddress)
             const userAfterUnlinking = await getService().findOne(user.id)
             expect(userAfterUnlinking.web3Addresses!.length).toBe(1)
             expect(userAfterUnlinking.web3Addresses![0].address).toBe(charlieAddress)
@@ -500,7 +500,7 @@ describe(`Users Service`, () => {
                 web3Address: charlieAddress,
             } as CreateWeb3UserDto)
 
-            await expect(getService().unlinkAddress(user, charlieAddress)).rejects.toThrow(BadRequestException)
+            await expect(getService().unlinkAddress(user.id, charlieAddress)).rejects.toThrow(BadRequestException)
         })
         it('does not allow to remove address belonging to another user', async () => {
             const charlieUser = await getService().createWeb3User({
@@ -514,7 +514,7 @@ describe(`Users Service`, () => {
                 web3Address: bobAddress,
             } as CreateWeb3UserDto)
 
-            await expect(getService().unlinkAddress(charlieUser, bobAddress)).rejects.toThrow(BadRequestException)
+            await expect(getService().unlinkAddress(charlieUser.id, bobAddress)).rejects.toThrow(BadRequestException)
         })
     })
 
@@ -528,7 +528,7 @@ describe(`Users Service`, () => {
 
             const userWithTwoAddresses = await getService().associateWeb3Address(user, bobAddress)
 
-            await getService().makeAddressPrimary(userWithTwoAddresses, bobAddress)
+            await getService().makeAddressPrimary(userWithTwoAddresses.id, bobAddress)
             const userWithChangedPrimaryAddress = await getService().findOne(user.id)
 
             const bobWeb3Address = userWithChangedPrimaryAddress.web3Addresses!.find(
@@ -552,7 +552,9 @@ describe(`Users Service`, () => {
                 web3Address: bobAddress,
             } as CreateWeb3UserDto)
 
-            await expect(getService().makeAddressPrimary(charlieUser, bobAddress)).rejects.toThrow(BadRequestException)
+            await expect(getService().makeAddressPrimary(charlieUser.id, bobAddress)).rejects.toThrow(
+                BadRequestException,
+            )
         })
     })
 })

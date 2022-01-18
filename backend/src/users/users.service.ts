@@ -130,12 +130,14 @@ export class UsersService {
         await this.userRepository.remove(currentUser)
     }
 
-    async unlinkAddress(user: UserEntity, address: string) {
+    async unlinkAddress(userId: string, address: string) {
+        const user = await this.findOne(userId)
         const web3Address = await this.checkIfAddressBelongsToTheUser(user, address)
         await this.web3AddressService.deleteAddress(web3Address)
     }
 
-    async makeAddressPrimary(user: UserEntity, address: string) {
+    async makeAddressPrimary(userId: string, address: string) {
+        const user = await this.findOne(userId)
         await this.checkIfAddressBelongsToTheUser(user, address)
         await this.web3AddressService.makePrimary(user.id, address)
     }
