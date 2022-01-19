@@ -1,5 +1,4 @@
-import { useMemo } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useParamFromQuery, UseParamFromQueryResult } from '../util/useParamFromQuery'
 
 export enum ProposalFilter {
     All = 'all',
@@ -7,16 +6,14 @@ export enum ProposalFilter {
     Submitted = 'submitted',
     Approved = 'approved'
 }
-
-
 export const ProposalFilterSearchParamName = 'filter'
 export const ProposalDefaultFilter = ProposalFilter.All
 
-export default () => {
-    const { search } = useLocation()
-    const proposalsFilter = useMemo(() => {
-        const filterParam = new URLSearchParams(search).get(ProposalFilterSearchParamName)
-        return filterParam ? (filterParam as ProposalFilter) : ProposalDefaultFilter
-    }, [search])
-    return { proposalsFilter }
-}
+export type UseProposalsFilterResult = UseParamFromQueryResult<ProposalFilter> & { setFilter: (filter: ProposalFilter) => string}
+
+export const useProposalsFilter = () => useParamFromQuery({
+    enumObject: ProposalFilter,
+    paramName: ProposalFilterSearchParamName,
+    defaultValue: ProposalDefaultFilter,
+    preserveParam: true
+})

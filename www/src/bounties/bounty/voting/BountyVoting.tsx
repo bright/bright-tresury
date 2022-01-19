@@ -16,7 +16,7 @@ const BountyVoting = ({ bounty }: BountyVotingProps) => {
     let { bountyIndex } = useParams<{ bountyIndex: string }>()
     const { network } = useNetworks()
     const { t } = useTranslation()
-    const { status, data: bountyVoting, refetch } = useGetBountyVoting({ bountyIndex, network: network.id })
+    const { status, data: bountyVoting } = useGetBountyVoting({ bountyIndex, network: network.id })
     return (
         <LoadingWrapper
             status={status}

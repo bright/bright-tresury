@@ -1,5 +1,4 @@
-import { useMemo } from 'react'
-import useLocationFactory from '../util/useLocationFactory'
+import { useParamFromQuery } from '../util/useParamFromQuery'
 
 export enum BountyFilter {
     All = 'all',
@@ -17,11 +16,9 @@ export enum BountyFilter {
 export const BountyFilterSearchParamName = 'filter'
 export const BountyDefaultFilter = BountyFilter.All
 
-export default () => {
-    const { search, getSearchParam } = useLocationFactory()
-    const bountiesFilter = useMemo(() => {
-        const filterParam = getSearchParam(BountyFilterSearchParamName) ?? BountyDefaultFilter
-        return filterParam as BountyFilter
-    }, [search])
-    return { bountiesFilter }
-}
+export const useBountiesFilter = () => useParamFromQuery({
+    enumObject: BountyFilter,
+    paramName: BountyFilterSearchParamName,
+    defaultValue: BountyDefaultFilter,
+    preserveParam: true
+})

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useLocation } from 'react-router-dom'
 import { useNetworks } from '../networks/useNetworks'
 import { useGetIdeas } from './ideas.api'

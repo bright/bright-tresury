@@ -7,7 +7,6 @@ import FormFooterButton from '../../../../components/form/footer/FormFooterButto
 import FormFooterButtonsContainer from '../../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterErrorBox from '../../../../components/form/footer/FormFooterErrorBox'
 import { useModal } from '../../../../components/modal/useModal'
-import { breakpoints, theme } from '../../../../theme/theme'
 import DeleteProposalMilestoneModal from '../details/DeleteProposalMilestoneModal'
 import { ProposalMilestoneDto } from '../proposal.milestones.dto'
 import { Nil } from '../../../../util/types'

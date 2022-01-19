@@ -1,6 +1,5 @@
 import React from 'react'
 import { useNetworks } from '../../networks/useNetworks'
-import { formatNumber } from '../../util/numberUtil'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
 import { NetworkDisplayValue } from '../../util/types'

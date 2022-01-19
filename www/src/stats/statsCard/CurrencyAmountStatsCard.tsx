@@ -10,9 +10,9 @@ interface OwnProps {
     imgSrc: string
 }
 
-export type CurrencyAmountStatsCard = OwnProps
+export type CurrencyAmountStatsCardProps = OwnProps
 
-const CurrencyAmountStatsCard = ({ value, name, imgSrc }: CurrencyAmountStatsCard) => {
+const CurrencyAmountStatsCard = ({ value, name, imgSrc }: CurrencyAmountStatsCardProps) => {
     const {
         network: { currency },
     } = useNetworks()

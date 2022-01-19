@@ -24,9 +24,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-interface OwnProps {}
-export type PleaseLogInProps = OwnProps
-const PleaseLogIn = ({}: PleaseLogInProps) => {
+
+const PleaseLogIn = () => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()

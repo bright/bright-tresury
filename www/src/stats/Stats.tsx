@@ -6,11 +6,7 @@ import { useNetworks } from '../networks/useNetworks'
 import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 
-interface OwnProps {}
-
-export type StatsProps = OwnProps
-
-const Stats = ({}: StatsProps) => {
+const Stats = () => {
     const { network } = useNetworks()
     const { status, data: stats } = useStats(network.id)
     const { t } = useTranslation()

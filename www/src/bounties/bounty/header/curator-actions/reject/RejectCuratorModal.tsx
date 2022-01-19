@@ -1,12 +1,10 @@
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useQueryClient } from 'react-query'
-import { useHistory } from 'react-router-dom'
 import Modal from '../../../../../components/modal/Modal'
 import Strong from '../../../../../components/strong/Strong'
 import { useNetworks } from '../../../../../networks/useNetworks'
 import SubmittingTransaction from '../../../../../substrate-lib/components/SubmittingTransaction'
-import { BOUNTY_QUERY_KEY_BASE, useGetBounty } from '../../../../bounties.api'
+import { useGetBounty } from '../../../../bounties.api'
 import { BountyDto } from '../../../../bounties.dto'
 
 interface OwnProps {

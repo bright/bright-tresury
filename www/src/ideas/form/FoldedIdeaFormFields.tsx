@@ -1,6 +1,5 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import TitleInput from '../../idea-proposal-details/form/TitleInput'
 import BeneficiaryField from './fields/BeneficiaryField'
 import IdeaNetworkValueInput from './networks/IdeaNetworkValueInput'
@@ -22,7 +21,6 @@ export type FoldedIdeaFormFieldsProps = OwnProps
 
 const FoldedIdeaFormFields = ({ values }: FoldedIdeaFormFieldsProps) => {
     const classes = useStyles()
-    const { t } = useTranslation()
 
     return (
         <>

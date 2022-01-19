@@ -7,7 +7,7 @@ import {
     useEditProposalComment,
 } from './proposal.comments.api'
 import { useQueryClient } from 'react-query'
-import { CommentDto, EditCommentDto } from '../../../components/discussion/comment.dto'
+import { CommentDto } from '../../../components/discussion/comment.dto'
 import { useNetworks } from '../../../networks/useNetworks'
 
 interface OwnProps {

@@ -6,9 +6,8 @@ import { useAuth } from '../../auth/AuthContext'
 import NavSelect from '../../components/select/NavSelect'
 import Tabs from '../../components/tabs/Tabs'
 import { breakpoints } from '../../theme/theme'
-import useTimeFrame, { TimeFrame } from '../../util/useTimeFrame'
-import useBountiesFilter, { BountyDefaultFilter, BountyFilter, BountyFilterSearchParamName } from '../useBountiesFilter'
-import useLocationFactory from '../../util/useLocationFactory'
+import { useTimeFrame, TimeFrame } from '../../util/useTimeFrame'
+import { useBountiesFilter, BountyDefaultFilter, BountyFilter, BountyFilterSearchParamName } from '../useBountiesFilter'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -37,9 +36,8 @@ const BountyStatusFilters = () => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { isUserSignedIn } = useAuth()
-    const { setSearchParam } = useLocationFactory()
-    const { bountiesFilter } = useBountiesFilter()
-    const { timeFrame } = useTimeFrame()
+    const { param: bountiesFilter, setParam: setBountyFilter } = useBountiesFilter()
+    const { param: timeFrame } = useTimeFrame()
     const isOnChain  = useMemo( () => timeFrame === TimeFrame.OnChain, [timeFrame])
     const filterValues = useMemo(() => {
         const filterValues = [BountyFilter.All]
@@ -81,7 +79,7 @@ const BountyStatusFilters = () => {
         return {
             isDefault: filter === BountyDefaultFilter,
             label: getTranslation(filter),
-            path: setSearchParam(BountyFilterSearchParamName, filter, true),
+            path: setBountyFilter(filter),
             filterName: filter,
         }
     }

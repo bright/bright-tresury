@@ -10,10 +10,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 )
 
-interface OwnProps {}
-export type NoCommentsProps = OwnProps
-
-const NoComments = ({}: NoCommentsProps) => {
+const NoComments = () => {
     const classes = useStyles()
     const { t } = useTranslation()
     return <p className={classes.noComments}>{t('discussion.noComments')}</p>

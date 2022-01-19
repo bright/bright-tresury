@@ -9,8 +9,8 @@ import ProposalsList from './list/ProposalsList'
 import LoadMore from '../components/loadMore/LoadMore'
 import { useTranslation } from 'react-i18next'
 import LoadingWrapper from '../components/loading/LoadingWrapper'
-import useTimeFrame from '../util/useTimeFrame'
-import useProposalsFilter from './useProposalsFilter'
+import { useTimeFrame } from '../util/useTimeFrame'
+import { useProposalsFilter } from './useProposalsFilter'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -25,9 +25,9 @@ const Proposals = () => {
 
     const { t } = useTranslation()
     const { user } = useAuth()
-    const { proposalsFilter } = useProposalsFilter()
+    const { param: proposalsFilter } = useProposalsFilter()
     const { network } = useNetworks()
-    const { timeFrame } = useTimeFrame()
+    const { param: timeFrame } = useTimeFrame()
 
     const PAGE_SIZE = 10
     const { status, isLoading, data, fetchNextPage } = useGetProposals(network.id, timeFrame, PAGE_SIZE)

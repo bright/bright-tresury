@@ -1,19 +1,17 @@
-import { useLocation } from 'react-router-dom'
-import { useMemo } from 'react'
+import { useParamFromQuery } from './useParamFromQuery'
 
 export enum TimeFrame {
-    OnChain = 'OnChain',
-    History = 'History'
+    OnChain = 'onChain',
+    History = 'history'
 }
 
 export const TimeSelectFilterSearchParamName = 'timeFrame'
 export const TimeSelectDefaultFilter = TimeFrame.OnChain
 
-export default () => {
-    const { search } = useLocation()
-    const timeFrame = useMemo(() => {
-        const paramFromQuery = new URLSearchParams(search).get(TimeSelectFilterSearchParamName)
-        return paramFromQuery ? (paramFromQuery as TimeFrame) : TimeSelectDefaultFilter
-    }, [search])
-    return { timeFrame }
-}
+export const useTimeFrame = () =>
+    useParamFromQuery({
+        enumObject: TimeFrame,
+        paramName:TimeSelectFilterSearchParamName,
+        defaultValue: TimeSelectDefaultFilter,
+        preserveParam: false
+    })

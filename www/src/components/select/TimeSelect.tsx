@@ -1,22 +1,20 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import NavSelect  from './NavSelect'
-import useTimeFrame, { TimeFrame, TimeSelectFilterSearchParamName } from '../../util/useTimeFrame'
-import useLocationFactory from '../../util/useLocationFactory'
+import { useTimeFrame, TimeFrame } from '../../util/useTimeFrame'
 
 const TimeSelect = () => {
     const { t } = useTranslation()
-    const { timeFrame } = useTimeFrame()
-    const { setSearchParam } = useLocationFactory()
+    const { param: timeFrame, setParam: setTimeFrame } = useTimeFrame()
 
     const options: { [key in TimeFrame]: {label: string, path: string} } = {
         [TimeFrame.OnChain]: {
             label: t('components.timeSelect.onChain'),
-            path: setSearchParam(TimeSelectFilterSearchParamName, TimeFrame.OnChain)
+            path: setTimeFrame(TimeFrame.OnChain)
         },
         [TimeFrame.History]: {
             label: t('components.timeSelect.history'),
-            path: setSearchParam(TimeSelectFilterSearchParamName, TimeFrame.History)
+            path: setTimeFrame(TimeFrame.History)
         },
     }
 

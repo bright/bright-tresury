@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
-import Button, { SuccessButton } from '../button/Button'
+import Button from '../button/Button'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

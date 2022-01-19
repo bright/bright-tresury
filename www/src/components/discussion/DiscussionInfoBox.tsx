@@ -1,7 +1,5 @@
-import React, { PropsWithChildren } from 'react'
+import React  from 'react'
 import { styled } from '@material-ui/core'
-import { Trans } from 'react-i18next'
-import { generatePath } from 'react-router'
 
 const DiscussionInfoBox = styled('p')(({ theme }) => ({
     marginTop: 0,

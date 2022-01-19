@@ -14,10 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-interface OwnProps {}
-export type DiscussionTopRowProps = OwnProps
 
-const DiscussionHeader = ({}: DiscussionTopRowProps) => {
+const DiscussionHeader = () => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { isUserSignedInAndVerified: canComment } = useAuth()

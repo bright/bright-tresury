@@ -23,7 +23,7 @@ export interface IdeaFormValues {
 }
 export type IdeaNetworkFromValues = Omit<EditIdeaNetworkDto, 'value'> & { value: NetworkDisplayValue }
 
-export default () => {
+const useIdeaForm = () => {
     const { t } = useTranslation()
     const { network, findNetwork } = useNetworks()
 
@@ -105,3 +105,5 @@ export default () => {
         toEditIdeaDto,
     }
 }
+
+export default useIdeaForm

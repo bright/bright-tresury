@@ -1,5 +1,4 @@
 import React from 'react'
-import { styled } from '@material-ui/core'
 import { Trans } from 'react-i18next'
 import DiscussionInfoBox from '../../../components/discussion/DiscussionInfoBox'
 import RouterLink from '../../../components/link/RouterLink'

@@ -8,8 +8,8 @@ import { useNetworks } from '../networks/useNetworks'
 import { filterBounties } from './list/filterBounties'
 import BountiesList from './list/BountiesList'
 import LoadMore from '../components/loadMore/LoadMore'
-import useTimeFrame from '../util/useTimeFrame'
-import useBountiesFilter from './useBountiesFilter'
+import { useTimeFrame } from '../util/useTimeFrame'
+import { useBountiesFilter } from './useBountiesFilter'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -23,8 +23,8 @@ const Bounties = () => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { network } = useNetworks()
-    const { bountiesFilter } = useBountiesFilter()
-    const { timeFrame } = useTimeFrame()
+    const { param: bountiesFilter } = useBountiesFilter()
+    const { param: timeFrame } = useTimeFrame()
     const PAGE_SIZE = 10
     const { status, data, isLoading, fetchNextPage } = useGetBounties(network.id, timeFrame, PAGE_SIZE)
 

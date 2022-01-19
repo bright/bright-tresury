@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import CancelSendButtons from '../cancelSendButtons/CancelSendButtons'
-import { Collapse, TextareaAutosize } from '@material-ui/core'
+import { Collapse } from '@material-ui/core'
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import { Nil } from '../../../util/types'

@@ -13,7 +13,6 @@ import PaperFilterBackground from '../components/header/list/PaperFilterBackgrou
 import TimeSelectWrapper from '../components/header/list/TimeSelectWrapper'
 import RouterLink from '../components/link/RouterLink'
 import clsx from 'clsx'
-import useProposalsFilter from './useProposalsFilter'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({

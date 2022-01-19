@@ -1,5 +1,4 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import clsx from 'clsx'
 import React, { PropsWithChildren } from 'react'
 import { breakpoints } from '../../../theme/theme'
 import CloseButton from '../../closeIcon/CloseButton'

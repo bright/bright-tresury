@@ -14,9 +14,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-interface OwnProps {}
-export type BasicInfoDividerProps = OwnProps
-const BasicInfoDivider = ({}: BasicInfoDividerProps) => {
+
+const BasicInfoDivider = () => {
     const classes = useStyles()
     return <Divider className={classes.root} orientation="vertical" />
 }

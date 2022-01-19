@@ -1,5 +1,4 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import { Switch, useRouteMatch } from 'react-router-dom'
 import discussionIcon from '../../assets/discussion.svg'
 import infoIcon from '../../assets/info.svg'
@@ -76,7 +75,6 @@ export type IdeaProps = OwnProps
 const Idea = ({ idea }: IdeaProps) => {
     const classes = useSuccessfullyLoadedItemStyles()
 
-    const { t } = useTranslation()
     let { path } = useRouteMatch()
 
     const ideaContentTypes =

@@ -11,7 +11,7 @@ export interface ProposalVotingProps {
 
 const ProposalVoting = ({ proposal }: ProposalVotingProps) => {
     const { network } = useNetworks()
-    const { status, data: polkassemblyMotions } = useGetMotions({
+    const { data: polkassemblyMotions } = useGetMotions({
         proposalIndex: proposal.proposalIndex,
         network: network.id,
     })

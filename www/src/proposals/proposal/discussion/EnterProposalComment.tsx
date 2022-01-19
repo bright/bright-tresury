@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import EnterComment from '../../../components/discussion/enterComment/EnterComment'
 import { PROPOSAL_COMMENTS_QUERY_KEY_BASE, useCreateProposalComment } from './proposal.comments.api'
 import { useQueryClient } from 'react-query'
-import { CreateCommentDto } from '../../../components/discussion/comment.dto'
 import { useNetworks } from '../../../networks/useNetworks'
 
 interface OwnProps {

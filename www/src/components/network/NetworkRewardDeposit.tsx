@@ -2,10 +2,8 @@ import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useNetworks } from '../../networks/useNetworks'
 import { breakpoints } from '../../theme/theme'
-import { useTranslation } from 'react-i18next'
 import Amount from '../amount/Amount'
-import { calculateBondValue } from '../../ideas/bondUtil'
-import { NetworkPlanckValue, Nil } from '../../util/types'
+import { NetworkPlanckValue } from '../../util/types'
 import { toNetworkDisplayValue } from '../../util/quota.util'
 
 const useStyles = makeStyles((theme: Theme) =>
