@@ -1,5 +1,5 @@
 import { INestApplication, MiddlewareConsumer, Module, NestModule, ValidationPipe } from '@nestjs/common'
-import { NestFactory } from '@nestjs/core'
+import { APP_GUARD, NestFactory } from '@nestjs/core'
 import { NestExpressApplication } from '@nestjs/platform-express'
 import { useContainer } from 'class-validator'
 import supertokens from 'supertokens-node'
@@ -24,6 +24,7 @@ import { UserSettingsModule } from './users/user-settings/user-settings.module'
 import { UsersModule } from './users/users.module'
 import { BountiesModule } from './bounties/bounties.module'
 import { PolkassemblyModule } from './polkassembly/polkassembly.module'
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 
 @Module({
     imports: [
@@ -45,6 +46,16 @@ import { PolkassemblyModule } from './polkassembly/polkassembly.module'
         UserSettingsModule,
         BountiesModule,
         BlockchainModule,
+        ThrottlerModule.forRoot({
+            ttl: 60,
+            limit: 30,
+        })
+    ],
+    providers: [
+        {
+            provide: APP_GUARD,
+            useClass: ThrottlerGuard
+        }
     ],
     exports: [],
     controllers: [AppController],
