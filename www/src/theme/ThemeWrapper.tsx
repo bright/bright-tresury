@@ -1,9 +1,9 @@
 import React, { useState, PropsWithChildren, useEffect } from 'react'
-import { createMuiTheme, CssBaseline, ThemeProvider } from '@material-ui/core'
+import { createMuiTheme, createTheme, CssBaseline, ThemeProvider } from '@material-ui/core'
 import { useNetworks } from '../networks/useNetworks'
 import { theme } from './theme'
 
-const muiTheme = createMuiTheme(theme)
+const muiTheme = createTheme(theme)
 
 interface State {
     setNetworkColor: (color: string) => void

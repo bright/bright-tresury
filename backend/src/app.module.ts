@@ -25,6 +25,7 @@ import { UsersModule } from './users/users.module'
 import { BountiesModule } from './bounties/bounties.module'
 import { PolkassemblyModule } from './polkassembly/polkassembly.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import helmet from 'helmet'
 
 @Module({
     imports: [
@@ -74,6 +75,11 @@ export function configureGlobalServices(app: INestApplication) {
         allowedHeaders: ['content-type', ...supertokens.getAllCORSHeaders()],
         credentials: true,
     })
+
+    app.use(helmet({
+        contentSecurityPolicy: false,
+        crossOriginEmbedderPolicy: false
+    }))
 
     app.useGlobalFilters(new SupertokensExceptionFilter())
 
