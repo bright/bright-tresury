@@ -1,6 +1,6 @@
 import { ProposalDto, ProposalStatus } from '../proposals.dto'
+import { ProposalFilter } from '../useProposalsFilter'
 import { filterProposals, isProposalMadeByUser } from './filterProposals'
-import { ProposalFilter } from './ProposalStatusFilters'
 import { AuthContextUser } from '../../auth/AuthContext'
 
 describe('filter proposals', () => {

@@ -1,10 +1,10 @@
 import * as AuthContext from '../../auth/AuthContext'
 import { BountyDto, BountyStatus } from '../bounties.dto'
-import { BountyFilter } from './BountyStatusFilters'
 import { filterBounties } from './filterBounties'
 import { renderHook } from '@testing-library/react-hooks'
 import * as React from 'react'
 import { compareWeb3Address } from '../../util/web3address.util'
+import { BountyFilter } from '../useBountiesFilter'
 
 const createBounty = (status: BountyStatus, user: AuthContext.AuthContextUser): BountyDto => {
     return {
