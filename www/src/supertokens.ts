@@ -1,6 +1,6 @@
 import SuperTokens from 'supertokens-auth-react'
-import EmailPassword from 'supertokens-auth-react/recipe/emailpassword'
-import Session, { addAxiosInterceptors } from 'supertokens-auth-react/recipe/session'
+import EmailPassword from 'supertokens-auth-react/lib/build/recipe/emailpassword/recipe'
+import Session from 'supertokens-auth-react/recipe/session'
 import { api } from './api'
 import config from './config'
 

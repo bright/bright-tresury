@@ -1,4 +1,4 @@
-import { User } from 'supertokens-auth-react/lib/build/recipe/authRecipeModule/types'
+import { User } from 'supertokens-auth-react/lib/build/recipe/authRecipe/types'
 
 export type SubmitNewPasswordAPIResponse =
     | {
@@ -51,4 +51,8 @@ export type SignInAPIResponse =
       }
 export type SendVerifyEmailAPIResponse = {
     status: 'EMAIL_ALREADY_VERIFIED_ERROR' | 'OK'
+}
+export type FormFieldError = {
+    id: string
+    error: string
 }
