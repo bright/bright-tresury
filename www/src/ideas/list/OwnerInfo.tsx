@@ -1,10 +1,10 @@
 import React from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import Identicon from '../../components/identicon/Identicon'
-import ProposerAvatar from './ProposerAvatar'
 import Author from '../../components/author/Author'
 import { AuthorDto } from '../../util/author.dto'
 import { useTranslation } from 'react-i18next'
+import Avatar from '../../components/avatar/Avatar'
+import StyledOwnerAvatar from './StyledOwnerAvatar'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,7 +44,9 @@ const OwnerInfo = ({ owner }: OwnerInfoProps) => {
     const { t } = useTranslation()
     return (
         <div className={classes.root}>
-            {isEmailPasswordEnabled ? <ProposerAvatar username={username} /> : <Identicon address={web3address!} />}
+            <StyledOwnerAvatar>
+                <Avatar web3Address={web3address!} username={username} />
+            </StyledOwnerAvatar>
             <div className={classes.container}>
                 <Author author={owner} />
                 <p className={classes.label}>{t('idea.list.card.proposer')}</p>

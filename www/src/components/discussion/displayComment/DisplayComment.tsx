@@ -1,18 +1,17 @@
 import React, { useState } from 'react'
-
 import SmallVerticalDivider from '../../smallHorizontalDivider/SmallVerticalDivider'
-import CommentAuthorImage from '../commentAuthorImage/CommentAuthorImage'
 import CommentOptionsMenu from '../commentOptionsMenu/CommentOptionsMenu'
 import Error from '../../error/Error'
 import { useAuth } from '../../../auth/AuthContext'
 import { Nil } from '../../../util/types'
 import EditComment from '../editComment/EditComment'
-import Author from '../../author/Author'
 import CommentAge from './CommentAge'
 import CommentContent from './CommentContent'
 import { CommentDto } from '../comment.dto'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
+import Avatar from '../../avatar/Avatar'
+import StyledAvatar from './StyledAvatar'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,6 +35,8 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         grayDivider: {
             color: theme.palette.text.disabled,
+            paddingTop: '6px',
+            height: '100%',
         },
         error: {
             fontSize: '12px',
@@ -88,8 +89,9 @@ const DisplayComment = ({
         <div className={classes.root}>
             <div className={classes.header}>
                 <div className={classes.headerLeft}>
-                    <CommentAuthorImage author={author} />
-                    <Author author={author} />
+                    <StyledAvatar>
+                        <Avatar username={author.username} web3Address={author.web3address} />
+                    </StyledAvatar>
                     <SmallVerticalDivider className={classes.grayDivider} />
                     <CommentAge createdAt={createdAt} updatedAt={updatedAt} />
                 </div>

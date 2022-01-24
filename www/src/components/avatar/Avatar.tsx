@@ -4,13 +4,12 @@ import { ClassNameProps } from '../props/className.props'
 import { getInitials } from './initials.helpers'
 import clsx from 'clsx'
 import { Nil } from '../../util/types'
+import { WithWidthProps } from '@material-ui/core/withWidth/withWidth'
+import Identicon from '../identicon/Identicon'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            height: '46px',
-            lineHeight: '46px',
-            width: '46px',
             borderRadius: '8px',
             backgroundColor: theme.palette.primary.main,
             color: 'white',
@@ -24,15 +23,25 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     username?: Nil<string>
     email?: Nil<string>
+    web3Address?: Nil<string>
+    size?: number
 }
 
 export type AvatarProps = OwnProps & ClassNameProps
 
-const Avatar = ({ username, email, className }: AvatarProps) => {
+const Avatar = ({ web3Address, email, className, username, size }: AvatarProps) => {
     const classes = useStyles()
     const name = username ?? email
     const initials = getInitials(name)
-    return <div className={clsx(classes.root, className)}>{initials}</div>
+    return (
+        <div className={clsx(className)}>
+            {web3Address ? (
+                <Identicon address={web3Address} size={size} />
+            ) : (
+                <div className={classes.root}>{initials}</div>
+            )}
+        </div>
+    )
 }
 
 export default Avatar

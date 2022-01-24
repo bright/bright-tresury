@@ -10,7 +10,6 @@ import IconButton from '../../../components/button/IconButton'
 import { useNetworks } from '../../../networks/useNetworks'
 import { ROUTE_ACCOUNT, ROUTE_IDEAS, ROUTE_PROPOSALS } from '../../../routes/routes'
 import { useMenu } from '../../../hook/useMenu'
-import AccountImage from './AccountImage'
 import EmailVerifyErrorMenuItem from './EmailVerifyErrorMenuItem'
 import MenuItem from './MenuItem'
 import SignOutMenuItem from './SignOutMenuItem'
@@ -18,13 +17,27 @@ import { IdeaFilter, IdeaFilterSearchParamName } from '../../../ideas/list/IdeaS
 import { useGetIdeas } from '../../../ideas/ideas.api'
 import { filterIdeas } from '../../../ideas/list/filterIdeas'
 import { useGetProposals } from '../../../proposals/proposals.api'
-import { TimeFrame } from '../../../util/useTimeFrame'
 import { ProposalFilter } from '../../../proposals/useProposalsFilter'
-
+import { TimeFrame } from '../../../util/useTimeFrame'
+import Avatar from '../../../components/avatar/Avatar'
+import { theme } from '../../../theme/theme'
+import clsx from 'clsx'
+import StyledAvatarContainer from './StyledAvatarContainer'
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
             display: 'flex',
+        },
+        avatar: {
+            height: '28px',
+            lineHeight: '28px',
+            width: '28px',
+            borderColor: theme.palette.primary.main,
+            borderWidth: '1px',
+        },
+        styledBorder: {
+            borderRadius: '8px',
+            borderStyle: 'solid',
         },
     }),
 )
@@ -44,6 +57,7 @@ const AccountInfo = () => {
         pageNumber: 1,
         pageSize: 100,
     })
+    const address = user?.web3Addresses.find((address) => address.isPrimary)?.encodedAddress ?? ''
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 
@@ -74,7 +88,14 @@ const AccountInfo = () => {
 
     return (
         <div className={classes.root}>
-            <AccountImage />
+            <StyledAvatarContainer>
+                <Avatar
+                    className={clsx(classes.avatar, address ? classes.styledBorder : null)}
+                    username={user?.username}
+                    web3Address={address}
+                    size={26}
+                />
+            </StyledAvatarContainer>
             <IconButton onClick={handleOpen} alt={t('topBar.showAccountMenu')} svg={arrowSvg} />
             <Menu
                 id="simple-menu"
