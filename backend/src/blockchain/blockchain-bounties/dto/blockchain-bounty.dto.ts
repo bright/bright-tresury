@@ -71,7 +71,9 @@ export class BlockchainBountyDto {
         this.status = status
     }
 
-    isCurator = (user: UserEntity) => UserEntity.hasWeb3Address(user, this.curator?.address)
+    isCurator = (user: UserEntity) =>
+        UserEntity.hasWeb3Address(user, this.curator?.address) &&
+        [BlockchainBountyStatus.Active, BlockchainBountyStatus.PendingPayout].includes(this.status)
 
     isProposer = (user: UserEntity) => UserEntity.hasWeb3Address(user, this.proposer.address)
 

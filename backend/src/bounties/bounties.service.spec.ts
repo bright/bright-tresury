@@ -257,13 +257,22 @@ describe('BountiesService', () => {
                 ).resolves.toBeDefined()
             })
 
-            it('curator should resolve when has curator', async () => {
+            it('curator should resolve when has curator and active', async () => {
+                const { bountyEntity } = await setUpUpdate(blockchainBountyActive)
+                const curator = await createCuratorSessionData(blockchainBountyActive)
+
+                return expect(
+                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, curator.user),
+                ).resolves.toBeDefined()
+            })
+
+            it('curator should throw ForbiddenException when has curator but not accepted', async () => {
                 const { bountyEntity } = await setUpUpdate(blockchainBountyCuratorProposed)
                 const curator = await createCuratorSessionData(blockchainBountyCuratorProposed)
 
                 return expect(
                     service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, curator.user),
-                ).resolves.toBeDefined()
+                ).rejects.toThrow(ForbiddenException)
             })
 
             it('curator should throw ForbiddenException when no curator', async () => {
