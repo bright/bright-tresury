@@ -92,6 +92,7 @@ export class SuperTokensService {
     }
 
     handleResponseIfRefreshTokenError(res: Response, error: any) {
+        logger.info('Handle response if refresh token error')
         if (error.type === SessionError.TRY_REFRESH_TOKEN) {
             res.status(SessionExpiredHttpStatus).send('Please refresh token.')
         }

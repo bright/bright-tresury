@@ -1,5 +1,6 @@
 import { Inject, Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
+import { getLogger } from '../../logging.module'
 import { SessionData } from './session.decorator'
 import { ISessionResolver, SessionResolverProvider } from './session.resolver'
 
@@ -23,7 +24,6 @@ export class SessionUserMiddleware implements NestMiddleware {
             next()
         } catch (error) {
             this.sessionResolver.handleResponseIfRefreshTokenError(res, error)
-            next()
         }
     }
 }
