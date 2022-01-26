@@ -16,6 +16,7 @@ import cloudform, {
     S3,
     SSM,
     StringParameter,
+    SNS,
 } from 'cloudform'
 
 const ProjectName = 'treasury'
@@ -117,6 +118,11 @@ const Resources = {
     AppAuthorizationAccessPolicy: 'AppAuthorizationAccessPolicy',
     BackendDBInstanceHostParameter: 'BackendDBInstanceHostParameter',
     AuthCoreDBInstanceHostParameter: 'AuthCoreDBInstanceHostParameter',
+
+    // alarms
+    AlarmsSNSTopic: 'AlarmsSNSTopic',
+    HTTPCodeTarget5XX: 'HTTPCodeTarget5XX',
+    AppStatusCheckFailed: 'AppStatusCheckFailed',
 }
 
 const DeployEnv = Fn.Ref('DeployEnv')
@@ -1476,6 +1482,68 @@ export default cloudform({
         [Resources.EC2InstanceProfile]: new IAM.InstanceProfile({
             Path: '/',
             Roles: [Fn.Ref(Resources.EC2Role)],
+        }),
+
+        [Resources.AlarmsSNSTopic]: new SNS.Topic({
+            DisplayName: Fn.Join('', [ProjectName, '-', DeployEnv, '-alarm']),
+            Subscription: [
+                {
+                    Endpoint: 'agnieszka.olszewska@bright.dev',
+                    Protocol: 'email',
+                },
+                {
+                    Endpoint: 'robert.koprowski@bright.dev',
+                    Protocol: 'email',
+                },
+                {
+                    Endpoint: 'lukasz.kuderewski@bright.dev',
+                    Protocol: 'email',
+                },
+                {
+                    Endpoint: 'katarzyna.lukasiewicz@bright.dev',
+                    Protocol: 'email',
+                },
+            ],
+        }),
+
+        [Resources.HTTPCodeTarget5XX]: new CloudWatch.Alarm({
+            AlarmDescription: 'Alarm if more than 3 5xx errors within an hour.',
+            AlarmActions: [Fn.Ref(Resources.AlarmsSNSTopic)],
+            MetricName: 'HTTPCode_Target_5XX_Count',
+            Namespace: 'AWS/ApplicationELB',
+            Statistic: 'Sum',
+            Period: 3600,
+            EvaluationPeriods: 1,
+            Threshold: 3,
+            ComparisonOperator: 'GreaterThanThreshold',
+            Dimensions: [
+                {
+                    Name: 'LoadBalancer',
+                    Value: Fn.Ref(Resources.ECSALB),
+                },
+                {
+                    Name: 'TargetGroup',
+                    Value: Fn.Ref(Resources.ECSAppTargetGroup),
+                },
+            ],
+        }),
+
+        [Resources.AppStatusCheckFailed]: new CloudWatch.Alarm({
+            AlarmDescription: 'Alarm if ECS status check failed.',
+            AlarmActions: [Fn.Ref(Resources.AlarmsSNSTopic)],
+            MetricName: 'StatusCheckFailed',
+            Namespace: 'AWS/EC2',
+            Statistic: 'Sum',
+            Period: 3600 * 24, // 1 day
+            EvaluationPeriods: 1,
+            Threshold: 1,
+            ComparisonOperator: 'GreaterThanOrEqualToThreshold',
+            Dimensions: [
+                {
+                    Name: 'AutoScalingGroupName',
+                    Value: Fn.Ref(Resources.ECSAutoScalingGroup),
+                },
+            ],
         }),
     },
 })
