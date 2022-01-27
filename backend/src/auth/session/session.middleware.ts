@@ -24,6 +24,7 @@ export class SessionUserMiddleware implements NestMiddleware {
             next()
         } catch (error) {
             this.sessionResolver.handleResponseIfRefreshTokenError(res, error)
+            next()
         }
     }
 }
