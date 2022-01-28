@@ -105,7 +105,7 @@ export const blockchainBounty0 = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Proposed,
 })
-const blockchainDeriveBounty0 = ({
+const blockchainDeriveBounty0 = {
     index: 0,
     description: 'bc-description-1',
     bounty: {
@@ -118,7 +118,7 @@ const blockchainDeriveBounty0 = ({
             isProposed: true,
         },
     },
-} as unknown) as DeriveBounty
+} as unknown as DeriveBounty
 
 export const blockchainBounty1 = new BlockchainBountyDto({
     index: 1,
@@ -130,7 +130,7 @@ export const blockchainBounty1 = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Proposed,
 })
-const blockchainDeriveBounty1 = ({
+const blockchainDeriveBounty1 = {
     index: 1,
     description: 'bc-description-2',
     bounty: {
@@ -143,7 +143,7 @@ const blockchainDeriveBounty1 = ({
             isProposed: true,
         },
     },
-} as unknown) as DeriveBounty
+} as unknown as DeriveBounty
 
 export const blockchainBountyApproved = new BlockchainBountyDto({
     index: 2,
@@ -155,7 +155,7 @@ export const blockchainBountyApproved = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Approved,
 })
-const blockchainDeriveBountyApproved = ({
+const blockchainDeriveBountyApproved = {
     index: 2,
     description: 'bc-description-2',
     bounty: {
@@ -168,7 +168,7 @@ const blockchainDeriveBountyApproved = ({
             isApproved: true,
         },
     },
-} as unknown) as DeriveBounty
+} as unknown as DeriveBounty
 
 export const blockchainBountyFunded = new BlockchainBountyDto({
     index: 3,
@@ -180,7 +180,7 @@ export const blockchainBountyFunded = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Funded,
 })
-const blockchainDeriveBountyFunded = ({
+const blockchainDeriveBountyFunded = {
     index: 3,
     description: 'bc-description-2',
     bounty: {
@@ -193,7 +193,7 @@ const blockchainDeriveBountyFunded = ({
             isFunded: true,
         },
     },
-} as unknown) as DeriveBounty
+} as unknown as DeriveBounty
 
 export const blockchainBountyCuratorProposed = new BlockchainBountyDto({
     index: 4,
@@ -206,7 +206,7 @@ export const blockchainBountyCuratorProposed = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.CuratorProposed,
 })
-const blockchainDeriveBountyCuratorProposed = ({
+const blockchainDeriveBountyCuratorProposed = {
     index: 4,
     description: 'bc-description-2',
     bounty: {
@@ -220,7 +220,7 @@ const blockchainDeriveBountyCuratorProposed = ({
             asCuratorProposed: { curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3' },
         },
     },
-} as unknown) as DeriveBounty
+} as unknown as DeriveBounty
 
 export const blockchainBountyActive = new BlockchainBountyDto({
     index: 5,
@@ -233,7 +233,7 @@ export const blockchainBountyActive = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.Active,
 })
-const blockchainDeriveBountyActive = ({
+const blockchainDeriveBountyActive = {
     index: 5,
     description: 'bc-description-2',
     bounty: {
@@ -247,7 +247,7 @@ const blockchainDeriveBountyActive = ({
             asActive: { curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3', updateDue: undefined },
         },
     },
-} as unknown) as DeriveBounty
+} as unknown as DeriveBounty
 
 export const blockchainBountyPendingPayout = new BlockchainBountyDto({
     index: 6,
@@ -261,7 +261,7 @@ export const blockchainBountyPendingPayout = new BlockchainBountyDto({
     bond: '10' as NetworkPlanckValue,
     status: BlockchainBountyStatus.PendingPayout,
 })
-const blockchainDeriveBountyPendingPayout = ({
+const blockchainDeriveBountyPendingPayout = {
     index: 6,
     description: 'bc-description-2',
     bounty: {
@@ -279,7 +279,7 @@ const blockchainDeriveBountyPendingPayout = ({
             },
         },
     },
-} as unknown) as DeriveBounty
+} as unknown as DeriveBounty
 export const blockchainBounties = [
     blockchainBounty0,
     blockchainBounty1,
