@@ -10,6 +10,7 @@ import { BlockchainService } from '../../blockchain/blockchain.service'
 import { mockGetProposalAndGetProposals } from '../spec.helpers'
 import { ProposalCommentsService } from './proposal-comments.service'
 import { v4 as uuid } from 'uuid'
+import { UserStatus } from '../../users/entities/user-status'
 
 describe('Proposal comments', () => {
     const app = beforeSetupFullApp()
@@ -52,7 +53,7 @@ describe('Proposal comments', () => {
 
         const [comment] = comments
         expect(comment).toMatchObject({
-            author: { userId: user.id, username: user.username, isEmailPasswordEnabled: user.isEmailPasswordEnabled },
+            author: { userId: user.id, username: user.username, status: user.status },
             content: 'This is a comment',
             thumbsUp: 0,
             thumbsDown: 0,
@@ -83,7 +84,7 @@ describe('Proposal comments', () => {
         expect(comment.author).toBeDefined()
         expect(comment.author!.id).toBe(user.id)
         expect(comment.author!.username).toBe(user.username)
-        expect(comment.author!.isEmailPasswordEnabled).toBe(user.isEmailPasswordEnabled)
+        expect(comment.author!.status).toBe(UserStatus.EmailPasswordEnabled)
     })
 
     it(`POST response should have ${HttpStatus.FORBIDDEN} status code for not signed in user`, async () => {

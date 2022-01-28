@@ -11,7 +11,7 @@ import { PolkassemblyBountyPostDto } from '../polkassembly/bounties/bounty-post.
 import { PolkassemblyBountiesService } from '../polkassembly/bounties/polkassembly-bounties.service'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
 import { PolkassemblyBountyPostSchema } from '../polkassembly/bounties/bounty-post.schema'
-import { UserEntity } from '../users/user.entity'
+import { UserEntity } from '../users/entities/user.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
 import { BountiesService } from './bounties.service'

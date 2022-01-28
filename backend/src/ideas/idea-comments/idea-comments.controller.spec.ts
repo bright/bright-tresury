@@ -119,7 +119,7 @@ describe('Idea comments', () => {
             expect(comment.author).toBeDefined()
             expect(comment.author!.id).toBe(user.id)
             expect(comment.author!.username).toBe(user.username)
-            expect(comment.author!.isEmailPasswordEnabled).toBe(user.isEmailPasswordEnabled)
+            expect(comment.author!.status).toBe(user.status)
         })
     })
 

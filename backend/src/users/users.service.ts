@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { FindConditions, In, Repository } from 'typeorm'
-import { UserEntity } from './user.entity'
+import { UserEntity } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { validateOrReject } from 'class-validator'
 import { plainToClass } from 'class-transformer'
@@ -20,6 +20,8 @@ import { ClassConstructor } from 'class-transformer/types/interfaces'
 import { AssociateEmailAccountDto } from './dto/associate-email-account.dto'
 import { CreateWeb3AddressDto } from './web3-addresses/create-web3-address.dto'
 import { SignInAttemptService } from './sign-in-attempt/sign-in-attempt.service'
+import { UserStatus } from './entities/user-status'
+import { v4 as uuid } from 'uuid'
 import { Nil } from '../utils/types'
 
 @Injectable()
@@ -92,7 +94,12 @@ export class UsersService {
 
     async create(createUserDto: CreateUserDto): Promise<UserEntity> {
         await this.validateUser(createUserDto)
-        const user = new UserEntity(createUserDto.authId, createUserDto.username, createUserDto.email, true)
+        const user = new UserEntity(
+            createUserDto.authId,
+            createUserDto.username,
+            createUserDto.email,
+            UserStatus.EmailPasswordEnabled,
+        )
         const createdUser = await this.userRepository.save(user)
         return (await this.findOneOrThrow(createdUser.id))!
     }
@@ -105,7 +112,7 @@ export class UsersService {
             await this.validateUsername(dto.username)
         }
         const user = await this.findOneOrThrow(id)
-        const userToSave = { ...user, ...dto, isEmailPasswordEnabled: true }
+        const userToSave = { ...user, ...dto, status: UserStatus.EmailPasswordEnabled }
         await this.userRepository.save(userToSave)
         return (await this.findOneOrThrow(id))!
     }
@@ -113,7 +120,13 @@ export class UsersService {
     async createWeb3User(createWeb3UserDto: CreateWeb3UserDto): Promise<UserEntity> {
         await this.validateWeb3User(createWeb3UserDto)
         const user = await this.userRepository.save(
-            new UserEntity(createWeb3UserDto.authId, createWeb3UserDto.username, createWeb3UserDto.username, false, []),
+            new UserEntity(
+                createWeb3UserDto.authId,
+                createWeb3UserDto.username,
+                createWeb3UserDto.username,
+                UserStatus.Web3Only,
+                [],
+            ),
         )
         await this.web3AddressService.create(new CreateWeb3AddressDto(createWeb3UserDto.web3Address, user))
         return (await this.findOneOrThrow(user.id))!
@@ -134,7 +147,16 @@ export class UsersService {
 
     async delete(id: string) {
         const currentUser = await this.findOneOrThrow(id)
-        await this.userRepository.remove(currentUser)
+
+        await this.userRepository.save({
+            ...currentUser,
+            username: uuid(),
+            email: uuid(),
+            status: UserStatus.Deleted,
+            isEmailNotificationEnabled: false,
+        })
+
+        await this.web3AddressService.forget(currentUser.id)
     }
 
     async unlinkAddress(userId: string, address: string) {

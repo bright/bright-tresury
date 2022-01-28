@@ -4,7 +4,7 @@ import { Repository } from 'typeorm'
 import { CommentEntity } from '../../comments/comment.entity'
 import { CreateCommentDto } from '../../comments/dto/create-comment.dto'
 import { UpdateCommentDto } from '../../comments/dto/update-comment.dto'
-import { UserEntity } from '../../users/user.entity'
+import { UserEntity } from '../../users/entities/user.entity'
 import { BountiesService } from '../bounties.service'
 import { BountyCommentEntity } from './entities/bounty-comment.entity'
 

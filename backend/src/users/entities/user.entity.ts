@@ -1,9 +1,10 @@
 import { encodeAddress } from '@polkadot/keyring'
 import { Column, Entity, OneToMany } from 'typeorm'
 import { v4 as uuid } from 'uuid'
-import { BaseEntity } from '../database/base.entity'
-import { isNil, Nil } from '../utils/types'
-import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
+import { BaseEntity } from '../../database/base.entity'
+import { isNil, Nil } from '../../utils/types'
+import { Web3AddressEntity } from '../web3-addresses/web3-address.entity'
+import { UserStatus } from './user-status'
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -16,8 +17,8 @@ export class UserEntity extends BaseEntity {
     @Column({ nullable: false, type: 'text', unique: true })
     email: string
 
-    @Column({ nullable: false, type: 'boolean' })
-    isEmailPasswordEnabled: boolean
+    @Column({ nullable: false, type: 'text' })
+    status: UserStatus
 
     @OneToMany(() => Web3AddressEntity, (web3Address) => web3Address.user, {
         cascade: true,
@@ -33,16 +34,16 @@ export class UserEntity extends BaseEntity {
         authId: string,
         username: string,
         email: string,
-        isEmailPasswordEnabled: boolean,
+        status: UserStatus,
         web3Addresses?: Web3AddressEntity[],
         id?: string,
-        isEmailNotificationEnabled: boolean = true
+        isEmailNotificationEnabled: boolean = true,
     ) {
         super()
         this.authId = authId
         this.username = username
         this.email = email
-        this.isEmailPasswordEnabled = isEmailPasswordEnabled
+        this.status = status
         this.web3Addresses = web3Addresses
         this.id = id ?? uuid()
         this.isEmailNotificationEnabled = isEmailNotificationEnabled

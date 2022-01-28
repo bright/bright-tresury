@@ -39,8 +39,8 @@ describe('Proposal comments', () => {
         const [readComment] = readComments
         expect(readComment).toMatchObject(createdComment)
         expect(readComment.content).toBe('This is a comment')
-        const { id: userId, username, isEmailPasswordEnabled } = sessionHandler.sessionData.user
-        expect(readComment.author).toMatchObject({ userId, username, isEmailPasswordEnabled })
+        const { id: userId, username, status } = sessionHandler.sessionData.user
+        expect(readComment.author).toMatchObject({ userId, username, status })
 
         // PATCH
         await sessionHandler.authorizeRequest(

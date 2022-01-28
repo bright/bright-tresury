@@ -4,7 +4,7 @@ import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetailsEntity } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { IdeaNetworkEntity } from '../../ideas/entities/idea-network.entity'
 import { IdeaMilestoneNetworkEntity } from '../../ideas/idea-milestones/entities/idea-milestone-network.entity'
-import { UserEntity } from '../../users/user.entity'
+import { UserEntity } from '../../users/entities/user.entity'
 import { Nil } from '../../utils/types'
 import { ProposalMilestoneEntity } from '../proposal-milestones/entities/proposal-milestone.entity'
 

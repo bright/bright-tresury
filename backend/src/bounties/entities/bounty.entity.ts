@@ -1,8 +1,8 @@
 import { ForbiddenException } from '@nestjs/common'
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
-import { UserEntity } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
+import { UserEntity } from '../../users/entities/user.entity'
 
 @Entity('bounties')
 export class BountyEntity extends BaseEntity {

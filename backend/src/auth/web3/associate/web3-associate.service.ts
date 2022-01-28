@@ -7,6 +7,7 @@ import { ConfirmSignMessageRequestDto } from '../signMessage/dto/confirm-sign-me
 import { SignMessageService } from '../signMessage/sign-message.service'
 import { StartSignMessageResponseDto } from '../signMessage/dto/start-sign-message-response.dto'
 import { StartWeb3AssociateRequestDto } from './dto/start-web3-associate-request.dto'
+import { UserStatus } from '../../../users/entities/user-status'
 
 @Injectable()
 export class Web3AssociateService {
@@ -20,7 +21,7 @@ export class Web3AssociateService {
     private readonly cacheKey = 'Web3AssociateMessage'
 
     async start(dto: StartWeb3AssociateRequestDto, { user }: SessionData): Promise<StartSignMessageResponseDto> {
-        if (user.isEmailPasswordEnabled) {
+        if (user.status === UserStatus.EmailPasswordEnabled) {
             if (!dto.password) {
                 throw new BadRequestException('Please provide password for this user')
             }

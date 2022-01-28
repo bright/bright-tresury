@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { Web3AddressEntity } from './web3-address.entity'
 import { CreateWeb3AddressDto } from './create-web3-address.dto'
+import { v4 as uuid } from 'uuid'
 
 @Injectable()
 export class Web3AddressesService {
@@ -52,5 +53,18 @@ export class Web3AddressesService {
             }
         })
         await this.web3AddressRepository.save(adjustedAddresses)
+    }
+
+    async forget(id: string) {
+        const web3Addresses = await this.findByUserId(id)
+
+        const forgetWeb3Addresses = web3Addresses.map((web3Address: Web3AddressEntity) => {
+            return {
+                ...web3Address,
+                address: uuid(),
+            }
+        })
+
+        await this.web3AddressRepository.save(forgetWeb3Addresses)
     }
 }

@@ -9,7 +9,7 @@ import {
 } from '../../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { EmailsService } from '../../../emails/emails.service'
 import { EmailTemplates } from '../../../emails/templates/templates'
-import { UserEntity } from '../../../users/user.entity'
+import { UserEntity } from '../../../users/entities/user.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { NewProposalCommentDto } from '../../app-event-types/proposal-comment/new-proposal-comment.dto'
 import { AppEventData, AppEventType } from '../../entities/app-event-type'

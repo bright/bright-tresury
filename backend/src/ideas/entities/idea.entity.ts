@@ -3,7 +3,7 @@ import { Column, Entity, Generated, JoinColumn, ManyToOne, OneToMany, OneToOne }
 import { v4 as uuid } from 'uuid'
 import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetailsEntity } from '../../idea-proposal-details/idea-proposal-details.entity'
-import { UserEntity } from '../../users/user.entity'
+import { UserEntity } from '../../users/entities/user.entity'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
 import { IdeaCommentEntity } from '../idea-comments/entities/idea-comment.entity'
 import { IdeaMilestoneEntity } from '../idea-milestones/entities/idea-milestone.entity'

@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             background: theme.palette.background.default,
             padding: '32px 80px 24px 42px',
+            height: '100%',
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 padding: '24px 2.2em 24px 2.2em',
             },

@@ -15,7 +15,7 @@ import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { getLogger } from '../logging.module'
 import { PolkassemblyBountiesService } from '../polkassembly/bounties/polkassembly-bounties.service'
 import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
-import { UserEntity } from '../users/user.entity'
+import { UserEntity } from '../users/entities/user.entity'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { ListenForBountyDto } from './dto/listen-for-bounty.dto'
 import { UpdateBountyDto } from './dto/update-bounty.dto'
@@ -43,7 +43,7 @@ export class BountiesService {
         private readonly bountiesBlockchainService: BlockchainBountiesService,
         private readonly blockchainService: BlockchainService,
         private readonly polkassemblyService: PolkassemblyBountiesService,
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
     ) {}
 
     create(dto: CreateBountyDto, user: UserEntity): Promise<BountyEntity> {

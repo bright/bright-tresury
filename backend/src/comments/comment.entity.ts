@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { ForbiddenException } from '@nestjs/common'
 import { BaseEntity } from '../database/base.entity'
-import { UserEntity } from '../users/user.entity'
+import { UserEntity } from '../users/entities/user.entity'
 import { Nil } from '../utils/types'
 
 @Entity('comments')

@@ -1,6 +1,6 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common'
 import { DeriveAccountRegistration, DeriveTreasuryProposal } from '@polkadot/api-derive/types'
-import { UserEntity } from '../../users/user.entity'
+import { UserEntity } from '../../users/entities/user.entity'
 import { BlockchainAccountInfo, toBlockchainAccountInfo } from './blockchain-account-info.dto'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
 import { ProposedMotionDto, toBlockchainMotion } from './proposed-motion.dto'

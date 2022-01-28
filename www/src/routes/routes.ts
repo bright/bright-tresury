@@ -40,6 +40,7 @@ export const ROUTE_EMAIL_NOT_VERIFIED = '/auth/email-not-verified'
 // endregion
 // region Account
 export const ROUTE_ACCOUNT = '/account'
+export const ROUTE_ACCOUNT_DELETED = '/account-deleted'
 // endregion
 // region Privacy
 export const ROUTE_PRIVACY = '/privacy'

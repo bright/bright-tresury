@@ -1,4 +1,4 @@
-import { UserEntity } from '../user.entity'
+import { UserEntity } from '../entities/user.entity'
 
 export class CreateWeb3AddressDto {
     address: string

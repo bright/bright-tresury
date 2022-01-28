@@ -1,9 +1,9 @@
-import { encodeAddress } from '@polkadot/util-crypto'
 import * as React from 'react'
-import { PropsWithChildren, useCallback, useEffect, useMemo, useRef } from 'react'
-import Session, { signOut, useSessionContext } from 'supertokens-auth-react/recipe/session'
+import { PropsWithChildren, useCallback, useEffect, useMemo } from 'react'
+import { encodeAddress } from '@polkadot/util-crypto'
 import { useNetworks } from '../networks/useNetworks'
 import { compareWeb3Address } from '../util/web3address.util'
+import Session, { signOut, useSessionContext } from 'supertokens-auth-react/recipe/session'
 
 export interface AuthContextState {
     user?: AuthContextUser
@@ -21,7 +21,7 @@ export interface AuthContextUser {
     username: string
     email: string
     isEmailVerified: boolean
-    isEmailPassword: boolean
+    status: UserStatus
     isWeb3: boolean
     web3Addresses: Web3Address[]
 }
@@ -30,6 +30,12 @@ export interface Web3Address {
     address: string
     isPrimary: boolean
     encodedAddress: string
+}
+
+export enum UserStatus {
+    EmailPasswordEnabled = 'emailPasswordEnabled',
+    Web3Only = 'web3Only',
+    Deleted = 'deleted',
 }
 
 export const AuthContext = React.createContext<AuthContextState | undefined>(undefined)
@@ -58,12 +64,17 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
     )
 
     const isUserVerified = useMemo(
-        () => user !== undefined && (user.isWeb3 || (user.isEmailPassword && user.isEmailVerified)),
+        () =>
+            user !== undefined &&
+            (user.isWeb3 || (user.status === UserStatus.EmailPasswordEnabled && user.isEmailVerified)),
         [user],
     )
 
     const isUserSignedInAndVerified = useMemo(
-        () => doesSessionExist && user !== undefined && (user.isWeb3 || (user.isEmailPassword && user.isEmailVerified)),
+        () =>
+            doesSessionExist &&
+            user !== undefined &&
+            (user.isWeb3 || (user.status === UserStatus.EmailPasswordEnabled && user.isEmailVerified)),
         [user, doesSessionExist],
     )
 

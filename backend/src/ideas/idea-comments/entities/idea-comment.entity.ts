@@ -1,6 +1,6 @@
 import { BeforeInsert, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn, Column } from 'typeorm'
 import { IdeaEntity } from '../../entities/idea.entity'
-import { UserEntity } from '../../../users/user.entity'
+import { UserEntity } from '../../../users/entities/user.entity'
 import { CommentEntity } from '../../../comments/comment.entity'
 import { v4 as uuid } from 'uuid'
 import { Nil } from '../../../utils/types'

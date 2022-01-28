@@ -3,13 +3,14 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Container from '../../components/form/Container'
 import { breakpoints } from '../../theme/theme'
-import { useAuth } from '../AuthContext'
 import EmailPasswordAccount from './emailPassword/EmailPasswordAccount'
 import Web3Account from './web3/Web3Account'
 import AccountSettings from './AccountSettings'
-import AccountAvatar from './AccountAvatar'
-import Content from './Content'
 import StyledSpacer from './StyledSpacer'
+import Content from './Content'
+import Avatar from '../../components/avatar/Avatar'
+import { useAuth, UserStatus } from '../AuthContext'
+import DeleteAccount from './account-delete/DeleteAccount'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,12 +44,13 @@ const Account = () => {
     const { t } = useTranslation()
     const classes = useStyles()
     const { user } = useAuth()
+
     return (
         <Container title={t('account.title')}>
             <div className={classes.root}>
                 <div className={classes.avatarContainer}>
-                    {user && user.isEmailPassword ? (
-                        <AccountAvatar username={user.username} email={user.email} />
+                    {user?.status === UserStatus.EmailPasswordEnabled ? (
+                        <Avatar username={user.username} email={user.email} />
                     ) : null}
                 </div>
                 <Content>
@@ -58,12 +60,13 @@ const Account = () => {
                         <Web3Account />
                     </div>
                     <StyledSpacer />
-                    {user && user.isEmailPassword && user.isEmailVerified ? (
+                    {user && user.status === UserStatus.EmailPasswordEnabled && user.isEmailVerified ? (
                         <>
                             <AccountSettings userId={user.id} />
                             <StyledSpacer />
                         </>
                     ) : null}
+                    {user && <DeleteAccount user={user} />}
                 </Content>
             </div>
         </Container>

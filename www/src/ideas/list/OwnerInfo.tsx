@@ -5,6 +5,9 @@ import { AuthorDto } from '../../util/author.dto'
 import { useTranslation } from 'react-i18next'
 import Avatar from '../../components/avatar/Avatar'
 import StyledOwnerAvatar from './StyledOwnerAvatar'
+import { UserStatus } from '../../auth/AuthContext'
+import accountDeleted from '../../assets/user-deleted.svg'
+import { breakpoints } from '../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,6 +33,17 @@ const useStyles = makeStyles((theme: Theme) =>
             right: '5px',
             top: '5px',
         },
+        accountDeletedAvatar: {
+            width: '32px',
+            height: '32px',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                width: '42px',
+                height: '42px',
+            },
+        },
+        image: {
+            height: '100%',
+        },
     }),
 )
 
@@ -39,13 +53,19 @@ interface OwnProps {
 export type OwnerInfoProps = OwnProps
 
 const OwnerInfo = ({ owner }: OwnerInfoProps) => {
-    const { username, web3address, isEmailPasswordEnabled } = owner
+    const { username, web3address, status } = owner
     const classes = useStyles()
     const { t } = useTranslation()
     return (
         <div className={classes.root}>
             <StyledOwnerAvatar>
-                <Avatar web3Address={web3address!} username={username} />
+                {owner.status !== UserStatus.Deleted ? (
+                    <Avatar web3Address={web3address} username={username} />
+                ) : (
+                    <div className={classes.accountDeletedAvatar}>
+                        <img className={classes.image} src={accountDeleted} />
+                    </div>
+                )}
             </StyledOwnerAvatar>
             <div className={classes.container}>
                 <Author author={owner} />

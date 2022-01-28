@@ -36,11 +36,12 @@ import { AuthorizationDatabaseName } from '../../database/authorization/authoriz
 import { EmailsService } from '../../emails/emails.service'
 import { getLogger } from '../../logging.module'
 import { CreateUserDto } from '../../users/dto/create-user.dto'
-import { UserEntity } from '../../users/user.entity'
 import { UsersService } from '../../users/users.service'
 import { SessionData } from '../session/session.decorator'
 import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
 import { AccountTemporaryLockedError } from './account-temporary-locked.error'
+import { UserStatus } from '../../users/entities/user-status'
+import { UserEntity } from '../../users/entities/user.entity'
 
 const logger = getLogger()
 
@@ -224,7 +225,7 @@ export class SuperTokensService {
         try {
             const user = await this.usersService.findOneByAuthId(authId)
             payload.id = user.id
-            if (user.isEmailPasswordEnabled) {
+            if (user.status === UserStatus.EmailPasswordEnabled) {
                 payload.username = user.username
                 payload.email = user.email
             }
@@ -279,9 +280,8 @@ export class SuperTokensService {
         }
     }
 
-
     async throwIfIsLockedOut(email: string) {
-        if(await this.usersService.isLockedOut(email)) {
+        if (await this.usersService.isLockedOut(email)) {
             throw new AccountTemporaryLockedError()
         }
     }

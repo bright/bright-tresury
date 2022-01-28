@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import SmallVerticalDivider from '../../smallHorizontalDivider/SmallVerticalDivider'
 import CommentOptionsMenu from '../commentOptionsMenu/CommentOptionsMenu'
 import Error from '../../error/Error'
-import { useAuth } from '../../../auth/AuthContext'
+import { useAuth, UserStatus } from '../../../auth/AuthContext'
 import { Nil } from '../../../util/types'
 import EditComment from '../editComment/EditComment'
 import CommentAge from './CommentAge'
@@ -12,6 +12,9 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
 import Avatar from '../../avatar/Avatar'
 import StyledAvatar from './StyledAvatar'
+import { useTranslation } from 'react-i18next'
+import userDeleted from '../../../assets/user-deleted.svg'
+import { breakpoints } from '../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,6 +47,26 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: 0,
             marginTop: '6px',
         },
+        deletedUserContainer: {
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                whiteSpace: 'nowrap',
+                position: 'relative',
+            },
+        },
+        userName: {
+            marginLeft: '5px',
+        },
+        avatar: {
+            height: '32px',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                height: '42px',
+                bottom: '6px',
+            },
+        },
     }),
 )
 
@@ -71,6 +94,7 @@ const DisplayComment = ({
 }: DisplayCommentProps) => {
     const { author, createdAt, updatedAt, content } = comment
     const classes = useStyles()
+    const { t } = useTranslation()
     const { user } = useAuth()
     const isAuthor = user?.id && author.userId && user?.id === author.userId
     const [editMode, setEditMode] = useState(false)
@@ -89,9 +113,16 @@ const DisplayComment = ({
         <div className={classes.root}>
             <div className={classes.header}>
                 <div className={classes.headerLeft}>
-                    <StyledAvatar>
-                        <Avatar username={author.username} web3Address={author.web3address} />
-                    </StyledAvatar>
+                    {author.status === UserStatus.Deleted ? (
+                        <div className={classes.deletedUserContainer}>
+                            <img className={classes.avatar} src={userDeleted} alt={'userDeletedimage'} />
+                            <div className={classes.userName}>{t('discussion.accountDeleted')}</div>
+                        </div>
+                    ) : (
+                        <StyledAvatar>
+                            <Avatar username={author.username} web3Address={author.web3address} />
+                        </StyledAvatar>
+                    )}
                     <SmallVerticalDivider className={classes.grayDivider} />
                     <CommentAge createdAt={createdAt} updatedAt={updatedAt} />
                 </div>

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { UserEntity } from '../../users/user.entity'
+import { UserEntity } from '../../users/entities/user.entity'
 import { CommentEntity } from '../../comments/comment.entity'
 import { ProposalsService } from '../proposals.service'
 import { ProposalCommentEntity } from './entities/proposal-comment.entity'

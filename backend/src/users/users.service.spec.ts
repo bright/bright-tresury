@@ -3,10 +3,11 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { v4 as uuid } from 'uuid'
 import { beforeSetupFullApp, cleanDatabase } from '../utils/spec.helpers'
 import { UsersService } from './users.service'
-import { UserEntity } from './user.entity'
+import { UserEntity } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
 import { CreateWeb3UserDto } from './dto/create-web3-user.dto'
 import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
+import { UserStatus } from './entities/user-status'
 
 describe(`Users Service`, () => {
     const app = beforeSetupFullApp()
@@ -31,7 +32,7 @@ describe(`Users Service`, () => {
             expect(user).toBeDefined()
             expect(user.email).toBe('chuck@email.com')
             expect(user.username).toBe('Chuck')
-            expect(user.isEmailPasswordEnabled).toBe(true)
+            expect(user.status).toBe('emailPasswordEnabled')
             expect(user.isEmailNotificationEnabled).toBe(true)
         })
         it('should save user', async () => {
@@ -122,7 +123,7 @@ describe(`Users Service`, () => {
             expect(updatedUser).toBeDefined()
             expect(updatedUser.username).toBe('Bob')
             expect(updatedUser.email).toBe('bob@email.com')
-            expect(updatedUser.isEmailPasswordEnabled).toBe(true)
+            expect(updatedUser.status).toBe('emailPasswordEnabled')
             expect(updatedUser.authId).toBe(user.authId)
         })
 
@@ -140,7 +141,7 @@ describe(`Users Service`, () => {
             expect(updatedUser.authId).toBe(user.authId)
         })
 
-        it('should set isEmailPasswordEnabled to true', async () => {
+        it(`should set status to ${UserStatus.EmailPasswordEnabled}`, async () => {
             await getService().associateEmailAccount(user.id, {
                 username: 'Bob',
                 email: 'bob@email.com',
@@ -148,7 +149,7 @@ describe(`Users Service`, () => {
 
             const updatedUser = await getRepository().findOne(user.id)
 
-            expect(updatedUser.isEmailPasswordEnabled).toBe(true)
+            expect(updatedUser.status).toBe(UserStatus.EmailPasswordEnabled)
         })
 
         it('should throw not found for not existing user', async () => {
@@ -200,7 +201,7 @@ describe(`Users Service`, () => {
             expect(savedUser).toBeDefined()
             expect(savedUser.isEmailPasswordEnabled).toBe(false)
         })
-        it('should set isEmailPasswordEnabled to false', async () => {
+        it('should set status to web3Only', async () => {
             const user = await getService().createWeb3User({
                 authId: uuid(),
                 username: 'Bob',
@@ -208,7 +209,7 @@ describe(`Users Service`, () => {
             })
             const savedUser = await getRepository().findOne(user.id)
             expect(savedUser).toBeDefined()
-            expect(savedUser.isEmailPasswordEnabled).toBe(false)
+            expect(savedUser.status).toBe(UserStatus.Web3Only)
         })
         it('should save user and address', async () => {
             const user = await getService().createWeb3User({
@@ -390,32 +391,63 @@ describe(`Users Service`, () => {
     })
 
     describe('delete', () => {
-        it('deletes user', async () => {
+        it('forgets the user data', async () => {
             const user = await getService().create({
                 authId: uuid(),
                 username: 'Chuck',
                 email: 'chuck@email.com',
             })
             await getService().delete(user.id)
-            await expect(getService().findOneOrThrow(user.id)).rejects.toThrow(NotFoundException)
+
+            const deletedUser = await getService().findOneOrThrow(user.id)
+
+            expect(deletedUser.username).not.toBe(user.username)
+            expect(deletedUser.email).not.toBe(user.email)
         })
-        it('deletes user and web3 addresses', async () => {
+        it('forgets web3 addresses', async () => {
             const user = await getService().createWeb3User({
                 authId: uuid(),
                 username: 'Chuck',
                 web3Address: bobAddress,
             })
             await getService().delete(user.id)
-            await expect(getService().findOneOrThrow(user.id)).rejects.toThrow(NotFoundException)
+
             const addresses = await getWeb3AddressRepository().find({
                 user: {
                     id: user.id,
                 },
             })
-            expect(addresses.length).toBe(0)
+
+            expect(addresses.length).toBe(1)
+            expect(addresses[0]).not.toBe(user.web3Addresses)
         })
-        it('deleting not existing user throws not found exception', async () => {
+        it('forgets the not existing user throws not found exception', async () => {
             await expect(getService().delete(uuid())).rejects.toThrow(NotFoundException)
+        })
+        it.only('forgets two users', async () => {
+            const user = await getService().create({
+                authId: '123e4567-e89b-12d3-a456-426614174000',
+                username: 'Chuck',
+                email: 'chuck@email.com',
+            })
+
+            const anotherUser = await getService().create({
+                authId: uuid(),
+                username: 'Bob',
+                email: 'bob@email.com',
+            })
+
+            await getService().delete(user.id)
+            const deletedUser = await getService().findOne(user.id)
+
+            await getService().delete(user.id)
+            const deletedAnotherUser = await getService().findOne(anotherUser.id)
+
+            expect(deletedUser.username).not.toBe(user.username)
+            expect(deletedUser.email).not.toBe(user.email)
+
+            expect(deletedAnotherUser.username).not.toBe(user.username)
+            expect(deletedAnotherUser.email).not.toBe(user.email)
         })
     })
 

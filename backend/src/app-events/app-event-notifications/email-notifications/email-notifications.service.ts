@@ -5,12 +5,13 @@ import { EmailTemplates } from '../../../emails/templates/templates'
 import { getLogger } from '../../../logging.module'
 import { NewBountyCommentDto } from '../../app-event-types/bounty-comment/new-bounty-comment.dto'
 import { NewIdeaCommentDto } from '../../app-event-types/idea-comment/new-idea-comment.dto'
-import { UserEntity } from '../../../users/user.entity'
+import { UserEntity } from '../../../users/entities/user.entity'
 import { UsersService } from '../../../users/users.service'
 import { NewProposalCommentDto } from '../../app-event-types/proposal-comment/new-proposal-comment.dto'
 import { AppEventReceiverEntity } from '../../entities/app-event-receiver.entity'
 import { AppEventData, AppEventType } from '../../entities/app-event-type'
 import { AppEventEntity } from '../../entities/app-event.entity'
+import { UserStatus } from '../../../users/entities/user-status'
 
 const logger = getLogger()
 
@@ -70,7 +71,7 @@ export class EmailNotificationsService {
     }
 
     private async hasValidEmail(user: UserEntity): Promise<boolean> {
-        if (!user.isEmailPasswordEnabled) {
+        if (user.status !== UserStatus.EmailPasswordEnabled) {
             return false
         }
         return this.superTokensService.isEmailVerified(user)

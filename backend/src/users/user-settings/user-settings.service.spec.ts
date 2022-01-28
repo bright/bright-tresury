@@ -2,7 +2,7 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { createSessionData } from '../../ideas/spec.helpers'
 import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
-import { UserEntity } from '../user.entity'
+import { UserEntity } from '../entities/user.entity'
 import { UserSettingsService } from './user-settings.service'
 
 describe(`Users Service`, () => {

@@ -39,9 +39,9 @@ describe('Idea comments', () => {
         expect(body).toHaveLength(1)
 
         const createdComment = body[0]
-        const { id: userId, username, isEmailPasswordEnabled } = sessionHandler.sessionData.user
+        const { id: userId, username, status } = sessionHandler.sessionData.user
         expect(createdComment).toMatchObject({
-            author: { userId, username, isEmailPasswordEnabled },
+            author: { userId, username, status },
             content: 'This is a comment',
             thumbsUp: 0,
             thumbsDown: 0,
@@ -65,7 +65,7 @@ describe('Idea comments', () => {
 
         const updatedComment = body[0]
         expect(updatedComment).toMatchObject({
-            author: { userId, username, isEmailPasswordEnabled },
+            author: { userId, username, status },
             content: 'This is updated comment',
             thumbsUp: 0,
             thumbsDown: 0,

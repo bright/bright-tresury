@@ -12,7 +12,7 @@ import { NETWORKS } from '../../utils/spec.helpers'
 const { POLKADOT } = NETWORKS
 import { ProposalCommentsService } from './proposal-comments.service'
 import { BlockchainProposal } from '../../blockchain/dto/blockchain-proposal.dto'
-import { UserEntity } from '../../users/user.entity'
+import { UserEntity } from '../../users/entities/user.entity'
 
 describe('ProposalCommentsServiceSpec', () => {
     const app = beforeSetupFullApp()
@@ -103,8 +103,8 @@ describe('ProposalCommentsServiceSpec', () => {
             expect(foundProposalComment.comment.thumbsUp).toBe(createdComment.comment.thumbsUp)
             expect(foundProposalComment.comment.thumbsDown).toBe(createdComment.comment.thumbsDown)
 
-            const { id, username, isEmailPasswordEnabled } = usr1SessionData.user
-            expect(foundProposalComment.comment.author).toMatchObject({ id, username, isEmailPasswordEnabled })
+            const { id, username, status } = usr1SessionData.user
+            expect(foundProposalComment.comment.author).toMatchObject({ id, username, status })
         })
         it('should return empty array when fetching comments for non existing proposal', async () => {
             const proposalComments = await getProposalCommentsService().findAll(1000000, POLKADOT)

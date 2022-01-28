@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Switch } from 'react-router-dom'
 import { EmailPasswordAuth } from 'supertokens-auth-react/recipe/emailpassword'
 import './App.css'
 import Account from './auth/account/Account'
+import AccountDeleted from './auth/account/account-delete/AccountDeleted'
 import { AuthContextProvider } from './auth/AuthContext'
 import SignIn from './auth/sign-in/SignIn'
 import EmailSignUpSuccess from './auth/sign-up/email/EmailSignUpSucces'
@@ -33,6 +34,7 @@ import { PublicOnlyRoute } from './routes/PublicOnlyRoute'
 import Route from './routes/Route'
 import {
     ROUTE_ACCOUNT,
+    ROUTE_ACCOUNT_DELETED,
     ROUTE_BOUNTIES,
     ROUTE_BOUNTY,
     ROUTE_EMAIL_NOT_VERIFIED,
@@ -112,6 +114,7 @@ function AppRoutes() {
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />
 
                 <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
+                <Route exact={true} path={ROUTE_ACCOUNT_DELETED} component={AccountDeleted} />
                 <Route exact={true} path={ROUTE_PRIVACY} component={Privacy} />
                 <Route exact={true} path={ROUTE_TERMS} component={Terms} />
             </Switch>

@@ -7,7 +7,7 @@ import { useModal } from '../../../components/modal/useModal'
 import AccountSelect, { EMPTY_ACCOUNT } from '../../../components/select/AccountSelect'
 import { Label } from '../../../components/text/Label'
 import { Account } from '../../../substrate-lib/accounts/AccountsContext'
-import { useAuth } from '../../AuthContext'
+import { useAuth, UserStatus } from '../../AuthContext'
 import EnterPasswordModal from '../emailPassword/passwordModal/EnterPasswordModal'
 import Web3AddressRow from './Web3AddressRow'
 import { useAssociateWeb3Account } from './web3Associate.api'
@@ -58,7 +58,7 @@ const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
     }
 
     const onSubmit = async (values: { account: Account }) => {
-        if (!user?.isEmailPassword) {
+        if (user?.status === UserStatus.Web3Only) {
             await mutateAsync({ account: values.account } as Web3AssociateValues, {
                 onSuccess: onAssociateSuccess,
             })

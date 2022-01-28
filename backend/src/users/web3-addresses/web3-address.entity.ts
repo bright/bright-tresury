@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
-import { UserEntity } from '../user.entity'
+import { UserEntity } from '../entities/user.entity'
 
 @Entity('user_web3_addresses')
 export class Web3AddressEntity extends BaseEntity {
-    @Column({ nullable: false, type: 'text', unique: true })
+    @Column({ type: 'text', unique: true })
     address: string
 
     @ManyToOne(() => UserEntity, (user) => user.web3Addresses)

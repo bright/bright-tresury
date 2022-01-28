@@ -2,7 +2,7 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { SessionData } from '../auth/session/session.decorator'
-import { UserEntity } from '../users/user.entity'
+import { UserEntity } from '../users/entities/user.entity'
 import { Web3AddressEntity } from '../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp } from '../utils/spec.helpers'
 import { CreateIdeaDto } from './dto/create-idea.dto'
@@ -13,6 +13,7 @@ import { IdeaMilestoneEntity } from './idea-milestones/entities/idea-milestone.e
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { IdeaMilestonesService } from './idea-milestones/idea-milestones.service'
 import { IdeasService } from './ideas.service'
+import { UserStatus } from '../users/entities/user-status'
 
 export async function createIdea(
     idea: Partial<CreateIdeaDto>,
@@ -70,7 +71,7 @@ export async function createSessionData(
         user.id ?? uuid(),
         user.username ?? 'chuck',
         user.email ?? 'chuck@test.test',
-        user.isEmailPasswordEnabled ?? true,
+        user.status ?? UserStatus.EmailPasswordEnabled,
     )
 
     const repository: Repository<UserEntity> =

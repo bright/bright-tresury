@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
-import { UserEntity } from '../../users/user.entity'
+import { UserEntity } from '../../users/entities/user.entity'
 import { AppEventEntity } from './app-event.entity'
 
 @Entity('app_event_receivers')

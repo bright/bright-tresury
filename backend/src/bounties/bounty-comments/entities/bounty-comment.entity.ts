@@ -1,7 +1,7 @@
 import { BeforeInsert, Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm'
 import { v4 as uuid } from 'uuid'
 import { CommentEntity } from '../../../comments/comment.entity'
-import { UserEntity } from '../../../users/user.entity'
+import { UserEntity } from '../../../users/entities/user.entity'
 
 @Entity('bounty_comments')
 export class BountyCommentEntity {
