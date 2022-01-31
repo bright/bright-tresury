@@ -8,10 +8,11 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import { BountyDto } from './dto/bounty.dto'
+import { ISubmittableResult } from '@polkadot/types/types/extrinsic'
 
 const baseUrl = `/api/v1/bounties/`
 
-describe.skip(`/api/v1/bounties/`, () => {
+describe(`/api/v1/bounties/`, () => {
     const app = beforeSetupFullApp()
 
     const blockchainsConnections = beforeAllSetup(() => app().get<BlockchainsConnections>('PolkadotApi'))
@@ -22,7 +23,7 @@ describe.skip(`/api/v1/bounties/`, () => {
     })
 
     describe('create a bounty (POST) and fetch all bounties (GET)', () => {
-        it(`should find extrinsic and create a bounty entity`, async (done) => {
+        it(`should find extrinsic and create a bounty entity`, async () => {
             const api = getApi(blockchainsConnections(), NETWORKS.POLKADOT)
             const keyring = new Keyring({ type: 'sr25519' })
             const aliceKeypair = keyring.addFromUri('//Alice', { name: 'Alice default' })
@@ -45,46 +46,39 @@ describe.skip(`/api/v1/bounties/`, () => {
                 )
                 .expect(HttpStatus.ACCEPTED)
 
-            await extrinsic.send(async (result) => {
-                if (result.isInBlock) {
-                    const applyExtrinsicEvents = BlockchainService.getApplyExtrinsicEvents(result.events)
-                    const bountyIndex = BlockchainBountiesService.extractBountyIndex(applyExtrinsicEvents)
-
-                    // wait until the extrinsic is found, read and bounty is saved
-                    setTimeout(async () => {
-                        // GET
-                        const { body: bountiesDtos }: { body: BountyDto[] } = await request(app()).get(
-                            `${baseUrl}?network=${NETWORKS.POLKADOT}`,
-                        )
-
-                        const bountyDto = bountiesDtos.find(({ blockchainIndex }) => blockchainIndex === bountyIndex)!
-                        expect(bountyDto).toBeDefined()
-                        expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
-                        expect(bountyDto.value).toBe('1000000000000')
-                        expect(bountyDto.bond).toBe('10200000000')
-                        expect(bountyDto.status).toBe('Proposed')
-                        expect(bountyDto.title).toBe('title')
-
-                        // UPDATE
-                        await sessionHandler
-                            .authorizeRequest(
-                                request(app())
-                                    .patch(`${baseUrl}${bountyIndex}?network=${NETWORKS.POLKADOT}`)
-                                    .send({ title: 'new title' }),
-                            )
-                            .expect(HttpStatus.OK)
-
-                        // GET single
-                        const { body: singleBounty } = await request(app()).get(
-                            `${baseUrl}${bountyIndex}?network=${NETWORKS.POLKADOT}`,
-                        )
-                        expect(singleBounty).toBeDefined()
-                        expect(singleBounty.title).toBe('new title')
-
-                        done()
-                    }, 4000)
-                }
+            const inBlockResult: ISubmittableResult = await new Promise((resolve, reject) => {
+                extrinsic.send(async (result) => {
+                    if (result.isInBlock) {
+                        resolve(result)
+                    }
+                })
             })
+            const applyExtrinsicEvents = BlockchainService.getApplyExtrinsicEvents(inBlockResult.events)
+            const bountyIndex = BlockchainBountiesService.extractBountyIndex(applyExtrinsicEvents)
+            await new Promise((resolve) => setTimeout(resolve, 400))
+            const response = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
+            const { items: bountiesDtos }: { items: BountyDto[] } = response.body
+            const bountyDto = bountiesDtos.find(({ blockchainIndex }) => blockchainIndex === bountyIndex)!
+            expect(bountyDto).toBeDefined()
+            expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(bountyDto.value).toBe('1000000000000')
+            expect(bountyDto.bond).toBe('10200000000')
+            expect(bountyDto.status).toBe('Proposed')
+            expect(bountyDto.title).toBe('title')
+            await sessionHandler
+                .authorizeRequest(
+                    request(app())
+                        .patch(`${baseUrl}${bountyIndex}?network=${NETWORKS.POLKADOT}`)
+                        .send({ title: 'new title' }),
+                )
+                .expect(HttpStatus.OK)
+
+            // GET single
+            const { body: singleBounty } = await request(app()).get(
+                `${baseUrl}${bountyIndex}?network=${NETWORKS.POLKADOT}`,
+            )
+            expect(singleBounty).toBeDefined()
+            expect(singleBounty.title).toBe('new title')
         })
     })
 })
