@@ -1,4 +1,4 @@
-FROM node:14.16.1
+FROM node:14.17.0
 
 RUN useradd --home-dir /srv/ --gid node --shell $(which bash) node-runner && \
     mkdir -p /srv/.config && \
@@ -15,6 +15,7 @@ COPY --chown=node backend/*.json ${SERVER_TARGET_DIR}/
 COPY --chown=node www/*.json ${CLIENT_TARGET_DIR}/
 COPY --chown=node www/yarn.lock ${CLIENT_TARGET_DIR}/
 COPY --chown=node www/.yarnclean ${CLIENT_TARGET_DIR}/
+COPY --chown=node www/patches/* ${CLIENT_TARGET_DIR}/patches/
 
 WORKDIR ${CLIENT_TARGET_DIR}
 

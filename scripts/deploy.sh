@@ -23,7 +23,7 @@ stack_exists=$(aws cloudformation list-stacks --query "StackSummaries[?StackName
 deploy_params="\
 ParameterKey=DeployEnv,ParameterValue=${DEPLOY_ENV} \
 ParameterKey=AppImage,ParameterValue=${DOCKER_REGISTRY}treasury:${VCS_VERSION} \
-ParameterKey=PolkadotImage,ParameterValue=public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:v0.9.13"
+ParameterKey=PolkadotImage,ParameterValue=public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:v0.9.15-1"
 
 
 if [[ ${stack_exists} =~ "[]" ]]; then

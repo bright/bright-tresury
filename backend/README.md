@@ -112,7 +112,7 @@ Change it to some smaller value like `3 * MINUTES`.
 -   tag the image for ECR `docker tag ${docker_image_id} public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:${version_number}`
 -   authenticate docker to be able to push to ECR `aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x2h8r1m3`
 -   push the image `docker push public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:${version_number}`
--   update image version in deploy.sh `PolkadotImage` param value and in docker-compose.development-\*.yml files
+-   update image version in `scripts/deploy.sh` `PolkadotImage` param value and in `deploy/polkadot.Dockerfile` files
 
 ### Tips & tricks
 

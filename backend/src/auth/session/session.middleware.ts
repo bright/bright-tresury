@@ -4,6 +4,8 @@ import { getLogger } from '../../logging.module'
 import { SessionData } from './session.decorator'
 import { ISessionResolver, SessionResolverProvider } from './session.resolver'
 
+const logger = getLogger()
+
 export interface SessionRequest extends Request {
     session?: SessionData
 }
@@ -23,6 +25,7 @@ export class SessionUserMiddleware implements NestMiddleware {
             await this.sessionResolver.resolveUserAndUpdateSessionData(req, res)
             next()
         } catch (error) {
+            logger.error('SessionUserMiddleware error', error)
             this.sessionResolver.handleResponseIfRefreshTokenError(res, error)
             next()
         }

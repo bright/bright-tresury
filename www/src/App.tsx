@@ -1,3 +1,6 @@
+// We need to add the import as since the @polkadot/api 7.x release, type augmentation is not applied by default to the API anymore
+// https://polkadot.js.org/docs/api/FAQ#since-upgrading-to-the-7x-series-typescript-augmentation-is-missing
+import '@polkadot/api-augment'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import i18next from 'i18next'
 import React, { useEffect } from 'react'
