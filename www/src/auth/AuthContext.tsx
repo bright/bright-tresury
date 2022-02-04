@@ -12,7 +12,7 @@ export interface AuthContextState {
     isUserSignedInAndVerified: boolean
     hasWeb3AddressAssigned: (address: string) => boolean
 
-    refreshJwt: () => Promise<void>
+    refreshSession: () => Promise<void>
     signOut: () => void
 }
 
@@ -86,11 +86,11 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
 
     useEffect(() => {
         if (doesSessionExist) {
-            refreshJwt()
+            refreshSession()
         }
     }, [doesSessionExist])
 
-    const refreshJwt = async () => {
+    const refreshSession = async () => {
         await Session.attemptRefreshingSession()
     }
 
@@ -102,7 +102,7 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
                 isUserVerified,
                 isUserSignedInAndVerified,
                 signOut,
-                refreshJwt,
+                refreshSession,
                 hasWeb3AddressAssigned,
             }}
             children={children}

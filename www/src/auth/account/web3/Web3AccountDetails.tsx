@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme: Theme) => {
 
 const Web3AccountDetails = () => {
     const { t } = useTranslation()
-    const { user, refreshJwt } = useAuth()
+    const { user, refreshSession } = useAuth()
     const classes = useStyles()
 
     const {
@@ -39,14 +39,14 @@ const Web3AccountDetails = () => {
     const onPrimaryChange = async (checked: boolean, address: Web3Address) => {
         if (!address.isPrimary && checked) {
             await makePrimaryMutateAsync(address.address, {
-                onSuccess: refreshJwt,
+                onSuccess: refreshSession,
             })
         }
     }
 
     const onUnlinkCLick = async (address: string) => {
         await unlinkAddressMutateAsync(address, {
-            onSuccess: refreshJwt,
+            onSuccess: refreshSession,
         })
     }
 

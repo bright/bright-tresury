@@ -424,7 +424,7 @@ describe(`Users Service`, () => {
         it('forgets the not existing user throws not found exception', async () => {
             await expect(getService().delete(uuid())).rejects.toThrow(NotFoundException)
         })
-        it.only('forgets two users', async () => {
+        it('forgets two users', async () => {
             const user = await getService().create({
                 authId: '123e4567-e89b-12d3-a456-426614174000',
                 username: 'Chuck',

@@ -1,5 +1,5 @@
 import { Nil } from './types'
-import { UserStatus } from '../../../backend/src/users/entities/user-status'
+import { UserStatus } from '../auth/AuthContext'
 
 export interface AuthorDto {
     userId: string

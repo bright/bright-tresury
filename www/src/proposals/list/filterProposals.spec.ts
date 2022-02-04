@@ -1,6 +1,6 @@
+import { AuthContextUser, UserStatus } from '../../auth/AuthContext'
 import { ProposalDto } from '../proposals.dto'
 import { isProposalMadeByUser } from './filterProposals'
-import { AuthContextUser } from '../../auth/AuthContext'
 
 describe(`isProposalMadeByUser`, () => {
     const user: AuthContextUser = {
@@ -8,7 +8,7 @@ describe(`isProposalMadeByUser`, () => {
         username: 'Example',
         email: 'example@example.com',
         isEmailVerified: true,
-        isEmailPassword: true,
+        status: UserStatus.EmailPasswordEnabled,
         isWeb3: true,
         web3Addresses: [
             {
@@ -24,7 +24,7 @@ describe(`isProposalMadeByUser`, () => {
         username: 'Example',
         email: 'example@example.com',
         isEmailVerified: true,
-        isEmailPassword: true,
+        status: UserStatus.EmailPasswordEnabled,
         isWeb3: true,
         web3Addresses: [
             {

@@ -1,3 +1,4 @@
+import { HttpStatus } from '@nestjs/common'
 import { v4 as uuid } from 'uuid'
 import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers'
 import { SuperTokensService } from './supertokens/supertokens.service'
@@ -17,7 +18,6 @@ describe(`Auth Controller`, () => {
     const getUsersService = () => app.get().get(UsersService)
 
     const bobEmail = 'bob@bobby.bob'
-    const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
     const bobUsername = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
     const superTokensSignUpUserPassword = uuid()
@@ -115,6 +115,45 @@ describe(`Auth Controller`, () => {
             expect(sessionData.user.id).toBe(user.id)
             expect(sessionData.user.username).toBe(user.username)
             expect(sessionData.user.email).toBe(user.email)
+        })
+    })
+
+    describe('unregister', () => {
+        it(`should invalidate current session`, async () => {
+            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+
+            await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/unregister`))
+
+            const userId = sessionHandler.sessionData.user.id
+            return sessionHandler
+                .authorizeRequest(request(app()).get(`/api/v1/users/${userId}/app-events/`))
+                .expect(HttpStatus.FORBIDDEN)
+        })
+
+        it(`should prevent sign in again`, async () => {
+            const email = 'email@example.com'
+            const username = 'username'
+            const password = 'password123'
+
+            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app(), email, username, password)
+            await sessionHandler.authorizeRequest(request(app()).delete(`${baseUrl}/unregister`))
+
+            const response = await request(app())
+                .post(`${baseUrl}/signin`)
+                .send({
+                    formFields: [
+                        {
+                            id: 'email',
+                            value: email,
+                        },
+                        {
+                            id: 'password',
+                            value: password,
+                        },
+                    ],
+                })
+            expect(response.status).toBe(200)
+            expect(response.body.status).toBe('WRONG_CREDENTIALS_ERROR')
         })
     })
 })

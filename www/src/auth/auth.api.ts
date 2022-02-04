@@ -13,19 +13,3 @@ function signOut({}) {
 export function useSignOut() {
     return useMutation(signOut)
 }
-
-// DELETE ACCOUNT
-
-export const USERS_API_PATH = '/users'
-
-export interface DeleteUserDto {
-    userId: string
-}
-
-function deleteUser({ userId }: DeleteUserDto): Promise<void> {
-    return apiDelete(`${USERS_API_PATH}/${userId}`)
-}
-
-export const useDeleteUser = () => {
-    return useMutation(deleteUser)
-}

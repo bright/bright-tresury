@@ -1,13 +1,14 @@
-import React from 'react'
-import { useHistory } from 'react-router-dom'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import HeaderContainer from '../../../components/header/details/HeaderContainer'
-import userDeletedSuccess from '../../../assets/user-deleted-success.svg'
 import { Theme, Typography } from '@material-ui/core'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
+import React, { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { ROUTE_ROOT } from '../../../routes/routes'
+import { useHistory } from 'react-router'
+import userDeletedSuccess from '../../../assets/user-deleted-success.svg'
+import HeaderContainer from '../../../components/header/details/HeaderContainer'
 import { Header } from '../../../components/text/Header'
+import { ROUTE_ROOT } from '../../../routes/routes'
 import { breakpoints } from '../../../theme/theme'
+import { useAuth } from '../../AuthContext'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -45,6 +46,12 @@ const AccountDeleted = () => {
     const history = useHistory()
     const classes = useStyles()
     const { t } = useTranslation()
+
+    const { refreshSession } = useAuth()
+
+    useEffect(() => {
+        refreshSession()
+    }, [])
 
     const goToRoot = () => {
         history.push(ROUTE_ROOT)

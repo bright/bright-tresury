@@ -4,11 +4,11 @@ import DeleteAccountWarningModal from './DeleteAccountWarningModal'
 import { useTranslation } from 'react-i18next'
 import { AuthContextUser, useAuth } from '../../AuthContext'
 import { useHistory } from 'react-router-dom'
-import { useDeleteUser } from '../../auth.api'
 import { useModal } from '../../../components/modal/useModal'
 import { ROUTE_ACCOUNT_DELETED } from '../../../routes/routes'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
+import { useDeleteUser } from './unregister.api'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,17 +38,14 @@ const DeleteAccount = ({ user }: DeleteAccountProps) => {
 
     const { mutateAsync: deleteAccount } = useDeleteUser()
 
-    const { signOut } = useAuth()
-
     const warningModal = useModal()
 
     const handleDeleteAccount = async () => {
         await deleteAccount(
-            { userId: user.id },
+            {},
             {
                 onSuccess: async () => {
-                    history.push(ROUTE_ACCOUNT_DELETED)
-                    signOut()
+                    history.replace(ROUTE_ACCOUNT_DELETED)
                 },
             },
         )

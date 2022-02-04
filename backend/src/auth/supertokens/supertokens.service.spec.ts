@@ -5,7 +5,8 @@ import { v4 as uuid } from 'uuid'
 import { EmailsService } from '../../emails/emails.service'
 import { UsersService } from '../../users/users.service'
 import { beforeSetupFullApp, cleanDatabase } from '../../utils/spec.helpers'
-import { cleanAuthorizationDatabase } from './specHelpers/supertokens.database.spec.helper'
+import { cleanAuthorizationDatabase, getAuthUser } from './specHelpers/supertokens.database.spec.helper'
+import { createUserSessionHandler } from './specHelpers/supertokens.session.spec.helper'
 import { SuperTokensUsernameKey } from './supertokens.recipeList'
 import { SuperTokensService } from './supertokens.service'
 
@@ -122,6 +123,29 @@ describe(`SuperTokens Service`, () => {
             const user = await getService().signUp('chuck@example.com', uuid())
 
             await expect(getService().updateEmail(user.id, 'chuck@example.com')).rejects.toThrow(ConflictException)
+        })
+    })
+    describe('deleteUser', () => {
+        it('should delete supertokens user', async () => {
+            const {
+                sessionData: { user },
+            } = await createUserSessionHandler(app())
+
+            await getService().deleteUser(user)
+
+            const actual = await getAuthUser(user.id)
+            expect(actual).toBeUndefined()
+        })
+
+        it('should call delete method from users service', async () => {
+            const {
+                sessionData: { user },
+            } = await createUserSessionHandler(app())
+            const spy = jest.spyOn(getUsersService(), 'delete')
+
+            await getService().deleteUser(user)
+
+            expect(spy).toBeCalledWith(user.id)
         })
     })
 })

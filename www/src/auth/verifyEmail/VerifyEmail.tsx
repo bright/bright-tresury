@@ -15,7 +15,7 @@ const VerifyEmail = () => {
     const location = useLocation()
     const [token, setToken] = useState<Nil<string>>()
     const { mutateAsync, isLoading, isSuccess, isIdle } = useVerifyEmail()
-    const { isUserSignedIn, refreshJwt } = useAuth()
+    const { isUserSignedIn, refreshSession } = useAuth()
 
     useEffect(() => {
         const t = new URLSearchParams(location.search).get(TOKEN_PARAM_NAME)
@@ -29,7 +29,7 @@ const VerifyEmail = () => {
             mutateAsync(token, {
                 onSuccess: () => {
                     if (isUserSignedIn) {
-                        refreshJwt()
+                        refreshSession()
                     }
                 },
             })

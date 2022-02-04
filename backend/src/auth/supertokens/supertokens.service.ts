@@ -36,12 +36,13 @@ import { AuthorizationDatabaseName } from '../../database/authorization/authoriz
 import { EmailsService } from '../../emails/emails.service'
 import { getLogger } from '../../logging.module'
 import { CreateUserDto } from '../../users/dto/create-user.dto'
+import { UserStatus } from '../../users/entities/user-status'
+import { UserEntity } from '../../users/entities/user.entity'
 import { UsersService } from '../../users/users.service'
 import { SessionData } from '../session/session.decorator'
 import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
 import { AccountTemporaryLockedError } from './account-temporary-locked.error'
-import { UserStatus } from '../../users/entities/user-status'
-import { UserEntity } from '../../users/entities/user.entity'
+import { deleteUser as supertokensDeleteUser } from 'supertokens-node'
 
 const logger = getLogger()
 
@@ -51,6 +52,7 @@ export interface AccessTokenPayload {
     email: string
     isEmailVerified: boolean
     web3Addresses: Web3Address[]
+    status: UserStatus
 }
 
 interface Web3Address {
@@ -238,6 +240,7 @@ export class SuperTokensService {
                       } as Web3Address
                   })
                 : []
+            payload.status = user.status
         } catch (err) {
             logger.error(err)
         }
@@ -291,5 +294,14 @@ export class SuperTokensService {
 
     async updateSignInAttemptCount(email: string) {
         return this.usersService.updateSignInAttemptCount(email)
+    }
+
+    async deleteUser(user: UserEntity): Promise<void> {
+        await this.usersService.delete(user.id)
+        const sessionHandles = await Session.getAllSessionHandlesForUser(user.authId)
+        for (const handle of sessionHandles) {
+            await Session.revokeSession(handle)
+        }
+        await supertokensDeleteUser(user.authId)
     }
 }

@@ -2,7 +2,6 @@ import { v4 as uuid } from 'uuid'
 import { beforeSetupFullApp, cleanDatabase, request } from '../utils/spec.helpers'
 import { MockSessionGuard } from './guards/session.spec.guard'
 import { HttpStatus } from '@nestjs/common'
-import { SessionData } from './session/session.decorator'
 import { MockSessionResolver } from './session/session.spec.resolver'
 import { UsersService } from '../users/users.service'
 import { CreateUserDto } from '../users/dto/create-user.dto'
@@ -22,20 +21,23 @@ describe(`Auth Controller`, () => {
     const bobEmail = 'bob@bobby.bob'
     const bobUsername = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
-    let sessionUser: SessionData
-
     beforeEach(async () => {
         await cleanDatabase()
         await cleanAuthorizationDatabase()
+    })
+
+    const setUp = async () => {
         const user = await getUsersService().create({
             username: bobUsername,
             email: bobEmail,
             authId: uuid(),
         } as CreateUserDto)
-        sessionUser = {
-            user,
+        return {
+            sessionUser: {
+                user,
+            },
         }
-    })
+    }
 
     describe('auth guard', () => {
         it('should allow request', () => {
@@ -52,18 +54,20 @@ describe(`Auth Controller`, () => {
 
     describe('session middleware', () => {
         it('should resolve user from session resolver', async () => {
+            const { sessionUser } = await setUp()
             sessionGuard.allow = true
             sessionResolver.sessionUser = sessionUser
             const response = await request(app()).get(`/api/v1/auth/session`).send()
             expect(response.statusCode).toBe(HttpStatus.OK)
             expect(response.body.user.id).toBe(sessionUser!.user.id)
         })
-    })
-    it('should not resolve user from session resolver', async () => {
-        sessionGuard.allow = true
-        sessionResolver.sessionUser = undefined
-        const response = await request(app()).get(`/api/v1/auth/session`).send()
-        expect(response.statusCode).toBe(HttpStatus.OK)
-        expect(response.body.user).toBe(undefined)
+
+        it('should not resolve user from session resolver', async () => {
+            sessionGuard.allow = true
+            sessionResolver.sessionUser = undefined
+            const response = await request(app()).get(`/api/v1/auth/session`).send()
+            expect(response.statusCode).toBe(HttpStatus.OK)
+            expect(response.body.user).toBe(undefined)
+        })
     })
 })

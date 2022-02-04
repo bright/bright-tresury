@@ -36,14 +36,14 @@ export interface Web3AccountFormProps {
 const Web3AccountForm = ({ onSuccess }: Web3AccountFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { user, refreshJwt } = useAuth()
+    const { user, refreshSession } = useAuth()
     const passwordModal = useModal()
     const [selectedAccount, setSelectedAccount] = useState<Account>()
 
     const { mutateAsync, isLoading, isError } = useAssociateWeb3Account()
 
     const onAssociateSuccess = () => {
-        refreshJwt()
+        refreshSession()
         onSuccess()
     }
 

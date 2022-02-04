@@ -15,7 +15,7 @@ import { useAssociateEmailPassword } from './emailPassword.api'
 
 const EmailPasswordAccountForm = () => {
     const { t } = useTranslation()
-    const { user, refreshJwt } = useAuth()
+    const { user, refreshSession } = useAuth()
     const { accounts } = useAccounts()
     const { initialValues, validationSchema } = useSignUpForm()
 
@@ -37,7 +37,7 @@ const EmailPasswordAccountForm = () => {
             },
             {
                 onSuccess: () => {
-                    refreshJwt()
+                    refreshSession()
                 },
             },
         )
