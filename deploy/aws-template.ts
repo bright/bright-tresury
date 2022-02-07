@@ -186,6 +186,139 @@ const OutboundAccessSecurity = [
         CidrIp: '0.0.0.0/0',
     },
 ]
+const AuthContainerDefinition = {
+    Name: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
+    Environment: [
+        {
+            Name: 'POSTGRESQL_PORT',
+            Value: '5432',
+        },
+        {
+            Name: 'POSTGRESQL_DATABASE_NAME',
+            Value: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbName'),
+        },
+    ],
+    Secrets: [
+        {
+            Name: 'POSTGRESQL_HOST',
+            ValueFrom: Fn.Join('', [
+                'arn:aws:ssm:',
+                Refs.Region,
+                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
+                DeployEnv,
+                '/authorizationDatabase/host',
+            ]),
+        },
+        {
+            Name: 'POSTGRESQL_USER',
+            ValueFrom: Fn.Join('', [
+                'arn:aws:ssm:',
+                Refs.Region,
+                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
+                DeployEnv,
+                '/authorizationDatabase/username',
+            ]),
+        },
+        {
+            Name: 'POSTGRESQL_PASSWORD',
+            ValueFrom: Fn.Join('', [
+                'arn:aws:ssm:',
+                Refs.Region,
+                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
+                DeployEnv,
+                '/authorizationDatabase/password',
+            ]),
+        },
+    ],
+    Cpu: 100,
+    Essential: true,
+    Image: 'supertokens/supertokens-postgresql:3.7',
+    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
+    LogConfiguration: {
+        LogDriver: 'awslogs',
+        Options: {
+            'awslogs-group': Fn.Ref('AuthCoreCloudwatchLogsGroup'),
+            'awslogs-region': Refs.Region,
+            'awslogs-stream-prefix': 'auth',
+            'awslogs-multiline-pattern': '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
+        },
+    },
+    PortMappings: [
+        {
+            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
+            HostPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
+        },
+    ],
+}
+
+const AppContainerDefinition = {
+    Name: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
+    Environment: [
+        {
+            Name: 'DEPLOY_ENV',
+            Value: DeployEnv,
+        },
+        {
+            Name: 'NODE_OPTIONS',
+            Value: '--max-old-space-size=800',
+        },
+    ],
+    Cpu: 100,
+    Essential: true,
+    Image: Fn.Ref('AppImage'),
+    Command: ['npm', 'run', 'database-migrate-clean-and-main'],
+    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
+    LogConfiguration: {
+        LogDriver: 'awslogs',
+        Options: {
+            'awslogs-group': Fn.Ref('CloudwatchLogsGroup'),
+            'awslogs-region': Refs.Region,
+            'awslogs-stream-prefix': Fn.Select(1, Fn.Split(':', Fn.Ref('AppImage'))),
+            'awslogs-multiline-pattern': '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
+        },
+    },
+    PortMappings: [
+        {
+            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
+        },
+    ],
+    Links: Fn.If(
+        'IsProd',
+        [Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName')],
+        [
+            Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
+            Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
+        ],
+    ),
+}
+
+const SubContainerDefinition = {
+    Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
+    Cpu: 100,
+    Essential: true,
+    Image: Fn.Ref('PolkadotImage'),
+    Command: ['--rpc-external', '--ws-external', '--dev'],
+    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
+    LogConfiguration: {
+        LogDriver: 'awslogs',
+        Options: {
+            'awslogs-group': Fn.Ref('SubstrateCloudwatchLogsGroup'),
+            'awslogs-region': Refs.Region,
+            'awslogs-stream-prefix': 'substrate',
+            'awslogs-multiline-pattern': '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
+        },
+    },
+    PortMappings: [
+        {
+            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
+            HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
+        },
+        {
+            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
+            HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
+        },
+    ],
+}
 
 export default cloudform({
     Parameters: {
@@ -207,6 +340,9 @@ export default cloudform({
             AllowedPattern: '(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})/(\\d{1,2})',
             ConstraintDescription: 'must be a valid CIDR range of the form x.x.x.x/x.',
         }),
+    },
+    Conditions: {
+        IsProd: Fn.Equals(DeployEnv, 'prod'),
     },
     Mappings: {
         SubnetConfig: {
@@ -864,138 +1000,11 @@ export default cloudform({
 
         [Resources.TaskDefinition]: new ECS.TaskDefinition({
             Family: Fn.Join('', [Refs.StackName, '-app']),
-            ContainerDefinitions: [
-                {
-                    Name: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
-                    Environment: [
-                        {
-                            Name: 'DEPLOY_ENV',
-                            Value: DeployEnv,
-                        },
-                        {
-                            Name: 'NODE_OPTIONS',
-                            Value: '--max-old-space-size=800',
-                        },
-                    ],
-                    Cpu: 100,
-                    Essential: true,
-                    Image: Fn.Ref('AppImage'),
-                    Command: ['npm', 'run', 'database-migrate-clean-and-main'],
-                    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
-                    LogConfiguration: {
-                        LogDriver: 'awslogs',
-                        Options: {
-                            'awslogs-group': Fn.Ref('CloudwatchLogsGroup'),
-                            'awslogs-region': Refs.Region,
-                            'awslogs-stream-prefix': Fn.Select(1, Fn.Split(':', Fn.Ref('AppImage'))),
-                            'awslogs-multiline-pattern':
-                                '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
-                        },
-                    },
-                    PortMappings: [
-                        {
-                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
-                        },
-                    ],
-                    Links: [
-                        Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
-                        Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
-                    ],
-                },
-                {
-                    Name: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
-                    Cpu: 100,
-                    Essential: true,
-                    Image: Fn.Ref('PolkadotImage'),
-                    Command: ['--rpc-external', '--ws-external', '--dev'],
-                    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
-                    LogConfiguration: {
-                        LogDriver: 'awslogs',
-                        Options: {
-                            'awslogs-group': Fn.Ref('SubstrateCloudwatchLogsGroup'),
-                            'awslogs-region': Refs.Region,
-                            'awslogs-stream-prefix': 'substrate',
-                            'awslogs-multiline-pattern':
-                                '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
-                        },
-                    },
-                    PortMappings: [
-                        {
-                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
-                            HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateHttpContainerPort'),
-                        },
-                        {
-                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
-                            HostPort: Fn.FindInMap('ECS', DeployEnv, 'SubstrateWsContainerPort'),
-                        },
-                    ],
-                },
-                {
-                    Name: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreContainerName'),
-                    Environment: [
-                        {
-                            Name: 'POSTGRESQL_PORT',
-                            Value: '5432',
-                        },
-                        {
-                            Name: 'POSTGRESQL_DATABASE_NAME',
-                            Value: Fn.FindInMap('AuthCoreDatabaseMapping', DeployEnv, 'DbName'),
-                        },
-                    ],
-                    Secrets: [
-                        {
-                            Name: 'POSTGRESQL_HOST',
-                            ValueFrom: Fn.Join('', [
-                                'arn:aws:ssm:',
-                                Refs.Region,
-                                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
-                                DeployEnv,
-                                '/authorizationDatabase/host',
-                            ]),
-                        },
-                        {
-                            Name: 'POSTGRESQL_USER',
-                            ValueFrom: Fn.Join('', [
-                                'arn:aws:ssm:',
-                                Refs.Region,
-                                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
-                                DeployEnv,
-                                '/authorizationDatabase/username',
-                            ]),
-                        },
-                        {
-                            Name: 'POSTGRESQL_PASSWORD',
-                            ValueFrom: Fn.Join('', [
-                                'arn:aws:ssm:',
-                                Refs.Region,
-                                `:${Resources.RootAwsAccountId}:parameter/${ProjectName}-`,
-                                DeployEnv,
-                                '/authorizationDatabase/password',
-                            ]),
-                        },
-                    ],
-                    Cpu: 100,
-                    Essential: true,
-                    Image: 'supertokens/supertokens-postgresql:3.7',
-                    MemoryReservation: Fn.FindInMap('ECS', DeployEnv, 'Memory'),
-                    LogConfiguration: {
-                        LogDriver: 'awslogs',
-                        Options: {
-                            'awslogs-group': Fn.Ref('AuthCoreCloudwatchLogsGroup'),
-                            'awslogs-region': Refs.Region,
-                            'awslogs-stream-prefix': 'auth',
-                            'awslogs-multiline-pattern':
-                                '^[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}.[0-9]{3}Z',
-                        },
-                    },
-                    PortMappings: [
-                        {
-                            ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
-                            HostPort: Fn.FindInMap('ECS', DeployEnv, 'AuthCoreHttpContainerPort'),
-                        },
-                    ],
-                },
-            ],
+            ContainerDefinitions: Fn.If(
+                'IsProd',
+                [AppContainerDefinition, AuthContainerDefinition],
+                [AppContainerDefinition, AuthContainerDefinition, SubContainerDefinition],
+            ),
             ExecutionRoleArn: Fn.GetAtt(Resources.AppTaskExecutionRole, 'Arn'),
             TaskRoleArn: Fn.GetAtt(Resources.AppTaskRole, 'Arn'),
         }),
@@ -1296,18 +1305,28 @@ export default cloudform({
         [Resources.ECSService]: new ECS.Service({
             Cluster: Fn.Ref(Resources.ECSCluster),
             DesiredCount: Fn.FindInMap('ECS', DeployEnv, 'DesiredTasksCount'),
-            LoadBalancers: [
-                {
-                    ContainerName: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
-                    ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
-                    TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
-                },
-                {
-                    ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
-                    ContainerPort: 9944,
-                    TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
-                },
-            ],
+            LoadBalancers: Fn.If(
+                'IsProd',
+                [
+                    {
+                        ContainerName: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
+                        ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
+                        TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
+                    },
+                ],
+                [
+                    {
+                        ContainerName: Fn.FindInMap('ECS', DeployEnv, 'ContainerName'),
+                        ContainerPort: Fn.FindInMap('ECS', DeployEnv, 'ContainerPort'),
+                        TargetGroupArn: Fn.Ref(Resources.ECSAppTargetGroup),
+                    },
+                    {
+                        ContainerName: Fn.FindInMap('ECS', DeployEnv, 'SubstrateContainerName'),
+                        ContainerPort: 9944,
+                        TargetGroupArn: Fn.Ref(Resources.ECSSubTargetGroup),
+                    },
+                ],
+            ),
             DeploymentConfiguration: {
                 MinimumHealthyPercent: 50,
             },
