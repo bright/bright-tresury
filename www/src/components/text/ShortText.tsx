@@ -1,8 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { breakpoints } from '../../theme/theme'
-import Placeholder from './Placeholder'
 import { Nil } from '../../util/types'
+import Placeholder from './Placeholder'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,16 +24,12 @@ interface OwnProps {
     placeholder: string
 }
 
-export type LongTextProps = OwnProps
+export type ShortTextProps = OwnProps
 
-const LongText = ({ text, placeholder }: LongTextProps) => {
+const ShortText = ({ text, placeholder }: ShortTextProps) => {
     const classes = useStyles()
 
-    return (
-        <>
-            <text className={classes.text}>{text || <Placeholder value={placeholder} />}</text>
-        </>
-    )
+    return <div className={classes.text}>{text || <Placeholder value={placeholder} />}</div>
 }
 
-export default LongText
+export default ShortText

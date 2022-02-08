@@ -18,7 +18,7 @@ const ActiveIdeasStatsCard = () => {
             return 0
         }
         return filterIdeas(ideas, IdeaFilter.Active).length
-    }, ideas)
+    }, [ideas])
 
     return (
         <ImageStatsCard

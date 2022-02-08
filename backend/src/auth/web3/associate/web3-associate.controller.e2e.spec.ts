@@ -5,7 +5,7 @@ import {
     createUserSessionHandlerWithVerifiedEmail,
     createWeb3SessionHandler,
 } from '../../supertokens/specHelpers/supertokens.session.spec.helper'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/dto/confirm-sign-message-request.dto'
 import { beforeEachWeb3E2eTest } from '../web3.spec.helper'
 import { HttpStatus } from '@nestjs/common'
 

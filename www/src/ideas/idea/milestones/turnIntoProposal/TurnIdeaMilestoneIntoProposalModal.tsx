@@ -22,7 +22,7 @@ import FormFooterButtonsContainer from '../../../../components/form/footer/FormF
 import { useIdeaMilestone } from '../useIdeaMilestone'
 import { useNetworks } from '../../../../networks/useNetworks'
 import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
-import WarningModal from '../../../../components/modal/WarningModal'
+import CloseFormWarningModal from '../../../../components/form/CloseFormWarningModal'
 import { useModal } from '../../../../components/modal/useModal'
 
 const useStyles = makeStyles(
@@ -62,8 +62,10 @@ const TurnIdeaMilestoneIntoProposalModal = ({
     const queryClient = useQueryClient()
     const warningModal = useModal()
     const { mutateAsync: patchIdeaMilestone, isError: isPatchIdeaMilestoneError } = usePatchIdeaMilestone()
-    const { mutateAsync: patchIdeaMilestoneNetworks, isError: isPatchIdeaMilestoneNetworksError } =
-        usePatchIdeaMilestoneNetworks()
+    const {
+        mutateAsync: patchIdeaMilestoneNetworks,
+        isError: isPatchIdeaMilestoneNetworksError,
+    } = usePatchIdeaMilestoneNetworks()
 
     const { toIdeaMilestoneDto, toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({ idea, ideaMilestone })
     const submitPatchIdeaMilestone = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
@@ -179,7 +181,11 @@ const TurnIdeaMilestoneIntoProposalModal = ({
                     </IdeaMilestoneForm>
                 </>
             </Modal>
-            <WarningModal open={warningModal.visible} onClose={warningModal.close} handleFormClose={handleOpenModal} />
+            <CloseFormWarningModal
+                open={warningModal.visible}
+                onClose={warningModal.close}
+                handleFormClose={handleOpenModal}
+            />
         </>
     )
 }

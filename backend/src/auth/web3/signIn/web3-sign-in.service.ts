@@ -10,10 +10,10 @@ import { Web3AddressesService } from '../../../users/web3-addresses/web3-address
 import { UsersService } from '../../../users/users.service'
 import { isValidAddress } from '../../../utils/address/address.validator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/dto/confirm-sign-message-request.dto'
 import { SignMessageService } from '../signMessage/sign-message.service'
-import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
-import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
+import { StartSignMessageRequestDto } from '../signMessage/dto/start-sign-message-request.dto'
+import { StartSignMessageResponseDto } from '../signMessage/dto/start-sign-message-response.dto'
 
 @Injectable()
 export class Web3SignInService {

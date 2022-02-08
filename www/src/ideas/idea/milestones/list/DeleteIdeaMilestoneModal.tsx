@@ -1,35 +1,15 @@
-import React from 'react'
-import Modal from '../../../../components/modal/Modal'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import { Box } from '@material-ui/core'
-import Button from '../../../../components/button/Button'
-import { useQueryClient } from 'react-query'
 import { DialogProps as MaterialDialogProps } from '@material-ui/core/Dialog/Dialog'
-import { IdeaDto } from '../../../ideas.dto'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { useQueryClient } from 'react-query'
+import QuestionModal from '../../../../components/modal/warning-modal/QuestionModal'
+import QuestionModalButtons from '../../../../components/modal/warning-modal/QuestionModalButtons'
+import QuestionModalError from '../../../../components/modal/warning-modal/QuestionModalError'
+import QuestionModalSubtitle from '../../../../components/modal/warning-modal/QuestionModalSubtitle'
+import QuestionModalTitle from '../../../../components/modal/warning-modal/QuestionModalTitle'
+import { IdeaDto } from '../../../ideas.dto'
 import { IDEA_MILESTONES_QUERY_KEY_BASE, useDeleteIdeaMilestone } from '../idea.milestones.api'
 import { IdeaMilestoneDto } from '../idea.milestones.dto'
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        title: {
-            textAlign: 'center',
-        },
-        subtitle: {
-            textAlign: 'center',
-        },
-        buttons: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            paddingRight: '5px',
-            paddingLeft: '5px',
-        },
-        error: {
-            color: theme.palette.error.main,
-            textAlign: 'center',
-        },
-    }),
-)
 
 interface OwnProps {
     idea: IdeaDto
@@ -47,7 +27,6 @@ const DeleteIdeaMilestoneModal = ({
     ideaMilestone,
     onIdeaMilestoneModalClose,
 }: DeleteIdeaMilestoneModalProps) => {
-    const classes = useStyles()
     const { t } = useTranslation()
     const queryClient = useQueryClient()
 
@@ -65,36 +44,17 @@ const DeleteIdeaMilestoneModal = ({
     }
 
     return (
-        <Modal
-            open={open}
-            onClose={onClose}
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
-            fullWidth={true}
-            maxWidth={'xs'}
-        >
-            <div>
-                <h2 className={classes.title} id="modal-title">
-                    {t('idea.milestones.modal.form.removeModal.title')}
-                </h2>
-                <p className={classes.subtitle} id="modal-description">
-                    {t('idea.milestones.modal.form.removeModal.subtitle')}
-                </p>
-                <Box className={classes.buttons} pt="30px" mt="auto">
-                    <Button variant="text" color="primary" onClick={onClose}>
-                        {t('idea.milestones.modal.form.removeModal.discard')}
-                    </Button>
-                    <Button color="primary" onClick={handleDeleteMilestone}>
-                        {t('idea.milestones.modal.form.removeModal.removeMilestone')}
-                    </Button>
-                </Box>
-            </div>
-            {isError ? (
-                <p className={classes.error} id="modal-error">
-                    {t('idea.milestones.modal.form.removeModal.error')}
-                </p>
-            ) : null}
-        </Modal>
+        <QuestionModal onClose={onClose} open={open}>
+            <QuestionModalTitle title={t('idea.milestones.modal.form.removeModal.title')} />
+            <QuestionModalSubtitle subtitle={t('idea.milestones.modal.form.removeModal.subtitle')} />
+            <QuestionModalButtons
+                onClose={onClose}
+                discardLabel={t('idea.milestones.modal.form.removeModal.discard')}
+                onSubmit={handleDeleteMilestone}
+                submitLabel={t('idea.milestones.modal.form.removeModal.removeMilestone')}
+            />
+            <QuestionModalError isError={isError} error={t('idea.milestones.modal.form.removeModal.error')} />
+        </QuestionModal>
     )
 }
 

@@ -9,7 +9,7 @@ import { CreateWeb3UserDto } from '../../../users/dto/create-web3-user.dto'
 import { SignatureValidator } from '../signMessage/signature.validator'
 import { Web3SignUpService } from './web3-sign-up.service'
 import { cleanDatabases } from '../web3.spec.helper'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/dto/confirm-sign-message-request.dto'
 
 describe(`Web3 Sign Up Service`, () => {
     const app = beforeSetupFullApp()

@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { ROUTE_ROOT } from '../../../routes/routes'
 import CloseButton from '../../closeIcon/CloseButton'
 import { Header } from '../../text/Header'
-import WarningModal from '../../modal/WarningModal'
+import CloseFormWarningModal from '../CloseFormWarningModal'
 import { useModal } from '../../modal/useModal'
 
 const useStyles = makeStyles(() =>
@@ -48,7 +48,11 @@ const FormHeader = ({ title, showWarningOnClose = false }: FormHeaderProps) => {
             <Header>{title}</Header>
             <CloseButton onClose={handleCloseButtonClick} />
             {showWarningOnClose && (
-                <WarningModal open={warningModal.visible} onClose={warningModal.close} handleFormClose={goBack} />
+                <CloseFormWarningModal
+                    open={warningModal.visible}
+                    onClose={warningModal.close}
+                    handleFormClose={goBack}
+                />
             )}
         </div>
     )

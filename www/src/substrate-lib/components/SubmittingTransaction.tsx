@@ -1,5 +1,5 @@
 import { SubmittableResult } from '@polkadot/api'
-import { EventMetadataLatest } from '@polkadot/types/interfaces'
+import { Event } from '@polkadot/types/interfaces/system/types'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNetworks } from '../../networks/useNetworks'
@@ -16,7 +16,7 @@ import { useSubstrate } from '../api/useSubstrate'
 
 export interface Result {
     status: Status
-    event?: EventMetadataLatest
+    event?: Event
     error?: ExtrinsicError
 }
 
@@ -100,7 +100,7 @@ const SubmittingTransaction = ({
                 phase.isApplyExtrinsic && event.section === txAttrs.palletRpc && event.method === txAttrs.eventMethod,
         )
         if (applyExtrinsicEvent) {
-            txResult.event = applyExtrinsicEvent.event.meta
+            txResult.event = applyExtrinsicEvent.event
         }
 
         setResult(txResult)

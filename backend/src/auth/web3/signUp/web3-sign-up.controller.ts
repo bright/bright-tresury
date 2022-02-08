@@ -2,10 +2,10 @@ import { Body, HttpStatus, Post, Res } from '@nestjs/common'
 import { ApiBadRequestResponse, ApiConflictResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { Response } from 'express'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/dto/confirm-sign-message-request.dto'
 import { Web3SignUpService } from './web3-sign-up.service'
-import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
-import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
+import { StartSignMessageRequestDto } from '../signMessage/dto/start-sign-message-request.dto'
+import { StartSignMessageResponseDto } from '../signMessage/dto/start-sign-message-response.dto'
 
 @ControllerApiVersion('/auth/web3/signup', ['v1'])
 @ApiTags('auth.web3.signUp')

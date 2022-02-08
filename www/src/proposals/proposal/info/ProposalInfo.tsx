@@ -14,13 +14,6 @@ const useStyles = makeStyles(() =>
         spacer: {
             marginTop: '2em',
         },
-
-        markdownImg: {
-            width: '100%',
-        },
-        polkassemblyButton: {
-            marginTop: '2em',
-        },
     }),
 )
 

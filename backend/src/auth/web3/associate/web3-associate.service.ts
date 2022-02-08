@@ -3,9 +3,9 @@ import { Web3AddressesService } from '../../../users/web3-addresses/web3-address
 import { UsersService } from '../../../users/users.service'
 import { SessionData } from '../../session/session.decorator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/dto/confirm-sign-message-request.dto'
 import { SignMessageService } from '../signMessage/sign-message.service'
-import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
+import { StartSignMessageResponseDto } from '../signMessage/dto/start-sign-message-response.dto'
 import { StartWeb3AssociateRequestDto } from './dto/start-web3-associate-request.dto'
 
 @Injectable()

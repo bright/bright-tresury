@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { signatureVerify } from '@polkadot/util-crypto'
-import { ConfirmSignMessageRequestDto } from './confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from './dto/confirm-sign-message-request.dto'
 
 @Injectable()
 export class SignatureValidator {

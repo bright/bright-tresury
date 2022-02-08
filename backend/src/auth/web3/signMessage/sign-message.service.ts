@@ -1,10 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common'
 import { v4 as uuid } from 'uuid'
 import { CacheManager } from '../../../cache/cache.manager'
-import { ConfirmSignMessageRequestDto } from './confirm-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from './dto/confirm-sign-message-request.dto'
 import { SignatureValidator } from './signature.validator'
-import { StartSignMessageRequestDto } from './start-sign-message-request.dto'
-import { StartSignMessageResponseDto } from './start-sign-message-response.dto'
+import { StartSignMessageRequestDto } from './dto/start-sign-message-request.dto'
+import { StartSignMessageResponseDto } from './dto/start-sign-message-response.dto'
 
 @Injectable()
 export class SignMessageService {

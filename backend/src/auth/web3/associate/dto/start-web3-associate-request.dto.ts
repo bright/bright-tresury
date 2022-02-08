@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsOptional } from 'class-validator'
-import { StartSignMessageRequestDto } from '../../signMessage/start-sign-message-request.dto'
+import { StartSignMessageRequestDto } from '../../signMessage/dto/start-sign-message-request.dto'
 
 export class StartWeb3AssociateRequestDto extends StartSignMessageRequestDto {
     @ApiProperty({

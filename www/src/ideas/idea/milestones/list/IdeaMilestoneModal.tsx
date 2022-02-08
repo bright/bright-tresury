@@ -21,7 +21,7 @@ import { theme } from '../../../../theme/theme'
 import { useModal } from '../../../../components/modal/useModal'
 import DeleteIdeaMilestoneModal from './DeleteIdeaMilestoneModal'
 import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
-import WarningModal from '../../../../components/modal/WarningModal'
+import CloseFormWarningModal from '../../../../components/form/CloseFormWarningModal'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -66,8 +66,10 @@ const IdeaMilestoneModal = ({
     const queryClient = useQueryClient()
     const warningModal = useModal()
     const { mutateAsync: patchIdeaMilestone, isError: isPatchIdeaMilestoneError } = usePatchIdeaMilestone()
-    const { mutateAsync: patchIdeaMilestoneNetworks, isError: isPatchIdeaMilestoneNetworksError } =
-        usePatchIdeaMilestoneNetworks()
+    const {
+        mutateAsync: patchIdeaMilestoneNetworks,
+        isError: isPatchIdeaMilestoneNetworksError,
+    } = usePatchIdeaMilestoneNetworks()
     const { toIdeaMilestoneDto, toIdeaMilestoneNetworkDto } = useIdeaMilestoneForm({ idea, ideaMilestone })
     const submitPatchIdeaMilestone = async (ideaMilestoneFromValues: IdeaMilestoneFormValues) => {
         const patchIdeaMilestoneDto: PatchIdeaMilestoneDto = toIdeaMilestoneDto(ideaMilestoneFromValues)
@@ -178,7 +180,11 @@ const IdeaMilestoneModal = ({
                     </FormFooterButtonsContainer>
                 </IdeaMilestoneForm>
             </Modal>
-            <WarningModal open={warningModal.visible} onClose={warningModal.close} handleFormClose={handleOpenModal} />
+            <CloseFormWarningModal
+                open={warningModal.visible}
+                onClose={warningModal.close}
+                handleFormClose={handleOpenModal}
+            />
         </>
     )
 }

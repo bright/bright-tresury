@@ -1,5 +1,6 @@
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import { stringToHex } from '@polkadot/util'
+import { encodeAddress } from '@polkadot/util-crypto'
 import { Account } from '../substrate-lib/accounts/AccountsContext'
 import { Nil } from '../util/types'
 
@@ -19,21 +20,21 @@ export interface ConfirmWeb3SignRequestDto {
 }
 
 export async function handleWeb3Sign(
-    account: Account,
+    account: Account | string,
     startCall: (dto: StartWeb3SignRequestDto) => Promise<StartWeb3SignResponseDto>,
     confirmCall: (confirmDto: ConfirmWeb3SignRequestDto) => Promise<void | any>,
     details?: any,
 ) {
-    const injected = await web3FromAddress(account.address)
-    if (!injected) {
-        throw new Error('Injected was not found for this address')
-    }
+    const address = encodeAddress(typeof account === 'string' ? account : account.address)
+
+    const injected = await web3FromAddress(address)
+
     const signRaw = injected && injected.signer && injected.signer.signRaw
     if (!signRaw) {
         throw new Error('Signer was not available')
     }
 
-    const startSignUpResponse = await startCall({ address: account.baseEncodedAddress, details })
+    const startSignUpResponse = await startCall({ address, details })
 
     const signMessage = startSignUpResponse?.signMessage
     if (!signMessage) {
@@ -41,12 +42,12 @@ export async function handleWeb3Sign(
     }
 
     const { signature } = await signRaw({
-        address: account.baseEncodedAddress,
+        address,
         data: stringToHex(signMessage),
         type: 'bytes',
     })
     return await confirmCall({
-        address: account.baseEncodedAddress,
+        address,
         signature,
         details,
     })

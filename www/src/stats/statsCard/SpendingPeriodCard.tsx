@@ -59,7 +59,7 @@ const SpendingPeriodCard = ({ value, name }: SpendingPeriodCardProps) => {
                     className={classes.chartDoughnut}
                     value={value}
                     thickness={7}
-                    variant="static"
+                    variant="determinate"
                     color="primary"
                 />
                 <div className={classes.percentagesDoughnut}>{value}%</div>

@@ -3,9 +3,9 @@ import { ApiBadRequestResponse, ApiNotFoundResponse, ApiOkResponse, ApiTags } fr
 import { Response } from 'express'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { Web3SignInService } from './web3-sign-in.service'
-import { ConfirmSignMessageRequestDto } from '../signMessage/confirm-sign-message-request.dto'
-import { StartSignMessageResponseDto } from '../signMessage/start-sign-message-response.dto'
-import { StartSignMessageRequestDto } from '../signMessage/start-sign-message-request.dto'
+import { ConfirmSignMessageRequestDto } from '../signMessage/dto/confirm-sign-message-request.dto'
+import { StartSignMessageResponseDto } from '../signMessage/dto/start-sign-message-response.dto'
+import { StartSignMessageRequestDto } from '../signMessage/dto/start-sign-message-request.dto'
 
 @ControllerApiVersion('/auth/web3/signin', ['v1'])
 @ApiTags('auth.web3.signIn')

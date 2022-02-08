@@ -1,12 +1,11 @@
 import React from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
+import { generatePath, useHistory } from 'react-router-dom'
 import Modal from '../components/modal/Modal'
 import Strong from '../components/strong/Strong'
-import { ROUTE_PROPOSALS } from '../routes/routes'
+import { ROUTE_PROPOSAL, ROUTE_PROPOSALS } from '../routes/routes'
 import SubmittingTransaction, { ExtrinsicDetails } from '../substrate-lib/components/SubmittingTransaction'
 import { NetworkPlanckValue } from '../util/types'
-
 
 interface OwnProps {
     open: boolean
@@ -24,8 +23,11 @@ const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary 
 
     const history = useHistory()
 
-    const goToProposals = () => {
-        history.push(ROUTE_PROPOSALS)
+    const goToProposal = (event?: any) => {
+        const proposalIndex = event?.data?.toJSON()?.[0]
+        proposalIndex !== undefined
+            ? history.push(generatePath(ROUTE_PROPOSAL, { proposalIndex }), { share: true })
+            : history.push(ROUTE_PROPOSALS)
     }
 
     return (
@@ -48,7 +50,7 @@ const SubmitProposalModal = ({ open, onClose, onTurn, title, value, beneficiary 
                         }}
                     />
                 }
-                onSuccess={goToProposals}
+                onSuccess={goToProposal}
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'treasury',

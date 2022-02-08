@@ -38,7 +38,7 @@ const NetworkRewardDeposit = ({ values }: NetworkRewardDepositProps) => {
     return (
         <div className={classes.root}>
             {values.map((value) => (
-                <div className={classes.item}>
+                <div className={classes.item} key={value.label}>
                     <Amount
                         amount={toNetworkDisplayValue(value.value, network.decimals)}
                         currency={network.currency}

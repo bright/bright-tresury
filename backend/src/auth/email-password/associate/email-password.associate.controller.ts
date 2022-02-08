@@ -6,12 +6,11 @@ import {
     ApiOkResponse,
     ApiTags,
 } from '@nestjs/swagger'
-import { Request, Response } from 'express'
 import { ControllerApiVersion } from '../../../utils/ControllerApiVersion'
 import { SessionGuard } from '../../guards/session.guard'
 import { ReqSession, SessionData } from '../../session/session.decorator'
 import { SuperTokensService } from '../../supertokens/supertokens.service'
-import { StartSignMessageResponseDto } from '../../web3/signMessage/start-sign-message-response.dto'
+import { StartSignMessageResponseDto } from '../../web3/signMessage/dto/start-sign-message-response.dto'
 import { ConfirmEmailPasswordAssociateRequestDto } from './dto/confirm.request.dto'
 import { StartEmailPasswordAssociateRequestDto } from './dto/start.request.dto'
 import { EmailPasswordAssociateService } from './email-password.associate.service'

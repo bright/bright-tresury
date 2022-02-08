@@ -10,7 +10,7 @@ import { IDEA_MILESTONES_QUERY_KEY_BASE, useCreateIdeaMilestone } from '../idea.
 import { useQueryClient } from 'react-query'
 import { CreateIdeaMilestoneDto } from '../idea.milestones.dto'
 import useIdeaMilestoneForm, { IdeaMilestoneFormValues } from '../form/useIdeaMilestoneForm'
-import WarningModal from '../../../../components/modal/WarningModal'
+import CloseFormWarningModal from '../../../../components/form/CloseFormWarningModal'
 import { useModal } from '../../../../components/modal/useModal'
 
 interface OwnProps {
@@ -88,7 +88,11 @@ const IdeaMilestoneCreateModal = ({ open, idea, onClose }: IdeaMilestoneCreateMo
                     </FormFooterButtonsContainer>
                 </IdeaMilestoneForm>
             </Modal>
-            <WarningModal open={warningModal.visible} onClose={warningModal.close} handleFormClose={handleOpenModal} />
+            <CloseFormWarningModal
+                open={warningModal.visible}
+                onClose={warningModal.close}
+                handleFormClose={handleOpenModal}
+            />
         </>
     )
 }

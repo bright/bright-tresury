@@ -10,7 +10,7 @@ import TransactionModal from './TransactionModal'
 interface OwnProps {
     status?: Status
     event?: any
-    onOk: () => void
+    onOk: (event?: any) => void
     eventDescription?: string
 }
 
@@ -57,7 +57,13 @@ const TransactionInProgress = ({ status, onOk, event, eventDescription }: Transa
             title={t('substrate.inProgress.title')}
             imgSrc={success ? successImg : undefined}
             buttons={
-                <Button color="primary" onClick={onOk} disabled={!success}>
+                <Button
+                    color="primary"
+                    onClick={() => {
+                        onOk(event)
+                    }}
+                    disabled={!success}
+                >
                     {t('substrate.inProgress.ok')}
                 </Button>
             }
