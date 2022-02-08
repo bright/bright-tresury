@@ -172,7 +172,7 @@ describe(`Blockchain service`, () => {
     describe('getProposals', () => {
         it('should return existing proposals', async () => {
             // create a proposal
-            const proposalValue = BN_TEN.pow(new BN(15))
+            const proposalValue = BN_TEN.pow(new BN(14))
             const setIdentityExtrinsic = api.tx.identity.setIdentity({ display: { Raw: 'Alice' } })
             await signAndSend(setIdentityExtrinsic, aliceKeypair)
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
