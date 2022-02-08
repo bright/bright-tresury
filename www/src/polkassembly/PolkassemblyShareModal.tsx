@@ -8,7 +8,6 @@ import QuestionModalButtons from '../components/modal/warning-modal/QuestionModa
 import QuestionModalError from '../components/modal/warning-modal/QuestionModalError'
 import QuestionModalSubtitle from '../components/modal/warning-modal/QuestionModalSubtitle'
 import QuestionModalTitle from '../components/modal/warning-modal/QuestionModalTitle'
-import { ProposalDto } from '../proposals/proposals.dto'
 import { useAccounts } from '../substrate-lib/accounts/useAccounts'
 import { usePolkassemblyShare } from './polkasseblyShare.api'
 
@@ -22,12 +21,12 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     onClose: () => void
-    proposal: ProposalDto
+    web3address: string
 }
 
 export type PolkassemblyShareModalProps = OwnProps & MaterialDialogProps
 
-const PolkassemblyShareModal = ({ open, onClose, proposal }: PolkassemblyShareModalProps) => {
+const PolkassemblyShareModal = ({ open, onClose, web3address }: PolkassemblyShareModalProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -40,7 +39,7 @@ const PolkassemblyShareModal = ({ open, onClose, proposal }: PolkassemblyShareMo
 
     const onSubmit = async () => {
         await mutateAsync(
-            { account: proposal.proposer.address },
+            { account: web3address },
             {
                 onError: (err) => {
                     if ((err as any).message?.includes('web3FromAddress')) {

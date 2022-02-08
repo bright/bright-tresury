@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 import EditButton from '../../components/header/details/EditButton'
 import { generatePath, useHistory } from 'react-router-dom'
 import { ROUTE_EDIT_PROPOSAL } from '../../routes/routes'
+import PolkassemblyShareButton from '../../polkassembly/PolkassemblyShareButton'
 
 interface OwnProps {
     proposal: ProposalDto
@@ -28,6 +29,7 @@ const ProposalActionButtons = ({ proposal, ...props }: ProposalActionButtonsProp
 
     return (
         <ActionButtons {...props}>
+            <PolkassemblyShareButton web3address={proposal.proposer.address} />
             <EditButton
                 label={proposal.details ? t('proposal.details.edit') : t('proposal.details.add')}
                 onClick={navigateToEdit}

@@ -837,6 +837,10 @@
                 "discard": "Do not share",
                 "notProposerError": "You do not have the proposer account configured in your browser extension.",
                 "generalError": "Ooops... Something went wrong."
+            },
+            "button": {
+                "shareOn": "Share on",
+                "polkassemblyLogoAlt": "Polkassembly logo"
             }
         }
     },
