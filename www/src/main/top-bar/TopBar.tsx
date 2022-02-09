@@ -44,7 +44,6 @@ const useStyles = makeStyles((theme: Theme) =>
 const TopBar = () => {
     const classes = useStyles()
     const { user, isUserSignedInAndVerified, isUserSignedIn } = useAuth()
-
     return (
         <div className={classes.root}>
             <NetworkPicker className={classes.networks} />

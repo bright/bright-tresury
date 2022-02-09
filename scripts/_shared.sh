@@ -8,6 +8,8 @@ export PROJECT_DIR="$( cd "${SCRIPT_DIR}/.."  && pwd )"
 
 export VCS_VERSION=${VCS_VERSION:-${BUILD_VCS_NUMBER:-$(git rev-parse HEAD)}}
 
+export VCS_SHORT_VERSION=$(git rev-parse --short HEAD)
+
 export PROJECT_NAME=treasury
 
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-''}

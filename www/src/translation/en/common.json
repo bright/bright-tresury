@@ -117,7 +117,8 @@
         "bounties": "Bounties",
         "whatForLabel": "What is Treasury app for?",
         "learnMoreLabel": "Learn more",
-        "logo": "Bright Treasury logo image"
+        "logo": "Bright Treasury logo image",
+        "build": "Build:"
     },
     "account": {
         "title": "Account",

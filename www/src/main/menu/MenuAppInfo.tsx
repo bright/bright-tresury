@@ -5,6 +5,7 @@ import menuDrawing from '../../assets/menu_drawing.svg'
 import treasuryLabeledLogo from '../../assets/treasury_labeled_logo.svg'
 import { useTranslation } from 'react-i18next'
 import Link from '../../components/link/Link'
+import config from '../../config'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -36,12 +37,19 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
             height: 32,
         },
+        buildInfo: {
+            fontSize: '14px',
+            position: 'relative',
+            bottom: '-10px',
+            left: '-104px',
+        },
     }),
 )
 
 const MenuAppInfo = () => {
     const classes = useStyles()
     const { t } = useTranslation()
+    const isStageOrQa = config.env === 'stage' || config.env === 'qa'
 
     return (
         <div className={classes.root}>
@@ -54,6 +62,11 @@ const MenuAppInfo = () => {
                 {t('menu.learnMoreLabel')}
             </Link>
             <img className={classes.logo} src={treasuryLabeledLogo} alt={t('menu.logo')} />
+            {isStageOrQa ? (
+                <div className={classes.buildInfo}>
+                    {t('menu.build')} {process.env.REACT_APP_VCS_SHORT_VERSION}
+                </div>
+            ) : null}
         </div>
     )
 }

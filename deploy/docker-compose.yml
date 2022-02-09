@@ -7,6 +7,7 @@ services:
             dockerfile: backend/Dockerfile
             args:
                 REACT_APP_DEPLOY_ENV: '${DEPLOY_ENV}'
+                REACT_APP_VCS_SHORT_VERSION: '${VCS_SHORT_VERSION}'
         environment:
             DEPLOY_ENV: '${DEPLOY_ENV}'
         restart: unless-stopped

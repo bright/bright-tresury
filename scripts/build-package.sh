@@ -6,6 +6,8 @@ set -x
 
 echo $(ls deploy)
 
+docker-compose --file ${PROJECT_DIR}/deploy/docker-compose.yml config
+
 docker-compose \
     --file ${PROJECT_DIR}/deploy/docker-compose.yml \
     build --no-cache
