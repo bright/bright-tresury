@@ -2,7 +2,6 @@ import {
     BadRequestException,
     ConflictException,
     ForbiddenException,
-    HttpStatus,
     Injectable,
     NotFoundException,
 } from '@nestjs/common'
@@ -41,6 +40,7 @@ import { UserEntity } from '../../users/user.entity'
 import { UsersService } from '../../users/users.service'
 import { SessionData } from '../session/session.decorator'
 import { SessionExpiredHttpStatus, SuperTokensUsernameKey } from './supertokens.recipeList'
+import { AccountTemporaryLockedError } from './account-temporary-locked.error'
 
 const logger = getLogger()
 
@@ -277,5 +277,19 @@ export class SuperTokensService {
         } else if (result && 'id' in result) {
             await this.refreshAccessTokenPayloadForUser(result.id)
         }
+    }
+
+
+    async throwIfIsLockedOut(email: string) {
+        if(await this.usersService.isLockedOut(email)) {
+            throw new AccountTemporaryLockedError()
+        }
+    }
+    async clearSignInAttemptCount(email: string) {
+        return this.usersService.clearSignInAttemptCount(email)
+    }
+
+    async updateSignInAttemptCount(email: string) {
+        return this.usersService.updateSignInAttemptCount(email)
     }
 }

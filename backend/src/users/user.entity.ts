@@ -36,7 +36,7 @@ export class UserEntity extends BaseEntity {
         isEmailPasswordEnabled: boolean,
         web3Addresses?: Web3AddressEntity[],
         id?: string,
-        isEmailNotificationEnabled: boolean = true,
+        isEmailNotificationEnabled: boolean = true
     ) {
         super()
         this.authId = authId

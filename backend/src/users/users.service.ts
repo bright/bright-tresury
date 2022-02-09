@@ -1,6 +1,6 @@
 import {
     BadRequestException,
-    ConflictException,
+    ConflictException, Inject,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
@@ -19,6 +19,7 @@ import { isValidAddress } from '../utils/address/address.validator'
 import { ClassConstructor } from 'class-transformer/types/interfaces'
 import { AssociateEmailAccountDto } from './dto/associate-email-account.dto'
 import { CreateWeb3AddressDto } from './web3-addresses/create-web3-address.dto'
+import { SignInAttemptService } from './sign-in-attempt/sign-in-attempt.service'
 
 @Injectable()
 export class UsersService {
@@ -26,6 +27,7 @@ export class UsersService {
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
         private readonly web3AddressService: Web3AddressesService,
+        private readonly signInAttemptService: SignInAttemptService
     ) {}
 
     async findOne(id: string): Promise<UserEntity> {
@@ -192,5 +194,20 @@ export class UsersService {
         if (doesAddressExist) {
             throw new ConflictException('User with this address already exists')
         }
+    }
+
+    async isLockedOut(email: string) {
+        const user = await this.findOneByEmail(email)
+        return this.signInAttemptService.isLockedOut(user)
+    }
+
+    async clearSignInAttemptCount(email: string) {
+        const user = await this.findOneByEmail(email)
+        return this.signInAttemptService.clearSignInAttemptCount(user)
+    }
+
+    async updateSignInAttemptCount(email: string) {
+        const user = await this.findOneByEmail(email)
+        return this.signInAttemptService.updateSignInAttemptCountAfterWrongTry(user)
     }
 }

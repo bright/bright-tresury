@@ -163,6 +163,7 @@
         "errors": {
             "generalError": "Something went wrong. Please try again later.",
             "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct.",
+            "accountTemporaryLocked": "Account temporary locked. Please try again later.",
             "emailAlreadyVerifiedError": "Email is already verified."
         },
         "signUp": {

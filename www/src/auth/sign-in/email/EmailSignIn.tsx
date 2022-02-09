@@ -42,9 +42,13 @@ const EmailSignIn = () => {
             return undefined
         }
         const typedError = error as Error
-        return typedError?.message === 'WRONG_CREDENTIALS_ERROR'
-            ? t('auth.errors.wrongCredentialsError')
-            : t('auth.errors.generalError')
+        if (typedError?.message === 'WRONG_CREDENTIALS_ERROR')
+            return t('auth.errors.wrongCredentialsError')
+        else if (typedError?.message === 'ACCOUNT_TEMPORARY_LOCKED')
+            return t('auth.errors.accountTemporaryLocked')
+        else
+            return t('auth.errors.generalError')
+
     }, [error, isError, t])
 
     const validationSchema = Yup.object().shape({

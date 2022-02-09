@@ -6,9 +6,11 @@ import { UsersService } from './users.service'
 import { Module } from '@nestjs/common'
 import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
 import { Web3AddressesModule } from './web3-addresses/web3-addresses.module'
+import { SignInAttemptService } from './sign-in-attempt/sign-in-attempt.service'
+import { SignInAttemptModule } from './sign-in-attempt/sign-in-attempt.module'
 
 @Module({
-    imports: [DatabaseModule, TypeOrmModule.forFeature([UserEntity, Web3AddressEntity]), Web3AddressesModule],
+    imports: [DatabaseModule, TypeOrmModule.forFeature([UserEntity, Web3AddressEntity]), Web3AddressesModule, SignInAttemptModule],
     providers: [UsersService],
     exports: [UsersService],
     controllers: [],
