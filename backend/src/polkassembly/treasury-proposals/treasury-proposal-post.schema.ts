@@ -18,7 +18,7 @@ export interface PolkassemblyTreasuryProposalPostSchema {
                 id: string
                 status: string
                 blockNumber: {
-                    'number': number
+                    number: number
                 }
             }[]
         }[]

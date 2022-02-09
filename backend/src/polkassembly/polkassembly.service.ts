@@ -6,24 +6,12 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { MotionTimeDto } from '../blockchain/dto/motion-time.dto'
 import { getLogger } from '../logging.module'
 import { Nil } from '../utils/types'
-import {
-    OneTreasuryProposalPost,
-    TreasuryProposalPosts,
-    TreasuryProposalPostsCount,
-} from './fragments/proposal.fragments'
-import { PolkassemblyTreasuryProposalPostDto } from './dto/treasury-proposal-post.dto'
-import { PolkassemblyBountyPostDto } from './dto/bounty-post.dto'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
-import { PolkassemblyTreasuryProposalPostSchema } from './schemas/treasury-proposal-post.schema'
-import { PolkassemblyBountyPostSchema } from './schemas/bounty-post.schema'
 import { ExecutedMotionDto } from './dto/executed-motion.dto'
 import { Motions } from './fragments/motion.fragments'
 import { MotionSchema } from './schemas/motion.schema'
-import { BountyPosts, BountyPostsCount, OneBountyPost } from './fragments/bounty.fragments'
 
 const logger = getLogger()
-
-const DEFAULT_LIMIT = 1000
 
 export interface GetPosts {
     includeIndexes?: Nil<number[]>
@@ -36,6 +24,7 @@ export interface GetPosts {
 @Injectable()
 export class PolkassemblyService {
     private readonly graphQLClients: { [key: string]: GraphQLClient | undefined }
+
     constructor(
         blockchainConfigurationService: BlockchainConfigurationService,
         private readonly blockchainService: BlockchainService,
@@ -47,18 +36,10 @@ export class PolkassemblyService {
         }, {} as { [key: string]: GraphQLClient })
     }
 
-    private async executeQuery(networkId: string, query: string, variables: any) {
+    async executeQuery(networkId: string, query: string, variables: any) {
         const client = this.graphQLClients[networkId]
         if (!client) return
         return client.request(query, variables)
-    }
-
-    async getProposalMotions(proposalIndex: number, networkId: string): Promise<ExecutedMotionDto[]> {
-        return this.getMotions('proposal_id', proposalIndex.toString(), networkId)
-    }
-
-    async getBountyMotions(bountyIndex: number, networkId: string): Promise<ExecutedMotionDto[]> {
-        return this.getMotions('bounty_id', bountyIndex.toString(), networkId)
     }
 
     async getMotions(argumentName: string, argumentValue: string, networkId: string): Promise<ExecutedMotionDto[]> {
@@ -84,81 +65,4 @@ export class PolkassemblyService {
         }
     }
 
-    async getProposal(proposalIndex: number, networkId: string): Promise<Nil<PolkassemblyTreasuryProposalPostDto>> {
-        logger.info('Looking for TreasuryProposalPost for proposal index and networkId', proposalIndex, networkId)
-        try {
-            const data = await this.executeQuery(networkId, OneTreasuryProposalPost, { id: proposalIndex })
-            const post: PolkassemblyTreasuryProposalPostSchema = data?.posts?.[0]
-            return post ? new PolkassemblyTreasuryProposalPostDto(post) : undefined
-        } catch (err) {
-            getLogger().error('Error when looking for TreasuryProposalPost', err)
-        }
-    }
-
-    async getProposals({
-        networkId,
-        paginatedParams,
-        ...queryVariables
-    }: GetPosts): Promise<PolkassemblyTreasuryProposalPostDto[]> {
-        logger.info('Looking for TreasuryProposalPosts for:', { ...queryVariables, networkId })
-
-        try {
-            const limit = paginatedParams?.pageSize ?? queryVariables.includeIndexes?.length ?? DEFAULT_LIMIT
-            const offset = paginatedParams ? paginatedParams.offset : 0
-            const data = await this.executeQuery(networkId, TreasuryProposalPosts, {
-                ...queryVariables,
-                limit,
-                offset,
-            })
-            return (
-                data?.posts?.map(
-                    (post: PolkassemblyTreasuryProposalPostSchema) => new PolkassemblyTreasuryProposalPostDto(post),
-                ) ?? []
-            )
-        } catch (err) {
-            logger.error('Error when looking for TreasuryProposalPosts', err)
-            return []
-        }
-        return Promise.resolve([])
-    }
-
-    async getProposalsCount({ networkId, ...queryVariables }: GetPosts): Promise<number> {
-        logger.info('Looking for TreasuryProposalPostsCount for:', { ...queryVariables, networkId })
-        try {
-            const data = await this.executeQuery(networkId, TreasuryProposalPostsCount, queryVariables)
-            return data.onchain_links_aggregate.aggregate.count as number
-        } catch (err) {
-            logger.error('Error when looking for TreasuryProposalPostsCount', err)
-            return -1
-        }
-        return Promise.resolve(-1)
-    }
-
-    async getBounty(bountyIndex: number, networkId: string): Promise<Nil<PolkassemblyBountyPostDto>> {
-        const client = this.graphQLClients[networkId]
-        if (!client) return
-        getLogger().info('Looking for BountyPost for bounty index and networkId', bountyIndex, networkId)
-        try {
-            const data = await this.executeQuery(networkId, OneBountyPost, { id: bountyIndex })
-            const post: PolkassemblyBountyPostSchema = data?.posts?.[0]
-            return post ? new PolkassemblyBountyPostDto(post) : undefined
-        } catch (err) {
-            getLogger().error('Error when looking for BountyPost', err)
-        }
-    }
-
-    async getBounties({
-        networkId,
-        paginatedParams,
-        ...queryVariables
-    }: GetPosts): Promise<PolkassemblyBountyPostDto[]> {
-        try {
-            getLogger().info('Looking for BountyPosts for ', { ...queryVariables, networkId })
-            const data = await this.executeQuery(networkId, BountyPosts, queryVariables)
-            return data?.posts.map((post: PolkassemblyBountyPostSchema) => new PolkassemblyBountyPostDto(post)) ?? []
-        } catch (err) {
-            getLogger().error('Error when looking for BountyPosts', err)
-            return []
-        }
-    }
 }

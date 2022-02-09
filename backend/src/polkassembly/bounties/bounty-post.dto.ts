@@ -1,11 +1,11 @@
 import { getLogger } from '../../logging.module'
 import { NetworkPlanckValue } from '../../utils/types'
-import { PolkassemblyPostEventDto } from './polkassembly-post-event.dto'
+import { PolkassemblyPostEventDto } from '../dto/polkassembly-post-event.dto'
 import {
     BlockchainBountyDto,
     BlockchainBountyStatus,
 } from '../../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
-import { OffchainPolkassemblyBountyStatus, PolkassemblyBountyPostSchema } from '../schemas/bounty-post.schema'
+import { OffchainPolkassemblyBountyStatus, PolkassemblyBountyPostSchema } from './bounty-post.schema'
 
 export class PolkassemblyBountyPostDto {
     title: string

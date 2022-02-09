@@ -2,7 +2,7 @@ import { ApiProperty } from '@nestjs/swagger'
 import { MotionTimeDto } from '../../blockchain/dto/motion-time.dto'
 import { MotionDto, MotionStatus } from '../../blockchain/dto/motion.dto'
 import { getLogger } from '../../logging.module'
-import { MotionSchema } from '../schemas/motion.schema'
+import { MotionSchema } from '../motions/motion.schema'
 import BN from 'bn.js'
 
 export class ExecutedMotionDto extends MotionDto {

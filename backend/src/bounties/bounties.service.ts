@@ -13,13 +13,14 @@ import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { getLogger } from '../logging.module'
+import { PolkassemblyBountiesService } from '../polkassembly/bounties/polkassembly-bounties.service'
 import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 import { UserEntity } from '../users/user.entity'
 import { CreateBountyDto } from './dto/create-bounty.dto'
 import { ListenForBountyDto } from './dto/listen-for-bounty.dto'
 import { UpdateBountyDto } from './dto/update-bounty.dto'
 import { BountyEntity } from './entities/bounty.entity'
-import { GetPosts, PolkassemblyService } from '../polkassembly/polkassembly.service'
+import { GetPosts } from '../polkassembly/polkassembly.service'
 import { Nil } from '../utils/types'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
@@ -28,9 +29,9 @@ import { UsersService } from '../users/users.service'
 import { BountyFilterQuery } from './bounty-filter.query'
 import { arrayToMap, keysAsArray } from '../utils/arrayToMap'
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
-import { PolkassemblyBountyPostDto } from '../polkassembly/dto/bounty-post.dto'
 import { FindBountyDto } from './dto/find-bounty.dto'
 import { BlockchainService } from '../blockchain/blockchain.service'
+import { PolkassemblyBountyPostDto } from '../polkassembly/bounties/bounty-post.dto'
 
 const logger = getLogger()
 
@@ -41,8 +42,8 @@ export class BountiesService {
         private readonly extrinsicsService: ExtrinsicsService,
         private readonly bountiesBlockchainService: BlockchainBountiesService,
         private readonly blockchainService: BlockchainService,
-        private readonly polkassemblyService: PolkassemblyService,
-        private readonly usersService: UsersService,
+        private readonly polkassemblyService: PolkassemblyBountiesService,
+        private readonly usersService: UsersService
     ) {}
 
     create(dto: CreateBountyDto, user: UserEntity): Promise<BountyEntity> {
@@ -197,7 +198,7 @@ export class BountiesService {
 
     async getBounty(networkId: string, blockchainIndex: number): Promise<FindBountyDto> {
         const onChain = await this.bountiesBlockchainService.getBounty(networkId, blockchainIndex)
-        const offChain = await this.polkassemblyService.getBounty(blockchainIndex, networkId)
+        const offChain = await this.polkassemblyService.findOne(blockchainIndex, networkId)
         if (!onChain && !offChain) {
             throw new NotFoundException(`Bounty with the given blockchain index was not found: ${blockchainIndex}`)
         }
@@ -218,7 +219,7 @@ export class BountiesService {
         } catch (err) {
             logger.info('Error when looking for motions')
         }
-        const polkassemblyMotions = await this.polkassemblyService.getBountyMotions(blockchainIndex, networkId)
+        const polkassemblyMotions = await this.polkassemblyService.findMotions(blockchainIndex, networkId)
         return [...blockchainMotions, ...polkassemblyMotions]
     }
 
@@ -241,6 +242,6 @@ export class BountiesService {
         return arrayToMap(await this.repository.find(options), 'blockchainIndex')
     }
     async getMappedPolkassemblyBounties(options: GetPosts): Promise<Map<number, PolkassemblyBountyPostDto>> {
-        return arrayToMap(await this.polkassemblyService.getBounties(options), 'blockchainIndex')
+        return arrayToMap(await this.polkassemblyService.find(options), 'blockchainIndex')
     }
 }

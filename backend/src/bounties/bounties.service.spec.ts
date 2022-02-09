@@ -10,9 +10,13 @@ import {
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { createSessionData, createWeb3SessionData } from '../ideas/spec.helpers'
-import { PolkassemblyService } from '../polkassembly/polkassembly.service'
+import { PolkassemblyBountiesService } from '../polkassembly/bounties/polkassembly-bounties.service'
 import { UserEntity } from '../users/user.entity'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
+import { PaginatedParams } from '../utils/pagination/paginated.param'
+import { v4 as uuid } from 'uuid'
+import { UsersService } from '../users/users.service'
+import { TimeFrame } from '../utils/time-frame.query'
 import { BountiesService } from './bounties.service'
 import { BountyEntity } from './entities/bounty.entity'
 import {
@@ -31,10 +35,6 @@ import {
     mockListenForExtrinsic,
     mockListenForExtrinsicWithNoEvent,
 } from './spec.helpers'
-import { TimeFrame } from '../utils/time-frame.query'
-import { PaginatedParams } from '../utils/pagination/paginated.param'
-import { v4 as uuid } from 'uuid'
-import { UsersService } from '../users/users.service'
 
 describe('BountiesService', () => {
     const app = beforeSetupFullApp()
@@ -43,7 +43,9 @@ describe('BountiesService', () => {
     const usersService = beforeAllSetup(() => app().get<UsersService>(UsersService))
     const repository = beforeAllSetup(() => app().get<Repository<BountyEntity>>(getRepositoryToken(BountyEntity)))
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
-    const polkassemblyService = beforeAllSetup(() => app().get<PolkassemblyService>(PolkassemblyService))
+    const polkassemblyService = beforeAllSetup(() =>
+        app().get<PolkassemblyBountiesService>(PolkassemblyBountiesService),
+    )
     const extrinsicsService = beforeAllSetup(() => app().get<ExtrinsicsService>(ExtrinsicsService))
 
     beforeEach(async () => {

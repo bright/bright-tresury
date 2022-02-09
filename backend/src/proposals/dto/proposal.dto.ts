@@ -6,7 +6,7 @@ import { Nil } from '../../utils/types'
 import { ProposedMotionDto } from '../../blockchain/dto/proposed-motion.dto'
 import { BlockchainProposalWithDomainDetails } from './blockchain-proposal-with-domain-details.dto'
 import { NetworkPlanckValue } from '../../utils/types'
-import { PolkassemblyTreasuryProposalPostDto } from '../../polkassembly/dto/treasury-proposal-post.dto'
+import { PolkassemblyTreasuryProposalPostDto } from '../../polkassembly/treasury-proposals/treasury-proposal-post.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',

@@ -1,7 +1,6 @@
 import { NetworkPlanckValue } from '../../utils/types'
 import { BlockchainProposal, BlockchainProposalStatus } from '../../blockchain/dto/blockchain-proposal.dto'
-import { PolkassemblyTreasuryProposalPostSchema } from '../schemas/treasury-proposal-post.schema'
-
+import { PolkassemblyTreasuryProposalPostSchema } from './treasury-proposal-post.schema'
 
 export class PolkassemblyTreasuryProposalPostDto {
     title: string
@@ -29,14 +28,12 @@ export class PolkassemblyTreasuryProposalPostDto {
         // https://github.com/Premiurly/polkassembly/blob/9139de85d81a77d12b64799960069f50b0df687a/node-watcher/src/tasks/createTreasury.ts#L95
         return new BlockchainProposal(
             this.blockchainIndex,
-            {address: this.proposerAddress},
-            {address: this.beneficiaryAdress},
+            { address: this.proposerAddress },
+            { address: this.beneficiaryAdress },
             this.value,
             this.bond,
             [],
-            BlockchainProposalStatus.Unknown
+            BlockchainProposalStatus.Unknown,
         )
     }
 }
-
-

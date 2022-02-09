@@ -3,7 +3,7 @@ import { BlockchainProposal, BlockchainProposalStatus } from '../../blockchain/d
 import { UserEntity } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
 import { ProposalEntity } from '../entities/proposal.entity'
-import { PolkassemblyTreasuryProposalPostDto } from '../../polkassembly/dto/treasury-proposal-post.dto'
+import { PolkassemblyTreasuryProposalPostDto } from '../../polkassembly/treasury-proposals/treasury-proposal-post.dto'
 
 interface IBlockchainProposalWithDomainDetails {
     blockchain: BlockchainProposal

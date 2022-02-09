@@ -7,9 +7,10 @@ import {
     BlockchainBountyDto,
     BlockchainBountyStatus,
 } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
-import { PolkassemblyBountyPostDto } from '../polkassembly/dto/bounty-post.dto'
+import { PolkassemblyBountyPostDto } from '../polkassembly/bounties/bounty-post.dto'
+import { PolkassemblyBountiesService } from '../polkassembly/bounties/polkassembly-bounties.service'
 import { PolkassemblyService } from '../polkassembly/polkassembly.service'
-import { PolkassemblyBountyPostSchema } from '../polkassembly/schemas/bounty-post.schema'
+import { PolkassemblyBountyPostSchema } from '../polkassembly/bounties/bounty-post.schema'
 import { UserEntity } from '../users/user.entity'
 import { NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue } from '../utils/types'
@@ -346,8 +347,8 @@ export const polkassemblyBounty10 = new PolkassemblyBountyPostDto({
 
 export const polkassemblyBounties = [polkassemblyBounty0, polkassemblyBounty10]
 
-export async function mockGetPolkassemblyBounty(service: PolkassemblyService) {
-    jest.spyOn(service, 'getBounty').mockImplementation(async (bountyIndex: number, networkId: string) =>
+export async function mockGetPolkassemblyBounty(service: PolkassemblyBountiesService) {
+    jest.spyOn(service, 'findOne').mockImplementation(async (bountyIndex: number, networkId: string) =>
         Promise.resolve(polkassemblyBounties.find((b) => b.blockchainIndex === bountyIndex)),
     )
 }

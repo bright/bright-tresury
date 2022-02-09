@@ -11,15 +11,16 @@ import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/id
 import { IdeaMilestoneEntity } from '../ideas/idea-milestones/entities/idea-milestone.entity'
 import { getLogger } from '../logging.module'
 import { MilestoneDetailsService } from '../milestone-details/milestone-details.service'
+import { PolkassemblyTreasuryProposalsService } from '../polkassembly/treasury-proposals/polkassembly-treasury-proposals.service'
 import { Nil } from '../utils/types'
 import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-with-domain-details.dto'
 import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
-import { GetPosts, PolkassemblyService } from '../polkassembly/polkassembly.service'
+import { GetPosts } from '../polkassembly/polkassembly.service'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
 import { TimeFrame } from '../utils/time-frame.query'
-import { PolkassemblyTreasuryProposalPostDto } from '../polkassembly/dto/treasury-proposal-post.dto'
+import { PolkassemblyTreasuryProposalPostDto } from '../polkassembly/treasury-proposals/treasury-proposal-post.dto'
 import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 import { ProposalDto, ProposalStatus } from './dto/proposal.dto'
@@ -45,8 +46,8 @@ export class ProposalsService {
         private readonly milestoneDetailsService: MilestoneDetailsService,
         @InjectRepository(ProposalMilestoneEntity)
         private readonly proposalMilestonesRepository: Repository<ProposalMilestoneEntity>,
-        private readonly polkassemblyService: PolkassemblyService,
         private readonly usersService: UsersService,
+        private readonly polkassemblyService: PolkassemblyTreasuryProposalsService,
     ) {}
 
     async find(
@@ -61,6 +62,7 @@ export class ProposalsService {
             return PaginatedResponseDto.empty()
         }
         try {
+
             if (timeFrame === TimeFrame.OnChain) return this.findOnChain(networkId, owner, status, paginatedParams)
             else return this.findOffChain(networkId, owner, paginatedParams)
         } catch (error) {
@@ -68,6 +70,7 @@ export class ProposalsService {
             return PaginatedResponseDto.empty()
         }
     }
+
     private async findOnChain(
         networkId: string,
         owner: Nil<UserEntity>,
@@ -122,7 +125,7 @@ export class ProposalsService {
 
         const [polkassemblyProposalsPosts, total] = await Promise.all([
             this.getMappedPolkassemblyProposals({ ...polkassemblySearchOptions, paginatedParams }),
-            this.polkassemblyService.getProposalsCount(polkassemblySearchOptions),
+            this.polkassemblyService.count(polkassemblySearchOptions),
         ])
 
         const offChainBlockchainIndexes = keysAsArray(polkassemblyProposalsPosts).sort((a, b) => b - a)
@@ -144,7 +147,7 @@ export class ProposalsService {
 
     async findOne(blockchainProposalId: number, networkId: string): Promise<BlockchainProposalWithDomainDetails> {
         const onChain = await this.blockchainService.getProposal(networkId, blockchainProposalId)
-        const offChain = await this.polkassemblyService.getProposal(blockchainProposalId, networkId)
+        const offChain = await this.polkassemblyService.findOne(blockchainProposalId, networkId)
 
         if (!onChain && !offChain) {
             throw new NotFoundException('Proposal with the given id in the given network not found')
@@ -269,7 +272,7 @@ export class ProposalsService {
     private async getMappedPolkassemblyProposals(
         options: GetPosts,
     ): Promise<Map<number, PolkassemblyTreasuryProposalPostDto>> {
-        return arrayToMap(await this.polkassemblyService.getProposals(options), 'blockchainIndex')
+        return arrayToMap(await this.polkassemblyService.find(options), 'blockchainIndex')
     }
 
     private encodeUserWeb3Addresses(networkId: string, user: Nil<UserEntity>) {
