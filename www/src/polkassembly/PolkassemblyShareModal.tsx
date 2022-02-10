@@ -8,8 +8,10 @@ import QuestionModalButtons from '../components/modal/warning-modal/QuestionModa
 import QuestionModalError from '../components/modal/warning-modal/QuestionModalError'
 import QuestionModalSubtitle from '../components/modal/warning-modal/QuestionModalSubtitle'
 import QuestionModalTitle from '../components/modal/warning-modal/QuestionModalTitle'
+import { useNetworks } from '../networks/useNetworks'
+import { useSnackNotifications } from '../snack-notifications/useSnackNotifications'
 import { useAccounts } from '../substrate-lib/accounts/useAccounts'
-import { usePolkassemblyShare } from './polkasseblyShare.api'
+import { usePolkassemblyShare } from './polkassembly-posts.api'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -19,18 +21,27 @@ const useStyles = makeStyles(() =>
     }),
 )
 
+export interface PolkasseblySherable {
+    title: string
+    content: string
+}
+
 interface OwnProps {
     onClose: () => void
     web3address: string
+    // TODO consider renaming both the prop and the interface when implementing the actual GQL mutation in TREAS-386
+    objectToShare: PolkasseblySherable
 }
 
 export type PolkassemblyShareModalProps = OwnProps & MaterialDialogProps
 
-const PolkassemblyShareModal = ({ open, onClose, web3address }: PolkassemblyShareModalProps) => {
+const PolkassemblyShareModal = ({ open, onClose, web3address, objectToShare }: PolkassemblyShareModalProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
     const { mutateAsync, isLoading, isError, error, reset } = usePolkassemblyShare()
+    const { network } = useNetworks()
+    const { open: openSnack } = useSnackNotifications()
 
     /*
     We need to load the accounts to be able to use them to sing the message
@@ -39,9 +50,19 @@ const PolkassemblyShareModal = ({ open, onClose, web3address }: PolkassemblyShar
 
     const onSubmit = async () => {
         await mutateAsync(
-            { account: web3address },
             {
-                onError: (err) => {
+                account: web3address,
+                details: {
+                    network,
+                    ...objectToShare,
+                },
+            },
+            {
+                onSuccess: () => {
+                    openSnack(t('polkassembly.share.modal.successSnackMessage'))
+                    onClose()
+                },
+                onError: (err: any) => {
                     if ((err as any).message?.includes('web3FromAddress')) {
                         console.log('show error')
                     }
@@ -69,8 +90,9 @@ const PolkassemblyShareModal = ({ open, onClose, web3address }: PolkassemblyShar
             <QuestionModalTitle title={t('polkassembly.share.modal.title')} />
             <InformationTip className={classes.warning} label={t('polkassembly.share.modal.warning')} />
             <QuestionModalSubtitle subtitle={t('polkassembly.share.modal.subtitle')} />
+            {/*TODO show preview TREAS-365*/}
             <QuestionModalButtons
-                onClose={onClose}
+                onClose={onCloseModal}
                 onSubmit={onSubmit}
                 submitLabel={t('polkassembly.share.modal.submit')}
                 discardLabel={t('polkassembly.share.modal.discard')}

@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger'
 import { MotionTimeDto } from '../../blockchain/dto/motion-time.dto'
 import { MotionDto, MotionStatus } from '../../blockchain/dto/motion.dto'
 import { getLogger } from '../../logging.module'
-import { MotionSchema } from '../motions/motion.schema'
 import BN from 'bn.js'
+import { MotionSchema } from '../schemas/motion.schema'
 
 export class ExecutedMotionDto extends MotionDto {
     @ApiProperty({ description: 'Status of the motion', type: MotionStatus })

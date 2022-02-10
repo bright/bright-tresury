@@ -29,7 +29,12 @@ const ProposalActionButtons = ({ proposal, ...props }: ProposalActionButtonsProp
 
     return (
         <ActionButtons {...props}>
-            <PolkassemblyShareButton web3address={proposal.proposer.address} />
+            <PolkassemblyShareButton
+                web3address={proposal.proposer.address}
+                /*TODO convert proposal to polkassembly structure TREAS-366 */
+                objectToShare={{ title: proposal.details?.title ?? '', content: proposal.details?.content ?? '' }}
+                disabled={!proposal.details}
+            />
             <EditButton
                 label={proposal.details ? t('proposal.details.edit') : t('proposal.details.add')}
                 onClick={navigateToEdit}
