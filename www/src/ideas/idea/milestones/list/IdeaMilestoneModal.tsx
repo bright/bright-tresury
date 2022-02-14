@@ -119,11 +119,15 @@ const IdeaMilestoneModal = ({
         warningModal.close()
     }
 
+    const openWarningModalOrClose = () => {
+        canEdit ? warningModal.open() : onClose()
+    }
+
     return (
         <>
             <Modal
                 open={open}
-                onClose={warningModal.open}
+                onClose={openWarningModalOrClose}
                 aria-labelledby="modal-title"
                 fullWidth={true}
                 maxWidth={'md'}
@@ -143,7 +147,7 @@ const IdeaMilestoneModal = ({
                                 className={classes.cancelButton}
                                 type={'button'}
                                 variant={'text'}
-                                onClick={onClose}
+                                onClick={openWarningModalOrClose}
                             >
                                 {t('idea.milestones.modal.form.buttons.cancel')}
                             </FormFooterButton>
