@@ -199,7 +199,7 @@ describe(`Users Service`, () => {
             })
             const savedUser = await getRepository().findOne(user.id)
             expect(savedUser).toBeDefined()
-            expect(savedUser.isEmailPasswordEnabled).toBe(false)
+            expect(savedUser.status).toBe(UserStatus.Web3Only)
         })
         it('should set status to web3Only', async () => {
             const user = await getService().createWeb3User({
