@@ -31,14 +31,18 @@ services:
         restart: unless-stopped
     local-development-polkadot-1:
         container_name: local-development-polkadot-1
-        image: parity/polkadot:latest
+        build:
+            context: ./
+            dockerfile: polkadot.Dockerfile
         ports:
             - '9944:9944'
         command: --rpc-external --ws-external --dev
         restart: unless-stopped
     local-development-polkadot-2:
         container_name: local-development-polkadot-2
-        image: parity/polkadot:latest
+        build:
+            context: ./
+            dockerfile: polkadot.Dockerfile
         ports:
             - '9955:9944'
         command: --rpc-external --ws-external --dev
