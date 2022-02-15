@@ -39,6 +39,7 @@ const Proposals = () => {
     const { param: timeFrame } = useTimeFrame()
 
     const PAGE_SIZE = 10
+
     const { status, isLoading, data, fetchNextPage } = useGetProposals({
         network: network.id,
         ownerId: proposalsFilter === ProposalFilter.Mine ? user?.id : null,

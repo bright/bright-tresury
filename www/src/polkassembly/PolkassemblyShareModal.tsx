@@ -2,6 +2,7 @@ import { DialogProps as MaterialDialogProps } from '@material-ui/core/Dialog/Dia
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import ReactMarkdown from 'react-markdown'
 import InformationTip from '../components/info/InformationTip'
 import QuestionModal from '../components/modal/warning-modal/QuestionModal'
 import QuestionModalButtons from '../components/modal/warning-modal/QuestionModalButtons'
@@ -21,7 +22,7 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-export interface PolkasseblySherable {
+export interface PolkassemblyPostDto {
     title: string
     content: string
 }
@@ -30,12 +31,12 @@ interface OwnProps {
     onClose: () => void
     web3address: string
     // TODO consider renaming both the prop and the interface when implementing the actual GQL mutation in TREAS-386
-    objectToShare: PolkasseblySherable
+    postData: PolkassemblyPostDto
 }
 
 export type PolkassemblyShareModalProps = OwnProps & MaterialDialogProps
 
-const PolkassemblyShareModal = ({ open, onClose, web3address, objectToShare }: PolkassemblyShareModalProps) => {
+const PolkassemblyShareModal = ({ open, onClose, web3address, postData }: PolkassemblyShareModalProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -54,7 +55,7 @@ const PolkassemblyShareModal = ({ open, onClose, web3address, objectToShare }: P
                 account: web3address,
                 details: {
                     network,
-                    ...objectToShare,
+                    ...postData,
                 },
             },
             {
@@ -91,6 +92,12 @@ const PolkassemblyShareModal = ({ open, onClose, web3address, objectToShare }: P
             <InformationTip className={classes.warning} label={t('polkassembly.share.modal.warning')} />
             <QuestionModalSubtitle subtitle={t('polkassembly.share.modal.subtitle')} />
             {/*TODO show preview TREAS-365*/}
+            <div style={{ border: 'solid 1px', textAlign: 'left' }}>
+                <h3>{postData.title}</h3>
+                <ReactMarkdown components={{ img: ({ node, ...props }) => <img {...props} /> }}>
+                    {postData.content}
+                </ReactMarkdown>
+            </div>
             <QuestionModalButtons
                 onClose={onCloseModal}
                 onSubmit={onSubmit}

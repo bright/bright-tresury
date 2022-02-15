@@ -29,7 +29,7 @@ const ON_CHAIN_FILTER_VALUES = [
     BountyFilter.Active,
     BountyFilter.PendingPayout,
 ]
-// TODO: discuss if how do we want to filter them (backend or frontend)
+
 const HISTORY_FILTER_VALUES = [BountyFilter.Claimed, BountyFilter.Rejected]
 
 const BountyStatusFilters = () => {

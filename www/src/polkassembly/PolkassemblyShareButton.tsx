@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom'
 import Button, { ButtonProps } from '../components/button/Button'
 import polkassemblyLogoSvg from '../assets/polkassembly_logo.png'
 import { useModal } from '../components/modal/useModal'
-import PolkassemblyShareModal, { PolkasseblySherable } from './PolkassemblyShareModal'
+import PolkassemblyShareModal, { PolkassemblyPostDto } from './PolkassemblyShareModal'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -21,12 +21,12 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     web3address: string
-    objectToShare: PolkasseblySherable
+    postData: PolkassemblyPostDto
 }
 
 export type PolkassemblyShareButtonProps = OwnProps & ButtonProps
 
-const PolkassemblyShareButton = ({ web3address, objectToShare, ...props }: PolkassemblyShareButtonProps) => {
+const PolkassemblyShareButton = ({ web3address, postData, ...props }: PolkassemblyShareButtonProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const location = useLocation()
@@ -47,7 +47,7 @@ const PolkassemblyShareButton = ({ web3address, objectToShare, ...props }: Polka
                 onClose={modal.close}
                 open={modal.visible}
                 web3address={web3address}
-                objectToShare={objectToShare}
+                postData={postData}
             />
         </>
     )

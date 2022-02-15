@@ -27,9 +27,13 @@ export const useBountyEdit = (bounty: BountyDto): UseBountyEditResult => {
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('bounty.form.emptyFieldError')),
-        beneficiary: Yup.string().test('validate-address', t('form.web3AddressInput.wrongWeb3AddressError'), (address) => {
-            return isValidAddressOrEmpty(address, network.ss58Format)
-        }),
+        beneficiary: Yup.string().test(
+            'validate-address',
+            t('form.web3AddressInput.wrongWeb3AddressError'),
+            (address) => {
+                return isValidAddressOrEmpty(address, network.ss58Format)
+            },
+        ),
     })
 
     const beneficiaryValidationSchema = Yup.object({

@@ -51,6 +51,7 @@ const Bounties = () => {
     const { param: bountiesFilter } = useBountiesFilter()
     const { param: timeFrame } = useTimeFrame()
     const PAGE_SIZE = 10
+
     const { status, data, isLoading, fetchNextPage } = useGetBounties({
         network: network.id,
         ownerId: bountiesFilter === BountyFilter.Mine ? user?.id : null,

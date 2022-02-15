@@ -1,6 +1,7 @@
 import React from 'react'
-import { ProposalDto } from '../proposals.dto'
 import ActionButtons, { ActionButtonsProps } from '../../components/header/details/ActionButtons'
+import { ProposalDto } from '../proposals.dto'
+import ProposalPolkassemblyShareButton from './polkassembly/ProposalPolkassemblyShareButton'
 import { useProposal } from './useProposals'
 import { useTranslation } from 'react-i18next'
 import EditButton from '../../components/header/details/EditButton'
@@ -29,12 +30,7 @@ const ProposalActionButtons = ({ proposal, ...props }: ProposalActionButtonsProp
 
     return (
         <ActionButtons {...props}>
-            <PolkassemblyShareButton
-                web3address={proposal.proposer.address}
-                /*TODO convert proposal to polkassembly structure TREAS-366 */
-                objectToShare={{ title: proposal.details?.title ?? '', content: proposal.details?.content ?? '' }}
-                disabled={!proposal.details}
-            />
+            <ProposalPolkassemblyShareButton proposal={proposal} />
             <EditButton
                 label={proposal.details ? t('proposal.details.edit') : t('proposal.details.add')}
                 onClick={navigateToEdit}

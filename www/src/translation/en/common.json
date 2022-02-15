@@ -531,6 +531,13 @@
             },
             "form": {
                 "edit": "Save"
+            },
+            "polkassemblyShare": {
+                "intro": "This proposal was added through BrightTreasury. For more info & discussion, check",
+                "link": "BrightTreasury",
+                "about": "About the project",
+                "milestones": "Milestones",
+                "seeMore": "See more..."
             }
         },
         "voting": {

@@ -16,9 +16,10 @@ export enum BountyFilter {
 export const BountyFilterSearchParamName = 'filter'
 export const BountyDefaultFilter = BountyFilter.All
 
-export const useBountiesFilter = () => useParamFromQuery({
-    enumObject: BountyFilter,
-    paramName: BountyFilterSearchParamName,
-    defaultValue: BountyDefaultFilter,
-    preserveParam: true
-})
+export const useBountiesFilter = () =>
+    useParamFromQuery({
+        enumObject: BountyFilter,
+        paramName: BountyFilterSearchParamName,
+        defaultValue: BountyDefaultFilter,
+        preserveParam: true,
+    })
