@@ -37,6 +37,11 @@ const useStyles = makeStyles((theme: Theme) =>
                 width: '100%',
             },
         },
+        avatar: {
+            height: '46px',
+            lineHeight: '46px',
+            width: '46px',
+        },
     }),
 )
 
@@ -50,7 +55,7 @@ const Account = () => {
             <div className={classes.root}>
                 <div className={classes.avatarContainer}>
                     {user?.status === UserStatus.EmailPasswordEnabled ? (
-                        <Avatar username={user.username} email={user.email} />
+                        <Avatar username={user.username} email={user.email} className={classes.avatar} />
                     ) : null}
                 </div>
                 <Content>
