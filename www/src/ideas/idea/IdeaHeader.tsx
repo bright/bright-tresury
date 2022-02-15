@@ -15,7 +15,7 @@ import HeaderTabs from '../../components/header/HeaderTabs'
 import ProposalNetworkRewardDeposit from '../../components/network/ProposalNetworkRewardDeposit'
 import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 import OptionalTitle from '../../components/text/OptionalTitle'
-import { ROUTE_TURN_IDEA } from '../../routes/routes'
+import { ROUTE_EDIT_IDEA, ROUTE_TURN_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto } from '../ideas.dto'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
@@ -24,6 +24,7 @@ import IdeaOptionsButton from './IdeaOptionsButton'
 import IdeaStatusIndicator from './status/IdeaStatusIndicator'
 import { useIdea } from './useIdea'
 import { IdeaContentType, IdeaTabConfig } from './Idea'
+import EditButton from '../../components/header/details/EditButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -82,6 +83,10 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
         history.push(generatePath(ROUTE_TURN_IDEA, { ideaId: idea.id }), { idea })
     }
 
+    const navigateToEdit = () => {
+        history.push(generatePath(ROUTE_EDIT_IDEA, { ideaId: idea.id }))
+    }
+
     const networkValue = idea.currentNetwork.value
     const withDiscussion = !!ideaTabsConfig.find(
         ({ ideaContentType }) => ideaContentType === IdeaContentType.Discussion,
@@ -109,6 +114,7 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
             </HeaderTabs>
             {canTurnIntoProposal && (
                 <ActionButtons className={classes.actionButtons}>
+                    <EditButton label={t('idea.details.edit')} onClick={navigateToEdit} />
                     <Button variant="contained" color="primary" onClick={navigateToTurnIntoProposal}>
                         {t('idea.details.header.turnIntoProposal')}
                     </Button>

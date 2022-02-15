@@ -41,7 +41,7 @@ const useStyles = makeStyles((theme: Theme) =>
         contentTypeTabs: {
             order: 4,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                order: 5,
+                order: 4,
             },
         },
         actionButtons: {
@@ -53,7 +53,10 @@ const useStyles = makeStyles((theme: Theme) =>
         optionsButton: {
             order: 7,
             [theme.breakpoints.down(breakpoints.tablet)]: {
-                order: 3,
+                order: 5,
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                order: 2,
             },
         },
     }),

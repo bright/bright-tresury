@@ -18,6 +18,7 @@ import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import Title from '../../components/header/details/Title'
 import PrivateProposalContentTypeTabs from './PrivateProposalContentTypeTabs'
 import { ProposalTabConfig } from './Proposal'
+import ProposalActionButtons from './ProposalActionButtons'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,6 +44,12 @@ const useStyles = makeStyles((theme: Theme) =>
             order: 5,
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 order: 6,
+            },
+        },
+        actionButtons: {
+            order: 6,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                order: 2,
             },
         },
     }),
@@ -80,7 +87,6 @@ const ProposalHeader = ({ proposal, proposalTabsConfig }: ProposalHeaderProps) =
             </NetworkValues>
 
             <FlexBreakLine className={classes.flexBreakLine} />
-
             <HeaderTabs className={classes.contentTypeTabs}>
                 {isUserSignedInAndVerified && user ? (
                     <PrivateProposalContentTypeTabs
@@ -92,6 +98,7 @@ const ProposalHeader = ({ proposal, proposalTabsConfig }: ProposalHeaderProps) =
                     <ProposalContentTypeTabs proposalTabsConfig={proposalTabsConfig} />
                 )}
             </HeaderTabs>
+            <ProposalActionButtons className={classes.actionButtons} proposal={proposal} />
         </HeaderContainer>
     )
 }

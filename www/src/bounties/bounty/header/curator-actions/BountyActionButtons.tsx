@@ -5,6 +5,7 @@ import { useBounty } from '../../useBounty'
 import CuratorAcceptButton from './accept/CuratorAcceptButton'
 import ClaimPayoutButton from './claim/ClaimPayoutButton'
 import CuratorRejectButton from './reject/CuratorRejectButton'
+import BountyEditButton from './BountyEditButton'
 
 interface OwnProps {
     bounty: BountyDto
@@ -13,13 +14,15 @@ interface OwnProps {
 export type CuratorActionButtonsProps = OwnProps & ActionButtonsProps
 
 const BountyActionButtons = ({ bounty, ...props }: CuratorActionButtonsProps) => {
-    const { canReject, canAccept, canClaimPayout } = useBounty(bounty)
-    if (!canAccept && !canReject && !canClaimPayout) {
+    const { canReject, canAccept, canClaimPayout, canEdit } = useBounty(bounty)
+
+    if (!canAccept && !canReject && !canClaimPayout && !canEdit) {
         return null
     }
 
     return (
         <ActionButtons {...props}>
+            {canEdit ? <BountyEditButton bounty={bounty} /> : null}
             {canReject && bounty.status === BountyStatus.CuratorProposed ? (
                 <CuratorRejectButton bounty={bounty} />
             ) : null}

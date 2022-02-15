@@ -28,9 +28,6 @@ const useStyles = makeStyles(() =>
         spacing: {
             marginTop: '2em',
         },
-        editButton: {
-            alignSelf: 'end',
-        },
     }),
 )
 
@@ -44,27 +41,9 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
     const classes = useStyles()
     const loadedClasses = useSuccessfullyLoadedItemStyles()
     const { t } = useTranslation()
-    const history = useHistory()
-    const { canEdit, hasDetails } = useBounty(bounty)
-
-    const navigateToEdit = () => {
-        history.push(generatePath(ROUTE_EDIT_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
-    }
 
     return (
         <div className={loadedClasses.content}>
-            {canEdit && (
-                <FormFooterButtonsContainer>
-                    <FormFooterButton
-                        className={classes.editButton}
-                        variant="contained"
-                        color="primary"
-                        onClick={navigateToEdit}
-                    >
-                        {hasDetails ? t('bounty.info.editButton') : t('bounty.info.addDetailsButton')}
-                    </FormFooterButton>
-                </FormFooterButtonsContainer>
-            )}
             <div className={classes.addresses}>
                 <div>
                     <Label label={t('bounty.info.proposer')} />
