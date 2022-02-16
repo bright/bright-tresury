@@ -12,6 +12,7 @@ import { TimeFrame, TimeFrameQuery } from '../utils/time-frame.query'
 import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 import { ProposalParam } from './proposal.param'
+import { ProposalsFilterQuery } from './proposals-filter.query'
 
 const logger = getLogger()
 
@@ -27,15 +28,16 @@ export class ProposalsController {
     })
     async getProposals(
         @Query() { network }: NetworkNameQuery,
+        @Query() { filter }: ProposalsFilterQuery,
         @Query() { timeFrame = TimeFrame.OnChain }: TimeFrameQuery,
         @Query() { pageNumber, pageSize }: PaginatedQueryParams,
     ): Promise<PaginatedResponseDto<ProposalDto>> {
-        logger.info(`Getting proposals for network: ${network} ${timeFrame}`)
-        const paginatedParams = new PaginatedParams({pageNumber, pageSize})
+        logger.info(`Getting proposals for network: ${network} ${timeFrame} ${filter}`)
+        const paginatedParams = new PaginatedParams({ pageNumber, pageSize })
         const { items, total } = await this.proposalsService.find(network, timeFrame, paginatedParams)
         return {
-            items: items.map( withDomainDetails => new ProposalDto(withDomainDetails)),
-            total
+            items: items.map((withDomainDetails) => new ProposalDto(withDomainDetails)),
+            total,
         }
     }
 

@@ -30,8 +30,13 @@ const Proposals = () => {
     const { param: timeFrame } = useTimeFrame()
 
     const PAGE_SIZE = 10
-    const { status, isLoading, data, fetchNextPage } = useGetProposals(network.id, timeFrame, PAGE_SIZE)
-    const proposals = data?.pages.map(page => page.items).flat() ?? []
+    const { status, isLoading, data, fetchNextPage } = useGetProposals(
+        network.id,
+        proposalsFilter,
+        timeFrame,
+        PAGE_SIZE,
+    )
+    const proposals = data?.pages.map((page) => page.items).flat() ?? []
 
     const pageNumber = data?.pages?.length ?? 0
     const canLoadMore = pageNumber * PAGE_SIZE === proposals.length
@@ -49,7 +54,7 @@ const Proposals = () => {
                 loadingText={t('loading.proposals')}
             >
                 <ProposalsList proposals={filteredProposals} />
-                { canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
+                {canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
             </LoadingWrapper>
         </div>
     )

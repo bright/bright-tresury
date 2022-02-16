@@ -22,7 +22,6 @@ import { filterProposals } from '../../../proposals/list/filterProposals'
 import { TimeFrame } from '../../../util/useTimeFrame'
 import { ProposalFilter } from '../../../proposals/useProposalsFilter'
 
-
 const useStyles = makeStyles(() =>
     createStyles({
         root: {
@@ -38,7 +37,7 @@ const AccountInfo = () => {
     const { user } = useAuth()
     const { network } = useNetworks()
     const { data: ideas } = useGetIdeas(network.id)
-    const { data: proposals } = useGetProposals(network.id, TimeFrame.OnChain, 100)
+    const { data: proposals } = useGetProposals(network.id, ProposalFilter.Mine, TimeFrame.OnChain, 100)
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 
@@ -49,8 +48,7 @@ const AccountInfo = () => {
 
     const numberOfMineProposals = useMemo(() => {
         const flattenProposals = proposals?.pages.map((page) => page.items).flat() ?? []
-        const mineProposals = proposals ? filterProposals(flattenProposals, ProposalFilter.Mine, user) : []
-        return mineProposals.length
+        return flattenProposals.length
     }, [proposals, user])
 
     const goToAccount = () => {

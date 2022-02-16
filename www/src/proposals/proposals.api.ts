@@ -5,23 +5,40 @@ import { useInfiniteQuery, useQuery, UseQueryOptions } from 'react-query'
 import { getPaginationQueryParams } from '../util/pagination/pagination.request.params'
 import { PaginationResponseDto } from '../util/pagination/pagination.response.dto'
 import { TimeFrame } from '../util/useTimeFrame'
+import { ProposalFilter } from './useProposalsFilter'
 
 export const PROPOSALS_API_PATH = '/proposals'
 
 // GET (paginated) ALL
 
-function getProposals(network: string, timeFrame: TimeFrame, pageNumber: number, pageSize?: number) {
-    const url = `${PROPOSALS_API_PATH}?network=${network}&timeFrame=${timeFrame}${getPaginationQueryParams({pageNumber, pageSize: pageSize ?? 10})}`
+function getProposals(
+    network: string,
+    proposalsFilter: ProposalFilter,
+    timeFrame: TimeFrame,
+    pageNumber: number,
+    pageSize?: number,
+) {
+    const networkQuery = `network=${network}`
+    const filterQuery = `filter=${proposalsFilter}`
+    const timeQuery = `timeFrame=${timeFrame}`
+    const paginationQuery = getPaginationQueryParams({ pageNumber, pageSize: pageSize ?? 10 })
+
+    const url = `${PROPOSALS_API_PATH}?${networkQuery}&${filterQuery}&${timeQuery}&${paginationQuery}`
     return apiGet<PaginationResponseDto<ProposalDto>>(url)
 }
 
-export const useGetProposals = (network: string, timeFrame: TimeFrame, pageSize?: number) => {
+export const useGetProposals = (
+    network: string,
+    proposalsFilter: ProposalFilter,
+    timeFrame: TimeFrame,
+    pageSize?: number,
+) => {
     return useInfiniteQuery(
-        ['proposals', network, timeFrame],
-        ({ pageParam = 1 }) => getProposals(network, timeFrame,  pageParam, pageSize ),
+        ['proposals', network, proposalsFilter, timeFrame],
+        ({ pageParam = 1 }) => getProposals(network, proposalsFilter, timeFrame, pageParam, pageSize),
         {
-            getNextPageParam: (lastPage, allPages) => allPages.length+1
-        }
+            getNextPageParam: (lastPage, allPages) => allPages.length + 1,
+        },
     )
 }
 
