@@ -7,9 +7,9 @@ import { MotionTimeDto } from '../blockchain/dto/motion-time.dto'
 import { getLogger } from '../logging.module'
 import { Nil } from '../utils/types'
 import {
-    OffChainTreasuryProposalPosts,
-    OnChainTreasuryProposalPosts,
     OneTreasuryProposalPost,
+    TreasuryProposalPosts,
+    TreasuryProposalPostsCount,
 } from './fragments/proposal.fragments'
 import { PolkassemblyTreasuryProposalPostDto } from './dto/treasury-proposal-post.dto'
 import { PolkassemblyBountyPostDto } from './dto/bounty-post.dto'
@@ -19,14 +19,17 @@ import { PolkassemblyBountyPostSchema } from './schemas/bounty-post.schema'
 import { ExecutedMotionDto } from './dto/executed-motion.dto'
 import { Motions } from './fragments/motion.fragments'
 import { MotionSchema } from './schemas/motion.schema'
-import { OffChainBountyPosts, OnChainBountyPosts, OneBountyPost } from './fragments/bounty.fragments'
+import { BountyPosts, OffChainBountyPosts, OneBountyPost } from './fragments/bounty.fragments'
 
 const logger = getLogger()
 
-interface GetPosts {
-    indexes: number[]
+const DEFAULT_LIMIT = 10
+
+export interface GetPosts {
+    includeIndexes?: Nil<number[]>
+    excludeIndexes?: Nil<number[]>
+    proposers?: Nil<string[]>
     networkId: string
-    onChain: boolean
     paginatedParams?: PaginatedParams
 }
 
@@ -93,29 +96,42 @@ export class PolkassemblyService {
     }
 
     async getProposals({
-        indexes,
         networkId,
-        onChain,
         paginatedParams,
+        ...queryVariables
     }: GetPosts): Promise<PolkassemblyTreasuryProposalPostDto[]> {
-        logger.info('Looking for TreasuryProposalPosts for proposal indexes and networkId', indexes, networkId)
+        logger.info('Looking for TreasuryProposalPosts for:', { ...queryVariables, networkId })
+
         try {
-            const query = onChain ? OnChainTreasuryProposalPosts : OffChainTreasuryProposalPosts
-            const variables = {
-                ids: indexes,
-                limit: paginatedParams ? paginatedParams.pageSize : indexes.length,
-                offset: paginatedParams ? paginatedParams.offset : 0,
-            }
-            const data = await this.executeQuery(networkId, query, variables)
+            const limit = paginatedParams?.pageSize ?? queryVariables.includeIndexes?.length ?? DEFAULT_LIMIT
+            const offset = paginatedParams ? paginatedParams.offset : 0
+            const data = await this.executeQuery(networkId, TreasuryProposalPosts, {
+                ...queryVariables,
+                limit,
+                offset,
+            })
             return (
                 data?.posts?.map(
                     (post: PolkassemblyTreasuryProposalPostSchema) => new PolkassemblyTreasuryProposalPostDto(post),
                 ) ?? []
             )
         } catch (err) {
-            getLogger().error('Error when looking for TreasuryProposalPosts', err)
+            logger.error('Error when looking for TreasuryProposalPosts', err)
             return []
         }
+        return Promise.resolve([])
+    }
+
+    async getProposalsCount({ networkId, ...queryVariables }: GetPosts): Promise<number> {
+        logger.info('Looking for TreasuryProposalPostsCount for:', { ...queryVariables, networkId })
+        try {
+            const data = await this.executeQuery(networkId, TreasuryProposalPostsCount, queryVariables)
+            return data.onchain_links_aggregate.aggregate.count as number
+        } catch (err) {
+            logger.error('Error when looking for TreasuryProposalPostsCount', err)
+            return -1
+        }
+        return Promise.resolve(-1)
     }
 
     async getBounty(bountyIndex: number, networkId: string): Promise<Nil<PolkassemblyBountyPostDto>> {
@@ -132,17 +148,23 @@ export class PolkassemblyService {
     }
 
     async getBounties({
-        indexes,
+        includeIndexes,
+        excludeIndexes,
         networkId,
-        onChain,
         paginatedParams,
     }: GetPosts): Promise<PolkassemblyBountyPostDto[]> {
         try {
-            getLogger().info('Looking for BountyPosts for bounties indexes and networkId', indexes, networkId, onChain)
-            const query = onChain ? OnChainBountyPosts : OffChainBountyPosts
+            getLogger().info('Looking for BountyPosts for ', {
+                includeIndexes,
+                excludeIndexes,
+                networkId,
+                paginatedParams,
+            })
+            const query = includeIndexes ? BountyPosts : OffChainBountyPosts
             const data = await this.executeQuery(networkId, query, {
-                ids: indexes,
-                limit: paginatedParams ? paginatedParams.pageSize : indexes.length,
+                includeIndexes: includeIndexes ?? [],
+                excludeIndexes: excludeIndexes ?? [],
+                limit: paginatedParams?.pageSize ?? includeIndexes?.length ?? DEFAULT_LIMIT,
                 offset: paginatedParams ? paginatedParams.offset : 0,
             })
             return data?.posts.map((post: PolkassemblyBountyPostSchema) => new PolkassemblyBountyPostDto(post)) ?? []

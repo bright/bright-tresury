@@ -1,18 +1,22 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsOptional } from 'class-validator'
+import { IsEnum, IsOptional, IsUUID } from 'class-validator'
+import { Nil } from '../utils/types'
+import { ProposalStatus } from './dto/proposal.dto'
+import { TimeFrameQuery } from '../utils/time-frame.query'
 
-export enum ProposalsFilterEnum {
-    All = 'all',
-    Mine = 'mine',
-    Submitted = 'submitted',
-    Approved = 'approved',
-}
-
-export class ProposalsFilterQuery {
+export class ProposalsFilterQuery extends TimeFrameQuery {
     @ApiPropertyOptional({
-        description: 'Proposals filter',
-        enum: ProposalsFilterEnum,
+        description: 'Proposal owner id',
     })
     @IsOptional()
-    filter?: ProposalsFilterEnum
+    @IsUUID()
+    ownerId?: Nil<string>
+
+    @ApiPropertyOptional({
+        description: 'Proposal status',
+        enum: ProposalStatus,
+    })
+    @IsOptional()
+    @IsEnum(ProposalStatus)
+    status?: Nil<ProposalStatus>
 }

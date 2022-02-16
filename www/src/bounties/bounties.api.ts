@@ -1,8 +1,7 @@
 import { useInfiniteQuery, useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { apiGet, apiPatch, apiPost } from '../api'
+import { apiGet, apiPatch, apiPost, getUrlSearchParams } from '../api'
 import { BountyDto, BountyExtrinsicDto, CreateBountyDto, EditBountyDto } from './bounties.dto'
 import { MotionDto } from '../components/voting/motion.dto'
-import { getPaginationQueryParams } from '../util/pagination/pagination.request.params'
 import { PaginationResponseDto } from '../util/pagination/pagination.response.dto'
 import { TimeFrame } from '../util/useTimeFrame'
 
@@ -51,20 +50,28 @@ export const usePatchBounty = () => {
 
 // GET ALL
 
-async function getBounties(network: string, timeFrame: TimeFrame, pageNumber: number, pageSize: number = 10): Promise<PaginationResponseDto<BountyDto>> {
-    const url = `${BOUNTIES_API_PATH}?network=${network}&timeFrame=${timeFrame}${getPaginationQueryParams({pageNumber, pageSize})}`
+async function getBounties(
+    network: string,
+    timeFrame: TimeFrame,
+    pageNumber: number,
+    pageSize: number = 10,
+): Promise<PaginationResponseDto<BountyDto>> {
+    //TODO: TREAS-341: use interface for params
+    const params = { network, timeFrame, pageNumber, pageSize }
+    const url = `${BOUNTIES_API_PATH}?${getUrlSearchParams(params)}`
     return apiGet<PaginationResponseDto<BountyDto>>(url)
 }
 
 export const BOUNTIES_QUERY_KEY_BASE = 'bounties'
 
 export const useGetBounties = (network: string, timeFrame: TimeFrame, pageSize?: number) => {
+    //TODO: TREAS-341: use interface for params
     return useInfiniteQuery(
         [BOUNTIES_QUERY_KEY_BASE, network, timeFrame],
-        ({pageParam}) => getBounties(network, timeFrame, pageParam, pageSize),
+        ({ pageParam }) => getBounties(network, timeFrame, pageParam, pageSize),
         {
-            getNextPageParam: (lastPage, allPages) => allPages.length+1,
-        }
+            getNextPageParam: (lastPage, allPages) => allPages.length + 1,
+        },
     )
 }
 

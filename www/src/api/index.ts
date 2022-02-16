@@ -10,6 +10,15 @@ export const api = axios.create({
     baseURL: API_URL,
 })
 
+export function getUrlSearchParams(params: Object) {
+    const searchParams = new URLSearchParams({})
+    Object.entries(params).forEach(([key, value]) => {
+        // backend controllers does not like empty/undefined/null values
+        if (value !== undefined && value !== null) searchParams.set(key, value)
+    })
+    return searchParams
+}
+
 export function apiGet<T>(url: string, config?: AxiosRequestConfig) {
     return api.get<T>(url, config).then((response) => response.data)
 }

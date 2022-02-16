@@ -126,9 +126,10 @@ export class BountiesService {
             where: { networkId, blockchainIndex: In(paginatedBlockchainIndexes) },
         })
         const bountiesPosts = await this.polkassemblyService.getBounties({
-            indexes: paginatedBlockchainIndexes,
+            excludeIndexes: null,
+            proposers: null,
+            includeIndexes: paginatedBlockchainIndexes,
             networkId,
-            onChain: true,
         })
         const items = paginatedBlockchainIndexes.map((blockchainIndex) => ({
             blockchain: bountiesBlockchain.find((bb) => bb.index === blockchainIndex)!,
@@ -148,9 +149,10 @@ export class BountiesService {
             .sort((bb1, bb2) => bb2.index - bb1.index)
             .map((bountyBlockchain) => bountyBlockchain.index)
         const bountiesPosts = await this.polkassemblyService.getBounties({
-            indexes: blockchainIndexes,
+            includeIndexes: null,
+            proposers: null,
+            excludeIndexes: blockchainIndexes,
             networkId,
-            onChain: false,
             paginatedParams,
         })
         const offChainBlockchainIndexes = bountiesPosts.map((bp) => bp.blockchainIndex)

@@ -73,7 +73,7 @@ describe(`Web3 Associate Service`, () => {
                     sessionHandler.sessionData,
                 )
 
-                const actualUser = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+                const actualUser = await getUsersService().findOneOrThrow(sessionHandler.sessionData.user.id)
                 expect(actualUser.web3Addresses!.length).toBe(1)
                 expect(actualUser.web3Addresses![0].address).toBe(bobAddress)
                 expect(actualUser.web3Addresses![0].isPrimary).toBe(true)
@@ -135,7 +135,7 @@ describe(`Web3 Associate Service`, () => {
                     sessionData,
                 )
 
-                const actualUser = await getUsersService().findOne(sessionData.user.id)
+                const actualUser = await getUsersService().findOneOrThrow(sessionData.user.id)
                 expect(actualUser.web3Addresses!.length).toBe(2)
                 const addedWeb3Address = actualUser.web3Addresses?.find((address) => address.address === bobAddress)
                 expect(addedWeb3Address).toBeDefined()
@@ -212,7 +212,7 @@ describe(`Web3 Associate Service`, () => {
                     sessionHandler.sessionData,
                 )
 
-                const actualUser = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+                const actualUser = await getUsersService().findOneOrThrow(sessionHandler.sessionData.user.id)
                 expect(actualUser.web3Addresses!.length).toBe(2)
                 const addedWeb3Address = actualUser.web3Addresses?.find((address) => address.address === charlieAddress)
                 expect(addedWeb3Address).toBeDefined()

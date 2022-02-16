@@ -32,6 +32,13 @@ export class PaginatedParams {
         return this.pageSize * (this.pageNumber - 1)
     }
     get limit(): number {
-        return this.pageNumber*this.pageSize
+        return this.pageNumber * this.pageSize
     }
+    slice<T>(array: T[]) {
+        return array.slice(this.offset, this.offset + this.pageSize)
+    }
+}
+
+export function slice<T>(array: T[]): T[] {
+    return []
 }

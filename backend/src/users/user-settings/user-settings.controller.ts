@@ -39,7 +39,7 @@ export class UserSettingsController {
     @UseGuards(SessionGuard)
     @UseGuards(UserGuard)
     async getOne(@Param('userId') userId: string): Promise<UserSettingsDto> {
-        const user = await this.usersService.findOne(userId)
+        const user = await this.usersService.findOneOrThrow(userId)
         return new UserSettingsDto(user)
     }
 

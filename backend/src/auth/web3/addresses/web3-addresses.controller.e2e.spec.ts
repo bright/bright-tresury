@@ -24,7 +24,7 @@ describe(`Web3 Addresses Controller`, () => {
                 request(app()).delete(`/api/v1/auth/web3/addresses/${charlieAddress}`).send(),
             )
 
-            const userAfterUnlinking = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+            const userAfterUnlinking = await getUsersService().findOneOrThrow(sessionHandler.sessionData.user.id)
             expect(userAfterUnlinking.web3Addresses!.length).toBe(1)
             expect(userAfterUnlinking.web3Addresses![0].address).toBe(bobAddress)
         })
@@ -45,7 +45,9 @@ describe(`Web3 Addresses Controller`, () => {
                 request(app()).post(`/api/v1/auth/web3/addresses/${charlieAddress}/make-primary`).send(),
             )
 
-            const userAfterMakingAddressPrimary = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+            const userAfterMakingAddressPrimary = await getUsersService().findOneOrThrow(
+                sessionHandler.sessionData.user.id,
+            )
             const charlieWeb3Address = userAfterMakingAddressPrimary.web3Addresses!.find(
                 (bAddress) => bAddress.address === charlieAddress,
             )

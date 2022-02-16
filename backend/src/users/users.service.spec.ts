@@ -291,12 +291,12 @@ describe(`Users Service`, () => {
                 email: 'chuck@email.com',
             })
 
-            const savedUser = await getService().findOne(user.id)
+            const savedUser = await getService().findOneOrThrow(user.id)
 
             expect(savedUser!.id).toBe(user.id)
         })
         it('should throw not found exception if wrong id', async () => {
-            await expect(getService().findOne(uuid())).rejects.toThrow(NotFoundException)
+            await expect(getService().findOneOrThrow(uuid())).rejects.toThrow(NotFoundException)
         })
     })
 
@@ -397,7 +397,7 @@ describe(`Users Service`, () => {
                 email: 'chuck@email.com',
             })
             await getService().delete(user.id)
-            await expect(getService().findOne(user.id)).rejects.toThrow(NotFoundException)
+            await expect(getService().findOneOrThrow(user.id)).rejects.toThrow(NotFoundException)
         })
         it('deletes user and web3 addresses', async () => {
             const user = await getService().createWeb3User({
@@ -406,7 +406,7 @@ describe(`Users Service`, () => {
                 web3Address: bobAddress,
             })
             await getService().delete(user.id)
-            await expect(getService().findOne(user.id)).rejects.toThrow(NotFoundException)
+            await expect(getService().findOneOrThrow(user.id)).rejects.toThrow(NotFoundException)
             const addresses = await getWeb3AddressRepository().find({
                 user: {
                     id: user.id,
@@ -489,7 +489,7 @@ describe(`Users Service`, () => {
             expect(userAfterAssociating.web3Addresses!.length).toBe(2)
 
             await getService().unlinkAddress(userAfterAssociating.id, bobAddress)
-            const userAfterUnlinking = await getService().findOne(user.id)
+            const userAfterUnlinking = await getService().findOneOrThrow(user.id)
             expect(userAfterUnlinking.web3Addresses!.length).toBe(1)
             expect(userAfterUnlinking.web3Addresses![0].address).toBe(charlieAddress)
         })
@@ -529,7 +529,7 @@ describe(`Users Service`, () => {
             const userWithTwoAddresses = await getService().associateWeb3Address(user, bobAddress)
 
             await getService().makeAddressPrimary(userWithTwoAddresses.id, bobAddress)
-            const userWithChangedPrimaryAddress = await getService().findOne(user.id)
+            const userWithChangedPrimaryAddress = await getService().findOneOrThrow(user.id)
 
             const bobWeb3Address = userWithChangedPrimaryAddress.web3Addresses!.find(
                 (bAddress) => bAddress.address === bobAddress,

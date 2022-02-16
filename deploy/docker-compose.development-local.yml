@@ -46,7 +46,6 @@ services:
             - POSTGRESQL_HOST=database
             - POSTGRESQL_PORT=5432
             - POSTGRESQL_DATABASE_NAME=treasury_authorization
-            - ACCESS_TOKEN_VALIDITY=60
         restart: unless-stopped
     authorization-test:
         container_name: authorization-test

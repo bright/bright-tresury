@@ -58,7 +58,7 @@ describe(`Web3 Associate Controller`, () => {
                     .post('/api/v1/auth/web3/associate/confirm')
                     .send({ address: charlieAddress, signature: uuid() } as ConfirmSignMessageRequestDto),
             )
-            const userWithAssociatedAddress = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+            const userWithAssociatedAddress = await getUsersService().findOneOrThrow(sessionHandler.sessionData.user.id)
 
             const addresses = userWithAssociatedAddress.web3Addresses!.map((web3Address) => web3Address.address)
 

@@ -2,10 +2,10 @@ import { gql } from 'graphql-request'
 
 const onchainLinkTreasuryProposal = gql`
     fragment onchainLinkTreasuryProposal on onchain_links {
-        id,
-        proposer_address,
-        onchain_treasury_proposal_id,
-        onchain_motion_id,
+        id
+        proposer_address
+        onchain_treasury_proposal_id
+        onchain_motion_id
         onchain_treasury_spend_proposal(where: {}) {
             id
             beneficiary
@@ -17,7 +17,7 @@ const onchainLinkTreasuryProposal = gql`
                 id
                 status
                 blockNumber {
-                  number
+                    number
                 }
             }
         }
@@ -25,50 +25,75 @@ const onchainLinkTreasuryProposal = gql`
 `
 
 const treasuryProposalPost = gql`
-fragment treasuryProposalPost on posts {
-    content
-    id
-    title
-    onchain_link {
-        ...onchainLinkTreasuryProposal
+    fragment treasuryProposalPost on posts {
+        content
+        id
+        title
+        onchain_link {
+            ...onchainLinkTreasuryProposal
+        }
     }
-}
-${onchainLinkTreasuryProposal}
+    ${onchainLinkTreasuryProposal}
 `
 
 export const OneTreasuryProposalPost = gql`
-query TreasuryProposalPost ($id:Int!) {
-        posts(where: {onchain_link: {onchain_treasury_proposal_id: {_eq: $id}}}) {
+    query TreasuryProposalPost($id: Int!) {
+        posts(where: { onchain_link: { onchain_treasury_proposal_id: { _eq: $id } } }) {
             ...treasuryProposalPost
         }
-}
-${treasuryProposalPost}
+    }
+    ${treasuryProposalPost}
 `
-export const OnChainTreasuryProposalPosts = gql`
-query OnChainTreasuryProposalPosts ($offset: Int! = 0, $limit: Int! = 1000, $ids:[Int!]) {
+
+export const TreasuryProposalPosts = gql`
+    query TreasuryProposalPosts(
+        $offset: Int! = 0
+        $limit: Int! = 1000
+        $excludeIndexes: [Int!]
+        $includeIndexes: [Int!]
+        $proposers: [String!]
+    ) {
         posts(
             offset: $offset
             limit: $limit
-            where: {onchain_link: {onchain_treasury_proposal_id: {_in: $ids}}}
-            order_by: {onchain_link: {onchain_treasury_proposal_id: desc}}
+            where: {
+                onchain_link: {
+                    _and: [
+                        { onchain_treasury_proposal_id: { _is_null: false, _nin: $excludeIndexes } }
+                        {
+                            _or: [
+                                { onchain_treasury_proposal_id: { _in: $includeIndexes } }
+                                { proposer_address: { _in: $proposers } }
+                            ]
+                        }
+                    ]
+                }
+            }
+            order_by: { onchain_link: { onchain_treasury_proposal_id: desc } }
         ) {
             ...treasuryProposalPost
         }
-}
-${treasuryProposalPost}
+    }
+    ${treasuryProposalPost}
 `
-
-export const OffChainTreasuryProposalPosts = gql`
-query OffChainTreasuryProposalPosts ($offset: Int! = 0, $limit: Int! = 1000, $ids:[Int!]) {
-        posts(
-            offset: $offset
-            limit: $limit
-            where: {onchain_link: {onchain_treasury_proposal_id: {_is_null: false, _nin: $ids}}}
-            order_by: {onchain_link: {onchain_treasury_proposal_id: desc}}
+export const TreasuryProposalPostsCount = gql`
+    query TreasuryProposalPostsCount($excludeIndexes: [Int!], $includeIndexes: [Int!], $proposers: [String!]) {
+        onchain_links_aggregate(
+            where: {
+                _and: [
+                    { onchain_treasury_proposal_id: { _is_null: false, _nin: $excludeIndexes } }
+                    {
+                        _or: [
+                            { onchain_treasury_proposal_id: { _in: $includeIndexes } }
+                            { proposer_address: { _in: $proposers } }
+                        ]
+                    }
+                ]
+            }
         ) {
-            ...treasuryProposalPost
+            aggregate {
+                count
+            }
         }
-}
-${treasuryProposalPost}
+    }
 `
-

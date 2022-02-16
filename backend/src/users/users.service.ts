@@ -1,6 +1,7 @@
 import {
     BadRequestException,
-    ConflictException, Inject,
+    ConflictException,
+    Inject,
     Injectable,
     InternalServerErrorException,
     NotFoundException,
@@ -20,6 +21,7 @@ import { ClassConstructor } from 'class-transformer/types/interfaces'
 import { AssociateEmailAccountDto } from './dto/associate-email-account.dto'
 import { CreateWeb3AddressDto } from './web3-addresses/create-web3-address.dto'
 import { SignInAttemptService } from './sign-in-attempt/sign-in-attempt.service'
+import { Nil } from '../utils/types'
 
 @Injectable()
 export class UsersService {
@@ -27,10 +29,14 @@ export class UsersService {
         @InjectRepository(UserEntity)
         private readonly userRepository: Repository<UserEntity>,
         private readonly web3AddressService: Web3AddressesService,
-        private readonly signInAttemptService: SignInAttemptService
+        private readonly signInAttemptService: SignInAttemptService,
     ) {}
 
-    async findOne(id: string): Promise<UserEntity> {
+    async findOne(id: string): Promise<Nil<UserEntity>> {
+        return this.userRepository.findOne(id, { relations: ['web3Addresses'] })
+    }
+
+    async findOneOrThrow(id: string): Promise<UserEntity> {
         try {
             return await this.findOneOrFail({ id })
         } catch (e: any) {
@@ -77,7 +83,7 @@ export class UsersService {
         } else if (users.length > 1) {
             throw new InternalServerErrorException('There are multiple users with the same web3 address')
         } else {
-            return this.findOne(users[0].id)
+            return this.findOneOrThrow(users[0].id)
         }
     }
 
@@ -89,7 +95,7 @@ export class UsersService {
         await this.validateUser(createUserDto)
         const user = new UserEntity(createUserDto.authId, createUserDto.username, createUserDto.email, true)
         const createdUser = await this.userRepository.save(user)
-        return (await this.findOne(createdUser.id))!
+        return (await this.findOneOrThrow(createdUser.id))!
     }
 
     async associateEmailAccount(id: string, dto: AssociateEmailAccountDto): Promise<UserEntity> {
@@ -99,10 +105,10 @@ export class UsersService {
         if (dto.username) {
             await this.validateUsername(dto.username)
         }
-        const user = await this.findOne(id)
+        const user = await this.findOneOrThrow(id)
         const userToSave = { ...user, ...dto, isEmailPasswordEnabled: true }
         await this.userRepository.save(userToSave)
-        return (await this.findOne(id))!
+        return (await this.findOneOrThrow(id))!
     }
 
     async createWeb3User(createWeb3UserDto: CreateWeb3UserDto): Promise<UserEntity> {
@@ -111,7 +117,7 @@ export class UsersService {
             new UserEntity(createWeb3UserDto.authId, createWeb3UserDto.username, createWeb3UserDto.username, false, []),
         )
         await this.web3AddressService.create(new CreateWeb3AddressDto(createWeb3UserDto.web3Address, user))
-        return (await this.findOne(user.id))!
+        return (await this.findOneOrThrow(user.id))!
     }
 
     async associateWeb3Address(user: UserEntity, address: string): Promise<UserEntity> {
@@ -124,22 +130,22 @@ export class UsersService {
             throw new BadRequestException('Address already associated')
         }
         await this.web3AddressService.create(new CreateWeb3AddressDto(address, user))
-        return (await this.findOne(user.id))!
+        return (await this.findOneOrThrow(user.id))!
     }
 
     async delete(id: string) {
-        const currentUser = await this.findOne(id)
+        const currentUser = await this.findOneOrThrow(id)
         await this.userRepository.remove(currentUser)
     }
 
     async unlinkAddress(userId: string, address: string) {
-        const user = await this.findOne(userId)
+        const user = await this.findOneOrThrow(userId)
         const web3Address = await this.checkIfAddressBelongsToTheUser(user, address)
         await this.web3AddressService.deleteAddress(web3Address)
     }
 
     async makeAddressPrimary(userId: string, address: string) {
-        const user = await this.findOne(userId)
+        const user = await this.findOneOrThrow(userId)
         await this.checkIfAddressBelongsToTheUser(user, address)
         await this.web3AddressService.makePrimary(user.id, address)
     }

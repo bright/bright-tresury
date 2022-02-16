@@ -1,5 +1,5 @@
 import { BadRequestException, ForbiddenException } from '@nestjs/common'
-import { BlockchainProposal } from '../../blockchain/dto/blockchain-proposal.dto'
+import { BlockchainProposal, BlockchainProposalStatus } from '../../blockchain/dto/blockchain-proposal.dto'
 import { UserEntity } from '../../users/user.entity'
 import { Nil } from '../../utils/types'
 import { ProposalEntity } from '../entities/proposal.entity'
@@ -62,4 +62,5 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
         this.isOwnerOrThrow(user)
         this.blockchain.isEditableOrThrow()
     }
+    hasBlockchainProposalStatus = (status?: BlockchainProposalStatus) => this.blockchain.status === status
 }

@@ -2,7 +2,7 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
+import { BlockchainProposal, BlockchainProposalStatus } from '../blockchain/dto/blockchain-proposal.dto'
 import { toCreateIdeaProposalDetailsDto } from '../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { IdeaProposalDetailsService } from '../idea-proposal-details/idea-proposal-details.service'
 import { IdeaNetworkEntity } from '../ideas/entities/idea-network.entity'
@@ -15,13 +15,20 @@ import { Nil } from '../utils/types'
 import { BlockchainProposalWithDomainDetails } from './dto/blockchain-proposal-with-domain-details.dto'
 import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
-import { PolkassemblyService } from '../polkassembly/polkassembly.service'
+import { GetPosts, PolkassemblyService } from '../polkassembly/polkassembly.service'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
 import { TimeFrame } from '../utils/time-frame.query'
 import { PolkassemblyTreasuryProposalPostDto } from '../polkassembly/dto/treasury-proposal-post.dto'
 import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
+import { ProposalDto, ProposalStatus } from './dto/proposal.dto'
+import { UsersService } from '../users/users.service'
+import { UserEntity } from '../users/user.entity'
+import { ProposalsFilterQuery } from './proposals-filter.query'
+import { arrayToMap, keysAsArray } from '../utils/arrayToMap'
+import { ObjectLiteral } from 'typeorm/common/ObjectLiteral'
+import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
 
 const logger = getLogger()
 
@@ -39,22 +46,24 @@ export class ProposalsService {
         private readonly milestoneDetailsService: MilestoneDetailsService,
         @InjectRepository(ProposalMilestoneEntity)
         private readonly proposalMilestonesRepository: Repository<ProposalMilestoneEntity>,
-        @Inject(PolkassemblyService)
         private readonly polkassemblyService: PolkassemblyService,
+        private readonly usersService: UsersService,
     ) {}
 
     async find(
         networkId: string,
-        timeFrame: TimeFrame,
-        paginatedParams: PaginatedParams
+        { ownerId, timeFrame, status }: ProposalsFilterQuery,
+        paginatedParams: PaginatedParams,
     ): Promise<PaginatedResponseDto<BlockchainProposalWithDomainDetails>> {
+        const owner = ownerId ? await this.usersService.findOne(ownerId) : null
+        if (ownerId && !owner) {
+            // if ownerId was provided but the user does not exists return empty response
+            // because no proposal is assigned to not existing user
+            return PaginatedResponseDto.empty()
+        }
         try {
-            if (timeFrame === TimeFrame.OnChain) {
-                return this.findOnChain(networkId, paginatedParams)
-            } else if (timeFrame === TimeFrame.History) {
-                return this.findOffChain(networkId, paginatedParams)
-            } else
-                return PaginatedResponseDto.empty()
+            if (timeFrame === TimeFrame.OnChain) return this.findOnChain(networkId, owner, status, paginatedParams)
+            else return this.findOffChain(networkId, owner, paginatedParams)
         } catch (error) {
             logger.error(error)
             return PaginatedResponseDto.empty()
@@ -62,62 +71,76 @@ export class ProposalsService {
     }
     private async findOnChain(
         networkId: string,
-        paginatedParams: PaginatedParams
+        owner: Nil<UserEntity>,
+        status: Nil<ProposalStatus>,
+        paginatedParams: PaginatedParams,
     ) {
-        const allBlockchainProposals = await this.blockchainService.getProposals(networkId)
-        const blockchainIndexes = allBlockchainProposals
-            .sort((bp1, bp2) => bp2.proposalIndex - bp1.proposalIndex)
-            .map(bp => bp.proposalIndex)
-        if(!blockchainIndexes.length)
-            return PaginatedResponseDto.empty()
-        const paginatedBlockchainIndexes: number[] = blockchainIndexes.slice(paginatedParams.offset, paginatedParams.offset+paginatedParams.pageSize)
-        const databaseProposals = await this.proposalsRepository.find({
-            where: { blockchainProposalId: In(paginatedBlockchainIndexes), networkId },
+        const blockchainProposals = await this.getMappedBlockchainProposals(networkId)
+
+        if (!blockchainProposals.size) return PaginatedResponseDto.empty()
+
+        const proposalIndexes = keysAsArray(blockchainProposals).sort((a, b) => b - a)
+
+        const databaseProposals = await this.getMappedEntityProposals({
+            where: { blockchainProposalId: In(proposalIndexes), networkId },
             relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
         })
-        const polkassemblyProposalsPosts = await this.polkassemblyService.getProposals({
-            indexes: paginatedBlockchainIndexes,
-            networkId,
-            onChain: true
-        })
 
-        const items = paginatedBlockchainIndexes.map(blockchainIndex => {
-            const blockchainProposal = allBlockchainProposals.find(bp => bp.proposalIndex === blockchainIndex)!
-            const entity = databaseProposals.find(dp => dp.blockchainProposalId === blockchainIndex)
-            const polkassemblyProposal = polkassemblyProposalsPosts.find(pp => pp.blockchainIndex === blockchainIndex)
-            return this.mergeProposal(blockchainProposal, entity, polkassemblyProposal)
+        const polkassemblyProposalsPosts = await this.getMappedPolkassemblyProposals({
+            networkId,
+            includeIndexes: proposalIndexes,
+            excludeIndexes: null,
+            proposers: [],
         })
-        const total = allBlockchainProposals.length
-        return {items, total}
+        const allItems = proposalIndexes
+            .map((blockchainIndex: number) =>
+                this.mergeProposal(
+                    blockchainProposals.get(blockchainIndex)!,
+                    databaseProposals.get(blockchainIndex),
+                    polkassemblyProposalsPosts.get(blockchainIndex),
+                ),
+            )
+            .filter(
+                (proposal) =>
+                    !status || proposal.hasBlockchainProposalStatus(ProposalDto.fromProposalDtoStatus(status)),
+            )
+            .filter((proposal) => !owner || proposal.isOwner(owner))
+        // Note: filtering added in code, not in DB/polkassembly query because we don't get a lot of active on chain proposals
+        return {
+            items: paginatedParams.slice(allItems),
+            total: allItems.length,
+        }
     }
 
-    private async findOffChain(
-        networkId: string,
-        paginatedParams: PaginatedParams
-    ) {
-        const allBlockchainProposals = await this.blockchainService.getProposals(networkId)
-        const blockchainIndexes = allBlockchainProposals
-            .sort((bp1, bp2) => bp2.proposalIndex - bp1.proposalIndex)
-            .map(bp => bp.proposalIndex)
-        const polkassemblyProposalsPosts = await this.polkassemblyService.getProposals({
-            indexes: blockchainIndexes,
-            networkId,
-            onChain: false,
-            paginatedParams,
-        })
-        const offChainBlockchainIndexes: number[] = polkassemblyProposalsPosts.map(pp => pp.blockchainIndex)
-        const databaseProposals = await this.proposalsRepository.find({
+    private async findOffChain(networkId: string, owner: Nil<UserEntity>, paginatedParams: PaginatedParams) {
+        const blockchainProposals = await this.getMappedBlockchainProposals(networkId)
+
+        const excludeIndexes = keysAsArray(blockchainProposals)
+        const includeIndexes = await this.getOwnerProposalsIndexes(networkId, owner)
+        const proposers = this.getOwnerAddresses(networkId, owner)
+
+        const polkassemblySearchOptions = { networkId, excludeIndexes, includeIndexes, proposers }
+
+        const [polkassemblyProposalsPosts, total] = await Promise.all([
+            this.getMappedPolkassemblyProposals({ ...polkassemblySearchOptions, paginatedParams }),
+            this.polkassemblyService.getProposalsCount(polkassemblySearchOptions),
+        ])
+
+        const offChainBlockchainIndexes = keysAsArray(polkassemblyProposalsPosts).sort((a, b) => b - a)
+
+        const databaseProposals = await this.getMappedEntityProposals({
             where: { blockchainProposalId: In(offChainBlockchainIndexes), networkId },
             relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
         })
-        const items = offChainBlockchainIndexes.map(blockchainIndex => {
-            const polkassemblyProposal = polkassemblyProposalsPosts.find(pp => pp.blockchainIndex === blockchainIndex)!
-            const blockchainProposal = polkassemblyProposal.asBlockchainProposal()
-            const entity = databaseProposals.find(dp => dp.blockchainProposalId === blockchainIndex)
-            return this.mergeProposal(blockchainProposal, entity, polkassemblyProposal)
-        })
-        const total = await this.getTotalProposalsCount(networkId) - allBlockchainProposals.length
-        return {items, total}
+        const items = offChainBlockchainIndexes.map((blockchainIndex) =>
+            this.mergeProposal(
+                polkassemblyProposalsPosts.get(blockchainIndex)!.asBlockchainProposal(),
+                databaseProposals.get(blockchainIndex),
+                polkassemblyProposalsPosts.get(blockchainIndex),
+            ),
+        )
+
+        return { items, total }
     }
 
     async findOne(blockchainProposalId: number, networkId: string): Promise<BlockchainProposalWithDomainDetails> {
@@ -226,5 +249,36 @@ export class ProposalsService {
         blockchainIndex: number,
     ): Promise<(ProposedMotionDto | ExecutedMotionDto)[]> {
         return this.polkassemblyService.getProposalMotions(blockchainIndex, networkId)
+    }
+    getOwnerAddresses(networkId: string, owner: Nil<UserEntity>): string[] | null {
+        if (!owner || !owner.web3Addresses) return null
+        return owner.web3Addresses.map((w3address) =>
+            this.blockchainService.encodeAddress(w3address.address, networkId),
+        )
+    }
+    async getOwnerProposalsIndexes(networkId: string, owner: Nil<UserEntity>): Promise<number[] | null> {
+        if (!owner) return null
+        const proposals = await this.proposalsRepository
+            .createQueryBuilder('proposals')
+            .select('proposals.blockchainProposalId')
+            .where('proposals.networkId = :networkId', { networkId })
+            .andWhere('proposals.ownerId = :ownerId', { ownerId: owner.id })
+            .getMany()
+
+        return proposals.map((proposal) => proposal.blockchainProposalId)
+    }
+
+    async getMappedBlockchainProposals(networkId: string): Promise<Map<number, BlockchainProposal>> {
+        return arrayToMap(await this.blockchainService.getProposals(networkId), 'proposalIndex')
+    }
+
+    async getMappedEntityProposals(options: FindManyOptions): Promise<Map<number, ProposalEntity>> {
+        return arrayToMap(await this.proposalsRepository.find(options), 'blockchainProposalId')
+    }
+
+    private async getMappedPolkassemblyProposals(
+        options: GetPosts,
+    ): Promise<Map<number, PolkassemblyTreasuryProposalPostDto>> {
+        return arrayToMap(await this.polkassemblyService.getProposals(options), 'blockchainIndex')
     }
 }

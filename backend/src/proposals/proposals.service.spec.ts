@@ -10,7 +10,8 @@ import { ProposalEntity } from './entities/proposal.entity'
 import { ProposalMilestoneEntity } from './proposal-milestones/entities/proposal-milestone.entity'
 import { ProposalsService } from './proposals.service'
 import {
-    mockGetProposalAndGetProposals, mockListenForExtrinsic,
+    mockGetProposalAndGetProposals,
+    mockListenForExtrinsic,
     setUpIdea,
     setUpIdeaWithMilestone,
 } from './spec.helpers'
@@ -18,10 +19,15 @@ import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/id
 import { NetworkPlanckValue } from '../utils/types'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { TimeFrame } from '../utils/time-frame.query'
+import { ProposalStatus } from './dto/proposal.dto'
+import { BlockchainProposalStatus } from '../blockchain/dto/blockchain-proposal.dto'
+import { UsersService } from '../users/users.service'
+import { v4 as uuid } from 'uuid'
 
 describe('ProposalsService', () => {
     const app = beforeSetupFullApp()
 
+    const usersService = beforeAllSetup(() => app().get<UsersService>(UsersService))
     const proposalsService = beforeAllSetup(() => app().get<ProposalsService>(ProposalsService))
     const proposalsRepository = beforeAllSetup(() =>
         app().get<Repository<ProposalEntity>>(getRepositoryToken(ProposalEntity)),
@@ -51,10 +57,15 @@ describe('ProposalsService', () => {
                 app(),
                 sessionHandler,
             )
+
             await proposalsService().createFromIdea(idea, 0, ideaNetwork)
             await proposalsService().createFromMilestone(ideaWithMilestone, 1, ideaMilestoneNetwork, ideaMilestone)
 
-            const paginated = await proposalsService().find(NETWORKS.POLKADOT, TimeFrame.OnChain, new PaginatedParams({}))
+            const paginated = await proposalsService().find(
+                NETWORKS.POLKADOT,
+                { ownerId: null, status: null, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
             const proposals = paginated.items
             expect(proposals).toHaveLength(4)
 
@@ -99,6 +110,49 @@ describe('ProposalsService', () => {
             expect(proposal3!.isCreatedFromIdeaMilestone).toBe(false)
             expect(proposal3!.ideaId).toBeUndefined()
             expect(proposal3!.ideaMilestoneId).toBeUndefined()
+        })
+        it('should return proposals with Submitted/Proposal status only', async () => {
+            const submittedPaginatedProposals = await proposalsService().find(
+                NETWORKS.POLKADOT,
+                { ownerId: null, status: ProposalStatus.Submitted, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+
+            expect([...new Set(submittedPaginatedProposals.items.map((p) => p.blockchain.status))]).toEqual([
+                BlockchainProposalStatus.Proposal,
+            ])
+
+            expect(submittedPaginatedProposals.items).not.toHaveLength(0)
+            for (const proposal of submittedPaginatedProposals.items)
+                expect(proposal.blockchain.status).toBe(BlockchainProposalStatus.Proposal)
+        })
+        it('should return proposals owned by proposer', async () => {
+            const owner = await usersService().createWeb3User({
+                authId: uuid(),
+                username: uuid(),
+                web3Address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+            })
+
+            const paginatedProposals = await proposalsService().find(
+                NETWORKS.POLKADOT,
+                { ownerId: owner.id, status: null, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            expect(paginatedProposals.items).not.toHaveLength(0)
+            for (const proposal of paginatedProposals.items) expect(proposal.isOwner(owner)).toBe(true)
+        })
+        it('should return proposals owned by owner', async () => {
+            const { idea, ideaNetwork, sessionHandler } = await setUpIdea(app())
+            await proposalsService().createFromIdea(idea, 0, ideaNetwork)
+
+            const paginatedProposals = await proposalsService().find(
+                NETWORKS.POLKADOT,
+                { ownerId: sessionHandler.sessionData.user.id, status: null, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            expect(paginatedProposals.items).not.toHaveLength(0)
+            for (const proposal of paginatedProposals.items)
+                expect(proposal.isOwner(sessionHandler.sessionData.user)).toBe(true)
         })
     })
 

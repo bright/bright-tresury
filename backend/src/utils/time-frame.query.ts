@@ -1,16 +1,17 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsOptional } from 'class-validator'
+import { IsEnum, IsOptional } from 'class-validator'
 
 export enum TimeFrame {
     OnChain = 'onChain',
-    History = 'history'
+    History = 'history',
 }
 
 export class TimeFrameQuery {
     @ApiPropertyOptional({
         description: 'Time frame',
-        enum: TimeFrame
+        enum: TimeFrame,
     })
     @IsOptional()
-    timeFrame?: TimeFrame
+    @IsEnum(TimeFrame)
+    timeFrame: TimeFrame = TimeFrame.OnChain
 }

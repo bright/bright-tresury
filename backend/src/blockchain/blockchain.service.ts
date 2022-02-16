@@ -12,7 +12,13 @@ import { getLogger } from '../logging.module'
 import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import { getApi, extractNumberFromBlockchainEvent, getAccounts, accountIdToAddress } from './utils'
+import {
+    getApi,
+    extractNumberFromBlockchainEvent,
+    getAccounts,
+    accountIdToAddress,
+    getBlockchainConfiguration,
+} from './utils'
 import { BlockchainsConnections } from './blockchain.module'
 import { StatsDto } from '../stats/stats.dto'
 import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
@@ -22,6 +28,7 @@ import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configurat
 import { BlockchainTimeLeft } from './dto/blockchain-time-left.dto'
 import { MotionTimeDto, MotionTimeType } from './dto/motion-time.dto'
 import { DeriveTreasuryProposal } from '@polkadot/api-derive/types'
+import { encodeAddress } from '@polkadot/keyring'
 
 const logger = getLogger()
 
@@ -357,5 +364,10 @@ export class BlockchainService implements OnModuleDestroy {
         const api = getApi(this.blockchainsConnections, networkId)
         const count = await api.query.treasury.proposalCount()
         return count.toNumber()
+    }
+
+    encodeAddress(address: string, networkId: string): string {
+        const blockchainConfiguration = getBlockchainConfiguration(this.blockchainsConfiguration, networkId)
+        return encodeAddress(address, blockchainConfiguration.ss58Format)
     }
 }

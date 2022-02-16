@@ -9,7 +9,7 @@ import { IdeaMilestoneNetworkEntity } from '../ideas/idea-milestones/entities/id
 import { IdeaMilestoneEntity } from '../ideas/idea-milestones/entities/idea-milestone.entity'
 import { createIdea, createIdeaMilestone, createSessionData } from '../ideas/spec.helpers'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
-import { ProposalDto } from './dto/proposal.dto'
+import { ProposalDto, ProposalStatus } from './dto/proposal.dto'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { mockGetProposalAndGetProposals } from './spec.helpers'
 import { IdeaMilestoneNetworkStatus } from '../ideas/idea-milestones/entities/idea-milestone-network-status'
@@ -184,29 +184,55 @@ describe(`/api/v1/proposals`, () => {
             })
         })
         it('should return correctly paginated response - first page', async () => {
-            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=2`))
-            const { items, total}: {items: ProposalDto[], total: number} = response.body
+            const response = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=2`)
+            const { items, total }: { items: ProposalDto[]; total: number } = response.body
             expect(Array.isArray(items)).toBe(true)
             expect(items).toHaveLength(2)
             expect(total).toBe(4)
-            expect(items.find(proposal => proposal.proposalIndex === 3)).toBeDefined()
-            expect(items.find(proposal => proposal.proposalIndex === 2)).toBeDefined()
+            expect(items.find((proposal) => proposal.proposalIndex === 3)).toBeDefined()
+            expect(items.find((proposal) => proposal.proposalIndex === 2)).toBeDefined()
         })
         it('should return correctly paginated response - seconds page', async () => {
-            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=2&pageSize=2`))
-            const { items, total}: {items: ProposalDto[], total: number} = response.body
+            const response = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=2&pageSize=2`)
+            const { items, total }: { items: ProposalDto[]; total: number } = response.body
             expect(Array.isArray(items)).toBe(true)
             expect(items).toHaveLength(2)
             expect(total).toBe(4)
-            expect(items.find(bounty => bounty.proposalIndex === 1)).toBeDefined()
-            expect(items.find(bounty => bounty.proposalIndex === 0)).toBeDefined()
+            expect(items.find((bounty) => bounty.proposalIndex === 1)).toBeDefined()
+            expect(items.find((bounty) => bounty.proposalIndex === 0)).toBeDefined()
         })
         it('should return no more than pageNumber*pageSize data in response', async () => {
-            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=200`))
-            const { items, total}: {items: ProposalDto[], total: number} = response.body
+            const response = await request(app()).get(
+                `${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=200`,
+            )
+            const { items, total }: { items: ProposalDto[]; total: number } = response.body
             expect(Array.isArray(items)).toBe(true)
             expect(items).toHaveLength(4)
             expect(total).toBe(4)
+        })
+
+        it(`should return ${HttpStatus.OK} for filter by status request`, async () => {
+            return request(app())
+                .get(`${baseUrl}?network=${NETWORKS.POLKADOT}&status=${ProposalStatus.Submitted}`)
+                .expect(HttpStatus.OK)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for filter by wrong status request`, async () => {
+            return request(app())
+                .get(`${baseUrl}?network=${NETWORKS.POLKADOT}&status=XYZ`)
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.OK} for filter by ownerId request`, async () => {
+            return request(app())
+                .get(`${baseUrl}?network=${NETWORKS.POLKADOT}&ownerId=${idea.ownerId}`)
+                .expect(HttpStatus.OK)
+        })
+
+        it(`should return ${HttpStatus.OK} for filter by bad ownerId request`, async () => {
+            return request(app())
+                .get(`${baseUrl}?network=${NETWORKS.POLKADOT}&ownerId=XYZ`)
+                .expect(HttpStatus.BAD_REQUEST)
         })
     })
 

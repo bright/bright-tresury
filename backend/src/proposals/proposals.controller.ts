@@ -8,7 +8,6 @@ import { ProposalsService } from './proposals.service'
 import { NetworkNameQuery } from '../utils/network-name.query'
 import { PaginatedParams, PaginatedQueryParams } from '../utils/pagination/paginated.param'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
-import { TimeFrame, TimeFrameQuery } from '../utils/time-frame.query'
 import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 import { ProposalParam } from './proposal.param'
@@ -28,13 +27,16 @@ export class ProposalsController {
     })
     async getProposals(
         @Query() { network }: NetworkNameQuery,
-        @Query() { filter }: ProposalsFilterQuery,
-        @Query() { timeFrame = TimeFrame.OnChain }: TimeFrameQuery,
-        @Query() { pageNumber, pageSize }: PaginatedQueryParams,
+        @Query() proposalsFilterQuery: ProposalsFilterQuery,
+        @Query() paginatedQueryParams: PaginatedQueryParams,
     ): Promise<PaginatedResponseDto<ProposalDto>> {
-        logger.info(`Getting proposals for network: ${network} ${timeFrame} ${filter}`)
-        const paginatedParams = new PaginatedParams({ pageNumber, pageSize })
-        const { items, total } = await this.proposalsService.find(network, timeFrame, paginatedParams)
+        logger.info(`Getting proposals for network: ${network}`, proposalsFilterQuery)
+
+        const { items, total } = await this.proposalsService.find(
+            network,
+            proposalsFilterQuery,
+            new PaginatedParams(paginatedQueryParams),
+        )
         return {
             items: items.map((withDomainDetails) => new ProposalDto(withDomainDetails)),
             total,

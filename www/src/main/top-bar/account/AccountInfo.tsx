@@ -18,7 +18,6 @@ import { IdeaFilter, IdeaFilterSearchParamName } from '../../../ideas/list/IdeaS
 import { useGetIdeas } from '../../../ideas/ideas.api'
 import { filterIdeas } from '../../../ideas/list/filterIdeas'
 import { useGetProposals } from '../../../proposals/proposals.api'
-import { filterProposals } from '../../../proposals/list/filterProposals'
 import { TimeFrame } from '../../../util/useTimeFrame'
 import { ProposalFilter } from '../../../proposals/useProposalsFilter'
 
@@ -37,7 +36,14 @@ const AccountInfo = () => {
     const { user } = useAuth()
     const { network } = useNetworks()
     const { data: ideas } = useGetIdeas(network.id)
-    const { data: proposals } = useGetProposals(network.id, ProposalFilter.Mine, TimeFrame.OnChain, 100)
+    const { data: proposals } = useGetProposals({
+        network: network.id,
+        ownerId: user?.id,
+        status: null,
+        timeFrame: TimeFrame.OnChain,
+        pageNumber: 1,
+        pageSize: 100,
+    })
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
 

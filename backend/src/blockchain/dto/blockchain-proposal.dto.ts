@@ -11,7 +11,7 @@ import { NetworkPlanckValue } from '../../utils/types'
 export enum BlockchainProposalStatus {
     Proposal = 'proposal',
     Approval = 'approval',
-    Unknown = 'unknown'
+    Unknown = 'unknown',
 }
 
 export class BlockchainProposal {

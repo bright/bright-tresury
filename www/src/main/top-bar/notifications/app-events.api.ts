@@ -1,6 +1,6 @@
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { apiGet, apiPatch } from '../../../api'
-import { getPaginationQueryParams, PaginationRequestParams } from '../../../util/pagination/pagination.request.params'
+import { apiGet, apiPatch, getUrlSearchParams } from '../../../api'
+import { PaginationRequestParams } from '../../../util/pagination/pagination.request.params'
 import { PaginationResponseDto } from '../../../util/pagination/pagination.response.dto'
 import { AppEventDto, AppEventType } from './app-events.dto'
 
@@ -19,26 +19,8 @@ interface GetAppEventsApiParams {
     networkId?: string
 }
 
-function getAppEvents({
-    userId,
-    isRead,
-    appEventType,
-    ideaId,
-    proposalIndex,
-    networkId,
-    pageSize,
-    pageNumber,
-}: GetAppEventsApiParams & PaginationRequestParams) {
-    let url = `${appEventsApiPath(userId)}?${getPaginationQueryParams({
-        pageSize,
-        pageNumber,
-    })}`
-    url += isRead !== undefined ? `&isRead=${isRead}` : ''
-    url += appEventType !== undefined ? `&appEventType=${appEventType}` : ''
-    url += ideaId !== undefined ? `&ideaId=${ideaId}` : ''
-    url += proposalIndex !== undefined ? `&proposalIndex=${proposalIndex}` : ''
-    url += networkId !== undefined ? `&networkId=${networkId}` : ''
-
+function getAppEvents({ userId, ...params }: GetAppEventsApiParams & PaginationRequestParams) {
+    let url = `${appEventsApiPath(userId)}?${getUrlSearchParams(params).toString()}`
     return apiGet<PaginationResponseDto<AppEventDto>>(url)
 }
 

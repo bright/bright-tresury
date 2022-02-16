@@ -98,7 +98,7 @@ describe(`Auth Email Password Associate Service`, () => {
                 sessionHandler.sessionData,
             )
 
-            const updatedUser = await getUsersService().findOne(sessionHandler.sessionData.user.id)
+            const updatedUser = await getUsersService().findOneOrThrow(sessionHandler.sessionData.user.id)
             expect(updatedUser).toBeDefined()
             expect(updatedUser.username).toBe('bob')
             expect(updatedUser.email).toBe('bob@example.com')

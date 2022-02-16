@@ -47,12 +47,17 @@ export const OneBountyPost = gql`
     ${bountyPost}
 `
 
-export const OnChainBountyPosts = gql`
-    query OnChainBountyPostAndComments($offset: Int! = 0, $limit: Int! = 1000, $ids: [Int!]) {
+export const BountyPosts = gql`
+    query OnChainBountyPostAndComments(
+        $offset: Int! = 0
+        $limit: Int! = 1000
+        $includeIndexes: [Int!]
+        $excludeIndexes: [Int!]
+    ) {
         posts(
             offset: $offset
             limit: $limit
-            where: { onchain_link: { onchain_bounty_id: { _in: $ids } } }
+            where: { onchain_link: { onchain_bounty_id: { _in: $includeIndexes } } }
             order_by: { onchain_link: { onchain_bounty_id: desc } }
         ) {
             ...bountyPost
@@ -62,11 +67,16 @@ export const OnChainBountyPosts = gql`
 `
 
 export const OffChainBountyPosts = gql`
-    query OffChainBountyPostAndComments($offset: Int! = 0, $limit: Int! = 1000, $ids: [Int!]) {
+    query OffChainBountyPostAndComments(
+        $offset: Int! = 0
+        $limit: Int! = 1000
+        $includeIndexes: [Int!]
+        $excludeIndexes: [Int!]
+    ) {
         posts(
             offset: $offset
             limit: $limit
-            where: { onchain_link: { onchain_bounty_id: { _is_null: false, _nin: $ids } } }
+            where: { onchain_link: { onchain_bounty_id: { _is_null: false, _nin: $excludeIndexes } } }
             order_by: { onchain_link: { onchain_bounty_id: desc } }
         ) {
             ...bountyPost

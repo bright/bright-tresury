@@ -13,7 +13,7 @@ export enum ProposalStatus {
     Approved = 'approved',
     Rejected = 'rejected',
     Rewarded = 'rewarded',
-    Unkown = 'unknown'
+    Unkown = 'unknown',
 }
 
 export class ProposalDto {
@@ -99,23 +99,32 @@ export class ProposalDto {
         this.bond = bond
         this.motions = motions
 
-        switch (status) {
-            case BlockchainProposalStatus.Proposal:
-                this.status = ProposalStatus.Submitted
-                break
-            case BlockchainProposalStatus.Approval:
-                this.status = ProposalStatus.Approved
-                break
-            case BlockchainProposalStatus.Unknown:
-                this.status = ProposalStatus.Unkown
-                break
-        }
-
+        this.status = ProposalDto.toProposalDtoStatus(status)
         this.details = entity ? new IdeaProposalDetailsDto(entity.details) : undefined
         this.isCreatedFromIdea = isCreatedFromIdea
         this.isCreatedFromIdeaMilestone = isCreatedFromIdeaMilestone
         this.ideaId = ideaId
         this.ideaMilestoneId = ideaMilestoneId
         this.ownerId = entity?.ownerId
+    }
+    static toProposalDtoStatus = (status: BlockchainProposalStatus) => {
+        switch (status) {
+            case BlockchainProposalStatus.Proposal:
+                return ProposalStatus.Submitted
+            case BlockchainProposalStatus.Approval:
+                return ProposalStatus.Approved
+            case BlockchainProposalStatus.Unknown:
+                return ProposalStatus.Unkown
+        }
+    }
+    static fromProposalDtoStatus = (status: ProposalStatus) => {
+        switch (status) {
+            case ProposalStatus.Submitted:
+                return BlockchainProposalStatus.Proposal
+            case ProposalStatus.Approved:
+                return BlockchainProposalStatus.Approval
+            case ProposalStatus.Unkown:
+                return BlockchainProposalStatus.Unknown
+        }
     }
 }

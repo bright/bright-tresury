@@ -1,41 +1,40 @@
-import { apiGet } from '../api'
-import { ProposalDto } from './proposals.dto'
+import { apiGet, getUrlSearchParams } from '../api'
+import { ProposalDto, ProposalStatus } from './proposals.dto'
 import { MotionDto } from '../components/voting/motion.dto'
 import { useInfiniteQuery, useQuery, UseQueryOptions } from 'react-query'
-import { getPaginationQueryParams } from '../util/pagination/pagination.request.params'
+import { PaginationRequestParams } from '../util/pagination/pagination.request.params'
 import { PaginationResponseDto } from '../util/pagination/pagination.response.dto'
 import { TimeFrame } from '../util/useTimeFrame'
-import { ProposalFilter } from './useProposalsFilter'
+import { Nil } from '../util/types'
 
 export const PROPOSALS_API_PATH = '/proposals'
 
 // GET (paginated) ALL
 
-function getProposals(
-    network: string,
-    proposalsFilter: ProposalFilter,
-    timeFrame: TimeFrame,
-    pageNumber: number,
-    pageSize?: number,
-) {
-    const networkQuery = `network=${network}`
-    const filterQuery = `filter=${proposalsFilter}`
-    const timeQuery = `timeFrame=${timeFrame}`
-    const paginationQuery = getPaginationQueryParams({ pageNumber, pageSize: pageSize ?? 10 })
+interface GetProposalsApiParams {
+    network: string
+    ownerId: Nil<string>
+    status: Nil<ProposalStatus>
+    timeFrame: TimeFrame
+}
 
-    const url = `${PROPOSALS_API_PATH}?${networkQuery}&${filterQuery}&${timeQuery}&${paginationQuery}`
+function getProposals(params: GetProposalsApiParams & PaginationRequestParams) {
+    const url = `${PROPOSALS_API_PATH}?${getUrlSearchParams(params).toString()}`
     return apiGet<PaginationResponseDto<ProposalDto>>(url)
 }
 
-export const useGetProposals = (
-    network: string,
-    proposalsFilter: ProposalFilter,
-    timeFrame: TimeFrame,
-    pageSize?: number,
-) => {
+export function useGetProposals({
+    network,
+    ownerId,
+    status,
+    timeFrame,
+    pageNumber,
+    pageSize,
+}: GetProposalsApiParams & PaginationRequestParams) {
     return useInfiniteQuery(
-        ['proposals', network, proposalsFilter, timeFrame],
-        ({ pageParam = 1 }) => getProposals(network, proposalsFilter, timeFrame, pageParam, pageSize),
+        ['proposals', network, ownerId, status, timeFrame],
+        ({ pageParam = pageNumber }) =>
+            getProposals({ network, ownerId, status, timeFrame, pageNumber: pageParam, pageSize }),
         {
             getNextPageParam: (lastPage, allPages) => allPages.length + 1,
         },
@@ -45,7 +44,7 @@ export const useGetProposals = (
 // GET ONE
 
 function getProposal(index: string, network: string) {
-    return apiGet<ProposalDto>(`${PROPOSALS_API_PATH}/${index}?network=${network}`)
+    return apiGet<ProposalDto>(`${PROPOSALS_API_PATH}/${index}?${getUrlSearchParams({ network })}`)
 }
 
 export const useGetProposal = (index: string, network: string, options?: UseQueryOptions<ProposalDto>) => {
@@ -58,7 +57,7 @@ export const PROPOSAL_MOTIONS_QUERY_KEY_BASE = 'motions'
 
 async function getMotions(proposalIndex: number, network: string): Promise<MotionDto[]> {
     return apiGet<MotionDto[]>(
-        `${PROPOSALS_API_PATH}/${proposalIndex}/${PROPOSAL_MOTIONS_QUERY_KEY_BASE}/?network=${network}`,
+        `${PROPOSALS_API_PATH}/${proposalIndex}/${PROPOSAL_MOTIONS_QUERY_KEY_BASE}/?${getUrlSearchParams({ network })}`,
     )
 }
 

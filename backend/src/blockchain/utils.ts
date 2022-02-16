@@ -7,6 +7,8 @@ import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { getLogger } from '../logging.module'
 import { BlockchainsConnections } from './blockchain.module'
 import { ApiPromise } from '@polkadot/api'
+import { BlockchainConfig } from './blockchain-configuration/blockchain-configuration.config'
+import { BlockchainProposal } from './dto/blockchain-proposal.dto'
 
 export const BN_TEN = new BN(10)
 
@@ -22,11 +24,7 @@ export const accountIdToAddress = (accountId: AccountId) => accountId.toHuman()
 
 export const getAccounts = (proposal: DeriveTreasuryProposal): AccountId[] => {
     const voters = getVotersFromCouncil(proposal.council)
-    return [
-        proposal.proposal.proposer,
-        proposal.proposal.beneficiary,
-        ...voters
-    ]
+    return [proposal.proposal.proposer, proposal.proposal.beneficiary, ...voters]
 }
 
 export const getVoters = (deriveTreasuryProposals: DeriveTreasuryProposal[]): AccountId[] =>
@@ -56,6 +54,15 @@ export const getApi = (connections: BlockchainsConnections, networkId: string): 
     if (!connections[networkId]) throw new BadRequestException(`Unrecognized network id: ${networkId}`)
 
     return connections[networkId].apiPromise
+}
+
+export const getBlockchainConfiguration = (
+    blockchainConfigurations: BlockchainConfig[],
+    networkId: string,
+): BlockchainConfig => {
+    const blockchainConfiguration = blockchainConfigurations.find((conf) => conf.id === networkId)
+    if (!blockchainConfiguration) throw new BadRequestException(`Unrecognized network id: ${networkId}`)
+    return blockchainConfiguration
 }
 
 export function extractFromBlockchainEvent(
@@ -99,4 +106,8 @@ export function extractNumberFromBlockchainEvent(
             `Found value ${value} is not a number for section: ${sectionName}, method: ${methodName}, arg index: ${argIndex}`,
         )
     }
+}
+
+export function getBlockchainProposalsIndexes(proposals: BlockchainProposal[]) {
+    return proposals.map((p) => p.proposalIndex)
 }

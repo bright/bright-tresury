@@ -6,8 +6,14 @@ import { useTranslation } from 'react-i18next'
 import { breakpoints } from '../../theme/theme'
 import NavSelect from '../../components/select/NavSelect'
 import { useAuth } from '../../auth/AuthContext'
-import { useProposalsFilter, ProposalDefaultFilter, ProposalFilter, ProposalFilterSearchParamName } from '../useProposalsFilter'
-import {useTimeFrame, TimeFrame } from '../../util/useTimeFrame'
+import {
+    ProposalDefaultFilter,
+    ProposalFilter,
+    ProposalFilterSearchParamName,
+    useProposalsFilter,
+} from '../useProposalsFilter'
+import { TimeFrame, useTimeFrame } from '../../util/useTimeFrame'
+import { isOn } from '@polkadot/util/is/helpers'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -28,12 +34,10 @@ const ProposalStatusFilters = () => {
     const { isUserSignedIn } = useAuth()
     const { param: timeFrame } = useTimeFrame()
     const { param: proposalsFilter, setParam: setProposalFilter } = useProposalsFilter()
-    const isOnChain  = useMemo( () => timeFrame === TimeFrame.OnChain, [timeFrame])
+    const isOnChain = useMemo(() => timeFrame === TimeFrame.OnChain, [timeFrame])
 
     const filterValues = useMemo(() => {
-        if(!isOnChain)
-            return [ProposalFilter.All]
-        const filterValues = Object.values(ProposalFilter)
+        const filterValues = isOnChain ? Object.values(ProposalFilter) : [ProposalFilter.All, ProposalFilter.Mine]
         return isUserSignedIn ? filterValues : filterValues.filter((value) => value !== ProposalFilter.Mine)
     }, [isUserSignedIn, isOnChain])
 

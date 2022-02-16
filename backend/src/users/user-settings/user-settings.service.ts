@@ -14,7 +14,7 @@ export class UserSettingsService {
     ) {}
 
     async update(userId: string, dto: UpdateUserSettingsDto): Promise<UserEntity> {
-        const user = await this.usersService.findOne(userId)
+        const user = await this.usersService.findOneOrThrow(userId)
         if (dto.isEmailNotificationEnabled !== undefined && dto.isEmailNotificationEnabled !== null) {
             user.isEmailNotificationEnabled = dto.isEmailNotificationEnabled
         }
