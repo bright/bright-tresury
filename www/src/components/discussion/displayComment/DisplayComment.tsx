@@ -15,6 +15,7 @@ import StyledAvatar from './StyledAvatar'
 import { useTranslation } from 'react-i18next'
 import userDeleted from '../../../assets/user-deleted.svg'
 import { breakpoints } from '../../../theme/theme'
+import Author from '../../author/Author'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,6 +41,12 @@ const useStyles = makeStyles((theme: Theme) =>
             color: theme.palette.text.disabled,
             paddingTop: '6px',
             height: '100%',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                paddingTop: '12px',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                paddingTop: '6px',
+            },
         },
         error: {
             fontSize: '12px',
@@ -47,18 +54,19 @@ const useStyles = makeStyles((theme: Theme) =>
             margin: 0,
             marginTop: '6px',
         },
-        deletedUserContainer: {
+        userContainer: {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'row',
+            top: '-5px',
             [theme.breakpoints.down(breakpoints.mobile)]: {
                 whiteSpace: 'nowrap',
                 position: 'relative',
             },
         },
         userName: {
-            marginLeft: '5px',
+            marginLeft: '20px',
         },
         avatar: {
             height: '32px',
@@ -113,16 +121,21 @@ const DisplayComment = ({
         <div className={classes.root}>
             <div className={classes.header}>
                 <div className={classes.headerLeft}>
-                    {author.status === UserStatus.Deleted ? (
-                        <div className={classes.deletedUserContainer}>
-                            <img className={classes.avatar} src={userDeleted} alt={'userDeletedimage'} />
-                            <div className={classes.userName}>{t('discussion.accountDeleted')}</div>
-                        </div>
-                    ) : (
-                        <StyledAvatar>
-                            <Avatar username={author.username} web3Address={author.web3address} />
-                        </StyledAvatar>
-                    )}
+                    <div className={classes.userContainer}>
+                        {author.status === UserStatus.Deleted ? (
+                            <>
+                                <img className={classes.avatar} src={userDeleted} alt={'userDeletedimage'} />
+                                <div className={classes.userName}>{t('discussion.accountDeleted')}</div>
+                            </>
+                        ) : (
+                            <>
+                                <StyledAvatar>
+                                    <Avatar username={author.username} web3Address={author.web3address} />
+                                </StyledAvatar>
+                                <Author author={author} />
+                            </>
+                        )}
+                    </div>
                     <SmallVerticalDivider className={classes.grayDivider} />
                     <CommentAge createdAt={createdAt} updatedAt={updatedAt} />
                 </div>

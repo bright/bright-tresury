@@ -10,7 +10,6 @@ import { useTranslation } from 'react-i18next'
 const useStyles = makeStyles(() =>
     createStyles({
         author: {
-            paddingTop: '6px',
             marginLeft: '16px',
             fontWeight: 600,
         },

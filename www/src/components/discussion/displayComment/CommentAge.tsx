@@ -3,12 +3,19 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { useTranslation } from 'react-i18next'
 import { timeToString } from '../../../util/dateUtil'
 import { extractTime } from '@polkadot/util'
+import { breakpoints } from '../../../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         age: {
             paddingTop: '6px',
             color: theme.palette.text.disabled,
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                paddingTop: '12px',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                paddingTop: '6px',
+            },
         },
     }),
 )
