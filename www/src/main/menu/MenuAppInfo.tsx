@@ -39,9 +39,10 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         buildInfo: {
             fontSize: '14px',
-            position: 'relative',
-            bottom: '-10px',
-            left: '-104px',
+            width: '100%',
+            paddingTop: '10px',
+            display: 'flex',
+            justifyContent: 'center',
         },
     }),
 )
