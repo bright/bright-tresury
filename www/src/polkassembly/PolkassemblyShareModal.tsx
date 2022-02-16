@@ -2,9 +2,8 @@ import { DialogProps as MaterialDialogProps } from '@material-ui/core/Dialog/Dia
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import ReactMarkdown from 'react-markdown'
 import InformationTip from '../components/info/InformationTip'
-import QuestionModal from '../components/modal/warning-modal/QuestionModal'
+import Modal from '../components/modal/Modal'
 import QuestionModalButtons from '../components/modal/warning-modal/QuestionModalButtons'
 import QuestionModalError from '../components/modal/warning-modal/QuestionModalError'
 import QuestionModalSubtitle from '../components/modal/warning-modal/QuestionModalSubtitle'
@@ -12,10 +11,26 @@ import QuestionModalTitle from '../components/modal/warning-modal/QuestionModalT
 import { useNetworks } from '../networks/useNetworks'
 import { useSnackNotifications } from '../snack-notifications/useSnackNotifications'
 import { useAccounts } from '../substrate-lib/accounts/useAccounts'
+import { breakpoints } from '../theme/theme'
 import { usePolkassemblyShare } from './polkassembly-posts.api'
+import PolkassemblyPostPreview from './PolkassemblyPostPreview'
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
     createStyles({
+        content: {
+            padding: '0 2.5em',
+            [theme.breakpoints.down(breakpoints.tablet)]: {
+                padding: '0 1.5em',
+            },
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                padding: '0 0.5em',
+            },
+            height: '100%',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            textAlign: 'center',
+        },
         warning: {
             justifyContent: 'center',
         },
@@ -25,12 +40,12 @@ const useStyles = makeStyles(() =>
 export interface PolkassemblyPostDto {
     title: string
     content: string
+    onChainIndex: number
 }
 
 interface OwnProps {
     onClose: () => void
     web3address: string
-    // TODO consider renaming both the prop and the interface when implementing the actual GQL mutation in TREAS-386
     postData: PolkassemblyPostDto
 }
 
@@ -87,26 +102,29 @@ const PolkassemblyShareModal = ({ open, onClose, web3address, postData }: Polkas
     }
 
     return (
-        <QuestionModal onClose={onCloseModal} open={open} maxWidth={'md'}>
-            <QuestionModalTitle title={t('polkassembly.share.modal.title')} />
-            <InformationTip className={classes.warning} label={t('polkassembly.share.modal.warning')} />
-            <QuestionModalSubtitle subtitle={t('polkassembly.share.modal.subtitle')} />
-            {/*TODO show preview TREAS-365*/}
-            <div style={{ border: 'solid 1px', textAlign: 'left' }}>
-                <h3>{postData.title}</h3>
-                <ReactMarkdown components={{ img: ({ node, ...props }) => <img {...props} /> }}>
-                    {postData.content}
-                </ReactMarkdown>
+        <Modal
+            onClose={onCloseModal}
+            open={open}
+            maxWidth={'md'}
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
+            fullWidth={true}
+        >
+            <div className={classes.content}>
+                <QuestionModalTitle title={t('polkassembly.share.modal.title')} />
+                <InformationTip className={classes.warning} label={t('polkassembly.share.modal.warning')} />
+                <QuestionModalSubtitle subtitle={t('polkassembly.share.modal.subtitle')} />
+                <PolkassemblyPostPreview postData={postData} />
+                <QuestionModalButtons
+                    onClose={onCloseModal}
+                    onSubmit={onSubmit}
+                    submitLabel={t('polkassembly.share.modal.submit')}
+                    discardLabel={t('polkassembly.share.modal.discard')}
+                    disabled={isLoading}
+                />
+                <QuestionModalError isError={isError} error={errorMessage} />
             </div>
-            <QuestionModalButtons
-                onClose={onCloseModal}
-                onSubmit={onSubmit}
-                submitLabel={t('polkassembly.share.modal.submit')}
-                discardLabel={t('polkassembly.share.modal.discard')}
-                disabled={isLoading}
-            />
-            <QuestionModalError isError={isError} error={errorMessage} />
-        </QuestionModal>
+        </Modal>
     )
 }
 

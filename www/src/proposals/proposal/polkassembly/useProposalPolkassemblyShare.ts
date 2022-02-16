@@ -32,7 +32,7 @@ export const useProposalPolkassemblyShare = ({
         ? { content: `${intro}${about}${milestones}`, title: details.title }
         : { title: '', content: '' }
 
-    return { postData }
+    return { postData: { ...postData, onChainIndex: proposalIndex } }
 }
 
 const useMilestones = (proposalIndex: number) => {
