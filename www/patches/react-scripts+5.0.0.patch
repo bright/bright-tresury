@@ -1,8 +1,20 @@
 diff --git a/node_modules/react-scripts/config/webpack.config.js b/node_modules/react-scripts/config/webpack.config.js
-index 2b1b3bb..88d2167 100644
+index 2b1b3bb..6804df3 100644
 --- a/node_modules/react-scripts/config/webpack.config.js
 +++ b/node_modules/react-scripts/config/webpack.config.js
-@@ -318,7 +318,9 @@ module.exports = function (webpackEnv) {
+@@ -254,6 +254,11 @@ module.exports = function (webpackEnv) {
+       level: 'none',
+     },
+     optimization: {
++      splitChunks: isEnvDevelopment
++          ? undefined
++          : {
++            chunks: 'all',
++          },
+       minimize: isEnvProduction,
+       minimizer: [
+         // This is only used in production mode
+@@ -318,7 +323,9 @@ module.exports = function (webpackEnv) {
          .map(ext => `.${ext}`)
          .filter(ext => useTypeScript || !ext.includes('ts')),
        alias: {
