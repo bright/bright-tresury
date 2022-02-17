@@ -163,7 +163,7 @@
             "title": "Are you sure you want to delete your account?",
             "subtitle": {
                 "header": "By deleting your account:",
-                "firstParagraph": "You <strong>won’t be able</strong> to recover access to any data within the app associated with the account only (i.e. ideas, comments);",
+                "firstParagraph": "You <strong>will lose the access</strong> to any data within the app associated with the account only (i.e. ideas, comments) without the possibility to recover the access;",
                 "secondParagraph": "You <strong>will still be able</strong> to get access to data associated with the web3 account (proposals, bounties), when they create a new account with their web3 address."
             },
             "cancel": "Cancel",
@@ -276,7 +276,7 @@
             "success": {
                 "title": "Your account has been deleted. We are sorry to see you leave…",
                 "image": "Rubbish bin image",
-                "information": "Remember, you are still able to get access to data associated with the web3 account (proposals, bounties), when you create a new account with your web3 address."
+                "information": "Remember, you are still able to get access to data associated with the web3 account (proposals, bounties), when you create a new account with your web3 address, but will not be able to recover access to ideas."
             }
         }
     },
