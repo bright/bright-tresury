@@ -1,5 +1,5 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Container from '../../components/form/Container'
 import { breakpoints } from '../../theme/theme'
@@ -11,6 +11,7 @@ import Content from './Content'
 import Avatar from '../../components/avatar/Avatar'
 import { useAuth, UserStatus } from '../AuthContext'
 import DeleteAccount from './account-delete/DeleteAccount'
+import Identicon from '../../components/identicon/Identicon'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -50,12 +51,20 @@ const Account = () => {
     const classes = useStyles()
     const { user } = useAuth()
 
+    const primaryAddress = useMemo(() => {
+        return user?.web3Addresses.find((address) => address.isPrimary)
+    }, [user])
+
     return (
         <Container title={t('account.title')}>
             <div className={classes.root}>
                 <div className={classes.avatarContainer}>
-                    {user?.status === UserStatus.EmailPasswordEnabled ? (
-                        <Avatar username={user.username} email={user.email} className={classes.avatar} />
+                    {user ? (
+                        primaryAddress ? (
+                            <Identicon size={46} address={primaryAddress.address} />
+                        ) : (
+                            <Avatar username={user.username} email={user.email} className={classes.avatar} />
+                        )
                     ) : null}
                 </div>
                 <Content>
