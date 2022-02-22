@@ -1,11 +1,12 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
-import Button, { ButtonProps } from '../components/button/Button'
 import polkassemblyLogoSvg from '../assets/polkassembly_logo.png'
+import Button, { ButtonProps } from '../components/button/Button'
 import { useModal } from '../components/modal/useModal'
-import PolkassemblyShareModal, { PolkassemblyPostDto } from './PolkassemblyShareModal'
+import { PolkassemblyPostDto } from './api/polkassembly-posts.dto'
+import PolkassemblyShareModal from './PolkassemblyShareModal'
 
 const useStyles = makeStyles(() =>
     createStyles({

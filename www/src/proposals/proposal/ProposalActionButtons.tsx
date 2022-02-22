@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next'
 import EditButton from '../../components/header/details/EditButton'
 import { generatePath, useHistory } from 'react-router-dom'
 import { ROUTE_EDIT_PROPOSAL } from '../../routes/routes'
-import PolkassemblyShareButton from '../../polkassembly/PolkassemblyShareButton'
 
 interface OwnProps {
     proposal: ProposalDto

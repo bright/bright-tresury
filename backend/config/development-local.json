@@ -64,7 +64,7 @@
             "id": "kusama",
             "name": "Kusama",
             "url": "wss://kusama-rpc.polkadot.io",
-            "polkassemblyUrl": "https://kusama.polkassembly.io/v1/graphql",
+            "polkassemblyUrl": "https://test.polkassembly.io/v1/graphql",
             "ss58Format": 2,
             "genesisHash": "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
             "bond": {

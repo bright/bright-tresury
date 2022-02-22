@@ -1,7 +1,7 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import ReactMarkdown from 'react-markdown'
-import { PolkassemblyPostDto } from './PolkassemblyShareModal'
+import { PolkassemblyPostDto } from './api/polkassembly-posts.dto'
 
 const useStyles = makeStyles((theme) =>
     createStyles({

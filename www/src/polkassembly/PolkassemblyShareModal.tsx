@@ -12,7 +12,8 @@ import { useNetworks } from '../networks/useNetworks'
 import { useSnackNotifications } from '../snack-notifications/useSnackNotifications'
 import { useAccounts } from '../substrate-lib/accounts/useAccounts'
 import { breakpoints } from '../theme/theme'
-import { usePolkassemblyShare } from './polkassembly-posts.api'
+import { usePolkassemblyShare } from './api/polkassembly-posts.api'
+import { PolkassemblyPostDto } from './api/polkassembly-posts.dto'
 import PolkassemblyPostPreview from './PolkassemblyPostPreview'
 
 const useStyles = makeStyles((theme) =>
@@ -36,12 +37,6 @@ const useStyles = makeStyles((theme) =>
         },
     }),
 )
-
-export interface PolkassemblyPostDto {
-    title: string
-    content: string
-    onChainIndex: number
-}
 
 interface OwnProps {
     onClose: () => void
@@ -70,18 +65,13 @@ const PolkassemblyShareModal = ({ open, onClose, web3address, postData }: Polkas
                 account: web3address,
                 details: {
                     network,
-                    ...postData,
+                    postData,
                 },
             },
             {
                 onSuccess: () => {
                     openSnack(t('polkassembly.share.modal.successSnackMessage'))
                     onClose()
-                },
-                onError: (err: any) => {
-                    if ((err as any).message?.includes('web3FromAddress')) {
-                        console.log('show error')
-                    }
                 },
             },
         )

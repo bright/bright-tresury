@@ -46,9 +46,19 @@ export async function handleWeb3Sign(
         data: stringToHex(signMessage),
         type: 'bytes',
     })
-    return await confirmCall({
-        address,
-        signature,
-        details,
-    })
+
+    try {
+        await confirmCall({
+            address,
+            signature,
+            details,
+        })
+    } catch (err) {
+        const anyErr = err as any
+        if ('message' in anyErr) {
+            throw new Error(anyErr.message)
+        } else {
+            throw new Error('Something went wrong when confirming transaction')
+        }
+    }
 }

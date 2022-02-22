@@ -7,6 +7,6 @@ export interface UsePathResult {
 
 export const usePath = (): UsePathResult => {
     const { network } = useNetworks()
-    const getAbsolutePath = (relativePath: string) => `${config.WEBSITE_URL}${relativePath}?network=${network.id}`
+    const getAbsolutePath = (relativePath: string) => `${config.WEBSITE_URL}${relativePath}?networkId=${network.id}`
     return { getAbsolutePath }
 }

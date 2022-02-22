@@ -24,7 +24,8 @@ export const useProposal = (proposal: Nil<ProposalDto>) => {
     }, [isUserSignedInAndVerified, proposal, user, ss58Format])
 
     const isEditable = useMemo(() => {
-        return !!proposal && proposal.status === ProposalStatus.Submitted
+        // TODO uncomment in TREAS-405
+        return !!proposal //&& proposal.status === ProposalStatus.Submitted
     }, [proposal])
 
     const canEdit = useMemo(() => {

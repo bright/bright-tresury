@@ -76,8 +76,9 @@ export class BlockchainProposal {
     }
 
     isEditableOrThrow = () => {
-        if (!this.isEditable()) {
-            throw new BadRequestException('You cannot edit an approved/rewarded/rejected proposal details')
-        }
+        // TODO uncomment in TREAS-405
+        // if (!this.isEditable()) {
+        //     throw new BadRequestException('You cannot edit an approved/rewarded/rejected proposal details')
+        // }
     }
 }

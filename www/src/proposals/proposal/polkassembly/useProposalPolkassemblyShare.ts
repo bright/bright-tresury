@@ -2,10 +2,10 @@ import { useTranslation } from 'react-i18next'
 import { generatePath } from 'react-router-dom'
 import { IdeaProposalDetailsDto } from '../../../idea-proposal-details/idea-proposal-details.dto'
 import { useNetworks } from '../../../networks/useNetworks'
-import { PolkassemblyPostDto } from '../../../polkassembly/PolkassemblyShareModal'
+import { PolkassemblyPostDto, PolkassemblyPostType } from '../../../polkassembly/api/polkassembly-posts.dto'
 import { ROUTE_PROPOSAL } from '../../../routes/routes'
-import { usePath } from '../../../util/usePath'
 import { Nil } from '../../../util/types'
+import { usePath } from '../../../util/usePath'
 import { useGetProposalMilestones } from '../milestones/proposal.milestones.api'
 import { ProposalContentType } from '../ProposalContentTypeTabs'
 
@@ -32,34 +32,7 @@ export const useProposalPolkassemblyShare = ({
         ? { content: `${intro}${about}${milestones}`, title: details.title }
         : { title: '', content: '' }
 
-    return { postData: { ...postData, onChainIndex: proposalIndex } }
-}
-
-const useMilestones = (proposalIndex: number) => {
-    const { network } = useNetworks()
-    const { data } = useGetProposalMilestones({ proposalIndex, network: network.id })
-    const { getAbsolutePath } = usePath()
-    const { t } = useTranslation()
-
-    if (!data || !data.length) {
-        return ''
-    }
-
-    const url = getAbsolutePath(
-        generatePath(`${ROUTE_PROPOSAL}/${ProposalContentType.Milestones}`, {
-            proposalIndex,
-        }),
-    )
-    const milestonesTitles = data.map((milestone) => `* ${milestone.details.subject}`).join('\n')
-
-    const content = `
-
-## ${t('proposal.details.polkassemblyShare.milestones')}
-
-${milestonesTitles}
-
-[${t('proposal.details.polkassemblyShare.seeMore')}](${url})`
-    return content
+    return { postData: { ...postData, onChainIndex: proposalIndex, type: PolkassemblyPostType.Proposal } }
 }
 
 const useIntro = (proposalIndex: number) => {
@@ -82,8 +55,28 @@ const useAbout = (details: Nil<IdeaProposalDetailsDto>) => {
     if (!details || details.content === '') {
         return ''
     }
-    return `
-## ${t('proposal.details.polkassemblyShare.about')}
+    return `\n\n## ${t('proposal.details.polkassemblyShare.about')}\n\n${details.content}`
+}
 
-${details.content}`
+const useMilestones = (proposalIndex: number) => {
+    const { network } = useNetworks()
+    const { data } = useGetProposalMilestones({ proposalIndex, network: network.id })
+    const { getAbsolutePath } = usePath()
+    const { t } = useTranslation()
+
+    if (!data || !data.length) {
+        return ''
+    }
+
+    const url = getAbsolutePath(
+        generatePath(`${ROUTE_PROPOSAL}/${ProposalContentType.Milestones}`, {
+            proposalIndex,
+        }),
+    )
+    const milestonesTitles = data.map((milestone) => `* ${milestone.details.subject}`).join('\n')
+
+    const content = `\n\n## ${t('proposal.details.polkassemblyShare.milestones')}\n\n${milestonesTitles}\n\n[${t(
+        'proposal.details.polkassemblyShare.seeMore',
+    )}](${url})`
+    return content
 }
