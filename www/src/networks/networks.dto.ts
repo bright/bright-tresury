@@ -27,4 +27,5 @@ export interface Network {
         maximumReasonLength: number
     }
     version: number
+    polkassemblyUrl: string
 }

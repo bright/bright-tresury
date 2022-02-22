@@ -4,7 +4,7 @@ import { useModal } from '../components/modal/useModal'
 
 interface State {
     visible: boolean
-    open: (label: string) => void
+    open: (label: React.ReactNode) => void
     close: () => void
 }
 
@@ -16,9 +16,9 @@ export type SnackNotificationsContextProviderProps = PropsWithChildren<OwnProps>
 
 const SnackNotificationsContextProvider = ({ children }: SnackNotificationsContextProviderProps) => {
     const { visible, open, close } = useModal()
-    const [label, setLabel] = useState('')
+    const [label, setLabel] = useState<React.ReactNode>('')
 
-    const setLabelAndOpen = (label: string) => {
+    const setLabelAndOpen = (label: React.ReactNode) => {
         setLabel(label)
         open()
     }

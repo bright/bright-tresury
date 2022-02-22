@@ -24,9 +24,9 @@ export const useProposalPolkassemblyShare = ({
     proposalIndex,
     details,
 }: UseProposalPolkassemblyShareProps): UseProposalPolkassemblyShareResult => {
-    const milestones = useMilestones(proposalIndex)
     const intro = useIntro(proposalIndex)
     const about = useAbout(details)
+    const milestones = useMilestones(proposalIndex)
 
     const postData = details
         ? { content: `${intro}${about}${milestones}`, title: details.title }

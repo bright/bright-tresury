@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom'
 import polkassemblyLogoSvg from '../assets/polkassembly_logo.png'
 import Button, { ButtonProps } from '../components/button/Button'
 import { useModal } from '../components/modal/useModal'
+import { useNetworks } from '../networks/useNetworks'
 import { PolkassemblyPostDto } from './api/polkassembly-posts.dto'
 import PolkassemblyShareModal from './PolkassemblyShareModal'
 
@@ -31,8 +32,12 @@ const PolkassemblyShareButton = ({ web3address, postData, ...props }: Polkassemb
     const classes = useStyles()
     const { t } = useTranslation()
     const location = useLocation()
-
     const modal = useModal((location.state as any)?.share)
+    const { network } = useNetworks()
+
+    if (!network.polkassemblyUrl) {
+        return null
+    }
 
     return (
         <>

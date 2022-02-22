@@ -45,7 +45,6 @@ async function confirmMutation({
     signature,
     details: { network, postData },
 }: ConfirmMutationRequestDto): Promise<void> {
-    debugger
     const apiUrl = network.polkassemblyUrl
 
     const mutation = gql`

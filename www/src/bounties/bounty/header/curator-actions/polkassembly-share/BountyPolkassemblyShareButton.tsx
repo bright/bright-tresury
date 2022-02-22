@@ -13,11 +13,7 @@ const BountyPolkassemblyShareButton = ({ bounty }: BountyPolkassemblyShareButton
     const { postData } = useBountyPolkassemblyShare({ bounty })
 
     return (
-        <PolkassemblyShareButton
-            web3address={bounty.proposer.address}
-            postData={postData}
-            disabled={!bounty.description}
-        />
+        <PolkassemblyShareButton web3address={bounty.proposer.address} postData={postData} disabled={!bounty.title} />
     )
 }
 
