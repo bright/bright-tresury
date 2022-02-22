@@ -25,6 +25,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
     const isCuratorProposed = bounty?.status === BountyStatus.CuratorProposed
     const isActive = bounty?.status === BountyStatus.Active
     const isPendingPayout = bounty?.status === BountyStatus.PendingPayout
+    const isUnknown = bounty?.status === BountyStatus.Unknown
 
     const isProposedCurator = isCuratorProposed && hasWeb3AddressAssigned(bounty.curator.address)
     const isCurator = (isActive || isPendingPayout) && hasWeb3AddressAssigned(bounty.curator.address)
@@ -41,7 +42,14 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
     const canAward = isCurator && isActive
 
     const canEdit =
-        (isOwner || isProposer || isCurator) && (isProposed || isApproved || isFunded || isCuratorProposed || isActive)
+        (isOwner || isProposer || isCurator) &&
+        (isProposed ||
+            isApproved ||
+            isFunded ||
+            isCuratorProposed ||
+            isActive ||
+            // TODO remove in TREAS-405
+            isUnknown)
 
     const canClaimPayout = isBeneficiary && isPendingPayout && !bounty.unlockAt
 

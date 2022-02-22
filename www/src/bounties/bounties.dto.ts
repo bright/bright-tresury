@@ -51,6 +51,10 @@ interface RejectedBounty {
     status: BountyStatus.Rejected
 }
 
+interface UnknownBounty {
+    status: BountyStatus.Unknown
+}
+
 interface BaseBountyDto {
     id?: Nil<string>
     blockchainIndex: number
@@ -77,6 +81,7 @@ type ExtendedBountyDto =
     | ActiveBounty
     | PendingPayoutBounty
     | RejectedBounty
+    | UnknownBounty
 
 export type BountyDto = BaseBountyDto & ExtendedBountyDto
 

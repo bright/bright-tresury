@@ -4,6 +4,7 @@ import { BountyDto, BountyStatus } from '../../../bounties.dto'
 import { useBounty } from '../../useBounty'
 import CuratorAcceptButton from './accept/CuratorAcceptButton'
 import ClaimPayoutButton from './claim/ClaimPayoutButton'
+import BountyPolkassemblyShareButton from './polkassembly-share/BountyPolkassemblyShareButton'
 import CuratorRejectButton from './reject/CuratorRejectButton'
 import BountyEditButton from './BountyEditButton'
 
@@ -23,6 +24,7 @@ const BountyActionButtons = ({ bounty, ...props }: CuratorActionButtonsProps) =>
     return (
         <ActionButtons {...props}>
             {canEdit ? <BountyEditButton bounty={bounty} /> : null}
+            {canEdit ? <BountyPolkassemblyShareButton bounty={bounty} /> : null}
             {canReject && bounty.status === BountyStatus.CuratorProposed ? (
                 <CuratorRejectButton bounty={bounty} />
             ) : null}

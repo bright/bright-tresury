@@ -8,7 +8,6 @@ export interface PolkassemblyBountyPostSchema {
         onchain_bounty_id: number
         onchain_bounty: {
             id: number
-            proposer: string
             value: string
             fee: string
             curatorDeposit: string

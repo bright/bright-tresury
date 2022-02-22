@@ -9,7 +9,7 @@ import { ROUTE_EDIT_BOUNTY } from '../../../../routes/routes'
 import { BountyDto, BountyStatus } from '../../../bounties.dto'
 import { useBounty } from '../../useBounty'
 import AwardMenuItem from '../curator-actions/award/AwardMenuItem'
-import ExtendExpiryMenuItem from '../curator-actions/extendExpiry/ExtendExpiryMenuItem'
+import ExtendExpiryMenuItem from '../curator-actions/extend-expiry/ExtendExpiryMenuItem'
 import CuratorRejectMenuItem from '../curator-actions/reject/CuratorRejectMenuItem'
 
 interface OwnProps {

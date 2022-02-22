@@ -92,6 +92,8 @@ export class BlockchainBountyDto {
             BlockchainBountyStatus.Funded,
             BlockchainBountyStatus.CuratorProposed,
             BlockchainBountyStatus.Active,
+            // TODO remove in TREAS-405
+            BlockchainBountyStatus.Unknown,
         ].includes(this.status)
     }
 

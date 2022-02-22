@@ -13,7 +13,7 @@ import BountyDiscussion from './discussion/BountyDiscussion'
 import BountyHeader from './header/BountyHeader'
 import BountyEdit from './edit/BountyEdit'
 import BountyAward from './header/curator-actions/award/BountyAward'
-import BountyExtendExpiry from './header/curator-actions/extendExpiry/BountyExtendExpiry'
+import BountyExtendExpiry from './header/curator-actions/extend-expiry/BountyExtendExpiry'
 import BountyInfo from './info/BountyInfo'
 import BountyVoting from './voting/BountyVoting'
 

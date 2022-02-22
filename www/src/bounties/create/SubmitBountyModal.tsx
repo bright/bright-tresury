@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-dom'
+import { generatePath, useHistory } from 'react-router-dom'
 import Modal from '../../components/modal/Modal'
 import Strong from '../../components/strong/Strong'
 import { useNetworks } from '../../networks/useNetworks'
-import { ROUTE_BOUNTIES } from '../../routes/routes'
+import { ROUTE_BOUNTIES, ROUTE_BOUNTY } from '../../routes/routes'
 import SubmittingTransaction, { ExtrinsicDetails } from '../../substrate-lib/components/SubmittingTransaction'
 import { toNetworkPlanckValue } from '../../util/quota.util'
 import { useCreateBounty } from '../bounties.api'
@@ -27,8 +27,12 @@ const SubmitBountyModal = ({ open, onClose, bounty }: SubmitBountyModalProps) =>
     const { mutateAsync } = useCreateBounty()
     const { network } = useNetworks()
 
-    const goToBounties = () => {
-        history.push(ROUTE_BOUNTIES)
+    const goToBounties = (event?: any) => {
+        debugger
+        const bountyIndex = event?.data?.toJSON()?.[0]
+        bountyIndex !== undefined
+            ? history.push(generatePath(ROUTE_BOUNTY, { bountyIndex }), { share: true })
+            : history.push(ROUTE_BOUNTIES)
     }
 
     const onTransactionSigned = useCallback(
