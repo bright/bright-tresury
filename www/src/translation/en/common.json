@@ -535,7 +535,7 @@
         },
         "voting": {
             "noMotion": {
-                "title": "No one has voted on the proposal yet"
+                "title": "No one is voting now"
             }
         },
         "milestones": {
