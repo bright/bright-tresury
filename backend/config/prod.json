@@ -29,7 +29,8 @@
             "genesisHash": "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
             "bond": {
                 "minValue": "66666666000",
-                "percentage": 5
+                "percentage": 5,
+                "maxValue": "3333333300000"
             },
             "currency": "KSM",
             "decimals": 12,

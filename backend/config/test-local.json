@@ -23,7 +23,8 @@
             "genesisHash": "",
             "bond": {
                 "minValue": "1000000000000",
-                "percentage": 5
+                "percentage": 5,
+                "maxValue": "5000000000000"
             },
             "currency": "Unit",
             "decimals": 12,
@@ -38,7 +39,8 @@
             "genesisHash": "",
             "bond": {
                 "minValue": "1000000000000",
-                "percentage": 5
+                "percentage": 5,
+                "maxValue": "5000000000000"
             },
             "currency": "Unit",
             "developmentKeyring": true,

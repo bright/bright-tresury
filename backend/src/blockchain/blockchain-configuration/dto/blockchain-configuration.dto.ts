@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { BlockchainConfig } from '../blockchain-configuration.config'
-import { NetworkPlanckValue } from '../../../utils/types'
+import { NetworkPlanckValue, Nil } from '../../../utils/types'
 import { BlockchainBountiesConfigurationDto } from '../../blockchain-bounties/dto/blockchain-bounties-configuration.dto'
 
 export class BlockchainConfigurationDto {
@@ -39,11 +39,13 @@ export class BlockchainConfigurationDto {
     genesisHash: string
 
     @ApiProperty({
-        description: 'Bond values used when we submit new proposal. Supported properties: minValue and percentage',
+        description:
+            'Bond values used when we submit new proposal. Supported properties: minValue, percentage and maxValue',
     })
     bond: {
         minValue: NetworkPlanckValue
         percentage: number
+        maxValue: Nil<NetworkPlanckValue>
     }
 
     @ApiProperty({ description: 'Ticker to use for the currency used by the blockchain' })
@@ -64,6 +66,9 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Bounties module configuration', type: BlockchainBountiesConfigurationDto })
     bounties: BlockchainBountiesConfigurationDto
 
+    @ApiProperty({ description: 'Chain current version' })
+    version: number
+
     constructor({
         id,
         name,
@@ -81,6 +86,7 @@ export class BlockchainConfigurationDto {
         isDefault,
         isLiveNetwork,
         bounties,
+        version,
     }: BlockchainConfig) {
         this.id = id
         this.name = name
@@ -98,5 +104,6 @@ export class BlockchainConfigurationDto {
         this.isDefault = isDefault
         this.isLiveNetwork = isLiveNetwork
         this.bounties = bounties
+        this.version = version
     }
 }

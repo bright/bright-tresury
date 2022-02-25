@@ -3,7 +3,7 @@ import { booleanFormat } from '../../config/formats/boolean.format'
 import { numberFormat } from '../../config/formats/number.format'
 import { stringFormat } from '../../config/formats/string.format'
 import { objectFormat } from '../../config/formats/object.format'
-import { NetworkPlanckValue } from '../../utils/types'
+import { NetworkPlanckValue, Nil } from '../../utils/types'
 
 export const BlockchainConfigToken = 'BlockchainConfig'
 
@@ -20,6 +20,7 @@ export interface BlockchainConfig {
     bond: {
         minValue: NetworkPlanckValue
         percentage: number
+        maxValue: Nil<NetworkPlanckValue>
     }
     currency: string
     decimals: number
@@ -32,6 +33,7 @@ export interface BlockchainConfig {
         maximumReasonLength: number
         bountyValueMinimum: NetworkPlanckValue
     }
+    version: number
 }
 
 export const blockchainConfigSchema: Schema<BlockchainConfig> = {
@@ -56,8 +58,7 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         format: stringFormat,
     },
     types: {
-        doc:
-            'Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.',
+        doc: 'Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.',
         default: {},
         format: objectFormat,
     },
@@ -82,7 +83,7 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
     },
     bond: {
         doc: 'Proposal bond information used by this blockchain',
-        default: { minValue: '1000000000000' as NetworkPlanckValue, percentage: 5 },
+        default: { minValue: '1000000000000' as NetworkPlanckValue, percentage: 5, maxValue: undefined },
     },
     currency: {
         doc: 'Currency ticker used',
@@ -117,5 +118,10 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
             maximumReasonLength: 16384,
             bountyValueMinimum: '100000000000' as NetworkPlanckValue,
         },
+    },
+    version: {
+        doc: 'Blockchain current version',
+        default: 0,
+        format: numberFormat,
     },
 }

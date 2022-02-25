@@ -32,17 +32,22 @@ export class BlockchainConfigurationService {
         const proposalBondMinimum = api.consts.treasury?.proposalBondMinimum.toString() as NetworkPlanckValue
         const minValue = proposalBondMinimum ?? defaultBlockchainConfig.bond.minValue
 
+        const proposalBondMaximum = api.consts.treasury.proposalBondMaximum?.toString() as NetworkPlanckValue
+        const maxValue = proposalBondMaximum ?? defaultBlockchainConfig.bond.maxValue
+
         const proposalBond = api.consts.treasury?.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber()
         const percentage = proposalBond ?? defaultBlockchainConfig.bond.percentage
 
         const bounties = this.bountiesBlockchainService.getBountiesConfig(networkId) ?? defaultBlockchainConfig.bounties
+        const version = api.consts.system.version.specVersion.toNumber()
 
         return {
             ...defaultBlockchainConfig,
             decimals,
             currency,
-            bond: { minValue, percentage },
+            bond: { minValue, percentage, maxValue },
             bounties,
+            version,
         }
     }
 

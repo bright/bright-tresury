@@ -1,5 +1,5 @@
 import { DefinitionRpcExt } from '@polkadot/types/types'
-import { NetworkPlanckValue } from '../util/types'
+import { NetworkPlanckValue, Nil } from '../util/types'
 
 export interface Network {
     id: string
@@ -13,6 +13,7 @@ export interface Network {
     bond: {
         minValue: NetworkPlanckValue
         percentage: number
+        maxValue: Nil<NetworkPlanckValue>
     }
     currency: string
     decimals: number
@@ -25,4 +26,5 @@ export interface Network {
         bountyValueMinimum: NetworkPlanckValue
         maximumReasonLength: number
     }
+    version: number
 }

@@ -23,24 +23,30 @@ const BountyBond = ({ networkId, value }: BountyBondProps) => {
         toNetworkPlanckValue(value, selectedNetwork.decimals)!,
         selectedNetwork.bond.percentage,
         selectedNetwork.bond.minValue,
+        selectedNetwork.bond.maxValue,
+        selectedNetwork.version,
     )
 
-    const bondTooltipLabel =
-        bondValue === network.bond.minValue ? (
-            t('idea.details.form.networks.bond.min')
-        ) : (
-            <Trans
-                i18nKey="idea.details.form.networks.bond.percentage"
-                values={{ percentage: network.bond.percentage }}
-            />
-        )
-
+    const bondTooltipLabel = () => {
+        if (bondValue === network.bond.minValue) {
+            return t('idea.details.form.networks.bond.min')
+        } else if (network.bond.maxValue && bondValue === network.bond.maxValue) {
+            return t('idea.details.form.networks.bond.max')
+        } else {
+            return (
+                <Trans
+                    i18nKey="idea.details.form.networks.bond.percentage"
+                    values={{ percentage: network.bond.percentage }}
+                />
+            )
+        }
+    }
     return (
         <Bond
             network={selectedNetwork}
             bondValue={bondValue}
             label={t('idea.details.form.networks.bond.name')}
-            tipLabel={bondTooltipLabel}
+            tipLabel={bondTooltipLabel()}
         />
     )
 }

@@ -17,7 +17,13 @@ const ProposalNetworkRewardDeposit = ({ rewardValue, bondValue }: NetworkRewardD
     let resolvedBondValue = bondValue
     if (!resolvedBondValue) {
         resolvedBondValue = rewardValue
-            ? calculateBondValue(rewardValue, network.bond.percentage, network.bond.minValue)
+            ? calculateBondValue(
+                  rewardValue,
+                  network.bond.percentage,
+                  network.bond.minValue,
+                  network.bond.maxValue,
+                  network.version,
+              )
             : ('0' as NetworkPlanckValue)
     }
 

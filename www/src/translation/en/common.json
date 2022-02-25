@@ -334,6 +334,7 @@
                     "bond": {
                         "name": "Bond",
                         "min": "The minimum amount that will be bonded",
+                        "max": "The maximum value that will be bonded",
                         "percentage": "The on-chain percentage for the treasury is {{percentage}}%"
                     },
                     "additionalNet": "+ Additional Net",
