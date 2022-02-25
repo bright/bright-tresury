@@ -95,7 +95,7 @@ describe('IdeaCommentsServiceSpec', () => {
                     author: {
                         id: usr1SessionData.user.id,
                         username: usr1SessionData.user.username,
-                        isEmailPasswordEnabled: usr1SessionData.user.isEmailPasswordEnabled,
+                        status: usr1SessionData.user.status,
                     },
                 },
             })

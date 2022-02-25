@@ -438,10 +438,10 @@ describe(`Users Service`, () => {
             })
 
             await getService().delete(user.id)
-            const deletedUser = await getService().findOne(user.id)
+            const deletedUser = await getService().findOneOrThrow(user.id)
 
             await getService().delete(user.id)
-            const deletedAnotherUser = await getService().findOne(anotherUser.id)
+            const deletedAnotherUser = await getService().findOneOrThrow(anotherUser.id)
 
             expect(deletedUser.username).not.toBe(user.username)
             expect(deletedUser.email).not.toBe(user.email)

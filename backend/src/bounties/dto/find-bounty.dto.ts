@@ -2,11 +2,11 @@ import {
     BlockchainBountyDto,
     BlockchainBountyStatus,
 } from '../../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
+import { UserEntity } from '../../users/entities/user.entity'
 import { Nil } from '../../utils/types'
 import { BountyEntity } from '../entities/bounty.entity'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
 import { PolkassemblyBountyPostDto } from '../../polkassembly/bounties/bounty-post.dto'
-import { UserEntity } from '../../users/user.entity'
 
 export class FindBountyDto {
     blockchain: BlockchainBountyDto

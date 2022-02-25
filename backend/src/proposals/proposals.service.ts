@@ -25,10 +25,10 @@ import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExecutedMotionDto } from '../polkassembly/dto/executed-motion.dto'
 import { ProposalDto, ProposalStatus } from './dto/proposal.dto'
 import { UsersService } from '../users/users.service'
-import { UserEntity } from '../users/user.entity'
 import { ProposalsFilterQuery } from './proposals-filter.query'
 import { arrayToMap, keysAsArray } from '../utils/arrayToMap'
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
+import { UserEntity } from '../users/entities/user.entity'
 
 const logger = getLogger()
 
@@ -62,7 +62,6 @@ export class ProposalsService {
             return PaginatedResponseDto.empty()
         }
         try {
-
             if (timeFrame === TimeFrame.OnChain) return this.findOnChain(networkId, owner, status, paginatedParams)
             else return this.findOffChain(networkId, owner, paginatedParams)
         } catch (error) {

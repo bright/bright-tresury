@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { Repository } from 'typeorm'
 import { SignInAttemptEntity } from './sign-in-attempt.entity'
-import { UserEntity } from '../user.entity'
 import { InjectRepository } from '@nestjs/typeorm'
+import { UserEntity } from '../entities/user.entity'
 
 const TEN_MINUTES = 10 * 60 * 1000
 const ALLOWED_TRIES = 5

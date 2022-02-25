@@ -1,6 +1,5 @@
 import React from 'react'
 import Button from '../../../components/button/Button'
-import DeleteAccountWarningModal from './DeleteAccountWarningModal'
 import { useTranslation } from 'react-i18next'
 import { AuthContextUser, useAuth } from '../../AuthContext'
 import { useHistory } from 'react-router-dom'
@@ -9,6 +8,7 @@ import { ROUTE_ACCOUNT_DELETED } from '../../../routes/routes'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../../theme/theme'
 import { useDeleteUser } from './unregister.api'
+import DeleteAccountWarningModal from './DeleteAccountWarningModal'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

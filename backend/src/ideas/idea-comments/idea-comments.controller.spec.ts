@@ -58,7 +58,7 @@ describe('Idea comments', () => {
                 author: {
                     userId: user.id,
                     username: user.username,
-                    isEmailPasswordEnabled: user.isEmailPasswordEnabled,
+                    status: user.status,
                 },
                 content: content.content,
                 thumbsUp: 0,
