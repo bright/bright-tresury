@@ -5,6 +5,7 @@ import { UsersService } from '../users/users.service'
 import {
     createSessionHandler,
     createUserSessionHandler,
+    createUserSessionHandlerWithVerifiedEmail,
 } from './supertokens/specHelpers/supertokens.session.spec.helper'
 import { cleanAuthorizationDatabase, getAuthUser } from './supertokens/specHelpers/supertokens.database.spec.helper'
 
@@ -79,6 +80,28 @@ describe(`Auth Controller`, () => {
                 { antiCsrfCheck: false },
             )
             expect(signInSession).toBeDefined()
+        })
+
+        it(`should prevent sign in unregistered user`, async () => {
+            const email = 'email@example.com'
+            const password = 'password123'
+
+            const response = await request(app())
+                .post(`${baseUrl}/signin`)
+                .send({
+                    formFields: [
+                        {
+                            id: 'email',
+                            value: email,
+                        },
+                        {
+                            id: 'password',
+                            value: password,
+                        },
+                    ],
+                })
+            expect(response.status).toBe(200)
+            expect(response.body.status).toBe('WRONG_CREDENTIALS_ERROR')
         })
     })
 
