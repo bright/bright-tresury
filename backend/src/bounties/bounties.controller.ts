@@ -22,7 +22,7 @@ import { UpdateBountyDto } from './dto/update-bounty.dto'
 import { PaginatedParams, PaginatedQueryParams } from '../utils/pagination/paginated.param'
 import { getLogger } from '../logging.module'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
-import { TimeFrame, TimeFrameQuery } from '../utils/time-frame.query'
+import { BountyFilterQuery } from './bounty-filter.query'
 
 const logger = getLogger()
 
@@ -30,7 +30,6 @@ const logger = getLogger()
 @ApiTags('bounties')
 export class BountiesController {
     constructor(private bountiesService: BountiesService) {}
-
     @Get()
     @ApiOkResponse({
         description: 'Respond with current bounties for the given network',
@@ -38,14 +37,16 @@ export class BountiesController {
     })
     async getBounties(
         @Query() { network }: NetworkNameQuery,
-        @Query() { timeFrame = TimeFrame.OnChain }: TimeFrameQuery,
-        @Query() { pageNumber, pageSize }: PaginatedQueryParams,
+        @Query() filterQuery: BountyFilterQuery,
+        @Query() paginatedQueryParams: PaginatedQueryParams,
     ): Promise<PaginatedResponseDto<BountyDto>> {
-        logger.info(
-            `Getting bounties for network: ${network} ${timeFrame} pageNumber: ${pageNumber} pageSize: ${pageSize}`,
+        logger.info(`Getting bounties for network: ${network}`, filterQuery)
+
+        const { items, total } = await this.bountiesService.find(
+            network,
+            filterQuery,
+            new PaginatedParams(paginatedQueryParams),
         )
-        const paginatedParams = new PaginatedParams({ pageNumber, pageSize })
-        const { items, total } = await this.bountiesService.find(network, timeFrame, paginatedParams)
         return {
             items: items.map((bounty) => new BountyDto(bounty)),
             total,

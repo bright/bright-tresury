@@ -4,7 +4,10 @@ import { plainToClass } from 'class-transformer'
 import { validateOrReject } from 'class-validator'
 import { In, Repository } from 'typeorm'
 import { BlockchainBountiesService } from '../blockchain/blockchain-bounties/blockchain-bounties.service'
-import { BlockchainBountyDto } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
+import {
+    BlockchainBountyDto,
+    BlockchainBountyStatus,
+} from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
 import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
@@ -22,6 +25,9 @@ import { Nil } from '../utils/types'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
 import { TimeFrame } from '../utils/time-frame.query'
+import { UsersService } from '../users/users.service'
+import { BountyFilterQuery } from './bounty-filter.query'
+import { BountyStatus } from '../../../www/src/bounties/bounties.dto'
 
 const logger = getLogger()
 
@@ -39,6 +45,7 @@ export class BountiesService {
         private readonly bountiesBlockchainService: BlockchainBountiesService,
         @Inject(PolkassemblyService)
         private readonly polkassemblyService: PolkassemblyService,
+        private readonly usersService: UsersService,
     ) {}
 
     create(dto: CreateBountyDto, user: UserEntity): Promise<BountyEntity> {
@@ -94,14 +101,22 @@ export class BountiesService {
     }
     async find(
         networkId: string,
-        timeFrame: TimeFrame,
+        { ownerId, status, timeFrame }: BountyFilterQuery,
         paginatedParams: PaginatedParams,
     ): Promise<PaginatedResponseDto<Bounty>> {
+        if (ownerId && !(await this.usersService.userExists(ownerId))) {
+            // if ownerId was provided but the user does not exists return empty response
+            // because no proposal is assigned to not existing user
+            return PaginatedResponseDto.empty()
+        }
+
+        const owner = ownerId ? await this.usersService.findOne(ownerId) : null
+
         try {
             if (timeFrame === TimeFrame.OnChain) {
-                return this.findOnChain(networkId, paginatedParams)
+                return this.findOnChain(networkId, owner, status, paginatedParams)
             } else if (timeFrame === TimeFrame.History) {
-                return this.findOffChain(networkId, paginatedParams)
+                return this.findOffChain(networkId, owner, paginatedParams)
             } else return PaginatedResponseDto.empty()
         } catch (error) {
             logger.error(error)
@@ -111,9 +126,22 @@ export class BountiesService {
 
     private async findOnChain(
         networkId: string,
+        owner: Nil<UserEntity>,
+        status: Nil<BlockchainBountyStatus>,
         paginatedParams: PaginatedParams,
     ): Promise<PaginatedResponseDto<Bounty>> {
-        const bountiesBlockchain = await this.bountiesBlockchainService.getBounties(networkId)
+        let bountiesBlockchain = await this.bountiesBlockchainService.getBounties(networkId)
+        if (status) bountiesBlockchain = bountiesBlockchain.filter((bb) => bb.status === status)
+        if (owner) {
+            const indexes = bountiesBlockchain.map((bb) => bb.index)
+            const bountiesEntitiesOwned = await this.repository.find({
+                where: { blockchainIndex: In(indexes), owner, networkId },
+            })
+            bountiesBlockchain = bountiesBlockchain.filter(
+                (bb) =>
+                    bb.isOwner(owner) || bountiesEntitiesOwned.find((entity) => entity.blockchainIndex === bb.index),
+            )
+        }
         const blockchainIndexes = bountiesBlockchain
             .sort((bb1, bb2) => bb2.index - bb1.index)
             .map((bountyBlockchain) => bountyBlockchain.index)
@@ -142,6 +170,7 @@ export class BountiesService {
 
     private async findOffChain(
         networkId: string,
+        owner: Nil<UserEntity>,
         paginatedParams: PaginatedParams,
     ): Promise<PaginatedResponseDto<Bounty>> {
         const bountiesBlockchain = await this.bountiesBlockchainService.getBounties(networkId)
