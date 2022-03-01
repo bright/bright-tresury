@@ -23,19 +23,15 @@ export type NoProposalDetailsProps = OwnProps
 const NoProposalDetails = ({ proposal }: NoProposalDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
-    const { isEditable, canEdit } = useProposal(proposal)
+    const { canEdit } = useProposal(proposal)
 
-    const informationTipLabel = isEditable
-        ? t('proposal.details.noProposalDetails.askToAddDescription')
-        : t('proposal.details.noProposalDetails.cannotEdit')
+    const informationTipLabel = canEdit
+        ? t('proposal.details.noProposalDetails.canEdit')
+        : t('proposal.details.noProposalDetails.askToAddDescription')
 
     return (
         <div className={classes.root}>
-            {canEdit ? (
-                <InformationTip label={t('proposal.details.noProposalDetails.canEdit')} />
-            ) : (
-                <InformationTip label={informationTipLabel} />
-            )}
+            <InformationTip label={informationTipLabel} />
         </div>
     )
 }

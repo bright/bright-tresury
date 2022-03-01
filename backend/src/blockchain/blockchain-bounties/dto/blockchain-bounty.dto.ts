@@ -84,22 +84,4 @@ export class BlockchainBountyDto {
             throw new ForbiddenException('The given user cannot add details to this bounty')
         }
     }
-
-    isEditable = () => {
-        return [
-            BlockchainBountyStatus.Proposed,
-            BlockchainBountyStatus.Approved,
-            BlockchainBountyStatus.Funded,
-            BlockchainBountyStatus.CuratorProposed,
-            BlockchainBountyStatus.Active,
-            // TODO remove in TREAS-405
-            BlockchainBountyStatus.Unknown,
-        ].includes(this.status)
-    }
-
-    isEditableOrThrow = () => {
-        if (!this.isEditable()) {
-            throw new BadRequestException('You cannot edit a rewarded bounty details')
-        }
-    }
 }

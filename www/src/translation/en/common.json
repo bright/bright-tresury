@@ -521,7 +521,6 @@
             "proposer": "Proposer",
             "beneficiary": "Beneficiary",
             "noProposalDetails": {
-                "cannotEdit": "No proposal description have been added to Bright Treasury module.",
                 "askToAddDescription": "No proposal description have been added yet. You can ask the owner to add description in the Discussion tab.",
                 "canEdit": "Looks like you have created this proposal. Would you Like to add details? Detailed description will allow our community appreciate the proposal more and understand it better."
             },
@@ -549,7 +548,6 @@
             "createMilestone": "+ Create Milestone",
             "ordinalNumberPrefix": "Milestone - ",
             "noMilestones": {
-                "noMilestones": "No milestones have been added to this proposal.",
                 "notOwner": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab.",
                 "noDetails": "Looks like you have created this proposal. Once you add the title and some details in the Info tab, you can add milestones to allow our community to understand the proposal better.",
                 "addMilestones": "Please add milestones for this proposal, milestones will allow our community appreciate the proposal more and understand it better."

@@ -5,7 +5,7 @@ import {
 import { Nil } from '../../utils/types'
 import { BountyEntity } from '../entities/bounty.entity'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
-import { PolkassemblyBountyPostDto } from '../../polkassembly/dto/bounty-post.dto'
+import { PolkassemblyBountyPostDto } from '../../polkassembly/bounties/bounty-post.dto'
 import { UserEntity } from '../../users/user.entity'
 
 export class FindBountyDto {

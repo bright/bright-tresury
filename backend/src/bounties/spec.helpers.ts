@@ -313,7 +313,6 @@ const bountySchema: PolkassemblyBountyPostSchema = {
             {
                 id: 0,
                 bountyId: 0,
-                proposer: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
                 value: '100',
                 fee: '10',
                 curatorDeposit: '10',

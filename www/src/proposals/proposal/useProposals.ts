@@ -5,7 +5,14 @@ import { useNetworks } from '../../networks/useNetworks'
 import { Nil } from '../../util/types'
 import { ProposalDto, ProposalStatus } from '../proposals.dto'
 
-export const useProposal = (proposal: Nil<ProposalDto>) => {
+interface UseProposalsResult {
+    isOwner: boolean
+    isProposer: boolean
+    canEdit: boolean
+    canEditMilestones: boolean
+}
+
+export const useProposal = (proposal: Nil<ProposalDto>): UseProposalsResult => {
     const { isUserSignedInAndVerified, user } = useAuth()
     const {
         network: { ss58Format },
@@ -23,14 +30,9 @@ export const useProposal = (proposal: Nil<ProposalDto>) => {
         return isUserSignedInAndVerified && isProposer
     }, [isUserSignedInAndVerified, proposal, user, ss58Format])
 
-    const isEditable = useMemo(() => {
-        // TODO uncomment in TREAS-405
-        return !!proposal //&& proposal.status === ProposalStatus.Submitted
-    }, [proposal])
-
     const canEdit = useMemo(() => {
-        return (isOwner || isProposer) && isEditable
-    }, [isOwner, isProposer, isEditable])
+        return isOwner || isProposer
+    }, [isOwner, isProposer])
 
     const canEditMilestones = useMemo(() => {
         return canEdit && !!proposal?.details
@@ -39,7 +41,6 @@ export const useProposal = (proposal: Nil<ProposalDto>) => {
     return {
         isOwner,
         isProposer,
-        isEditable,
         canEdit,
         canEditMilestones,
     }

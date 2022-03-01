@@ -70,15 +70,4 @@ export class BlockchainProposal {
             throw new ForbiddenException('The given user cannot add details to this proposal')
         }
     }
-
-    isEditable = () => {
-        return this.status === BlockchainProposalStatus.Proposal
-    }
-
-    isEditableOrThrow = () => {
-        // TODO uncomment in TREAS-405
-        // if (!this.isEditable()) {
-        //     throw new BadRequestException('You cannot edit an approved/rewarded/rejected proposal details')
-        // }
-    }
 }

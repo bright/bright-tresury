@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common'
+import { ConflictException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { v4 as uuid } from 'uuid'
@@ -9,6 +9,7 @@ import { IdeaProposalsService } from '../../ideas/idea-proposals/idea-proposals.
 import { createIdea, createSessionData } from '../../ideas/spec.helpers'
 import { Web3AddressEntity } from '../../users/web3-addresses/web3-address.entity'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../utils/spec.helpers'
+import { NetworkPlanckValue } from '../../utils/types'
 import { ProposalEntity } from '../entities/proposal.entity'
 import { IdeaWithMilestones, ProposalsService } from '../proposals.service'
 import {
@@ -18,7 +19,6 @@ import {
     setUpProposalFromIdea,
 } from '../spec.helpers'
 import { ProposalDetailsService } from './proposal-details.service'
-import { NetworkPlanckValue } from '../../utils/types'
 
 describe('ProposalDetailsService', () => {
     const app = beforeSetupFullApp()
@@ -124,12 +124,12 @@ describe('ProposalDetailsService', () => {
             )
         })
 
-        it(`should throw BadRequestException when trying to create details for a proposal with ${BlockchainProposalStatus.Approval} status`, async () => {
+        it(`should resolve when trying to create details for a proposal with ${BlockchainProposalStatus.Approval} status`, async () => {
             const proposal = proposals[3]
             const sessionData = await createProposerSessionData(proposal)
             await expect(
                 service().create(proposal.proposalIndex, NETWORKS.POLKADOT, { title: 'title' }, sessionData),
-            ).rejects.toThrow(BadRequestException)
+            ).resolves.toBeDefined()
         })
     })
 
@@ -239,7 +239,7 @@ describe('ProposalDetailsService', () => {
             await expect(service().update(2, NETWORKS.POLKADOT, {}, sessionData)).rejects.toThrow(NotFoundException)
         })
 
-        it(`should throw BadRequestException when trying to update proposal with ${BlockchainProposalStatus.Approval}`, async () => {
+        it(`should resolve when trying to update proposal with ${BlockchainProposalStatus.Approval}`, async () => {
             const sessionData = await createSessionData()
             const idea = await createIdea(
                 {
@@ -253,7 +253,7 @@ describe('ProposalDetailsService', () => {
             await ideaProposalsService().turnIdeaIntoProposal(idea, idea.networks[0], 3)
             await proposalsService().createFromIdea(idea as IdeaWithMilestones, 3, idea.networks[0])
 
-            await expect(service().update(3, NETWORKS.POLKADOT, {}, sessionData)).rejects.toThrow(BadRequestException)
+            await expect(service().update(3, NETWORKS.POLKADOT, {}, sessionData)).resolves.toBeDefined()
         })
     })
 })

@@ -203,15 +203,6 @@ describe(`ProposalMilestonesService`, () => {
             )
         })
 
-        it(`should throw BadRequestException for a proposal with status other than ${ProposalStatus.Submitted}`, async () => {
-            const {
-                sessionHandler: { sessionData },
-            } = await setUp(app(), { blockchainProposalId: 3 })
-            await expect(service().create(3, NETWORKS.POLKADOT, { details }, sessionData)).rejects.toThrow(
-                BadRequestException,
-            )
-        })
-
         it(`should throw BadRequestException for a proposal with with no details created`, async () => {
             const {
                 sessionHandler: { sessionData },
@@ -371,18 +362,6 @@ describe(`ProposalMilestonesService`, () => {
             ).rejects.toThrow(NotFoundException)
         })
 
-        it(`should throw BadRequestException for a proposal with status other than ${ProposalStatus.Submitted}`, async () => {
-            const {
-                sessionHandler: { sessionData },
-                proposal,
-            } = await setUp(app(), { blockchainProposalId: 3 })
-            const milestone = await createProposalMilestone(app(), proposal)
-
-            await expect(service().update(milestone.id, 3, NETWORKS.POLKADOT, {}, sessionData)).rejects.toThrow(
-                BadRequestException,
-            )
-        })
-
         it(`should throw ForbiddenException for a proposal with other owner`, async () => {
             const { proposal } = await setUp(app())
             const milestone = await createProposalMilestone(app(), proposal)
@@ -451,18 +430,6 @@ describe(`ProposalMilestonesService`, () => {
             await expect(
                 service().delete(uuid(), proposal.blockchainProposalId, NETWORKS.POLKADOT, sessionData),
             ).rejects.toThrow(NotFoundException)
-        })
-
-        it(`should throw BadRequestException for a proposal with status other than ${ProposalStatus.Submitted}`, async () => {
-            const {
-                sessionHandler: { sessionData },
-                proposal,
-            } = await setUp(app(), { blockchainProposalId: 3 })
-            const milestone = await createProposalMilestone(app(), proposal)
-
-            await expect(service().delete(milestone.id, 3, NETWORKS.POLKADOT, sessionData)).rejects.toThrow(
-                BadRequestException,
-            )
         })
 
         it(`should throw ForbiddenException for a proposal with other owner`, async () => {

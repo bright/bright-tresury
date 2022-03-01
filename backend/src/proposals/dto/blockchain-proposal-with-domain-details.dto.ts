@@ -52,7 +52,6 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
 
     canEditOrThrow = (user: UserEntity) => {
         this.isOwnerOrThrow(user)
-        this.blockchain.isEditableOrThrow()
     }
 
     canEditMilestonesOrThrow = (user: UserEntity) => {
@@ -60,7 +59,6 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
             throw new BadRequestException('You cannot edit milestones of a proposal with no details created')
         }
         this.isOwnerOrThrow(user)
-        this.blockchain.isEditableOrThrow()
     }
     hasBlockchainProposalStatus = (status?: BlockchainProposalStatus) => this.blockchain.status === status
 }

@@ -11,11 +11,8 @@ export type NoProposalMilestonesInfoProps = OwnProps
 
 const NoProposalMilestonesInfo = ({ proposal }: NoProposalMilestonesInfoProps) => {
     const { t } = useTranslation()
-    const { canEdit, isEditable, canEditMilestones } = useProposal(proposal)
+    const { canEdit, canEditMilestones } = useProposal(proposal)
 
-    if (!isEditable) {
-        return <p>{t('proposal.milestones.noMilestones.noMilestones')}</p>
-    }
     if (!canEdit) {
         return <p>{t('proposal.milestones.noMilestones.notOwner')}</p>
     }

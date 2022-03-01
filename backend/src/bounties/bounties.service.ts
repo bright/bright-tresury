@@ -68,8 +68,6 @@ export class BountiesService {
             throw new ForbiddenException('The given user cannot edit this bounty')
         }
 
-        bounty.blockchain.isEditableOrThrow()
-
         if (!bounty.entity) {
             try {
                 // construct CreateBountyDto object and validate

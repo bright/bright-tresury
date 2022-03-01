@@ -298,51 +298,6 @@ describe('BountiesService', () => {
                 ).resolves.toBeDefined()
             })
         })
-        describe('when status', () => {
-            it('PendingPayout should throw BadRequestException', async () => {
-                const { user, bountyEntity } = await setUpUpdate(blockchainBountyPendingPayout)
-
-                return expect(
-                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
-                ).rejects.toThrow(BadRequestException)
-            })
-
-            it('Proposed should resolve', async () => {
-                const { user, bountyEntity } = await setUpUpdate(blockchainBounty0)
-
-                return expect(
-                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
-                ).resolves.toBeDefined()
-            })
-            it('Approved should resolve', async () => {
-                const { user, bountyEntity } = await setUpUpdate(blockchainBountyApproved)
-
-                return expect(
-                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
-                ).resolves.toBeDefined()
-            })
-            it('Funded should resolve', async () => {
-                const { user, bountyEntity } = await setUpUpdate(blockchainBountyFunded)
-
-                return expect(
-                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
-                ).resolves.toBeDefined()
-            })
-            it('CuratorProposed should resolve', async () => {
-                const { user, bountyEntity } = await setUpUpdate(blockchainBountyCuratorProposed)
-
-                return expect(
-                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
-                ).resolves.toBeDefined()
-            })
-            it('Active should resolve', async () => {
-                const { user, bountyEntity } = await setUpUpdate(blockchainBountyActive)
-
-                return expect(
-                    service().update(bountyEntity.blockchainIndex, bountyEntity.networkId, {}, user),
-                ).resolves.toBeDefined()
-            })
-        })
     })
 
     describe('getBounties', () => {

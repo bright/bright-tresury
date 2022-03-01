@@ -41,15 +41,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
 
     const canAward = isCurator && isActive
 
-    const canEdit =
-        (isOwner || isProposer || isCurator) &&
-        (isProposed ||
-            isApproved ||
-            isFunded ||
-            isCuratorProposed ||
-            isActive ||
-            // TODO remove in TREAS-405
-            isUnknown)
+    const canEdit = isOwner || isProposer || isCurator
 
     const canClaimPayout = isBeneficiary && isPendingPayout && !bounty.unlockAt
 
