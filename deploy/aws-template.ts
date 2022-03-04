@@ -1531,18 +1531,14 @@ export default cloudform({
             MetricName: 'HTTPCode_Target_5XX_Count',
             Namespace: 'AWS/ApplicationELB',
             Statistic: 'Sum',
-            Period: 3600,
+            Period: 60,
             EvaluationPeriods: 1,
-            Threshold: 3,
-            ComparisonOperator: 'GreaterThanThreshold',
+            Threshold: 1,
+            ComparisonOperator: 'GreaterThanOrEqualToThreshold',
             Dimensions: [
                 {
                     Name: 'LoadBalancer',
-                    Value: Fn.Ref(Resources.ECSALB),
-                },
-                {
-                    Name: 'TargetGroup',
-                    Value: Fn.Ref(Resources.ECSAppTargetGroup),
+                    Value: Fn.GetAtt(Resources.ECSALB, 'LoadBalancerFullName'),
                 },
             ],
         }),

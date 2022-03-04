@@ -18,4 +18,10 @@ export class AppController {
         }
         return new HealthCheckResponse(blockchainServices)
     }
+
+    @Get('/unhealth')
+    unhealthy(): void {
+        logger.info('This is an error!')
+        throw new InternalServerErrorException()
+    }
 }
