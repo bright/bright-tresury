@@ -23,12 +23,8 @@ import { IdeaMilestoneProposalsService } from './idea-milestones/idea-milestone-
 import { IdeaMilestoneProposalsController } from './idea-milestones/idea-milestone-proposals/idea-milestone-proposals.controller'
 import { ConfigModule } from '../config/config.module'
 import { IsValidNetworkConstraint } from '../utils/network.validator'
-import { IdeaCommentsController } from './idea-comments/idea-comments.controller'
-import { IdeaCommentEntity } from './idea-comments/entities/idea-comment.entity'
-import { IdeaCommentsService } from './idea-comments/idea-comments.service'
 import { IdeaNetworksService } from './idea-networks/idea-networks.service'
 import { IdeaNetworksController } from './idea-networks/idea-networks.controller'
-import { CommentEntity } from '../comments/comment.entity'
 
 @Module({
     imports: [
@@ -40,14 +36,7 @@ import { CommentEntity } from '../comments/comment.entity'
         MilestoneDetailsModule,
         ConfigModule,
         ProposalsModule,
-        TypeOrmModule.forFeature([
-            IdeaEntity,
-            IdeaNetworkEntity,
-            IdeaMilestonesRepository,
-            IdeaMilestoneNetworkEntity,
-            IdeaCommentEntity,
-            CommentEntity,
-        ]),
+        TypeOrmModule.forFeature([IdeaEntity, IdeaNetworkEntity, IdeaMilestonesRepository, IdeaMilestoneNetworkEntity]),
     ],
     providers: [
         IdeasService,
@@ -56,7 +45,6 @@ import { CommentEntity } from '../comments/comment.entity'
         IdeaMilestoneNetworksService,
         IdeaMilestoneProposalsService,
         IsValidNetworkConstraint,
-        IdeaCommentsService,
         IdeaNetworksService,
     ],
     controllers: [
@@ -65,9 +53,8 @@ import { CommentEntity } from '../comments/comment.entity'
         IdeaMilestoneNetworksController,
         IdeaMilestoneProposalsController,
         IdeaProposalsController,
-        IdeaCommentsController,
         IdeaNetworksController,
     ],
-    exports: [IdeasService, IdeaMilestonesService, IdeaCommentsService],
+    exports: [IdeasService, IdeaMilestonesService],
 })
 export class IdeasModule {}

@@ -1,11 +1,14 @@
-import { Inject } from '@nestjs/common'
+import { Inject, NotFoundException } from '@nestjs/common'
 import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm'
 import { BlockchainBountyDto } from '../../../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
 import { BountiesService } from '../../../bounties/bounties.service'
-import { BountyCommentsService } from '../../../bounties/bounty-comments/bounty-comments.service'
-import { BountyCommentEntity } from '../../../bounties/bounty-comments/entities/bounty-comment.entity'
 import { BountyEntity } from '../../../bounties/entities/bounty.entity'
 import { AppConfig, AppConfigToken } from '../../../config/config.module'
+import { CommentsService } from '../../../discussions/comments.service'
+import { DiscussionsService } from '../../../discussions/discussions.service'
+import { CommentEntity } from '../../../discussions/entites/comment.entity'
+import { DiscussionCategory } from '../../../discussions/entites/discussion-category'
+import { DiscussionEntity } from '../../../discussions/entites/discussion.entity'
 import { getLogger } from '../../../logging.module'
 import { UsersService } from '../../../users/users.service'
 import { Nil } from '../../../utils/types'
@@ -16,9 +19,10 @@ import { NewBountyCommentDto } from './new-bounty-comment.dto'
 const logger = getLogger()
 
 @EventSubscriber()
-export class BountyCommentSubscriber implements EntitySubscriberInterface<BountyCommentEntity> {
+export class BountyCommentSubscriber implements EntitySubscriberInterface<CommentEntity> {
     constructor(
-        private readonly commentsService: BountyCommentsService,
+        private readonly commentsService: CommentsService,
+        private readonly discussionsService: DiscussionsService,
         private readonly appEventsService: AppEventsService,
         private readonly bountiesService: BountiesService,
         private readonly usersService: UsersService,
@@ -29,45 +33,66 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Bounty
     }
 
     listenTo() {
-        return BountyCommentEntity
+        return CommentEntity
     }
 
-    async afterInsert({ entity }: InsertEvent<BountyCommentEntity>) {
-        logger.info(`New bounty comment created. Creating NewBountyComment app event: `, entity)
+    async afterInsert({ entity }: InsertEvent<CommentEntity>) {
+        logger.info(`New comment created:`, entity)
 
-        const bounty = await this.bountiesService.getBounty(entity.networkId, entity.blockchainBountyId)
-        const receiverIds = await this.getReceiverIds(entity, bounty.blockchain, bounty.entity)
-        const data = this.getEventDetails(entity, bounty.blockchain, bounty.entity)
+        const discussion = entity.discussion ?? (await this.discussionsService.findOne(entity.discussionId))
+        if (discussion?.category !== DiscussionCategory.Bounty) {
+            return
+        }
+        logger.info(`Creating NewBountyComment app event: `, entity)
 
-        await this.appEventsService.create(data, receiverIds)
+        try {
+            const bounty = await this.bountiesService.getBounty(discussion.networkId!, discussion.blockchainIndex!)
+            const receiverIds = await this.getReceiverIds(entity, discussion, bounty.blockchain, bounty.entity)
+            const data = this.getEventDetails(
+                entity,
+                discussion.blockchainIndex!,
+                discussion.networkId!,
+                bounty.blockchain,
+                bounty.entity,
+            )
+
+            await this.appEventsService.create(data, receiverIds)
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                logger.info(`Bounty not found, will not create event`, entity)
+            } else {
+                throw e
+            }
+        }
     }
 
     private getEventDetails(
-        bountyComment: BountyCommentEntity,
+        comment: CommentEntity,
+        blockchainIndex: number,
+        networkId: string,
         bountyBlockchain: BlockchainBountyDto,
         bountyEntity: Nil<BountyEntity>,
     ): NewBountyCommentDto {
-        const commentsUrl = `${this.appConfig.websiteUrl}/bounties/${bountyComment.blockchainBountyId}/discussion?networkId=${bountyComment.networkId}`
+        const commentsUrl = `${this.appConfig.websiteUrl}/bounties/${blockchainIndex}/discussion?networkId=${networkId}`
 
         return {
             type: AppEventType.NewBountyComment,
-            commentId: bountyComment.comment.id,
+            commentId: comment.id,
             bountyTitle: bountyEntity?.title ?? bountyBlockchain.description,
-            bountyBlockchainId: bountyComment.blockchainBountyId,
+            bountyBlockchainId: blockchainIndex,
             commentsUrl,
-            networkId: bountyComment.networkId,
+            networkId,
             websiteUrl: this.appConfig.websiteUrl,
         }
     }
 
     private async getReceiverIds(
-        bountyComment: BountyCommentEntity,
+        comment: CommentEntity,
+        discussion: DiscussionEntity,
         bountyBlockchain: BlockchainBountyDto,
         bountyEntity: Nil<BountyEntity>,
     ): Promise<string[]> {
-        const receiverIds = (
-            await this.commentsService.findAll(bountyComment.blockchainBountyId, bountyComment.networkId)
-        ).map((c) => c.comment.authorId)
+        const receiverIds = (discussion.comments ?? []).map((c) => c.authorId)
 
         // add bounty in-app owner
         if (bountyEntity) {
@@ -81,7 +106,7 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Bounty
         }
 
         // Set created from an array will take only distinct values
-        return [...new Set(receiverIds)].filter((receiverId) => receiverId !== bountyComment.comment.authorId)
+        return [...new Set(receiverIds)].filter((receiverId) => receiverId !== comment.authorId)
     }
 
     private async addUserFromWeb3Address(web3address: string, receiverIds: string[]): Promise<void> {

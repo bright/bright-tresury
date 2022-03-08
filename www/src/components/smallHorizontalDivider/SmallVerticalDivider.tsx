@@ -3,16 +3,15 @@ import React from 'react'
 import clsx from 'clsx'
 import { TypographyProps } from '@material-ui/core'
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
     createStyles({
         root: {
             fontWeight: 600,
             marginLeft: '8px',
             marginRight: '8px',
-            alignSelf: 'flex-end',
         },
         blackDivider: {
-            color: 'black',
+            color: theme.palette.text.disabled,
         },
     }),
 )

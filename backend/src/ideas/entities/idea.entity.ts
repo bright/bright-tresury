@@ -5,7 +5,6 @@ import { BaseEntity } from '../../database/base.entity'
 import { IdeaProposalDetailsEntity } from '../../idea-proposal-details/idea-proposal-details.entity'
 import { UserEntity } from '../../users/entities/user.entity'
 import { EmptyBeneficiaryException } from '../exceptions/empty-beneficiary.exception'
-import { IdeaCommentEntity } from '../idea-comments/entities/idea-comment.entity'
 import { IdeaMilestoneEntity } from '../idea-milestones/entities/idea-milestone.entity'
 import { IdeaNetworkStatus } from './idea-network-status'
 import { IdeaNetworkEntity } from './idea-network.entity'
@@ -54,19 +53,11 @@ export class IdeaEntity extends BaseEntity {
     @JoinColumn()
     details: IdeaProposalDetailsEntity
 
-    @OneToMany(() => IdeaCommentEntity, (ideaComment) => ideaComment.idea, {
-        cascade: true,
-        onDelete: 'CASCADE',
-        onUpdate: 'CASCADE',
-    })
-    comments: Nil<IdeaCommentEntity[]>
-
     constructor(
         networks: IdeaNetworkEntity[],
         status: IdeaStatus,
         owner: UserEntity,
         details: IdeaProposalDetailsEntity,
-        comments: IdeaCommentEntity[],
         beneficiary?: string,
         id?: string,
     ) {
@@ -77,7 +68,6 @@ export class IdeaEntity extends BaseEntity {
         this.id = id ?? uuid()
         this.owner = owner
         this.details = details
-        this.comments = comments
     }
 
     isDraft = (): boolean => this.status === IdeaStatus.Draft

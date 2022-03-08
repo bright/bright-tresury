@@ -42,7 +42,10 @@ export class SessionHandler {
     }
 }
 
-export const createWeb3SessionHandler = async (app: INestApplication, address: string): Promise<SessionHandler> => {
+export const createWeb3SessionHandler = async (
+    app: INestApplication,
+    address: string = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
+): Promise<SessionHandler> => {
     const signatureValidator = app.get(SignatureValidator)
     /**
      * Mock signature validation so that we don't use real blockchain for signin.

@@ -285,11 +285,9 @@
     "ago": "ago",
     "lessThanMinuteAgo": "less than a minute",
     "discussion": {
-        "edit": "Edit",
-        "delete": "Delete",
         "commentAlso": "Comment also on ",
         "ideaAlreadyTurnedIntoProposal": "This idea was turned into the proposal. We suggest discussing this in the proposal <a>page</a>.",
-        "enterCommentPlaceholder": "Leave your comment here",
+        "createCommentPlaceholder": "Leave your comment here",
         "commentCreatedTimestampTitle": "commented",
         "commentUpdatedTimestampTitle": "edited",
         "inOrderToComment": "In order to comment, please ",
@@ -302,7 +300,17 @@
         "thumbsDownAlt": "Thumbs Down",
         "deleteError": "Something went wrong when deleting this comment.",
         "editError": "Something went wrong when updating this comment.",
-        "accountDeleted": "Account Deleted"
+        "accountDeleted": "Account Deleted",
+        "optionsMenu": {
+            "edit": "Edit",
+            "delete": "Delete"
+        },
+        "deleteCommentModal": {
+            "title": "Are you sure you want to delete the comment?",
+            "discard": "Discard",
+            "deleteComment": "Delete comment",
+            "error": "An error occured while deleting the comment"
+        }
     },
     "voting": {
         "past": {
@@ -882,13 +890,11 @@
         "errorOccurredWhileLoadingProposals": "An error occurred while loading proposals.",
         "errorOccurredWhileLoadingIdea": "An error occurred while loading idea.",
         "errorOccurredWhileLoadingIdeaMilestones": "An error occurred while loading idea milestones.",
-        "errorOccurredWhileLoadingIdeaComments": "An error occurred while loading idea comments.",
         "errorOccurredWhileLoadingProposal": "An error occurred while loading proposal.",
         "errorOccurredWhileLoadingProposalMilestones": "An error occurred while loading proposal milestones.",
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
-        "errorOccurredWhileLoadingProposalComments": "An error occurred while loading proposal comments.",
         "errorOccurredWhileLoadingBounty": "An error occurred while loading bounty.",
-        "errorOccurredWhileLoadingBountyComments": "An error occurred while loading bounty comments.",
+        "errorOccurredWhileLoadingComments": "An error occurred while loading comments.",
         "somethingWentWrong": "Ooops... Something went wrong."
     },
     "loading": {
@@ -896,15 +902,13 @@
         "bounties": "We're loading the bounties. It may take a moment. Bear with us.",
         "idea": "We're loading the idea. It may take a moment. Bear with us.",
         "ideaMilestones": "We're loading the idea milestones. It may take a moment. Bear with us.",
-        "ideaComments": "We're loading the idea comments. It may take a moment. Bear with us.",
         "proposals": "We're loading the proposals. It may take a moment. Bear with us.",
         "proposal": "We're loading the proposal. It may take a moment. Bear with us.",
         "proposalMilestones": "We're loading the proposal milestones. It may take a moment. Bear with us.",
         "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us.",
         "stats": "We're loading the statistics. It may take a moment. Bear with us.",
-        "proposalComments": "We're loading the proposal comments. It may take a moment. Bear with us.",
         "bounty": "We're loading the bounty. It may take a moment. Bear with us.",
-        "bountyComments": "We're loading the bounty comments. It may take a moment. Bear with us.",
+        "comments": "We're loading the comments. It may take a moment. Bear with us.",
         "bountiesVoting": "We're loading the bounty voting. It may take a moment. Bear with us."
     }
 }

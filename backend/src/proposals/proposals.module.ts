@@ -15,10 +15,6 @@ import { ProposalsService } from './proposals.service'
 import { ConfigModule } from '../config/config.module'
 import { IsValidNetworkConstraint } from '../utils/network.validator'
 import { ProposalDetailsService } from './proposal-details/proposal-details.service'
-import { ProposalCommentsController } from './proposal-comments/proposal-comments.controller'
-import { ProposalCommentsService } from './proposal-comments/proposal-comments.service'
-import { CommentEntity } from '../comments/comment.entity'
-import { ProposalCommentEntity } from './proposal-comments/entities/proposal-comment.entity'
 import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
 import { UsersModule } from '../users/users.module'
 
@@ -32,21 +28,10 @@ import { UsersModule } from '../users/users.module'
         MilestoneDetailsModule,
         PolkassemblyModule,
         UsersModule,
-        TypeOrmModule.forFeature([ProposalEntity, ProposalMilestoneEntity, ProposalCommentEntity, CommentEntity]),
+        TypeOrmModule.forFeature([ProposalEntity, ProposalMilestoneEntity]),
     ],
-    controllers: [
-        ProposalsController,
-        ProposalMilestonesController,
-        ProposalDetailsController,
-        ProposalCommentsController,
-    ],
-    providers: [
-        ProposalsService,
-        IsValidNetworkConstraint,
-        ProposalMilestonesService,
-        ProposalDetailsService,
-        ProposalCommentsService,
-    ],
-    exports: [ProposalsService, ProposalCommentsService],
+    controllers: [ProposalsController, ProposalMilestonesController, ProposalDetailsController],
+    providers: [ProposalsService, IsValidNetworkConstraint, ProposalMilestonesService, ProposalDetailsService],
+    exports: [ProposalsService],
 })
 export class ProposalsModule {}

@@ -28,6 +28,7 @@ import { UsersModule } from './users/users.module'
 import { BountiesModule } from './bounties/bounties.module'
 import { PolkassemblyModule } from './polkassembly/polkassembly.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
+import { DiscussionsModule } from './discussions/discussions.module'
 import helmet from 'helmet'
 
 @Module({
@@ -53,13 +54,14 @@ import helmet from 'helmet'
         ThrottlerModule.forRoot({
             ttl: 60,
             limit: 30,
-        })
+        }),
+        DiscussionsModule,
     ],
     providers: [
         {
             provide: APP_GUARD,
-            useClass: ThrottlerGuard
-        }
+            useClass: ThrottlerGuard,
+        },
     ],
     exports: [],
     controllers: [AppController],
@@ -79,10 +81,12 @@ export function configureGlobalServices(app: INestApplication) {
         credentials: true,
     })
 
-    app.use(helmet({
-        contentSecurityPolicy: false,
-        crossOriginEmbedderPolicy: false
-    }))
+    app.use(
+        helmet({
+            contentSecurityPolicy: false,
+            crossOriginEmbedderPolicy: false,
+        }),
+    )
 
     app.useGlobalFilters(new SupertokensExceptionFilter())
 

@@ -1,27 +1,30 @@
 import React, { useEffect } from 'react'
 import { useQueryClient } from 'react-query'
+import { useGetComments } from '../../../discussion/comments.api'
+import { ProposalDiscussionDto } from '../../../discussion/comments.dto'
+import Discussion from '../../../discussion/Discussion'
 import {
     PROPOSAL_DISCUSSION_APP_EVENTS_QUERY_KEY_BASE,
     UNREAD_APP_EVENTS_QUERY_KEY_BASE,
     useGetProposalDiscussionAppEvents,
     useReadAppEvents,
 } from '../../../main/top-bar/notifications/app-events.api'
-import { useNetworks } from '../../../networks/useNetworks'
-import { useGetProposalComments } from './proposal.comments.api'
-import PublicProposalDiscussion from './PublicProposalDiscussion'
 
 interface OwnProps {
-    proposalIndex: number
+    discussion: ProposalDiscussionDto
     userId: string
 }
 export type PrivateProposalDiscussionProps = OwnProps
 
-const PrivateProposalDiscussion = ({ proposalIndex, userId }: PrivateProposalDiscussionProps) => {
-    const { network } = useNetworks()
-    const proposalComments = useGetProposalComments(proposalIndex, network.id)
+const PrivateProposalDiscussion = ({
+    discussion,
+    discussion: { blockchainIndex: proposalIndex, networkId },
+    userId,
+}: PrivateProposalDiscussionProps) => {
+    const proposalComments = useGetComments(discussion)
     const appEvents = useGetProposalDiscussionAppEvents({
         proposalIndex,
-        networkId: network.id,
+        networkId,
         userId,
         pageSize: 100,
         pageNumber: 1,
@@ -50,6 +53,6 @@ const PrivateProposalDiscussion = ({ proposalIndex, userId }: PrivateProposalDis
         )
     }, [appEvents.isSuccess, appEvents.data, proposalComments.isSuccess, proposalComments.data])
 
-    return <PublicProposalDiscussion proposalIndex={proposalIndex} />
+    return <Discussion discussion={discussion} />
 }
 export default PrivateProposalDiscussion

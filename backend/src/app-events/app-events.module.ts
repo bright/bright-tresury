@@ -5,6 +5,7 @@ import { SuperTokensModule } from '../auth/supertokens/supertokens.module'
 import { BountiesModule } from '../bounties/bounties.module'
 import { ConfigModule } from '../config/config.module'
 import { DatabaseModule } from '../database/database.module'
+import { DiscussionsModule } from '../discussions/discussions.module'
 import { EmailsModule } from '../emails/emails.module'
 import { IdeasModule } from '../ideas/ideas.module'
 import { ProposalsModule } from '../proposals/proposals.module'
@@ -27,6 +28,7 @@ import { AppEventsController } from './app-events.controller'
         UsersModule,
         TypeOrmModule.forFeature([AppEventEntity, AppEventReceiverEntity]),
         SuperTokensModule,
+        DiscussionsModule,
         IdeasModule,
         ProposalsModule,
         BountiesModule,

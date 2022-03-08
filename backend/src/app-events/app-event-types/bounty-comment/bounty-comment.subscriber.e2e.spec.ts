@@ -2,8 +2,10 @@ import { cleanAuthorizationDatabase } from '../../../auth/supertokens/specHelper
 import { createUserSessionHandlerWithVerifiedEmail } from '../../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainBountiesService } from '../../../blockchain/blockchain-bounties/blockchain-bounties.service'
 import { BountiesService } from '../../../bounties/bounties.service'
-import { BountyCommentsService } from '../../../bounties/bounty-comments/bounty-comments.service'
 import { blockchainBountyCuratorProposed, createBountyEntity, mockGetBounties } from '../../../bounties/spec.helpers'
+import { DiscussionsService } from '../../../discussions/discussions.service'
+import { BountyDiscussionDto } from '../../../discussions/dto/discussion-category/bounty-discussion.dto'
+import { DiscussionCategory } from '../../../discussions/entites/discussion-category'
 import { createSessionData } from '../../../ideas/spec.helpers'
 import { UserEntity } from '../../../users/entities/user.entity'
 import { Web3AddressEntity } from '../../../users/web3-addresses/web3-address.entity'
@@ -13,7 +15,7 @@ import { AppEventType } from '../../entities/app-event-type'
 
 describe('New bounty comment app event e2e', () => {
     const app = beforeSetupFullApp()
-    const getBountyCommentsService = () => app.get().get(BountyCommentsService)
+    const getDiscussionsService = () => app.get().get(DiscussionsService)
 
     beforeAll(() => {
         mockGetBounties(app().get(BlockchainBountiesService))
@@ -25,6 +27,24 @@ describe('New bounty comment app event e2e', () => {
         jest.clearAllMocks()
     })
 
+    const createBountyComment = (
+        blockchainIndex: number,
+        networkId: string,
+        user: UserEntity,
+        content: string = 'This is a comment',
+    ) =>
+        getDiscussionsService().addComment(
+            {
+                content,
+                discussionDto: {
+                    category: DiscussionCategory.Bounty,
+                    blockchainIndex,
+                    networkId,
+                } as BountyDiscussionDto,
+            },
+            user,
+        )
+
     const setUp = async () => {
         const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
         const user = await createSessionData({ username: 'user1', email: 'user1@example.com' })
@@ -33,12 +53,7 @@ describe('New bounty comment app event e2e', () => {
         })
 
         const createComment = (someUser: UserEntity) =>
-            getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                { content: 'This is a comment' },
-                someUser,
-            )
+            createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, someUser)
 
         return {
             sessionHandler,
@@ -46,7 +61,7 @@ describe('New bounty comment app event e2e', () => {
             user,
             bountyEntity,
             bountyBlockchain: blockchainBountyCuratorProposed,
-            createComment,
+            createCommentForEntity: createComment,
         }
     }
 
@@ -55,10 +70,9 @@ describe('New bounty comment app event e2e', () => {
             const { bountyEntity, user, commentDto } = await setUp()
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            const createdComment = await getBountyCommentsService().create(
+            const createdComment = await createBountyComment(
                 bountyEntity.blockchainIndex,
                 bountyEntity.networkId,
-                commentDto,
                 user.user,
             )
 
@@ -67,7 +81,7 @@ describe('New bounty comment app event e2e', () => {
                     type: AppEventType.NewBountyComment,
                     bountyBlockchainId: bountyEntity.blockchainIndex,
                     bountyTitle: bountyEntity.title,
-                    commentId: createdComment.comment.id,
+                    commentId: createdComment.id,
                     commentsUrl: `http://localhost:3000/bounties/${bountyEntity.blockchainIndex}/discussion?networkId=${bountyEntity.networkId}`,
                     networkId: bountyEntity.networkId,
                     websiteUrl: 'http://localhost:3000',
@@ -80,12 +94,7 @@ describe('New bounty comment app event e2e', () => {
             const { bountyEntity, user, commentDto } = await setUp()
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                user.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, user.user)
 
             expect(spy).toHaveBeenCalledWith(expect.anything(), [bountyEntity.ownerId])
         })
@@ -99,12 +108,7 @@ describe('New bounty comment app event e2e', () => {
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                user.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, user.user)
 
             expect(spy).toHaveBeenCalledWith(expect.anything(), expect.arrayContaining([proposer.user.id]))
         })
@@ -118,33 +122,24 @@ describe('New bounty comment app event e2e', () => {
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                user.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, user.user)
 
             expect(spy).toHaveBeenCalledWith(expect.anything(), expect.arrayContaining([curator.user.id]))
         })
 
         it('should create NewBountyComment event for all bounty commenters', async () => {
-            const { bountyEntity, user, createComment, commentDto } = await setUp()
+            const { bountyEntity, user, createCommentForEntity, commentDto } = await setUp()
 
-            await createComment(user.user)
-            await createComment(user.user)
+            await createCommentForEntity(user.user)
+            await createCommentForEntity(user.user)
 
             const user2 = await createSessionData({ username: 'user2', email: 'user2@example.com' })
-            await createComment(user2.user)
+            await createCommentForEntity(user2.user)
 
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
             const user3 = await createSessionData({ username: 'user3', email: 'user3@example.com' })
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                user3.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, user3.user)
+
             expect(spy).toHaveBeenLastCalledWith(
                 expect.anything(),
                 expect.arrayContaining([user.user.id, user2.user.id]),
@@ -155,12 +150,12 @@ describe('New bounty comment app event e2e', () => {
             const { bountyEntity, sessionHandler: bountyOwner, commentDto } = await setUp()
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getBountyCommentsService().create(
+            await createBountyComment(
                 bountyEntity.blockchainIndex,
                 bountyEntity.networkId,
-                commentDto,
                 bountyOwner.sessionData.user,
             )
+
             expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([bountyEntity.ownerId]))
         })
 
@@ -173,12 +168,7 @@ describe('New bounty comment app event e2e', () => {
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                proposer.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, proposer.user)
 
             expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([proposer.user]))
         })
@@ -192,12 +182,7 @@ describe('New bounty comment app event e2e', () => {
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                curator.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, curator.user)
 
             expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([curator.user]))
         })
@@ -207,20 +192,10 @@ describe('New bounty comment app event e2e', () => {
             const { bountyEntity, user, commentDto } = await setUp()
 
             // create one comment
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                user.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, user.user)
 
             // create another comment with the same user
-            await getBountyCommentsService().create(
-                bountyEntity.blockchainIndex,
-                bountyEntity.networkId,
-                commentDto,
-                user.user,
-            )
+            await createBountyComment(bountyEntity.blockchainIndex, bountyEntity.networkId, user.user)
             expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.not.arrayContaining([user.user.id]))
         })
     })

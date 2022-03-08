@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react'
 import { useQueryClient } from 'react-query'
+import { useGetComments } from '../../../discussion/comments.api'
+import { IdeaDiscussionDto } from '../../../discussion/comments.dto'
 import {
     IDEA_DISCUSSION_APP_EVENTS_QUERY_KEY_BASE,
     UNREAD_APP_EVENTS_QUERY_KEY_BASE,
@@ -7,19 +9,19 @@ import {
     useReadAppEvents,
 } from '../../../main/top-bar/notifications/app-events.api'
 import { IdeaDto } from '../../ideas.dto'
-import { useGetIdeaComments } from './idea.comments.api'
 import PublicIdeaDiscussion from './PublicIdeaDiscussion'
 
 interface OwnProps {
     idea: IdeaDto
+    discussion: IdeaDiscussionDto
     userId: string
 }
 export type PrivateIdeaDiscussionProps = OwnProps
 
-const PrivateIdeaDiscussion = ({ idea, userId }: PrivateIdeaDiscussionProps) => {
-    const ideaComments = useGetIdeaComments(idea.id)
+const PrivateIdeaDiscussion = ({ idea, discussion, userId }: PrivateIdeaDiscussionProps) => {
+    const ideaComments = useGetComments(discussion)
     const appEvents = useGetIdeaDiscussionAppEvents({
-        ideaId: idea.id,
+        ideaId: discussion.entityId,
         userId: userId,
         pageSize: 100,
         pageNumber: 1,
@@ -48,6 +50,6 @@ const PrivateIdeaDiscussion = ({ idea, userId }: PrivateIdeaDiscussionProps) => 
         )
     }, [appEvents.isSuccess, appEvents.data, ideaComments.isSuccess, ideaComments.data])
 
-    return <PublicIdeaDiscussion idea={idea} />
+    return <PublicIdeaDiscussion idea={idea} discussion={discussion} />
 }
 export default PrivateIdeaDiscussion

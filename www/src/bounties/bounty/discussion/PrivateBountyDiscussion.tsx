@@ -1,27 +1,30 @@
 import React, { useEffect } from 'react'
 import { useQueryClient } from 'react-query'
+import { useGetComments } from '../../../discussion/comments.api'
+import { BountyDiscussionDto } from '../../../discussion/comments.dto'
+import Discussion from '../../../discussion/Discussion'
 import {
     BOUNTY_DISCUSSION_APP_EVENTS_QUERY_KEY_BASE,
     UNREAD_APP_EVENTS_QUERY_KEY_BASE,
     useGetBountyDiscussionAppEvents,
     useReadAppEvents,
 } from '../../../main/top-bar/notifications/app-events.api'
-import { useNetworks } from '../../../networks/useNetworks'
-import { useGetBountyComments } from './bounty.comments.api'
-import PublicBountyDiscussion from './PublicBountyDiscussion'
 
 interface OwnProps {
-    bountyIndex: number
+    discussion: BountyDiscussionDto
     userId: string
 }
 export type PrivateBountyDiscussionProps = OwnProps
 
-const PrivateBountyDiscussion = ({ bountyIndex, userId }: PrivateBountyDiscussionProps) => {
-    const { network } = useNetworks()
-    const bountyComments = useGetBountyComments(bountyIndex, network.id)
+const PrivateBountyDiscussion = ({
+    discussion,
+    discussion: { blockchainIndex: bountyIndex, networkId },
+    userId,
+}: PrivateBountyDiscussionProps) => {
+    const bountyComments = useGetComments(discussion)
     const appEvents = useGetBountyDiscussionAppEvents({
         bountyIndex,
-        networkId: network.id,
+        networkId,
         userId,
         pageSize: 100,
         pageNumber: 1,
@@ -50,6 +53,6 @@ const PrivateBountyDiscussion = ({ bountyIndex, userId }: PrivateBountyDiscussio
         )
     }, [appEvents.isSuccess, appEvents.data, bountyComments.isSuccess, bountyComments.data])
 
-    return <PublicBountyDiscussion bountyIndex={bountyIndex} />
+    return <Discussion discussion={discussion} />
 }
 export default PrivateBountyDiscussion
