@@ -4,9 +4,10 @@ import { DatabaseModule } from '../../database/database.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { Web3AddressesService } from './web3-addresses.service'
 import { UserEntity } from '../user.entity'
+import { BlockchainModule } from '../../blockchain/blockchain.module'
 
 @Module({
-    imports: [DatabaseModule, TypeOrmModule.forFeature([UserEntity, Web3AddressEntity])],
+    imports: [BlockchainModule, DatabaseModule, TypeOrmModule.forFeature([UserEntity, Web3AddressEntity])],
     providers: [Web3AddressesService],
     exports: [Web3AddressesService],
 })

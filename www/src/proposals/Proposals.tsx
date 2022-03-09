@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import ProposalsHeader from './ProposalsHeader'
 import { useGetProposals } from './proposals.api'
@@ -47,10 +47,9 @@ const Proposals = () => {
         pageNumber: 1,
         pageSize: PAGE_SIZE,
     })
-    const proposals = data?.pages.map((page) => page.items).flat() ?? []
-
-    const pageNumber = data?.pages?.length ?? 0
-    const canLoadMore = pageNumber * PAGE_SIZE === proposals.length
+    const proposals = useMemo(() => data?.pages.map((page) => page.items).flat() ?? [], [data])
+    const pageNumber = useMemo(() => data?.pages?.length ?? 0, [data])
+    const canLoadMore = useMemo(() => pageNumber * PAGE_SIZE === proposals.length, [pageNumber, proposals])
 
     return (
         <div className={classes.root}>

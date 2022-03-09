@@ -1,8 +1,8 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { BlockchainProposal, BlockchainProposalStatus } from '../blockchain/dto/blockchain-proposal.dto'
+import { BlockchainProposal } from '../blockchain/dto/blockchain-proposal.dto'
 import { toCreateIdeaProposalDetailsDto } from '../idea-proposal-details/dto/create-idea-proposal-details.dto'
 import { IdeaProposalDetailsService } from '../idea-proposal-details/idea-proposal-details.service'
 import { IdeaNetworkEntity } from '../ideas/entities/idea-network.entity'
@@ -27,7 +27,6 @@ import { UsersService } from '../users/users.service'
 import { UserEntity } from '../users/user.entity'
 import { ProposalsFilterQuery } from './proposals-filter.query'
 import { arrayToMap, keysAsArray } from '../utils/arrayToMap'
-import { ObjectLiteral } from 'typeorm/common/ObjectLiteral'
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
 
 const logger = getLogger()
@@ -117,7 +116,7 @@ export class ProposalsService {
 
         const excludeIndexes = keysAsArray(blockchainProposals)
         const includeIndexes = await this.getOwnerProposalsIndexes(networkId, owner)
-        const proposers = this.getOwnerAddresses(networkId, owner)
+        const proposers = this.encodeUserWeb3Addresses(networkId, owner)
 
         const polkassemblySearchOptions = { networkId, excludeIndexes, includeIndexes, proposers }
 
@@ -240,22 +239,13 @@ export class ProposalsService {
         return proposalMilestones
     }
 
-    getTotalProposalsCount(networkId: string) {
-        return this.blockchainService.getTotalProposalsCount(networkId)
-    }
-
     async getProposalMotions(
         networkId: string,
         blockchainIndex: number,
     ): Promise<(ProposedMotionDto | ExecutedMotionDto)[]> {
         return this.polkassemblyService.getProposalMotions(blockchainIndex, networkId)
     }
-    getOwnerAddresses(networkId: string, owner: Nil<UserEntity>): string[] | null {
-        if (!owner || !owner.web3Addresses) return null
-        return owner.web3Addresses.map((w3address) =>
-            this.blockchainService.encodeAddress(w3address.address, networkId),
-        )
-    }
+
     async getOwnerProposalsIndexes(networkId: string, owner: Nil<UserEntity>): Promise<number[] | null> {
         if (!owner) return null
         const proposals = await this.proposalsRepository
@@ -280,5 +270,10 @@ export class ProposalsService {
         options: GetPosts,
     ): Promise<Map<number, PolkassemblyTreasuryProposalPostDto>> {
         return arrayToMap(await this.polkassemblyService.getProposals(options), 'blockchainIndex')
+    }
+
+    private encodeUserWeb3Addresses(networkId: string, user: Nil<UserEntity>) {
+        if (!user || !user.web3Addresses) return null
+        return user.web3Addresses.map((w3address) => this.blockchainService.encodeAddress(networkId, w3address.address))
     }
 }

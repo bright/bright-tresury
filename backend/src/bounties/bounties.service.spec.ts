@@ -33,11 +33,14 @@ import {
 } from './spec.helpers'
 import { TimeFrame } from '../utils/time-frame.query'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
+import { v4 as uuid } from 'uuid'
+import { UsersService } from '../users/users.service'
 
 describe('BountiesService', () => {
     const app = beforeSetupFullApp()
 
     const service = beforeAllSetup(() => app().get<BountiesService>(BountiesService))
+    const usersService = beforeAllSetup(() => app().get<UsersService>(UsersService))
     const repository = beforeAllSetup(() => app().get<Repository<BountyEntity>>(getRepositoryToken(BountyEntity)))
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
     const polkassemblyService = beforeAllSetup(() => app().get<PolkassemblyService>(PolkassemblyService))
@@ -348,12 +351,64 @@ describe('BountiesService', () => {
         it('should return seven bounties', async () => {
             const paginatedBounties = await service().find(
                 NETWORKS.POLKADOT,
-                TimeFrame.OnChain,
-                new PaginatedParams({ pageSize: '10', pageNumber: '1' }),
+                { timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
             )
             const bounties = paginatedBounties.items
             expect(Array.isArray(bounties)).toBe(true)
             expect(bounties).toHaveLength(7)
+        })
+        it(`should return only ${BlockchainBountyStatus.Active} bounties`, async () => {
+            const paginatedBounties = await service().find(
+                NETWORKS.POLKADOT,
+                { status: BlockchainBountyStatus.Active, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const bounties = paginatedBounties.items
+            expect(Array.isArray(bounties)).toBe(true)
+            expect(bounties).not.toHaveLength(0)
+            for (const bounty of bounties) expect(bounty.blockchain.status).toBe(BlockchainBountyStatus.Active)
+        })
+        it(`should return only ${BlockchainBountyStatus.Approved} bounties`, async () => {
+            const paginatedBounties = await service().find(
+                NETWORKS.POLKADOT,
+                { status: BlockchainBountyStatus.Approved, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const bounties = paginatedBounties.items
+            expect(Array.isArray(bounties)).toBe(true)
+            expect(bounties).not.toHaveLength(0)
+            for (const bounty of bounties) expect(bounty.blockchain.status).toBe(BlockchainBountyStatus.Approved)
+        })
+        it('should return bounties with owner by address', async () => {
+            const owner = await usersService().createWeb3User({
+                authId: uuid(),
+                username: uuid(),
+                web3Address: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
+            })
+            const paginatedBounties = await service().find(
+                NETWORKS.POLKADOT,
+                { ownerId: owner.id, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const bounties = paginatedBounties.items
+            expect(Array.isArray(bounties)).toBe(true)
+            expect(bounties).not.toHaveLength(0)
+            for (const bounty of bounties) expect(bounty.isOwner(owner)).toBe(true)
+        })
+        it('should return bounties with owner by owner id', async () => {
+            const { user: owner } = await setUp()
+            await createBountyEntity(service(), owner, minimalValidCreateDto)
+
+            const paginatedBounties = await service().find(
+                NETWORKS.POLKADOT,
+                { ownerId: owner.id, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const bounties = paginatedBounties.items
+            expect(Array.isArray(bounties)).toBe(true)
+            expect(bounties).not.toHaveLength(0)
+            for (const bounty of bounties) expect(bounty.isOwner(owner)).toBe(true)
         })
     })
 

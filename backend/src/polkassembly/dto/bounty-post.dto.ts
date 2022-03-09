@@ -24,9 +24,9 @@ export class PolkassemblyBountyPostDto {
     constructor(post: PolkassemblyBountyPostSchema) {
         this.title = post.title
         this.content = post.content
+        this.proposerAddress = post.onchain_link.proposer_address
         const [onchainBounty] = post.onchain_link.onchain_bounty
         this.blockchainIndex = onchainBounty?.bountyId
-        this.proposerAddress = onchainBounty?.proposer
         this.value = onchainBounty?.value as NetworkPlanckValue
         this.fee = onchainBounty?.fee as NetworkPlanckValue
         this.curatorDeposit = onchainBounty?.curatorDeposit as NetworkPlanckValue

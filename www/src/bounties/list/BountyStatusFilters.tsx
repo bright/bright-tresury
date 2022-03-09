@@ -6,8 +6,8 @@ import { useAuth } from '../../auth/AuthContext'
 import NavSelect from '../../components/select/NavSelect'
 import Tabs from '../../components/tabs/Tabs'
 import { breakpoints } from '../../theme/theme'
-import { useTimeFrame, TimeFrame } from '../../util/useTimeFrame'
-import { useBountiesFilter, BountyDefaultFilter, BountyFilter, BountyFilterSearchParamName } from '../useBountiesFilter'
+import { TimeFrame, useTimeFrame } from '../../util/useTimeFrame'
+import { BountyDefaultFilter, BountyFilter, BountyFilterSearchParamName, useBountiesFilter } from '../useBountiesFilter'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,17 +38,13 @@ const BountyStatusFilters = () => {
     const { isUserSignedIn } = useAuth()
     const { param: bountiesFilter, setParam: setBountyFilter } = useBountiesFilter()
     const { param: timeFrame } = useTimeFrame()
-    const isOnChain  = useMemo( () => timeFrame === TimeFrame.OnChain, [timeFrame])
-    const filterValues = useMemo(() => {
-        const filterValues = [BountyFilter.All]
-        if (!isOnChain)
-            return filterValues
+    const isOnChain = useMemo(() => timeFrame === TimeFrame.OnChain, [timeFrame])
 
-        if (isUserSignedIn) {
-            filterValues.push(BountyFilter.Mine)
-        }
-        return filterValues.concat(ON_CHAIN_FILTER_VALUES)
-    }, [isUserSignedIn, timeFrame])
+    const filterValues = useMemo(() => {
+        const filters = [BountyFilter.All]
+        if (isUserSignedIn) filters.push(BountyFilter.Mine)
+        return filters.concat(isOnChain ? ON_CHAIN_FILTER_VALUES : HISTORY_FILTER_VALUES)
+    }, [isUserSignedIn, isOnChain])
 
     const getTranslation = (bountyFilter: BountyFilter): any => {
         switch (bountyFilter) {

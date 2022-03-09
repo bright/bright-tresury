@@ -6,7 +6,6 @@ import * as Yup from 'yup'
 import InfoBox from '../../../components/form/InfoBox'
 import Input from '../../../components/form/input/Input'
 import PasswordInput from '../../../components/form/input/password/PasswordInput'
-import { useAuth } from '../../AuthContext'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignOption } from '../../sign-components/SignOption'
@@ -42,13 +41,9 @@ const EmailSignIn = () => {
             return undefined
         }
         const typedError = error as Error
-        if (typedError?.message === 'WRONG_CREDENTIALS_ERROR')
-            return t('auth.errors.wrongCredentialsError')
-        else if (typedError?.message === 'ACCOUNT_TEMPORARY_LOCKED')
-            return t('auth.errors.accountTemporaryLocked')
-        else
-            return t('auth.errors.generalError')
-
+        if (typedError?.message === 'WRONG_CREDENTIALS_ERROR') return t('auth.errors.wrongCredentialsError')
+        else if (typedError?.message === 'ACCOUNT_TEMPORARY_LOCKED') return t('auth.errors.accountTemporaryLocked')
+        else return t('auth.errors.generalError')
     }, [error, isError, t])
 
     const validationSchema = Yup.object().shape({

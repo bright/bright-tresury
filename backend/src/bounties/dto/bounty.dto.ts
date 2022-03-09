@@ -4,7 +4,7 @@ import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-i
 import { BlockchainTimeLeft } from '../../blockchain/dto/blockchain-time-left.dto'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
-import { Bounty } from '../bounties.service'
+import { FindBountyDto } from './find-bounty.dto'
 
 export class BountyDto {
     @ApiProperty({
@@ -98,7 +98,7 @@ export class BountyDto {
     })
     polkassembly?: Nil<PolkassemblyPostDto>
 
-    constructor({ blockchain, entity, polkassembly }: Bounty) {
+    constructor({ blockchain, entity, polkassembly }: FindBountyDto) {
         this.id = entity?.id
         this.blockchainIndex = blockchain.index
         this.blockchainDescription = blockchain.description

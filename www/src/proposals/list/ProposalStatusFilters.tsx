@@ -13,7 +13,6 @@ import {
     useProposalsFilter,
 } from '../useProposalsFilter'
 import { TimeFrame, useTimeFrame } from '../../util/useTimeFrame'
-import { isOn } from '@polkadot/util/is/helpers'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

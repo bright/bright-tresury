@@ -19,11 +19,11 @@ import { PolkassemblyBountyPostSchema } from './schemas/bounty-post.schema'
 import { ExecutedMotionDto } from './dto/executed-motion.dto'
 import { Motions } from './fragments/motion.fragments'
 import { MotionSchema } from './schemas/motion.schema'
-import { BountyPosts, OffChainBountyPosts, OneBountyPost } from './fragments/bounty.fragments'
+import { BountyPosts, BountyPostsCount, OneBountyPost } from './fragments/bounty.fragments'
 
 const logger = getLogger()
 
-const DEFAULT_LIMIT = 10
+const DEFAULT_LIMIT = 1000
 
 export interface GetPosts {
     includeIndexes?: Nil<number[]>
@@ -148,25 +148,13 @@ export class PolkassemblyService {
     }
 
     async getBounties({
-        includeIndexes,
-        excludeIndexes,
         networkId,
         paginatedParams,
+        ...queryVariables
     }: GetPosts): Promise<PolkassemblyBountyPostDto[]> {
         try {
-            getLogger().info('Looking for BountyPosts for ', {
-                includeIndexes,
-                excludeIndexes,
-                networkId,
-                paginatedParams,
-            })
-            const query = includeIndexes ? BountyPosts : OffChainBountyPosts
-            const data = await this.executeQuery(networkId, query, {
-                includeIndexes: includeIndexes ?? [],
-                excludeIndexes: excludeIndexes ?? [],
-                limit: paginatedParams?.pageSize ?? includeIndexes?.length ?? DEFAULT_LIMIT,
-                offset: paginatedParams ? paginatedParams.offset : 0,
-            })
+            getLogger().info('Looking for BountyPosts for ', { ...queryVariables, networkId })
+            const data = await this.executeQuery(networkId, BountyPosts, queryVariables)
             return data?.posts.map((post: PolkassemblyBountyPostSchema) => new PolkassemblyBountyPostDto(post)) ?? []
         } catch (err) {
             getLogger().error('Error when looking for BountyPosts', err)

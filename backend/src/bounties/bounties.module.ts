@@ -11,6 +11,7 @@ import { BountyCommentEntity } from './bounty-comments/entities/bounty-comment.e
 import { BountyEntity } from './entities/bounty.entity'
 import { BlockchainModule } from '../blockchain/blockchain.module'
 import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
+import { UsersModule } from '../users/users.module'
 
 @Module({
     imports: [
@@ -19,6 +20,7 @@ import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
         ExtrinsicsModule,
         BlockchainModule,
         PolkassemblyModule,
+        UsersModule,
     ],
     controllers: [BountiesController, BountyCommentsController],
     providers: [BountiesService, BountyCommentsService],

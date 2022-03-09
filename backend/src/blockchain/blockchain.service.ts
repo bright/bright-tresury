@@ -360,13 +360,7 @@ export class BlockchainService implements OnModuleDestroy {
         return api.derive.chain.bestNumber() // current block number
     }
 
-    async getTotalProposalsCount(networkId: string) {
-        const api = getApi(this.blockchainsConnections, networkId)
-        const count = await api.query.treasury.proposalCount()
-        return count.toNumber()
-    }
-
-    encodeAddress(address: string, networkId: string): string {
+    encodeAddress(networkId: string, address: string): string {
         const blockchainConfiguration = getBlockchainConfiguration(this.blockchainsConfiguration, networkId)
         return encodeAddress(address, blockchainConfiguration.ss58Format)
     }
