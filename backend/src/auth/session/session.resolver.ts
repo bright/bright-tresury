@@ -28,7 +28,7 @@ export class SessionResolver implements ISessionResolver {
     }
 
     async resolveUserAndUpdateSessionData(req: SessionRequest, res: Response) {
-        const session = await this.superTokensService.getSession(req, res, { antiCsrfCheck: false })
+        const session = await this.superTokensService.getSession(req, res)
         if (!session) {
             return
         }

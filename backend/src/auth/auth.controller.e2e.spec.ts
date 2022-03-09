@@ -58,9 +58,7 @@ describe(`Auth Controller`, () => {
                 bobUsername,
                 superTokensSignUpUserPassword,
             )
-            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, {
-                antiCsrfCheck: false,
-            })
+            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any)
 
             expect(session).toBeDefined()
         })
@@ -74,11 +72,7 @@ describe(`Auth Controller`, () => {
             const user = await getUsersService().findOneByEmail(bobEmail)
             const signInSessionHandler = createSessionHandler(res, user)
 
-            const signInSession = await getService().getSession(
-                signInSessionHandler.getAuthorizedRequest(),
-                {} as any,
-                { antiCsrfCheck: false },
-            )
+            const signInSession = await getService().getSession(signInSessionHandler.getAuthorizedRequest(), {} as any)
             expect(signInSession).toBeDefined()
         })
 
@@ -114,9 +108,7 @@ describe(`Auth Controller`, () => {
                 superTokensSignUpUserPassword,
             )
             await sessionHandler.authorizeRequest(request(app()).get(`/api/health`)).send()
-            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any, {
-                antiCsrfCheck: false,
-            })
+            const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any)
             const sessionData = await session?.getSessionData()
 
             const user = await getUsersService().findOneByUsername(bobUsername)
