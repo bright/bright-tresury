@@ -846,7 +846,7 @@
                 "discard": "Do not share",
                 "notProposerError": "You do not have the proposer account configured in your browser extension.",
                 "generalError": "Ooops... Something went wrong.",
-                "successSnackMessage": "Details of the proposal have been successfully shared on <a>Polkassembly</a>"
+                "successSnackMessage": "Details of the proposal have been successfully shared on Polkassembly"
             },
             "button": {
                 "shareOn": "Share on",
