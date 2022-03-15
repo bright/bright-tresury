@@ -22,16 +22,17 @@ export class SessionHandler {
     }
 
     getAuthorizedRequest(): Request {
-        return {
+        return ({
             headers: {
                 cookie: this.cookies,
+                rid: 'session',
             },
             method: '',
-        } as Request
+        } as unknown) as Request
     }
 
     authorizeRequest(req: supertest.Test): supertest.Test {
-        return this.cookies ? req.set('cookie', this.cookies) : req
+        return this.cookies ? req.set('cookie', this.cookies).set('rid', 'session') : req
     }
 
     async revoke() {
