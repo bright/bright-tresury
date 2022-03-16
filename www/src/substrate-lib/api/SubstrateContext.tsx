@@ -36,7 +36,7 @@ const reducer = (state: State, action: Action): State => {
             return { ...state, socket, api: undefined, apiState: undefined }
 
         case 'CONNECT':
-            return { ...state, api: action.api, apiState: ApiState.CONNECTING }
+            return { ...state, api: state.api ?? action.api, apiState: ApiState.CONNECTING }
 
         case 'CONNECT_SUCCESS':
             return { ...state, apiState: ApiState.READY }

@@ -12,7 +12,6 @@ export const useSubstrate = () => {
         if (api || dispatch === undefined) {
             return
         }
-
         console.log(`Connecting to ${socket} with types:`, types)
         const provider = new WsProvider(socket)
         const _api = new ApiPromise({ provider, types, rpc: jsonrpc })
@@ -27,7 +26,9 @@ export const useSubstrate = () => {
         _api.on('ready', () => {
             dispatch({ type: 'CONNECT_SUCCESS' })
         })
-        _api.on('error', (err) => dispatch({ type: 'CONNECT_ERROR', apiError: err }))
+        _api.on('error', (err) => {
+            dispatch({ type: 'CONNECT_ERROR', apiError: err })
+        })
     }, [api, socket, jsonrpc, types, dispatch])
 
     useEffect(() => {

@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { Formik } from 'formik'
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import InfoBox from '../../../components/form/InfoBox'
 import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
@@ -12,6 +12,7 @@ import { SignUpButton } from '../../sign-up/common/SignUpButton'
 import EmailSignUpFormFields from '../../sign-up/email/form/EmailSignUpFormFields'
 import useSignUpForm, { SignUpValues } from '../../sign-up/email/form/useSignUpForm'
 import { useAssociateEmailPassword } from './emailPassword.api'
+import useIdentity from '../../../util/useIdentity'
 
 const EmailPasswordAccountForm = () => {
     const { t } = useTranslation()
@@ -19,20 +20,23 @@ const EmailPasswordAccountForm = () => {
     const { accounts } = useAccounts()
     const { initialValues, validationSchema } = useSignUpForm()
 
+    const primaryAccount = useMemo(() => {
+        const address = user?.web3Addresses.find((address) => address.isPrimary)
+        if (!address) return
+        const account = accounts.find((account) => account.address === address.encodedAddress)
+        return account
+    }, [user, accounts])
+
+    const identity = useIdentity({ address: primaryAccount?.address })
+
     const { mutateAsync, error, isLoading } = useAssociateEmailPassword()
 
     const onSubmit = (data: SignUpValues) => {
-        const address = user?.web3Addresses.find((address) => address.isPrimary)
-        if (!address) {
-            return Promise.reject(Error(t('account.emailPassword.addressNotFound')))
-        }
-        const account = accounts.find((account) => account.address === address.encodedAddress)
-        if (!account) {
-            return Promise.reject(Error(t('account.emailPassword.accountNotFound')))
-        }
+        if (!primaryAccount) return Promise.reject(Error(t('account.emailPassword.accountNotFound')))
+
         return mutateAsync(
             {
-                account,
+                account: primaryAccount,
                 details: data,
             },
             {
@@ -57,7 +61,7 @@ const EmailPasswordAccountForm = () => {
     return (
         <Formik
             enableReinitialize={true}
-            initialValues={initialValues}
+            initialValues={{ ...initialValues, username: identity?.display ?? initialValues.username }}
             validate={fullValidatorForSchema(validationSchema)}
             onSubmit={onSubmit}
         >
