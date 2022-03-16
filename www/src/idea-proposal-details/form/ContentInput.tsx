@@ -17,6 +17,7 @@ const ContentInput = (props: ContentInputProps) => {
             rows={20}
             label={t('ideaProposalDetails.content')}
             placeholder={t('ideaProposalDetails.content')}
+            markdown={true}
             {...props}
         />
     )

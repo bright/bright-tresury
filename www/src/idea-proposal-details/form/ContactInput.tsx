@@ -17,6 +17,7 @@ const ContactInput = (props: ContactInputProps) => {
             rows={20}
             label={t('ideaProposalDetails.contact')}
             placeholder={t('ideaProposalDetails.contact')}
+            markdown={true}
             {...props}
         />
     )

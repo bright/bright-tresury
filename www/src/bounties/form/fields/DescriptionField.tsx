@@ -11,6 +11,7 @@ const DescriptionField = () => {
             rows={20}
             label={t('bounty.form.fields.description')}
             placeholder={t('bounty.form.fields.description')}
+            markdown={true}
         />
     )
 }
