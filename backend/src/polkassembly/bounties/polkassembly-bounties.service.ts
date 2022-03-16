@@ -28,11 +28,7 @@ export class PolkassemblyBountiesService {
         }
     }
 
-    async find({
-        networkId,
-        paginatedParams,
-        ...queryVariables
-    }: GetPosts): Promise<PolkassemblyBountyPostDto[]> {
+    async find({ networkId, paginatedParams, ...queryVariables }: GetPosts): Promise<PolkassemblyBountyPostDto[]> {
         try {
             logger.info('Looking for BountyPosts for ', { ...queryVariables, networkId })
             const data = await this.polkassemblyService.executeQuery(networkId, BountyPosts, queryVariables)

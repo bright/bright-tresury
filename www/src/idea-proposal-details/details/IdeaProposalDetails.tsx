@@ -46,9 +46,10 @@ const IdeaProposalDetails = ({ details }: IdeaProposalDetailsProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
-    const nonEmptyLinks = useMemo(() => (details.links ? details.links.filter((link: string) => !!link) : []), [
-        details,
-    ])
+    const nonEmptyLinks = useMemo(
+        () => (details.links ? details.links.filter((link: string) => !!link) : []),
+        [details],
+    )
 
     return (
         <div>

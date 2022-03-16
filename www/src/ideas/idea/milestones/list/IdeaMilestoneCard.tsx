@@ -4,7 +4,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import { createStyles } from '@material-ui/core'
 import Divider from '../../../../components/divider/Divider'
 import NetworkValue from '../../../../components/network/NetworkValue'
-import MilestoneDescription from '../../../../milestone-details/components/milestone-card/MilestoneDescription'
 import MilestoneDateRange from '../../../../milestone-details/components/milestone-card/MilestoneDateRange'
 import ButtonCard from '../../../../components/card/ButtonCard'
 import CardDetails from '../../../../components/card/components/CardDetails'
@@ -15,6 +14,7 @@ import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
 import IdeaMilestoneStatusIndicator from '../status/IdeaMilestoneStatusIndicator'
 import { toNetworkDisplayValue } from '../../../../util/quota.util'
 import { useNetworks } from '../../../../networks/useNetworks'
+import MilestoneDescription from '../../../../milestone-details/components/milestone-card/MilestoneDescription'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -29,6 +29,7 @@ const useStyles = makeStyles(() =>
         description: {
             height: '50px',
             marginBottom: '20px',
+            marginTop: 0,
         },
     }),
 )
@@ -66,11 +67,14 @@ const IdeaMilestoneCard = ({ ideaMilestone, onClick }: IdeaMilestoneCardProps) =
 
             <CardDetails>
                 <CardTitle title={ideaMilestone.details.subject} />
-                {
-                    ideaMilestoneNetwork
-                        ? <NetworkValue value={toNetworkDisplayValue(ideaMilestoneNetwork.value, findNetwork(ideaMilestoneNetwork.name)!.decimals)} />
-                        : null
-                }
+                {ideaMilestoneNetwork ? (
+                    <NetworkValue
+                        value={toNetworkDisplayValue(
+                            ideaMilestoneNetwork.value,
+                            findNetwork(ideaMilestoneNetwork.name)!.decimals,
+                        )}
+                    />
+                ) : null}
             </CardDetails>
 
             <div className={classes.description}>

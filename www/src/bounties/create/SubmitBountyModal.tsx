@@ -28,7 +28,6 @@ const SubmitBountyModal = ({ open, onClose, bounty }: SubmitBountyModalProps) =>
     const { network } = useNetworks()
 
     const goToBounties = (event?: any) => {
-        debugger
         const bountyIndex = event?.data?.toJSON()?.[0]
         bountyIndex !== undefined
             ? history.push(generatePath(ROUTE_BOUNTY, { bountyIndex }), { share: true })

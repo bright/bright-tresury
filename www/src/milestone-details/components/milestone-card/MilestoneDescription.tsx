@@ -3,11 +3,15 @@ import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import Placeholder from '../../../components/text/Placeholder'
 import { Nil } from '../../../util/types'
+import Markdown from '../../../components/markdown/Markdown'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            fontSize: '16px',
+            fontSize: '14px',
+            overflow: 'hidden',
+            position: 'relative',
+            top: '-40px',
         },
         description: {
             display: '-webkit-box',
@@ -36,7 +40,7 @@ const MilestoneDescription = ({ description, placeholder }: MilestoneDescription
     return (
         <div className={classes.root}>
             {description ? (
-                <div className={classes.description}>{description}</div>
+                <Markdown>{description}</Markdown>
             ) : (
                 <Placeholder className={classes.descriptionPlaceholder} value={placeholder} />
             )}

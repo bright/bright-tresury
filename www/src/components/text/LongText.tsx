@@ -2,6 +2,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import Placeholder from './Placeholder'
 import { Nil } from '../../util/types'
+import Markdown from '../markdown/Markdown'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -17,6 +18,11 @@ const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
             resize: 'vertical',
             whiteSpace: 'pre-wrap',
+        },
+        markdown: {
+            padding: '10px 20px 10px 20px',
+            borderRadius: '8px',
+            background: theme.palette.background.default,
         },
     }),
 )
@@ -34,7 +40,7 @@ const LongText = ({ text, placeholder }: LongTextProps) => {
     return (
         <>
             {text ? (
-                <div className={classes.longText}>{text}</div>
+                <Markdown className={classes.markdown}>{text}</Markdown>
             ) : (
                 <div className={classes.longText}>
                     <Placeholder value={placeholder} />

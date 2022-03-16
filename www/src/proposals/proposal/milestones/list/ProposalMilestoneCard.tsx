@@ -9,8 +9,8 @@ import CardTitle from '../../../../components/card/components/CardTitle'
 import Divider from '../../../../components/divider/Divider'
 import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
 import MilestoneDateRange from '../../../../milestone-details/components/milestone-card/MilestoneDateRange'
-import MilestoneDescription from '../../../../milestone-details/components/milestone-card/MilestoneDescription'
 import { ProposalMilestoneDto } from '../proposal.milestones.dto'
+import MilestoneDescription from '../../../../milestone-details/components/milestone-card/MilestoneDescription'
 
 const useStyles = makeStyles(() =>
     createStyles({

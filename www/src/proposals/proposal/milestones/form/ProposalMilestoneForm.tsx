@@ -50,6 +50,7 @@ interface OwnProps {
     onSubmit?: (values: ProposalMilestoneFormValues) => void
     isError?: boolean
     isLoading?: boolean
+    canEdit?: boolean
 }
 
 export type ProposalMilestoneFormProps = PropsWithChildren<OwnProps>
@@ -84,9 +85,9 @@ const ProposalMilestoneForm = ({
                 validationSchema={validationSchema}
                 onSubmit={onSubmit ?? onSubmitFallback}
             >
-                {({ handleSubmit }) => (
+                {({ handleSubmit, values }) => (
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <ProposalMilestoneFormFields readonly={readonly} />
+                        <ProposalMilestoneFormFields readonly={readonly} values={values} />
                         <FormFooter>
                             {isError ? <FormFooterErrorBox error={t('errors.somethingWentWrong')} /> : null}
                             <FormFooterButtonsContainer>

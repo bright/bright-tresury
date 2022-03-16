@@ -3,6 +3,7 @@ import React from 'react'
 import DateRangeInput from '../../../../../milestone-details/components/form/DateRangeInput'
 import DescriptionInput from '../../../../../milestone-details/components/form/DescriptionInput'
 import SubjectInput from '../../../../../milestone-details/components/form/SubjectInput'
+import { ProposalMilestoneFormValues } from '../ProposalMilestoneForm'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -17,18 +18,19 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     readonly: boolean
+    values: ProposalMilestoneFormValues
 }
 
 export type IdeaMilestoneFormFieldsProps = OwnProps
 
-const ProposalMilestoneFormFields = ({ readonly }: IdeaMilestoneFormFieldsProps) => {
+const ProposalMilestoneFormFields = ({ readonly, values }: IdeaMilestoneFormFieldsProps) => {
     const classes = useStyles()
 
     return (
         <div className={classes.root}>
             <SubjectInput readonly={readonly} />
             <DateRangeInput readonly={readonly} />
-            <DescriptionInput readonly={readonly} />
+            {values.description && <DescriptionInput description={values.description} readonly={readonly} />}
         </div>
     )
 }
