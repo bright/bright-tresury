@@ -13,20 +13,8 @@ import { useIdeaMilestone } from '../../useIdeaMilestone'
 import IdeaMilestoneNetworkCardField from './IdeaMilestoneNetworkCardField'
 import IdeaMilestoneFieldsContainer from './IdeaMilestoneFieldsContainer'
 import useIdeaMilestoneForm, { IdeaMilestoneFormValues, IdeaMilestoneNetworkFormValues } from '../useIdeaMilestoneForm'
-import Markdown from '../../../../../components/markdown/Markdown'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { theme } from '../../../../../theme/theme'
 
 const translationKeyPrefix = 'idea.milestones.modal.form'
-
-const useStyles = makeStyles(() =>
-    createStyles({
-        markdown: {
-            background: theme.palette.background.paper,
-            padding: '0 20px 0 20px',
-        },
-    }),
-)
 
 interface OwnProps {
     values: IdeaMilestoneFormValues
@@ -44,7 +32,6 @@ const IdeaMilestoneFormFields = ({
     onTurnIntoProposalClick,
 }: IdeaMilestoneFormFieldsProps) => {
     const { t } = useTranslation()
-    const classes = useStyles()
     const { canEdit, canEditAnyIdeaMilestoneNetwork, canTurnIntoProposal } = useIdeaMilestone(idea, ideaMilestone)
     const { toIdeaMilestoneDto } = useIdeaMilestoneForm({ idea, ideaMilestone })
     const renderTitle = () => {
@@ -100,11 +87,7 @@ const IdeaMilestoneFormFields = ({
                     inputName={`additionalNetworks[${idx}].value`}
                 />
             ))}
-            {canEdit ? (
-                <DescriptionInput readonly={!canEdit} />
-            ) : (
-                <Markdown className={classes.markdown} children={values.description ?? ''} />
-            )}
+            <DescriptionInput description={values.description} readonly={!canEdit} />
         </IdeaMilestoneFieldsContainer>
     )
 }

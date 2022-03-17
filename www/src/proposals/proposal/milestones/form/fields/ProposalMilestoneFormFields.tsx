@@ -30,7 +30,7 @@ const ProposalMilestoneFormFields = ({ readonly, values }: IdeaMilestoneFormFiel
         <div className={classes.root}>
             <SubjectInput readonly={readonly} />
             <DateRangeInput readonly={readonly} />
-            {values.description && <DescriptionInput description={values.description} readonly={readonly} />}
+            <DescriptionInput description={values.description} readonly={readonly} />
         </div>
     )
 }

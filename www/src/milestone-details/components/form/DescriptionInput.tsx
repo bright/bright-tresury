@@ -5,11 +5,15 @@ import { TextFieldColorScheme } from '../../../components/form/input/textFieldSt
 import Markdown from '../../../components/markdown/Markdown'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { theme } from '../../../theme/theme'
+import { Nil } from '../../../util/types'
+import { Label } from '../../../components/text/Label'
 
 const useStyles = makeStyles(() =>
     createStyles({
         markdown: {
             background: theme.palette.background.paper,
+            position: 'relative',
+            top: '-30px',
             padding: '0 20px 0 20px',
         },
     }),
@@ -17,7 +21,7 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     readonly: boolean
-    description?: string
+    description?: Nil<string>
 }
 
 export type DescriptionInputProps = OwnProps
@@ -29,7 +33,10 @@ const DescriptionInput = ({ readonly, description }: DescriptionInputProps) => {
     return (
         <>
             {readonly ? (
-                <Markdown className={classes.markdown}>{description ?? ''}</Markdown>
+                <>
+                    <Label label={t(`milestoneDetails.form.description`)} />
+                    <Markdown className={classes.markdown}>{description ?? ''}</Markdown>
+                </>
             ) : (
                 <Input
                     name="description"
@@ -39,6 +46,7 @@ const DescriptionInput = ({ readonly, description }: DescriptionInputProps) => {
                     rows={4}
                     multiline={true}
                     textFieldColorScheme={TextFieldColorScheme.Dark}
+                    markdown={!readonly}
                 />
             )}
         </>
