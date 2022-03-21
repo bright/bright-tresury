@@ -2,14 +2,14 @@ import { Theme } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React, { useState } from 'react'
 import { useAuth } from '../../auth/AuthContext'
-import { CommentDto, DiscussionDto } from '../comments.dto'
-import { breakpoints } from '../../theme/theme'
 import SmallVerticalDivider from '../../components/smallHorizontalDivider/SmallVerticalDivider'
-import CommentOptionsMenu from './components/CommentOptionsMenu'
-import EditComment from './EditComment'
+import { AuthorDto } from '../../util/author.dto'
+import { CommentDto, DiscussionDto } from '../comments.dto'
 import CommentAge from './components/CommentAge'
 import CommentAuthor from './components/CommentAuthor'
 import CommentContent from './components/CommentContent'
+import CommentOptionsMenu from './components/CommentOptionsMenu'
+import EditComment from './EditComment'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -39,10 +39,11 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     comment: CommentDto
     discussion: DiscussionDto
+    people: AuthorDto[]
 }
 export type DisplayCommentProps = OwnProps
 
-const DisplayComment = ({ comment, discussion }: DisplayCommentProps) => {
+const DisplayComment = ({ comment, discussion, people }: DisplayCommentProps) => {
     const { author, createdAt, updatedAt, content } = comment
     const classes = useStyles()
 
@@ -69,7 +70,7 @@ const DisplayComment = ({ comment, discussion }: DisplayCommentProps) => {
                 </div>
             </div>
             {editMode ? (
-                <EditComment comment={comment} discussion={discussion} onClose={disableEditMode} />
+                <EditComment comment={comment} discussion={discussion} onClose={disableEditMode} people={people} />
             ) : (
                 <CommentContent content={content} />
             )}

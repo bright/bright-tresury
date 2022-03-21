@@ -4,10 +4,11 @@ import clsx from 'clsx'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from 'react-query'
+import { AuthorDto } from '../../util/author.dto'
 import { COMMENTS_QUERY_KEY_BASE, useCreateComment } from '../comments.api'
 import { DiscussionDto } from '../comments.dto'
 import CancelSendButtons from './components/CancelSendButtons'
-import CommentTextarea from './components/CommentTextArea'
+import CommentInput from './components/input/CommentInput'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,10 +23,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     discussion: DiscussionDto
+    people: AuthorDto[]
 }
 export type CreateCommentProps = OwnProps
 
-const CreateComment = ({ discussion }: CreateCommentProps) => {
+const CreateComment = ({ discussion, people }: CreateCommentProps) => {
     const classes = useStyles()
     const [focus, setFocus] = useState(false)
     const [content, setContent] = useState('')
@@ -54,12 +56,12 @@ const CreateComment = ({ discussion }: CreateCommentProps) => {
 
     return (
         <div className={clsx(classes.root)}>
-            <CommentTextarea
+            <CommentInput
                 onFocus={() => setFocus(true)}
                 onBlur={() => setFocus(false)}
                 onChange={(event) => setContent(event.target.value)}
                 value={content}
-                placeholder={t('discussion.createCommentPlaceholder')}
+                people={people}
             />
 
             <Collapse in={!!(focus || content)}>

@@ -1,8 +1,10 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import clsx from 'clsx'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import userDeleted from '../../../assets/user-deleted.svg'
 import { UserStatus } from '../../../auth/AuthContext'
+import { ClassNameProps } from '../../../components/props/className.props'
 import { breakpoints } from '../../../theme/theme'
 import { AuthorDto } from '../../../util/author.dto'
 import Author from '../../../components/author/Author'
@@ -14,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
+            justifyContent: 'left',
             flexDirection: 'row',
         },
         name: {
@@ -32,13 +34,14 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     author: AuthorDto
 }
-export type CommentAuthorProps = OwnProps
-const CommentAuthor = ({ author }: CommentAuthorProps) => {
+export type CommentAuthorProps = OwnProps & ClassNameProps
+
+const CommentAuthor = ({ author, className }: CommentAuthorProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
     return (
-        <div className={classes.root}>
+        <div className={clsx(classes.root, className)}>
             {author.status === UserStatus.Deleted ? (
                 <>
                     <img className={classes.avatar} src={userDeleted} alt={'userDeletedImage'} />

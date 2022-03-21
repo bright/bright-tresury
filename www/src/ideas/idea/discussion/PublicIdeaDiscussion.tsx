@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { IdeaDiscussionDto } from '../../../discussion/comments.dto'
 import Discussion from '../../../discussion/Discussion'
 import { IdeaDto, IdeaStatus } from '../../ideas.dto'
@@ -16,6 +16,6 @@ const PublicIdeaDiscussion = ({ idea, discussion }: PublicIdeaDiscussionProps) =
             <AlreadyTurnedIntoProposal proposalIndex={idea.currentNetwork.blockchainProposalId!} />
         ) : null
 
-    return <Discussion discussion={discussion} info={info} />
+    return <Discussion discussion={discussion} info={info} discussedEntity={idea} />
 }
 export default PublicIdeaDiscussion

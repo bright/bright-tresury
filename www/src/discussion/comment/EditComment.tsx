@@ -3,10 +3,11 @@ import clsx from 'clsx'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from 'react-query'
+import { AuthorDto } from '../../util/author.dto'
 import { COMMENTS_QUERY_KEY_BASE, useEditComment } from '../comments.api'
-import { DiscussionDto, CommentDto } from '../comments.dto'
+import { CommentDto, DiscussionDto } from '../comments.dto'
 import CancelSendButtons from './components/CancelSendButtons'
-import CommentTextarea from './components/CommentTextArea'
+import CommentInput from './components/input/CommentInput'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -20,11 +21,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     comment: CommentDto
     discussion: DiscussionDto
+    people: AuthorDto[]
     onClose: () => void
 }
 export type EditCommentProps = OwnProps
 
-const EditComment = ({ comment, discussion, onClose }: EditCommentProps) => {
+const EditComment = ({ comment, discussion, onClose, people }: EditCommentProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const [content, setContent] = useState(comment.content)
@@ -46,7 +48,7 @@ const EditComment = ({ comment, discussion, onClose }: EditCommentProps) => {
 
     return (
         <div className={clsx(classes.editCommentRow)}>
-            <CommentTextarea onChange={(event) => setContent(event.target.value)} value={content} />
+            <CommentInput onChange={(event) => setContent(event.target.value)} value={content} people={people} />
             <CancelSendButtons
                 onCancelClick={onClose}
                 onSendClick={onSendClick}

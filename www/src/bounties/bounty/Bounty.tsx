@@ -43,7 +43,7 @@ const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]: BountyTabConfig
         getUrl: (baseUrl: string) => `${baseUrl}/${BountyContentType.Discussion}`,
         getRoute: (basePath: string, bounty: BountyDto) => (
             <Route key={BountyContentType.Discussion} exact={true} path={`${basePath}/${BountyContentType.Discussion}`}>
-                <BountyDiscussion bountyIndex={bounty.blockchainIndex} />
+                <BountyDiscussion bounty={bounty} />
             </Route>
         ),
     },

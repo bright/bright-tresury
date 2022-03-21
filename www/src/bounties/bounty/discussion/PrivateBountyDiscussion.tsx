@@ -9,9 +9,11 @@ import {
     useGetBountyDiscussionAppEvents,
     useReadAppEvents,
 } from '../../../main/top-bar/notifications/app-events.api'
+import { BountyDto } from '../../bounties.dto'
 
 interface OwnProps {
     discussion: BountyDiscussionDto
+    bounty: BountyDto
     userId: string
 }
 export type PrivateBountyDiscussionProps = OwnProps
@@ -19,6 +21,7 @@ export type PrivateBountyDiscussionProps = OwnProps
 const PrivateBountyDiscussion = ({
     discussion,
     discussion: { blockchainIndex: bountyIndex, networkId },
+    bounty,
     userId,
 }: PrivateBountyDiscussionProps) => {
     const bountyComments = useGetComments(discussion)
@@ -53,6 +56,6 @@ const PrivateBountyDiscussion = ({
         )
     }, [appEvents.isSuccess, appEvents.data, bountyComments.isSuccess, bountyComments.data])
 
-    return <Discussion discussion={discussion} />
+    return <Discussion discussion={discussion} discussedEntity={bounty} />
 }
 export default PrivateBountyDiscussion

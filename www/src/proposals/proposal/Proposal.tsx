@@ -72,7 +72,7 @@ const PROPOSAL_CONTENT_TYPE_BUILDER: { [key in ProposalContentType]: ProposalTab
                 exact={true}
                 path={`${basePath}/${ProposalContentType.Discussion}`}
             >
-                <ProposalDiscussion proposalIndex={proposal.proposalIndex} />
+                <ProposalDiscussion proposal={proposal} />
             </Route>
         ),
     },

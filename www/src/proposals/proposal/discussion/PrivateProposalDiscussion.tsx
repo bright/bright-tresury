@@ -9,9 +9,11 @@ import {
     useGetProposalDiscussionAppEvents,
     useReadAppEvents,
 } from '../../../main/top-bar/notifications/app-events.api'
+import { ProposalDto } from '../../proposals.dto'
 
 interface OwnProps {
     discussion: ProposalDiscussionDto
+    proposal: ProposalDto
     userId: string
 }
 export type PrivateProposalDiscussionProps = OwnProps
@@ -19,6 +21,7 @@ export type PrivateProposalDiscussionProps = OwnProps
 const PrivateProposalDiscussion = ({
     discussion,
     discussion: { blockchainIndex: proposalIndex, networkId },
+    proposal,
     userId,
 }: PrivateProposalDiscussionProps) => {
     const proposalComments = useGetComments(discussion)
@@ -53,6 +56,6 @@ const PrivateProposalDiscussion = ({
         )
     }, [appEvents.isSuccess, appEvents.data, proposalComments.isSuccess, proposalComments.data])
 
-    return <Discussion discussion={discussion} />
+    return <Discussion discussion={discussion} discussedEntity={proposal} />
 }
 export default PrivateProposalDiscussion
