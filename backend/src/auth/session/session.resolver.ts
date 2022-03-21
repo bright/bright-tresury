@@ -42,7 +42,7 @@ export class SessionResolver implements ISessionResolver {
             await this.superTokensService.refreshSessionData(session)
             sessionUser = await session.getSessionData()
         }
-        if (sessionUser) {
+        if (sessionUser && verifyEmailRequired) {
             const isEmailVerified = await this.superTokensService.isEmailVerified(sessionUser.user)
 
             if (isEmailVerified) {
