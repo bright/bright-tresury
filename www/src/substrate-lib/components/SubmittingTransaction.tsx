@@ -3,7 +3,7 @@ import { Event } from '@polkadot/types/interfaces/system/types'
 import React, { useState } from 'react'
 import { Trans, useTranslation } from 'react-i18next'
 import { useNetworks } from '../../networks/useNetworks'
-import { ApiState } from '../api/SubstrateContext'
+import { ApiState, useSubstrate } from '../api/SubstrateContext'
 import ExtrinsicFailed from './ExtrinsicFailed'
 import SignAndSubmit from './SignAndSubmit'
 import SubstrateLoading from './SubstrateLoading'
@@ -12,7 +12,6 @@ import TransactionInProgress from './TransactionInProgress'
 import { getFromAcct, transformParams } from './utils'
 import { useAccounts } from '../accounts/useAccounts'
 import { KeyringState } from '../accounts/AccountsContext'
-import { useSubstrate } from '../api/useSubstrate'
 
 export interface Result {
     status: Status

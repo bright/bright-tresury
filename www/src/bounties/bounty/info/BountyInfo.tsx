@@ -1,7 +1,6 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 import PolkassemblyDescription from '../../../components/polkassemblyDescription/PolkassemblyDescription'
 import { Label } from '../../../components/text/Label'
@@ -11,6 +10,7 @@ import ShortText from '../../../components/text/ShortText'
 import { timeToString } from '../../../util/dateUtil'
 import { BountyDto, BountyStatus } from '../../bounties.dto'
 import ExpiryDate from './components/ExpiryDate'
+import User from '../../../components/user/User'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -42,25 +42,25 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
             <div className={classes.addresses}>
                 <div>
                     <Label label={t('bounty.info.proposer')} />
-                    <AddressInfo address={bounty.proposer.address} ellipsed={true} />
+                    <User user={{ web3address: bounty.proposer.address }} />
                 </div>
                 {bounty.status === BountyStatus.CuratorProposed ? (
                     <div>
                         <Label label={t('bounty.info.proposedCurator')} />
-                        <AddressInfo address={bounty.curator.address} ellipsed={true} />
+                        <User user={{ web3address: bounty.curator.address }} />
                     </div>
                 ) : null}
                 {bounty.status === BountyStatus.Active || bounty.status === BountyStatus.PendingPayout ? (
                     <div>
                         <Label label={t('bounty.info.curator')} />
-                        <AddressInfo address={bounty.curator.address} ellipsed={true} />
+                        <User user={{ web3address: bounty.curator.address }} />
                     </div>
                 ) : null}
                 {bounty.status === BountyStatus.PendingPayout || bounty.status === BountyStatus.Active ? (
                     <div>
                         <Label label={t('bounty.info.beneficiary')} />
                         {bounty.beneficiary ? (
-                            <AddressInfo address={bounty.beneficiary.address} ellipsed={true} />
+                            <User user={{ web3address: bounty.beneficiary.address }} />
                         ) : (
                             <Placeholder value={t('bounty.info.beneficiary')} />
                         )}

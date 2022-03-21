@@ -1,13 +1,13 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 import PolkassemblyDescription from '../../../components/polkassemblyDescription/PolkassemblyDescription'
 import { Label } from '../../../components/text/Label'
 import IdeaProposalDetails from '../../../idea-proposal-details/details/IdeaProposalDetails'
 import { ProposalDto } from '../../proposals.dto'
 import NoProposalDetails from './details/NoProposalDetails'
+import User from '../../../components/user/User'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -32,9 +32,9 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary, polkassembly }, propo
     return (
         <div className={successfullyLoadedItemClasses.content}>
             <Label label={t('proposal.details.proposer')} />
-            <AddressInfo address={proposer.address} ellipsed={false} />
+            <User user={{ web3address: proposer.address }} ellipsis={false} />
             <Label className={classes.spacer} label={t('proposal.details.beneficiary')} />
-            <AddressInfo address={beneficiary.address} ellipsed={false} />
+            <User user={{ web3address: beneficiary.address }} ellipsis={false} />
             {proposal.details ? (
                 <IdeaProposalDetails details={proposal.details} />
             ) : (

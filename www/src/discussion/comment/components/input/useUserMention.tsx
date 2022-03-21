@@ -55,7 +55,7 @@ const useUserMention = ({ people }: UseUserMentionProps): MentionProps => {
         data: getData,
         markup: '[@__display__](__id__)',
         renderSuggestion: (suggestion: SuggestionDataItem) => (
-            <SuggestionItem author={(suggestion as EnhancedSuggestionDataItem).author} />
+            <SuggestionItem user={(suggestion as EnhancedSuggestionDataItem).author} />
         ),
         displayTransform: (id: string, display: string) => `@${display}`,
         appendSpaceOnAdd: true,

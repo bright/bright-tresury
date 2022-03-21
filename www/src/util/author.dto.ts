@@ -1,5 +1,5 @@
 import { Nil } from './types'
-import { UserStatus } from '../auth/AuthContext'
+import { AuthContextUser, UserStatus } from '../auth/AuthContext'
 
 export interface AuthorDto {
     userId: string
@@ -7,3 +7,10 @@ export interface AuthorDto {
     username?: Nil<string>
     status: UserStatus
 }
+
+export const fromAuthContextUser = (user: AuthContextUser): AuthorDto => ({
+    userId: user.id,
+    web3address: user.web3Addresses.find((web3Address) => web3Address.isPrimary)?.encodedAddress,
+    username: user.username,
+    status: user.status,
+})

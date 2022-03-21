@@ -10,7 +10,6 @@ import FormFooterButton from '../../../components/form/footer/FormFooterButton'
 import FormFooterButtonsContainer from '../../../components/form/footer/FormFooterButtonsContainer'
 import FormFooterErrorBox from '../../../components/form/footer/FormFooterErrorBox'
 import { networkValueValidationSchema } from '../../../components/form/input/networkValue/NetworkValueInput'
-import AddressInfo from '../../../components/identicon/AddressInfo'
 import { Label } from '../../../components/text/Label'
 import { breakpoints } from '../../../theme/theme'
 import IdeaNetworkValueInput from '../../form/networks/IdeaNetworkValueInput'
@@ -19,6 +18,7 @@ import { IdeaDto } from '../../ideas.dto'
 import { toNetworkDisplayValue, toNetworkPlanckValue } from '../../../util/quota.util'
 import { useNetworks } from '../../../networks/useNetworks'
 import { NetworkDisplayValue } from '../../../util/types'
+import User from '../../../components/user/User'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -98,10 +98,10 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
         >
             {({ values, handleSubmit }) => (
                 <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                    <Label label={t('idea.details.title')} />
+                    <Label label={t('ideaProposalDetails.title')} />
                     <text className={classes.text}>{idea.details.title}</text>
                     <Label className={classes.spacing} label={t('idea.details.beneficiary')} />
-                    <AddressInfo address={idea.beneficiary} ellipsed={false} />
+                    <User user={{ web3address: idea.beneficiary }} ellipsis={false} />
                     <IdeaNetworkValueInput
                         className={classes.spacing}
                         inputName={'value'}

@@ -1,7 +1,6 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import AddressInfo from '../../../components/identicon/AddressInfo'
 import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
 import { Label } from '../../../components/text/Label'
 import Placeholder from '../../../components/text/Placeholder'
@@ -10,6 +9,7 @@ import { breakpoints } from '../../../theme/theme'
 import { IdeaDto } from '../../ideas.dto'
 import { useIdea } from '../useIdea'
 import AdditionalNetworkDetailsCard from './AdditionalNetworkDetailsCard'
+import User from '../../../components/user/User'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -35,9 +35,9 @@ interface OwnProps {
     idea: IdeaDto
 }
 
-export type IdeaDetailsProps = OwnProps
+export type IdeaInfoProps = OwnProps
 
-const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
+const IdeaInfo = ({ idea }: IdeaInfoProps) => {
     const classes = useStyles()
     const loadedClasses = useSuccessfullyLoadedItemStyles()
     const { t } = useTranslation()
@@ -47,7 +47,7 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
         <div className={loadedClasses.content}>
             <Label label={t('idea.details.beneficiary')} />
             {idea.beneficiary ? (
-                <AddressInfo address={idea.beneficiary} ellipsed={false} />
+                <User user={{ web3address: idea.beneficiary }} ellipsis={false} />
             ) : (
                 <Placeholder value={t('idea.details.beneficiary')} />
             )}
@@ -62,4 +62,4 @@ const IdeaDetails = ({ idea }: IdeaDetailsProps) => {
     )
 }
 
-export default IdeaDetails
+export default IdeaInfo

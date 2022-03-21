@@ -10,13 +10,13 @@ import ProposalStatusIndicator from '../status/ProposalStatusIndicator'
 import { ProposalContentType } from '../proposal/ProposalContentTypeTabs'
 import ProposalIndex from './ProposalIndex'
 import NetworkCard from '../../components/network/NetworkCard'
-import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import NetworkValue from '../../components/network/NetworkValue'
 import CardHeader from '../../components/card/components/CardHeader'
 import CardDetails from '../../components/card/components/CardDetails'
 import CardTitle from '../../components/card/components/CardTitle'
 import { toNetworkDisplayValue } from '../../util/quota.util'
 import { useNetworks } from '../../networks/useNetworks'
+import User from '../../components/user/User'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -35,14 +35,13 @@ interface OwnProps {
 export type ProposalCardProps = OwnProps
 
 const ProposalCard = ({
-    proposal: { proposalIndex, status, details, value, beneficiary, proposer, polkassembly }
+    proposal: { proposalIndex, status, details, value, beneficiary, proposer, polkassembly },
 }: ProposalCardProps) => {
     const classes = useStyles()
-    const {network} = useNetworks()
+    const { network } = useNetworks()
     const { t } = useTranslation()
 
     const redirectTo = `${generatePath(ROUTE_PROPOSAL, { proposalIndex })}/${ProposalContentType.Info}`
-
     return (
         <NetworkCard redirectTo={redirectTo}>
             <CardHeader>
@@ -60,8 +59,8 @@ const ProposalCard = ({
             <Divider />
 
             <div className={classes.accountsWrapper}>
-                <AddressInfoWithLabel label={t('proposal.list.card.beneficiary')} address={beneficiary.address} />
-                <AddressInfoWithLabel label={t('proposal.list.card.proposer')} address={proposer.address} />
+                <User label={t('proposal.list.card.beneficiary')} user={{ web3address: beneficiary.address }} />
+                <User label={t('proposal.list.card.proposer')} user={{ web3address: proposer.address }} />
             </div>
         </NetworkCard>
     )

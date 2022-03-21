@@ -6,6 +6,7 @@ import { ClassNameProps } from '../props/className.props'
 import { AuthorDto } from '../../util/author.dto'
 import { UserStatus } from '../../auth/AuthContext'
 import { useTranslation } from 'react-i18next'
+import { DeriveAccountRegistration } from '@polkadot/api-derive/types'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -20,10 +21,12 @@ interface OwnProps {
     author: Pick<AuthorDto, 'status' | 'username' | 'web3address'>
 }
 export type AuthorProps = OwnProps & ClassNameProps
+
 const Author = ({ author: { status, username, web3address } }: AuthorProps) => {
     const classes = useStyles()
     const { network } = useNetworks()
     const { t } = useTranslation()
+
     return (
         <div className={classes.author}>
             {status === UserStatus.Deleted ? (

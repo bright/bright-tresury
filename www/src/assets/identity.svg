@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="35" height="35" viewBox="0 0 35 35">
+    <defs>
+        <filter id="Ellipse_147" x="0" y="0" width="35" height="35" filterUnits="userSpaceOnUse">
+            <feOffset dy="3" input="SourceAlpha"/>
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feFlood flood-opacity="0.161"/>
+            <feComposite operator="in" in2="blur"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+    </defs>
+    <g id="Information_identity_selected" data-name="Information identity selected" transform="translate(-544 -248)">
+        <g id="Group_879" data-name="Group 879" transform="translate(-25)">
+            <g transform="matrix(1, 0, 0, 1, 569, 248)" filter="url(#Ellipse_147)">
+                <circle id="Ellipse_147-2" data-name="Ellipse 147" cx="8.5" cy="8.5" r="8.5" transform="translate(9 6)" fill="#0e65f2"/>
+            </g>
+            <text id="i" transform="translate(585 266)" fill="#fff" font-size="12" font-family="ProximaNova-Bold, Proxima Nova" font-weight="700"><tspan x="0" y="0">i</tspan></text>
+        </g>
+    </g>
+</svg>

@@ -7,17 +7,16 @@ import Divider from '../../components/divider/Divider'
 import { useTranslation } from 'react-i18next'
 import IdeaStatusIndicator from '../idea/status/IdeaStatusIndicator'
 import NetworkCard from '../../components/network/NetworkCard'
-import AddressInfoWithLabel from '../../components/identicon/AddressInfoWithLabel'
 import NetworkValue from '../../components/network/NetworkValue'
 import CardHeader from '../../components/card/components/CardHeader'
 import CardDetails from '../../components/card/components/CardDetails'
 import CardTitle from '../../components/card/components/CardTitle'
 import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
-import OwnerInfo from './OwnerInfo'
 import { IdeaContentType } from '../idea/Idea'
 import { toNetworkDisplayValue } from '../../util/quota.util'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
+import User from '../../components/user/User'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -81,8 +80,8 @@ const IdeaCard = ({
             <Divider />
 
             <div className={classes.usersInfoContainer}>
-                <AddressInfoWithLabel label={t('idea.list.card.beneficiary')} address={beneficiary} />
-                <OwnerInfo owner={owner} />
+                <User user={{ web3address: beneficiary }} label={t('idea.list.card.beneficiary')} />
+                <User user={owner} label={t('idea.list.card.proposer')} />
             </div>
         </NetworkCard>
     )

@@ -11,7 +11,7 @@ import { Nil } from '../../util/types'
 import { IdeaDto, IdeaStatus } from '../ideas.dto'
 import IdeaDiscussion from './discussion/IdeaDiscussion'
 import IdeaHeader from './IdeaHeader'
-import IdeaDetails from './info/IdeaDetails'
+import IdeaInfo from './info/IdeaInfo'
 import IdeaEdit from './info/IdeaEdit'
 import IdeaMilestones from './milestones/IdeaMilestones'
 import TurnIdeaIntoProposal from './turnIntoProposal/TurnIdeaIntoProposal'
@@ -30,7 +30,7 @@ const IDEA_CONTENT_TYPE_BUILDER: { [key in IdeaContentType]: IdeaTabConfig } = {
         getUrl: (baseUrl: string) => `${baseUrl}/${IdeaContentType.Info}`,
         getRoute: (basePath: string, idea: IdeaDto) => (
             <Route key={IdeaContentType.Info} exact={true} path={`${basePath}/${IdeaContentType.Info}`}>
-                <IdeaDetails idea={idea} />
+                <IdeaInfo idea={idea} />
             </Route>
         ),
         isDefault: true,
@@ -98,7 +98,7 @@ const Idea = ({ idea }: IdeaProps) => {
                     <IdeaHeader idea={idea} ideaTabsConfig={ideaTabsConfig} />
                     <Switch>
                         <Route exact={true} path={path}>
-                            <IdeaDetails idea={idea} />
+                            <IdeaInfo idea={idea} />
                         </Route>
                         {routes}
                     </Switch>

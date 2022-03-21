@@ -1,9 +1,9 @@
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
-import AddressInfoWithLabel from '../../../identicon/AddressInfoWithLabel'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { AccountInfo } from '../../../../util/types'
+import User from '../../../user/User'
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -44,7 +44,7 @@ const Vote = ({ accountInfo, voteType }: VoteProps) => {
     const label = voteType === VoteType.Aye ? t('voting.vote.aye') : t('voting.vote.nay')
     return (
         <div className={classes.vote}>
-            <AddressInfoWithLabel address={accountInfo.address} label={accountInfo.display || ''} />
+            <User user={{ web3address: accountInfo.address }} />
             <strong className={clsx(classes.voteType, colorClassName)}>{label}</strong>
         </div>
     )

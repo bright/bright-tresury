@@ -19,11 +19,12 @@ import { filterIdeas } from '../../../ideas/list/filterIdeas'
 import { useGetProposals } from '../../../proposals/proposals.api'
 import { ProposalFilter } from '../../../proposals/useProposalsFilter'
 import { TimeFrame } from '../../../util/useTimeFrame'
-import Avatar from '../../../components/avatar/Avatar'
-import { theme } from '../../../theme/theme'
 import clsx from 'clsx'
 import StyledAvatarContainer from './StyledAvatarContainer'
-const useStyles = makeStyles(() =>
+import { fromAuthContextUser } from '../../../util/author.dto'
+import UserAvatar from '../../../components/user/UserAvatar'
+
+const useStyles = makeStyles((theme) =>
     createStyles({
         root: {
             display: 'flex',
@@ -89,10 +90,9 @@ const AccountInfo = () => {
     return (
         <div className={classes.root}>
             <StyledAvatarContainer>
-                <Avatar
+                <UserAvatar
                     className={clsx(classes.avatar, address ? classes.styledBorder : null)}
-                    username={user?.username}
-                    web3Address={address}
+                    user={fromAuthContextUser(user!)}
                     size={26}
                 />
             </StyledAvatarContainer>

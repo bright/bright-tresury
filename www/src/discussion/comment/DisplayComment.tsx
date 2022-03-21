@@ -2,15 +2,15 @@ import { Theme } from '@material-ui/core'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React, { useState } from 'react'
 import { useAuth } from '../../auth/AuthContext'
+import { CommentDto, DiscussionDto } from '../comments.dto'
 import SmallVerticalDivider from '../../components/smallHorizontalDivider/SmallVerticalDivider'
 import { AuthorDto } from '../../util/author.dto'
-import { CommentDto, DiscussionDto } from '../comments.dto'
 import CommentAge from './components/CommentAge'
-import CommentAuthor from './components/CommentAuthor'
 import CommentContent from './components/CommentContent'
 import CommentOptionsMenu from './components/CommentOptionsMenu'
 import EditComment from './EditComment'
 import Reactions from './reactions/Reactions'
+import User from '../../components/user/User'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -60,7 +60,7 @@ const DisplayComment = ({ comment, discussion, people }: DisplayCommentProps) =>
         <div className={classes.root}>
             <div className={classes.header}>
                 <div className={classes.headerLeft}>
-                    <CommentAuthor author={author} />
+                    <User user={author} avatarSize={26} />
                     <SmallVerticalDivider />
                     <CommentAge createdAt={createdAt} updatedAt={updatedAt} />
                 </div>

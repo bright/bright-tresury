@@ -1,20 +1,15 @@
-import { useEffect, useState } from 'react'
-import { ApiState } from '../substrate-lib/api/SubstrateContext'
-import { useSubstrate } from '../substrate-lib/api/useSubstrate'
-
-import { DeriveAccountRegistration } from '@polkadot/api-derive/types'
+import { ApiState, useSubstrate } from '../substrate-lib/api/SubstrateContext'
 import { Nil } from './types'
+import { useQuery } from 'react-query'
 
 const useIdentity = ({ address }: { address: Nil<string> }) => {
-    const [identity, setIdentity] = useState<DeriveAccountRegistration>()
     const { api, apiState } = useSubstrate()
-    useEffect(() => {
+    const { data: identity } = useQuery(['identity', api, apiState, address], () => {
         if (!api || apiState !== ApiState.READY) return
         if (!address) return
-        api.derive.accounts.identity(address).then((fetchedIdentity) => setIdentity(fetchedIdentity))
-    }, [api, apiState, address])
-
-    return identity
+        return api.derive.accounts.identity(address)
+    })
+    return { identity }
 }
 
 export default useIdentity

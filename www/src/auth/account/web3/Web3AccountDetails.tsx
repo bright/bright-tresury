@@ -2,12 +2,12 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import InfoBox from '../../../components/form/InfoBox'
-import AddressInfo from '../../../components/identicon/AddressInfo'
 import { Label } from '../../../components/text/Label'
 import { useAuth, Web3Address } from '../../AuthContext'
 import Web3AddressRow from './Web3AddressRow'
 import { useMakePrimary, useUnlinkAddress } from './web3Associate.api'
 import Web3LinkingButton from './Web3LinkingButton'
+import User from '../../../components/user/User'
 
 const useStyles = makeStyles((theme: Theme) => {
     return createStyles({
@@ -61,7 +61,7 @@ const Web3AccountDetails = () => {
                         key={address.address}
                         onPrimaryChange={(checked) => onPrimaryChange(checked, address)}
                         isPrimary={address.isPrimary}
-                        addressComponent={<AddressInfo address={address.encodedAddress} />}
+                        addressComponent={<User user={{ web3address: address.encodedAddress }} detectYou={false} />}
                         linkComponent={
                             address.isPrimary ? (
                                 ''

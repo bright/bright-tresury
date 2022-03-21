@@ -38,7 +38,7 @@ const ReactionTooltip = ({ reactions, usersReaction }: ReactionTooltipProps) => 
             title={
                 <div>
                     {reactions.map((reaction) => (
-                        <SuggestionItem author={reaction.author} />
+                        <SuggestionItem user={reaction.author} />
                     ))}
                 </div>
             }

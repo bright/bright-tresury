@@ -27,7 +27,7 @@ const EmailPasswordAccountForm = () => {
         return account
     }, [user, accounts])
 
-    const identity = useIdentity({ address: primaryAccount?.address })
+    const { identity } = useIdentity({ address: primaryAccount?.address })
 
     const { mutateAsync, error, isLoading } = useAssociateEmailPassword()
 

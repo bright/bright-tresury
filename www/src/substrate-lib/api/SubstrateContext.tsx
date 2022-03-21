@@ -1,6 +1,6 @@
-import { ApiPromise } from '@polkadot/api'
+import { ApiPromise, WsProvider } from '@polkadot/api'
 import { DefinitionRpcExt } from '@polkadot/types/types'
-import React, { Dispatch, PropsWithChildren, useReducer } from 'react'
+import React, { Dispatch, PropsWithChildren, useCallback, useEffect, useReducer, useState } from 'react'
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc'
 import { useNetworks } from '../../networks/useNetworks'
 
@@ -27,26 +27,7 @@ export enum ApiState {
     ERROR = 'ERROR',
 }
 
-const reducer = (state: State, action: Action): State => {
-    let socket = null
-
-    switch (action.type) {
-        case 'RESET_SOCKET':
-            socket = action.socket || state.socket
-            return { ...state, socket, api: undefined, apiState: undefined }
-
-        case 'CONNECT':
-            return { ...state, api: state.api ?? action.api, apiState: ApiState.CONNECTING }
-
-        case 'CONNECT_SUCCESS':
-            return { ...state, apiState: ApiState.READY }
-
-        case 'CONNECT_ERROR':
-            return { ...state, apiState: ApiState.ERROR, apiError: action.apiError }
-    }
-}
-
-const SubstrateContext = React.createContext<[State, Dispatch<Action> | undefined]>([INIT_STATE, undefined])
+const SubstrateContext = React.createContext<State>(INIT_STATE)
 
 interface OwnProps {}
 export type SubstrateContextProviderProps = PropsWithChildren<OwnProps>
@@ -59,9 +40,45 @@ const SubstrateContextProvider = ({ children }: SubstrateContextProviderProps) =
         types: network.customTypes,
     } as State
 
-    const [state, dispatch] = useReducer(reducer, initState)
+    const [state, setState] = useState<State>(initState)
 
-    return <SubstrateContext.Provider value={[state, dispatch]}>{children}</SubstrateContext.Provider>
+    const connect = useCallback(async () => {
+        const { api, socket, jsonrpc, types } = state
+        if (api) {
+            return
+        }
+        console.log(`Connecting to ${socket} with types:`, types)
+        const provider = new WsProvider(socket)
+        const _api = new ApiPromise({ provider, types, rpc: jsonrpc })
+
+        // We want to listen to event for disconnection and reconnection.
+        //  That's why we set for listeners.
+        _api.on('connected', () => {
+            setState({ ...state, apiState: ApiState.CONNECTING, api: _api })
+            // `ready` event is not emitted upon reconnection. So we check explicitly here.
+            _api.isReady.then((_api) => setState({ ...state, apiState: ApiState.READY, api: _api }))
+        })
+        _api.on('ready', () => {
+            _api.isReady.then((_api) => setState({ ...state, apiState: ApiState.READY, api: _api }))
+        })
+        _api.on('error', (err) => {
+            _api.isReady.then((_api) => setState({ ...state, apiState: ApiState.ERROR, apiError: err }))
+        })
+    }, [state])
+
+    useEffect(() => {
+        connect()
+    }, [connect])
+
+    return <SubstrateContext.Provider value={state}>{children}</SubstrateContext.Provider>
 }
 
-export { SubstrateContext, SubstrateContextProvider }
+const useSubstrate = () => {
+    const context = React.useContext(SubstrateContext)
+    if (!context) {
+        throw new Error('useSubstrate must be used within an SubstrateContextProvider')
+    }
+    return context
+}
+
+export { SubstrateContext, SubstrateContextProvider, useSubstrate }
