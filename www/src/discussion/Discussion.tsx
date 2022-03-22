@@ -27,7 +27,7 @@ export type DiscussionProps = OwnProps
 
 const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
     const { t } = useTranslation()
-    const { isUserSignedInAndVerified: canComment } = useAuth()
+    const { isUserSignedInAndVerified: canComment, user } = useAuth()
 
     const { status, data: comments } = useGetComments(discussion)
 
@@ -43,11 +43,16 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
         })
 
         // get entity author
-        if (discussedEntity?.owner) {
+        if (discussedEntity?.owner && discussedEntity.owner.status !== UserStatus.Deleted) {
             authors.set(discussedEntity.owner.userId, discussedEntity.owner)
         }
 
         // TODO get blockchain accounts identities (proposer, curator, beneficiary) TREAS- 458
+
+        // remove logged in user from suggestions list
+        if (user && authors.has(user.id)) {
+            authors.delete(user.id)
+        }
 
         return Array.from(authors.values())
     }, [comments])

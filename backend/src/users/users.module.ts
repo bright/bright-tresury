@@ -7,6 +7,7 @@ import { Web3AddressEntity } from './web3-addresses/web3-address.entity'
 import { Web3AddressesModule } from './web3-addresses/web3-addresses.module'
 import { SignInAttemptModule } from './sign-in-attempt/sign-in-attempt.module'
 import { SessionModule } from '../auth/session/session.module'
+import { UsersController } from './users.controller'
 
 @Module({
     imports: [
@@ -18,5 +19,6 @@ import { SessionModule } from '../auth/session/session.module'
     ],
     providers: [UsersService],
     exports: [UsersService],
+    controllers: [UsersController],
 })
 export class UsersModule {}

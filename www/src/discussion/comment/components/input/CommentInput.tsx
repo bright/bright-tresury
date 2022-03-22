@@ -1,8 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import React, { useMemo } from 'react'
-import { Mention, MentionsInput, MentionsInputProps, SuggestionDataItem } from 'react-mentions'
+import React from 'react'
+import { Mention, MentionsInput, MentionsInputProps } from 'react-mentions'
 import { AuthorDto } from '../../../../util/author.dto'
-import SuggestionItem from './SuggesionItem'
+import useUserMention from './useUserMention'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -51,35 +51,13 @@ interface OwnProps {
 
 export type CommentInputProps = OwnProps & Omit<MentionsInputProps, 'children'>
 
-export type EnhancedSuggestionDataItem = SuggestionDataItem & { author: AuthorDto }
-
-const CommentInput = ({ people = [], ...props }: CommentInputProps) => {
+const CommentInput = ({ people, ...props }: CommentInputProps) => {
     const classes = useStyles()
-
-    const data: EnhancedSuggestionDataItem[] = useMemo(
-        () =>
-            people?.map((person) => ({
-                id: person.userId,
-                display: person.username ?? person.web3address ?? person.userId,
-                author: person,
-            })),
-        [people],
-    )
-
-    // TODO enable manually inserting the tag TREAS-459
+    const userMentionProps = useUserMention({ people })
 
     return (
-        <MentionsInput {...props} classNames={classes}>
-            <Mention
-                trigger="@"
-                data={data}
-                markup={'[@__display__](__id__)'}
-                renderSuggestion={(suggestion) => (
-                    <SuggestionItem author={(suggestion as EnhancedSuggestionDataItem).author} />
-                )}
-                displayTransform={(id, display) => `@${display}`}
-                appendSpaceOnAdd={true}
-            />
+        <MentionsInput {...props} classNames={classes} ignoreAccents={true}>
+            <Mention {...userMentionProps} />
         </MentionsInput>
     )
 }

@@ -6,6 +6,7 @@ import {
     NotFoundException,
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { encodeAddress } from '@polkadot/keyring'
 import { FindConditions, In, Repository } from 'typeorm'
 import { UserEntity } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -71,6 +72,22 @@ export class UsersService {
         } catch (e: any) {
             throw handleFindError(e, `There is no user with authId ${authId}`)
         }
+    }
+
+    async findOneByDisplay(display: string): Promise<UserEntity[]> {
+        const users: UserEntity[] = []
+        try {
+            users.push(await this.findOneByUsername(display))
+        } catch {
+            // not found so nothing happens
+        }
+
+        try {
+            users.push(await this.findOneByWeb3Address(encodeAddress(display)))
+        } catch {
+            // not found so nothing happens
+        }
+        return users
     }
 
     async findOneByWeb3Address(web3Address: string): Promise<UserEntity> {

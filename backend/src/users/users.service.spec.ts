@@ -390,6 +390,32 @@ describe(`Users Service`, () => {
         })
     })
 
+    describe('find one by display name', () => {
+        it('should return user by username', async () => {
+            const user = await getService().create({
+                authId: uuid(),
+                username: 'chuck',
+                email: 'chuck@email.com',
+            })
+
+            const actual = await getService().findOneByDisplay('chuck')
+            expect(actual).toHaveLength(1)
+            expect(actual[0].id).toBe(user.id)
+        })
+
+        it('should return user by web3 address', async () => {
+            const user = await getService().createWeb3User({
+                authId: uuid(),
+                username: 'Charlie',
+                web3Address: charlieAddress,
+            })
+
+            const actual = await getService().findOneByDisplay(charlieAddress)
+            expect(actual).toHaveLength(1)
+            expect(actual[0].id).toBe(user.id)
+        })
+    })
+
     describe('delete', () => {
         it('forgets the user data', async () => {
             const user = await getService().create({
