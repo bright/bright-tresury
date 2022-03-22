@@ -42,6 +42,8 @@ import {
     ROUTE_IDEAS,
     ROUTE_NEW_BOUNTY,
     ROUTE_NEW_IDEA,
+    ROUTE_NEW_PASSWORD,
+    ROUTE_PASSWORD_RECOVERY,
     ROUTE_PRIVACY,
     ROUTE_PROPOSAL,
     ROUTE_PROPOSALS,
@@ -61,6 +63,8 @@ import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
 import { initializeSupertokens } from './supertokens'
 import ThemeWrapper from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
+import PasswordRecovery from './auth/PasswordRecovery/PasswordRecovery'
+import NewPassword from './auth/PasswordRecovery/NewPassword'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -98,6 +102,9 @@ function AppRoutes() {
                 />
                 <Route exact={true} path={ROUTE_EMAIL_NOT_VERIFIED} component={EmailNotVerified} />
                 <Route exact={true} path={ROUTE_VERIFY_EMAIL} component={VerifyEmail} />
+
+                <Route exact={true} path={ROUTE_PASSWORD_RECOVERY} component={PasswordRecovery} />
+                <Route exact={true} path={ROUTE_NEW_PASSWORD} component={NewPassword} />
 
                 <Route exact={true} path={ROUTE_ROOT} component={Stats} />
                 <Route exact={true} path={ROUTE_STATS} component={Stats} />

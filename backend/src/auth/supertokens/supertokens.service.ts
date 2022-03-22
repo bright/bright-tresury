@@ -262,6 +262,10 @@ export class SuperTokensService {
         await this.emailsService.sendVerifyEmail(user.email, emailVerificationURLWithToken)
     }
 
+    sendResetPasswordEmail = async (user: SuperTokensUser, passwordResetURLWithToken: string): Promise<void> => {
+        await this.emailsService.sendResetPasswordEmail(user.email, passwordResetURLWithToken)
+    }
+
     async verifyEmail(authId: string) {
         const token = await createEmailVerificationToken(authId)
         if (token.status === 'OK') {

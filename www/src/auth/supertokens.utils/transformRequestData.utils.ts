@@ -1,6 +1,7 @@
 import { APIFormField } from 'supertokens-auth-react/lib/build/types'
 import { SignInData } from '../sign-in/email/emailSignIn.dto'
 import { SignUpData } from '../sign-up/email/emailSignUp.dto'
+import { Nil } from '../../util/types'
 
 const EMAIL_FIELD_NAME = 'email'
 const PASSWORD_FIELD_NAME = 'password'
@@ -18,20 +19,27 @@ export function transformSignUpRequestData(data: SignUpData) {
     return requestData
 }
 
-function transformBasicRequestData(data: { password: string; email: string }): { formFields: APIFormField[] } {
+export function transformBasicRequestData(data: { password?: Nil<string>; email?: Nil<string> }): {
+    formFields: APIFormField[]
+} {
     const { email, password } = data
-    return {
-        formFields: [
-            {
-                id: EMAIL_FIELD_NAME,
-                value: email,
-            },
-            {
-                id: PASSWORD_FIELD_NAME,
-                value: password,
-            },
-        ],
+    const requestData: { formFields: APIFormField[] } = {
+        formFields: [],
     }
+    if (password) {
+        requestData.formFields.push({
+            id: PASSWORD_FIELD_NAME,
+            value: password,
+        })
+    }
+    if (email) {
+        requestData.formFields.push({
+            id: EMAIL_FIELD_NAME,
+            value: email,
+        })
+    }
+
+    return requestData
 }
 
 export const supertokensRequestConfig = { headers: { rid: 'emailpassword' } }

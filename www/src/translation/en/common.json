@@ -177,7 +177,8 @@
             "generalError": "Something went wrong. Please try again later.",
             "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct.",
             "accountTemporaryLocked": "Account temporary locked. Please try again later.",
-            "emailAlreadyVerifiedError": "Email is already verified."
+            "emailAlreadyVerifiedError": "Email is already verified.",
+            "tokenError": "Your token has expired"
         },
         "signUp": {
             "title": "Sign up",
@@ -246,7 +247,7 @@
                     "placeholder": "Enter your password"
                 },
                 "submitButton": "Login",
-                "forgotPassword": "Forgot Password?"
+                "forgotPassword": "Forgot Password"
             },
             "verifyEmail": {
                 "success": {
@@ -272,12 +273,19 @@
             "emailSendingError": "An error occurred when sending email, please try again later",
             "emailAlreadyVerifiedError": "Email already verified, please try refreshing the page or logging in again"
         },
-        "deleteAccount": {
-            "success": {
-                "title": "Your account has been deleted. We are sorry to see you leave…",
-                "image": "Rubbish bin image",
-                "information": "Remember, you are still able to get access to data associated with the web3 account (proposals, bounties), when you create a new account with your web3 address, but will not be able to recover access to ideas."
-            }
+        "passwordRecovery": {
+            "title": "Forgot Password",
+            "header": "Forgot password?",
+            "paragraph": "In order to reset your password, please enter your Login (Email Address)",
+            "reset": "Reset",
+            "success": "We have sent an e-mail to the address provided to reset your password."
+        },
+        "newPassword": {
+            "title": "Password reset",
+            "header": "Enter your new password",
+            "label": "Password",
+            "placeholder": "Enter new password",
+            "success": "A new password has been set"
         }
     },
     "copy": "Copy",

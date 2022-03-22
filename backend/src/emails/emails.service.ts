@@ -45,6 +45,17 @@ export class EmailsService {
         return this.sendEmail(to, subject, text, html)
     }
 
+    async sendResetPasswordEmail(to: string, verifyUrl: string) {
+        logger.info(`Sending reset password email to ${to}`)
+        const templateData = {
+            url: verifyUrl,
+        }
+        const subject = 'Reset your password to BrightTreasury'
+        const text = `After clicking on the "reset" button you will be taken to the password reset page ${verifyUrl}`
+        const html = this.compileTemplate(EmailTemplates.ResetPasswordTemplate, templateData)
+        return this.sendEmail(to, subject, text, html)
+    }
+
     async sendEmailFromTemplate(to: string, subject: string, text: string, template: EmailTemplates, data: unknown) {
         const html = this.compileTemplate(template, data)
         return this.sendEmail(to, subject, text, html)

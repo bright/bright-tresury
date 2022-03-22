@@ -1,5 +1,6 @@
 import React, { PropsWithChildren } from 'react'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import { ClassNameProps } from '../../components/props/className.props'
 
 const useStyles = makeStyles<Theme, SignFormWrapperStylesProps>(() =>
     createStyles({

@@ -1,4 +1,3 @@
-import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -12,14 +11,7 @@ import { SignOption } from '../../sign-components/SignOption'
 import NotSignedUpYet from '../common/NotSignedUpYet'
 import { SignInButton } from '../common/SignInButton'
 import { useSignIn } from './emailSignIn.api'
-
-const useStyles = makeStyles(() =>
-    createStyles({
-        forgotPasswordButton: {
-            marginTop: '3em',
-        },
-    }),
-)
+import PasswordRecoveryLink from '../common/PasswordRecoveryLink'
 
 interface SignInValues {
     email: string
@@ -28,7 +20,6 @@ interface SignInValues {
 
 const EmailSignIn = () => {
     const { t } = useTranslation()
-    const classes = useStyles()
 
     const { isLoading, isError, mutateAsync, error } = useSignIn()
 
@@ -82,11 +73,8 @@ const EmailSignIn = () => {
                         />
                     </SignComponentWrapper>
                     <SignInButton disabled={isLoading} />
-                    {/*Hidden due to TREAS-128. Feature is not implemented yet*/}
-                    {/*<Button className={classes.forgotPasswordButton} variant="text" color="default" type="button">*/}
-                    {/*    {t('auth.signIn.emailSignIn.forgotPassword')}*/}
-                    {/*</Button>*/}
                     <NotSignedUpYet signOption={SignOption.Email} />
+                    <PasswordRecoveryLink />
                 </SignFormWrapper>
             )}
         </Formik>

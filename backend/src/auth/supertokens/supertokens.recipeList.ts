@@ -62,6 +62,9 @@ export const getRecipeList = (cookieSecure: boolean, superTokensService: SuperTo
         emailVerificationFeature: {
             createAndSendCustomEmail: superTokensService.sendVerifyEmail,
         },
+        resetPasswordUsingTokenFeature: {
+            createAndSendCustomEmail: superTokensService.sendResetPasswordEmail,
+        },
         signUpFeature: {
             formFields: [
                 {
