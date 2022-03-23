@@ -5,6 +5,7 @@ import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { SessionGuard } from './guards/session.guard'
 import { ReqSession, SessionData } from './session/session.decorator'
 import { SuperTokensService } from './supertokens/supertokens.service'
+import { SessionWithEmailNotVerifiedGuard } from './guards/sessionWithEmailNotVerified.guard'
 
 const logger = getLogger()
 
@@ -29,7 +30,7 @@ export class AuthController {
         description: 'User cannot be deleted',
     })
     @Delete('/unregister')
-    @UseGuards(SessionGuard)
+    @UseGuards(SessionWithEmailNotVerifiedGuard)
     async unregister(@ReqSession() sessionData: SessionData) {
         logger.info(`Deleting user ${sessionData.user.id}...`)
         await this.superTokensService.deleteUser(sessionData.user)

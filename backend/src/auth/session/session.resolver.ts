@@ -7,9 +7,9 @@ import { SessionData } from './session.decorator'
 export const SessionResolverProvider = 'SessionResolverProvider'
 
 export interface ISessionResolver {
-    validateSession(req: SessionRequest, res: Response): Promise<boolean>
+    validateSession(req: SessionRequest, res: Response, verifyEmailRequired?: boolean): Promise<boolean>
 
-    resolveUserAndUpdateSessionData(req: SessionRequest, res: Response): Promise<void>
+    resolveUserAndUpdateSessionData(req: SessionRequest, res: Response, verifyEmailRequired?: boolean): Promise<void>
 
     handleResponseIfRefreshTokenError(res: Response, error: any): any
 }
@@ -18,16 +18,16 @@ export interface ISessionResolver {
 export class SessionResolver implements ISessionResolver {
     constructor(private readonly superTokensService: SuperTokensService) {}
 
-    async validateSession(req: SessionRequest, res: Response): Promise<boolean> {
+    async validateSession(req: SessionRequest, res: Response, verifyEmailNotRequired?: boolean): Promise<boolean> {
         try {
-            await this.resolveUserAndUpdateSessionData(req, res)
+            await this.resolveUserAndUpdateSessionData(req, res, verifyEmailNotRequired)
             return true
         } catch (error) {
             return false
         }
     }
 
-    async resolveUserAndUpdateSessionData(req: SessionRequest, res: Response) {
+    async resolveUserAndUpdateSessionData(req: SessionRequest, res: Response, verifyEmailNotRequired = false) {
         const session = await this.superTokensService.getSession(req, res)
         if (!session) {
             return
@@ -44,7 +44,10 @@ export class SessionResolver implements ISessionResolver {
         }
         if (sessionUser) {
             const isEmailVerified = await this.superTokensService.isEmailVerified(sessionUser.user)
+
             if (isEmailVerified) {
+                req.session = sessionUser
+            } else if (verifyEmailNotRequired) {
                 req.session = sessionUser
             } else {
                 throw new UnauthorizedException()
