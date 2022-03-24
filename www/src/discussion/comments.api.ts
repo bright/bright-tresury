@@ -2,7 +2,7 @@ import { apiDelete, apiGet, apiPatch, apiPost, getUrlSearchParams } from '../api
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { CommentDto, CreateCommentDto, DiscussionDto, EditCommentDto } from './comments.dto'
 
-const COMMENTS_API_PATH = '/comments'
+export const COMMENTS_API_PATH = '/comments'
 
 // GET ALL
 

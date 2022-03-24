@@ -8,7 +8,7 @@ interface OwnProps {
 
 export type IconButtonProps = PropsWithChildren<OwnProps & MaterialIconButtonProps>
 
-const IconButton = ({ children, svg, alt, ...props }: IconButtonProps) => {
+const IconButton = ({ svg, alt, ...props }: IconButtonProps) => {
     return <MaterialIconButton {...props}>{svg ? <img src={svg} alt={alt ?? ''} /> : null}</MaterialIconButton>
 }
 

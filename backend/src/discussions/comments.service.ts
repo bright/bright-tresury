@@ -33,7 +33,7 @@ export class CommentsService {
         await this.repository.remove(comment)
     }
 
-    private async findOneOrThrow(id: string): Promise<CommentEntity> {
+    async findOneOrThrow(id: string): Promise<CommentEntity> {
         const comment = await this.repository.findOne(id)
         if (!comment) {
             throw new NotFoundException('Comment with the given id does not exist')

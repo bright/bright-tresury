@@ -1,8 +1,9 @@
 import { ForbiddenException } from '@nestjs/common'
-import { Column, Entity, ManyToOne } from 'typeorm'
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm'
 import { BaseEntity } from '../../database/base.entity'
 import { UserEntity } from '../../users/entities/user.entity'
 import { Nil } from '../../utils/types'
+import { CommentReactionEntity } from '../reactions/entities/comment-reaction.entity'
 import { DiscussionEntity } from './discussion.entity'
 
 @Entity('comments')
@@ -21,6 +22,14 @@ export class CommentEntity extends BaseEntity {
 
     @ManyToOne(() => DiscussionEntity, (discussion) => discussion.comments)
     discussion?: DiscussionEntity
+
+    @OneToMany(() => CommentReactionEntity, (reaction) => reaction.comment, {
+        cascade: true,
+        onDelete: 'CASCADE',
+        onUpdate: 'CASCADE',
+        eager: true,
+    })
+    reactions!: CommentReactionEntity[]
 
     isAuthor = (user: UserEntity) => {
         return this.authorId === user.id

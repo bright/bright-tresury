@@ -1,4 +1,5 @@
 import { AuthorDto } from '../util/author.dto'
+import { ReactionDto } from './comment/reactions/reactions.dto'
 
 export interface CommentDto {
     id: string
@@ -6,6 +7,7 @@ export interface CommentDto {
     createdAt: number
     updatedAt: number
     content: string
+    reactions: ReactionDto[]
 }
 
 export interface ProposalDiscussionDto {

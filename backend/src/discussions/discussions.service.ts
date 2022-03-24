@@ -23,7 +23,14 @@ export class DiscussionsService {
     async findComments(where: Partial<DiscussionEntity>): Promise<CommentEntity[]> {
         const discussion = await this.repository.findOne({
             where: { ...where },
-            relations: ['comments', 'comments.author', 'comments.author.web3Addresses'],
+            relations: [
+                'comments',
+                'comments.author',
+                'comments.author.web3Addresses',
+                'comments.reactions',
+                'comments.reactions.author',
+                'comments.reactions.author.web3Addresses',
+            ],
         })
         return discussion?.comments ?? []
     }

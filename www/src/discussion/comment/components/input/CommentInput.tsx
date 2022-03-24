@@ -34,9 +34,6 @@ const useStyles = makeStyles((theme: Theme) =>
         control__suggestions__list: {
             borderRadius: '8px',
             padding: '0px 0px !important',
-            '::last-of-type': {
-                backgroundColor: 'red',
-            },
             boxShadow: '0px 0px 60px #00000029',
         },
         'control__suggestions__item--focused': {

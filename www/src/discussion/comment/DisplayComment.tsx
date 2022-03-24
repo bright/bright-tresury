@@ -10,6 +10,7 @@ import CommentAuthor from './components/CommentAuthor'
 import CommentContent from './components/CommentContent'
 import CommentOptionsMenu from './components/CommentOptionsMenu'
 import EditComment from './EditComment'
+import Reactions from './reactions/Reactions'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -64,6 +65,7 @@ const DisplayComment = ({ comment, discussion, people }: DisplayCommentProps) =>
                     <CommentAge createdAt={createdAt} updatedAt={updatedAt} />
                 </div>
                 <div className={classes.headerRight}>
+                    <Reactions comment={comment} discussion={discussion} />
                     {isAuthor ? (
                         <CommentOptionsMenu onEdit={enableEditMode} comment={comment} discussion={discussion} />
                     ) : null}

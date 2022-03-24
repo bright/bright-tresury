@@ -15,6 +15,8 @@ import { ProposalDiscussionDto } from './dto/discussion-category/proposal-discus
 import { DiscussionDto } from './dto/discussion.dto'
 import { DiscussionCategory } from './entites/discussion-category'
 import { CommentsService } from './comments.service'
+import { CommentReactionsService } from './reactions/comment-reactions.service'
+import { ReactionType } from './reactions/entities/comment-reaction.entity'
 
 const baseUrl = '/api/v1/comments'
 
@@ -22,6 +24,7 @@ describe('/api/v1/comments', () => {
     const app = beforeSetupFullApp()
     const discussionService = beforeAllSetup(() => app().get<DiscussionsService>(DiscussionsService))
     const commentsService = beforeAllSetup(() => app().get<CommentsService>(CommentsService))
+    const reactionsService = beforeAllSetup(() => app().get<CommentReactionsService>(CommentReactionsService))
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -44,7 +47,7 @@ describe('/api/v1/comments', () => {
                 },
                 sessionHandler.sessionData.user,
             )
-            return { comment }
+            return { comment, user: sessionHandler.sessionData.user }
         }
 
         it(`should return comments array`, async () => {
@@ -66,6 +69,31 @@ describe('/api/v1/comments', () => {
                 }),
                 createdAt: comment.createdAt.getTime(),
                 updatedAt: comment.updatedAt.getTime(),
+                reactions: [],
+            })
+        })
+
+        it(`should return reactions`, async () => {
+            const discussionDto: IdeaDiscussionDto = { category: DiscussionCategory.Idea, entityId: uuid() }
+            const { comment, user } = await getSetUp(discussionDto)
+            const reaction = await reactionsService().create({ name: ReactionType.ThumbUp }, comment.id, user)
+
+            const result = await request(app()).get(
+                `${baseUrl}?category=${discussionDto.category}&entityId=${discussionDto.entityId}`,
+            )
+
+            expect(result.body[0]).toMatchObject({
+                reactions: [
+                    {
+                        id: reaction.id,
+                        name: reaction.name,
+                        author: expect.objectContaining({
+                            userId: comment.authorId,
+                            status: UserStatus.EmailPasswordEnabled,
+                            username: comment.author!.username,
+                        }),
+                    },
+                ],
             })
         })
 
