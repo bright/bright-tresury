@@ -273,6 +273,13 @@
             "emailSendingError": "An error occurred when sending email, please try again later",
             "emailAlreadyVerifiedError": "Email already verified, please try refreshing the page or logging in again"
         },
+        "deleteAccount": {
+            "success": {
+                "title": "Your account has been deleted. We are sorry to see you leave…",
+                "image": "Rubbish bin image",
+                "information": "Remember, you are still able to get access to data associated with the web3 account (proposals, bounties), when you create a new account with your web3 address."
+            }
+        },
         "passwordRecovery": {
             "title": "Forgot Password",
             "header": "Forgot password?",
