@@ -390,7 +390,7 @@ describe(`Users Service`, () => {
         })
     })
 
-    describe('find one by display name', () => {
+    describe('find by display name', () => {
         it('should return user by username', async () => {
             const user = await getService().create({
                 authId: uuid(),
@@ -398,7 +398,7 @@ describe(`Users Service`, () => {
                 email: 'chuck@email.com',
             })
 
-            const actual = await getService().findOneByDisplay('chuck')
+            const actual = await getService().findByDisplay('chuck')
             expect(actual).toHaveLength(1)
             expect(actual[0].id).toBe(user.id)
         })
@@ -410,7 +410,7 @@ describe(`Users Service`, () => {
                 web3Address: charlieAddress,
             })
 
-            const actual = await getService().findOneByDisplay(charlieAddress)
+            const actual = await getService().findByDisplay(charlieAddress)
             expect(actual).toHaveLength(1)
             expect(actual[0].id).toBe(user.id)
         })

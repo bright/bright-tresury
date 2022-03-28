@@ -52,9 +52,9 @@ describe('UsersController', () => {
 
         it('should return user for a given username', async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
-            const user = await getService().create({ authId: uuid(), username: 'chuck', email: 'chuck@example.com' })
+            const user = await getService().create({ authId: uuid(), username: 'bob', email: 'bob@example.com' })
 
-            const actual = await sessionHandler.authorizeRequest(request(app()).get(`${baseUrl}chuck`))
+            const actual = await sessionHandler.authorizeRequest(request(app()).get(`${baseUrl}bob`))
 
             expect(actual.body).toHaveLength(1)
             expect(actual.body[0].userId).toBe(user.id)

@@ -19,7 +19,7 @@ export class UsersController {
     })
     async getUsersByDisplay(@Query() { display }: { display: string }): Promise<AuthorDto[]> {
         logger.info(`Getting users for display: ${display}`)
-        const users = await this.service.findOneByDisplay(display)
+        const users = await this.service.findByDisplay(display)
 
         return users.map((user) => new AuthorDto(user))
     }

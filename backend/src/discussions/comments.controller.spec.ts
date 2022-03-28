@@ -263,6 +263,7 @@ describe('/api/v1/comments', () => {
                 }),
                 createdAt: expect.any(Number),
                 updatedAt: expect.any(Number),
+                reactions: [],
             })
         })
 
@@ -501,6 +502,7 @@ describe('/api/v1/comments', () => {
                 }),
                 createdAt: expect.any(Number),
                 updatedAt: expect.any(Number),
+                reactions: [],
             })
         })
 

@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { encodeAddress } from '@polkadot/keyring'
+import { checkAddress } from '@polkadot/util-crypto/address/check'
 import { FindConditions, In, Repository } from 'typeorm'
 import { UserEntity } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -74,7 +75,7 @@ export class UsersService {
         }
     }
 
-    async findOneByDisplay(display: string): Promise<UserEntity[]> {
+    async findByDisplay(display: string): Promise<UserEntity[]> {
         const users: UserEntity[] = []
         try {
             users.push(await this.findOneByUsername(display))
@@ -83,7 +84,7 @@ export class UsersService {
         }
 
         try {
-            users.push(await this.findOneByWeb3Address(encodeAddress(display)))
+            users.push(await this.findOneByWeb3Address(display))
         } catch {
             // not found so nothing happens
         }
@@ -91,10 +92,15 @@ export class UsersService {
     }
 
     async findOneByWeb3Address(web3Address: string): Promise<UserEntity> {
+        if (!isValidAddress(web3Address)) {
+            throw new NotFoundException('User not found')
+        }
         const users = await this.userRepository
             .createQueryBuilder('user')
             .leftJoinAndSelect('user.web3Addresses', 'web3Addresses')
-            .where('web3Addresses.address = :web3Address', { web3Address })
+            .where('web3Addresses.address = ANY(:web3Addresses)', {
+                web3Addresses: [web3Address, encodeAddress(web3Address)],
+            })
             .getMany()
         if (!users || users.length === 0) {
             throw new NotFoundException('User not found')
