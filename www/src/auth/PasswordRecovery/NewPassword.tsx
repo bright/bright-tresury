@@ -7,15 +7,16 @@ import { Trans, useTranslation } from 'react-i18next'
 import { Formik } from 'formik'
 import { SignComponentWrapper } from '../sign-components/SignComponentWrapper'
 import RouterLink from '../../components/link/RouterLink'
-import { ROUTE_SIGNUP } from '../../routes/routes'
+import { ROUTE_SIGNIN, ROUTE_SIGNUP } from '../../routes/routes'
 import { SignFormWrapper } from '../sign-components/SignFormWrapper'
 import Button from '../../components/button/Button'
 import PasswordInput from '../../components/form/input/password/PasswordInput'
 import { fullValidatorForSchema } from '../../util/form.util'
 import useNewPasswordValidation from './useNewPasswordValidation'
 import { useNewPassword } from './new-password.api'
-import { useLocation } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import InfoBox from '../../components/form/InfoBox'
+import { useSnackNotifications } from '../../snack-notifications/useSnackNotifications'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -58,11 +59,15 @@ export function NewPassword() {
     const [error, setError] = useState<string | null>(null)
     const { mutateAsync } = useNewPassword()
     const token = new URLSearchParams(location.search).get(TOKEN_PARAM_NAME) ?? ''
+    const { open: openSnack } = useSnackNotifications()
+    const history = useHistory()
 
     const onSuccess = (data: any) => {
         if (data.status === 'OK') {
             setSuccess(true)
             setError(null)
+            openSnack('A new password has been set. Now you can log in.')
+            history.replace(ROUTE_SIGNIN)
         } else if (data.status === 'RESET_PASSWORD_INVALID_TOKEN_ERROR') {
             setError(t('auth.errors.tokenError'))
         } else {
