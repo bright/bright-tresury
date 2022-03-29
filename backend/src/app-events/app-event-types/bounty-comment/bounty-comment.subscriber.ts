@@ -99,10 +99,10 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Commen
             receiverIds.push(bountyEntity.ownerId)
         }
 
-        await this.addUserFromWeb3Address(bountyBlockchain.proposer.address, receiverIds)
+        await this.addUserFromWeb3Address(bountyBlockchain.proposer, receiverIds)
 
         if (bountyBlockchain.curator) {
-            await this.addUserFromWeb3Address(bountyBlockchain.curator.address, receiverIds)
+            await this.addUserFromWeb3Address(bountyBlockchain.curator, receiverIds)
         }
 
         // Set created from an array will take only distinct values
@@ -111,7 +111,7 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Commen
 
     private async addUserFromWeb3Address(web3address: string, receiverIds: string[]): Promise<void> {
         try {
-            const user = await this.usersService.findOneByWeb3Address(web3address)
+            const user = await this.usersService.findOneByWeb3AddressOrThrow(web3address)
             receiverIds.push(user.id)
         } catch (err) {
             logger.info(`No user with address ${web3address} found`)

@@ -2,18 +2,13 @@ import { useMemo } from 'react'
 import { formatAddress } from '../identicon/utils'
 import { useTranslation } from 'react-i18next'
 import { useAuth, UserStatus } from '../../auth/AuthContext'
-import { Nil } from '../../util/types'
 import { encodeAddress } from '@polkadot/keyring'
 import { useNetworks } from '../../networks/useNetworks'
 import useIdentity from '../../util/useIdentity'
+import { PublicUserDto } from '../../util/publicUser.dto'
 
 export interface UseUserDisplayProps {
-    user: {
-        userId?: string
-        username?: Nil<string>
-        web3address?: Nil<string>
-        status?: UserStatus
-    }
+    user: PublicUserDto
     detectYou?: boolean
     ellipsis?: boolean
 }
@@ -36,7 +31,7 @@ const useUserDisplay = ({ user, detectYou = true, ellipsis = true }: UseUserDisp
                 encodeAddress(web3Address.address, network.ss58Format) ===
                 encodeAddress(user.web3address!, network.ss58Format),
         )
-    }, [user, isDeleted, authUser])
+    }, [user, isDeleted, detectYou, authUser])
 
     const hasUsername = useMemo(() => user.status === UserStatus.EmailPasswordEnabled && user.username, [user])
 
@@ -49,7 +44,7 @@ const useUserDisplay = ({ user, detectYou = true, ellipsis = true }: UseUserDisp
         else if (identity?.display) return identity.display
         else if (user.web3address) return formatAddress(user.web3address, network.ss58Format, ellipsis)
         else return t('common.na')
-    }, [isDeleted, isYou, user, identity, network, ellipsis])
+    }, [isDeleted, isYou, hasUsername, user, identity, network, ellipsis])
     return { display }
 }
 export default useUserDisplay

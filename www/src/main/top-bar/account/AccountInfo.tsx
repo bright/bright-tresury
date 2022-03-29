@@ -21,7 +21,7 @@ import { ProposalFilter } from '../../../proposals/useProposalsFilter'
 import { TimeFrame } from '../../../util/useTimeFrame'
 import clsx from 'clsx'
 import StyledAvatarContainer from './StyledAvatarContainer'
-import { fromAuthContextUser } from '../../../util/author.dto'
+import { fromAuthContextUser } from '../../../util/publicUser.dto'
 import UserAvatar from '../../../components/user/UserAvatar'
 
 const useStyles = makeStyles((theme) =>

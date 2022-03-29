@@ -28,8 +28,8 @@ export class PolkassemblyTreasuryProposalPostDto {
         // https://github.com/Premiurly/polkassembly/blob/9139de85d81a77d12b64799960069f50b0df687a/node-watcher/src/tasks/createTreasury.ts#L95
         return new BlockchainProposal(
             this.blockchainIndex,
-            { address: this.proposerAddress },
-            { address: this.beneficiaryAdress },
+            this.proposerAddress,
+            this.beneficiaryAdress,
             this.value,
             this.bond,
             [],

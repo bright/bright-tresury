@@ -14,7 +14,7 @@ const ProposalPolkassemblyShareButton = ({
 }: ProposalPolkassemblyShareButtonProps) => {
     const { postData } = useProposalPolkassemblyShare({ proposalIndex, details })
 
-    return <PolkassemblyShareButton web3address={proposer.address} postData={postData} disabled={!details} />
+    return <PolkassemblyShareButton web3address={proposer.web3address!} postData={postData} disabled={!details} />
 }
 
 export default ProposalPolkassemblyShareButton

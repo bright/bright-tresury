@@ -2,10 +2,11 @@ import CardDetails from '../../../card/components/CardDetails'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Theme } from '@material-ui/core'
-import { AccountInfo, Nil } from '../../../../util/types'
+import { Nil } from '../../../../util/types'
 import Vote, { VoteType } from './Vote'
+import { PublicUserDto } from '../../../../util/publicUser.dto'
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             display: 'flex',
@@ -17,8 +18,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    ayes: Nil<AccountInfo[]>
-    nays: Nil<AccountInfo[]>
+    ayes: Nil<PublicUserDto[]>
+    nays: Nil<PublicUserDto[]>
 }
 
 export type MotionDetailsProps = OwnProps
@@ -29,15 +30,15 @@ const MotionDetails = ({ ayes, nays }: MotionDetailsProps) => {
 
     const styles = useStyles()
 
-    const renderVote = (accountInfo: AccountInfo, voteType: VoteType) => (
-        <Vote key={`${voteType}_${accountInfo.address}`} accountInfo={accountInfo} voteType={voteType} />
+    const renderVote = (user: PublicUserDto, voteType: VoteType) => (
+        <Vote key={`${voteType}_${user.web3address}`} user={user} voteType={voteType} />
     )
 
     return (
         <CardDetails>
             <div className={styles.root}>
-                {ayes.map((aye: AccountInfo) => renderVote(aye, VoteType.Aye))}
-                {nays.map((nay: AccountInfo) => renderVote(nay, VoteType.Nay))}
+                {ayes.map((aye: PublicUserDto) => renderVote(aye, VoteType.Aye))}
+                {nays.map((nay: PublicUserDto) => renderVote(nay, VoteType.Nay))}
             </div>
         </CardDetails>
     )

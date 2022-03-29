@@ -364,7 +364,7 @@ describe(`Users Service`, () => {
                 web3Address,
             })
 
-            const user = await getService().findOneByWeb3Address(web3Address)
+            const user = await getService().findOneByWeb3AddressOrThrow(web3Address)
 
             expect(user).toBeDefined()
         })
@@ -381,12 +381,12 @@ describe(`Users Service`, () => {
                 web3Address: charlieAddress,
             })
 
-            const user = await getService().findOneByWeb3Address(web3Address)
+            const user = await getService().findOneByWeb3AddressOrThrow(web3Address)
 
             expect(user).toBeDefined()
         })
         it('should throw not found exception if wrong web3 address', async () => {
-            await expect(getService().findOneByWeb3Address(uuid())).rejects.toThrow(NotFoundException)
+            await expect(getService().findOneByWeb3AddressOrThrow(uuid())).rejects.toThrow(NotFoundException)
         })
     })
 
@@ -400,7 +400,7 @@ describe(`Users Service`, () => {
 
             const actual = await getService().findByDisplay('chuck')
             expect(actual).toHaveLength(1)
-            expect(actual[0].id).toBe(user.id)
+            expect(actual[0].userId).toBe(user.id)
         })
 
         it('should return user by web3 address', async () => {
@@ -412,7 +412,7 @@ describe(`Users Service`, () => {
 
             const actual = await getService().findByDisplay(charlieAddress)
             expect(actual).toHaveLength(1)
-            expect(actual[0].id).toBe(user.id)
+            expect(actual[0].userId).toBe(user.id)
         })
     })
 

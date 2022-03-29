@@ -93,14 +93,17 @@ export class ProposalsService {
             excludeIndexes: null,
             proposers: [],
         })
-        const allItems = proposalIndexes
-            .map((blockchainIndex: number) =>
-                this.mergeProposal(
-                    blockchainProposals.get(blockchainIndex)!,
-                    databaseProposals.get(blockchainIndex),
-                    polkassemblyProposalsPosts.get(blockchainIndex),
+        const allItems = (
+            await Promise.all(
+                proposalIndexes.map((blockchainIndex: number) =>
+                    this.mergeProposal(
+                        blockchainProposals.get(blockchainIndex)!,
+                        databaseProposals.get(blockchainIndex),
+                        polkassemblyProposalsPosts.get(blockchainIndex),
+                    ),
                 ),
             )
+        )
             .filter(
                 (proposal) =>
                     !status || proposal.hasBlockchainProposalStatus(ProposalDto.fromProposalDtoStatus(status)),
@@ -133,11 +136,13 @@ export class ProposalsService {
             where: { blockchainProposalId: In(offChainBlockchainIndexes), networkId },
             relations: ['ideaNetwork', 'ideaMilestoneNetwork', 'ideaMilestoneNetwork.ideaMilestone'],
         })
-        const items = offChainBlockchainIndexes.map((blockchainIndex) =>
-            this.mergeProposal(
-                polkassemblyProposalsPosts.get(blockchainIndex)!.asBlockchainProposal(),
-                databaseProposals.get(blockchainIndex),
-                polkassemblyProposalsPosts.get(blockchainIndex),
+        const items = await Promise.all(
+            offChainBlockchainIndexes.map((blockchainIndex) =>
+                this.mergeProposal(
+                    polkassemblyProposalsPosts.get(blockchainIndex)!.asBlockchainProposal(),
+                    databaseProposals.get(blockchainIndex),
+                    polkassemblyProposalsPosts.get(blockchainIndex),
+                ),
             ),
         )
 
@@ -161,13 +166,15 @@ export class ProposalsService {
         return this.mergeProposal(blockchainProposal, postgresProposal, offChain)
     }
 
-    mergeProposal(
+    async mergeProposal(
         blockchainProposal: BlockchainProposal,
         proposalEntity: Nil<ProposalEntity>,
         polkassemblyProposal?: Nil<PolkassemblyTreasuryProposalPostDto>,
-    ): BlockchainProposalWithDomainDetails {
+    ): Promise<BlockchainProposalWithDomainDetails> {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const ideaId = proposalEntity?.ideaNetwork?.ideaId ?? milestone?.ideaId
+        const proposer = await this.usersService.findPublicByWeb3Address(blockchainProposal.proposer)
+        const beneficiary = await this.usersService.findPublicByWeb3Address(blockchainProposal.beneficiary)
         return new BlockchainProposalWithDomainDetails({
             blockchain: blockchainProposal,
             entity: proposalEntity,
@@ -176,6 +183,8 @@ export class ProposalsService {
             isCreatedFromIdeaMilestone: !!milestone,
             ideaId,
             ideaMilestoneId: milestone?.id,
+            proposer,
+            beneficiary,
         })
     }
 

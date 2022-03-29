@@ -32,7 +32,7 @@ describe(`Web3 Associate Controller`, () => {
                     .send({ address: charlieAddress, signature: uuid() } as ConfirmSignMessageRequestDto),
             )
 
-            const userWithAssociatedAddress = await getUsersService().findOneByWeb3Address(bobAddress)
+            const userWithAssociatedAddress = await getUsersService().findOneByWeb3AddressOrThrow(bobAddress)
 
             const addresses = userWithAssociatedAddress.web3Addresses!.map((web3Address) => web3Address.address)
 

@@ -139,7 +139,7 @@ describe(`IdeasService`, () => {
 
     describe('findByProposalIds', () => {
         it('should return ideas for given proposalIds and network', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title 1' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
@@ -158,7 +158,7 @@ describe(`IdeasService`, () => {
         })
 
         it('should not return ideas for other network', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title 1' },
                     networks: [{ name: 'other_network', value: '10' as NetworkPlanckValue }],
@@ -175,7 +175,7 @@ describe(`IdeasService`, () => {
         })
 
         it('should not return ideas for other proposalIds', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title 1' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
@@ -194,7 +194,7 @@ describe(`IdeasService`, () => {
 
     describe('find one', () => {
         it('should return an existing idea', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title', content: 'content' },
                     networks: [
@@ -206,7 +206,7 @@ describe(`IdeasService`, () => {
                 sessionData,
             )
 
-            const savedIdea = (await getService().findOne(idea.id, sessionData))!
+            const { entity: savedIdea } = (await getService().findOne(idea.id, sessionData))!
 
             expect(savedIdea.details.title).toBe('Test title')
             expect(savedIdea.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
@@ -224,7 +224,7 @@ describe(`IdeasService`, () => {
             done()
         })
         it('should return own draft idea', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title 1' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
@@ -239,7 +239,7 @@ describe(`IdeasService`, () => {
             done()
         })
         it('should not return other draft idea', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title 1' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
@@ -252,7 +252,7 @@ describe(`IdeasService`, () => {
             done()
         })
         it('should not return draft idea with no user', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title 1' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
@@ -268,32 +268,32 @@ describe(`IdeasService`, () => {
 
     describe('create', () => {
         it('should create and save idea with owner', async () => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
-            const savedIdea = await getService().findOne(createdIdea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea).toBeDefined()
             expect(savedIdea.ownerId).toBe(sessionData.user.id)
         })
 
         it('should create and save idea with default idea status', async () => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
-            const savedIdea = await getService().findOne(createdIdea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea.status).toBe(DefaultIdeaStatus)
         })
 
         it('should create and save idea with draft status', async () => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
@@ -301,12 +301,12 @@ describe(`IdeasService`, () => {
                 } as CreateIdeaDto,
                 sessionData,
             )
-            const savedIdea = await getService().findOne(createdIdea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea.status).toBe(IdeaStatus.Draft)
         })
 
         it('should create and save idea with active status', async () => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
@@ -314,31 +314,31 @@ describe(`IdeasService`, () => {
                 } as CreateIdeaDto,
                 sessionData,
             )
-            const savedIdea = await getService().findOne(createdIdea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea.status).toBe(IdeaStatus.Active)
         })
 
         it('should add auto generated ordinal number', async () => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
-            const savedIdea = await getService().findOne(createdIdea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea.ordinalNumber).toBeDefined()
         })
 
         it('should auto increment ordinal number', async () => {
-            const createdFirstIdea = await getService().create(
+            const { entity: createdFirstIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
                 } as CreateIdeaDto,
                 sessionData,
             )
-            const createdSecondIdea = await getService().create(
+            const { entity: createdSecondIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '1' as NetworkPlanckValue } as IdeaNetworkDto],
@@ -349,7 +349,7 @@ describe(`IdeasService`, () => {
         })
 
         it('should create and save idea with all valid data', async (done) => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: {
                         title: 'Test title',
@@ -364,7 +364,7 @@ describe(`IdeasService`, () => {
                 },
                 sessionData,
             )
-            const savedIdea = await getService().findOne(createdIdea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(savedIdea.details.title).toBe('Test title')
             expect(savedIdea.details.content).toBe('Test content')
@@ -376,14 +376,14 @@ describe(`IdeasService`, () => {
         })
 
         it('should create and save idea with networks', async (done) => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
                 },
                 sessionData,
             )
-            const savedIdea = await getService().findOne(createdIdea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(createdIdea.id, sessionData)
             expect(savedIdea).toBeDefined()
             expect(savedIdea.details.title).toBe('Test title')
             expect(savedIdea.networks!.length).toBe(1)
@@ -396,7 +396,7 @@ describe(`IdeasService`, () => {
 
     describe('update', () => {
         it('should update and save idea with updated networks', async () => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -410,14 +410,14 @@ describe(`IdeasService`, () => {
                 idea.id,
                 sessionData,
             )
-            const savedIdea = await getService().findOne(idea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(idea.id, sessionData)
             expect(savedIdea.networks[0].name).toBe(NETWORKS.KUSAMA)
             expect(savedIdea.networks[0].value).toBe('249')
             expect(savedIdea.networks![0].status).toBe(IdeaNetworkStatus.Active)
         })
 
         it('should update and save idea milestone networks when updating networks', async () => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -466,7 +466,7 @@ describe(`IdeasService`, () => {
         })
 
         it('should update and save idea with updated status', async () => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -474,12 +474,12 @@ describe(`IdeasService`, () => {
                 sessionData,
             )
             await getService().update({ status: IdeaStatus.Active }, idea.id, sessionData)
-            const savedIdea = await getService().findOne(idea.id, sessionData)
+            const { entity: savedIdea } = await getService().findOne(idea.id, sessionData)
             expect(savedIdea.status).toBe(IdeaStatus.Active)
         })
 
         it('should throw forbidden exception when trying to update not own idea', async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -497,7 +497,7 @@ describe(`IdeasService`, () => {
         })
 
         it(`should throw BadRequestException when trying to update idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -513,7 +513,7 @@ describe(`IdeasService`, () => {
         })
 
         it(`should throw BadRequestException when trying to update idea with ${IdeaStatus.MilestoneSubmission} status`, async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -531,7 +531,7 @@ describe(`IdeasService`, () => {
 
     describe('delete', () => {
         it('should delete idea', async (done) => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue }],
@@ -547,7 +547,7 @@ describe(`IdeasService`, () => {
             done()
         })
         it('should throw forbidden exception when trying to delete not own idea', async (done) => {
-            const createdIdea = await getService().create(
+            const { entity: createdIdea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue }],
@@ -563,7 +563,7 @@ describe(`IdeasService`, () => {
         })
 
         it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -577,7 +577,7 @@ describe(`IdeasService`, () => {
         })
 
         it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.TurnedIntoProposal} status`, async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -590,7 +590,7 @@ describe(`IdeasService`, () => {
             done()
         })
         it(`should throw BadRequestException exception when trying to delete idea with ${IdeaStatus.MilestoneSubmission} status`, async (done) => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '44' as NetworkPlanckValue }],
@@ -602,7 +602,7 @@ describe(`IdeasService`, () => {
             done()
         })
         it('should delete milestone, networks and ideas when delete idea', async () => {
-            const idea = await getService().create(
+            const { entity: idea } = await getService().create(
                 {
                     details: { title: 'Test title' },
                     networks: [{ name: NETWORKS.KUSAMA, value: '42' as NetworkPlanckValue }],

@@ -1,8 +1,8 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { Mention, MentionsInput, MentionsInputProps } from 'react-mentions'
-import { AuthorDto } from '../../../../util/author.dto'
 import useUserMention from './useUserMention'
+import { PublicUserDto } from '../../../../util/publicUser.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    people: AuthorDto[]
+    people: PublicUserDto[]
 }
 
 export type CommentInputProps = OwnProps & Omit<MentionsInputProps, 'children'>

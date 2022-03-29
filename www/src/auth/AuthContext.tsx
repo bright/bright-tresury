@@ -4,13 +4,14 @@ import { encodeAddress } from '@polkadot/util-crypto'
 import { useNetworks } from '../networks/useNetworks'
 import { compareWeb3Address } from '../util/web3address.util'
 import Session, { signOut, useSessionContext } from 'supertokens-auth-react/recipe/session'
+import { Nil } from '../util/types'
 
 export interface AuthContextState {
     user?: AuthContextUser
     isUserSignedIn: boolean
     isUserVerified: boolean
     isUserSignedInAndVerified: boolean
-    hasWeb3AddressAssigned: (address: string) => boolean
+    hasWeb3AddressAssigned: (address: Nil<string>) => boolean
 
     refreshSession: () => Promise<void>
     signOut: () => void
@@ -79,7 +80,8 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
     )
 
     const hasWeb3AddressAssigned = useCallback(
-        (address: string) =>
+        (address: Nil<string>) =>
+            !!address &&
             !!user?.web3Addresses.find((web3Address: any) => compareWeb3Address(web3Address.address, address)),
         [user],
     )

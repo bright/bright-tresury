@@ -1,10 +1,11 @@
-import { AccountInfo, Nil } from '../../util/types'
+import { Nil } from '../../util/types'
 import { Time } from '@polkadot/util/types'
+import { PublicUserDto } from '../../util/publicUser.dto'
 
 interface ProposedMotionDto {
     status: MotionStatus.Proposed
-    ayes: AccountInfo[]
-    nays: AccountInfo[]
+    ayes: PublicUserDto[]
+    nays: PublicUserDto[]
 }
 
 interface ExecutedMotionDto {

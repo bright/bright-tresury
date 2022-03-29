@@ -173,8 +173,6 @@ describe(`Blockchain service`, () => {
         it('should return existing proposals', async () => {
             // create a proposal
             const proposalValue = BN_TEN.pow(new BN(14))
-            const setIdentityExtrinsic = api.tx.identity.setIdentity({ display: { Raw: 'Alice' } })
-            await signAndSend(setIdentityExtrinsic, aliceKeypair)
             const nextProposalIndex = (await api.query.treasury.proposalCount()).toNumber()
             const extrinsic = api.tx.treasury.proposeSpend(proposalValue, bobAddress)
             await signAndSend(extrinsic, aliceKeypair)
@@ -182,9 +180,8 @@ describe(`Blockchain service`, () => {
             expect(proposals.length).toBeGreaterThan(0)
             const lastProposal = proposals.find((p) => p.proposalIndex === nextProposalIndex)!
             expect(lastProposal.proposalIndex).toBe(nextProposalIndex)
-            expect(lastProposal.proposer.address).toBe(aliceAddress)
-            expect(lastProposal.proposer.display).toBe('Alice')
-            expect(lastProposal.beneficiary.address).toBe(bobAddress)
+            expect(lastProposal.proposer).toBe(aliceAddress)
+            expect(lastProposal.beneficiary).toBe(bobAddress)
             expect(lastProposal.bond).toBe(proposalValue.muln(5).divn(100).toString()) // 5% of proposalValue
             expect(lastProposal.value).toBe(proposalValue.toString())
         }, 60000)

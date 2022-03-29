@@ -39,7 +39,7 @@ export class IdeaMilestoneProposalsService {
         { ideaMilestoneNetworkId, extrinsicHash, lastBlockHash }: CreateIdeaMilestoneProposalDto,
         sessionData: SessionData,
     ): Promise<IdeaMilestoneNetworkEntity> {
-        const idea = await this.ideasService.findOne(ideaId, sessionData)
+        const { entity: idea } = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.isOwnerOrThrow(sessionData.user)
 
@@ -57,9 +57,7 @@ export class IdeaMilestoneProposalsService {
         ideaMilestoneNetwork.canTurnIntoProposalOrThrow()
 
         const callback = async (extrinsicEvents: ExtrinsicEvent[]) => {
-            const blockchainProposalIndex = this.blockchainService.extractProposalIndex(
-                extrinsicEvents,
-            )
+            const blockchainProposalIndex = this.blockchainService.extractProposalIndex(extrinsicEvents)
 
             if (blockchainProposalIndex !== undefined) {
                 await this.turnIdeaMilestoneIntoProposal(

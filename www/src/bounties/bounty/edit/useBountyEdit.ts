@@ -49,7 +49,7 @@ export const useBountyEdit = (bounty: BountyDto): UseBountyEditResult => {
         title: bounty.title ?? '',
         field: bounty.field ?? '',
         description: bounty.description ?? '',
-        beneficiary: bounty.beneficiary?.address ?? '',
+        beneficiary: bounty.beneficiary?.web3address ?? '',
     }
 
     const patchParams = (formValues: BountyEditFormValues): PatchBountyParams => {

@@ -1,9 +1,9 @@
 import { Get, Query } from '@nestjs/common'
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { getLogger } from '../logging.module'
-import { AuthorDto } from '../utils/author.dto'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
 import { UsersService } from './users.service'
+import { PublicUserDto } from './dto/public-user.dto'
 
 const logger = getLogger()
 
@@ -15,12 +15,10 @@ export class UsersController {
     @Get()
     @ApiOkResponse({
         description: 'Respond with users for the given display',
-        type: [AuthorDto],
+        type: [PublicUserDto],
     })
-    async getUsersByDisplay(@Query() { display }: { display: string }): Promise<AuthorDto[]> {
+    async getUsersByDisplay(@Query() { display }: { display: string }): Promise<PublicUserDto[]> {
         logger.info(`Getting users for display: ${display}`)
-        const users = await this.service.findByDisplay(display)
-
-        return users.map((user) => new AuthorDto(user))
+        return this.service.findByDisplay(display)
     }
 }

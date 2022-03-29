@@ -85,7 +85,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
     const toIdeaMilestoneFormValues = (): IdeaMilestoneFormValues => {
         if (!ideaMilestone) {
             return {
-                beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
+                beneficiary: formatAddress(idea.beneficiary?.web3address, network.ss58Format, false),
                 currentNetwork: {
                     name: idea.currentNetwork.name,
                     value: '0' as NetworkDisplayValue,

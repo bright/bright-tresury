@@ -32,9 +32,9 @@ const ProposalInfo = ({ proposal: { proposer, beneficiary, polkassembly }, propo
     return (
         <div className={successfullyLoadedItemClasses.content}>
             <Label label={t('proposal.details.proposer')} />
-            <User user={{ web3address: proposer.address }} ellipsis={false} />
+            <User user={proposer} ellipsis={false} />
             <Label className={classes.spacer} label={t('proposal.details.beneficiary')} />
-            <User user={{ web3address: beneficiary.address }} ellipsis={false} />
+            <User user={beneficiary} ellipsis={false} />
             {proposal.details ? (
                 <IdeaProposalDetails details={proposal.details} />
             ) : (

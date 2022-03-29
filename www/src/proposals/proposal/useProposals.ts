@@ -3,7 +3,7 @@ import { useAuth } from '../../auth/AuthContext'
 import { formatAddress } from '../../components/identicon/utils'
 import { useNetworks } from '../../networks/useNetworks'
 import { Nil } from '../../util/types'
-import { ProposalDto, ProposalStatus } from '../proposals.dto'
+import { ProposalDto } from '../proposals.dto'
 
 interface UseProposalsResult {
     isOwner: boolean
@@ -19,11 +19,11 @@ export const useProposal = (proposal: Nil<ProposalDto>): UseProposalsResult => {
     } = useNetworks()
 
     const isOwner = useMemo(() => {
-        return isUserSignedInAndVerified && proposal?.ownerId === user?.id
+        return isUserSignedInAndVerified && proposal?.owner?.userId === user?.id
     }, [isUserSignedInAndVerified, proposal, user])
 
     const isProposer = useMemo(() => {
-        const encodedProposalAddress = formatAddress(proposal?.proposer.address, ss58Format, false)
+        const encodedProposalAddress = formatAddress(proposal?.proposer.web3address, ss58Format, false)
         const isProposer = !!user?.web3Addresses?.find(
             ({ encodedAddress }) => encodedAddress === encodedProposalAddress,
         )

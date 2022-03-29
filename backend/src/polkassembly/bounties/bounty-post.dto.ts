@@ -49,12 +49,12 @@ export class PolkassemblyBountyPostDto {
         return new BlockchainBountyDto({
             index: this.blockchainIndex,
             description: '',
-            proposer: { address: this.proposerAddress },
+            proposer: this.proposerAddress,
             value: this.value,
             bond: this.bond,
             curatorDeposit: this.curatorDeposit,
-            curator: { address: this.curatorAddress },
-            beneficiary: { address: this.beneficiaryAddress },
+            curator: this.curatorAddress,
+            beneficiary: this.beneficiaryAddress,
             fee: this.fee,
             status: this.getBlockchainStatus(),
         })

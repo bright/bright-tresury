@@ -42,25 +42,25 @@ const BountyInfo = ({ bounty }: BountyDetailsProps) => {
             <div className={classes.addresses}>
                 <div>
                     <Label label={t('bounty.info.proposer')} />
-                    <User user={{ web3address: bounty.proposer.address }} />
+                    <User user={bounty.proposer} />
                 </div>
                 {bounty.status === BountyStatus.CuratorProposed ? (
                     <div>
                         <Label label={t('bounty.info.proposedCurator')} />
-                        <User user={{ web3address: bounty.curator.address }} />
+                        <User user={bounty.curator} />
                     </div>
                 ) : null}
                 {bounty.status === BountyStatus.Active || bounty.status === BountyStatus.PendingPayout ? (
                     <div>
                         <Label label={t('bounty.info.curator')} />
-                        <User user={{ web3address: bounty.curator.address }} />
+                        <User user={bounty.curator} />
                     </div>
                 ) : null}
                 {bounty.status === BountyStatus.PendingPayout || bounty.status === BountyStatus.Active ? (
                     <div>
                         <Label label={t('bounty.info.beneficiary')} />
                         {bounty.beneficiary ? (
-                            <User user={{ web3address: bounty.beneficiary.address }} />
+                            <User user={bounty.beneficiary} />
                         ) : (
                             <Placeholder value={t('bounty.info.beneficiary')} />
                         )}

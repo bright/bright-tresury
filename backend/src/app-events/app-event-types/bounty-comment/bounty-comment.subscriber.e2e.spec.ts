@@ -104,7 +104,7 @@ describe('New bounty comment app event e2e', () => {
             const proposer = await createSessionData({
                 username: 'proposer',
                 email: 'proposer@example.com',
-                web3Addresses: [new Web3AddressEntity(bountyBlockchain.proposer.address, true)],
+                web3Addresses: [new Web3AddressEntity(bountyBlockchain.proposer, true)],
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
@@ -118,7 +118,7 @@ describe('New bounty comment app event e2e', () => {
             const curator = await createSessionData({
                 username: 'curator',
                 email: 'curator@example.com',
-                web3Addresses: [new Web3AddressEntity(bountyBlockchain.curator!.address, true)],
+                web3Addresses: [new Web3AddressEntity(bountyBlockchain.curator!, true)],
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
@@ -164,7 +164,7 @@ describe('New bounty comment app event e2e', () => {
             const proposer = await createSessionData({
                 username: 'proposer',
                 email: 'proposer@example.com',
-                web3Addresses: [new Web3AddressEntity(bountyBlockchain.proposer.address, true)],
+                web3Addresses: [new Web3AddressEntity(bountyBlockchain.proposer, true)],
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
@@ -178,7 +178,7 @@ describe('New bounty comment app event e2e', () => {
             const curator = await createSessionData({
                 username: 'curator',
                 email: 'curator@example.com',
-                web3Addresses: [new Web3AddressEntity(bountyBlockchain.curator!.address, true)],
+                web3Addresses: [new Web3AddressEntity(bountyBlockchain.curator!, true)],
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 

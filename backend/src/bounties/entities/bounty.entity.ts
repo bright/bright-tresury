@@ -24,7 +24,7 @@ export class BountyEntity extends BaseEntity {
     @Column({ nullable: false, type: 'text' })
     blockchainIndex!: number
 
-    @ManyToOne(() => UserEntity)
+    @ManyToOne(() => UserEntity, { eager: true })
     owner?: Nil<UserEntity>
 
     @Column({ nullable: false, type: 'text' })

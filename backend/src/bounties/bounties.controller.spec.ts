@@ -263,12 +263,11 @@ describe(`/api/v1/bounties/`, () => {
                     beneficiary: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
                 }),
             )
-
             expect(body.blockchainIndex).toBe(0)
             expect(body.title).toBe('new title')
             expect(body.field).toBe('new field')
             expect(body.description).toBe('new description')
-            expect(body.beneficiary.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(body.beneficiary.web3address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
         })
 
         it(`should call update method of bounties service`, async () => {
@@ -357,7 +356,8 @@ describe(`/api/v1/bounties/`, () => {
                 }),
             )
 
-            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body.items
+            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
+                .items
             expect(Array.isArray(bountiesDtos)).toBe(true)
             expect(bountiesDtos).toHaveLength(7)
 
@@ -365,39 +365,41 @@ describe(`/api/v1/bounties/`, () => {
             expect(bountyDto).toBeDefined()
             expect(bountyDto.blockchainIndex).toBe(0)
             expect(bountyDto.blockchainDescription).toBe('bc-description-1')
-            expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(bountyDto.proposer.web3address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(bountyDto.value).toBe('10000')
             expect(bountyDto.curatorFee).toBe('100')
             expect(bountyDto.curatorDeposit).toBe('0')
             expect(bountyDto.bond).toBe('10')
             expect(bountyDto.status).toBe(BlockchainBountyStatus.Proposed)
-            expect(bountyDto.ownerId).toBe(sessionHandler.sessionData.user.id)
+            expect(bountyDto.owner?.userId).toBe(sessionHandler.sessionData.user.id)
             expect(bountyDto.title).toBe('bounty-title')
             expect(bountyDto.field).toBe('field')
             expect(bountyDto.description).toBe('db-description')
         })
 
         it('should return correctly paginated response - first page', async () => {
-            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=2`))
-            const { items, total}: {items: BountyDto[], total: number} = response.body
+            const response = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=2`)
+            const { items, total }: { items: BountyDto[]; total: number } = response.body
             expect(Array.isArray(items)).toBe(true)
             expect(items).toHaveLength(2)
             expect(total).toBe(7)
-            expect(items.find(bounty => bounty.blockchainIndex === 6)).toBeDefined()
-            expect(items.find(bounty => bounty.blockchainIndex === 5)).toBeDefined()
+            expect(items.find((bounty) => bounty.blockchainIndex === 6)).toBeDefined()
+            expect(items.find((bounty) => bounty.blockchainIndex === 5)).toBeDefined()
         })
         it('should return correctly paginated response - seconds page', async () => {
-            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=2&pageSize=2`))
-            const { items, total}: {items: BountyDto[], total: number} = response.body
+            const response = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=2&pageSize=2`)
+            const { items, total }: { items: BountyDto[]; total: number } = response.body
             expect(Array.isArray(items)).toBe(true)
             expect(items).toHaveLength(2)
             expect(total).toBe(7)
-            expect(items.find(bounty => bounty.blockchainIndex === 4)).toBeDefined()
-            expect(items.find(bounty => bounty.blockchainIndex === 3)).toBeDefined()
+            expect(items.find((bounty) => bounty.blockchainIndex === 4)).toBeDefined()
+            expect(items.find((bounty) => bounty.blockchainIndex === 3)).toBeDefined()
         })
         it('should return no more than pageNumber*pageSize data in response', async () => {
-            const response = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=200`))
-            const { items, total}: {items: BountyDto[], total: number} = response.body
+            const response = await request(app()).get(
+                `${baseUrl}?network=${NETWORKS.POLKADOT}&pageNumber=1&pageSize=200`,
+            )
+            const { items, total }: { items: BountyDto[]; total: number } = response.body
             expect(Array.isArray(items)).toBe(true)
             expect(items).toHaveLength(7)
             expect(total).toBe(7)
@@ -413,7 +415,8 @@ describe(`/api/v1/bounties/`, () => {
                     blockchainIndex: 100,
                 }),
             )
-            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body.items
+            const bountiesDtos: BountyDto[] = (await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)).body
+                .items
 
             const bountyDto = bountiesDtos.find(({ blockchainIndex }) => blockchainIndex === 100)
             expect(bountyDto).toBeUndefined()
@@ -430,7 +433,7 @@ describe(`/api/v1/bounties/`, () => {
             const { body: bountyDto } = await request(app()).get(`${baseUrl}0?network=${NETWORKS.POLKADOT}`)
             expect(bountyDto.blockchainIndex).toBe(0)
             expect(bountyDto.blockchainDescription).toBe('bc-description-1')
-            expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(bountyDto.proposer.web3address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(bountyDto.value).toBe('10000')
             expect(bountyDto.curatorFee).toBe('100')
             expect(bountyDto.curatorDeposit).toBe('0')
@@ -456,7 +459,7 @@ describe(`/api/v1/bounties/`, () => {
                 `${baseUrl}${blockchainBountyPendingPayout.index}?network=${NETWORKS.POLKADOT}`,
             )
 
-            expect(body.beneficiary.address).toEqual(blockchainBountyPendingPayout.beneficiary?.address)
+            expect(body.beneficiary.web3address).toEqual(blockchainBountyPendingPayout.beneficiary)
         })
         it('should return entity beneficiary if no blockchain', async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
@@ -473,7 +476,7 @@ describe(`/api/v1/bounties/`, () => {
                 `${baseUrl}${blockchainBounty0.index}?network=${NETWORKS.POLKADOT}`,
             )
 
-            expect(body.beneficiary.address).toEqual(bountyEntity.beneficiary)
+            expect(body.beneficiary.web3address).toEqual(bountyEntity.beneficiary)
         })
         it(`should return ${HttpStatus.BAD_REQUEST} status code for bounty id not being a number`, async () => {
             return request(app()).get(`${baseUrl}AB?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.BAD_REQUEST)

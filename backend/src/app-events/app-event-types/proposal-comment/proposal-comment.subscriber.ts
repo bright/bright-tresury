@@ -91,7 +91,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Comm
 
         // add proposer
         try {
-            const proposerUser = await this.usersService.findOneByWeb3Address(proposal.blockchain.proposer.address)
+            const proposerUser = await this.usersService.findOneByWeb3AddressOrThrow(proposal.blockchain.proposer)
             receiverIds.push(proposerUser.id)
         } catch (err) {
             logger.info('No user with proposer address found')

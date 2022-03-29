@@ -59,8 +59,8 @@ const ProposalCard = ({
             <Divider />
 
             <div className={classes.accountsWrapper}>
-                <User label={t('proposal.list.card.beneficiary')} user={{ web3address: beneficiary.address }} />
-                <User label={t('proposal.list.card.proposer')} user={{ web3address: proposer.address }} />
+                <User label={t('proposal.list.card.beneficiary')} user={beneficiary} />
+                <User label={t('proposal.list.card.proposer')} user={proposer} />
             </div>
         </NetworkCard>
     )

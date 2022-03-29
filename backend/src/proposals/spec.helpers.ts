@@ -6,7 +6,6 @@ import {
     createUserSessionHandlerWithVerifiedEmail,
     SessionHandler,
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
-import { BlockchainAccountInfo } from '../blockchain/dto/blockchain-account-info.dto'
 import { ProposedMotionDto } from '../blockchain/dto/proposed-motion.dto'
 import { BlockchainProposal, BlockchainProposalStatus } from '../blockchain/dto/blockchain-proposal.dto'
 import { BlockchainTimeLeft } from '../blockchain/dto/blockchain-time-left.dto'
@@ -24,13 +23,14 @@ import { NETWORKS } from '../utils/spec.helpers'
 import { NetworkPlanckValue, Nil } from '../utils/types'
 import { IdeaWithMilestones, ProposalsService } from './proposals.service'
 import { BlockchainService } from '../blockchain/blockchain.service'
+import { PublicUserDto } from '../users/dto/public-user.dto'
 
 const makeMotion = (
     hash: string,
     method: MotionMethod,
     motionIndex: number,
-    ayes: BlockchainAccountInfo[],
-    nays: BlockchainAccountInfo[],
+    ayes: PublicUserDto[],
+    nays: PublicUserDto[],
 ): ProposedMotionDto => ({
     status: MotionStatus.Proposed,
     hash,
@@ -45,8 +45,8 @@ const makeMotion = (
 export const proposals = [
     new BlockchainProposal(
         0,
-        { display: 'John Doe', address: '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' },
-        { address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
+        '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
+        '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
         '1' as NetworkPlanckValue,
         '100' as NetworkPlanckValue,
         [makeMotion('hash_0_0', ProposalMotionMethod.Approve, 0, [], [])] as ProposedMotionDto[],
@@ -55,8 +55,8 @@ export const proposals = [
 
     new BlockchainProposal(
         1,
-        { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-        { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+        '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
+        '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
         '2000' as NetworkPlanckValue,
         '40' as NetworkPlanckValue,
         [makeMotion('hash_1_0', ProposalMotionMethod.Approve, 1, [], [])] as ProposedMotionDto[],
@@ -64,8 +64,8 @@ export const proposals = [
     ),
     new BlockchainProposal(
         2,
-        { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-        { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+        '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
+        '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
 
         '1000' as NetworkPlanckValue,
         '20' as NetworkPlanckValue,
@@ -75,8 +75,8 @@ export const proposals = [
     ),
     new BlockchainProposal(
         3,
-        { address: '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y' },
-        { display: 'Maybe Alice', address: '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw' },
+        '5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y',
+        '5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw',
 
         '1000' as NetworkPlanckValue,
         '20' as NetworkPlanckValue,
@@ -114,7 +114,7 @@ export const mockedBlockchainService = {
         if (networkId !== NETWORKS.POLKADOT) {
             return
         }
-        return proposals.find(blockchainProposal => blockchainProposal.proposalIndex === blockchainIndex)
+        return proposals.find((blockchainProposal) => blockchainProposal.proposalIndex === blockchainIndex)
     },
     getProposals: async (networkId: string) => {
         getLogger().info('Mock implementation of getProposals')
@@ -125,21 +125,14 @@ export const mockedBlockchainService = {
     },
 }
 export const mockListenForExtrinsic = (blockchainService: BlockchainService) => {
-    jest.spyOn(blockchainService, 'listenForExtrinsic').mockImplementation(
-        mockedBlockchainService.listenForExtrinsic,
-    )
+    jest.spyOn(blockchainService, 'listenForExtrinsic').mockImplementation(mockedBlockchainService.listenForExtrinsic)
 }
 export const mockGetProposalAndGetProposals = (blockchainService: BlockchainService) => {
-    jest.spyOn(blockchainService, 'getProposals').mockImplementation(
-        mockedBlockchainService.getProposals,
-    )
-    jest.spyOn(blockchainService, 'getProposal').mockImplementation(
-        mockedBlockchainService.getProposal,
-    )
+    jest.spyOn(blockchainService, 'getProposals').mockImplementation(mockedBlockchainService.getProposals)
+    jest.spyOn(blockchainService, 'getProposal').mockImplementation(mockedBlockchainService.getProposal)
 }
 
-export const createProposerSessionData = (proposal: BlockchainProposal) =>
-    createWeb3SessionData(proposal.proposer.address)
+export const createProposerSessionData = (proposal: BlockchainProposal) => createWeb3SessionData(proposal.proposer)
 
 export const setUpIdea = async (
     app: INestApplication,

@@ -1,7 +1,7 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { AccountInfo } from '../../../../util/types'
+import { PublicUserDto } from '../../../../util/publicUser.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,8 +16,8 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    ayes: AccountInfo[]
-    nays: AccountInfo[]
+    ayes: PublicUserDto[]
+    nays: PublicUserDto[]
 }
 
 export type VoteCountProps = OwnProps

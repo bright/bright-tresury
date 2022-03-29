@@ -141,15 +141,17 @@ export class BountiesService {
             }),
         ])
 
-        const allItems = bountiesIndexes
-            .map(
-                (bountyIndex) =>
-                    new FindBountyDto(
+        const allItems = (
+            await Promise.all(
+                bountiesIndexes.map((bountyIndex) =>
+                    this.createFindBountyDto(
                         blockchainBounties.get(bountyIndex)!,
                         databaseBounties.get(bountyIndex),
                         polkassemblyBountiesPosts.get(bountyIndex),
                     ),
+                ),
             )
+        )
             .filter((bounty: FindBountyDto) => !owner || bounty.isOwner(owner))
             .filter((bounty: FindBountyDto) => !status || bounty.hasStatus(status))
         return {
@@ -179,15 +181,17 @@ export class BountiesService {
         const databaseBounties = await this.getMappedEntityBounties({
             where: { networkId, blockchainIndex: In(offChainBlockchainIndexes) },
         })
-        const items = offChainBlockchainIndexes
-            .map(
-                (blockchainIndex) =>
-                    new FindBountyDto(
+        const items = (
+            await Promise.all(
+                offChainBlockchainIndexes.map((blockchainIndex) =>
+                    this.createFindBountyDto(
                         polkassemblyBountiesPosts.get(blockchainIndex)!.asBlockchainBountyDto(),
                         databaseBounties.get(blockchainIndex),
                         polkassemblyBountiesPosts.get(blockchainIndex),
                     ),
+                ),
             )
+        )
             .filter((bounty: FindBountyDto) => !owner || bounty.isOwner(owner))
             .filter((bounty: FindBountyDto) => !status || bounty.hasStatus(status))
 
@@ -204,7 +208,23 @@ export class BountiesService {
         const blockchain = onChain ?? offChain!.asBlockchainBountyDto()
 
         const entity = await this.repository.findOne({ where: { networkId, blockchainIndex } })
-        return new FindBountyDto(blockchain, entity, offChain)
+        return this.createFindBountyDto(blockchain, entity, offChain)
+    }
+
+    async createFindBountyDto(
+        blockchain: BlockchainBountyDto,
+        entity: Nil<BountyEntity>,
+        polkassembly: Nil<PolkassemblyBountyPostDto>,
+    ): Promise<FindBountyDto> {
+        const proposerAddress = blockchain.proposer
+        const beneficiaryAddress = blockchain.beneficiary ?? entity?.beneficiary
+        const curatorAddress = blockchain.curator
+        const [proposer, beneficiary, curator] = await Promise.all([
+            this.usersService.findPublicByWeb3Address(proposerAddress),
+            beneficiaryAddress ? this.usersService.findPublicByWeb3Address(beneficiaryAddress) : null,
+            curatorAddress ? this.usersService.findPublicByWeb3Address(curatorAddress) : null,
+        ])
+        return new FindBountyDto(blockchain, entity, polkassembly, proposer, curator, beneficiary)
     }
 
     async getBountyMotions(

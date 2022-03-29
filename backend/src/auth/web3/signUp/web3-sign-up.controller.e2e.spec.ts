@@ -29,7 +29,7 @@ describe(`Web3 Sign Up Controller`, () => {
                     signature: uuid(),
                 })
 
-            const user = await getUsersService().findOneByWeb3Address(bobAddress)
+            const user = await getUsersService().findOneByWeb3AddressOrThrow(bobAddress)
             const superTokensUser = await getAuthUser(user.authId)
             const isEmailVerified = await getService().isEmailVerified(user)
             expect(user).toBeDefined()
@@ -47,7 +47,7 @@ describe(`Web3 Sign Up Controller`, () => {
                     details: { network: 'localhost' },
                     signature: uuid(),
                 })
-            const user = await getUsersService().findOneByWeb3Address(bobAddress)
+            const user = await getUsersService().findOneByWeb3AddressOrThrow(bobAddress)
             const sessionHandler = createSessionHandler(confirmSignUpResponse, user)
             const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any)
 

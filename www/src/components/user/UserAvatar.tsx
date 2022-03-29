@@ -6,8 +6,7 @@ import Identicon from '../identicon/Identicon'
 import { UserStatus } from '../../auth/AuthContext'
 import userDeleted from '../../assets/user-deleted.svg'
 import { breakpoints } from '../../theme/theme'
-import { Nil } from '../../util/types'
-import clsx from 'clsx'
+import { PublicUserDto } from '../../util/publicUser.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,14 +29,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-// TODO: fix this interface in TREAS-457 task
+
 interface OwnProps {
-    user: {
-        userId?: string
-        username?: Nil<string>
-        web3address?: Nil<string>
-        status?: UserStatus
-    }
+    user: PublicUserDto
     size?: number
 }
 

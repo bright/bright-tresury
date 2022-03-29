@@ -72,8 +72,8 @@ describe('ProposalsService', () => {
             const proposal1 = proposals.find(({ blockchain: { proposalIndex } }) => proposalIndex === 0)
 
             expect(proposal1).toBeDefined()
-            expect(proposal1!.blockchain.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(proposal1!.blockchain.beneficiary.address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+            expect(proposal1!.blockchain.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            expect(proposal1!.blockchain.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
             expect(proposal1!.blockchain.bond).toBe('100')
             expect(proposal1!.blockchain.value).toBe('1')
             expect(proposal1!.blockchain.status).toBe('proposal')
@@ -86,8 +86,8 @@ describe('ProposalsService', () => {
 
             const proposal2 = proposals.find(({ blockchain: { proposalIndex } }) => proposalIndex === 1)
             expect(proposal2).toBeDefined()
-            expect(proposal2!.blockchain.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
-            expect(proposal2!.blockchain.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
+            expect(proposal2!.blockchain.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
+            expect(proposal2!.blockchain.beneficiary).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
             expect(proposal2!.blockchain.bond).toBe('40')
             expect(proposal2!.blockchain.value).toBe('2000')
             expect(proposal2!.blockchain.status).toBe('proposal')
@@ -99,8 +99,8 @@ describe('ProposalsService', () => {
             expect(proposal2!.ideaMilestoneId).toBe(ideaMilestone.id)
 
             const proposal3 = proposals.find(({ blockchain: { proposalIndex } }) => proposalIndex === 3)
-            expect(proposal3!.blockchain.proposer.address).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
-            expect(proposal3!.blockchain.beneficiary.address).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
+            expect(proposal3!.blockchain.proposer).toBe('5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y')
+            expect(proposal3!.blockchain.beneficiary).toBe('5HGjWAeFDfFCWPsjFQdVV2Msvz2XtMktvgocEZcCj68kUMaw')
             expect(proposal3!.blockchain.bond).toBe('20')
             expect(proposal3!.blockchain.value).toBe('1000')
             expect(proposal3!.blockchain.status).toBe('approval')
@@ -162,8 +162,8 @@ describe('ProposalsService', () => {
 
             expect(proposal.blockchain).toBeDefined()
             expect(proposal.blockchain.proposalIndex).toBe(0)
-            expect(proposal.blockchain.proposer.address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
-            expect(proposal.blockchain.beneficiary.address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
+            expect(proposal.blockchain.proposer).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            expect(proposal.blockchain.beneficiary).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
             expect(proposal.blockchain.bond).toBe('100')
             expect(proposal.blockchain.value).toBe('1')
             expect(proposal.blockchain.status).toBe('proposal')

@@ -60,7 +60,7 @@ describe(`Web3 Sign Up Service`, () => {
                 {} as Response,
             )
 
-            const user = await getUsersService().findOneByWeb3Address(bobAddress)
+            const user = await getUsersService().findOneByWeb3AddressOrThrow(bobAddress)
             const superTokensUser = await getAuthUser(user.authId)
             expect(user).toBeDefined()
             expect(superTokensUser).toBeDefined()

@@ -80,7 +80,7 @@ const IdeaCard = ({
             <Divider />
 
             <div className={classes.usersInfoContainer}>
-                <User user={{ web3address: beneficiary }} label={t('idea.list.card.beneficiary')} />
+                {beneficiary ? <User user={beneficiary} label={t('idea.list.card.beneficiary')} /> : null}
                 <User user={owner} label={t('idea.list.card.proposer')} />
             </div>
         </NetworkCard>

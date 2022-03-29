@@ -27,7 +27,8 @@ export async function createIdea(
         status: IdeaStatus.Active,
     }
     const service: IdeasService = ideasService ?? beforeSetupFullApp().get().get(IdeasService)
-    return await service.create({ ...defaultIdea, ...idea }, sessionData)
+    const { entity } = await service.create({ ...defaultIdea, ...idea }, sessionData)
+    return entity
 }
 
 export async function createIdeaMilestone(

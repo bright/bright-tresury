@@ -42,7 +42,7 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<CommentE
         logger.info(`Creating NewIdeaComment app event: `, entity)
 
         try {
-            const idea = await this.ideasService.findOne(discussion.entityId!)
+            const { entity: idea } = await this.ideasService.findOne(discussion.entityId!)
             const receiverIds = await this.getReceiverIds(entity, discussion, idea)
             const data = this.getEventDetails(entity, idea)
 

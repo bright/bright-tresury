@@ -4,6 +4,7 @@ import React from 'react'
 import SuggestionItem from '../../components/input/SuggesionItem'
 import { ReactionDto } from '../reactions.dto'
 import ReactionCountLabel from './ReactionCountLabel'
+import User from '../../../../components/user/User'
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -36,11 +37,11 @@ const ReactionTooltip = ({ reactions, usersReaction }: ReactionTooltipProps) => 
         <Tooltip
             classes={classes}
             title={
-                <div>
+                <>
                     {reactions.map((reaction) => (
                         <SuggestionItem user={reaction.author} showI={false} />
                     ))}
-                </div>
+                </>
             }
         >
             <ReactionCountLabel className={usersReaction ? classes.usersReaction : ''}>{count}</ReactionCountLabel>

@@ -1,8 +1,7 @@
-import { BadRequestException, ForbiddenException } from '@nestjs/common'
+import { ForbiddenException } from '@nestjs/common'
 import { Time } from '@polkadot/util/types'
 import { NetworkPlanckValue } from '../../../utils/types'
 import { UserEntity } from '../../../users/entities/user.entity'
-import { BlockchainAccountInfo } from '../../dto/blockchain-account-info.dto'
 
 export enum BlockchainBountyStatus {
     Proposed = 'Proposed',
@@ -19,13 +18,13 @@ export enum BlockchainBountyStatus {
 export class BlockchainBountyDto {
     index: number
     description: string
-    proposer: BlockchainAccountInfo
+    proposer: string
     value: NetworkPlanckValue
     bond: NetworkPlanckValue
     curatorDeposit: NetworkPlanckValue
-    curator?: BlockchainAccountInfo
+    curator?: string
     updateDue?: Time
-    beneficiary?: BlockchainAccountInfo
+    beneficiary?: string
     unlockAt?: Time
     fee: NetworkPlanckValue
     status: BlockchainBountyStatus
@@ -46,13 +45,13 @@ export class BlockchainBountyDto {
     }: {
         index: number
         description: string
-        proposer: BlockchainAccountInfo
+        proposer: string
         value: NetworkPlanckValue
         bond: NetworkPlanckValue
         curatorDeposit: NetworkPlanckValue
-        curator?: BlockchainAccountInfo
+        curator?: string
         updateDue?: Time
-        beneficiary?: BlockchainAccountInfo
+        beneficiary?: string
         unlockAt?: Time
         fee: NetworkPlanckValue
         status: BlockchainBountyStatus
@@ -72,10 +71,10 @@ export class BlockchainBountyDto {
     }
 
     isCurator = (user: UserEntity) =>
-        UserEntity.hasWeb3Address(user, this.curator?.address) &&
+        UserEntity.hasWeb3Address(user, this.curator) &&
         [BlockchainBountyStatus.Active, BlockchainBountyStatus.PendingPayout].includes(this.status)
 
-    isProposer = (user: UserEntity) => UserEntity.hasWeb3Address(user, this.proposer.address)
+    isProposer = (user: UserEntity) => UserEntity.hasWeb3Address(user, this.proposer)
 
     isOwner = (user: UserEntity) => this.isCurator(user) || this.isProposer(user)
 

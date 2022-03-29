@@ -1,12 +1,12 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { BlockchainProposalStatus } from '../../blockchain/dto/blockchain-proposal.dto'
-import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
 import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
 import { Nil } from '../../utils/types'
 import { ProposedMotionDto } from '../../blockchain/dto/proposed-motion.dto'
 import { BlockchainProposalWithDomainDetails } from './blockchain-proposal-with-domain-details.dto'
 import { NetworkPlanckValue } from '../../utils/types'
 import { PolkassemblyTreasuryProposalPostDto } from '../../polkassembly/treasury-proposals/treasury-proposal-post.dto'
+import { PublicUserDto } from '../../users/dto/public-user.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -22,11 +22,11 @@ export class ProposalDto {
     })
     proposalIndex: number
 
-    @ApiProperty({ description: 'Proposer account information', type: BlockchainAccountInfo })
-    proposer: BlockchainAccountInfo
+    @ApiProperty({ description: 'Proposer account information', type: PublicUserDto })
+    proposer: PublicUserDto
 
-    @ApiProperty({ description: 'Beneficiary account information', type: BlockchainAccountInfo })
-    beneficiary: BlockchainAccountInfo
+    @ApiProperty({ description: 'Beneficiary account information', type: PublicUserDto })
+    beneficiary: PublicUserDto
 
     @ApiProperty({
         description: 'Value of the proposal',
@@ -68,8 +68,8 @@ export class ProposalDto {
     })
     ideaMilestoneId?: Nil<string>
 
-    @ApiPropertyOptional({ description: 'Id of an owner who created the idea' })
-    ownerId?: Nil<string>
+    @ApiPropertyOptional({ description: 'Public data of an owner who created the idea' })
+    owner?: Nil<PublicUserDto>
 
     @ApiPropertyOptional({
         description: 'Contextual details of the proposal',
@@ -82,14 +82,17 @@ export class ProposalDto {
         type: PolkassemblyTreasuryProposalPostDto,
     })
     polkassembly?: Nil<PolkassemblyTreasuryProposalPostDto>
+
     constructor({
-        blockchain: { proposalIndex, proposer, beneficiary, value, bond, motions, status },
+        blockchain: { proposalIndex, value, bond, motions, status },
         entity,
         polkassembly,
         isCreatedFromIdea,
         isCreatedFromIdeaMilestone,
         ideaId,
         ideaMilestoneId,
+        proposer,
+        beneficiary,
     }: BlockchainProposalWithDomainDetails) {
         this.proposalIndex = proposalIndex
         this.polkassembly = polkassembly
@@ -105,7 +108,7 @@ export class ProposalDto {
         this.isCreatedFromIdeaMilestone = isCreatedFromIdeaMilestone
         this.ideaId = ideaId
         this.ideaMilestoneId = ideaMilestoneId
-        this.ownerId = entity?.ownerId
+        this.owner = entity?.owner ? PublicUserDto.fromUserEntity(entity?.owner) : null
     }
     static toProposalDtoStatus = (status: BlockchainProposalStatus) => {
         switch (status) {

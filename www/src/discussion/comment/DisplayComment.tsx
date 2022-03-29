@@ -4,13 +4,13 @@ import React, { useState } from 'react'
 import { useAuth } from '../../auth/AuthContext'
 import { CommentDto, DiscussionDto } from '../comments.dto'
 import SmallVerticalDivider from '../../components/smallHorizontalDivider/SmallVerticalDivider'
-import { AuthorDto } from '../../util/author.dto'
 import CommentAge from './components/CommentAge'
 import CommentContent from './components/CommentContent'
 import CommentOptionsMenu from './components/CommentOptionsMenu'
 import EditComment from './EditComment'
 import Reactions from './reactions/Reactions'
 import User from '../../components/user/User'
+import { PublicUserDto } from '../../util/publicUser.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     comment: CommentDto
     discussion: DiscussionDto
-    people: AuthorDto[]
+    people: PublicUserDto[]
 }
 export type DisplayCommentProps = OwnProps
 

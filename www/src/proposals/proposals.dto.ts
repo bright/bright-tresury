@@ -1,7 +1,8 @@
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
-import { AccountInfo, NetworkPlanckValue } from '../util/types'
+import { NetworkPlanckValue, Nil } from '../util/types'
 import { PolkassemblyPostDto } from '../components/polkassemblyDescription/polkassembly-post.dto'
 import { MotionDto } from '../components/voting/motion.dto'
+import { PublicUserDto } from '../util/publicUser.dto'
 
 export enum ProposalStatus {
     Submitted = 'submitted',
@@ -9,13 +10,13 @@ export enum ProposalStatus {
     Rejected = 'rejected',
     Rewarded = 'rewarded',
     Closed = 'closed',
-    Unknown = 'unknown'
+    Unknown = 'unknown',
 }
 
 export interface ProposalDto {
     proposalIndex: number
-    proposer: AccountInfo
-    beneficiary: AccountInfo
+    proposer: PublicUserDto
+    beneficiary: PublicUserDto
     value: NetworkPlanckValue
     bond: NetworkPlanckValue
     status: ProposalStatus
@@ -24,7 +25,7 @@ export interface ProposalDto {
     isCreatedFromIdeaMilestone: boolean
     ideaId?: string
     ideaMilestoneId?: string
-    ownerId?: string
+    owner?: Nil<PublicUserDto>
     details?: IdeaProposalDetailsDto
     polkassembly?: PolkassemblyPostDto
 }

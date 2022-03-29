@@ -63,7 +63,7 @@ export const createWeb3SessionHandler = async (
             },
             signature: uuid(),
         })
-    const user = await app.get(UsersService).findOneByWeb3Address(address)
+    const user = await app.get(UsersService).findOneByWeb3AddressOrThrow(address)
     return createSessionHandler(confirmSignUpRes, user)
 }
 

@@ -68,12 +68,12 @@ const BountyCard = ({ bounty, disable = false, showStatus = true }: BountyCardPr
             <Divider />
 
             <div className={classes.usersInfoContainer}>
-                <User label={t('bounty.list.proposer')} user={{ web3address: bounty.proposer.address }} />
+                <User label={t('bounty.list.proposer')} user={bounty.proposer} />
                 {bounty.status === BountyStatus.CuratorProposed ? (
-                    <User label={t('bounty.list.curatorProposed')} user={{ web3address: bounty.curator.address }} />
+                    <User label={t('bounty.list.curatorProposed')} user={bounty.curator} />
                 ) : null}
                 {bounty.status === BountyStatus.Active || bounty.status === BountyStatus.PendingPayout ? (
-                    <User label={t('bounty.list.curator')} user={{ web3address: bounty.curator.address }} />
+                    <User label={t('bounty.list.curator')} user={bounty.curator} />
                 ) : null}
             </div>
         </NetworkCard>

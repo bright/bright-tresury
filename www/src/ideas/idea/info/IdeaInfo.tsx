@@ -47,7 +47,7 @@ const IdeaInfo = ({ idea }: IdeaInfoProps) => {
         <div className={loadedClasses.content}>
             <Label label={t('idea.details.beneficiary')} />
             {idea.beneficiary ? (
-                <User user={{ web3address: idea.beneficiary }} ellipsis={false} />
+                <User user={idea.beneficiary} ellipsis={false} />
             ) : (
                 <Placeholder value={t('idea.details.beneficiary')} />
             )}

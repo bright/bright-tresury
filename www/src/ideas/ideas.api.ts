@@ -11,18 +11,18 @@ import {
     IdeaStatus,
     TurnIdeaIntoProposalDto,
 } from './ideas.dto'
-import { NetworkPlanckValue } from '../util/types'
-import { AuthorDto } from '../util/author.dto'
+import { NetworkPlanckValue, Nil } from '../util/types'
+import { PublicUserDto } from '../util/publicUser.dto'
 
 export const IDEAS_API_PATH = '/ideas'
 
 interface ApiIdeaDto {
     id: string
     ordinalNumber: number
-    beneficiary: string
+    beneficiary?: Nil<PublicUserDto>
     networks: IdeaNetworkDto[]
     status: IdeaStatus
-    owner: AuthorDto
+    owner: PublicUserDto
     details: IdeaProposalDetailsDto
 }
 

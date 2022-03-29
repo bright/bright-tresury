@@ -6,11 +6,7 @@ import {
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../../utils/spec.helpers'
-import {
-    mockGetProposalAndGetProposals,
-    proposals,
-    setUpProposalFromIdea,
-} from '../spec.helpers'
+import { mockGetProposalAndGetProposals, proposals, setUpProposalFromIdea } from '../spec.helpers'
 
 const baseUrl = (blockchainProposalId: number, network: string) =>
     `/api/v1/proposals/${blockchainProposalId}/details?network=${network}`
@@ -30,7 +26,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
     describe('POST', () => {
         it(`should return ${HttpStatus.CREATED} for minimal valid data`, async () => {
             const proposal = proposals[0]
-            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer.address)
+            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer)
 
             return sessionHandler
                 .authorizeRequest(
@@ -43,7 +39,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
 
         it(`should return created proposal details for all data`, async () => {
             const proposal = proposals[0]
-            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer.address)
+            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer)
 
             const { body } = await sessionHandler.authorizeRequest(
                 request(app())
@@ -68,7 +64,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
 
         it(`should return ${HttpStatus.BAD_REQUEST} if title is empty`, async () => {
             const proposal = proposals[0]
-            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer.address)
+            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer)
 
             return sessionHandler
                 .authorizeRequest(request(app()).post(baseUrl(proposal.proposalIndex, NETWORKS.POLKADOT)).send({}))
@@ -77,7 +73,7 @@ describe(`/api/v1/proposals/:proposalBlockchainId/details`, () => {
 
         it(`should return ${HttpStatus.BAD_REQUEST} if links are not array`, async () => {
             const proposal = proposals[0]
-            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer.address)
+            const sessionHandler = await createWeb3SessionHandler(app(), proposal.proposer)
 
             return sessionHandler
                 .authorizeRequest(

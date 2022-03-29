@@ -2,8 +2,7 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth, UserStatus } from '../auth/AuthContext'
 import LoadingWrapper from '../components/loading/LoadingWrapper'
-import { AuthorDto } from '../util/author.dto'
-import { AccountInfo, Nil } from '../util/types'
+import { Nil } from '../util/types'
 import CreateComment from './comment/CreateComment'
 import DisplayComment from './comment/DisplayComment'
 import { useGetComments } from './comments.api'
@@ -12,6 +11,7 @@ import DiscussionCommentsContainer from './list/DiscussionCommentsContainer'
 import DiscussionContainer from './list/DiscussionContainer'
 import DiscussionHeader from './list/header/DiscussionHeader'
 import NoComments from './NoComments'
+import { PublicUserDto } from '../util/publicUser.dto'
 
 interface OwnProps {
     discussion: DiscussionDto
@@ -20,7 +20,7 @@ interface OwnProps {
 }
 
 export interface DiscussedEntity {
-    owner?: Nil<AuthorDto>
+    owner?: Nil<PublicUserDto>
 }
 
 export type DiscussionProps = OwnProps
@@ -31,15 +31,15 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
 
     const { status, data: comments } = useGetComments(discussion)
 
-    const people: AuthorDto[] = useMemo(() => {
+    const people: PublicUserDto[] = useMemo(() => {
         if (!comments) {
             return []
         }
-        const authors = new Map<string, AuthorDto>()
+        const authors = new Map<string, PublicUserDto>()
 
         // get comments authors
         comments.forEach(({ author }) => {
-            if (author.status !== UserStatus.Deleted) authors.set(author.userId, author)
+            if (author.status !== UserStatus.Deleted) authors.set(author.userId!, author)
         })
 
         // get entity author

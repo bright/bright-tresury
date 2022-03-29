@@ -1,10 +1,11 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { IdeaProposalDetailsDto } from '../../idea-proposal-details/dto/idea-proposal-details.dto'
-import { IdeaEntity } from '../entities/idea.entity'
 import { IdeaMilestoneDto } from '../idea-milestones/dto/idea-milestone.dto'
 import { IdeaStatus } from '../entities/idea-status'
 import { IdeaNetworkDto } from './idea-network.dto'
-import { AuthorDto } from '../../utils/author.dto'
+import { PublicUserDto } from '../../users/dto/public-user.dto'
+import FindIdeaDto from './find-idea.dto'
+import { Nil } from '../../utils/types'
 
 export class IdeaDto {
     @ApiProperty({
@@ -12,13 +13,14 @@ export class IdeaDto {
     })
     id!: string
 
-    @ApiProperty({ description: 'Information about comment author', type: AuthorDto })
-    owner: AuthorDto
+    @ApiProperty({ description: 'Information about idea owner', type: PublicUserDto })
+    owner: PublicUserDto
 
     @ApiPropertyOptional({
         description: 'Blockchain address of the idea beneficiary',
+        type: PublicUserDto,
     })
-    beneficiary?: string
+    beneficiary?: Nil<PublicUserDto>
 
     @ApiProperty({
         description: 'Networks of the idea',
@@ -49,12 +51,13 @@ export class IdeaDto {
     })
     details: IdeaProposalDetailsDto
 
-    constructor({ id, status, networks, ordinalNumber, owner, beneficiary, details }: IdeaEntity) {
+
+    constructor({ entity: { id, status, networks, ordinalNumber, owner, details }, beneficiary }: FindIdeaDto) {
         this.id = id
         this.status = status
         this.networks = networks ? networks.map((ideaNetwork) => new IdeaNetworkDto(ideaNetwork)) : []
         this.ordinalNumber = ordinalNumber
-        this.owner = new AuthorDto(owner)
+        this.owner = PublicUserDto.fromUserEntity(owner)
         this.beneficiary = beneficiary
         this.details = new IdeaProposalDetailsDto(details)
     }

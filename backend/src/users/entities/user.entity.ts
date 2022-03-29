@@ -21,6 +21,7 @@ export class UserEntity extends BaseEntity {
     status: UserStatus
 
     @OneToMany(() => Web3AddressEntity, (web3Address) => web3Address.user, {
+        eager: true,
         cascade: true,
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',

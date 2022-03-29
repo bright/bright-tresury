@@ -101,7 +101,7 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
                     <Label label={t('ideaProposalDetails.title')} />
                     <text className={classes.text}>{idea.details.title}</text>
                     <Label className={classes.spacing} label={t('idea.details.beneficiary')} />
-                    <User user={{ web3address: idea.beneficiary }} ellipsis={false} />
+                    {idea.beneficiary ? <User user={idea.beneficiary} ellipsis={false} /> : null}
                     <IdeaNetworkValueInput
                         className={classes.spacing}
                         inputName={'value'}

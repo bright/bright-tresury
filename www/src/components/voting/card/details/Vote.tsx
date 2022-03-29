@@ -2,8 +2,8 @@ import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { AccountInfo } from '../../../../util/types'
 import User from '../../../user/User'
+import { PublicUserDto } from '../../../../util/publicUser.dto'
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -30,13 +30,13 @@ export enum VoteType {
 }
 
 interface OwnProps {
-    accountInfo: AccountInfo
+    user: PublicUserDto
     voteType: VoteType
 }
 
 export type VoteProps = OwnProps
 
-const Vote = ({ accountInfo, voteType }: VoteProps) => {
+const Vote = ({ user, voteType }: VoteProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
 
@@ -44,7 +44,7 @@ const Vote = ({ accountInfo, voteType }: VoteProps) => {
     const label = voteType === VoteType.Aye ? t('voting.vote.aye') : t('voting.vote.nay')
     return (
         <div className={classes.vote}>
-            <User user={{ web3address: accountInfo.address }} />
+            <User user={user} />
             <strong className={clsx(classes.voteType, colorClassName)}>{label}</strong>
         </div>
     )

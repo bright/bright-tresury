@@ -1,9 +1,9 @@
-import { AuthorDto } from '../util/author.dto'
 import { ReactionDto } from './comment/reactions/reactions.dto'
+import { PublicUserDto } from '../util/publicUser.dto'
 
 export interface CommentDto {
     id: string
-    author: AuthorDto
+    author: PublicUserDto
     createdAt: number
     updatedAt: number
     content: string

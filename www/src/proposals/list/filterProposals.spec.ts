@@ -37,7 +37,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal made by user with web3address`, () => {
         const proposal = {
-            proposer: { address: user.web3Addresses[0].address },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, user)).toStrictEqual(true)
@@ -45,7 +45,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal made by otherUser with web3address`, () => {
         const proposal = {
-            proposer: { address: user.web3Addresses[0].address },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, otherUser)).toStrictEqual(false)
@@ -53,7 +53,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal made by undefined user with web3address`, () => {
         const proposal = {
-            proposer: { address: user.web3Addresses[0].address },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, undefined)).toStrictEqual(false)
@@ -61,7 +61,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal made by user without web3address`, () => {
         const proposal = {
-            ownerId: user.id,
+            owner: { userId: user.id },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, user)).toStrictEqual(true)
@@ -69,7 +69,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal made by otherUser without web3address`, () => {
         const proposal = {
-            ownerId: user.id,
+            owner: { userId: user.id },
             proposer: {},
         } as ProposalDto
 
@@ -78,7 +78,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal made by undefined user without web3address`, () => {
         const proposal = {
-            ownerId: user.id,
+            owner: { userId: user.id },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, undefined)).toStrictEqual(false)
@@ -86,8 +86,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal is made by user`, () => {
         const proposal = {
-            ownerId: user.id,
-            proposer: { address: user.web3Addresses[0].address },
+            owner: { userId: user.id },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, user)).toStrictEqual(true)
@@ -95,8 +95,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal is made by otherUser`, () => {
         const proposal = {
-            ownerId: user.id,
-            proposer: { address: user.web3Addresses[0].address },
+            owner: { userId: user.id },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, otherUser)).toStrictEqual(false)
@@ -104,8 +104,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal is made by undefined user`, () => {
         const proposal = {
-            ownerId: user.id,
-            proposer: { address: user.web3Addresses[0].address },
+            owner: { userId: user.id },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, undefined)).toStrictEqual(false)
@@ -113,8 +113,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal have user in ownerId and otherUser in proposer`, () => {
         const proposal = {
-            ownerId: user.id,
-            proposer: { address: otherUser.web3Addresses[0].address },
+            owner: { userId: user.id },
+            proposer: { web3address: otherUser.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, user)).toStrictEqual(true)
@@ -122,8 +122,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal have in user ownerId and otherUser in proposer when user is otherUser`, () => {
         const proposal = {
-            ownerId: user.id,
-            proposer: { address: otherUser.web3Addresses[0].address },
+            owner: { userId: user.id },
+            proposer: { web3address: otherUser.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, otherUser)).toStrictEqual(true)
@@ -131,8 +131,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal have in user ownerId and otherUser in proposer when user is undefined`, () => {
         const proposal = {
-            ownerId: user.id,
-            proposer: { address: otherUser.web3Addresses[0].address },
+            owner: { userId: user.id },
+            proposer: { web3address: otherUser.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, undefined)).toStrictEqual(false)
@@ -140,8 +140,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal have otherUser in ownerId and user in proposer`, () => {
         const proposal = {
-            ownerId: otherUser.id,
-            proposer: { address: user.web3Addresses[0].address },
+            owner: { userId: otherUser.id },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, user)).toStrictEqual(true)
@@ -149,8 +149,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal have otherUser in ownerId and user in proposer when user is otherUser`, () => {
         const proposal = {
-            ownerId: otherUser.id,
-            proposer: { address: user.web3Addresses[0].address },
+            owner: { userId: otherUser.id },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, otherUser)).toStrictEqual(true)
@@ -158,8 +158,8 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal have otherUser in ownerId and user in proposer when user is undefined`, () => {
         const proposal = {
-            ownerId: otherUser.id,
-            proposer: { address: user.web3Addresses[0].address },
+            owner: { userId: otherUser.id },
+            proposer: { web3address: user.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, undefined)).toStrictEqual(false)
@@ -191,7 +191,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposer is made by otherUser`, () => {
         const proposal = {
-            proposer: { address: otherUser.web3Addresses[0].address },
+            proposer: { web3address: otherUser.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, user)).toStrictEqual(false)
@@ -199,7 +199,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposer is made by otherUser and user is otherUser`, () => {
         const proposal = {
-            proposer: { address: otherUser.web3Addresses[0].address },
+            proposer: { web3address: otherUser.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, otherUser)).toStrictEqual(true)
@@ -207,7 +207,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposer is made by otherUser and user is undefined`, () => {
         const proposal = {
-            proposer: { address: otherUser.web3Addresses[0].address },
+            proposer: { web3address: otherUser.web3Addresses[0].address },
         } as ProposalDto
 
         expect(isProposalMadeByUser(proposal, undefined)).toStrictEqual(false)
@@ -215,7 +215,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal is made by otherUser without proposer and user is user`, () => {
         const proposal = {
-            ownerId: otherUser.id,
+            owner: { userId: otherUser.id },
             proposer: {},
         } as ProposalDto
 
@@ -224,7 +224,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return true if proposal is made by otherUser without proposer and user is otherUser`, () => {
         const proposal = {
-            ownerId: otherUser.id,
+            owner: { userId: otherUser.id },
             proposer: {},
         } as ProposalDto
 
@@ -233,7 +233,7 @@ describe(`isProposalMadeByUser`, () => {
 
     it(`should return false if proposal is made by otherUser without proposer and user is undefined`, () => {
         const proposal = {
-            ownerId: otherUser.id,
+            owner: { userId: otherUser.id },
             proposer: {},
         } as ProposalDto
 

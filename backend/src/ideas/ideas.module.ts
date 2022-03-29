@@ -25,6 +25,7 @@ import { ConfigModule } from '../config/config.module'
 import { IsValidNetworkConstraint } from '../utils/network.validator'
 import { IdeaNetworksService } from './idea-networks/idea-networks.service'
 import { IdeaNetworksController } from './idea-networks/idea-networks.controller'
+import { UsersModule } from '../users/users.module'
 
 @Module({
     imports: [
@@ -35,6 +36,7 @@ import { IdeaNetworksController } from './idea-networks/idea-networks.controller
         IdeaProposalDetailsModule,
         MilestoneDetailsModule,
         ConfigModule,
+        UsersModule,
         ProposalsModule,
         TypeOrmModule.forFeature([IdeaEntity, IdeaNetworkEntity, IdeaMilestonesRepository, IdeaMilestoneNetworkEntity]),
     ],

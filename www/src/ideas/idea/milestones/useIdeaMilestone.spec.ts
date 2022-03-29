@@ -1,5 +1,4 @@
 import { renderHook } from '@testing-library/react-hooks'
-import { AuthorDto } from '../../../util/author.dto'
 import { IdeaDto, IdeaNetworkStatus, IdeaStatus } from '../../ideas.dto'
 import * as useIdea from '../useIdea'
 import { UseIdeaResult } from '../useIdea'
@@ -11,6 +10,7 @@ import {
 } from './idea.milestones.dto'
 import { useIdeaMilestone } from './useIdeaMilestone'
 import { NetworkPlanckValue } from '../../../util/types'
+import { PublicUserDto } from '../../../util/publicUser.dto'
 
 describe('useIdeaMilestone', () => {
     const mockUseIdea = (mockParams: Partial<UseIdeaResult>) => {
@@ -28,7 +28,7 @@ describe('useIdeaMilestone', () => {
     const idea: IdeaDto = {
         id: '5cd895d2-8b44-4d39-b580-b338018cd5a5',
         ordinalNumber: 1,
-        beneficiary: '',
+        beneficiary: { web3address: '' },
         currentNetwork: {
             id: '5cd895d2-8b44-4d39-b580-b338018cd5a5',
             name: 'polkadot',
@@ -38,7 +38,7 @@ describe('useIdeaMilestone', () => {
         },
         additionalNetworks: [],
         status: IdeaStatus.Active,
-        owner: { userId: '5cd895d2-8b44-4d39-b580-b338018cd5a5' } as AuthorDto,
+        owner: { userId: '5cd895d2-8b44-4d39-b580-b338018cd5a5' } as PublicUserDto,
         details: {
             title: 'title',
             content: 'content',

@@ -1,6 +1,6 @@
 import { ApiPromise, WsProvider } from '@polkadot/api'
 import { DefinitionRpcExt } from '@polkadot/types/types'
-import React, { Dispatch, PropsWithChildren, useCallback, useEffect, useReducer, useState } from 'react'
+import React, { PropsWithChildren, useCallback, useEffect, useState } from 'react'
 import jsonrpc from '@polkadot/types/interfaces/jsonrpc'
 import { useNetworks } from '../../networks/useNetworks'
 
@@ -12,13 +12,6 @@ type State = {
     apiError?: any
     apiState?: ApiState
 }
-
-type Action =
-    | { type: 'RESET_SOCKET'; socket: string }
-    | { type: 'CONNECT'; api: ApiPromise }
-    | { type: 'CONNECT_SUCCESS' }
-    | { type: 'CONNECT_ERROR'; apiError: any }
-
 const INIT_STATE = {} as State
 
 export enum ApiState {

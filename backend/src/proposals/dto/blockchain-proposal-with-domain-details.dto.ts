@@ -4,6 +4,7 @@ import { UserEntity } from '../../users/entities/user.entity'
 import { Nil } from '../../utils/types'
 import { ProposalEntity } from '../entities/proposal.entity'
 import { PolkassemblyTreasuryProposalPostDto } from '../../polkassembly/treasury-proposals/treasury-proposal-post.dto'
+import { PublicUserDto } from '../../users/dto/public-user.dto'
 
 interface IBlockchainProposalWithDomainDetails {
     blockchain: BlockchainProposal
@@ -13,6 +14,8 @@ interface IBlockchainProposalWithDomainDetails {
     isCreatedFromIdeaMilestone: boolean
     ideaId: Nil<string>
     ideaMilestoneId: Nil<string>
+    proposer: PublicUserDto
+    beneficiary: PublicUserDto
 }
 
 export class BlockchainProposalWithDomainDetails implements IBlockchainProposalWithDomainDetails {
@@ -23,6 +26,8 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
     isCreatedFromIdeaMilestone: boolean
     ideaId: Nil<string>
     ideaMilestoneId: Nil<string>
+    proposer: PublicUserDto
+    beneficiary: PublicUserDto
 
     constructor({
         blockchain,
@@ -32,6 +37,8 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
         isCreatedFromIdeaMilestone,
         ideaId,
         ideaMilestoneId,
+        proposer,
+        beneficiary,
     }: IBlockchainProposalWithDomainDetails) {
         this.blockchain = blockchain
         this.entity = entity
@@ -40,6 +47,8 @@ export class BlockchainProposalWithDomainDetails implements IBlockchainProposalW
         this.isCreatedFromIdeaMilestone = isCreatedFromIdeaMilestone
         this.ideaId = ideaId
         this.ideaMilestoneId = ideaMilestoneId
+        this.proposer = proposer
+        this.beneficiary = beneficiary
     }
 
     isOwner = (user: UserEntity) => this.blockchain.isOwner(user) || this.entity?.isOwner(user)

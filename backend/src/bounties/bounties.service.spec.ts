@@ -380,7 +380,7 @@ describe('BountiesService', () => {
 
             expect(bounty.blockchain.index).toBe(0)
             expect(bounty.blockchain.description).toBe('bc-description-1')
-            expect(bounty.blockchain.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(bounty.blockchain.proposer).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(bounty.blockchain.value).toBe('10000')
             expect(bounty.blockchain.fee).toBe('100')
             expect(bounty.blockchain.curatorDeposit).toBe('0')

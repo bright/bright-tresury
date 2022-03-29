@@ -26,7 +26,7 @@ describe(`Web3 Sign In Controller`, () => {
                 address: bobAddress,
                 signature: uuid(),
             })
-            const user = await getUsersService().findOneByWeb3Address(bobAddress)
+            const user = await getUsersService().findOneByWeb3AddressOrThrow(bobAddress)
             const sessionHandler = createSessionHandler(confirmSignInResponse, user)
             const session = await getService().getSession(sessionHandler.getAuthorizedRequest(), {} as any)
 

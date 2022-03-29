@@ -175,7 +175,7 @@ describe(`/api/v1/ideas`, () => {
 
             const body = result.body as IdeaDto
             expect(body.details.title).toBe(idea.details.title)
-            expect(body.beneficiary).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
+            expect(body.beneficiary?.web3address).toBe('5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY')
             expect(body.networks).toBeDefined()
             expect(body.networks!.length).toBe(2)
 
@@ -292,7 +292,7 @@ describe(`/api/v1/ideas`, () => {
 
             const body = response.body
             expect(uuidValidate(body.id)).toBe(true)
-            expect(body.beneficiary).toBe(baseEncodedAddress)
+            expect(body.beneficiary.web3address).toBe(baseEncodedAddress)
             expect(body.networks!.length).toBe(1)
             expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
             expect(body.networks[0].value).toBe('10')
@@ -317,7 +317,7 @@ describe(`/api/v1/ideas`, () => {
             )
 
             const ideasService = app.get().get(IdeasService)
-            const actual = await ideasService.findOne(result.body.id, sessionHandler.sessionData)
+            const { entity: actual } = await ideasService.findOne(result.body.id, sessionHandler.sessionData)
             expect(actual).toBeDefined()
             expect(actual!.details.title).toBe('Test title')
             expect(actual!.networks!.length).toBe(1)
@@ -717,7 +717,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(HttpStatus.OK)
             const body = response.body
             expect(body.details.title).not.toBe('Test title')
-            expect(body.beneficiary).toBe('abcd-1234')
+            expect(body.beneficiary.web3address).toBe('abcd-1234')
             expect(body.details.content).toBe('Test content')
             expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
             done()

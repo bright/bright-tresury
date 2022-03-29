@@ -1,13 +1,7 @@
-import { useTranslation } from 'react-i18next'
-import { useAuth, UserStatus } from '../../auth/AuthContext'
-import useIdentity from '../../util/useIdentity'
-import { formatAddress } from '../identicon/utils'
-import React, { useMemo } from 'react'
-import { useNetworks } from '../../networks/useNetworks'
+import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { Nil } from '../../util/types'
-import { encodeAddress } from '@polkadot/keyring'
 import useUserDisplay from './useUserDisplay'
+import { PublicUserDto } from '../../util/publicUser.dto'
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -31,14 +25,9 @@ const useStyles = makeStyles((theme) =>
         },
     }),
 )
-// TODO: fix this interface in TREAS-457 task
+
 interface OwnProps {
-    user: {
-        userId?: string
-        username?: Nil<string>
-        web3address?: Nil<string>
-        status?: UserStatus
-    }
+    user: PublicUserDto
     ellipsis?: boolean
     label?: string
     detectYou?: boolean

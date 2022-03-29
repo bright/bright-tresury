@@ -25,6 +25,7 @@ import { SignInAttemptService } from './sign-in-attempt/sign-in-attempt.service'
 import { UserStatus } from './entities/user-status'
 import { v4 as uuid } from 'uuid'
 import { Nil } from '../utils/types'
+import { PublicUserDto } from './dto/public-user.dto'
 
 @Injectable()
 export class UsersService {
@@ -75,23 +76,41 @@ export class UsersService {
         }
     }
 
-    async findByDisplay(display: string): Promise<UserEntity[]> {
-        const users: UserEntity[] = []
+    async findByDisplay(display: string): Promise<PublicUserDto[]> {
+        const users: PublicUserDto[] = []
         try {
-            users.push(await this.findOneByUsername(display))
+            users.push(PublicUserDto.fromUserEntity(await this.findOneByUsername(display)))
         } catch {
             // not found so nothing happens
         }
 
-        try {
-            users.push(await this.findOneByWeb3Address(display))
-        } catch {
-            // not found so nothing happens
-        }
+        users.push(await this.findPublicByWeb3Address(display))
+
         return users
     }
 
-    async findOneByWeb3Address(web3Address: string): Promise<UserEntity> {
+    async findPublicByWeb3Address(web3Address: string): Promise<PublicUserDto> {
+        const entity = await this.findOneByWeb3Address(web3Address)
+        const publicUserDto = entity ? PublicUserDto.fromUserEntity(entity) : new PublicUserDto({})
+        return {
+            ...publicUserDto,
+            web3address: web3Address,
+        }
+    }
+
+    async findOneByWeb3Address(web3Address: string): Promise<Nil<UserEntity>> {
+        if (!isValidAddress(web3Address)) return
+
+        return this.userRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.web3Addresses', 'web3Addresses')
+            .where('web3Addresses.address = ANY(:web3Addresses)', {
+                web3Addresses: [web3Address, encodeAddress(web3Address)],
+            })
+            .getOne()
+    }
+
+    async findOneByWeb3AddressOrThrow(web3Address: string): Promise<UserEntity> {
         if (!isValidAddress(web3Address)) {
             throw new NotFoundException('User not found')
         }

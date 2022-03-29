@@ -10,7 +10,7 @@ import StyledSpacer from './StyledSpacer'
 import Content from './Content'
 import { useAuth, UserStatus } from '../AuthContext'
 import DeleteAccount from './account-delete/DeleteAccount'
-import { fromAuthContextUser } from '../../util/author.dto'
+import { fromAuthContextUser } from '../../util/publicUser.dto'
 import UserAvatar from '../../components/user/UserAvatar'
 
 const useStyles = makeStyles((theme: Theme) =>

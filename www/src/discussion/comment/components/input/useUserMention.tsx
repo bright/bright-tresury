@@ -3,14 +3,15 @@ import React, { useCallback, useMemo } from 'react'
 import { MentionProps, SuggestionDataItem } from 'react-mentions'
 import { UserStatus } from '../../../../auth/AuthContext'
 import { useNetworks } from '../../../../networks/useNetworks'
-import { AuthorDto } from '../../../../util/author.dto'
+
 import SuggestionItem from './SuggesionItem'
 import { getUsers } from './users.api'
+import { PublicUserDto } from '../../../../util/publicUser.dto'
 
-export type EnhancedSuggestionDataItem = SuggestionDataItem & { author: AuthorDto }
+export type EnhancedSuggestionDataItem = SuggestionDataItem & { author: PublicUserDto }
 
 interface OwnProps {
-    people: AuthorDto[]
+    people: PublicUserDto[]
 }
 
 export type UseUserMentionProps = OwnProps
@@ -18,15 +19,15 @@ export type UseUserMentionProps = OwnProps
 const useUserMention = ({ people }: UseUserMentionProps): MentionProps => {
     const { network } = useNetworks()
 
-    const toSuggestionDataItem = (author: AuthorDto) => ({
-        id: author.userId,
+    const toSuggestionDataItem = (author: PublicUserDto) => ({
+        id: author.userId!,
         display:
             // todo use unified method to get display name TREAS-458
-            author.status === UserStatus.EmailPasswordEnabled
+            (author.status === UserStatus.EmailPasswordEnabled
                 ? author.username ?? author.userId
                 : author.web3address
                 ? encodeAddress(author.web3address, network.ss58Format)
-                : author.userId,
+                : author.userId) ?? undefined,
         author: author,
     })
 
@@ -44,7 +45,7 @@ const useUserMention = ({ people }: UseUserMentionProps): MentionProps => {
                 })
             }
 
-            const filteredData = data.filter((d) => d.display.includes(query) || d.author.web3address?.includes(query))
+            const filteredData = data.filter((d) => d.display?.includes(query) || d.author.web3address?.includes(query))
             return callback(filteredData)
         },
         [people],

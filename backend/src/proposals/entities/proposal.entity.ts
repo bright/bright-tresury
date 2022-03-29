@@ -10,7 +10,7 @@ import { ProposalMilestoneEntity } from '../proposal-milestones/entities/proposa
 
 @Entity('proposals')
 export class ProposalEntity extends BaseEntity {
-    @ManyToOne(() => UserEntity)
+    @ManyToOne(() => UserEntity, { eager: true })
     owner: Nil<UserEntity>
 
     @Column({ nullable: false, type: 'text' })

@@ -1,6 +1,7 @@
 import { Time } from '@polkadot/util/types'
-import { AccountInfo, NetworkPlanckValue, Nil } from '../util/types'
+import { NetworkPlanckValue, Nil } from '../util/types'
 import { PolkassemblyPostDto } from '../components/polkassemblyDescription/polkassembly-post.dto'
+import { PublicUserDto } from '../util/publicUser.dto'
 
 export enum BountyStatus {
     Proposed = 'Proposed',
@@ -29,21 +30,21 @@ interface FundedBounty {
 interface CuratorProposedBounty {
     status: BountyStatus.CuratorProposed
     curatorFee: NetworkPlanckValue
-    curator: AccountInfo
+    curator: PublicUserDto
 }
 
 interface ActiveBounty {
     status: BountyStatus.Active
     curatorFee: NetworkPlanckValue
-    curator: AccountInfo
+    curator: PublicUserDto
     updateDue?: Time
 }
 
 interface PendingPayoutBounty {
     status: BountyStatus.PendingPayout | BountyStatus.Claimed
     curatorFee: NetworkPlanckValue
-    curator: AccountInfo
-    beneficiary: AccountInfo
+    curator: PublicUserDto
+    beneficiary: PublicUserDto
     unlockAt?: Time
 }
 
@@ -62,13 +63,13 @@ interface BaseBountyDto {
     value: NetworkPlanckValue
     bond: NetworkPlanckValue
     curatorDeposit: NetworkPlanckValue
-    proposer: AccountInfo
+    proposer: PublicUserDto
 
-    beneficiary?: AccountInfo
+    beneficiary?: PublicUserDto
     title?: Nil<string>
     field?: Nil<string>
     description?: Nil<string>
-    ownerId?: string
+    owner?: Nil<PublicUserDto>
 
     polkassembly?: Nil<PolkassemblyPostDto>
 }

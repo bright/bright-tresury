@@ -1,20 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { DeriveAccountRegistration, DeriveCollectiveProposal } from '@polkadot/api-derive/types'
+import { DeriveCollectiveProposal } from '@polkadot/api-derive/types'
 import { Vec } from '@polkadot/types'
 import { AccountId, BlockNumber } from '@polkadot/types/interfaces/runtime'
-import { BlockchainAccountInfo, toBlockchainAccountInfo } from './blockchain-account-info.dto'
 import { MotionTimeDto } from './motion-time.dto'
 import { MotionDto, MotionMethod, MotionStatus } from './motion.dto'
+import { PublicUserDto } from '../../users/dto/public-user.dto'
 
 export class ProposedMotionDto extends MotionDto {
     @ApiProperty({ description: 'Status of the motion', type: MotionStatus.Proposed })
     status: MotionStatus.Proposed
 
-    @ApiProperty({ description: 'List of accounts that voted aye', type: [BlockchainAccountInfo] })
-    ayes: BlockchainAccountInfo[]
+    @ApiProperty({ description: 'List of accounts that voted aye', type: [PublicUserDto] })
+    ayes: PublicUserDto[]
 
-    @ApiProperty({ description: 'List of accounts that voted nay', type: [BlockchainAccountInfo] })
-    nays: BlockchainAccountInfo[]
+    @ApiProperty({ description: 'List of accounts that voted nay', type: [PublicUserDto] })
+    nays: PublicUserDto[]
 
     constructor({ hash, method, ayes, nays, motionIndex, threshold, motionEnd }: Omit<ProposedMotionDto, 'status'>) {
         super()
@@ -31,7 +31,6 @@ export class ProposedMotionDto extends MotionDto {
 
 export function toBlockchainMotion(
     council: DeriveCollectiveProposal,
-    identities: Map<string, DeriveAccountRegistration>,
     toBlockchainMotionEnd: (endBlock: BlockNumber) => MotionTimeDto,
 ): ProposedMotionDto {
     const toStringVotesArray = (votesVector: Vec<AccountId>): string[] =>
@@ -51,12 +50,8 @@ export function toBlockchainMotion(
     return new ProposedMotionDto({
         hash: hash.toString(),
         method: proposal.method as MotionMethod,
-        ayes: toStringVotesArray(votes.ayes).map((address) =>
-            toBlockchainAccountInfo(address, identities.get(address)),
-        ),
-        nays: toStringVotesArray(votes.nays).map((address) =>
-            toBlockchainAccountInfo(address, identities.get(address)),
-        ),
+        ayes: toStringVotesArray(votes.ayes).map((address) => new PublicUserDto({ web3address: address })),
+        nays: toStringVotesArray(votes.nays).map((address) => new PublicUserDto({ web3address: address })),
         motionIndex: votes.index.toNumber(),
         threshold: votes.threshold.toNumber(),
         motionEnd: toBlockchainMotionEnd(votes.end),

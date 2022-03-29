@@ -577,7 +577,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 3,
             )
 
-            const updatedIdea = await ideasService().findOne(idea.id, sessionData)
+            const { entity: updatedIdea } = await ideasService().findOne(idea.id, sessionData)
 
             expect(updatedIdea.status).toBe(IdeaStatus.MilestoneSubmission)
         })
@@ -646,7 +646,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 ideaMilestoneNetworkA,
                 0,
             )
-            const modifiedIdea = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
+            const { entity: modifiedIdea } = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
             expect(modifiedIdea.status).toBe(IdeaStatus.MilestoneSubmission)
 
             const modifiedIdeaMilestone = await ideaMilestonesService().findOne(
@@ -706,7 +706,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 0,
             )
 
-            const ideaAfterFirstTurn = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
+            const { entity: ideaAfterFirstTurn } = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
             const ideaMilestoneAfterFirstTurn = await ideaMilestonesService().findOne(
                 ideaMilestoneWithTwoNetworks.id,
                 sessionData,
@@ -719,7 +719,7 @@ describe('IdeaMilestoneProposalsService', () => {
                 0,
             )
 
-            const modifiedIdea = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
+            const { entity: modifiedIdea } = await ideasService().findOne(ideaWithTwoNetworks.id, sessionData)
             expect(modifiedIdea.status).toBe(IdeaStatus.MilestoneSubmission)
 
             const modifiedIdeaMilestone = await ideaMilestonesService().findOne(

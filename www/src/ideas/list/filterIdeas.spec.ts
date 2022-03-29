@@ -1,14 +1,14 @@
-import { AuthorDto } from '../../util/author.dto'
 import { filterIdeas } from './filterIdeas'
 import { IdeaFilter } from './IdeaStatusFilters'
 import { IdeaDto, IdeaStatus } from '../ideas.dto'
 import { AuthContextUser } from '../../auth/AuthContext'
+import { PublicUserDto } from '../../util/publicUser.dto'
 
 const createIdea = (status: IdeaStatus, user: AuthContextUser): IdeaDto => {
     return {
         owner: {
             userId: user.id,
-        } as AuthorDto,
+        } as PublicUserDto,
         status: status,
     } as IdeaDto
 }

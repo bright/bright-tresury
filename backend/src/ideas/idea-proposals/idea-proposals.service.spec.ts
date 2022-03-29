@@ -356,7 +356,7 @@ describe('IdeaProposalsService', () => {
         it(`should change idea status to ${IdeaStatus.TurnedIntoProposal}`, async () => {
             await ideaProposalsService().turnIdeaIntoProposal(idea, idea.networks[0], 3)
 
-            const updatedIdea = await ideasService().findOne(idea.id, sessionData)
+            const { entity: updatedIdea } = await ideasService().findOne(idea.id, sessionData)
 
             expect(updatedIdea.status).toBe(IdeaStatus.TurnedIntoProposal)
         })

@@ -1,10 +1,10 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { BlockchainBountyStatus } from '../../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
-import { BlockchainAccountInfo } from '../../blockchain/dto/blockchain-account-info.dto'
 import { BlockchainTimeLeft } from '../../blockchain/dto/blockchain-time-left.dto'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
 import { FindBountyDto } from './find-bounty.dto'
+import { PublicUserDto } from '../../users/dto/public-user.dto'
 
 export class BountyDto {
     @ApiProperty({
@@ -25,7 +25,7 @@ export class BountyDto {
     @ApiProperty({
         description: 'Account information of a person who proposed the bounty',
     })
-    proposer: BlockchainAccountInfo
+    proposer: PublicUserDto
 
     @ApiProperty({
         description: 'Bounty value',
@@ -50,12 +50,12 @@ export class BountyDto {
     @ApiProperty({
         description: 'Account information of a person who will manage the bounty (curator)',
     })
-    curator?: BlockchainAccountInfo
+    curator?: Nil<PublicUserDto>
 
     @ApiProperty({
         description: 'Account information of a person who will get the bounty reward (beneficiary)',
     })
-    beneficiary?: BlockchainAccountInfo
+    beneficiary?: Nil<PublicUserDto>
 
     @ApiProperty({
         description: 'Time left until the payout is unlocked',
@@ -73,9 +73,9 @@ export class BountyDto {
     status: BlockchainBountyStatus
 
     @ApiPropertyOptional({
-        description: 'Id of a user who created bounty details',
+        description: 'Public data of a user who created bounty details',
     })
-    ownerId?: Nil<string>
+    owner?: Nil<PublicUserDto>
 
     @ApiPropertyOptional({
         description: 'Bounty title stored in the Bright Treasury module',
@@ -98,22 +98,21 @@ export class BountyDto {
     })
     polkassembly?: Nil<PolkassemblyPostDto>
 
-    constructor({ blockchain, entity, polkassembly }: FindBountyDto) {
+    constructor({ blockchain, entity, polkassembly, beneficiary, curator, proposer }: FindBountyDto) {
         this.id = entity?.id
         this.blockchainIndex = blockchain.index
         this.blockchainDescription = blockchain.description
-        this.proposer = blockchain.proposer
+        this.proposer = proposer
         this.value = blockchain.value
         this.bond = blockchain.bond
         this.curatorDeposit = blockchain.curatorDeposit
         this.curatorFee = blockchain.fee
-        this.curator = blockchain.curator
-        this.beneficiary = blockchain.beneficiary ?? (entity?.beneficiary ? { address: entity.beneficiary } : undefined)
+        this.curator = curator
+        this.beneficiary = beneficiary
         this.unlockAt = blockchain.unlockAt
         this.updateDue = blockchain.updateDue
         this.status = blockchain.status
-
-        this.ownerId = entity?.ownerId
+        this.owner = entity?.owner ? PublicUserDto.fromUserEntity(entity.owner) : null
         this.title = entity?.title
         this.description = entity?.description
         this.field = entity?.field

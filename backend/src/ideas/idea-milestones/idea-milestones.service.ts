@@ -23,7 +23,7 @@ export class IdeaMilestonesService {
     ) {}
 
     async find(ideaId: string, sessionData: SessionData): Promise<IdeaMilestoneEntity[]> {
-        const idea = await this.ideasService.findOne(ideaId, sessionData)
+        const { entity: idea } = await this.ideasService.findOne(ideaId, sessionData)
         return await this.ideaMilestoneRepository.find({ idea })
     }
 
@@ -59,7 +59,7 @@ export class IdeaMilestonesService {
     }
 
     async create(ideaId: string, dto: CreateIdeaMilestoneDto, sessionData: SessionData): Promise<IdeaMilestoneEntity> {
-        const idea = await this.ideasService.findOne(ideaId, sessionData)
+        const { entity: idea } = await this.ideasService.findOne(ideaId, sessionData)
 
         idea.canEditMilestonesOrThrow(sessionData.user)
 

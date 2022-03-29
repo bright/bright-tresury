@@ -204,18 +204,10 @@ export class BlockchainService implements OnModuleDestroy {
         logger.info(`Getting proposal from blockchain for networkId: ${networkId}`)
         const blockchainProposal = await this.getDeriveProposal(networkId, blockchainIndex)
         if (!blockchainProposal) return
-        const accounts = getAccounts(blockchainProposal)
-        const uniqueAddresses = new Set(accounts.map(accountIdToAddress))
-        const identities = await this.getIdentities(networkId, Array.from(uniqueAddresses))
         const currentBlockNumber = await getApi(this.blockchainsConnections, networkId).derive.chain.bestNumber()
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): MotionTimeDto =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
-        return BlockchainProposal.create(
-            blockchainProposal,
-            blockchainProposal.status,
-            identities,
-            toBlockchainProposalMotionEnd,
-        )
+        return BlockchainProposal.create(blockchainProposal, blockchainProposal.status, toBlockchainProposalMotionEnd)
     }
 
     async getProposals(networkId: string): Promise<BlockchainProposal[]> {
@@ -230,17 +222,12 @@ export class BlockchainService implements OnModuleDestroy {
             return []
         }
 
-        // get unique (set) accountIds as strings (toHuman) from ongoing proposals and approvals
-        const accounts = blockchainProposals.map((blockchainProposal) => getAccounts(blockchainProposal)).flat()
-        const uniqueAddresses = new Set(accounts.map(accountIdToAddress))
-        const identities = await this.getIdentities(networkId, Array.from(uniqueAddresses))
-
         // make a function that will compute remaining voting time
         const currentBlockNumber = await api.derive.chain.bestNumber()
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): MotionTimeDto =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
         return blockchainProposals.map((deriveProposal) =>
-            BlockchainProposal.create(deriveProposal, deriveProposal.status, identities, toBlockchainProposalMotionEnd),
+            BlockchainProposal.create(deriveProposal, deriveProposal.status, toBlockchainProposalMotionEnd),
         )
     }
 

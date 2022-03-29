@@ -77,7 +77,7 @@ const useIdeaForm = () => {
             }
         }
         return {
-            beneficiary: formatAddress(idea.beneficiary, network.ss58Format, false),
+            beneficiary: formatAddress(idea?.beneficiary?.web3address, network.ss58Format, false),
             currentNetwork: toIdeaNetworkFromValues(idea.currentNetwork),
             additionalNetworks: idea.additionalNetworks.map(toIdeaNetworkFromValues),
             ...idea.details,

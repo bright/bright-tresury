@@ -1,13 +1,13 @@
-import { Theme } from '@material-ui/core'
 import AccountInformation from '../../account-information/AccountInformation'
-import { UserDisplay } from './UserDisplay.'
+import { UserDisplay } from './UserDisplay'
 import UserAvatar from './UserAvatar'
 import { UserStatus } from '../../auth/AuthContext'
-import { Nil } from '../../util/types'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { ClassNameProps } from '../props/className.props'
 import clsx from 'clsx'
-const useStyles = makeStyles((theme: Theme) =>
+import { PublicUserDto } from '../../util/publicUser.dto'
+
+const useStyles = makeStyles(() =>
     createStyles({
         root: {
             display: 'flex',
@@ -17,14 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
     }),
 )
-// TODO: fix this interface in TREAS-457 task
+
 interface OwnProps {
-    user: {
-        userId?: string
-        username?: Nil<string>
-        web3address?: Nil<string>
-        status?: UserStatus
-    }
+    user: PublicUserDto
     avatarSize?: number
     label?: string
     ellipsis?: boolean

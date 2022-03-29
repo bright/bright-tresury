@@ -60,7 +60,7 @@ describe(`/api/v1/bounties/`, () => {
             const { items: bountiesDtos }: { items: BountyDto[] } = response.body
             const bountyDto = bountiesDtos.find(({ blockchainIndex }) => blockchainIndex === bountyIndex)!
             expect(bountyDto).toBeDefined()
-            expect(bountyDto.proposer.address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
+            expect(bountyDto.proposer.web3address).toBe('15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5')
             expect(bountyDto.value).toBe('1000000000000')
             expect(bountyDto.bond).toBe('10200000000')
             expect(bountyDto.status).toBe('Proposed')

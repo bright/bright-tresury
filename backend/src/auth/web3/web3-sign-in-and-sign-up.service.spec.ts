@@ -64,7 +64,7 @@ describe(`Auth Web3 Service`, () => {
                 } as ConfirmSignMessageRequestDto,
                 {} as Response,
             )
-            const charlieUser = await getUsersService().findOneByWeb3Address(charlieAddress)
+            const charlieUser = await getUsersService().findOneByWeb3AddressOrThrow(charlieAddress)
             expect(charlieUser).toBeDefined()
         })
     })

@@ -96,7 +96,7 @@ describe('New proposal comment app event e2e', () => {
             const proposer = await createSessionData({
                 username: 'proposer',
                 email: 'proposer@example.com',
-                web3Addresses: [new Web3AddressEntity(proposal.proposer.address, true)],
+                web3Addresses: [new Web3AddressEntity(proposal.proposer, true)],
             })
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
@@ -138,7 +138,7 @@ describe('New proposal comment app event e2e', () => {
             const proposer = await createSessionData({
                 username: 'user1',
                 email: 'user1@example.com',
-                web3Addresses: [new Web3AddressEntity(proposal.proposer.address, true)],
+                web3Addresses: [new Web3AddressEntity(proposal.proposer, true)],
             })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 

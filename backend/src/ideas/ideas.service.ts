@@ -15,6 +15,8 @@ import { IdeaMilestoneEntity } from './idea-milestones/entities/idea-milestone.e
 import { IdeaMilestonesRepository } from './idea-milestones/idea-milestones.repository'
 import { DefaultIdeaStatus, IdeaStatus } from './entities/idea-status'
 import { NetworkPlanckValue } from '../utils/types'
+import { UsersService } from '../users/users.service'
+import FindIdeaDto from './dto/find-idea.dto'
 
 const logger = getLogger()
 
@@ -28,11 +30,12 @@ export class IdeasService {
         private readonly detailsService: IdeaProposalDetailsService,
         @InjectRepository(IdeaMilestonesRepository)
         private readonly ideaMilestoneRepository: IdeaMilestonesRepository,
+        private readonly usersService: UsersService,
     ) {}
 
-    async find(networkName?: string, sessionData?: SessionData): Promise<IdeaEntity[]> {
+    async find(networkName?: string, sessionData?: SessionData): Promise<FindIdeaDto[]> {
         try {
-            return networkName
+            const entities = networkName
                 ? await this.ideaRepository
                       .createQueryBuilder('idea')
                       .leftJoinAndSelect('idea.networks', 'networkToQuery')
@@ -53,13 +56,14 @@ export class IdeasService {
                       where: [{ status: Not(IdeaStatus.Draft) }, { ownerId: sessionData?.user.id }],
                       relations: ['owner', 'owner.web3Addresses'],
                   })
+            return await Promise.all(entities.map((entity) => this.createFindIdeaDto(entity)))
         } catch (error) {
             logger.error(error)
             return []
         }
     }
 
-    async findOne(id: string, sessionData?: SessionData): Promise<IdeaEntity> {
+    async findOne(id: string, sessionData?: SessionData): Promise<FindIdeaDto> {
         const idea = await this.ideaRepository.findOne(id, {
             relations: ['owner', 'owner.web3Addresses'],
         })
@@ -67,7 +71,15 @@ export class IdeasService {
             throw new NotFoundException('There is no idea with such id')
         }
         idea.canGetOrThrow(sessionData?.user)
-        return idea
+        return this.createFindIdeaDto(idea)
+    }
+
+    async createFindIdeaDto(entity: IdeaEntity): Promise<FindIdeaDto> {
+        if (!entity.beneficiary) return { entity }
+        return {
+            entity,
+            beneficiary: await this.usersService.findPublicByWeb3Address(entity.beneficiary),
+        }
     }
 
     async findByProposalIds(proposalIds: number[], networkName: string): Promise<Map<number, IdeaEntity>> {
@@ -90,7 +102,7 @@ export class IdeasService {
         return result
     }
 
-    async create(createIdeaDto: CreateIdeaDto, sessionData: SessionData): Promise<IdeaEntity> {
+    async create(createIdeaDto: CreateIdeaDto, sessionData: SessionData): Promise<FindIdeaDto> {
         const details = await this.detailsService.create(createIdeaDto.details)
 
         const idea = new IdeaEntity(
@@ -108,14 +120,14 @@ export class IdeasService {
     }
 
     async delete(id: string, sessionData: SessionData) {
-        const currentIdea = await this.findOne(id, sessionData)
+        const { entity: currentIdea } = await this.findOne(id, sessionData)
         currentIdea.canEditOrThrow(sessionData.user)
         await this.ideaRepository.remove(currentIdea)
         await this.detailsService.delete(currentIdea.details)
     }
 
-    async update(dto: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<IdeaEntity> {
-        const currentIdea = await this.findOne(id, sessionData)
+    async update(dto: UpdateIdeaDto, id: string, sessionData: SessionData): Promise<FindIdeaDto> {
+        const { entity: currentIdea } = await this.findOne(id, sessionData)
 
         currentIdea.canEditOrThrow(sessionData.user)
 

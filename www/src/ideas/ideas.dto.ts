@@ -1,15 +1,15 @@
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
 import { NetworkPlanckValue, Nil } from '../util/types'
-import { AuthorDto } from '../util/author.dto'
+import { PublicUserDto } from '../util/publicUser.dto'
 
 export interface IdeaDto {
     id: string
     ordinalNumber: number
-    beneficiary: string
+    beneficiary?: Nil<PublicUserDto>
     currentNetwork: IdeaNetworkDto
     additionalNetworks: IdeaNetworkDto[]
     status: IdeaStatus
-    owner: AuthorDto
+    owner: PublicUserDto
     details: IdeaProposalDetailsDto
 }
 

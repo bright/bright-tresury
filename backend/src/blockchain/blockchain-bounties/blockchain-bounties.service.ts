@@ -7,9 +7,8 @@ import { extractNumberFromBlockchainEvent, getApi } from '../utils'
 import { BlockchainBountiesConfigurationDto } from './dto/blockchain-bounties-configuration.dto'
 import { BlockchainBountyDto, BlockchainBountyStatus } from './dto/blockchain-bounty.dto'
 import { BlockchainService } from '../blockchain.service'
-import { toBlockchainAccountInfo } from '../dto/blockchain-account-info.dto'
 import { PalletBountiesBountyStatus } from '@polkadot/types/lookup'
-import { DeriveBounties, DeriveBounty, DeriveCollectiveProposal } from '@polkadot/api-derive/types'
+import { DeriveBounty, DeriveCollectiveProposal } from '@polkadot/api-derive/types'
 import { BlockNumber } from '@polkadot/types/interfaces'
 import BN from 'bn.js'
 import { extractTime } from '@polkadot/util'
@@ -71,10 +70,6 @@ export class BlockchainBountiesService {
     private async toBlockchainBountyDto(deriveBounties: DeriveBounty[], networkId: string) {
         const bestNumber = await this.blockchainService.getCurrentBlockNumber(networkId) // time for processing one block
         const blockTime = this.blockchainService.getBlockTime(networkId) // time for processing one block
-        const identities = await this.blockchainService.getIdentities(
-            networkId,
-            BlockchainBountiesService.getAllAddresses(deriveBounties),
-        ) // fetch proposers, curators and beneficiaries identities
         return deriveBounties.map(({ index, description, bounty }) => {
             const proposerAddress = bounty.proposer.toString()
             const { status, data: bountyStatusData } = BlockchainBountiesService.getBountyStatusData(bounty.status)
@@ -84,16 +79,12 @@ export class BlockchainBountiesService {
             return new BlockchainBountyDto({
                 index: Number(index.toString()),
                 description,
-                proposer: toBlockchainAccountInfo(proposerAddress, identities.get(proposerAddress)),
+                proposer: proposerAddress,
                 value: bounty.value.toString() as NetworkPlanckValue,
                 fee: bounty.fee.toString() as NetworkPlanckValue,
-                curator: curatorAddress
-                    ? toBlockchainAccountInfo(curatorAddress, identities.get(curatorAddress))
-                    : undefined,
+                curator: curatorAddress,
                 updateDue: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, updateDue, blockTime),
-                beneficiary: beneficiaryAddress
-                    ? toBlockchainAccountInfo(beneficiaryAddress, identities.get(beneficiaryAddress))
-                    : undefined,
+                beneficiary: beneficiaryAddress,
                 unlockAt: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, unlockAt, blockTime),
                 curatorDeposit: bounty.curatorDeposit.toString() as NetworkPlanckValue,
                 bond: bounty.bond.toString() as NetworkPlanckValue,
@@ -102,34 +93,10 @@ export class BlockchainBountiesService {
         })
     }
 
-    private static getAllAddresses(bountiesDerived: DeriveBounties) {
-        const proposersAddresses = BlockchainBountiesService.getProposersAddresses(bountiesDerived) // all proposers addresses
-        const curatorsAddresses = BlockchainBountiesService.getCuratorsAddresses(bountiesDerived) // all curators addresses (if exists)
-        const beneficiariesAddresses = BlockchainBountiesService.getBeneficiariesAddresses(bountiesDerived) // all beneficiaries addresses (if exists)
-        return [...proposersAddresses, ...curatorsAddresses, ...beneficiariesAddresses]
-    }
-
     private static getBlockchainTimeLeft(currentBlock: BlockNumber, futureBlock: Nil<BlockNumber>, blockTime: BN) {
         if (!futureBlock || futureBlock.cmp(currentBlock) !== 1) return
         const blocksLeft = futureBlock.sub(currentBlock)
         return extractTime(Math.abs(blocksLeft.mul(blockTime).toNumber()))
-    }
-    private static getProposersAddresses(bountiesDerived: DeriveBounties): string[] {
-        return bountiesDerived.map((bountyDerived) => bountyDerived.bounty.proposer.toString())
-    }
-
-    private static getCuratorsAddresses(bountiesDerived: DeriveBounties): string[] {
-        return bountiesDerived
-            .map(({ bounty }) => BlockchainBountiesService.getBountyStatusData(bounty.status))
-            .filter(({ data }) => data?.curator !== undefined)
-            .map(({ data }) => data!.curator.toString())
-    }
-
-    private static getBeneficiariesAddresses(bountiesDerived: DeriveBounties): string[] {
-        return bountiesDerived
-            .map(({ bounty }) => BlockchainBountiesService.getBountyStatusData(bounty.status))
-            .filter(({ data }) => data?.beneficiary !== undefined)
-            .map(({ data }) => data!.beneficiary!.toString())
     }
 
     private static getBountyStatusData(
@@ -180,13 +147,9 @@ export class BlockchainBountiesService {
         }
         const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
         const motions = deriveBounty.proposals
-        const identities = await this.blockchainService.getIdentities(
-            networkId,
-            BlockchainBountiesService.getVoters(motions),
-        ) // fetch proposers, curators and beneficiaries identities
         const toBlockchainMotionEnd = (endBlock: BlockNumber) =>
             this.blockchainService.getRemainingTime(networkId, currentBlockNumber, endBlock)
-        return motions.map((motion) => toBlockchainMotion(motion, identities, toBlockchainMotionEnd))
+        return motions.map((motion) => toBlockchainMotion(motion, toBlockchainMotionEnd))
     }
 
     async getTotalBountiesCount(networkId: string) {

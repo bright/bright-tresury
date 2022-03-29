@@ -20,7 +20,7 @@ export type BountyAwardProps = OwnProps
 const BountyAward = ({ bounty }: BountyAwardProps) => {
     const { t } = useTranslation()
     const { mutateAsync, isError, isLoading } = usePatchBounty()
-    const [beneficiary, setBeneficiary] = useState(bounty.beneficiary?.address)
+    const [beneficiary, setBeneficiary] = useState(bounty.beneficiary?.web3address)
     const { canAward, hasDetails } = useBounty(bounty)
     const { visible, open, close } = useModal()
 

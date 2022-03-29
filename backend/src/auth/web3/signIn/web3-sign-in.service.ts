@@ -42,7 +42,7 @@ export class Web3SignInService {
          * then we are sure that this user owns the address and can obtain information regarding associated account.
          */
         await this.validateAddress(dto.address)
-        const user = await this.userService.findOneByWeb3Address(dto.address)
+        const user = await this.userService.findOneByWeb3AddressOrThrow(dto.address)
         if (res) {
             try {
                 await this.superTokensService.createSession(res, user.authId)

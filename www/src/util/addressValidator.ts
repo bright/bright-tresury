@@ -1,5 +1,3 @@
-import { decodeAddress, encodeAddress } from '@polkadot/keyring'
-import { hexToU8a, isHex } from '@polkadot/util'
 import { checkAddress } from '@polkadot/util-crypto'
 import { Nil } from './types'
 
