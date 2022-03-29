@@ -5,19 +5,30 @@ import PasswordInput from '../../../../components/form/input/password/PasswordIn
 import { SignComponentWrapper } from '../../../sign-components/SignComponentWrapper'
 import { PrivacyNotice } from '../../common/PrivacyNotice'
 import { UserAgreementCheckbox } from '../../common/UserAgreementCheckbox'
-import useSignUpForm from './useSignUpForm'
+import useSignUpForm, { SignUpValues } from './useSignUpForm'
+import { FormikValues } from 'formik'
+import DisabledFormField from '../../../account/emailPassword/components/DisabledFormField'
 
-const EmailSignUpFormFields = () => {
+interface OwnProps {
+    initialValues?: SignUpValues
+}
+export type EmailSignUpFormFieldsProps = OwnProps
+
+const EmailSignUpFormFields = ({ initialValues }: EmailSignUpFormFieldsProps) => {
     const { t } = useTranslation()
     const { passwordValidationRules } = useSignUpForm()
     return (
         <>
             <SignComponentWrapper>
-                <Input
-                    name="username"
-                    placeholder={t('auth.signUp.emailSignUp.form.username.placeholder')}
-                    label={t('auth.signUp.emailSignUp.form.username.label')}
-                />
+                {initialValues?.username ? (
+                    <DisabledFormField title={t('account.emailPassword.username')} value={initialValues?.username} />
+                ) : (
+                    <Input
+                        name="username"
+                        placeholder={t('auth.signUp.emailSignUp.form.username.placeholder')}
+                        label={t('auth.signUp.emailSignUp.form.username.label')}
+                    />
+                )}
             </SignComponentWrapper>
             <SignComponentWrapper>
                 <Input

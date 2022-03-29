@@ -23,8 +23,7 @@ const EmailPasswordAccountForm = () => {
     const primaryAccount = useMemo(() => {
         const address = user?.web3Addresses.find((address) => address.isPrimary)
         if (!address) return
-        const account = accounts.find((account) => account.address === address.encodedAddress)
-        return account
+        return accounts.find((account) => account.address === address.encodedAddress)
     }, [user, accounts])
 
     const { identity } = useIdentity({ address: primaryAccount?.address })
@@ -65,9 +64,9 @@ const EmailPasswordAccountForm = () => {
             validate={fullValidatorForSchema(validationSchema)}
             onSubmit={onSubmit}
         >
-            {({ handleSubmit }) => (
+            {({ handleSubmit, initialValues }) => (
                 <SignFormWrapper handleSubmit={handleSubmit} variant={'left'}>
-                    <EmailSignUpFormFields />
+                    <EmailSignUpFormFields initialValues={initialValues} />
                     {errorMessage ? (
                         <SignComponentWrapper>
                             <InfoBox message={errorMessage} level={'error'} />
