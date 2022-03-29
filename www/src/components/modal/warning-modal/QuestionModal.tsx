@@ -7,6 +7,9 @@ const useStyles = makeStyles(() =>
     createStyles({
         content: {
             textAlign: 'center',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
         },
     }),
 )

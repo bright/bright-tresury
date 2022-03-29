@@ -10,6 +10,7 @@ const TitleField = () => {
             description={t('form.web3AddressInput.description')}
             placeholder={t('idea.details.beneficiary')}
             label={t('idea.details.beneficiary')}
+            variant={'web3Address'}
         />
     )
 }

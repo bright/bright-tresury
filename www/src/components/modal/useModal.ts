@@ -1,6 +1,12 @@
 import { useState } from 'react'
 
-export const useModal = (initialVisible: boolean = false) => {
+export interface UseModalResult {
+    visible: boolean
+    open: () => void
+    close: () => void
+}
+
+export const useModal = (initialVisible: boolean = false): UseModalResult => {
     const [visible, setVisible] = useState<boolean>(initialVisible)
 
     const open = () => setVisible(true)

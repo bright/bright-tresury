@@ -17,7 +17,7 @@ const PortfolioInput = (props: PortfolioInputProps) => {
             rows={20}
             label={t('ideaProposalDetails.portfolio')}
             placeholder={t('ideaProposalDetails.portfolio')}
-            markdown={true}
+            variant={'markdown'}
             {...props}
         />
     )

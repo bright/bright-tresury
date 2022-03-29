@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import StyledSmallInput from '../../../components/form/input/StyledSmallInput'
 
-const TitleField = () => {
+const BeneficiaryField = () => {
     const { t } = useTranslation()
     return (
         <StyledSmallInput
@@ -10,7 +10,8 @@ const TitleField = () => {
             description={t('form.web3AddressInput.description')}
             placeholder={t('bounty.form.fields.beneficiary')}
             label={t('bounty.form.fields.beneficiary')}
+            variant={'web3Address'}
         />
     )
 }
-export default TitleField
+export default BeneficiaryField

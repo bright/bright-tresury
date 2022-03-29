@@ -1,12 +1,12 @@
 import { decodeAddress, encodeAddress } from '@polkadot/keyring'
 import { hexToU8a, isHex } from '@polkadot/util'
+import { checkAddress } from '@polkadot/util-crypto'
 import { Nil } from './types'
 
 export function isValidAddress(address: string, ss58format?: number): boolean {
     try {
-        encodeAddress(isHex(address) ? hexToU8a(address) : decodeAddress(address, true, ss58format), ss58format)
-
-        return true
+        const [isValid] = checkAddress(address, ss58format ?? 0)
+        return isValid
     } catch (error) {
         return false
     }

@@ -42,7 +42,7 @@ const IdeaOptionsButton = ({ className, idea }: IdeaOptionsButtonProps) => {
                 handleOpen={handleOpen}
                 className={className}
             >
-                <MenuItem key={'DeleteIdea'} onClick={onEditIdeaClick} disabled={!canEditIdea}>
+                <MenuItem key={'EditIdea'} onClick={onEditIdeaClick} disabled={!canEditIdea}>
                     {t('idea.optionsMenu.editIdea')}
                 </MenuItem>
                 <MenuItem key={'DeleteIdea'} onClick={onDeleteIdeaClick} disabled={!canEditIdea}>

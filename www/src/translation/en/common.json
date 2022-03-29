@@ -75,7 +75,13 @@
         },
         "web3AddressInput": {
             "description": "Web3 account address needs to be encoded in the network acceptable format",
-            "wrongWeb3AddressError": "Please provide the address in the network acceptable format"
+            "wrongWeb3AddressError": "Please provide the address in the network acceptable format",
+            "warningModal": {
+                "title": "Please check if beneficiary is correct",
+                "subtitle": "In order to avoid mistakes, please make sure the beneficiary of your idea is correct:",
+                "discard": "Change beneficiary",
+                "close": "Proceed with beneficiary"
+            }
         }
     },
     "networks": {

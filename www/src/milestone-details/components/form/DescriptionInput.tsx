@@ -46,7 +46,7 @@ const DescriptionInput = ({ readonly, description }: DescriptionInputProps) => {
                     rows={4}
                     multiline={true}
                     textFieldColorScheme={TextFieldColorScheme.Dark}
-                    markdown={!readonly}
+                    variant={readonly ? 'text' : 'markdown'}
                 />
             )}
         </>

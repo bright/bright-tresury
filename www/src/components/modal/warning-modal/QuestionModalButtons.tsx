@@ -11,6 +11,7 @@ const useStyles = makeStyles(() =>
             paddingRight: '5px',
             paddingLeft: '5px',
             paddingTop: '30px',
+            width: '100%',
         },
     }),
 )
