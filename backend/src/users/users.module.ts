@@ -1,3 +1,4 @@
+import { SuperTokensModule } from '../auth/supertokens/supertokens.module'
 import { DatabaseModule } from '../database/database.module'
 import { UserEntity } from './entities/user.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'

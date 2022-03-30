@@ -17,11 +17,35 @@ describe(`Users Service`, () => {
     describe('update', () => {
         it('should update isEmailNotificationEnabled', async () => {
             const { user } = await createSessionData()
+
             await getService().update(user.id, { isEmailNotificationEnabled: false })
 
             const saved = (await getRepository().findOne(user.id))!
 
-            expect(saved.isEmailNotificationEnabled).toBe(false)
+            expect(saved).toMatchObject({ isEmailNotificationEnabled: false })
+        })
+
+        it('should update username', async () => {
+            const { user } = await createSessionData()
+
+            await getService().update(user.id, { username: 'new username' })
+
+            const saved = (await getRepository().findOne(user.id))!
+
+            expect(saved).toMatchObject({ username: 'new username' })
+        })
+
+        it('should not update anything when empty dto', async () => {
+            const { user } = await createSessionData()
+
+            await getService().update(user.id, {})
+
+            const saved = (await getRepository().findOne(user.id))!
+
+            expect(saved).toMatchObject({
+                username: user.username,
+                isEmailNotificationEnabled: user.isEmailNotificationEnabled,
+            })
         })
     })
 })

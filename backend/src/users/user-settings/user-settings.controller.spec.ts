@@ -4,7 +4,9 @@ import { cleanAuthorizationDatabase } from '../../auth/supertokens/specHelpers/s
 import {
     createUserSessionHandler,
     createUserSessionHandlerWithVerifiedEmail,
+    createWeb3SessionHandler,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
+import { SuperTokensService } from '../../auth/supertokens/supertokens.service'
 import { createSessionData } from '../../ideas/spec.helpers'
 import { beforeSetupFullApp, cleanDatabase, request } from '../../utils/spec.helpers'
 import { UserSettingsService } from './user-settings.service'
@@ -14,6 +16,7 @@ const getBaseUrl = (userId: string) => `/api/v1/users/${userId}/settings`
 describe('/api/v1/users/:userId/settings', () => {
     const app = beforeSetupFullApp()
     const getService = () => app.get().get<UserSettingsService>(UserSettingsService)
+    const getSuperTokensService = () => app.get().get<SuperTokensService>(SuperTokensService)
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -35,6 +38,17 @@ describe('/api/v1/users/:userId/settings', () => {
                 request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}`),
             )
             expect(body.isEmailNotificationEnabled).toBe(true)
+            expect(body.username).toBe(sessionHandler.sessionData.user.username)
+        })
+
+        it('should not return username when web3 address only account', async () => {
+            const sessionHandler = await createWeb3SessionHandler(app())
+
+            const { body } = await sessionHandler.authorizeRequest(
+                request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}`),
+            )
+            expect(body.isEmailNotificationEnabled).toBe(true)
+            expect(body.username).toBeUndefined()
         })
 
         it(`should return ${HttpStatus.FORBIDDEN} when trying to access other user's data`, async () => {
@@ -78,9 +92,24 @@ describe('/api/v1/users/:userId/settings', () => {
             await sessionHandler.authorizeRequest(
                 request(app())
                     .patch(`${getBaseUrl(sessionHandler.sessionData.user.id)}`)
-                    .send({ isEmailNotificationEnabled: true }),
+                    .send({ isEmailNotificationEnabled: true, username: 'new-username' }),
             )
-            expect(spy).toHaveBeenCalledWith(sessionHandler.sessionData.user.id, { isEmailNotificationEnabled: true })
+            expect(spy).toHaveBeenCalledWith(sessionHandler.sessionData.user.id, {
+                isEmailNotificationEnabled: true,
+                username: 'new-username',
+            })
+        })
+
+        it('should update username in session', async () => {
+            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+            const spy = jest.spyOn(getSuperTokensService(), 'refreshAccessTokenPayloadForUser')
+
+            await sessionHandler.authorizeRequest(
+                request(app())
+                    .patch(`${getBaseUrl(sessionHandler.sessionData.user.id)}`)
+                    .send({ username: 'new-username' }),
+            )
+            expect(spy).toHaveBeenCalledWith(sessionHandler.sessionData.user.authId)
         })
 
         it(`should return ${HttpStatus.BAD_REQUEST} for not boolean isEmailNotificationEnabled param`, async () => {

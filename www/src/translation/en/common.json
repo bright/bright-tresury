@@ -145,6 +145,9 @@
         "title": "Account",
         "emailPassword": {
             "username": "Displayed name",
+            "editUsername": "Edit",
+            "saveUsername": "Save",
+            "cancelChangeUsername": "Cancel",
             "login": "Login",
             "resetPassword": "ResetPassword",
             "addEmailCredentials": "Add Email Credentials",

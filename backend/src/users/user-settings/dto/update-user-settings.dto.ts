@@ -1,5 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsBoolean, IsOptional } from 'class-validator'
+import { IsBoolean, IsOptional, IsString } from 'class-validator'
+import { Nil } from '../../../utils/types'
 
 export class UpdateUserSettingsDto {
     @ApiPropertyOptional({
@@ -7,5 +8,12 @@ export class UpdateUserSettingsDto {
     })
     @IsOptional()
     @IsBoolean()
-    isEmailNotificationEnabled?: boolean
+    isEmailNotificationEnabled?: Nil<boolean>
+
+    @ApiPropertyOptional({
+        description: 'The display name of the user',
+    })
+    @IsOptional()
+    @IsString()
+    username?: Nil<string>
 }
