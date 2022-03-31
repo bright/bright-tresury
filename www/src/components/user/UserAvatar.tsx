@@ -15,9 +15,10 @@ const useStyles = makeStyles((theme: Theme) =>
             borderRadius: '8px',
             backgroundColor: theme.palette.primary.main,
             color: 'white',
-            fontSize: '18px',
-            verticalAlign: 'center',
+            fontSize: '20px',
+            verticalAlign: 'middle',
             textAlign: 'center',
+            width: '28px',
         },
         deleted: {
             width: '32px',
