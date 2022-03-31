@@ -5,6 +5,8 @@ import UserAvatar from './UserAvatar'
 import { UserStatus } from '../../auth/AuthContext'
 import { Nil } from '../../util/types'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { ClassNameProps } from '../props/className.props'
+import clsx from 'clsx'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -27,16 +29,17 @@ interface OwnProps {
     label?: string
     ellipsis?: boolean
     detectYou?: boolean
+    showI?: boolean
 }
-export type UserProps = OwnProps
+export type UserProps = OwnProps & ClassNameProps
 
-const User = ({ user, avatarSize, label, ellipsis = true, detectYou = true }: UserProps) => {
+const User = ({ user, className, avatarSize, label, ellipsis = true, detectYou = true, showI = true }: UserProps) => {
     const classes = useStyles()
     return (
-        <div className={classes.root}>
+        <div className={clsx(classes.root, className)}>
             <UserAvatar user={user} size={avatarSize} />
             <UserDisplay user={user} label={label} ellipsis={ellipsis} detectYou={detectYou} />
-            {user.status !== UserStatus.Deleted && user.web3address ? (
+            {showI && user.status !== UserStatus.Deleted && user.web3address ? (
                 <AccountInformation address={user.web3address} />
             ) : null}
         </div>

@@ -7,6 +7,7 @@ import { useNetworks } from '../../networks/useNetworks'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Nil } from '../../util/types'
 import { encodeAddress } from '@polkadot/keyring'
+import useUserDisplay from './useUserDisplay'
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -18,6 +19,8 @@ const useStyles = makeStyles((theme) =>
         },
         display: {
             margin: 0,
+            color: theme.palette.text.primary,
+            fontSize: '14px',
         },
         label: {
             fontSize: '12px',
@@ -42,35 +45,9 @@ interface OwnProps {
 }
 export type UserDisplayProps = OwnProps
 
-export const UserDisplay = ({ user, ellipsis = true, label, detectYou = true }: UserDisplayProps) => {
+export const UserDisplay = ({ label, ...useUserDisplayProps }: UserDisplayProps) => {
     const classes = useStyles()
-    const { t } = useTranslation()
-    const { network } = useNetworks()
-    const { identity } = useIdentity({ address: user.web3address })
-    const { user: authUser } = useAuth()
-
-    const isDeleted = useMemo(() => user.status === UserStatus.Deleted, [user])
-    const isYou = useMemo(() => {
-        if (!detectYou || !authUser || isDeleted) return false
-
-        if (user.userId === authUser.id) return true
-
-        if (!user.web3address || !authUser.web3Addresses) return false
-        return !!authUser.web3Addresses.find(
-            (web3Address) =>
-                encodeAddress(web3Address.address, network.ss58Format) ===
-                encodeAddress(user.web3address!, network.ss58Format),
-        )
-    }, [user, isDeleted, authUser])
-    const hasUsername = useMemo(() => user.status === UserStatus.EmailPasswordEnabled && user.username, [user])
-
-    const display = useMemo(() => {
-        if (isDeleted) return t('account.accountDeleted')
-        else if (isYou) return t('common.you')
-        else if (hasUsername) return user.username
-        else if (identity?.display) return identity!.display
-        else if (user.web3address) return formatAddress(user.web3address, network.ss58Format, ellipsis)
-    }, [isDeleted, isYou, user, identity, network, ellipsis])
+    const { display } = useUserDisplay(useUserDisplayProps)
 
     return (
         <div className={classes.root}>
