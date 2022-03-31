@@ -3,7 +3,7 @@ import { isValidAddress, isValidAddressOrEmpty } from './addressValidator'
 describe('address validator', () => {
     it('correct address is valid', () => {
         const validAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-        expect(isValidAddress(validAddress)).toBeTruthy()
+        expect(isValidAddress(validAddress, 42)).toBeTruthy()
     })
     it('wrong address is invalid', () => {
         const invalidAddress = '5GrwvaEF5zXb26Fz9rcQ'
@@ -18,7 +18,7 @@ describe('address validator', () => {
 describe('address validator constraint', () => {
     it('correct address is valid', () => {
         const validAddress = '5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY'
-        expect(isValidAddressOrEmpty(validAddress)).toBeTruthy()
+        expect(isValidAddressOrEmpty(validAddress, 42)).toBeTruthy()
     })
     it('wrong address is invalid', () => {
         const invalidAddress = '5GrwvaEF5zXb26Fz9'
