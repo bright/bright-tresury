@@ -5,4 +5,7 @@ export enum EmailTemplates {
     NewProposalCommentTemplate = 'newProposalCommentTemplate',
     NewBountyCommentTemplate = 'newBountyCommentTemplate',
     TestTemplate = 'testTemplate',
+    TaggedInIdeaCommentTemplate = 'taggedInIdeaCommentTemplate',
+    TaggedInProposalCommentTemplate = 'taggedInProposalCommentTemplate',
+    TaggedInBountyCommentTemplate = 'taggedInBountyCommentTemplate',
 }

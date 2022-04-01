@@ -1,7 +1,7 @@
 import { AppEventType } from '../../entities/app-event-type'
 
 export interface NewIdeaCommentDto {
-    type: AppEventType.NewIdeaComment
+    type: AppEventType.NewIdeaComment | AppEventType.TaggedInIdeaComment
     ideaId: string
     ideaOrdinalNumber: number
     ideaTitle: string

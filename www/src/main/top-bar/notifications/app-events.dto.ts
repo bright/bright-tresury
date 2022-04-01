@@ -10,10 +10,13 @@ export enum AppEventType {
     NewIdeaComment = 'new_idea_comment',
     NewProposalComment = 'new_proposal_comment',
     NewBountyComment = 'new_bounty_comment',
+    TaggedInIdeaComment = 'tagged_in_idea_comment',
+    TaggedInProposalComment = 'tagged_in_proposal_comment',
+    TaggedInBountyComment = 'tagged_in_bounty_comment',
 }
 
 export interface NewIdeaCommentData {
-    type: AppEventType.NewIdeaComment
+    type: AppEventType.NewIdeaComment | AppEventType.TaggedInIdeaComment
     ideaId: string
     ideaOrdinalNumber: number
     ideaTitle: string
@@ -23,7 +26,7 @@ export interface NewIdeaCommentData {
 }
 
 export interface NewProposalCommentData {
-    type: AppEventType.NewProposalComment
+    type: AppEventType.NewProposalComment | AppEventType.TaggedInProposalComment
     commentId: string
     proposalBlockchainId: number
     proposalTitle: string
@@ -32,7 +35,7 @@ export interface NewProposalCommentData {
 }
 
 export interface NewBountyCommentData {
-    type: AppEventType.NewBountyComment
+    type: AppEventType.NewBountyComment | AppEventType.TaggedInBountyComment
     commentId: string
     bountyBlockchainId: number
     bountyTitle: string

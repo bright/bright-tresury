@@ -1,5 +1,5 @@
 import { Inject, NotFoundException } from '@nestjs/common'
-import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent } from 'typeorm'
+import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, UpdateEvent } from 'typeorm'
 import { AppConfig, AppConfigToken } from '../../../config/config.module'
 import { CommentsService } from '../../../discussions/comments.service'
 import { DiscussionsService } from '../../../discussions/discussions.service'
@@ -43,10 +43,12 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<CommentE
 
         try {
             const { entity: idea } = await this.ideasService.findOne(discussion.entityId!)
-            const receiverIds = await this.getReceiverIds(entity, discussion, idea)
+            const taggedReceiverIds = await this.getTaggedUsers(entity)
+            const discussionReceiverIds = await this.getReceiverIds(entity, discussion, idea, taggedReceiverIds)
             const data = this.getEventDetails(entity, idea)
 
-            await this.appEventsService.create(data, receiverIds)
+            await this.appEventsService.create({ ...data, type: AppEventType.TaggedInIdeaComment }, taggedReceiverIds)
+            await this.appEventsService.create(data, discussionReceiverIds)
         } catch (e) {
             if (e instanceof NotFoundException) {
                 logger.info(`Idea not found, will not create event`, entity)
@@ -54,6 +56,53 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<CommentE
                 throw e
             }
         }
+    }
+
+    async afterUpdate({ databaseEntity, entity }: UpdateEvent<CommentEntity>) {
+        logger.info(`Comment updated: `, entity)
+
+        if (entity && 'content' in entity) {
+            databaseEntity.content = entity.content
+        } else {
+            return
+        }
+
+        const discussion =
+            databaseEntity.discussion ?? (await this.discussionsService.findOne(databaseEntity.discussionId))
+        if (discussion?.category !== DiscussionCategory.Idea) {
+            return
+        }
+
+        try {
+            const { entity: idea } = await this.ideasService.findOne(discussion.entityId!)
+            const taggedReceiverIds = await this.getTaggedUsers(databaseEntity)
+            const data = this.getEventDetails(databaseEntity, idea)
+
+            await this.appEventsService.create({ ...data, type: AppEventType.TaggedInIdeaComment }, taggedReceiverIds)
+        } catch (e) {
+            if (e instanceof NotFoundException) {
+                logger.info(`Idea not found, will not create event`, databaseEntity)
+            } else {
+                throw e
+            }
+        }
+    }
+
+    private async getTaggedUsers(comment: CommentEntity): Promise<string[]> {
+        const taggedUsers: string[] = []
+
+        const commentContainsTag = comment.content.match(/\[(?<text>.+)\]\((?<url>[^ ]+)(?: "(?<title>.+)")?\)/gim)
+
+        if (commentContainsTag) {
+            const userId = commentContainsTag[0].match(/(?<=\().+?(?=\))/gim)
+            if (userId !== null) {
+                for (const id of userId) {
+                    taggedUsers.push(id)
+                }
+            }
+        }
+
+        return [...new Set(taggedUsers)]
     }
 
     private getEventDetails(comment: CommentEntity, idea: IdeaEntity): NewIdeaCommentDto {
@@ -77,13 +126,17 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<CommentE
         comment: CommentEntity,
         discussion: DiscussionEntity,
         idea: IdeaEntity,
+        excludeIds: string[],
     ): Promise<string[]> {
         const allAuthorIds = (discussion.comments ?? []).map((c) => c.authorId)
+        allAuthorIds.push(idea.ownerId)
 
         // Set created from an array will take only distinct values
-        const receiverIds = [...new Set(allAuthorIds), idea.ownerId].filter(
-            (receiverId) => receiverId !== comment.authorId,
-        )
-        return receiverIds
+        const receiversIdsSet = new Set(allAuthorIds.filter((receiverId) => receiverId !== comment.authorId))
+
+        excludeIds.forEach((id) => {
+            receiversIdsSet.delete(id)
+        })
+        return [...receiversIdsSet]
     }
 }

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { generatePath } from 'react-router-dom'
 import bountySvg from '../../../../assets/menu_bounty_highlighted.svg'
 import { ROUTE_BOUNTY } from '../../../../routes/routes'
-import { NewBountyCommentData } from '../app-events.dto'
+import { AppEventType, NewBountyCommentData } from '../app-events.dto'
 import NotificationsItemDescription from './components/NotificationsItemDescription'
 import NotificationsItemTitle from './components/NotificationsItemTitle'
 import NotificationsMenuItem from './components/NotificationsMenuItem'
@@ -35,7 +35,11 @@ const BountyDiscussion = ({ data, closeMenu }: BountyDiscussionProps) => {
             />
             <NotificationsItemTitle ordinalNumber={data.bountyBlockchainId} title={data.bountyTitle} />
             <NotificationsItemDescription
-                description={t('topBar.notifications.menuItems.bountyDiscussion.description')}
+                description={t(
+                    data.type === AppEventType.NewBountyComment
+                        ? 'topBar.notifications.menuItems.bountyDiscussion.description'
+                        : 'topBar.notifications.menuItems.bountyDiscussion.tagged',
+                )}
             />
         </NotificationsMenuItem>
     )

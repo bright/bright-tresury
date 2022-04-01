@@ -115,17 +115,20 @@
                 "ideaDiscussion": {
                     "title": "Idea Discussion",
                     "goTo": "Go to Discussion",
-                    "description": "There are new messages in the idea discussion"
+                    "description": "There are new messages in the idea discussion",
+                    "tagged": "You have been tagged in the idea discussion"
                 },
                 "proposalDiscussion": {
                     "title": "Proposal Discussion",
                     "goTo": "Go to Discussion",
-                    "description": "There are new messages in the proposal discussion"
+                    "description": "There are new messages in the proposal discussion",
+                    "tagged": "You have been tagged in the proposal discussion"
                 },
                 "bountyDiscussion": {
                     "title": "Bounty Discussion",
                     "goTo": "Go to Discussion",
-                    "description": "There are new messages in the bounty discussion"
+                    "description": "There are new messages in the bounty discussion",
+                    "tagged": "You have been tagged in the bounty discussion"
                 }
             }
         }

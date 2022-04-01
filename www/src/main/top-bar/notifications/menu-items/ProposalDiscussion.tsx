@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { generatePath } from 'react-router-dom'
 import proposalSvg from '../../../../assets/menu_proposals_highlighted.svg'
 import { ROUTE_PROPOSAL } from '../../../../routes/routes'
-import { NewProposalCommentData } from '../app-events.dto'
+import { AppEventType, NewProposalCommentData } from '../app-events.dto'
 import NotificationsItemDescription from './components/NotificationsItemDescription'
 import NotificationsItemTitle from './components/NotificationsItemTitle'
 import NotificationsMenuItem from './components/NotificationsMenuItem'
@@ -35,7 +35,11 @@ const ProposalDiscussion = ({ data, closeMenu }: ProposalDiscussionProps) => {
             />
             <NotificationsItemTitle ordinalNumber={data.proposalBlockchainId} title={data.proposalTitle} />
             <NotificationsItemDescription
-                description={t('topBar.notifications.menuItems.proposalDiscussion.description')}
+                description={t(
+                    data.type === AppEventType.NewProposalComment
+                        ? 'topBar.notifications.menuItems.proposalDiscussion.description'
+                        : 'topBar.notifications.menuItems.proposalDiscussion.tagged',
+                )}
             />
         </NotificationsMenuItem>
     )

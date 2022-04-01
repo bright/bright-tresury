@@ -4,7 +4,7 @@ import { generatePath } from 'react-router-dom'
 import ideasSvg from '../../../../assets/menu_ideas_highlighted.svg'
 import { useNetworks } from '../../../../networks/useNetworks'
 import { ROUTE_IDEA } from '../../../../routes/routes'
-import { NewIdeaCommentData } from '../app-events.dto'
+import { AppEventType, NewIdeaCommentData } from '../app-events.dto'
 import NotificationsItemDescription from './components/NotificationsItemDescription'
 import NotificationsItemTitle from './components/NotificationsItemTitle'
 import NotificationsMenuItem from './components/NotificationsMenuItem'
@@ -36,7 +36,11 @@ const IdeaDiscussion = ({ data, closeMenu }: IdeaDiscussionProps) => {
             />
             <NotificationsItemTitle ordinalNumber={data.ideaOrdinalNumber} title={data.ideaTitle} />
             <NotificationsItemDescription
-                description={t('topBar.notifications.menuItems.ideaDiscussion.description')}
+                description={t(
+                    data.type === AppEventType.NewIdeaComment
+                        ? 'topBar.notifications.menuItems.ideaDiscussion.description'
+                        : 'topBar.notifications.menuItems.ideaDiscussion.tagged',
+                )}
             />
         </NotificationsMenuItem>
     )

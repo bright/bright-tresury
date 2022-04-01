@@ -62,9 +62,15 @@ const Notifications = ({ userId, className }: NotificationsProps) => {
         switch (data.type) {
             case AppEventType.NewIdeaComment:
                 return <IdeaDiscussion data={data} closeMenu={handleClose} />
+            case AppEventType.TaggedInIdeaComment:
+                return <IdeaDiscussion data={data} closeMenu={handleClose} />
             case AppEventType.NewProposalComment:
                 return <ProposalDiscussion data={data} closeMenu={handleClose} />
+            case AppEventType.TaggedInProposalComment:
+                return <ProposalDiscussion data={data} closeMenu={handleClose} />
             case AppEventType.NewBountyComment:
+                return <BountyDiscussion data={data} closeMenu={handleClose} />
+            case AppEventType.TaggedInBountyComment:
                 return <BountyDiscussion data={data} closeMenu={handleClose} />
             default:
                 return null

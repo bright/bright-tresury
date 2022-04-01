@@ -6,5 +6,8 @@ export enum AppEventType {
     NewIdeaComment = 'new_idea_comment',
     NewProposalComment = 'new_proposal_comment',
     NewBountyComment = 'new_bounty_comment',
+    TaggedInIdeaComment = 'tagged_in_idea_comment',
+    TaggedInProposalComment = 'tagged_in_proposal_comment',
+    TaggedInBountyComment = 'tagged_in_bounty_comment',
 }
 export type AppEventData = NewIdeaCommentDto | NewProposalCommentDto | NewBountyCommentDto

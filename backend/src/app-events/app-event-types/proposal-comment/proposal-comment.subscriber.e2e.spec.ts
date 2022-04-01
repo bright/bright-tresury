@@ -16,10 +16,12 @@ import { Web3AddressEntity } from '../../../users/web3-addresses/web3-address.en
 import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec.helpers'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
+import { CommentsService } from '../../../discussions/comments.service'
 
 describe('New proposal comment app event e2e', () => {
     const app = beforeSetupFullApp()
     const getDiscussionsService = () => app.get().get(DiscussionsService)
+    const getCommentsService = () => app.get().get(CommentsService)
 
     beforeAll(() => {
         mockGetProposalAndGetProposals(app().get(BlockchainService))
@@ -57,7 +59,7 @@ describe('New proposal comment app event e2e', () => {
 
     describe('after ProposalComment insert', () => {
         it('should create NewProposalComment event with data', async () => {
-            const { proposal, idea } = await setUp()
+            const { proposal } = await setUp()
             const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
             const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
 
@@ -122,6 +124,49 @@ describe('New proposal comment app event e2e', () => {
             expect(spy).toHaveBeenLastCalledWith(
                 expect.anything(),
                 expect.arrayContaining([user1.user.id, user2.user.id]),
+            )
+        })
+
+        it('should create NewProposalComment event for tagged users', async () => {
+            const { proposal } = await setUp()
+            const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
+            const user2 = await createSessionData({ username: 'user2', email: 'user2@example.com' })
+            const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
+
+            await createProposalComment(
+                proposal.blockchainProposalId,
+                proposal.networkId,
+                user1.user,
+                `This is a comment with tag [@user1](${user2.user.id})`,
+            )
+
+            expect(spy).toHaveBeenCalledWith(expect.anything(), expect.arrayContaining([]))
+        })
+
+        it('should create TaggedInProposalComment event for update comment for all tagged users', async () => {
+            const { proposal } = await setUp()
+            const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
+            const user2 = await createSessionData({ username: 'user2', email: 'user2@example.com' })
+            const comment = await createProposalComment(
+                proposal.blockchainProposalId,
+                proposal.networkId,
+                user1.user,
+                `This is a comment with tag [@user1](${user2.user.id})`,
+            )
+
+            const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
+
+            await getCommentsService().update(
+                comment.id,
+                { content: `This is a comment with tag [@user2](${user2.user.id})` },
+                user1.user,
+            )
+
+            expect(spy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: AppEventType.TaggedInProposalComment,
+                }),
+                expect.arrayContaining([user2.user.id]),
             )
         })
 

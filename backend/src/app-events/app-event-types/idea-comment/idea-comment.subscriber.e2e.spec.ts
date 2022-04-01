@@ -9,11 +9,13 @@ import { beforeSetupFullApp, cleanDatabase, NETWORKS } from '../../../utils/spec
 import { NetworkPlanckValue } from '../../../utils/types'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
+import { CommentsService } from '../../../discussions/comments.service'
 
 describe('New idea comment app event e2e', () => {
     const app = beforeSetupFullApp()
     const getDiscussionsService = () => app.get().get(DiscussionsService)
     const getIdeasService = () => app.get().get(IdeasService)
+    const getCommentsService = () => app.get().get(CommentsService)
 
     beforeEach(async () => {
         await cleanDatabase()
@@ -83,6 +85,46 @@ describe('New idea comment app event e2e', () => {
                 expect.arrayContaining([idea.ownerId, user1.user.id, user2.user.id]),
             )
             done()
+        })
+
+        it('should create NewIdeaComment event for tagged users', async (done) => {
+            const { idea, ideaOwner } = await setUp()
+
+            const user1 = await createSessionData({ username: 'user1', email: 'user1@example.com' })
+
+            const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
+
+            await getDiscussionsService().addComment(
+                {
+                    content: `This is a comment with tag [@user1](${user1.user.id})`,
+                    discussionDto: { category: DiscussionCategory.Idea, entityId: idea.id } as IdeaDiscussionDto,
+                },
+                ideaOwner,
+            )
+
+            expect(spy).toHaveBeenLastCalledWith(expect.anything(), expect.arrayContaining([]))
+            done()
+        })
+
+        it('should create TaggedInIdeaComment event for update comment for all tagged users', async () => {
+            const { idea, ideaOwner } = await setUp()
+            const user2 = await createSessionData({ username: 'user2', email: 'user2@example.com' })
+            const comment = await createIdeaComment(idea.id, ideaOwner)
+
+            const spy = jest.spyOn(app().get<AppEventsService>(AppEventsService), 'create')
+
+            await getCommentsService().update(
+                comment.id,
+                { content: `This is a comment with tag [@user2](${user2.user.id})` },
+                ideaOwner,
+            )
+
+            expect(spy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    type: AppEventType.TaggedInIdeaComment,
+                }),
+                expect.arrayContaining([user2.user.id]),
+            )
         })
 
         it('should not create NewIdeaComment event for idea owner when he is commenting', async (done) => {

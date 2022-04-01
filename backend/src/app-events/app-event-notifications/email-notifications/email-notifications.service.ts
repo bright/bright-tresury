@@ -85,6 +85,13 @@ export class EmailNotificationsService {
                 return this.getNewProposalCommentEmailDetails(appEvent.data)
             case AppEventType.NewBountyComment:
                 return this.getNewBountyCommentEmailDetails(appEvent.data)
+            case AppEventType.TaggedInIdeaComment:
+                return this.getTaggedInIdeaCommentEmailDetails(appEvent.data)
+            case AppEventType.TaggedInProposalComment:
+                return this.getTaggedInProposalCommentEmailDetails(appEvent.data)
+            case AppEventType.TaggedInBountyComment:
+                return this.getTaggedInBountyCommentEmailDetails(appEvent.data)
+
             default:
                 // for exhaustiveness check - should never get here if all data types are coverd
                 return appEvent.data
@@ -98,6 +105,17 @@ export class EmailNotificationsService {
             subject,
             text,
             template: EmailTemplates.NewIdeaCommentTemplate,
+            data,
+        }
+    }
+
+    private getTaggedInIdeaCommentEmailDetails(data: NewIdeaCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Idea ${data.ideaOrdinalNumber} - You have been tagged`
+        const text = `You have been tagged in Idea ${data.ideaOrdinalNumber} ${data.ideaTitle}. You can see them here: ${data.commentsUrl}`
+        return {
+            subject,
+            text,
+            template: EmailTemplates.TaggedInIdeaCommentTemplate,
             data,
         }
     }
@@ -116,6 +134,20 @@ export class EmailNotificationsService {
         }
     }
 
+    private getTaggedInProposalCommentEmailDetails(data: NewProposalCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Proposal ${data.proposalBlockchainId} - You have been tagged`
+        const text = `You have been tagged in Proposal ${data.proposalBlockchainId} ${
+            data.proposalTitle ?? ''
+        }. You can see them here: ${data.commentsUrl}`
+
+        return {
+            subject,
+            text,
+            template: EmailTemplates.TaggedInProposalCommentTemplate,
+            data,
+        }
+    }
+
     private getNewBountyCommentEmailDetails(data: NewBountyCommentDto): EmailDetails {
         const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Bounty ${data.bountyBlockchainId} - new comments`
         const text = `You have a new comment in Bounty ${data.bountyBlockchainId} ${
@@ -126,6 +158,20 @@ export class EmailNotificationsService {
             subject,
             text,
             template: EmailTemplates.NewBountyCommentTemplate,
+            data,
+        }
+    }
+
+    private getTaggedInBountyCommentEmailDetails(data: NewBountyCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Bounty ${data.bountyBlockchainId} - You have been tagged`
+        const text = `You have been tagged in Bounty ${data.bountyBlockchainId} ${
+            data.bountyTitle ?? ''
+        }. You can see them here: ${data.commentsUrl}`
+
+        return {
+            subject,
+            text,
+            template: EmailTemplates.TaggedInBountyCommentTemplate,
             data,
         }
     }
