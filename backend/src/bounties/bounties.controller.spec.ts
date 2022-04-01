@@ -468,7 +468,7 @@ describe(`/api/v1/bounties/`, () => {
                     ...minimalValidCreateDto,
                     blockchainIndex: blockchainBounty0.index,
                     owner: sessionHandler.sessionData.user,
-                    beneficiary: 'other-than-in-blockchain',
+                    beneficiary: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
                 }),
             )
 

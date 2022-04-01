@@ -704,7 +704,7 @@ describe(`/api/v1/ideas`, () => {
                         content: 'Test content',
                     },
                     networks: [{ name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue }],
-                    beneficiary: 'abcd-1234',
+                    beneficiary: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty',
                 },
                 sessionHandler.sessionData,
             )
@@ -717,7 +717,7 @@ describe(`/api/v1/ideas`, () => {
                 .expect(HttpStatus.OK)
             const body = response.body
             expect(body.details.title).not.toBe('Test title')
-            expect(body.beneficiary.web3address).toBe('abcd-1234')
+            expect(body.beneficiary.web3address).toBe('5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty')
             expect(body.details.content).toBe('Test content')
             expect(body.networks[0].name).toBe(NETWORKS.KUSAMA)
             done()
