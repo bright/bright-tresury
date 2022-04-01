@@ -78,7 +78,7 @@ export class IdeasService {
         if (!entity.beneficiary) return { entity }
         return {
             entity,
-            beneficiary: await this.usersService.findPublicByWeb3Address(entity.beneficiary),
+            beneficiary: await this.usersService.getPublicUserDataForWeb3Address(entity.beneficiary),
         }
     }
 

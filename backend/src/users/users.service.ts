@@ -84,18 +84,26 @@ export class UsersService {
             // not found so nothing happens
         }
 
-        users.push(await this.findPublicByWeb3Address(display))
+        const user = await this.findPublicByWeb3Address(display)
+        if (user) users.push(user)
 
         return users
     }
 
-    async findPublicByWeb3Address(web3Address: string): Promise<PublicUserDto> {
+    async findPublicByWeb3Address(web3Address: string): Promise<Nil<PublicUserDto>> {
         const entity = await this.findOneByWeb3Address(web3Address)
-        const publicUserDto = entity ? PublicUserDto.fromUserEntity(entity) : new PublicUserDto({})
-        return {
-            ...publicUserDto,
-            web3address: web3Address,
-        }
+        if (entity)
+            return new PublicUserDto({
+                userId: entity.id,
+                username: entity.username,
+                status: entity.status,
+                web3address: (entity.web3Addresses ?? [])[0].address,
+            })
+    }
+    async getPublicUserDataForWeb3Address(web3Address: string): Promise<Nil<PublicUserDto>> {
+        const data = await this.findPublicByWeb3Address(web3Address)
+        if (data) return data
+        if (isValidAddress(web3Address)) return new PublicUserDto({ web3address: web3Address })
     }
 
     async findOneByWeb3Address(web3Address: string): Promise<Nil<UserEntity>> {

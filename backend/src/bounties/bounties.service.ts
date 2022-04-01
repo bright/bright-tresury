@@ -220,11 +220,11 @@ export class BountiesService {
         const beneficiaryAddress = blockchain.beneficiary ?? entity?.beneficiary
         const curatorAddress = blockchain.curator
         const [proposer, beneficiary, curator] = await Promise.all([
-            this.usersService.findPublicByWeb3Address(proposerAddress),
-            beneficiaryAddress ? this.usersService.findPublicByWeb3Address(beneficiaryAddress) : null,
-            curatorAddress ? this.usersService.findPublicByWeb3Address(curatorAddress) : null,
+            this.usersService.getPublicUserDataForWeb3Address(proposerAddress),
+            beneficiaryAddress ? this.usersService.getPublicUserDataForWeb3Address(beneficiaryAddress) : null,
+            curatorAddress ? this.usersService.getPublicUserDataForWeb3Address(curatorAddress) : null,
         ])
-        return new FindBountyDto(blockchain, entity, polkassembly, proposer, curator, beneficiary)
+        return new FindBountyDto(blockchain, entity, polkassembly, proposer!, curator, beneficiary)
     }
 
     async getBountyMotions(

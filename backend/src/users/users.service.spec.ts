@@ -414,8 +414,49 @@ describe(`Users Service`, () => {
             expect(actual).toHaveLength(1)
             expect(actual[0].userId).toBe(user.id)
         })
+        it('should return public user data with non primary address when asked with non primary address', async () => {
+            const user = await getService().createWeb3User({
+                authId: uuid(),
+                username: 'Charlie',
+                web3Address: charlieAddress,
+            })
+            await getService().associateWeb3Address(user, bobAddress)
+            const actual = await getService().findByDisplay(charlieAddress)
+            expect(actual).toHaveLength(1)
+            expect(actual[0].userId).toBe(user.id)
+            expect(actual[0].web3address).toBe(charlieAddress)
+        })
+        it('should return empty array when asked for address that does not exist in the database', async () => {
+            const actual = await getService().findByDisplay(bobAddress)
+            expect(actual).toHaveLength(0)
+        })
     })
-
+    describe('get public user data for web3 address', () => {
+        it('should return public user data for existing user', async () => {
+            const user = await getService().createWeb3User({
+                authId: uuid(),
+                username: 'Charlie',
+                web3Address: charlieAddress,
+            })
+            const actual = await getService().getPublicUserDataForWeb3Address(charlieAddress)
+            expect(actual).toMatchObject({
+                userId: user.id,
+                username: 'Charlie',
+                status: UserStatus.Web3Only,
+                web3address: charlieAddress,
+            })
+        })
+        it('should return public user data with just web3 address for non existing user', async () => {
+            const actual = await getService().getPublicUserDataForWeb3Address(charlieAddress)
+            expect(actual).toMatchObject({
+                web3address: charlieAddress,
+            })
+        })
+        it('should return undefined for bad web3 address', async () => {
+            const actual = await getService().getPublicUserDataForWeb3Address('XYZ')
+            expect(actual).toBeUndefined()
+        })
+    })
     describe('delete', () => {
         it('forgets the user data', async () => {
             const user = await getService().create({

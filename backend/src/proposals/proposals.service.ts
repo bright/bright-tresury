@@ -173,8 +173,8 @@ export class ProposalsService {
     ): Promise<BlockchainProposalWithDomainDetails> {
         const milestone = proposalEntity?.ideaMilestoneNetwork?.ideaMilestone
         const ideaId = proposalEntity?.ideaNetwork?.ideaId ?? milestone?.ideaId
-        const proposer = await this.usersService.findPublicByWeb3Address(blockchainProposal.proposer)
-        const beneficiary = await this.usersService.findPublicByWeb3Address(blockchainProposal.beneficiary)
+        const proposer = await this.usersService.getPublicUserDataForWeb3Address(blockchainProposal.proposer)
+        const beneficiary = await this.usersService.getPublicUserDataForWeb3Address(blockchainProposal.beneficiary)
         return new BlockchainProposalWithDomainDetails({
             blockchain: blockchainProposal,
             entity: proposalEntity,
@@ -183,8 +183,8 @@ export class ProposalsService {
             isCreatedFromIdeaMilestone: !!milestone,
             ideaId,
             ideaMilestoneId: milestone?.id,
-            proposer,
-            beneficiary,
+            proposer: proposer!,
+            beneficiary: beneficiary!,
         })
     }
 
