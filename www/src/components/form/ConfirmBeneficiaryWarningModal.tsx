@@ -1,6 +1,8 @@
+import { useMediaQuery, useTheme } from '@material-ui/core'
 import { DialogProps as MaterialDialogProps } from '@material-ui/core/Dialog/Dialog'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { breakpoints } from '../../theme/theme'
 import { Nil } from '../../util/types'
 import QuestionModal from '../modal/warning-modal/QuestionModal'
 import QuestionModalButtons from '../modal/warning-modal/QuestionModalButtons'
@@ -23,12 +25,14 @@ const ConfirmBeneficiaryWarningModal = ({
     beneficiary,
 }: ConfirmBeneficiaryWarningModalProps) => {
     const { t } = useTranslation()
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down(breakpoints.mobile))
 
     return (
         <QuestionModal onClose={onClose} open={open} maxWidth={'md'}>
             <QuestionModalTitle title={t('form.web3AddressInput.warningModal.title')} />
             <QuestionModalSubtitle subtitle={t('form.web3AddressInput.warningModal.subtitle')} />
-            <User user={{ web3address: beneficiary }} ellipsis={false} />
+            <User user={{ web3address: beneficiary }} ellipsis={isMobile} />
             <QuestionModalButtons
                 onClose={onClose}
                 onSubmit={onSubmit}
