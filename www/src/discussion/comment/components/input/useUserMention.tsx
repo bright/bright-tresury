@@ -39,7 +39,7 @@ const useUserMention = ({ people }: UseUserMentionProps): MentionProps => {
                 const users = await getUsers({ display: query })
 
                 users.forEach((user) => {
-                    if (!people.find((person) => person.userId === user.userId)) {
+                    if (!data.find((item) => item.id === user.userId)) {
                         data.push(toSuggestionDataItem(user))
                     }
                 })
@@ -56,7 +56,7 @@ const useUserMention = ({ people }: UseUserMentionProps): MentionProps => {
         data: getData,
         markup: '[@__display__](__id__)',
         renderSuggestion: (suggestion: SuggestionDataItem) => (
-            <SuggestionItem user={(suggestion as EnhancedSuggestionDataItem).author} />
+            <SuggestionItem user={(suggestion as EnhancedSuggestionDataItem).author} showI={false} />
         ),
         displayTransform: (id: string, display: string) => `@${display}`,
         appendSpaceOnAdd: true,

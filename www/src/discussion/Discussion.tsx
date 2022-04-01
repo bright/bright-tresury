@@ -15,12 +15,15 @@ import { PublicUserDto } from '../util/publicUser.dto'
 
 interface OwnProps {
     discussion: DiscussionDto
-    discussedEntity: DiscussedEntity | any // todo remove any once all duscussable entities have owners
+    discussedEntity: DiscussedEntity
     info?: Nil<React.ReactNode>
 }
 
 export interface DiscussedEntity {
     owner?: Nil<PublicUserDto>
+    proposer?: Nil<PublicUserDto>
+    beneficiary?: Nil<PublicUserDto>
+    curator?: Nil<PublicUserDto>
 }
 
 export type DiscussionProps = OwnProps
@@ -35,26 +38,29 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
         if (!comments) {
             return []
         }
-        const authors = new Map<string, PublicUserDto>()
 
-        // get comments authors
-        comments.forEach(({ author }) => {
-            if (author.status !== UserStatus.Deleted) authors.set(author.userId!, author)
+        const authors = comments.map((comment) => comment.author)
+        if (discussedEntity.owner) {
+            authors.push(discussedEntity.owner)
+        }
+        if (discussedEntity.proposer) {
+            authors.push(discussedEntity.proposer)
+        }
+        if (discussedEntity.beneficiary) {
+            authors.push(discussedEntity.beneficiary)
+        }
+        if (discussedEntity.curator) {
+            authors.push(discussedEntity.curator)
+        }
+
+        // to map to remove duplicates, deleted accounts and logged in user
+        const authorsMap = new Map<string, PublicUserDto>()
+        authors.forEach((author) => {
+            if (author.status !== UserStatus.Deleted && author.userId !== user?.id)
+                authorsMap.set(author.userId!, author)
         })
 
-        // get entity author
-        if (discussedEntity?.owner && discussedEntity.owner.status !== UserStatus.Deleted) {
-            authors.set(discussedEntity.owner.userId, discussedEntity.owner)
-        }
-
-        // TODO get blockchain accounts identities (proposer, curator, beneficiary) TREAS- 458
-
-        // remove logged in user from suggestions list
-        if (user && authors.has(user.id)) {
-            authors.delete(user.id)
-        }
-
-        return Array.from(authors.values())
+        return Array.from(authorsMap.values())
     }, [comments])
 
     const renderComment = (comment: CommentDto) => (
