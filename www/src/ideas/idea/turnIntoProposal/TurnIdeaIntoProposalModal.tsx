@@ -39,7 +39,7 @@ const TurnIdeaIntoProposalModal = ({ idea, open, onClose }: TurnIdeaIntoProposal
             onTurn={onTurn}
             title={t('idea.details.submitProposalModal.title')}
             value={idea.currentNetwork.value}
-            beneficiary={idea.beneficiary!.web3address!}
+            beneficiary={idea.beneficiary?.web3address!}
         />
     )
 }
