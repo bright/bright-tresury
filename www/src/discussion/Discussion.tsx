@@ -53,10 +53,10 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
             authors.push(discussedEntity.curator)
         }
 
-        // to map to remove duplicates, deleted accounts and logged in user
+        // to map to remove duplicates, deleted accounts, accounts with no userId and logged in user
         const authorsMap = new Map<string, PublicUserDto>()
         authors.forEach((author) => {
-            if (author.status !== UserStatus.Deleted && author.userId !== user?.id)
+            if (author.status !== UserStatus.Deleted && author.userId && author.userId !== user?.id)
                 authorsMap.set(author.userId!, author)
         })
 
