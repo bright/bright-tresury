@@ -800,6 +800,13 @@
             "bountyClosed": "This bounty is already closed."
         }
     },
+    "tips": {
+        "indexPrefix": "#",
+        "list": {
+            "finder": "Finder",
+            "beneficiary": "Beneficiary"
+        }
+    },
     "ideaProposalDetails": {
         "title": "Title",
         "field": "Field",

@@ -43,6 +43,7 @@ import {
     ROUTE_LEARN_MORE,
     ROUTE_NEW_BOUNTY,
     ROUTE_NEW_IDEA,
+    ROUTE_TIPS,
     ROUTE_NEW_PASSWORD,
     ROUTE_PASSWORD_RECOVERY,
     ROUTE_PRIVACY,
@@ -67,6 +68,7 @@ import { getTranslation } from './translation/translationStorage'
 import LearnMore from './components/learnMore/LearnMore'
 import PasswordRecovery from './auth/PasswordRecovery/PasswordRecovery'
 import NewPassword from './auth/PasswordRecovery/NewPassword'
+import Tips from './tips/Tips'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -121,6 +123,8 @@ function AppRoutes() {
                 <Route exact={true} path={ROUTE_IDEAS} component={Ideas} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_IDEA} component={IdeaCreate} requireVerified={true} />
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />
+
+                <Route exact={true} path={ROUTE_TIPS} component={Tips} />
 
                 <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
                 <Route exact={true} path={ROUTE_ACCOUNT_DELETED} component={AccountDeleted} />
