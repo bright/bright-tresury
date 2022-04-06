@@ -39,7 +39,11 @@ const DisplayMarkdown = ({ markdownFile }: DisplayMarkdownProps) => {
 
     return (
         <HeaderContainer onClose={goBack}>
-            <Markdown className={classes.lineBreak} children={markdownText} />
+            <Markdown
+                className={classes.lineBreak}
+                components={{ img: (props) => <img {...props} style={{ maxWidth: '100%' }} alt="" /> }}
+                children={markdownText}
+            />
         </HeaderContainer>
     )
 }

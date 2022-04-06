@@ -50,3 +50,6 @@ export const ROUTE_PRIVACY = '/privacy'
 // region Terms
 export const ROUTE_TERMS = '/terms'
 // endregion
+// region Learn More
+export const ROUTE_LEARN_MORE = '/learn-more'
+// // endregion

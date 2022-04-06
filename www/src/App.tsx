@@ -40,6 +40,7 @@ import {
     ROUTE_EMAIL_NOT_VERIFIED,
     ROUTE_IDEA,
     ROUTE_IDEAS,
+    ROUTE_LEARN_MORE,
     ROUTE_NEW_BOUNTY,
     ROUTE_NEW_IDEA,
     ROUTE_NEW_PASSWORD,
@@ -63,6 +64,7 @@ import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
 import { initializeSupertokens } from './supertokens'
 import ThemeWrapper from './theme/ThemeWrapper'
 import { getTranslation } from './translation/translationStorage'
+import LearnMore from './components/learnMore/LearnMore'
 import PasswordRecovery from './auth/PasswordRecovery/PasswordRecovery'
 import NewPassword from './auth/PasswordRecovery/NewPassword'
 
@@ -124,6 +126,7 @@ function AppRoutes() {
                 <Route exact={true} path={ROUTE_ACCOUNT_DELETED} component={AccountDeleted} />
                 <Route exact={true} path={ROUTE_PRIVACY} component={Privacy} />
                 <Route exact={true} path={ROUTE_TERMS} component={Terms} />
+                <Route exact={true} path={ROUTE_LEARN_MORE} component={LearnMore} />
             </Switch>
         </Main>
     )

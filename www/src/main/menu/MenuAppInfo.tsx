@@ -4,8 +4,9 @@ import { createStyles, Theme } from '@material-ui/core'
 import menuDrawing from '../../assets/menu_drawing.svg'
 import treasuryLabeledLogo from '../../assets/treasury_labeled_logo.svg'
 import { useTranslation } from 'react-i18next'
-import Link from '../../components/link/Link'
 import config from '../../config'
+import NormalRouterLink from '../../components/link/NormalRouterLink'
+import { ROUTE_LEARN_MORE } from '../../routes/routes'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -56,12 +57,9 @@ const MenuAppInfo = () => {
         <div className={classes.root}>
             <img className={classes.drawing} src={menuDrawing} alt={''} />
             <div className={classes.whatForLabel}>{t('menu.whatForLabel')}</div>
-            <Link
-                className={classes.learnMoreButton}
-                href="https://brightinventions.pl/blog/bright-treasury-is-now-live/"
-            >
+            <NormalRouterLink className={classes.learnMoreButton} to={ROUTE_LEARN_MORE}>
                 {t('menu.learnMoreLabel')}
-            </Link>
+            </NormalRouterLink>
             <img className={classes.logo} src={treasuryLabeledLogo} alt={t('menu.logo')} />
             {isStageOrQa ? (
                 <div className={classes.buildInfo}>
