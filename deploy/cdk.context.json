@@ -1,0 +1,45 @@
+{
+    "vpc-provider:account=265126396833:filter.tag:Name=treasury-app-stage-VPC:region=eu-central-1:returnAsymmetricSubnets=true": {
+        "vpcId": "vpc-0a96e9ce80a777425",
+        "vpcCidrBlock": "10.0.0.0/16",
+        "availabilityZones": [],
+        "subnetGroups": [
+            {
+                "name": "Private",
+                "type": "Private",
+                "subnets": [
+                    {
+                        "subnetId": "subnet-04f96f1c62434d113",
+                        "cidr": "10.0.0.0/24",
+                        "availabilityZone": "eu-central-1a",
+                        "routeTableId": "rtb-0e1a4d7b4ccf5b42f"
+                    },
+                    {
+                        "subnetId": "subnet-0a643482706121d61",
+                        "cidr": "10.0.1.0/24",
+                        "availabilityZone": "eu-central-1b",
+                        "routeTableId": "rtb-005136bfaecbfe983"
+                    }
+                ]
+            },
+            {
+                "name": "Public",
+                "type": "Public",
+                "subnets": [
+                    {
+                        "subnetId": "subnet-04c21f189eacdf3ec",
+                        "cidr": "10.0.100.0/24",
+                        "availabilityZone": "eu-central-1a",
+                        "routeTableId": "rtb-0fd1a38fe6e840b3c"
+                    },
+                    {
+                        "subnetId": "subnet-09564468e0de3d16d",
+                        "cidr": "10.0.101.0/24",
+                        "availabilityZone": "eu-central-1b",
+                        "routeTableId": "rtb-0fd1a38fe6e840b3c"
+                    }
+                ]
+            }
+        ]
+    }
+}

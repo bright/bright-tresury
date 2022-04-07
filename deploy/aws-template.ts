@@ -55,11 +55,6 @@ const Resources = {
     AuthCoreDBInstance: 'AuthCoreDBInstance',
     AuthCoreDbSuffix: 'authorization',
 
-    // bastion host
-    BastionIPAddress: 'BastionIPAddress',
-    BastionHost: 'BastionHost',
-    BastionSecurityGroup: 'BastionSecurityGroup',
-
     // storage
     UploadsBucket: 'UploadsBucket',
 
@@ -759,40 +754,6 @@ export default cloudform({
                 },
             ],
         }),
-
-        [Resources.BastionIPAddress]: new EC2.EIP({
-            Domain: 'vpc',
-            InstanceId: Fn.Ref(Resources.BastionHost),
-        }),
-
-        [Resources.BastionHost]: new EC2.Instance({
-            InstanceType: 't2.nano',
-            KeyName: 'treasury-ssh-key',
-            ImageId: 'ami-1b316af0',
-            NetworkInterfaces: [
-                {
-                    AssociatePublicIpAddress: true,
-                    DeviceIndex: '0',
-                    SubnetId: Fn.Ref(Resources.PublicASubnet),
-                    DeleteOnTermination: true,
-                    GroupSet: [Fn.Ref(Resources.BastionSecurityGroup)],
-                },
-            ],
-            Tags: [new ResourceTag('Application', Refs.StackName), new ResourceTag('Name', Resources.BastionHost)],
-        }).dependsOn([Resources.PublicASubnet, Resources.BastionSecurityGroup]),
-
-        [Resources.BastionSecurityGroup]: new EC2.SecurityGroup({
-            GroupDescription: 'Enable access to the Bastion host',
-            VpcId: Fn.Ref(Resources.VPC),
-            SecurityGroupIngress: [
-                {
-                    IpProtocol: 'tcp',
-                    FromPort: 22,
-                    ToPort: 22,
-                    CidrIp: Fn.Ref('SSHFrom'),
-                },
-            ],
-        }).dependsOn(Resources.VPC),
 
         [Resources.UploadsBucket]: new S3.Bucket({
             BucketName: Fn.Join('-', [ProjectName, 'uploads', DeployEnv, Resources.RootAwsAccountId]),
