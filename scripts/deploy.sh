@@ -20,7 +20,7 @@ stack_name="${PROJECT_NAME}-app-${DEPLOY_ENV}"
 
 # run once
 # in shell that has AWS access keys for target environment and AWS_REGION variable set
-npm run cdk bootstrap
-npm run cdk -- deploy --require-approval=never
+npm run --prefix deploy cdk bootstrap
+npm run --prefix deploy cdk -- deploy --require-approval=never
 
 popd

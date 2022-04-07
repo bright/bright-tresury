@@ -204,7 +204,7 @@ To set up the tunnel to safely connect to the database:
 
 -   set up aws-vault session
 -   before the first run you may need to install the Session Manager plugin - [instructions](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html#install-plugin-macos)
--   run `../scripts/bastion-host-ssh`
+-   run `DEPLOY_ENV=${required-env} ../scripts/bastion-host-ssh`
 -   you will see the information about successful login similar to:
 
 ```
@@ -225,6 +225,7 @@ To connect to the database:
     -   host: `localhost`
     -   port: `5433`
     -   username & password - get from the AWS Parameter Store
+    -   make sure to set the read-only option for all AWS databases!
 
 #### AWS credentials
 
