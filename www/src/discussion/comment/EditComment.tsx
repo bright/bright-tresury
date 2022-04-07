@@ -3,7 +3,7 @@ import clsx from 'clsx'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useQueryClient } from 'react-query'
-import { PublicUserDto } from '../../util/publicUser.dto'
+import { PublicInAppUserDto } from '../../util/publicUser.dto'
 import { COMMENTS_QUERY_KEY_BASE, useEditComment } from '../comments.api'
 import { CommentDto, DiscussionDto } from '../comments.dto'
 import CancelSendButtons from './components/CancelSendButtons'
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     comment: CommentDto
     discussion: DiscussionDto
-    people: PublicUserDto[]
+    people: PublicInAppUserDto[]
     onClose: () => void
 }
 export type EditCommentProps = OwnProps

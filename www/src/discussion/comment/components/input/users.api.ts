@@ -1,6 +1,6 @@
 import { useQuery, UseQueryOptions } from 'react-query'
 import { apiGet, getUrlSearchParams } from '../../../../api'
-import { PublicUserDto } from '../../../../util/publicUser.dto'
+import { PublicInAppUserDto, PublicUserDto } from '../../../../util/publicUser.dto'
 
 const USERS_API_PATH = 'users'
 
@@ -8,9 +8,9 @@ interface UsersQuery {
     display: string
 }
 
-export async function getUsers(dto: UsersQuery): Promise<PublicUserDto[]> {
+export async function getUsers(dto: UsersQuery): Promise<PublicInAppUserDto[]> {
     const queryParams = getUrlSearchParams(dto).toString()
-    return apiGet<PublicUserDto[]>(`${USERS_API_PATH}?${queryParams}`)
+    return apiGet<PublicInAppUserDto[]>(`${USERS_API_PATH}?${queryParams}`)
 }
 
 export const USERS_QUERY_KEY_BASE = 'users'

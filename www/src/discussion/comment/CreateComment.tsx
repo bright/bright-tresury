@@ -8,7 +8,7 @@ import { COMMENTS_QUERY_KEY_BASE, useCreateComment } from '../comments.api'
 import { DiscussionDto } from '../comments.dto'
 import CancelSendButtons from './components/CancelSendButtons'
 import CommentInput from './components/input/CommentInput'
-import { PublicUserDto } from '../../util/publicUser.dto'
+import { PublicInAppUserDto } from '../../util/publicUser.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     discussion: DiscussionDto
-    people: PublicUserDto[]
+    people: PublicInAppUserDto[]
 }
 export type CreateCommentProps = OwnProps
 

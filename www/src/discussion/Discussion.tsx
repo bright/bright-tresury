@@ -11,7 +11,7 @@ import DiscussionCommentsContainer from './list/DiscussionCommentsContainer'
 import DiscussionContainer from './list/DiscussionContainer'
 import DiscussionHeader from './list/header/DiscussionHeader'
 import NoComments from './NoComments'
-import { PublicUserDto } from '../util/publicUser.dto'
+import { isPublicInAppUserDto, PublicInAppUserDto, PublicUserDto } from '../util/publicUser.dto'
 
 interface OwnProps {
     discussion: DiscussionDto
@@ -34,7 +34,7 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
 
     const { status, data: comments } = useGetComments(discussion)
 
-    const people: PublicUserDto[] = useMemo(() => {
+    const people: PublicInAppUserDto[] = useMemo(() => {
         if (!comments) {
             return []
         }
@@ -53,11 +53,14 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
             authors.push(discussedEntity.curator)
         }
 
-        // to map to remove duplicates, deleted accounts, accounts with no userId and logged in user
-        const authorsMap = new Map<string, PublicUserDto>()
+        // to map to remove duplicates
+        const authorsMap = new Map<string, PublicInAppUserDto>()
         authors.forEach((author) => {
-            if (author.status !== UserStatus.Deleted && author.userId && author.userId !== user?.id)
-                authorsMap.set(author.userId!, author)
+            // include only if: in-app account, not deleted account and not the logged in user
+            if (isPublicInAppUserDto(author) && author.status !== UserStatus.Deleted && author.userId !== user?.id) {
+                // if `author` has userId, it is an in-app user so we can safely assert the type
+                authorsMap.set(author.userId, author as PublicInAppUserDto)
+            }
         })
 
         return Array.from(authorsMap.values())
