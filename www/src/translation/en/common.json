@@ -810,6 +810,30 @@
             "tippers": "Tippers"
         }
     },
+    "tip": {
+        "create": {
+            "title": "Create Tip",
+            "create": "Create",
+            "submitModal": {
+                "title": "You are about to create a tip request",
+                "warningMessage": "In order to submit your tip request you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your tip proposal will be <strong>rejected you will lose the deposit</strong>. If your tip proposal is approved you will get the deposit money back.",
+                "eventDescription": "event new tip finished"
+            }
+        },
+        "form": {
+            "emptyFieldError": "This field cannot be empty",
+            "maxBlockchainDescriptionLength": "The on-chain description is too long",
+            "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
+            "fields": {
+                "title": "Title",
+                "deposit": "Deposit",
+                "depositTooltip": "The deposit amount that will be bonded (depends on the on-chain description length)",
+                "blockchainDescription": "Description - this description is stored on chain (the bond will increase for each byte of this description)",
+                "description": "Description",
+                "beneficiary": "Beneficiary"
+            }
+        }
+    },
     "ideaProposalDetails": {
         "title": "Title",
         "field": "Field",

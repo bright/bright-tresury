@@ -45,6 +45,7 @@ import {
     ROUTE_NEW_IDEA,
     ROUTE_TIPS,
     ROUTE_NEW_PASSWORD,
+    ROUTE_NEW_TIP,
     ROUTE_PASSWORD_RECOVERY,
     ROUTE_PRIVACY,
     ROUTE_PROPOSAL,
@@ -64,6 +65,7 @@ import { AccountsContextProvider } from './substrate-lib/accounts/AccountsContex
 import { SubstrateContextProvider } from './substrate-lib/api/SubstrateContext'
 import { initializeSupertokens } from './supertokens'
 import ThemeWrapper from './theme/ThemeWrapper'
+import TipCreate from './tips/create/TipCreate'
 import { getTranslation } from './translation/translationStorage'
 import LearnMore from './components/learnMore/LearnMore'
 import PasswordRecovery from './auth/PasswordRecovery/PasswordRecovery'
@@ -125,6 +127,7 @@ function AppRoutes() {
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />
 
                 <Route exact={true} path={ROUTE_TIPS} component={Tips} />
+                <PrivateRoute exact={true} path={ROUTE_NEW_TIP} component={TipCreate} requireVerified={true} />
 
                 <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
                 <Route exact={true} path={ROUTE_ACCOUNT_DELETED} component={AccountDeleted} />

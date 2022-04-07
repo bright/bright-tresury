@@ -16,6 +16,8 @@ export const ROUTE_EDIT_PROPOSAL = '/proposals/:proposalIndex/edit'
 // endregion
 // region Tips
 export const ROUTE_TIPS = '/tips'
+export const ROUTE_TIP = '/tips/:tipHash'
+export const ROUTE_NEW_TIP = '/tips/new'
 // endregion
 // region Bounties
 export const ROUTE_BOUNTIES = '/bounties'
