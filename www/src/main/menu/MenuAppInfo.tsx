@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) =>
             fontWeight: 600,
             borderRadius: '8px',
             padding: '.5em 2em',
+            textDecoration: 'none',
         },
         logo: {
             marginTop: 30,
