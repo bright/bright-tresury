@@ -1,11 +1,11 @@
 import React from 'react'
-import ReactMarkdown from 'react-markdown'
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown'
+import MDEditor from '@uiw/react-md-editor'
 
 const Markdown = ({ children, className }: ReactMarkdownOptions) => {
     return (
         <div className={className}>
-            <ReactMarkdown>{children}</ReactMarkdown>
+            <MDEditor.Markdown source={children} />
         </div>
     )
 }
