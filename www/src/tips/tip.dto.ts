@@ -1,17 +1,21 @@
 import { NetworkPlanckValue } from '../util/types'
 import { PublicUserDto } from '../util/publicUser.dto'
+import { Nil } from '../../../backend/src/utils/types'
 
 export interface TipDto {
-    tippersCount: number
-    title: string
-    polkassembly: {
-        title: string
-    }
-    blockchain: {
-        index: number
-        description: string
+    hash: string
+    reason: Nil<string>
+    finder: PublicUserDto
+    beneficiary: PublicUserDto
+    tips: {
+        tipper: PublicUserDto
         value: NetworkPlanckValue
-        finder: PublicUserDto
-        beneficiary: PublicUserDto
-    }
+    }[]
+    tippersCount: number
+
+    title: Nil<string>
+    description: Nil<string>
+    owner: Nil<PublicUserDto>
+
+    polkassembly?: Nil<{ title: string }>
 }

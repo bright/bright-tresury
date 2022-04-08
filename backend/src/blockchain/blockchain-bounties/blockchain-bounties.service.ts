@@ -127,18 +127,6 @@ export class BlockchainBountiesService {
         const deriveBounty = deriveBounties.find((db) => Number(db.index.toString()) === index)
         return deriveBounty
     }
-    private static getVoters(motions: DeriveCollectiveProposal[]): string[] {
-        const voters = motions
-            .map((motion) => [
-                ...(motion.votes?.ayes?.map((accountId) => accountId.toHuman()) ?? []),
-                ...(motion.votes?.nays?.map((accountId) => accountId.toHuman()) ?? []),
-            ])
-            .reduce((acc, motionVoters) => {
-                motionVoters.forEach((voter) => acc.add(voter))
-                return acc
-            }, new Set<string>())
-        return [...voters]
-    }
 
     async getMotions(networkId: string, index: number): Promise<ProposedMotionDto[]> {
         const deriveBounty = await this.getDeriveBounty(networkId, index)

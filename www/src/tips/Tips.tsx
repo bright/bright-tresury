@@ -21,8 +21,7 @@ const Tips = () => {
         ...defaultPaginatedRequestParams(),
     })
     const tips = useMemo(() => data?.pages?.map((page) => page.items).flat() ?? [], [data])
-    const pageNumber = useMemo(() => data?.pages?.length ?? 0, [data])
-    const canLoadMore = true
+    const canLoadMore = useMemo(() => (data?.pages ? data?.pages[0]?.total > tips.length : false), [data])
     return (
         <>
             <TipsHeader />
@@ -31,11 +30,7 @@ const Tips = () => {
                 errorText={t('errors.errorOccurredWhileLoadingTips')}
                 loadingText={t('loading.tips')}
             >
-                <CardsList<TipDto>
-                    items={tips}
-                    renderCard={(tip: TipDto) => <TipCard item={tip} />}
-                    sortFunction={(tipA: TipDto, tipB: TipDto) => tipB.blockchain.index - tipA.blockchain.index}
-                />
+                <CardsList<TipDto> items={tips} renderCard={(tip: TipDto) => <TipCard item={tip} />} />
             </LoadingWrapper>
             {canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
         </>

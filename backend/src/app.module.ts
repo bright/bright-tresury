@@ -30,6 +30,7 @@ import { PolkassemblyModule } from './polkassembly/polkassembly.module'
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { DiscussionsModule } from './discussions/discussions.module'
 import helmet from 'helmet'
+import { TipsModule } from './tips/tips.module'
 
 @Module({
     imports: [
@@ -56,6 +57,7 @@ import helmet from 'helmet'
             limit: 30,
         }),
         DiscussionsModule,
+        TipsModule,
     ],
     providers: [
         {

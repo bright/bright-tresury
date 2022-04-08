@@ -17,6 +17,10 @@ const getTips = async (params: GetTipsApiParams & PaginationRequestParams) => {
     return apiGet<PaginationResponseDto<TipDto>>(`${TIPS_API_PATH}?${getUrlSearchParams(params).toString()}`)
 }
 export const useGetTips = ({ pageNumber, ...params }: GetTipsApiParams & PaginationRequestParams) =>
-    useInfiniteQuery([TIPS_QUERY_KEY_BASE, params], ({ pageParam: pageNumber }) => getTips({ pageNumber, ...params }), {
-        getNextPageParam: (lastPage, allPages) => allPages.length + 1,
-    })
+    useInfiniteQuery(
+        [TIPS_QUERY_KEY_BASE, params.network, params.timeFrame],
+        ({ pageParam: pageNumber }) => getTips({ pageNumber, ...params }),
+        {
+            getNextPageParam: (lastPage, allPages) => allPages.length + 1,
+        },
+    )

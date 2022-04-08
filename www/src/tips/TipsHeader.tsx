@@ -73,7 +73,7 @@ const TipsHeader = () => {
     const { t } = useTranslation()
     const classes = useStyles()
     const goToNewTip = () => {
-        alert('Not implemented yet')
+        // TODO: fill with TREAS-442 or TREAS-478
     }
 
     return (

@@ -1,5 +1,7 @@
 import React, { PropsWithChildren } from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
+import { ClassNameProps } from '../../props/className.props'
+import clsx from 'clsx'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -15,12 +17,12 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {}
 
-export type CardDetailsProps = PropsWithChildren<OwnProps>
+export type CardDetailsProps = PropsWithChildren<OwnProps> & ClassNameProps
 
-const CardHeader = ({ children }: CardDetailsProps) => {
+const CardHeader = ({ children, className }: CardDetailsProps) => {
     const classes = useStyles()
 
-    return <div className={classes.root}>{children}</div>
+    return <div className={clsx(classes.root, className)}>{children}</div>
 }
 
 export default CardHeader

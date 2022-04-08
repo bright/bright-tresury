@@ -803,8 +803,11 @@
     "tips": {
         "indexPrefix": "#",
         "list": {
+            "createTip": "Create Tip",
             "finder": "Finder",
-            "beneficiary": "Beneficiary"
+            "beneficiary": "Beneficiary",
+            "tipper": "Tipper",
+            "tippers": "Tippers"
         }
     },
     "ideaProposalDetails": {
@@ -944,11 +947,13 @@
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
         "errorOccurredWhileLoadingBounty": "An error occurred while loading bounty.",
         "errorOccurredWhileLoadingComments": "An error occurred while loading comments.",
+        "errorOccurredWhileLoadingTips": "An error occurred while loading tips.",
         "somethingWentWrong": "Ooops... Something went wrong."
     },
     "loading": {
         "ideas": "We're loading the ideas. It may take a moment. Bear with us.",
         "bounties": "We're loading the bounties. It may take a moment. Bear with us.",
+        "tips": "We're loading tips. It may take a moment. Bear with us.",
         "idea": "We're loading the idea. It may take a moment. Bear with us.",
         "ideaMilestones": "We're loading the idea milestones. It may take a moment. Bear with us.",
         "proposals": "We're loading the proposals. It may take a moment. Bear with us.",

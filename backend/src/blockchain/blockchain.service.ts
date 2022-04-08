@@ -12,13 +12,7 @@ import { getLogger } from '../logging.module'
 import { BlockchainProposal, BlockchainProposalStatus } from './dto/blockchain-proposal.dto'
 import { DeriveAccountRegistration } from '@polkadot/api-derive/accounts/types'
 import type { BlockNumber } from '@polkadot/types/interfaces/runtime'
-import {
-    getApi,
-    extractNumberFromBlockchainEvent,
-    getAccounts,
-    accountIdToAddress,
-    getBlockchainConfiguration,
-} from './utils'
+import { getApi, extractNumberFromBlockchainEvent, getBlockchainConfiguration } from './utils'
 import { BlockchainsConnections } from './blockchain.module'
 import { StatsDto } from '../stats/stats.dto'
 import { GetProposalsCountDto } from '../stats/get-proposals-count.dto'
