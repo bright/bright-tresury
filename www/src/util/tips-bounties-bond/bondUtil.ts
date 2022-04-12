@@ -1,6 +1,6 @@
 import BN from 'bn.js'
-import { getBytesLength } from '../util/stringUtil'
-import { NetworkPlanckValue } from '../util/types'
+import { getBytesLength } from '../stringUtil'
+import { NetworkPlanckValue } from '../types'
 
 export function calculateBondValue(
     onChainDesc: string,

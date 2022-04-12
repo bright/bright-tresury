@@ -1,20 +1,24 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
 import TitleField from 'tips/form/fields/TitleField'
 import BeneficiaryField from '../form/fields/BeneficiaryField'
 import BlockchainDescriptionField from '../form/fields/BlockchainDescriptionField'
 import DescriptionField from '../form/fields/DescriptionField'
+import TipBond from '../form/fields/TipBond'
+import { TipCreateFormValues } from './useTipCreate'
 
-interface OwnProps {}
+interface OwnProps {
+    values: TipCreateFormValues
+}
 
 export type TipCreateFormFieldsProps = OwnProps
 
-const TipCreateFormFields = ({}: TipCreateFormFieldsProps) => {
+const TipCreateFormFields = ({ values }: TipCreateFormFieldsProps) => {
     return (
         <>
             <TitleField />
-            <BlockchainDescriptionField />
             <BeneficiaryField />
+            <TipBond blockchainDescription={values.blockchainDescription} />
+            <BlockchainDescriptionField />
             <DescriptionField />
         </>
     )

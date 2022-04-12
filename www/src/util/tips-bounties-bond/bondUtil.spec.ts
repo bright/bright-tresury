@@ -1,5 +1,5 @@
-import { NetworkPlanckValue } from '../util/types'
-import { calculateBondValue } from './bountyBondUtil'
+import { NetworkPlanckValue } from '../types'
+import { calculateBondValue } from './bondUtil'
 
 describe('calculateBondValue', () => {
     const baseDeposit = '100' as NetworkPlanckValue

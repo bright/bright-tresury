@@ -27,7 +27,6 @@ describe('GET blockchains configurations', () => {
                 color,
                 isDefault,
                 isLiveNetwork,
-                bounties,
                 version,
             } = blockchainConfiguration
             expect(typeof id).toBe('string')
@@ -49,12 +48,36 @@ describe('GET blockchains configurations', () => {
             expect(typeof color).toBe('string')
             expect(typeof isDefault).toBe('boolean')
             expect(typeof isLiveNetwork).toBe('boolean')
+            expect(typeof version).toBe('number')
+        }
+    })
+
+    it('response should include tips configuration', async () => {
+        const response = await request(app()).get('/api/v1/blockchain/configuration')
+        const blockchainsConfiguration = response.body
+        expect(Array.isArray(blockchainsConfiguration)).toBe(true)
+        for (const blockchainConfiguration of blockchainsConfiguration) {
+            const { tips } = blockchainConfiguration
+            expect(typeof tips.dataDepositPerByte).toBe('string')
+            expect(typeof tips.tipReportDepositBase).toBe('string')
+            expect(typeof tips.maximumReasonLength).toBe('number')
+            expect(typeof tips.tipCountdown).toBe('number')
+            expect(tips.tipFindersFee).toBeGreaterThan(0)
+            expect(tips.tipFindersFee).toBeLessThan(100)
+        }
+    })
+
+    it('response should include bounties configuration', async () => {
+        const response = await request(app()).get('/api/v1/blockchain/configuration')
+        const blockchainsConfiguration = response.body
+        expect(Array.isArray(blockchainsConfiguration)).toBe(true)
+        for (const blockchainConfiguration of blockchainsConfiguration) {
+            const { bounties } = blockchainConfiguration
             expect(typeof bounties).toBe('object')
             expect(typeof bounties.depositBase).toBe('string')
             expect(typeof bounties.dataDepositPerByte).toBe('string')
             expect(typeof bounties.bountyValueMinimum).toBe('string')
             expect(typeof bounties.maximumReasonLength).toBe('number')
-            expect(typeof version).toBe('number')
         }
     })
 })

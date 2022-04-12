@@ -1,32 +1,40 @@
+import { createStyles } from '@material-ui/core'
+import { makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Bond from '../../../components/form/input/networkValue/Bond'
 import { ClassNameProps } from '../../../components/props/className.props'
 import { useNetworks } from '../../../networks/useNetworks'
-import { NetworkPlanckValue } from '../../../util/types'
-// import { calculateBondValue } from '../../tipBondUtil'
+import { calculateBondValue } from '../../../util/tips-bounties-bond/bondUtil'
+
+const useStyles = makeStyles(() =>
+    createStyles({
+        root: {
+            marginTop: '2em',
+        },
+    }),
+)
 
 interface OwnProps {
-    networkId: string
     blockchainDescription: string
 }
 
 export type TipBondProps = OwnProps & ClassNameProps
 
-const TipBond = ({ networkId, blockchainDescription }: TipBondProps) => {
+const TipBond = ({ blockchainDescription }: TipBondProps) => {
+    const classes = useStyles()
     const { t } = useTranslation()
-    const { findNetwork } = useNetworks()
-    const network = findNetwork(networkId)!
+    const { network } = useNetworks()
 
-    const depositValue = '0' as NetworkPlanckValue
-    // todo calculateBondValue(
-    // blockchainDescription,
-    // network.bounties.depositBase,
-    // network.bounties.dataDepositPerByte,
-    // )
+    const depositValue = calculateBondValue(
+        blockchainDescription,
+        network.tips.tipReportDepositBase,
+        network.tips.dataDepositPerByte,
+    )
 
     return (
         <Bond
+            className={classes.root}
             network={network}
             bondValue={depositValue}
             label={t('tip.form.fields.deposit')}

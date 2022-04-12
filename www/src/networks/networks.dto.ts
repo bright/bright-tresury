@@ -26,6 +26,13 @@ export interface Network {
         bountyValueMinimum: NetworkPlanckValue
         maximumReasonLength: number
     }
+    tips: {
+        dataDepositPerByte: NetworkPlanckValue
+        tipReportDepositBase: NetworkPlanckValue
+        maximumReasonLength: number
+        tipCountdown: number
+        tipFindersFee: number
+    }
     version: number
     polkassemblyUrl: string
 }

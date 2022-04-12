@@ -29,7 +29,7 @@ const TipCard = ({ item: tip }: TipCardProps) => {
     const { t } = useTranslation()
     const classes = useStyles()
     const tippers = useMemo(
-        () => `${tip.tips.length} ${tip.tips.length === 1 ? t('tips.list.tipper') : t('tips.list.tippers')}`,
+        () => `${tip.tips.length} ${tip.tips.length === 1 ? t('tip.list.tipper') : t('tip.list.tippers')}`,
         [tip],
     )
     return (
@@ -47,8 +47,8 @@ const TipCard = ({ item: tip }: TipCardProps) => {
             <Divider />
 
             <CardFooter>
-                <User label={t('tips.list.finder')} user={tip.finder} />
-                <User label={t('tips.list.beneficiary')} user={tip.beneficiary} />
+                <User label={t('tip.list.finder')} user={tip.finder} />
+                <User label={t('tip.list.beneficiary')} user={tip.beneficiary} />
             </CardFooter>
         </NetworkCard>
     )

@@ -33,6 +33,13 @@ export interface BlockchainConfig {
         maximumReasonLength: number
         bountyValueMinimum: NetworkPlanckValue
     }
+    tips: {
+        dataDepositPerByte: NetworkPlanckValue
+        tipReportDepositBase: NetworkPlanckValue
+        maximumReasonLength: number
+        tipCountdown: number
+        tipFindersFee: number
+    }
     version: number
 }
 
@@ -58,7 +65,8 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         format: stringFormat,
     },
     types: {
-        doc: 'Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.',
+        doc:
+            'Additional types used by runtime modules. This is necessary if the runtime modules uses types not available in the base Substrate runtime.',
         default: {},
         format: objectFormat,
     },
@@ -82,7 +90,7 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         format: stringFormat,
     },
     bond: {
-        doc: 'Proposal bond information used by this blockchain',
+        doc: 'Proposal tips-bounties-bond information used by this blockchain',
         default: { minValue: '1000000000000' as NetworkPlanckValue, percentage: 5, maxValue: undefined },
     },
     currency: {
@@ -117,6 +125,16 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
             dataDepositPerByte: '100000000' as NetworkPlanckValue,
             maximumReasonLength: 16384,
             bountyValueMinimum: '100000000000' as NetworkPlanckValue,
+        },
+    },
+    tips: {
+        doc: 'Tips module configuration used by this blockchain',
+        default: {
+            tipReportDepositBase: '10000000000' as NetworkPlanckValue,
+            dataDepositPerByte: '100000000' as NetworkPlanckValue,
+            maximumReasonLength: 16384,
+            tipCountdown: 70,
+            tipFindersFee: 20,
         },
     },
     version: {

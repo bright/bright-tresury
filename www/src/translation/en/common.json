@@ -800,7 +800,7 @@
             "bountyClosed": "This bounty is already closed."
         }
     },
-    "tips": {
+    "tip": {
         "indexPrefix": "#",
         "list": {
             "createTip": "Create Tip",
@@ -808,9 +808,7 @@
             "beneficiary": "Beneficiary",
             "tipper": "Tipper",
             "tippers": "Tippers"
-        }
-    },
-    "tip": {
+        },
         "create": {
             "title": "Create Tip",
             "create": "Create",

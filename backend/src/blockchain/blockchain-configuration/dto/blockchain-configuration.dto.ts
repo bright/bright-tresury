@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger'
+import { BlockchainTipsConfigurationDto } from '../../blockchain-tips/dto/blockchain-tips-configuration.dto'
 import { BlockchainConfig } from '../blockchain-configuration.config'
 import { NetworkPlanckValue, Nil } from '../../../utils/types'
 import { BlockchainBountiesConfigurationDto } from '../../blockchain-bounties/dto/blockchain-bounties-configuration.dto'
@@ -66,6 +67,9 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Bounties module configuration', type: BlockchainBountiesConfigurationDto })
     bounties: BlockchainBountiesConfigurationDto
 
+    @ApiProperty({ description: 'Tips module configuration', type: BlockchainTipsConfigurationDto })
+    tips: BlockchainTipsConfigurationDto
+
     @ApiProperty({ description: 'Chain current version' })
     version: number
 
@@ -86,6 +90,7 @@ export class BlockchainConfigurationDto {
         isDefault,
         isLiveNetwork,
         bounties,
+        tips,
         version,
     }: BlockchainConfig) {
         this.id = id
@@ -104,6 +109,7 @@ export class BlockchainConfigurationDto {
         this.isDefault = isDefault
         this.isLiveNetwork = isLiveNetwork
         this.bounties = bounties
+        this.tips = tips
         this.version = version
     }
 }

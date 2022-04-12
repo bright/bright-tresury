@@ -1,16 +1,8 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import { Formik } from 'formik'
 import React, { PropsWithChildren } from 'react'
-import { useTranslation } from 'react-i18next'
-import * as Yup from 'yup'
 import FormFooter from '../../components/form/footer/FormFooter'
-import { networkValueValidationSchema, optional } from '../../components/form/input/networkValue/NetworkValueInput'
 import { useModal } from '../../components/modal/useModal'
-import { useNetworks } from '../../networks/useNetworks'
-import { isValidAddressOrEmpty } from '../../util/addressValidator'
-import { isMin, toNetworkDisplayValue } from '../../util/quota.util'
-import { getBytesLength } from '../../util/stringUtil'
-import { NetworkDisplayValue, NetworkPlanckValue } from '../../util/types'
 import SubmitTipModal from './SubmitTipModal'
 import TipCreateFormFields from './TipCreateFormFields'
 import { useTipCreate } from './useTipCreate'
@@ -48,7 +40,7 @@ const TipCreateForm = ({ children }: TipCreateFormProps) => {
             {({ values, handleSubmit }) => (
                 <>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <TipCreateFormFields />
+                        <TipCreateFormFields values={values} />
                         <FormFooter>{children}</FormFooter>
                     </form>
                     <SubmitTipModal open={submitTipModal.visible} onClose={submitTipModal.close} tip={values} />

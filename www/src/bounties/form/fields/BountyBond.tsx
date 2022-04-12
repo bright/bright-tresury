@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import Bond from '../../../components/form/input/networkValue/Bond'
 import { ClassNameProps } from '../../../components/props/className.props'
 import { useNetworks } from '../../../networks/useNetworks'
-import { calculateBondValue } from '../../bountyBondUtil'
+import { calculateBondValue } from '../../../util/tips-bounties-bond/bondUtil'
 
 interface OwnProps {
     networkId: string

@@ -2,6 +2,8 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import { useNetworks } from 'networks/useNetworks'
 import { isValidAddressOrEmpty } from 'util/addressValidator'
+import { optional } from '../../components/form/input/networkValue/NetworkValueInput'
+import { getBytesLength } from '../../util/stringUtil'
 
 export interface TipCreateFormValues {
     blockchainDescription: string
@@ -21,18 +23,18 @@ export const useTipCreate = (): UseTipCreateResult => {
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('tip.form.emptyFieldError')),
-        blockchainDescription: Yup.string().required(t('tip.form.emptyFieldError')),
+        blockchainDescription: Yup.string()
+            .required(t('tip.form.emptyFieldError'))
+            .test(
+                'max-bytes-length',
+                t('tip.form.maxBlockchainDescriptionLength'),
+                optional((value) => getBytesLength(value) <= network.tips.maximumReasonLength),
+            ),
         beneficiary: Yup.string()
             .required(t('tip.form.emptyFieldError'))
-            .test('validate-address', t('form.web3AddressInput.wrongWeb3AddressError'), (address) => {
-                return isValidAddressOrEmpty(address, network.ss58Format)
-            }),
-        // todo add validation for maximumReasonLength
-        // .test(
-        //     'max-bytes-length',
-        //     t('tip.form.maxBlockchainDescriptionLength'),
-        //     optional((value) => getBytesLength(value) <= network.tips.maximumReasonLength),
-        // ),
+            .test('validate-address', t('form.web3AddressInput.wrongWeb3AddressError'), (address) =>
+                isValidAddressOrEmpty(address, network.ss58Format),
+            ),
     })
 
     const initialValues: TipCreateFormValues = {

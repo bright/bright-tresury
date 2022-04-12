@@ -38,20 +38,24 @@ export class BlockchainBountiesService {
     }
 
     getBountiesConfig(networkId: string): BlockchainBountiesConfigurationDto | undefined {
-        const bountiesConsts = getApi(this.blockchainsConnections, networkId).consts.bounties
-        if (!bountiesConsts) {
-            return
-        }
+        try {
+            const bountiesConsts = getApi(this.blockchainsConnections, networkId).consts.bounties
+            if (!bountiesConsts) {
+                return
+            }
 
-        const depositBase = bountiesConsts.bountyDepositBase.toString() as NetworkPlanckValue
-        const dataDepositPerByte = bountiesConsts.dataDepositPerByte.toString() as NetworkPlanckValue
-        const bountyValueMinimum = bountiesConsts.bountyValueMinimum.toString() as NetworkPlanckValue
-        const maximumReasonLength = Number(bountiesConsts.maximumReasonLength)
-        return {
-            depositBase,
-            dataDepositPerByte,
-            bountyValueMinimum,
-            maximumReasonLength,
+            const depositBase = bountiesConsts.bountyDepositBase.toString() as NetworkPlanckValue
+            const dataDepositPerByte = bountiesConsts.dataDepositPerByte.toString() as NetworkPlanckValue
+            const bountyValueMinimum = bountiesConsts.bountyValueMinimum.toString() as NetworkPlanckValue
+            const maximumReasonLength = Number(bountiesConsts.maximumReasonLength)
+            return {
+                depositBase,
+                dataDepositPerByte,
+                bountyValueMinimum,
+                maximumReasonLength,
+            }
+        } catch (err) {
+            logger.error('Error while fetching bounties configuration', err)
         }
     }
     async getBounties(networkId: string): Promise<BlockchainBountyDto[]> {

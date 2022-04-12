@@ -5,10 +5,38 @@ import { encodeAddress } from '@polkadot/keyring'
 import { NetworkPlanckValue } from '../../utils/types'
 import { BlockchainTipDto } from './dto/blockchain-tip.dto'
 import { hexToString } from '@polkadot/util'
+import { BlockchainTipsConfigurationDto } from './dto/blockchain-tips-configuration.dto'
+import { getLogger } from '../../logging.module'
+
+const logger = getLogger()
 
 @Injectable()
 export class BlockchainTipsService {
     constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections) {}
+
+    getTipsConfig(networkId: string): BlockchainTipsConfigurationDto | undefined {
+        try {
+            const tipsConsts = getApi(this.blockchainsConnections, networkId).consts.tips
+            if (!tipsConsts) {
+                return
+            }
+
+            const dataDepositPerByte = tipsConsts.dataDepositPerByte.toString() as NetworkPlanckValue
+            const tipReportDepositBase = tipsConsts.tipReportDepositBase.toString() as NetworkPlanckValue
+            const maximumReasonLength = Number(tipsConsts.maximumReasonLength)
+            const tipCountdown = tipsConsts.tipCountdown.toNumber()
+            const tipFindersFee = tipsConsts.tipFindersFee.toNumber()
+            return {
+                dataDepositPerByte,
+                tipReportDepositBase,
+                maximumReasonLength,
+                tipCountdown,
+                tipFindersFee,
+            }
+        } catch (err) {
+            logger.error('Error while fetching tips configuration', err)
+        }
+    }
 
     async getTips(networkId: string): Promise<BlockchainTipDto[]> {
         const api = getApi(this.blockchainsConnections, networkId)

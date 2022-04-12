@@ -1,3 +1,4 @@
+import { useHistory } from 'react-router'
 import HeaderListContainer, { mobileHeaderListHorizontalMargin } from '../components/header/list/HeaderListContainer'
 import BasicInfo from '../components/header/BasicInfo'
 import Button from '../components/button/Button'
@@ -11,6 +12,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { makeStyles, Theme } from '@material-ui/core'
 import { createStyles } from '@material-ui/core/styles'
+import { ROUTE_NEW_TIP } from '../routes/routes'
 import { breakpoints } from '../theme/theme'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -72,15 +74,17 @@ const useStyles = makeStyles((theme: Theme) =>
 const TipsHeader = () => {
     const { t } = useTranslation()
     const classes = useStyles()
+    const history = useHistory()
+
     const goToNewTip = () => {
-        // TODO: fill with TREAS-442 or TREAS-478
+        history.push(ROUTE_NEW_TIP)
     }
 
     return (
         <HeaderListContainer>
             <BasicInfo>
                 <Button className={classes.newTipButton} variant="contained" color="primary" onClick={goToNewTip}>
-                    {t('tips.list.createTip')}
+                    {t('tip.list.createTip')}
                 </Button>
             </BasicInfo>
             <FlexBreakLine className={classes.flexBreakLine} />
