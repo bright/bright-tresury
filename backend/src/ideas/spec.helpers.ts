@@ -64,10 +64,10 @@ export async function createWeb3SessionData(address: string) {
     })
 }
 
-export async function createSessionData(
+export async function createUserEntity(
     user: Partial<UserEntity> = {},
     usersRepository?: Repository<UserEntity>,
-): Promise<SessionData> {
+): Promise<UserEntity> {
     const defaultUser = new UserEntity(
         user.id ?? uuid(),
         user.username ?? 'chuck',
@@ -77,6 +77,14 @@ export async function createSessionData(
 
     const repository: Repository<UserEntity> =
         usersRepository ?? beforeSetupFullApp().get().get(getRepositoryToken(UserEntity))
-    const userEntity = await repository.save({ ...defaultUser, ...user })
-    return { user: userEntity }
+    return repository.save({ ...defaultUser, ...user })
+}
+
+export async function createSessionData(
+    user: Partial<UserEntity> = {},
+    usersRepository?: Repository<UserEntity>,
+): Promise<SessionData> {
+    return {
+        user: await createUserEntity(user, usersRepository),
+    }
 }

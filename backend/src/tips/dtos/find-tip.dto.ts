@@ -6,6 +6,5 @@ import { PublicUserDto } from '../../users/dto/public-user.dto'
 export interface FindTipDto {
     blockchain: BlockchainTipDto
     entity: Nil<TipEntity>
-    finder: PublicUserDto
-    beneficiary: PublicUserDto
+    people: Map<string, PublicUserDto>
 }

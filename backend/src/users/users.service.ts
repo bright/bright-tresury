@@ -7,7 +7,6 @@ import {
 } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { encodeAddress } from '@polkadot/keyring'
-import { checkAddress } from '@polkadot/util-crypto/address/check'
 import { FindConditions, In, Repository } from 'typeorm'
 import { UserEntity } from './entities/user.entity'
 import { CreateUserDto } from './dto/create-user.dto'
@@ -83,39 +82,37 @@ export class UsersService {
         } catch {
             // not found so nothing happens
         }
-
-        const user = await this.findPublicByWeb3Address(display)
-        if (user) users.push(user)
+        try {
+            const userEntity = await this.findOneByWeb3AddressOrThrow(display)
+            users.push(
+                new PublicUserDto({
+                    userId: userEntity.id,
+                    username: userEntity.username,
+                    status: userEntity.status,
+                    web3address: display,
+                }),
+            )
+        } catch {
+            // not found so nothing happens
+        }
 
         return users
     }
 
-    async findPublicByWeb3Address(web3Address: string): Promise<Nil<PublicUserDto>> {
-        const entity = await this.findOneByWeb3Address(web3Address)
-        if (entity)
+    async getPublicUserDataForWeb3Address(web3Address: string): Promise<PublicUserDto> {
+        try {
+            const userEntity = await this.findOneByWeb3AddressOrThrow(web3Address)
             return new PublicUserDto({
-                userId: entity.id,
-                username: entity.username,
-                status: entity.status,
-                web3address: (entity.web3Addresses ?? [])[0].address,
+                userId: userEntity.id,
+                username: userEntity.username,
+                status: userEntity.status,
+                web3address: web3Address,
             })
-    }
-    async getPublicUserDataForWeb3Address(web3Address: string): Promise<Nil<PublicUserDto>> {
-        const data = await this.findPublicByWeb3Address(web3Address)
-        if (data) return data
-        if (isValidAddress(web3Address)) return new PublicUserDto({ web3address: web3Address })
-    }
+        } catch {
+            // nothing to do
+        }
 
-    async findOneByWeb3Address(web3Address: string): Promise<Nil<UserEntity>> {
-        if (!isValidAddress(web3Address)) return
-
-        return this.userRepository
-            .createQueryBuilder('user')
-            .leftJoinAndSelect('user.web3Addresses', 'web3Addresses')
-            .where('web3Addresses.address = ANY(:web3Addresses)', {
-                web3Addresses: [web3Address, encodeAddress(web3Address)],
-            })
-            .getOne()
+        return new PublicUserDto({ web3address: web3Address })
     }
 
     async findOneByWeb3AddressOrThrow(web3Address: string): Promise<UserEntity> {

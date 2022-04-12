@@ -244,7 +244,7 @@ describe('ProposalDetailsService', () => {
             const idea = await createIdea(
                 {
                     details: { title: 'ideaTitle' },
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [{ name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue }],
                 },
                 sessionData,

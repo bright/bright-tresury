@@ -59,13 +59,19 @@ export class TipsService {
         return Promise.resolve({ items: [], total: 0 })
     }
     private async createFindTipDto(blockchain: BlockchainTipDto, entity: Nil<TipEntity>): Promise<FindTipDto> {
-        const finderAddress = blockchain.finder
-        const beneficiaryAddress = blockchain.who
-        const [finder, beneficiary] = await Promise.all([
-            this.usersService.getPublicUserDataForWeb3Address(finderAddress),
-            this.usersService.getPublicUserDataForWeb3Address(beneficiaryAddress),
+        const people = await this.getMappedPublicUserDtos([
+            ...blockchain.tips.map((tip) => tip.tipper),
+            blockchain.finder,
+            blockchain.who,
         ])
-        return { blockchain, entity, finder: finder!, beneficiary: beneficiary! }
+
+        return { blockchain, entity, people }
+    }
+    private async getMappedPublicUserDtos(addresses: string[]) {
+        return arrayToMap(
+            await Promise.all(addresses.map((address) => this.usersService.getPublicUserDataForWeb3Address(address))),
+            'web3address',
+        )
     }
     private async getMappedBlockchainTips(networkId: string) {
         return arrayToMap(await this.blockchainTipsService.getTips(networkId), 'hash')

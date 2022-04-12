@@ -1,6 +1,5 @@
-import { NetworkPlanckValue } from '../util/types'
+import { NetworkPlanckValue, Nil } from '../util/types'
 import { PublicUserDto } from '../util/publicUser.dto'
-import { Nil } from '../../../backend/src/utils/types'
 
 export interface TipDto {
     hash: string
@@ -11,7 +10,8 @@ export interface TipDto {
         tipper: PublicUserDto
         value: NetworkPlanckValue
     }[]
-    tippersCount: number
+    deposit: NetworkPlanckValue
+    findersFee: boolean
 
     title: Nil<string>
     description: Nil<string>

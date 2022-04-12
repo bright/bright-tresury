@@ -2,9 +2,6 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { HttpStatus } from '@nestjs/common'
 import { TipsService } from './tips.service'
 import { NetworkPlanckValue, Nil } from '../utils/types'
-import BN from 'bn.js'
-import { PaginatedParams } from '../utils/pagination/paginated.param'
-import { TipFilterQuery } from './tip-filter.query'
 import { PublicUserDto } from '../users/dto/public-user.dto'
 
 const baseUrl = `/api/v1/tips/`
@@ -31,21 +28,27 @@ describe(`/api/v1/tips/`, () => {
                             blockchain: {
                                 hash: '0x0',
                                 reason: 'reason',
-                                who: '0x1',
-                                finder: '0x2',
+                                who: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
+                                finder: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
                                 deposit: '1' as NetworkPlanckValue,
                                 closes: null,
                                 tips: [
                                     {
-                                        tipper: '0x3',
+                                        tipper: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
                                         value: '1' as NetworkPlanckValue,
                                     },
                                 ],
                                 findersFee: false,
                             },
                             entity: null,
-                            finder: new PublicUserDto({ web3address: '0x2' }),
-                            beneficiary: new PublicUserDto({ web3address: '0x1' }),
+                            people: new Map([
+                                [
+                                    '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
+                                    new PublicUserDto({
+                                        web3address: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
+                                    }),
+                                ],
+                            ]),
                         },
                     ],
                     total: 1,

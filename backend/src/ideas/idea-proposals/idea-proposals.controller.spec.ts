@@ -78,7 +78,7 @@ describe(`/api/v1/ideas/:id/proposals`, () => {
         beforeEach(async () => {
             idea = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
                 },
                 verifiedUserSessionHandler.sessionData,

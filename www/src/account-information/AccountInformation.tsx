@@ -1,6 +1,6 @@
 import AccountInformationIcon from './AccountInformationIcon'
 import { Popover } from '@material-ui/core'
-import { MouseEvent, useState } from 'react'
+import { MouseEvent } from 'react'
 import AccountDetails from './AccountDetails'
 import { useMenu } from '../hook/useMenu'
 

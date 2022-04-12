@@ -20,11 +20,11 @@ export class BlockchainTipsService {
                 const openTip = optionOpenTip.unwrap()
                 const hash = storageKey.hash.toHex()
                 const optionReason = await api.query.tips.reasons(openTip.reason)
-                const reason = optionReason.isSome ? hexToString(optionReason.unwrap().toHex()) : null
+                const reason = hexToString(optionReason.unwrapOr(null)?.toHex())
                 const who = encodeAddress(openTip.who.toString())
                 const finder = encodeAddress(openTip.finder.toString())
                 const deposit = openTip.deposit.toString() as NetworkPlanckValue
-                const closes = openTip.closes.unwrapOr(null)?.toBn()
+                const closes = openTip.closes.unwrapOr(null)
                 const tips = openTip.tips.map(([account, amount]) => ({
                     tipper: encodeAddress(account.toString()),
                     value: amount.toString() as NetworkPlanckValue,

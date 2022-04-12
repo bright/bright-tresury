@@ -10,7 +10,7 @@ export class TipEntity extends BaseEntity {
     networkId!: string
 
     @Column({ nullable: false, type: 'text' })
-    blockchainHash?: string
+    blockchainHash!: string
 
     @Column({ nullable: false, type: 'text' })
     title!: string
@@ -19,18 +19,5 @@ export class TipEntity extends BaseEntity {
     description?: Nil<string>
 
     @ManyToOne(() => UserEntity, { eager: true })
-    owner?: Nil<UserEntity>
-
-    @Column({ nullable: false, type: 'text' })
-    ownerId!: string
-
-    isOwner(user: UserEntity) {
-        return this.ownerId === user.id
-    }
-
-    isOwnerOrThrow = (user: UserEntity) => {
-        if (!this.isOwner(user)) {
-            throw new ForbiddenException('The given user cannot edit this tip')
-        }
-    }
+    owner!: UserEntity
 }

@@ -1,7 +1,7 @@
 import { BoxProps } from '@material-ui/core'
 import Box from '@material-ui/core/Box'
 import styled from '@material-ui/core/styles/styled'
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 const StyledBox = styled(Box)(({ theme }) => ({
     backgroundColor: theme.palette.secondary.main,

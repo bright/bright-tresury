@@ -61,7 +61,7 @@ describe('IdeaProposalsService', () => {
 
         idea = await createIdea(
             {
-                beneficiary: uuid(),
+                beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                 networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
             },
             sessionData,
@@ -135,7 +135,7 @@ describe('IdeaProposalsService', () => {
         it(`should return bad request exception for idea and network with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
             const ideaAlreadyTurned = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     status: IdeaStatus.TurnedIntoProposal,
                     networks: [{ name: 'polkadot', value: '100' as NetworkPlanckValue }],
                 },
@@ -156,7 +156,7 @@ describe('IdeaProposalsService', () => {
         it(`should return bad request exception for idea with ${IdeaStatus.Draft} status`, async () => {
             const draftIdea = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     status: IdeaStatus.Draft,
                     networks: [{ name: 'polkadot', value: '100' as NetworkPlanckValue }],
                 },
@@ -177,7 +177,7 @@ describe('IdeaProposalsService', () => {
         it(`should resolve for idea already turned into proposal for a NOT turned network`, async () => {
             const ideaAlreadyTurned = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [
                         { name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue },
                         { name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue },
@@ -206,7 +206,7 @@ describe('IdeaProposalsService', () => {
         it(`should return bad request exception for idea with ${IdeaStatus.MilestoneSubmission} status`, async () => {
             const ideaWithMilestoneSubmissionStatus = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     status: IdeaStatus.MilestoneSubmission,
                     networks: [{ name: NETWORKS.POLKADOT, value: '100' as NetworkPlanckValue }],
                 },
@@ -236,7 +236,7 @@ describe('IdeaProposalsService', () => {
         it('should throw bad request exception for idea network which value in equal 0', async () => {
             const ideaWithZeroNetworkValue = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [{ name: NETWORKS.POLKADOT, value: '0' as NetworkPlanckValue }],
                 },
                 sessionData,
@@ -380,7 +380,7 @@ describe('IdeaProposalsService', () => {
         it(`should set other idea network statuses to ${IdeaNetworkStatus.Pending}`, async () => {
             const ideaWithMultipleNetworks = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [
                         { name: NETWORKS.POLKADOT, value: '2' as NetworkPlanckValue },
                         { name: NETWORKS.KUSAMA, value: '3' as NetworkPlanckValue },
@@ -402,7 +402,7 @@ describe('IdeaProposalsService', () => {
         it(`should not update other idea network status if already turned into proposal`, async () => {
             const ideaWithMultipleNetworks = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [
                         { name: NETWORKS.POLKADOT, value: '2' as NetworkPlanckValue },
                         { name: NETWORKS.KUSAMA, value: '3' as NetworkPlanckValue },

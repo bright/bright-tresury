@@ -6,7 +6,6 @@ import {
     Theme,
 } from '@material-ui/core'
 import { makeStyles } from '@material-ui/core/styles'
-import React from 'react'
 import { breakpoints } from '../../theme/theme'
 
 const useStyles = makeStyles<Theme, ButtonStyleProps>((theme: Theme) =>

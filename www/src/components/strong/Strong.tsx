@@ -1,5 +1,5 @@
 import styled from '@material-ui/core/styles/styled'
-import React, { PropsWithChildren } from 'react'
+import { PropsWithChildren } from 'react'
 
 interface OwnProps {
     color?: StrongColor

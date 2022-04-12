@@ -4,7 +4,6 @@ import { TipsService } from './tips.service'
 import { Get, Query } from '@nestjs/common'
 import { NetworkNameQuery } from '../utils/network-name.query'
 import { PaginatedParams, PaginatedQueryParams } from '../utils/pagination/paginated.param'
-import { PaginationResponseDto } from '../../../www/src/util/pagination/pagination.response.dto'
 import { TipDto } from './dtos/tip.dto'
 import { getLogger } from '../logging.module'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
@@ -26,7 +25,7 @@ export class TipsController {
         @Query() { network }: NetworkNameQuery,
         @Query() filterQuery: TipFilterQuery,
         @Query() paginatedQueryParams: PaginatedQueryParams,
-    ): Promise<PaginationResponseDto<TipDto>> {
+    ): Promise<PaginatedResponseDto<TipDto>> {
         logger.info('Getting tips for network', network)
         const { items, total } = await this.tipsService.find(
             network,

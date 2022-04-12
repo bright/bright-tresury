@@ -80,7 +80,7 @@ describe('IdeaMilestoneProposalsService', () => {
 
         idea = await createIdea(
             {
-                beneficiary: uuid(),
+                beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
             },
             sessionData,
             ideasService(),
@@ -155,7 +155,7 @@ describe('IdeaMilestoneProposalsService', () => {
         it(`should throw BadRequestException for idea with ${IdeaStatus.TurnedIntoProposal} status`, async () => {
             const ideaWithTurnedIntoProposalStatus = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                 },
                 sessionData,
                 ideasService(),
@@ -187,7 +187,7 @@ describe('IdeaMilestoneProposalsService', () => {
         it(`should throw BadRequestException for idea with ${IdeaStatus.Draft} status`, async () => {
             const ideaWithDraftStatus = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                 },
                 sessionData,
                 ideasService(),
@@ -261,7 +261,7 @@ describe('IdeaMilestoneProposalsService', () => {
             const ideaMilestone = await createIdeaMilestone(
                 idea.id,
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [
                         {
                             name: NETWORKS.POLKADOT,
@@ -610,7 +610,7 @@ describe('IdeaMilestoneProposalsService', () => {
         it('should turn one ideaMilestoneNetwork into proposal and set Pending status to other', async () => {
             const ideaWithTwoNetworks = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [
                         { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue },
                         { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue },
@@ -669,7 +669,7 @@ describe('IdeaMilestoneProposalsService', () => {
         it('turn both ideaMilestoneNetworks into proposals and check that their statuses are TurnedIntoProposal', async () => {
             const ideaWithTwoNetworks = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                     networks: [
                         { name: NETWORKS.POLKADOT, value: '1000' as NetworkPlanckValue },
                         { name: NETWORKS.KUSAMA, value: '1000' as NetworkPlanckValue },

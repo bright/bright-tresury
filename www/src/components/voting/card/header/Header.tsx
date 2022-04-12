@@ -1,5 +1,4 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React from 'react'
 import CardHeader from '../../../card/components/CardHeader'
 import { MotionDto, MotionStatus } from '../../motion.dto'
 import MotionTimeRow from './MotionTimeRow'

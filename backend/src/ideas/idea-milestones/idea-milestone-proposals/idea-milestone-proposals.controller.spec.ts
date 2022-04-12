@@ -94,7 +94,7 @@ describe('/api/v1/ideas/:ideaId/milestones/:ideaMilestoneId/proposals', () => {
         beforeEach(async () => {
             idea = await createIdea(
                 {
-                    beneficiary: uuid(),
+                    beneficiary: '14MBCttARciF9RZGW447KuLvjVtvJn8UQF3KJKHDtjW1ENT6',
                 },
                 verifiedUserSessionHandler.sessionData,
                 ideasService(),

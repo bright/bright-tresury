@@ -1,28 +1,9 @@
-import React, { PropsWithChildren } from 'react'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import { ClassNameProps } from '../../props/className.props'
-import clsx from 'clsx'
+import { styled } from '@material-ui/core'
 
-const useStyles = makeStyles(() =>
-    createStyles({
-        root: {
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-end',
-            marginTop: '20px',
-            marginBottom: '6px',
-        },
-    }),
-)
-
-interface OwnProps {}
-
-export type CardDetailsProps = PropsWithChildren<OwnProps> & ClassNameProps
-
-const CardHeader = ({ children, className }: CardDetailsProps) => {
-    const classes = useStyles()
-
-    return <div className={clsx(classes.root, className)}>{children}</div>
-}
-
-export default CardHeader
+export default styled('div')({
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
+    marginTop: '20px',
+    marginBottom: '6px',
+})

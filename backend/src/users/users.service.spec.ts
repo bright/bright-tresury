@@ -452,10 +452,6 @@ describe(`Users Service`, () => {
                 web3address: charlieAddress,
             })
         })
-        it('should return undefined for bad web3 address', async () => {
-            const actual = await getService().getPublicUserDataForWeb3Address('XYZ')
-            expect(actual).toBeUndefined()
-        })
     })
     describe('delete', () => {
         it('forgets the user data', async () => {

@@ -7,9 +7,8 @@ import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import LoadMore from '../components/loadMore/LoadMore'
 import TipsHeader from './TipsHeader'
-import CardsList from '../components/cardsList/CardsList'
-import { TipDto } from './tip.dto'
 import TipCard from './TipCard'
+import Grid from '../components/grid/Grid'
 
 const Tips = () => {
     const { t } = useTranslation()
@@ -30,7 +29,7 @@ const Tips = () => {
                 errorText={t('errors.errorOccurredWhileLoadingTips')}
                 loadingText={t('loading.tips')}
             >
-                <CardsList<TipDto> items={tips} renderCard={(tip: TipDto) => <TipCard item={tip} />} />
+                <Grid items={tips} renderItem={(item) => <TipCard item={item} />} />
             </LoadingWrapper>
             {canLoadMore ? <LoadMore disabled={isLoading} onClick={fetchNextPage} /> : null}
         </>
