@@ -6,7 +6,7 @@ import { optional } from '../../components/form/input/networkValue/NetworkValueI
 import { getBytesLength } from '../../util/stringUtil'
 
 export interface TipCreateFormValues {
-    blockchainDescription: string
+    blockchainReason: string
     title: string
     description: string
     beneficiary: string
@@ -23,11 +23,11 @@ export const useTipCreate = (): UseTipCreateResult => {
 
     const validationSchema = Yup.object({
         title: Yup.string().required(t('tip.form.emptyFieldError')),
-        blockchainDescription: Yup.string()
+        blockchainReason: Yup.string()
             .required(t('tip.form.emptyFieldError'))
             .test(
                 'max-bytes-length',
-                t('tip.form.maxBlockchainDescriptionLength'),
+                t('tip.form.maxBlockchainReasonLength'),
                 optional((value) => getBytesLength(value) <= network.tips.maximumReasonLength),
             ),
         beneficiary: Yup.string()
@@ -38,7 +38,7 @@ export const useTipCreate = (): UseTipCreateResult => {
     })
 
     const initialValues: TipCreateFormValues = {
-        blockchainDescription: '',
+        blockchainReason: '',
         title: '',
         description: '',
         beneficiary: '',

@@ -34,7 +34,7 @@ export class BlockchainConfigurationService {
         const proposalBondMinimum = api.consts.treasury?.proposalBondMinimum.toString() as NetworkPlanckValue
         const minValue = proposalBondMinimum ?? defaultBlockchainConfig.bond.minValue
 
-        const proposalBondMaximum = api.consts.treasury.proposalBondMaximum?.toString() as NetworkPlanckValue
+        const proposalBondMaximum = api.consts.treasury?.proposalBondMaximum?.toString() as NetworkPlanckValue
         const maxValue = proposalBondMaximum ?? defaultBlockchainConfig.bond.maxValue
 
         const proposalBond = api.consts.treasury?.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber()

@@ -16,18 +16,18 @@ const useStyles = makeStyles(() =>
 )
 
 interface OwnProps {
-    blockchainDescription: string
+    blockchainReason: string
 }
 
 export type TipBondProps = OwnProps & ClassNameProps
 
-const TipBond = ({ blockchainDescription }: TipBondProps) => {
+const TipBond = ({ blockchainReason }: TipBondProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { network } = useNetworks()
 
     const depositValue = calculateBondValue(
-        blockchainDescription,
+        blockchainReason,
         network.tips.tipReportDepositBase,
         network.tips.dataDepositPerByte,
     )

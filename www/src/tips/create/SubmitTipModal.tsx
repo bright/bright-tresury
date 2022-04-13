@@ -5,12 +5,10 @@ import Modal from '../../components/modal/Modal'
 import Strong from '../../components/strong/Strong'
 import { useNetworks } from '../../networks/useNetworks'
 import { ROUTE_TIP, ROUTE_TIPS } from '../../routes/routes'
-// import { ROUTE_BOUNTIES, ROUTE_TIP } from '../../routes/routes'
 import SubmittingTransaction, { ExtrinsicDetails } from '../../substrate-lib/components/SubmittingTransaction'
-import { toNetworkPlanckValue } from '../../util/quota.util'
+import { useCreateTip } from '../tips.api'
+import { CreateTipDto } from '../tips.dto'
 import { TipCreateFormValues } from './useTipCreate'
-// import { useCreateTip } from '../bounties.api'
-// import { CreateTipDto } from '../bounties.dto'
 
 interface OwnProps {
     open: boolean
@@ -25,7 +23,7 @@ const SubmitTipModal = ({ open, onClose, tip }: SubmitTipModalProps) => {
 
     const history = useHistory()
 
-    // const { mutateAsync } = useCreateTip()
+    const { mutateAsync } = useCreateTip()
     const { network } = useNetworks()
 
     const goToTips = (event?: any) => {
@@ -35,24 +33,16 @@ const SubmitTipModal = ({ open, onClose, tip }: SubmitTipModalProps) => {
 
     const onTransactionSigned = useCallback(
         async ({ extrinsicHash, lastBlockHash, signerAddress }: ExtrinsicDetails) => {
-            // todo call backend
-            console.log('transaction signed')
-            // if (tip) {
-            //     const params: CreateTipDto = {
-            //         ...tip,
-            //         networkId: network.id,
-            //         proposer: signerAddress,
-            //         extrinsicHash,
-            //         lastBlockHash,
-            //         value: toNetworkPlanckValue(tip.value, network.decimals)!,
-            //     }
-            //     await mutateAsync(params)
-            // }
+            const params: CreateTipDto = {
+                ...tip,
+                networkId: network.id,
+                finder: signerAddress,
+                extrinsicHash,
+                lastBlockHash,
+            }
+            await mutateAsync(params)
         },
-        [
-            tip,
-            //    mutateAsync
-        ],
+        [tip, mutateAsync],
     )
 
     return (
@@ -85,7 +75,7 @@ const SubmitTipModal = ({ open, onClose, tip }: SubmitTipModalProps) => {
                     inputParams: [
                         {
                             name: 'reason',
-                            value: tip.blockchainDescription,
+                            value: tip.blockchainReason,
                         },
                         {
                             name: 'who',

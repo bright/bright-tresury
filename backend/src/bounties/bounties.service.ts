@@ -100,6 +100,7 @@ export class BountiesService {
             callback,
         )
     }
+
     async find(
         networkId: string,
         { ownerId, status, timeFrame }: BountyFilterQuery,

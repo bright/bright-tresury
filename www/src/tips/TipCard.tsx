@@ -1,4 +1,4 @@
-import { TipDto } from './tip.dto'
+import { TipDto } from './tips.dto'
 import NetworkCard from '../components/network/NetworkCard'
 import { useTranslation } from 'react-i18next'
 import CardHeader from '../components/card/components/CardHeader'

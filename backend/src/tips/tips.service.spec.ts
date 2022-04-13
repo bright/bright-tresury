@@ -1,4 +1,7 @@
+import { BlockchainService } from '../blockchain/blockchain.service'
+import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
+import { minimalValidListenForTipDto, mockListenForExtrinsic, mockListenForExtrinsicWithNoEvent } from './spec.helpers'
 import { TipsService } from './tips.service'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { TimeFrame } from '../utils/time-frame.query'
@@ -9,7 +12,7 @@ import { getRepositoryToken } from '@nestjs/typeorm'
 import { TipEntity } from './tip.entity'
 import { UserEntity } from '../users/entities/user.entity'
 import { BlockchainTipDto } from '../blockchain/blockchain-tips/dto/blockchain-tip.dto'
-import { createWeb3SessionData } from '../ideas/spec.helpers'
+import { createUserEntity, createWeb3SessionData } from '../ideas/spec.helpers'
 
 describe(`TipsService`, () => {
     const app = beforeSetupFullApp()
@@ -18,13 +21,15 @@ describe(`TipsService`, () => {
     const charlieAddress = '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q'
     const daveAddress = '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57'
 
-    const tipService = beforeAllSetup(() => app().get<TipsService>(TipsService))
+    const tipsService = beforeAllSetup(() => app().get<TipsService>(TipsService))
     const blockchainTipService = beforeAllSetup(() => app().get<BlockchainTipsService>(BlockchainTipsService))
-    const tipRepository = beforeAllSetup(() => app().get<Repository<TipEntity>>(getRepositoryToken(TipEntity)))
+    const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
+    const extrinsicsService = beforeAllSetup(() => app().get<ExtrinsicsService>(ExtrinsicsService))
+    const tipsRepository = beforeAllSetup(() => app().get<Repository<TipEntity>>(getRepositoryToken(TipEntity)))
 
     const setUpEntityTip = (tip: Partial<TipEntity>, user: UserEntity) => {
-        return tipRepository().save(
-            tipRepository().create({
+        return tipsRepository().save(
+            tipsRepository().create({
                 networkId: NETWORKS.POLKADOT,
                 blockchainHash: '0x0',
                 title: 'entity title',
@@ -67,7 +72,7 @@ describe(`TipsService`, () => {
             }
             setUpBlockchainTips([expectedBlockchainTip])
 
-            const { items, total } = await tipService().find(
+            const { items, total } = await tipsService().find(
                 NETWORKS.POLKADOT,
                 { timeFrame: TimeFrame.OnChain },
                 new PaginatedParams({}),
@@ -102,7 +107,7 @@ describe(`TipsService`, () => {
             }
             setUpBlockchainTips([expectedBlockchainTip])
 
-            const { items, total } = await tipService().find(
+            const { items, total } = await tipsService().find(
                 NETWORKS.POLKADOT,
                 { timeFrame: TimeFrame.OnChain },
                 new PaginatedParams({}),
@@ -123,13 +128,121 @@ describe(`TipsService`, () => {
 
         it('should return off-chain tip', async () => {
             // TODO: TREAS-453 implement proper test
-            const { items, total } = await tipService().find(
+            const { items, total } = await tipsService().find(
                 NETWORKS.POLKADOT,
                 { timeFrame: TimeFrame.History },
                 new PaginatedParams({}),
             )
             expect(total).toBe(0)
             expect(items).toHaveLength(0)
+        })
+    })
+
+    describe('create', () => {
+        it('should return created tip entity', async () => {
+            const user = await createUserEntity()
+
+            const result = await tipsService().create(
+                {
+                    title: 'title',
+                    description: 'description',
+                    networkId: NETWORKS.POLKADOT,
+                    blockchainHash: '0x0',
+                },
+                user,
+            )
+
+            expect(result).toMatchObject({
+                title: 'title',
+                description: 'description',
+                networkId: NETWORKS.POLKADOT,
+                blockchainHash: '0x0',
+                owner: expect.objectContaining({ id: user.id }),
+            })
+        })
+
+        it('should create tip entity', async () => {
+            const user = await createUserEntity()
+
+            const result = await tipsService().create(
+                {
+                    title: 'title',
+                    description: 'description',
+                    networkId: NETWORKS.POLKADOT,
+                    blockchainHash: '0x0',
+                },
+                user,
+            )
+
+            const saved = (await tipsRepository().findOne(result.id))!
+
+            expect(saved).toMatchObject({
+                title: 'title',
+                description: 'description',
+                networkId: NETWORKS.POLKADOT,
+                blockchainHash: '0x0',
+                owner: expect.objectContaining({ id: user.id }),
+            })
+        })
+    })
+
+    describe('listenForNewTipExtrinsic', () => {
+        beforeAll(() => {
+            mockListenForExtrinsic(blockchainService())
+        })
+
+        it('should call listenForExtrinsic method', async () => {
+            const user = await createUserEntity()
+            const spy = jest.spyOn(extrinsicsService(), 'listenForExtrinsic')
+
+            await tipsService().listenForNewTipExtrinsic(minimalValidListenForTipDto, user)
+
+            expect(spy).toHaveBeenCalledTimes(1)
+            expect(spy).toHaveBeenCalledWith(
+                minimalValidListenForTipDto.networkId,
+                {
+                    extrinsicHash: minimalValidListenForTipDto.extrinsicHash,
+                    lastBlockHash: minimalValidListenForTipDto.lastBlockHash,
+                    data: minimalValidListenForTipDto,
+                },
+                expect.anything(),
+            )
+        })
+
+        it('should return extrinsic', async () => {
+            const user = await createUserEntity()
+
+            const result = await tipsService().listenForNewTipExtrinsic(minimalValidListenForTipDto, user)
+            expect(result).toBeDefined()
+            expect(result.extrinsicHash).toBe(minimalValidListenForTipDto.extrinsicHash)
+            expect(result.lastBlockHash).toBe(minimalValidListenForTipDto.lastBlockHash)
+            expect(result.data).toStrictEqual(minimalValidListenForTipDto)
+        })
+
+        it('should call create tip method when extrinsic with NewTip event', async () => {
+            const user = await createUserEntity()
+            const spy = jest.spyOn(tipsService(), 'create')
+
+            await tipsService().listenForNewTipExtrinsic(minimalValidListenForTipDto, user)
+
+            expect(spy).toHaveBeenCalledTimes(1)
+            expect(spy).toHaveBeenCalledWith(
+                {
+                    ...minimalValidListenForTipDto,
+                    blockchainHash: '0x2c3f6dcddab44cf56b5466182f7b3a6f94b455f7b61175a13d61d905138b35ce',
+                },
+                expect.objectContaining({ id: user.id }),
+            )
+        })
+
+        it('should not call create tip method when extrinsic with no NewTip event', async () => {
+            await mockListenForExtrinsicWithNoEvent(blockchainService())
+            const user = await createUserEntity()
+            const spy = jest.spyOn(tipsService(), 'create')
+
+            await tipsService().listenForNewTipExtrinsic(minimalValidListenForTipDto, user)
+
+            expect(spy).not.toHaveBeenCalled()
         })
     })
 })

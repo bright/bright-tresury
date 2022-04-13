@@ -23,7 +23,6 @@ const CommentContent = ({ content }: CommentContentProps) => {
     const classes = useStyles()
     return (
         <>
-            {/*TODO show the info icon and identity details TREAS-455*/}
             <ReactMarkdown
                 components={{ a: ({ node, ...props }) => <span className={classes.mention}>{props.children}</span> }}
                 className={classes.commentContent}

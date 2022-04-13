@@ -1,7 +1,7 @@
 import React from 'react'
 import TitleField from 'tips/form/fields/TitleField'
 import BeneficiaryField from '../form/fields/BeneficiaryField'
-import BlockchainDescriptionField from '../form/fields/BlockchainDescriptionField'
+import BlockchainReasonField from '../form/fields/BlockchainReasonField'
 import DescriptionField from '../form/fields/DescriptionField'
 import TipBond from '../form/fields/TipBond'
 import { TipCreateFormValues } from './useTipCreate'
@@ -17,8 +17,8 @@ const TipCreateFormFields = ({ values }: TipCreateFormFieldsProps) => {
         <>
             <TitleField />
             <BeneficiaryField />
-            <TipBond blockchainDescription={values.blockchainDescription} />
-            <BlockchainDescriptionField />
+            <TipBond blockchainReason={values.blockchainReason} />
+            <BlockchainReasonField />
             <DescriptionField />
         </>
     )

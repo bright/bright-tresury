@@ -1,19 +1,25 @@
 import { Injectable } from '@nestjs/common'
-import { TipFilterQuery } from './tip-filter.query'
-import { PaginatedParams } from '../utils/pagination/paginated.param'
-import { TimeFrame } from '../utils/time-frame.query'
-import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
-import { getLogger } from '../logging.module'
-import { arrayToMap, keysAsArray } from '../utils/arrayToMap'
-import { BlockchainTipsService } from '../blockchain/blockchain-tips/blockchain-tips.service'
-import { FindTipDto } from './dtos/find-tip.dto'
 import { InjectRepository } from '@nestjs/typeorm'
-import { TipEntity } from './tip.entity'
 import { In, Repository } from 'typeorm'
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
-import { UsersService } from '../users/users.service'
+import { BlockchainTipsService } from '../blockchain/blockchain-tips/blockchain-tips.service'
 import { BlockchainTipDto } from '../blockchain/blockchain-tips/dto/blockchain-tip.dto'
+import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
+import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
+import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
+import { getLogger } from '../logging.module'
+import { UserEntity } from '../users/entities/user.entity'
+import { UsersService } from '../users/users.service'
+import { arrayToMap, keysAsArray } from '../utils/arrayToMap'
+import { PaginatedParams } from '../utils/pagination/paginated.param'
+import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
+import { TimeFrame } from '../utils/time-frame.query'
 import { Nil } from '../utils/types'
+import { CreateTipDto } from './dto/create-tip.dto'
+import { FindTipDto } from './dto/find-tip.dto'
+import { ListenForTipDto } from './dto/listen-for-tip.dto'
+import { TipFilterQuery } from './tip-filter.query'
+import { TipEntity } from './tip.entity'
 
 const logger = getLogger()
 
@@ -23,7 +29,33 @@ export class TipsService {
         @InjectRepository(TipEntity) private readonly repository: Repository<TipEntity>,
         private readonly blockchainTipsService: BlockchainTipsService,
         private readonly usersService: UsersService,
+        private readonly extrinsicsService: ExtrinsicsService,
     ) {}
+
+    create(dto: CreateTipDto, user: UserEntity): Promise<TipEntity> {
+        logger.info(`Creating a tip entity`, dto)
+        const tip = this.repository.create({
+            ...dto,
+            owner: user,
+        })
+        return this.repository.save(tip)
+    }
+
+    async listenForNewTipExtrinsic(dto: ListenForTipDto, user: UserEntity): Promise<ExtrinsicEntity> {
+        logger.info(`Start listening for a new tip extrinsic...`)
+        const callback = async (events: ExtrinsicEvent[]) => {
+            const blockchainHash = BlockchainTipsService.extractTipHash(events)
+            if (blockchainHash !== undefined) {
+                logger.info(`Tip hash found ${blockchainHash}. Creating tip entity`)
+                await this.create({ ...dto, blockchainHash }, user)
+            }
+        }
+        return this.extrinsicsService.listenForExtrinsic(
+            dto.networkId,
+            { extrinsicHash: dto.extrinsicHash, lastBlockHash: dto.lastBlockHash, data: dto },
+            callback,
+        )
+    }
 
     async find(
         networkId: string,
@@ -67,15 +99,18 @@ export class TipsService {
 
         return { blockchain, entity, people }
     }
+
     private async getMappedPublicUserDtos(addresses: string[]) {
         return arrayToMap(
             await Promise.all(addresses.map((address) => this.usersService.getPublicUserDataForWeb3Address(address))),
             'web3address',
         )
     }
+
     private async getMappedBlockchainTips(networkId: string) {
         return arrayToMap(await this.blockchainTipsService.getTips(networkId), 'hash')
     }
+
     private async getMappedDatabaseTips(options: FindManyOptions) {
         return arrayToMap(await this.repository.find(options), 'blockchainHash')
     }

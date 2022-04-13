@@ -820,13 +820,13 @@
         },
         "form": {
             "emptyFieldError": "This field cannot be empty",
-            "maxBlockchainDescriptionLength": "The on-chain description is too long",
+            "maxBlockchainReasonLength": "The on-chain description is too long",
             "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
             "fields": {
                 "title": "Title",
                 "deposit": "Deposit",
                 "depositTooltip": "The deposit amount that will be bonded (depends on the on-chain description length)",
-                "blockchainDescription": "Description - this description is stored on chain (the bond will increase for each byte of this description)",
+                "blockchainReason": "Reason - this description is stored on chain (the bond will increase for each byte of this description)",
                 "description": "Description",
                 "beneficiary": "Beneficiary"
             }

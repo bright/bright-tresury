@@ -1,13 +1,17 @@
+import { Body, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from '@nestjs/common'
+import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
+import { SessionGuard } from '../auth/guards/session.guard'
+import { ReqSession, SessionData } from '../auth/session/session.decorator'
+import { ExtrinsicEntity } from '../extrinsics/extrinsic.entity'
+import { getLogger } from '../logging.module'
 import { ControllerApiVersion } from '../utils/ControllerApiVersion'
-import { ApiOkResponse, ApiTags } from '@nestjs/swagger'
-import { TipsService } from './tips.service'
-import { Get, Query } from '@nestjs/common'
 import { NetworkNameQuery } from '../utils/network-name.query'
 import { PaginatedParams, PaginatedQueryParams } from '../utils/pagination/paginated.param'
-import { TipDto } from './dtos/tip.dto'
-import { getLogger } from '../logging.module'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
+import { ListenForTipDto } from './dto/listen-for-tip.dto'
+import { TipDto } from './dto/tip.dto'
 import { TipFilterQuery } from './tip-filter.query'
+import { TipsService } from './tips.service'
 
 const logger = getLogger()
 
@@ -33,5 +37,18 @@ export class TipsController {
             new PaginatedParams(paginatedQueryParams),
         )
         return { items: items.map((item) => new TipDto(item)), total }
+    }
+
+    @Post()
+    @HttpCode(HttpStatus.ACCEPTED)
+    @ApiCreatedResponse({
+        description: 'Accepted to find a tip proposal extrinsic and create a tip entity',
+    })
+    @ApiBadRequestResponse({
+        description: 'Not valid data',
+    })
+    @UseGuards(SessionGuard)
+    async createTip(@Body() dto: ListenForTipDto, @ReqSession() sessionData: SessionData): Promise<ExtrinsicEntity> {
+        return this.tipsService.listenForNewTipExtrinsic(dto, sessionData.user)
     }
 }
