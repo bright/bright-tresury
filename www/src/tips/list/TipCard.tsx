@@ -1,14 +1,15 @@
-import { TipDto } from './tips.dto'
-import NetworkCard from '../components/network/NetworkCard'
+import { TipDto } from '../tips.dto'
+import NetworkCard from '../../components/network/NetworkCard'
 import { useTranslation } from 'react-i18next'
-import CardHeader from '../components/card/components/CardHeader'
-import Divider from '../components/divider/Divider'
+import CardHeader from '../../components/card/components/CardHeader'
+import Divider from '../../components/divider/Divider'
 import React, { useMemo } from 'react'
-import CardDetails from '../components/card/components/CardDetails'
-import CardTitle from '../components/card/components/CardTitle'
-import CardFooter from '../components/card/components/CardFooter'
-import User from '../components/user/User'
+import CardDetails from '../../components/card/components/CardDetails'
+import CardTitle from '../../components/card/components/CardTitle'
+import CardFooter from '../../components/card/components/CardFooter'
+import User from '../../components/user/User'
 import { makeStyles } from '@material-ui/core'
+import TipValue from './TipValue'
 
 const useStyles = makeStyles(() => ({
     flexEnd: {
@@ -42,6 +43,7 @@ const TipCard = ({ item: tip }: TipCardProps) => {
 
             <CardDetails>
                 <CardTitle title={tip.title ?? tip.polkassembly?.title ?? tip.reason} />
+                {tip.tips.length ? <TipValue tipsValues={tip.tips.map((t) => t.value)} /> : null}
             </CardDetails>
 
             <Divider />

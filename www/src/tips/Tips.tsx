@@ -7,7 +7,7 @@ import LoadingWrapper from '../components/loading/LoadingWrapper'
 import { useTranslation } from 'react-i18next'
 import LoadMore from '../components/loadMore/LoadMore'
 import TipsHeader from './TipsHeader'
-import TipCard from './TipCard'
+import TipCard from './list/TipCard'
 import Grid from '../components/grid/Grid'
 
 const Tips = () => {
