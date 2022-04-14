@@ -1,5 +1,5 @@
 import { Trans } from 'react-i18next'
-import CheckboxInput from '../../../components/form/input/CheckboxInput'
+import CheckboxInput from '../../../components/form/input/checkbox/CheckboxInput'
 import React from 'react'
 import * as Yup from 'yup'
 import { TFunction } from 'i18next'

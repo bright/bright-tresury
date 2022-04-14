@@ -50,7 +50,7 @@ const useIdeaForm = () => {
     const extendedValidationSchema = Yup.object().shape({
         beneficiary: Yup.string().required(t('idea.details.form.emptyFieldError')),
         currentNetwork: Yup.object().shape({
-            value: networkValueValidationSchema({ t, findNetwork, required: true }),
+            value: networkValueValidationSchema({ t, findNetwork, required: true, nonZero: true }),
         }),
     })
 

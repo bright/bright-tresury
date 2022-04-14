@@ -60,7 +60,7 @@ const useIdeaMilestoneForm = ({ idea, ideaMilestone }: useIdeaMilestoneFormProps
                 isValidAddressOrEmpty(address, network.ss58Format),
             ),
         currentNetwork: Yup.object().shape({
-            value: networkValueValidationSchema({ t, findNetwork, required: true }),
+            value: networkValueValidationSchema({ t, findNetwork, required: true, nonZero: true }),
         }),
     })
 

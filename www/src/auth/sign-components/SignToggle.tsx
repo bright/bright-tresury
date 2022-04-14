@@ -1,8 +1,8 @@
 import React from 'react'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import ToggleButtonGroup from "../../components/toggle/ToggleButtonGroup";
+import ToggleButtonGroup from '../../components/toggle/toggle-redirect/ToggleButtonGroup'
 import { SignOption } from './SignOption'
-import { ToggleEntry } from '../../components/toggle/ToggleButton'
+import { ToggleEntry } from '../../components/toggle/toggle-redirect/ToggleButton'
 import { useRouteMatch } from 'react-router-dom'
 import { SignComponentWrapper } from './SignComponentWrapper'
 

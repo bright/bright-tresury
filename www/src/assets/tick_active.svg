@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29">
+  <g id="tick_active" data-name="tick active" transform="translate(-559 -538.801)">
+    <g id="Tick_hover_over" transform="translate(559 538.801)" fill="#fff" stroke="#0e65f2" stroke-width="1">
+      <rect width="29" height="29" rx="3" stroke="none"/>
+      <rect x="0.5" y="0.5" width="28" height="28" rx="2.5" fill="none"/>
+    </g>
+    <path id="Path_429" data-name="Path 429" d="M504.016,397.677l4.333,4.041,6.666-10.679" transform="translate(64.092 157.23)" fill="none" stroke="#0e65f2" stroke-miterlimit="10" stroke-width="1.5"/>
+  </g>
+</svg>

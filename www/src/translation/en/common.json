@@ -810,12 +810,25 @@
             "tippers": "Tippers"
         },
         "create": {
+            "header": {
+                "createOnly": "I want to propose",
+                "createAndTip": "I want to tip",
+                "createAndTipSubtitle": "To tip you need to have a tipper’s account",
+                "info": "What’s a <a>tipper’s account</a>"
+            },
             "title": "Create Tip",
             "create": "Create",
             "submitModal": {
-                "title": "You are about to create a tip request",
-                "warningMessage": "In order to submit your tip request you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your tip proposal will be <strong>rejected you will lose the deposit</strong>. If your tip proposal is approved you will get the deposit money back.",
-                "eventDescription": "event new tip finished"
+                "withTipping": {
+                    "title": "You are about to create a tip request along with tipping",
+                    "warningMessage": "As you are about to create a tip request along with a tipping offer, you will not be bonded. You will also not receive any finder's fee.",
+                    "eventDescription": "event new tip finished"
+                },
+                "withoutTipping": {
+                    "title": "You are about to create a tip request",
+                    "warningMessage": "In order to submit your tip request you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your tip proposal will be <strong>rejected you will lose the deposit</strong>. If your tip proposal is approved you will get the deposit money back.",
+                    "eventDescription": "event new tip finished"
+                }
             }
         },
         "form": {
@@ -825,10 +838,12 @@
             "fields": {
                 "title": "Title",
                 "deposit": "Deposit",
-                "depositTooltip": "The deposit amount that will be bonded (depends on the on-chain description length)",
-                "blockchainReason": "Reason - this description is stored on chain (the bond will increase for each byte of this description)",
+                "depositTooltip": "Deposit is calculated automatically based on the chain reason for each byte of the reason",
+                "blockchainReason": "On-chain reason - this description is stored on chain",
                 "description": "Description",
-                "beneficiary": "Beneficiary"
+                "beneficiary": "Beneficiary",
+                "includeTip": "I want to tip",
+                "value": "Reward"
             }
         }
     },
@@ -931,6 +946,10 @@
                 "unspecific": "Something went wrong, you may try again later",
                 "treasury": {
                     "InsufficientProposersBalance": "Proposer's balance is too low."
+                },
+                "tips": {
+                    "AlreadyKnown": "The reason is already associated with another tip",
+                    "BadOrigin": "You do not have an account "
                 },
                 "general": {
                     "BadOrigin": "You are not allowed to perform this action."

@@ -1,22 +1,38 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import clsx from 'clsx'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import * as Yup from 'yup'
 import { TestContext } from 'yup'
 import { Network } from '../../../../networks/networks.dto'
 import { useNetworks } from '../../../../networks/useNetworks'
+import { breakpoints } from '../../../../theme/theme'
 import { hasPositiveDigit, isCorrectDecimalPrecision, isNotNegative, isValidNumber } from '../../../../util/quota.util'
 import { NetworkDisplayValue, Nil } from '../../../../util/types'
 import { ClassNameProps } from '../../../props/className.props'
 import { Label } from '../../../text/Label'
 import Input from '../Input'
 import TextField from '../TextField'
+import WithInformationTip from '../WithInformationTip'
 
-const useStyles = makeStyles(() =>
+const useStyles = makeStyles((theme) =>
     createStyles({
         value: {
             width: '164px',
             marginRight: '52px',
+        },
+        content: {
+            display: 'flex',
+            flexDirection: 'row',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            [theme.breakpoints.down(breakpoints.mobile)]: {
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+            },
+        },
+        tip: {
+            marginTop: '8px',
+            marginBottom: '8px',
         },
     }),
 )
@@ -37,6 +53,7 @@ interface NetworkValueYupValidation {
     findNetwork: (networkId: string) => Nil<Network>
     decimals?: number
     required?: Nil<boolean>
+    nonZero?: Nil<boolean>
 }
 
 export const networkValueValidationSchema = ({
@@ -44,6 +61,7 @@ export const networkValueValidationSchema = ({
     findNetwork,
     decimals,
     required = false,
+    nonZero = false,
 }: NetworkValueYupValidation) => {
     let validationSchema = Yup.string()
         .test('is-not-negative', t('form.networkValueInput.valueCannotBeLessThanZero'), optional(isNotNegative))
@@ -55,16 +73,22 @@ export const networkValueValidationSchema = ({
                 isCorrectDecimalPrecision(value, decimals ?? findNetwork(context.parent.name)!.decimals),
             ),
         )
-    if (required)
-        validationSchema = validationSchema
-            .required(t('form.networkValueInput.emptyFieldError'))
-            .test('more-then-zero', t('form.networkValueInput.moreThanZero'), optional(hasPositiveDigit))
+    if (required) validationSchema = validationSchema.required(t('form.networkValueInput.emptyFieldError'))
+
+    if (nonZero)
+        validationSchema = validationSchema.test(
+            'more-then-zero',
+            t('form.networkValueInput.moreThanZero'),
+            optional(hasPositiveDigit),
+        )
+
     return validationSchema
 }
 
 interface OwnProps {
     label: string
     networkId: string
+    tipLabel?: Nil<ReactNode>
 }
 
 export interface InputFieldProps {
@@ -79,7 +103,7 @@ export interface TextFieldProps {
 
 export type NetworkValueInputProps = OwnProps & (InputFieldProps | TextFieldProps) & ClassNameProps
 
-const NetworkValueInput = ({ networkId, label, className, ...props }: NetworkValueInputProps) => {
+const NetworkValueInput = ({ networkId, label, tipLabel, className, ...props }: NetworkValueInputProps) => {
     const classes = useStyles()
     const { findNetwork } = useNetworks()
     const network = findNetwork(networkId)!
@@ -88,7 +112,8 @@ const NetworkValueInput = ({ networkId, label, className, ...props }: NetworkVal
         <div>
             {!props.readonly ? (
                 <Input
-                    className={clsx(classes.value)}
+                    {...props}
+                    className={clsx(classes.value, className)}
                     name={props.inputName}
                     type={`text`}
                     label={label}
@@ -96,15 +121,18 @@ const NetworkValueInput = ({ networkId, label, className, ...props }: NetworkVal
                     endAdornment={network.currency}
                 />
             ) : (
-                <div>
+                <div className={className}>
                     <Label label={label} />
-                    <TextField
-                        className={clsx(classes.value)}
-                        disabled={true}
-                        value={props.value}
-                        placeholder={label}
-                        endAdornment={network.currency}
-                    />
+                    <WithInformationTip tipLabel={tipLabel}>
+                        <TextField
+                            {...props}
+                            className={clsx(classes.value)}
+                            disabled={true}
+                            value={props.value}
+                            placeholder={label}
+                            endAdornment={network.currency}
+                        />
+                    </WithInformationTip>
                 </div>
             )}
         </div>

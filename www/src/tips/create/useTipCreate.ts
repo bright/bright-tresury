@@ -2,14 +2,16 @@ import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
 import { useNetworks } from 'networks/useNetworks'
 import { isValidAddressOrEmpty } from 'util/addressValidator'
-import { optional } from '../../components/form/input/networkValue/NetworkValueInput'
+import { networkValueValidationSchema, optional } from '../../components/form/input/networkValue/NetworkValueInput'
 import { getBytesLength } from '../../util/stringUtil'
+import { NetworkDisplayValue } from '../../util/types'
 
 export interface TipCreateFormValues {
     blockchainReason: string
     title: string
     description: string
     beneficiary: string
+    value: NetworkDisplayValue
 }
 
 export interface UseTipCreateResult {
@@ -18,7 +20,7 @@ export interface UseTipCreateResult {
 }
 
 export const useTipCreate = (): UseTipCreateResult => {
-    const { network } = useNetworks()
+    const { network, findNetwork } = useNetworks()
     const { t } = useTranslation()
 
     const validationSchema = Yup.object({
@@ -35,6 +37,13 @@ export const useTipCreate = (): UseTipCreateResult => {
             .test('validate-address', t('form.web3AddressInput.wrongWeb3AddressError'), (address) =>
                 isValidAddressOrEmpty(address, network.ss58Format),
             ),
+        value: networkValueValidationSchema({
+            t,
+            findNetwork,
+            required: true,
+            nonZero: false,
+            decimals: network.decimals,
+        }),
     })
 
     const initialValues: TipCreateFormValues = {
@@ -42,6 +51,7 @@ export const useTipCreate = (): UseTipCreateResult => {
         title: '',
         description: '',
         beneficiary: '',
+        value: '0' as NetworkDisplayValue,
     }
 
     return {

@@ -3,9 +3,11 @@ import { Formik } from 'formik'
 import React, { PropsWithChildren } from 'react'
 import FormFooter from '../../components/form/footer/FormFooter'
 import { useModal } from '../../components/modal/useModal'
+import TipCreateAndTipFormFields from './create-and-tip/TipCreateAndTipFormFields'
 import SubmitTipModal from './SubmitTipModal'
-import TipCreateFormFields from './TipCreateFormFields'
 import { useTipCreate } from './useTipCreate'
+import TipCreateOnlyFormFields from './create-only/TipCreateOnlyFormFields'
+import { TipCreateMode } from './TipCreateSwitch'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -17,11 +19,13 @@ const useStyles = makeStyles(() =>
     }),
 )
 
-interface OwnProps {}
+interface OwnProps {
+    mode: TipCreateMode
+}
 
 export type TipCreateFormProps = PropsWithChildren<OwnProps>
 
-const TipCreateForm = ({ children }: TipCreateFormProps) => {
+const TipCreateForm = ({ mode, children }: TipCreateFormProps) => {
     const classes = useStyles()
     const submitTipModal = useModal()
     const { initialValues, validationSchema } = useTipCreate()
@@ -40,10 +44,19 @@ const TipCreateForm = ({ children }: TipCreateFormProps) => {
             {({ values, handleSubmit }) => (
                 <>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <TipCreateFormFields values={values} />
+                        {mode === 'createOnly' ? (
+                            <TipCreateOnlyFormFields values={values} />
+                        ) : (
+                            <TipCreateAndTipFormFields />
+                        )}
                         <FormFooter>{children}</FormFooter>
                     </form>
-                    <SubmitTipModal open={submitTipModal.visible} onClose={submitTipModal.close} tip={values} />
+                    <SubmitTipModal
+                        open={submitTipModal.visible}
+                        onClose={submitTipModal.close}
+                        tip={values}
+                        mode={mode}
+                    />
                 </>
             )}
         </Formik>

@@ -1,5 +1,5 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React from 'react'
+import React, { ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import informationSvg from '../../assets/Information_icon.svg'
 import { ClassNameProps } from '../props/className.props'
@@ -21,7 +21,7 @@ const useStyles = makeStyles(() =>
 )
 
 interface OwnProps {
-    label: string | JSX.Element
+    label: ReactNode
 }
 
 export type InformationTipProps = OwnProps & ClassNameProps

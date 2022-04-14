@@ -50,7 +50,13 @@ const BountyCreateForm = ({ children }: BountyCreateFormProps) => {
                 t('bounty.form.maxBlockchainDescriptionLength'),
                 optional((value) => getBytesLength(value) <= network.bounties.maximumReasonLength),
             ),
-        value: networkValueValidationSchema({ t, findNetwork, required: true, decimals: network.decimals }).test(
+        value: networkValueValidationSchema({
+            t,
+            findNetwork,
+            required: true,
+            nonZero: true,
+            decimals: network.decimals,
+        }).test(
             'is-min',
             t('bounty.form.minValueError', {
                 value: toNetworkDisplayValue(network.bounties.bountyValueMinimum, network.decimals),

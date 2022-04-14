@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" viewBox="0 0 29 29">
+  <g id="tick_inactive" fill="#fff" stroke="rgba(123,123,123,0.26)" stroke-width="1">
+    <rect width="29" height="29" rx="3" stroke="none"/>
+    <rect x="0.5" y="0.5" width="28" height="28" rx="2.5" fill="none"/>
+  </g>
+</svg>

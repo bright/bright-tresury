@@ -83,7 +83,7 @@ const TurnPendingIdeaIntoProposalForm = ({ idea, submitProposalModalOpen }: Turn
     }
 
     const validationSchema = Yup.object({
-        value: networkValueValidationSchema({ t, findNetwork, required: true }),
+        value: networkValueValidationSchema({ t, findNetwork, required: true, nonZero: true }),
     })
 
     return (
