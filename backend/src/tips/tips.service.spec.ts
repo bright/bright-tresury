@@ -1,7 +1,16 @@
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
-import { minimalValidListenForTipDto, mockListenForExtrinsic, mockListenForExtrinsicWithNoEvent } from './spec.helpers'
+import {
+    aliceAddress,
+    bobAddress,
+    charlieAddress,
+    daveAddress,
+    minimalValidListenForTipDto,
+    mockListenForExtrinsic,
+    mockListenForExtrinsicWithNoEvent,
+    validBlockchainTip,
+} from './spec.helpers'
 import { TipsService } from './tips.service'
 import { PaginatedParams } from '../utils/pagination/paginated.param'
 import { TimeFrame } from '../utils/time-frame.query'
@@ -19,10 +28,6 @@ import BN from 'bn.js'
 
 describe(`TipsService`, () => {
     const app = beforeSetupFullApp()
-    const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
-    const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
-    const charlieAddress = '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q'
-    const daveAddress = '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57'
 
     const tipsService = beforeAllSetup(() => app().get<TipsService>(TipsService))
     const blockchainTipService = beforeAllSetup(() => app().get<BlockchainTipsService>(BlockchainTipsService))
@@ -62,14 +67,11 @@ describe(`TipsService`, () => {
     })
 
     describe('find', () => {
-        it('should return on-chain tip WITHOUT entity and detailed public used data for finder and beneficiary', async () => {
+        it('should return on-chain tip WITHOUT entity and detailed public user data for finder and beneficiary', async () => {
             const expectedBlockchainTip = {
-                hash: '0x0',
-                reason: 'reason',
+                ...validBlockchainTip,
                 who: bobAddress,
                 finder: charlieAddress,
-                deposit: '1' as NetworkPlanckValue,
-                closes: null,
                 tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
                 findersFee: false,
             }
@@ -99,12 +101,9 @@ describe(`TipsService`, () => {
             const expectedEntityTip = await setUpEntityTip({ blockchainHash: '0x0' }, alice)
 
             const expectedBlockchainTip = {
-                hash: '0x0',
-                reason: 'reason',
+                ...validBlockchainTip,
                 who: bobAddress,
                 finder: charlieAddress,
-                deposit: '1' as NetworkPlanckValue,
-                closes: null,
                 tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
                 findersFee: false,
             }
@@ -130,17 +129,13 @@ describe(`TipsService`, () => {
         })
 
         it(`should return tip with ${TipStatus.Proposed} status`, async () => {
-            const blockchainTip = {
-                hash: '0x0',
-                reason: 'reason',
-                who: bobAddress,
-                finder: charlieAddress,
-                deposit: '1' as NetworkPlanckValue,
-                closes: null,
-                tips: [],
-                findersFee: false,
-            }
-            setUpBlockchainTips([blockchainTip])
+            setUpBlockchainTips([
+                {
+                    ...validBlockchainTip,
+                    closes: null,
+                    tips: [],
+                },
+            ])
             const { items } = await tipsService().find(
                 NETWORKS.POLKADOT,
                 { timeFrame: TimeFrame.OnChain },
@@ -151,17 +146,14 @@ describe(`TipsService`, () => {
         })
 
         it(`should return tip with ${TipStatus.Tipped} status`, async () => {
-            const blockchainTip = {
-                hash: '0x0',
-                reason: 'reason',
-                who: bobAddress,
-                finder: charlieAddress,
-                deposit: '1' as NetworkPlanckValue,
-                closes: null,
-                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
-                findersFee: false,
-            }
-            setUpBlockchainTips([blockchainTip])
+            setUpBlockchainTips([
+                {
+                    ...validBlockchainTip,
+                    closes: null,
+                    tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                },
+            ])
+
             const { items } = await tipsService().find(
                 NETWORKS.POLKADOT,
                 { timeFrame: TimeFrame.OnChain },
@@ -171,18 +163,16 @@ describe(`TipsService`, () => {
             expect(actual.status).toBe(TipStatus.Tipped)
         })
         it(`should return tip with ${TipStatus.Closing} status`, async () => {
-            const blockchainTip = {
-                hash: '0x0',
-                reason: 'reason',
-                who: bobAddress,
-                finder: charlieAddress,
-                deposit: '1' as NetworkPlanckValue,
-                closes: new BN(1) as BlockNumber,
-                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
-                findersFee: false,
-            }
-
-            setUpBlockchainTips([blockchainTip])
+            setUpBlockchainTips([
+                {
+                    ...validBlockchainTip,
+                    closes: new BN(1) as BlockNumber,
+                    tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                },
+            ])
+            jest.spyOn(blockchainService(), 'getCurrentBlockNumber').mockImplementation(
+                async () => new BN(2) as BlockNumber,
+            )
             const { items } = await tipsService().find(
                 NETWORKS.POLKADOT,
                 { timeFrame: TimeFrame.OnChain },
@@ -193,18 +183,13 @@ describe(`TipsService`, () => {
         })
 
         it(`should return tip with ${TipStatus.PendingPayout} status`, async () => {
-            const blockchainTip = {
-                hash: '0x0',
-                reason: 'reason',
-                who: bobAddress,
-                finder: charlieAddress,
-                deposit: '1' as NetworkPlanckValue,
-                closes: new BN(1) as BlockNumber,
-                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
-                findersFee: false,
-            }
-
-            setUpBlockchainTips([blockchainTip])
+            setUpBlockchainTips([
+                {
+                    ...validBlockchainTip,
+                    closes: new BN(1) as BlockNumber,
+                    tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                },
+            ])
             jest.spyOn(blockchainService(), 'getCurrentBlockNumber').mockImplementation(
                 async () => new BN(0) as BlockNumber,
             )

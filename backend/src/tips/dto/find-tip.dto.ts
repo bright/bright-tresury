@@ -8,7 +8,6 @@ export enum TipStatus {
     Tipped = 'Tipped',
     Closing = 'Closing',
     PendingPayout = 'PendingPayout',
-    Unknown = 'Unknown',
 }
 
 export interface FindTipDto {

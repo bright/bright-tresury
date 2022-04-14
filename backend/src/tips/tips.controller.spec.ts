@@ -6,12 +6,17 @@ import {
     SessionHandler,
 } from '../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { BlockchainService } from '../blockchain/blockchain.service'
-import { PublicUserDto } from '../users/dto/public-user.dto'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
-import { NetworkPlanckValue } from '../utils/types'
-import { minimalValidListenForTipDto, mockListenForExtrinsic } from './spec.helpers'
+import {
+    bobAddress,
+    charlieAddress,
+    minimalValidListenForTipDto,
+    mockListenForExtrinsic,
+    validBlockchainTip,
+} from './spec.helpers'
 import { TipsService } from './tips.service'
 import { TipStatus } from './dto/find-tip.dto'
+import { PublicUserDto } from '../users/dto/public-user.dto'
 
 const baseUrl = `/api/v1/tips/`
 
@@ -37,31 +42,13 @@ describe(`/api/v1/tips/`, () => {
                 Promise.resolve({
                     items: [
                         {
-                            blockchain: {
-                                hash: '0x0',
-                                reason: 'reason',
-                                who: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
-                                finder: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
-                                deposit: '1' as NetworkPlanckValue,
-                                closes: null,
-                                tips: [
-                                    {
-                                        tipper: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
-                                        value: '1' as NetworkPlanckValue,
-                                    },
-                                ],
-                                findersFee: false,
-                            },
+                            blockchain: validBlockchainTip,
                             entity: null,
                             people: new Map([
-                                [
-                                    '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
-                                    new PublicUserDto({
-                                        web3address: '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57',
-                                    }),
-                                ],
+                                [bobAddress, new PublicUserDto({ web3address: bobAddress })],
+                                [charlieAddress, new PublicUserDto({ web3address: charlieAddress })],
                             ]),
-                            status: TipStatus.Tipped,
+                            status: TipStatus.Proposed,
                         },
                     ],
                     total: 1,

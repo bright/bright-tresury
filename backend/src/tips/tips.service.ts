@@ -110,15 +110,11 @@ export class TipsService {
         return { blockchain, entity, people, status }
     }
 
-    private static getTipStatus({ closes, tips, hash }: BlockchainTipDto, currentBlockNumber: BlockNumber): TipStatus {
+    private static getTipStatus({ closes, tips }: BlockchainTipDto, currentBlockNumber: BlockNumber): TipStatus {
         if (closes && closes > currentBlockNumber) return TipStatus.PendingPayout
         else if (closes) return TipStatus.Closing
-        else if (tips && tips.length !== 0) return TipStatus.Tipped
-        else if (tips && tips.length === 0) return TipStatus.Proposed
-        else {
-            logger.warn('Unknown tip status', { hash })
-            return TipStatus.Unknown
-        }
+        else if (tips.length !== 0) return TipStatus.Tipped
+        else return TipStatus.Proposed
     }
 
     private async getMappedPublicUserDtos(addresses: string[]) {

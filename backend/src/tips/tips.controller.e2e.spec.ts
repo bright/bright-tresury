@@ -49,7 +49,7 @@ describe(`/api/v1/tips/`, () => {
                 .expect(HttpStatus.ACCEPTED)
 
             // send exstrinsic and extract tip hash
-            const inBlockResult: ISubmittableResult = await new Promise((resolve, reject) => {
+            const inBlockResult: ISubmittableResult = await new Promise((resolve) => {
                 extrinsic.send(async (result) => {
                     if (result.isInBlock) {
                         resolve(result)
@@ -59,7 +59,7 @@ describe(`/api/v1/tips/`, () => {
             const applyExtrinsicEvents = BlockchainService.getApplyExtrinsicEvents(inBlockResult.events)
             const tipHash = BlockchainTipsService.extractTipHash(applyExtrinsicEvents)
 
-            await new Promise((resolve) => setTimeout(resolve, 400))
+            await new Promise((resolve) => setTimeout(resolve, 600))
 
             // GET
             const response = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)

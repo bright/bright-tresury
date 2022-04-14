@@ -2,6 +2,24 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../extrinsics/extrinsicEvent'
 import { NETWORKS } from '../utils/spec.helpers'
+import { NetworkPlanckValue } from '../utils/types'
+import { PublicUserDto } from '../users/dto/public-user.dto'
+
+export const aliceAddress = '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5'
+export const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
+export const charlieAddress = '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q'
+export const daveAddress = '126TwBzBM4jUEK2gTphmW4oLoBWWnYvPp8hygmduTr4uds57'
+
+export const validBlockchainTip = {
+    hash: '0x0',
+    reason: 'reason',
+    who: bobAddress,
+    finder: charlieAddress,
+    deposit: '1' as NetworkPlanckValue,
+    closes: null,
+    tips: [],
+    findersFee: false,
+}
 
 // listen for extrinsic
 
