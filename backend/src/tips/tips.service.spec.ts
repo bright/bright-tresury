@@ -13,6 +13,9 @@ import { TipEntity } from './tip.entity'
 import { UserEntity } from '../users/entities/user.entity'
 import { BlockchainTipDto } from '../blockchain/blockchain-tips/dto/blockchain-tip.dto'
 import { createUserEntity, createWeb3SessionData } from '../ideas/spec.helpers'
+import { TipStatus } from './dto/find-tip.dto'
+import { BlockNumber } from '@polkadot/types/interfaces'
+import BN from 'bn.js'
 
 describe(`TipsService`, () => {
     const app = beforeSetupFullApp()
@@ -124,6 +127,95 @@ describe(`TipsService`, () => {
                 web3address: charlieAddress,
             })
             expect(actual.people.get(daveAddress)).toMatchObject({ username: dave.username, web3address: daveAddress })
+        })
+
+        it(`should return tip with ${TipStatus.Proposed} status`, async () => {
+            const blockchainTip = {
+                hash: '0x0',
+                reason: 'reason',
+                who: bobAddress,
+                finder: charlieAddress,
+                deposit: '1' as NetworkPlanckValue,
+                closes: null,
+                tips: [],
+                findersFee: false,
+            }
+            setUpBlockchainTips([blockchainTip])
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const [actual] = items
+            expect(actual.status).toBe(TipStatus.Proposed)
+        })
+
+        it(`should return tip with ${TipStatus.Tipped} status`, async () => {
+            const blockchainTip = {
+                hash: '0x0',
+                reason: 'reason',
+                who: bobAddress,
+                finder: charlieAddress,
+                deposit: '1' as NetworkPlanckValue,
+                closes: null,
+                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                findersFee: false,
+            }
+            setUpBlockchainTips([blockchainTip])
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const [actual] = items
+            expect(actual.status).toBe(TipStatus.Tipped)
+        })
+        it(`should return tip with ${TipStatus.Closing} status`, async () => {
+            const blockchainTip = {
+                hash: '0x0',
+                reason: 'reason',
+                who: bobAddress,
+                finder: charlieAddress,
+                deposit: '1' as NetworkPlanckValue,
+                closes: new BN(1) as BlockNumber,
+                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                findersFee: false,
+            }
+
+            setUpBlockchainTips([blockchainTip])
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const [actual] = items
+            expect(actual.status).toBe(TipStatus.Closing)
+        })
+
+        it(`should return tip with ${TipStatus.PendingPayout} status`, async () => {
+            const blockchainTip = {
+                hash: '0x0',
+                reason: 'reason',
+                who: bobAddress,
+                finder: charlieAddress,
+                deposit: '1' as NetworkPlanckValue,
+                closes: new BN(1) as BlockNumber,
+                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                findersFee: false,
+            }
+
+            setUpBlockchainTips([blockchainTip])
+            jest.spyOn(blockchainService(), 'getCurrentBlockNumber').mockImplementation(
+                async () => new BN(0) as BlockNumber,
+            )
+
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            const [actual] = items
+            expect(actual.status).toBe(TipStatus.PendingPayout)
         })
 
         it('should return off-chain tip', async () => {

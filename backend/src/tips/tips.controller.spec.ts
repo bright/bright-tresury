@@ -11,6 +11,7 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import { NetworkPlanckValue } from '../utils/types'
 import { minimalValidListenForTipDto, mockListenForExtrinsic } from './spec.helpers'
 import { TipsService } from './tips.service'
+import { TipStatus } from './dto/find-tip.dto'
 
 const baseUrl = `/api/v1/tips/`
 
@@ -60,6 +61,7 @@ describe(`/api/v1/tips/`, () => {
                                     }),
                                 ],
                             ]),
+                            status: TipStatus.Tipped,
                         },
                     ],
                     total: 1,

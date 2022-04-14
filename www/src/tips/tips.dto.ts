@@ -1,6 +1,14 @@
 import { NetworkPlanckValue, Nil } from '../util/types'
 import { PublicUserDto } from '../util/publicUser.dto'
 
+export enum TipStatus {
+    Proposed = 'Proposed',
+    Tipped = 'Tipped',
+    Closing = 'Closing',
+    PendingPayout = 'PendingPayout',
+    Unknown = 'Unknown',
+}
+
 export interface TipDto {
     hash: string
     reason: Nil<string>
@@ -18,6 +26,8 @@ export interface TipDto {
     owner: Nil<PublicUserDto>
 
     polkassembly?: Nil<{ title: string }>
+
+    status: TipStatus
 }
 
 export interface CreateTipDto {

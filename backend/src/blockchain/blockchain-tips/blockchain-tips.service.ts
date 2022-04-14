@@ -47,7 +47,6 @@ export class BlockchainTipsService {
     async getTips(networkId: string): Promise<BlockchainTipDto[]> {
         const api = getApi(this.blockchainsConnections, networkId)
         const entries = (await api.query.tips.tips.entries()).filter(([_, option]) => option.isSome)
-
         return Promise.all(
             entries.map(
                 async ([
@@ -68,6 +67,7 @@ export class BlockchainTipsService {
                         value: amount.toString() as NetworkPlanckValue,
                     }))
                     const findersFee = openTip.findersFee.isTrue
+
                     return { hash: hash.toHex(), reason, who, finder, deposit, closes, tips, findersFee }
                 },
             ),

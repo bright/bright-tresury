@@ -1,5 +1,4 @@
 import { NetworkPlanckValue, Nil } from '../../../utils/types'
-import BN from 'bn.js'
 import { BlockNumber } from '@polkadot/types/interfaces'
 
 export interface BlockchainTipDto {

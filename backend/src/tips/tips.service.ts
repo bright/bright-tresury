@@ -16,10 +16,12 @@ import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto
 import { TimeFrame } from '../utils/time-frame.query'
 import { Nil } from '../utils/types'
 import { CreateTipDto } from './dto/create-tip.dto'
-import { FindTipDto } from './dto/find-tip.dto'
+import { FindTipDto, TipStatus } from './dto/find-tip.dto'
 import { ListenForTipDto } from './dto/listen-for-tip.dto'
 import { TipFilterQuery } from './tip-filter.query'
 import { TipEntity } from './tip.entity'
+import { BlockNumber } from '@polkadot/types/interfaces'
+import { BlockchainService } from '../blockchain/blockchain.service'
 
 const logger = getLogger()
 
@@ -28,6 +30,7 @@ export class TipsService {
     constructor(
         @InjectRepository(TipEntity) private readonly repository: Repository<TipEntity>,
         private readonly blockchainTipsService: BlockchainTipsService,
+        private readonly blockchainService: BlockchainService,
         private readonly usersService: UsersService,
         private readonly extrinsicsService: ExtrinsicsService,
     ) {}
@@ -77,8 +80,11 @@ export class TipsService {
         const hashes = keysAsArray(blockchainTips)
         const databaseTips = await this.getMappedDatabaseTips({ where: { blockchainHash: In(hashes), networkId } })
         const polkassemblyTips = {} // TODO: TREAS-446 add when implementing polkassembly support
+        const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
         const allItems = await Promise.all(
-            hashes.map((hash) => this.createFindTipDto(blockchainTips.get(hash)!, databaseTips.get(hash))),
+            hashes.map((hash) =>
+                this.createFindTipDto(blockchainTips.get(hash)!, databaseTips.get(hash), currentBlockNumber),
+            ),
         )
         return {
             items: paginatedParams.slice(allItems),
@@ -90,14 +96,29 @@ export class TipsService {
         // TODO: TREAS-453 Implement  history tips
         return Promise.resolve({ items: [], total: 0 })
     }
-    private async createFindTipDto(blockchain: BlockchainTipDto, entity: Nil<TipEntity>): Promise<FindTipDto> {
+    private async createFindTipDto(
+        blockchain: BlockchainTipDto,
+        entity: Nil<TipEntity>,
+        currentBlockNumber: BlockNumber,
+    ): Promise<FindTipDto> {
         const people = await this.getMappedPublicUserDtos([
             ...blockchain.tips.map((tip) => tip.tipper),
             blockchain.finder,
             blockchain.who,
         ])
+        const status = TipsService.getTipStatus(blockchain, currentBlockNumber)
+        return { blockchain, entity, people, status }
+    }
 
-        return { blockchain, entity, people }
+    private static getTipStatus({ closes, tips, hash }: BlockchainTipDto, currentBlockNumber: BlockNumber): TipStatus {
+        if (closes && closes > currentBlockNumber) return TipStatus.PendingPayout
+        else if (closes) return TipStatus.Closing
+        else if (tips && tips.length !== 0) return TipStatus.Tipped
+        else if (tips && tips.length === 0) return TipStatus.Proposed
+        else {
+            logger.warn('Unknown tip status', { hash })
+            return TipStatus.Unknown
+        }
     }
 
     private async getMappedPublicUserDtos(addresses: string[]) {

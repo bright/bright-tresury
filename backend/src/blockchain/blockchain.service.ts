@@ -202,7 +202,7 @@ export class BlockchainService implements OnModuleDestroy {
         logger.info(`Getting proposal from blockchain for networkId: ${networkId}`)
         const blockchainProposal = await this.getDeriveProposal(networkId, blockchainIndex)
         if (!blockchainProposal) return
-        const currentBlockNumber = await getApi(this.blockchainsConnections, networkId).derive.chain.bestNumber()
+        const currentBlockNumber = await this.getCurrentBlockNumber(networkId)
         const toBlockchainProposalMotionEnd = (endBlock: BlockNumber): MotionTimeDto =>
             this.getRemainingTime(networkId, currentBlockNumber, endBlock)
         return BlockchainProposal.create(blockchainProposal, blockchainProposal.status, toBlockchainProposalMotionEnd)
