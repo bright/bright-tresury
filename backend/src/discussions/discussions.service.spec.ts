@@ -12,6 +12,7 @@ import { CommentEntity } from './entites/comment.entity'
 import { DiscussionCategory } from './entites/discussion-category'
 import { DiscussionEntity } from './entites/discussion.entity'
 import { v4 as uuid } from 'uuid'
+import { TipDiscussionDto } from './dto/discussion-category/tip-discussion.dto'
 
 describe('DiscussionsService', () => {
     const app = beforeSetupFullApp()
@@ -54,33 +55,21 @@ describe('DiscussionsService', () => {
             const addComment = (discussionDto: DiscussionDto) =>
                 service().addComment(
                     {
-                        content: 'proposal comment',
+                        content: 'some comment',
                         discussionDto,
                     },
                     author,
                 )
+
+            return { author, addComment }
+        }
+        it('should return proposal comment', async () => {
+            const { addComment } = await findCommentsSetUp()
             const proposalComment = await addComment({
                 category: DiscussionCategory.Proposal,
                 blockchainIndex: 1,
                 networkId: NETWORKS.POLKADOT,
             } as ProposalDiscussionDto)
-
-            const bountyComment = await addComment({
-                category: DiscussionCategory.Bounty,
-                blockchainIndex: 1,
-                networkId: NETWORKS.POLKADOT,
-            } as BountyDiscussionDto)
-
-            const ideaEntityId = uuid()
-            const ideaComment = await addComment({
-                category: DiscussionCategory.Idea,
-                entityId: ideaEntityId,
-            } as IdeaDiscussionDto)
-
-            return { author, proposalComment, bountyComment, ideaComment, ideaEntityId }
-        }
-        it('should return proposal comment', async () => {
-            const { proposalComment } = await findCommentsSetUp()
 
             const actual = await service().findComments({
                 category: DiscussionCategory.Proposal,
@@ -93,7 +82,12 @@ describe('DiscussionsService', () => {
         })
 
         it('should return bounty comment', async () => {
-            const { bountyComment } = await findCommentsSetUp()
+            const { addComment } = await findCommentsSetUp()
+            const bountyComment = await addComment({
+                category: DiscussionCategory.Bounty,
+                blockchainIndex: 1,
+                networkId: NETWORKS.POLKADOT,
+            } as BountyDiscussionDto)
 
             const actual = await service().findComments({
                 category: DiscussionCategory.Bounty,
@@ -106,7 +100,12 @@ describe('DiscussionsService', () => {
         })
 
         it('should return idea comment', async () => {
-            const { ideaComment, ideaEntityId } = await findCommentsSetUp()
+            const { addComment } = await findCommentsSetUp()
+            const ideaEntityId = uuid()
+            const ideaComment = await addComment({
+                category: DiscussionCategory.Idea,
+                entityId: ideaEntityId,
+            } as IdeaDiscussionDto)
 
             const actual = await service().findComments({
                 category: DiscussionCategory.Idea,
@@ -115,6 +114,24 @@ describe('DiscussionsService', () => {
 
             expect(actual).toHaveLength(1)
             expect(actual[0].id).toBe(ideaComment.id)
+        })
+
+        it('should return tip comment', async () => {
+            const { addComment } = await findCommentsSetUp()
+            const tipComment = await addComment({
+                category: DiscussionCategory.Tip,
+                blockchainHash: '0x0',
+                networkId: NETWORKS.POLKADOT,
+            } as TipDiscussionDto)
+
+            const actual = await service().findComments({
+                category: DiscussionCategory.Tip,
+                blockchainHash: '0x0',
+                networkId: NETWORKS.POLKADOT,
+            })
+
+            expect(actual).toHaveLength(1)
+            expect(actual[0].id).toBe(tipComment.id)
         })
     })
 
@@ -249,6 +266,26 @@ describe('DiscussionsService', () => {
                 )
 
                 const actual = await repository().findOne({ where: ideaDiscussionDto, relations: ['comments'] })
+                expect(actual).toBeDefined()
+            })
+
+            it('should create tip discussion', async () => {
+                const { user: author } = await createSessionData()
+                const tipDiscussionDto = {
+                    category: DiscussionCategory.Tip as const,
+                    blockchainHash: '0x0',
+                    networkId: NETWORKS.POLKADOT,
+                }
+
+                await service().addComment(
+                    {
+                        content: 'content',
+                        discussionDto: tipDiscussionDto,
+                    },
+                    author,
+                )
+
+                const actual = await repository().findOne({ where: tipDiscussionDto, relations: ['comments'] })
                 expect(actual).toBeDefined()
             })
         })

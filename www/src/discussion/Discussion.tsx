@@ -2,13 +2,13 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuth, UserStatus } from '../auth/AuthContext'
 import LoadingWrapper from '../components/loading/LoadingWrapper'
+import { useSuccessfullyLoadedItemStyles } from '../components/loading/useSuccessfullyLoadedItemStyles'
 import { Nil } from '../util/types'
 import CreateComment from './comment/CreateComment'
 import DisplayComment from './comment/DisplayComment'
 import { useGetComments } from './comments.api'
 import { CommentDto, DiscussionDto } from './comments.dto'
 import DiscussionCommentsContainer from './list/DiscussionCommentsContainer'
-import DiscussionContainer from './list/DiscussionContainer'
 import DiscussionHeader from './list/header/DiscussionHeader'
 import NoComments from './NoComments'
 import { isPublicInAppUserDto, PublicInAppUserDto, PublicUserDto } from '../util/publicUser.dto'
@@ -22,6 +22,7 @@ interface OwnProps {
 export interface DiscussedEntity {
     owner?: Nil<PublicUserDto>
     proposer?: Nil<PublicUserDto>
+    finder?: Nil<PublicUserDto>
     beneficiary?: Nil<PublicUserDto>
     curator?: Nil<PublicUserDto>
 }
@@ -30,6 +31,7 @@ export type DiscussionProps = OwnProps
 
 const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
     const { t } = useTranslation()
+    const classes = useSuccessfullyLoadedItemStyles()
     const { isUserSignedInAndVerified: canComment, user } = useAuth()
 
     const { status, data: comments } = useGetComments(discussion)
@@ -52,6 +54,9 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
         if (discussedEntity.curator) {
             authors.push(discussedEntity.curator)
         }
+        if (discussedEntity.finder) {
+            authors.push(discussedEntity.finder)
+        }
 
         // to map to remove duplicates
         const authorsMap = new Map<string, PublicInAppUserDto>()
@@ -71,19 +76,19 @@ const Discussion = ({ discussion, info, discussedEntity }: DiscussionProps) => {
     )
 
     return (
-        <DiscussionContainer>
-            <LoadingWrapper
-                status={status}
-                errorText={t('errors.errorOccurredWhileLoadingComments')}
-                loadingText={t('loading.comments')}
-            >
+        <LoadingWrapper
+            status={status}
+            errorText={t('errors.errorOccurredWhileLoadingComments')}
+            loadingText={t('loading.comments')}
+        >
+            <div className={classes.content}>
                 <DiscussionHeader info={info} />
                 <DiscussionCommentsContainer>
                     {canComment ? <CreateComment discussion={discussion} people={people} /> : null}
                     {comments?.length ? comments.map(renderComment) : <NoComments />}
                 </DiscussionCommentsContainer>
-            </LoadingWrapper>
-        </DiscussionContainer>
+            </div>
+        </LoadingWrapper>
     )
 }
 

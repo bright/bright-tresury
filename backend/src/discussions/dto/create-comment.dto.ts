@@ -5,6 +5,7 @@ import { DiscussionCategory } from '../entites/discussion-category'
 import { BountyDiscussionDto } from './discussion-category/bounty-discussion.dto'
 import { IdeaDiscussionDto } from './discussion-category/idea-discussion.dto'
 import { ProposalDiscussionDto } from './discussion-category/proposal-discussion.dto'
+import { TipDiscussionDto } from './discussion-category/tip-discussion.dto'
 import { DiscussionDto } from './discussion.dto'
 
 export class CreateCommentDto {
@@ -26,6 +27,7 @@ export class CreateCommentDto {
                 { name: DiscussionCategory.Bounty, value: BountyDiscussionDto },
                 { name: DiscussionCategory.Proposal, value: ProposalDiscussionDto },
                 { name: DiscussionCategory.Idea, value: IdeaDiscussionDto },
+                { name: DiscussionCategory.Tip, value: TipDiscussionDto },
             ],
         },
     })

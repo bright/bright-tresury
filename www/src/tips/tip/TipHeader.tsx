@@ -59,7 +59,7 @@ interface OwnProps {
 
 export type TipHeaderProps = OwnProps
 
-const BountyHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
+const TipHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
@@ -84,4 +84,4 @@ const BountyHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
     )
 }
 
-export default BountyHeader
+export default TipHeader

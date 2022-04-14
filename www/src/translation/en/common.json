@@ -861,7 +861,8 @@
             "reason": "Reason of Tip"
         },
         "content": {
-            "infoLabel": "Info"
+            "infoLabel": "Info",
+            "discussionLabel": "Discussion"
         }
     },
     "ideaProposalDetails": {

@@ -27,7 +27,13 @@ export interface IdeaDiscussionDto {
     entityId: string
 }
 
-export type DiscussionDto = ProposalDiscussionDto | BountyDiscussionDto | IdeaDiscussionDto
+export interface TipDiscussionDto {
+    category: DiscussionCategory.Tip
+    blockchainHash: string
+    networkId: string
+}
+
+export type DiscussionDto = ProposalDiscussionDto | BountyDiscussionDto | IdeaDiscussionDto | TipDiscussionDto
 
 export interface CreateCommentDto {
     content: string
@@ -38,6 +44,7 @@ export enum DiscussionCategory {
     Bounty = 'bounty',
     Proposal = 'proposal',
     Idea = 'idea',
+    Tip = 'tip',
 }
 
 export interface EditCommentDto {

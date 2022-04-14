@@ -12,6 +12,7 @@ import { DiscussionsService } from './discussions.service'
 import { BountyDiscussionDto } from './dto/discussion-category/bounty-discussion.dto'
 import { IdeaDiscussionDto } from './dto/discussion-category/idea-discussion.dto'
 import { ProposalDiscussionDto } from './dto/discussion-category/proposal-discussion.dto'
+import { TipDiscussionDto } from './dto/discussion-category/tip-discussion.dto'
 import { DiscussionDto } from './dto/discussion.dto'
 import { DiscussionCategory } from './entites/discussion-category'
 import { CommentsService } from './comments.service'
@@ -182,7 +183,7 @@ describe('/api/v1/comments', () => {
             })
 
             describe('proposal', () => {
-                const baseProposalUrl = `${baseUrl}?category=${DiscussionCategory.Proposal}&`
+                const baseProposalUrl = `${baseUrl}?category=${DiscussionCategory.Proposal}`
 
                 it(`should return comments for numeric blockchainIndex and existing networkId`, async () => {
                     const discussionDto: ProposalDiscussionDto = {
@@ -218,6 +219,41 @@ describe('/api/v1/comments', () => {
                 it(`should return ${HttpStatus.BAD_REQUEST} for unknown networkId`, async () => {
                     return request(app())
                         .get(`${baseProposalUrl}&networkId=unknown&blockchainIndex=1`)
+                        .expect(HttpStatus.BAD_REQUEST)
+                })
+            })
+
+            describe('tip', () => {
+                const baseProposalUrl = `${baseUrl}?category=${DiscussionCategory.Tip}&`
+
+                it(`should return comments for hash and existing networkId`, async () => {
+                    const discussionDto: TipDiscussionDto = {
+                        category: DiscussionCategory.Tip,
+                        networkId: NETWORKS.POLKADOT,
+                        blockchainHash: '0x0',
+                    }
+                    await getSetUp(discussionDto)
+
+                    const result = await request(app()).get(
+                        `${baseProposalUrl}&blockchainHash=0x0&networkId=${NETWORKS.POLKADOT}`,
+                    )
+
+                    expect(result.body).toHaveLength(1)
+                })
+
+                it(`should return empty array for empty blockchainHash`, async () => {
+                    const result = await request(app()).get(`${baseProposalUrl}&networkId=${NETWORKS.POLKADOT}`)
+                    expect(result.body).toHaveLength(0)
+                })
+
+                it(`should return empty array for empty networkId`, async () => {
+                    const result = await request(app()).get(`${baseProposalUrl}&blockchainHash=0x0`)
+                    expect(result.body).toHaveLength(0)
+                })
+
+                it(`should return ${HttpStatus.BAD_REQUEST} for unknown networkId`, async () => {
+                    return request(app())
+                        .get(`${baseProposalUrl}&networkId=unknown&blockchainHash=0x0`)
                         .expect(HttpStatus.BAD_REQUEST)
                 })
             })
@@ -454,6 +490,56 @@ describe('/api/v1/comments', () => {
 
                 it(`should return ${HttpStatus.BAD_REQUEST} for not uuid entityId`, async () => {
                     const dto = getIdeaDiscussionDto({ entityId: 'not a uuid' })
+                    const { sessionHandler } = await setUp()
+
+                    return sessionHandler
+                        .authorizeRequest(request(app()).post(baseUrl).send(dto))
+                        .expect(HttpStatus.BAD_REQUEST)
+                })
+            })
+
+            describe('tip', () => {
+                const getTipDiscussionDto = (dto: any = {}) => {
+                    return {
+                        ...validDto,
+                        discussionDto: {
+                            category: DiscussionCategory.Tip,
+                            blockchainHash: '0x0',
+                            networkId: NETWORKS.POLKADOT,
+                            ...dto,
+                        },
+                    }
+                }
+
+                it(`should return ${HttpStatus.CREATED} for blockchainHash and existing networkId`, async () => {
+                    const dto = getTipDiscussionDto()
+                    const { sessionHandler } = await setUp()
+
+                    return sessionHandler
+                        .authorizeRequest(request(app()).post(baseUrl).send(dto))
+                        .expect(HttpStatus.CREATED)
+                })
+
+                it(`should return ${HttpStatus.BAD_REQUEST} for empty blockchainHash`, async () => {
+                    const dto = getTipDiscussionDto({ blockchainHash: undefined })
+                    const { sessionHandler } = await setUp()
+
+                    return sessionHandler
+                        .authorizeRequest(request(app()).post(baseUrl).send(dto))
+                        .expect(HttpStatus.BAD_REQUEST)
+                })
+
+                it(`should return ${HttpStatus.BAD_REQUEST} for empty networkId`, async () => {
+                    const dto = getTipDiscussionDto({ networkId: undefined })
+                    const { sessionHandler } = await setUp()
+
+                    return sessionHandler
+                        .authorizeRequest(request(app()).post(baseUrl).send(dto))
+                        .expect(HttpStatus.BAD_REQUEST)
+                })
+
+                it(`should return ${HttpStatus.BAD_REQUEST} for unknown networkId`, async () => {
+                    const dto = getTipDiscussionDto({ networkId: 'unknown' })
                     const { sessionHandler } = await setUp()
 
                     return sessionHandler

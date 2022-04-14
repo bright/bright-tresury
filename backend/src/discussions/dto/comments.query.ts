@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import { IsEnum, IsNotEmpty, IsNumberString, IsOptional, IsUUID, Validate } from 'class-validator'
+import { IsEnum, IsNotEmpty, IsNumberString, IsOptional, IsString, IsUUID, Validate } from 'class-validator'
 import { IsValidNetworkConstraint } from '../../utils/network.validator'
 import { DiscussionCategory } from '../entites/discussion-category'
 
@@ -25,4 +25,9 @@ export class CommentsQuery {
     @IsOptional()
     @IsUUID()
     entityId?: string
+
+    @ApiPropertyOptional({ description: 'Blockchain hash of the blockchain entity' })
+    @IsOptional()
+    @IsString()
+    blockchainHash?: string
 }

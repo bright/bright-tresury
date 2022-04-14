@@ -1,17 +1,19 @@
-import { TipDto } from '../tips.dto'
-import NetworkCard from '../../components/network/NetworkCard'
-import { useTranslation } from 'react-i18next'
-import CardHeader from '../../components/card/components/CardHeader'
-import Divider from '../../components/divider/Divider'
-import React, { useMemo } from 'react'
-import CardDetails from '../../components/card/components/CardDetails'
-import CardTitle from '../../components/card/components/CardTitle'
-import CardFooter from '../../components/card/components/CardFooter'
-import User from '../../components/user/User'
 import { makeStyles } from '@material-ui/core'
-import TipValue from './TipValue'
-import { ROUTE_TIPS } from '../../routes/routes'
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { generatePath } from 'react-router-dom'
+import CardDetails from '../../components/card/components/CardDetails'
+import CardFooter from '../../components/card/components/CardFooter'
+import CardHeader from '../../components/card/components/CardHeader'
+import CardTitle from '../../components/card/components/CardTitle'
+import Divider from '../../components/divider/Divider'
+import NetworkCard from '../../components/network/NetworkCard'
+import User from '../../components/user/User'
 import { useNetworks } from '../../networks/useNetworks'
+import { ROUTE_TIP } from '../../routes/routes'
+import { TipContentType } from '../tip/Tip'
+import { TipDto } from '../tips.dto'
+import TipValue from './TipValue'
 
 const useStyles = makeStyles(() => ({
     flexEnd: {
@@ -37,7 +39,7 @@ const TipCard = ({ item: tip }: TipCardProps) => {
         [tip],
     )
 
-    const redirectTo = `${ROUTE_TIPS}/${tip.hash}?${network.name}`
+    const redirectTo = `${generatePath(ROUTE_TIP, { tipHash: tip.hash })}/${TipContentType.Info}`
 
     return (
         <NetworkCard redirectTo={redirectTo}>

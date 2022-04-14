@@ -9,6 +9,9 @@ export class DiscussionEntity extends BaseEntity {
     blockchainIndex?: number
 
     @Column()
+    blockchainHash?: string
+
+    @Column()
     networkId?: string
 
     @Column({ type: 'uuid' })
