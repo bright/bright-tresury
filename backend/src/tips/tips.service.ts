@@ -62,11 +62,17 @@ export class TipsService {
 
     async find(
         networkId: string,
-        { timeFrame }: TipFilterQuery,
+        { ownerId, status, timeFrame }: TipFilterQuery,
         paginatedParams: PaginatedParams,
     ): Promise<PaginatedResponseDto<FindTipDto>> {
+        const owner = ownerId ? await this.usersService.findOne(ownerId) : null
+        if (ownerId && !owner) {
+            // if ownerId was provided but the user does not exists return empty response
+            // because no proposal is assigned to not existing user
+            return PaginatedResponseDto.empty()
+        }
         try {
-            if (timeFrame === TimeFrame.OnChain) return this.findOnChain(networkId, paginatedParams)
+            if (timeFrame === TimeFrame.OnChain) return this.findOnChain(networkId, owner, status, paginatedParams)
             else return this.findOffChain(networkId, paginatedParams)
         } catch (error) {
             logger.error(error)
@@ -74,18 +80,28 @@ export class TipsService {
         }
     }
 
-    private async findOnChain(networkId: string, paginatedParams: PaginatedParams) {
+    private async findOnChain(
+        networkId: string,
+        owner: Nil<UserEntity>,
+        status: Nil<TipStatus>,
+        paginatedParams: PaginatedParams,
+    ) {
+        logger.info('Looking for on-chain tips', { networkId, status, owner: owner?.id })
         const blockchainTips = await this.getMappedBlockchainTips(networkId)
         if (!blockchainTips.size) return PaginatedResponseDto.empty()
         const hashes = keysAsArray(blockchainTips)
         const databaseTips = await this.getMappedDatabaseTips({ where: { blockchainHash: In(hashes), networkId } })
         const polkassemblyTips = {} // TODO: TREAS-446 add when implementing polkassembly support
         const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
-        const allItems = await Promise.all(
-            hashes.map((hash) =>
-                this.createFindTipDto(blockchainTips.get(hash)!, databaseTips.get(hash), currentBlockNumber),
-            ),
+        const allItems = (
+            await Promise.all(
+                hashes.map((hash) =>
+                    this.createFindTipDto(blockchainTips.get(hash)!, databaseTips.get(hash), currentBlockNumber),
+                ),
+            )
         )
+            .filter((findTipDto) => !status || findTipDto.status === status)
+            .filter((findTipDto) => !owner || findTipDto.isOwner(owner))
         return {
             items: paginatedParams.slice(allItems),
             total: allItems.length,
@@ -107,7 +123,7 @@ export class TipsService {
             blockchain.who,
         ])
         const status = TipsService.getTipStatus(blockchain, currentBlockNumber)
-        return { blockchain, entity, people, status }
+        return new FindTipDto(blockchain, entity, people, status)
     }
 
     private static getTipStatus({ closes, tips }: BlockchainTipDto, currentBlockNumber: BlockNumber): TipStatus {

@@ -1,6 +1,6 @@
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { ExtrinsicsService } from '../extrinsics/extrinsics.service'
-import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS } from '../utils/spec.helpers'
+import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
 import {
     aliceAddress,
     bobAddress,
@@ -25,6 +25,7 @@ import { createUserEntity, createWeb3SessionData } from '../ideas/spec.helpers'
 import { TipStatus } from './dto/find-tip.dto'
 import { BlockNumber } from '@polkadot/types/interfaces'
 import BN from 'bn.js'
+import { v4 as uuid } from 'uuid'
 
 describe(`TipsService`, () => {
     const app = beforeSetupFullApp()
@@ -49,16 +50,19 @@ describe(`TipsService`, () => {
     }
     const setUpBlockchainTips = (tips: Partial<BlockchainTipDto>[]) => {
         jest.spyOn(blockchainTipService(), 'getTips').mockImplementation(async () =>
-            tips.map((partialTip, index) => ({
-                hash: partialTip.hash ?? `0x${index}`,
-                reason: partialTip.reason ?? `reason ${index}`,
-                who: partialTip.who ?? bobAddress,
-                finder: partialTip.finder ?? charlieAddress,
-                deposit: partialTip.deposit ?? (index.toString() as NetworkPlanckValue),
-                closes: partialTip.closes ?? null,
-                tips: partialTip.tips ?? [],
-                findersFee: partialTip.findersFee ?? false,
-            })),
+            tips.map(
+                (partialTip, index) =>
+                    new BlockchainTipDto({
+                        hash: partialTip.hash ?? `0x${index}`,
+                        reason: partialTip.reason ?? `reason ${index}`,
+                        who: partialTip.who ?? bobAddress,
+                        finder: partialTip.finder ?? charlieAddress,
+                        deposit: partialTip.deposit ?? (index.toString() as NetworkPlanckValue),
+                        closes: partialTip.closes ?? null,
+                        tips: partialTip.tips ?? [],
+                        findersFee: partialTip.findersFee ?? false,
+                    }),
+            ),
         )
     }
     beforeEach(async () => {
@@ -68,13 +72,13 @@ describe(`TipsService`, () => {
 
     describe('find', () => {
         it('should return on-chain tip WITHOUT entity and detailed public user data for finder and beneficiary', async () => {
-            const expectedBlockchainTip = {
+            const expectedBlockchainTip = new BlockchainTipDto({
                 ...validBlockchainTip,
                 who: bobAddress,
                 finder: charlieAddress,
                 tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
                 findersFee: false,
-            }
+            })
             setUpBlockchainTips([expectedBlockchainTip])
 
             const { items, total } = await tipsService().find(
@@ -86,7 +90,8 @@ describe(`TipsService`, () => {
             expect(items).toHaveLength(1)
 
             const [actual] = items
-            expect(actual.blockchain).toMatchObject(expectedBlockchainTip)
+            // BlockchainTipDto contains a function which fails the below expect, to make it work we need to compare JSON.stringify result
+            expect(JSON.stringify(actual.blockchain)).toBe(JSON.stringify(expectedBlockchainTip))
             expect(actual.entity).toBeUndefined()
             expect(actual.people.get(bobAddress)).toMatchObject({ web3address: bobAddress })
             expect(actual.people.get(charlieAddress)).toMatchObject({ web3address: charlieAddress })
@@ -100,13 +105,13 @@ describe(`TipsService`, () => {
 
             const expectedEntityTip = await setUpEntityTip({ blockchainHash: '0x0' }, alice)
 
-            const expectedBlockchainTip = {
+            const expectedBlockchainTip = new BlockchainTipDto({
                 ...validBlockchainTip,
                 who: bobAddress,
                 finder: charlieAddress,
                 tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
                 findersFee: false,
-            }
+            })
             setUpBlockchainTips([expectedBlockchainTip])
 
             const { items, total } = await tipsService().find(
@@ -118,7 +123,7 @@ describe(`TipsService`, () => {
             expect(items).toHaveLength(1)
 
             const [actual] = items
-            expect(actual.blockchain).toMatchObject(expectedBlockchainTip)
+            expect(JSON.stringify(actual.blockchain)).toBe(JSON.stringify(expectedBlockchainTip))
             expect(actual.entity).toMatchObject(expectedEntityTip)
             expect(actual.people.get(bobAddress)).toMatchObject({ username: bob.username, web3address: bobAddress })
             expect(actual.people.get(charlieAddress)).toMatchObject({
@@ -201,6 +206,76 @@ describe(`TipsService`, () => {
             )
             const [actual] = items
             expect(actual.status).toBe(TipStatus.PendingPayout)
+        })
+
+        it(`should return tips filtered by status`, async () => {
+            // Two blockchain tips: Tipped, Proposed
+            setUpBlockchainTips([
+                {
+                    ...validBlockchainTip,
+                    hash: '0x0',
+                    closes: null,
+                    tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                },
+                {
+                    ...validBlockchainTip,
+                    hash: '0x1',
+                    closes: null,
+                    tips: [],
+                },
+            ])
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { status: TipStatus.Tipped, timeFrame: TimeFrame.OnChain },
+                new PaginatedParams({}),
+            )
+            expect(items).toHaveLength(1)
+            expect(items[0].blockchain.hash).toBe('0x0')
+            expect(items[0].status).toBe(TipStatus.Tipped)
+        })
+
+        it(`should return tips filtered by owner when no tip entity`, async () => {
+            const { user: alice } = await createWeb3SessionData(aliceAddress)
+            setUpBlockchainTips([
+                {
+                    ...validBlockchainTip,
+                    hash: '0x0',
+                    finder: aliceAddress,
+                },
+                {
+                    ...validBlockchainTip,
+                    hash: '0x1',
+                    finder: bobAddress,
+                },
+            ])
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { timeFrame: TimeFrame.OnChain, ownerId: alice.id },
+                new PaginatedParams({}),
+            )
+            expect(items).toHaveLength(1)
+            expect(items[0].blockchain.hash).toBe('0x0')
+        })
+
+        it(`should return no tips when user is not an owner of any tip`, async () => {
+            const { user: charlie } = await createWeb3SessionData(charlieAddress)
+            setUpBlockchainTips([{ ...validBlockchainTip, finder: aliceAddress }])
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { timeFrame: TimeFrame.OnChain, ownerId: charlie.id },
+                new PaginatedParams({}),
+            )
+            expect(items).toHaveLength(0)
+        })
+
+        it(`should return no tips when user does not exist`, async () => {
+            setUpBlockchainTips([{ ...validBlockchainTip, finder: aliceAddress }])
+            const { items } = await tipsService().find(
+                NETWORKS.POLKADOT,
+                { timeFrame: TimeFrame.OnChain, ownerId: uuid() },
+                new PaginatedParams({}),
+            )
+            expect(items).toHaveLength(0)
         })
 
         it('should return off-chain tip', async () => {

@@ -24,8 +24,6 @@ import {
     blockchainBountyActive,
     blockchainBountyApproved,
     blockchainBountyCuratorProposed,
-    blockchainBountyFunded,
-    blockchainBountyPendingPayout,
     createBountyEntity,
     createCuratorSessionData,
     createProposerSessionData,

@@ -1,5 +1,4 @@
-import { BadRequestException, Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
-import { ApiPromise } from '@polkadot/api'
+import { Inject, Injectable, OnModuleDestroy } from '@nestjs/common'
 import Extrinsic from '@polkadot/types/extrinsic/Extrinsic'
 import { EventRecord, Header } from '@polkadot/types/interfaces'
 import { AccountId } from '@polkadot/types/interfaces/runtime'

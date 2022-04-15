@@ -19,4 +19,8 @@ export class TipEntity extends BaseEntity {
 
     @ManyToOne(() => UserEntity, { eager: true })
     owner!: UserEntity
+
+    isOwner(user: UserEntity) {
+        return this.owner.id === user.id
+    }
 }

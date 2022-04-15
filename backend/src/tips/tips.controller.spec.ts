@@ -10,12 +10,13 @@ import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } 
 import {
     bobAddress,
     charlieAddress,
+    daveAddress,
     minimalValidListenForTipDto,
     mockListenForExtrinsic,
     validBlockchainTip,
 } from './spec.helpers'
 import { TipsService } from './tips.service'
-import { TipStatus } from './dto/find-tip.dto'
+import { FindTipDto, TipStatus } from './dto/find-tip.dto'
 import { PublicUserDto } from '../users/dto/public-user.dto'
 
 const baseUrl = `/api/v1/tips/`
@@ -38,26 +39,35 @@ describe(`/api/v1/tips/`, () => {
             return request(app()).get(baseUrl).expect(HttpStatus.BAD_REQUEST)
         })
         it('should return tips for given network', async () => {
-            jest.spyOn(service(), 'find').mockImplementation(async () =>
-                Promise.resolve({
-                    items: [
-                        {
-                            blockchain: validBlockchainTip,
-                            entity: null,
-                            people: new Map([
-                                [bobAddress, new PublicUserDto({ web3address: bobAddress })],
-                                [charlieAddress, new PublicUserDto({ web3address: charlieAddress })],
-                            ]),
-                            status: TipStatus.Proposed,
-                        },
-                    ],
-                    total: 1,
-                }),
-            )
+            jest.spyOn(service(), 'find').mockImplementation(async () => ({
+                items: [
+                    new FindTipDto(
+                        validBlockchainTip,
+                        null,
+                        new Map([
+                            [bobAddress, new PublicUserDto({ web3address: bobAddress })],
+                            [charlieAddress, new PublicUserDto({ web3address: charlieAddress })],
+                        ]),
+                        TipStatus.Proposed,
+                    ),
+                ],
+                total: 1,
+            }))
             const result = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
             const { items, total } = result.body
             expect(total).toBe(1)
             expect(items).toHaveLength(1)
+        })
+        it(`should return ${HttpStatus.BAD_REQUEST} for request with wrong status option`, async () => {
+            return request(app())
+                .get(`${baseUrl}?network=${NETWORKS.POLKADOT}&status=xyz`)
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+
+        it(`should return ${HttpStatus.BAD_REQUEST} for request with wrong owner id`, async () => {
+            return request(app())
+                .get(`${baseUrl}?network=${NETWORKS.POLKADOT}&ownerId=xyz`)
+                .expect(HttpStatus.BAD_REQUEST)
         })
     })
 

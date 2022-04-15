@@ -68,7 +68,16 @@ export class BlockchainTipsService {
                     }))
                     const findersFee = openTip.findersFee.isTrue
 
-                    return { hash: hash.toHex(), reason, who, finder, deposit, closes, tips, findersFee }
+                    return new BlockchainTipDto({
+                        hash: hash.toHex(),
+                        reason,
+                        who,
+                        finder,
+                        deposit,
+                        closes,
+                        tips,
+                        findersFee,
+                    })
                 },
             ),
         )

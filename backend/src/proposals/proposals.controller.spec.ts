@@ -229,7 +229,7 @@ describe(`/api/v1/proposals`, () => {
                 .expect(HttpStatus.OK)
         })
 
-        it(`should return ${HttpStatus.OK} for filter by bad ownerId request`, async () => {
+        it(`should return ${HttpStatus.BAD_REQUEST} for filter by bad ownerId request`, async () => {
             return request(app())
                 .get(`${baseUrl}?network=${NETWORKS.POLKADOT}&ownerId=XYZ`)
                 .expect(HttpStatus.BAD_REQUEST)

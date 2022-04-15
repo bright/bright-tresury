@@ -8,9 +8,10 @@ import { BlockchainsConnections } from '../blockchain/blockchain.module'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
+import { v4 as uuid } from 'uuid'
+import { bobAddress } from './spec.helpers'
 
 const baseUrl = `/api/v1/tips/`
-const bobAddress = '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty'
 
 describe(`/api/v1/tips/`, () => {
     const app = beforeSetupFullApp()
@@ -28,16 +29,16 @@ describe(`/api/v1/tips/`, () => {
             const keyring = new Keyring({ type: 'sr25519' })
             const aliceKeypair = keyring.addFromUri('//Alice', { name: 'Alice default' })
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
-
+            const reason = `${Date.now()}`
             // create extrinsic
-            const extrinsic = api.tx.tips.reportAwesome('bc', bobAddress)
+            const extrinsic = api.tx.tips.reportAwesome(reason, bobAddress)
             await extrinsic.signAsync(aliceKeypair)
 
             // POST
             await sessionHandler
                 .authorizeRequest(
                     request(app()).post(baseUrl).send({
-                        blockchainReason: 'bc',
+                        blockchainReason: reason,
                         title: 'title',
                         networkId: NETWORKS.POLKADOT,
                         beneficiary: bobAddress,
@@ -56,10 +57,11 @@ describe(`/api/v1/tips/`, () => {
                     }
                 })
             })
+
             const applyExtrinsicEvents = BlockchainService.getApplyExtrinsicEvents(inBlockResult.events)
             const tipHash = BlockchainTipsService.extractTipHash(applyExtrinsicEvents)
 
-            await new Promise((resolve) => setTimeout(resolve, 600))
+            await new Promise((resolve) => setTimeout(resolve, 1000))
 
             // GET
             const response = await request(app()).get(`${baseUrl}?network=${NETWORKS.POLKADOT}`)
