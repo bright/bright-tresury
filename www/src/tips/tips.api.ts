@@ -1,4 +1,4 @@
-import { useInfiniteQuery, useMutation } from 'react-query'
+import { useInfiniteQuery, useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { PaginationRequestParams } from '../util/pagination/pagination.request.params'
 import { TimeFrame } from '../util/useTimeFrame'
 import { apiGet, apiPost, getUrlSearchParams } from '../api'
@@ -29,6 +29,21 @@ export const useGetTips = ({ pageNumber, ...params }: GetTipsApiParams & Paginat
             getNextPageParam: (lastPage, allPages) => allPages.length + 1,
         },
     )
+
+// GET ONE TIP
+
+async function getTip(tipHash: string, network: string): Promise<TipDto> {
+    return apiGet<TipDto>(`${TIPS_API_PATH}/${tipHash}?${getUrlSearchParams({ network }).toString()}`)
+}
+
+export const TIP_QUERY_KEY_BASE = 'tip'
+
+export const useGetTip = (
+    { tipHash, network }: { tipHash: string; network: string },
+    options?: UseQueryOptions<TipDto>,
+) => {
+    return useQuery([TIP_QUERY_KEY_BASE, tipHash, network], () => getTip(tipHash, network), options)
+}
 
 // POST
 

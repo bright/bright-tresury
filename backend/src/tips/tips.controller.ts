@@ -1,4 +1,4 @@
-import { Body, Get, HttpCode, HttpStatus, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { ApiBadRequestResponse, ApiCreatedResponse, ApiOkResponse, ApiTags } from '@nestjs/swagger'
 import { SessionGuard } from '../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../auth/session/session.decorator'
@@ -37,6 +37,16 @@ export class TipsController {
             new PaginatedParams(paginatedQueryParams),
         )
         return { items: items.map((item) => new TipDto(item)), total }
+    }
+
+    @Get(':hash')
+    @ApiOkResponse({
+        description: 'Respond with tip for the given index in the given network',
+        type: TipDto,
+    })
+    async getTip(@Param() { hash }: { hash: string }, @Query() { network }: NetworkNameQuery): Promise<TipDto> {
+        const tip = await this.tipsService.findOne(network, hash)
+        return new TipDto(tip)
     }
 
     @Post()

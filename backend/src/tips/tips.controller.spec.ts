@@ -71,6 +71,48 @@ describe(`/api/v1/tips/`, () => {
         })
     })
 
+    describe('GET ONE', () => {
+        it(`should response with status code ${HttpStatus.NOT_FOUND} for not existing tip`, async () => {
+            const tipHash = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
+            return request(app()).get(`${baseUrl}${tipHash}?network=${NETWORKS.POLKADOT}`).expect(HttpStatus.NOT_FOUND)
+        })
+        it(`should response with status code ${HttpStatus.BAD_REQUEST} for not given network name `, async () => {
+            const tipHash = '0xa9a65822b4717b60310e942a0ceec663764c110d29b7622ed464b9191f226e1f'
+
+            return request(app()).get(`${baseUrl}${tipHash}`).expect(HttpStatus.BAD_REQUEST)
+        })
+        // TODO fix this
+        // it.skip('should return tip for given network', async () => {
+        //     const tipHash = '0x0'
+        //     const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+        //     jest.spyOn(service(), 'findOne').mockImplementation(async () =>
+        //         Promise.resolve({
+        //             blockchain: validBlockchainTip,
+        //             entity: null,
+        //             people: new Map([
+        //                 [bobAddress, new PublicUserDto({ web3address: bobAddress })],
+        //                 [charlieAddress, new PublicUserDto({ web3address: charlieAddress })],
+        //             ]),
+        //             status: TipStatus.Proposed,
+        //         }),
+        //     )
+        //     const result = await request(app()).get(`${baseUrl}${tipHash}?network=${NETWORKS.POLKADOT}`)
+        //
+        //     expect(result.body).toMatchObject({
+        //         hash: '0x0',
+        //         reason: 'reason',
+        //         finder: { web3address: '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q' },
+        //         beneficiary: { web3address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
+        //         tips: [],
+        //         findersFee: false,
+        //         deposit: '1',
+        //         owner: {},
+        //         status: 'Proposed',
+        //     })
+        // })
+    })
+
     describe('POST', () => {
         beforeAll(() => {
             mockListenForExtrinsic(blockchainService())

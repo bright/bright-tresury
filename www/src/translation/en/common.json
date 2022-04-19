@@ -801,7 +801,7 @@
         }
     },
     "tip": {
-        "indexPrefix": "#",
+        "indexPrefix": "",
         "list": {
             "createTip": "Create Tip",
             "finder": "Finder",
@@ -853,6 +853,15 @@
                 "includeTip": "I want to tip",
                 "value": "Reward"
             }
+        },
+        "info": {
+            "description": "Description",
+            "finder": "Finder",
+            "beneficiary": "Beneficiary",
+            "reason": "Reason of Tip"
+        },
+        "content": {
+            "infoLabel": "Info"
         }
     },
     "ideaProposalDetails": {

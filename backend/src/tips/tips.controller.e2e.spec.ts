@@ -8,9 +8,7 @@ import { BlockchainsConnections } from '../blockchain/blockchain.module'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { getApi } from '../blockchain/utils'
 import { beforeAllSetup, beforeSetupFullApp, cleanDatabase, NETWORKS, request } from '../utils/spec.helpers'
-import { v4 as uuid } from 'uuid'
 import { bobAddress } from './spec.helpers'
-
 const baseUrl = `/api/v1/tips/`
 
 describe(`/api/v1/tips/`, () => {
@@ -29,7 +27,8 @@ describe(`/api/v1/tips/`, () => {
             const keyring = new Keyring({ type: 'sr25519' })
             const aliceKeypair = keyring.addFromUri('//Alice', { name: 'Alice default' })
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
-            const reason = `${Date.now()}`
+            const reason = `Reason ${Date.now()}`
+
             // create extrinsic
             const extrinsic = api.tx.tips.reportAwesome(reason, bobAddress)
             await extrinsic.signAsync(aliceKeypair)
@@ -75,6 +74,17 @@ describe(`/api/v1/tips/`, () => {
                     title: 'title',
                 }),
             )
+
+            // GET ONE
+            const oneTipResponse = await request(app()).get(`${baseUrl}${tipHash}?network=${NETWORKS.POLKADOT}`)
+
+            expect(oneTipResponse.body).toMatchObject({
+                hash: tipHash,
+                owner: expect.objectContaining({
+                    userId: sessionHandler.sessionData.user.id,
+                }),
+                title: 'title',
+            })
         })
     })
 })

@@ -10,6 +10,8 @@ import CardFooter from '../../components/card/components/CardFooter'
 import User from '../../components/user/User'
 import { makeStyles } from '@material-ui/core'
 import TipValue from './TipValue'
+import { ROUTE_TIPS } from '../../routes/routes'
+import { useNetworks } from '../../networks/useNetworks'
 
 const useStyles = makeStyles(() => ({
     flexEnd: {
@@ -29,12 +31,16 @@ export type TipCardProps = OwnProps
 const TipCard = ({ item: tip }: TipCardProps) => {
     const { t } = useTranslation()
     const classes = useStyles()
+    const { network } = useNetworks()
     const tippers = useMemo(
         () => `${tip.tips.length} ${tip.tips.length === 1 ? t('tip.list.tipper') : t('tip.list.tippers')}`,
         [tip],
     )
+
+    const redirectTo = `${ROUTE_TIPS}/${tip.hash}?${network.name}`
+
     return (
-        <NetworkCard redirectTo={undefined}>
+        <NetworkCard redirectTo={redirectTo}>
             <CardHeader className={classes.flexEnd}>
                 <div className={classes.tippers}>{tippers}</div>
             </CardHeader>

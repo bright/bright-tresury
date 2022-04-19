@@ -65,6 +65,11 @@ describe(`TipsService`, () => {
             ),
         )
     }
+
+    const setUpBlockchainTip = (tip: BlockchainTipDto) => {
+        //
+    }
+
     beforeEach(async () => {
         await cleanDatabase()
         jest.clearAllMocks()
@@ -287,6 +292,26 @@ describe(`TipsService`, () => {
             )
             expect(total).toBe(0)
             expect(items).toHaveLength(0)
+        })
+    })
+
+    describe.skip('findOne', () => {
+        it('should return on-chain tip WITHOUT entity and detailed public user data for finder and beneficiary', async () => {
+            const tipHash = '0x0000000000000000000000000000000000000000000000000000000000000000'
+            const expectedBlockchainTip = {
+                ...validBlockchainTip,
+                hash: tipHash,
+                who: bobAddress,
+                finder: charlieAddress,
+                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                findersFee: false,
+            }
+
+            setUpBlockchainTip(expectedBlockchainTip)
+
+            const tip = await tipsService().findOne(NETWORKS.POLKADOT, tipHash)
+
+            expect(tip).toMatchObject(expectedBlockchainTip)
         })
     })
 

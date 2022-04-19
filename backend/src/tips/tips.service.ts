@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
@@ -58,6 +58,23 @@ export class TipsService {
             { extrinsicHash: dto.extrinsicHash, lastBlockHash: dto.lastBlockHash, data: dto },
             callback,
         )
+    }
+
+    async findOne(networkId: string, blockchainHash: string): Promise<FindTipDto> {
+        const blockachainTip = await this.blockchainTipsService.getTip(networkId, blockchainHash)
+
+        const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
+
+        if (blockachainTip === undefined) {
+            throw new NotFoundException(`Tip not found`)
+        }
+
+        const databaseTip = await this.repository.findOne({
+            networkId,
+            blockchainHash,
+        })
+
+        return this.createFindTipDto(blockachainTip, databaseTip, currentBlockNumber)
     }
 
     async find(

@@ -82,4 +82,36 @@ export class BlockchainTipsService {
             ),
         )
     }
+
+    async getTip(networkId: string, hash: string): Promise<BlockchainTipDto | undefined> {
+        const api = getApi(this.blockchainsConnections, networkId)
+        const tip = await api.query.tips.tips(hash)
+
+        if (tip.isNone) {
+            return undefined
+        }
+
+        const openTip = tip.unwrap()
+        const optionReason = await api.query.tips.reasons(openTip.reason)
+        const reason = hexToString(optionReason.unwrapOr(null)?.toHex())
+        const who = encodeAddress(openTip.who.toString())
+        const finder = encodeAddress(openTip.finder.toString())
+        const deposit = openTip.deposit.toString() as NetworkPlanckValue
+        const closes = openTip.closes.unwrapOr(null)
+        const tips = openTip.tips.map(([account, amount]) => ({
+            tipper: encodeAddress(account.toString()),
+            value: amount.toString() as NetworkPlanckValue,
+        }))
+        const findersFee = openTip.findersFee.isTrue
+        return new BlockchainTipDto({
+            hash,
+            reason,
+            who,
+            finder,
+            deposit,
+            closes,
+            tips,
+            findersFee,
+        })
+    }
 }

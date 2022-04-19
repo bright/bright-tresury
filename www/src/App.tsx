@@ -43,7 +43,6 @@ import {
     ROUTE_LEARN_MORE,
     ROUTE_NEW_BOUNTY,
     ROUTE_NEW_IDEA,
-    ROUTE_TIPS,
     ROUTE_NEW_PASSWORD,
     ROUTE_NEW_TIP,
     ROUTE_PASSWORD_RECOVERY,
@@ -57,6 +56,8 @@ import {
     ROUTE_SIGNUP_WEB3_SUCCESS,
     ROUTE_STATS,
     ROUTE_TERMS,
+    ROUTE_TIP,
+    ROUTE_TIPS,
     ROUTE_VERIFY_EMAIL,
 } from './routes/routes'
 import SnackNotificationsContextProvider from './snack-notifications/SnackNotificationsContext'
@@ -71,6 +72,7 @@ import LearnMore from './components/learnMore/LearnMore'
 import PasswordRecovery from './auth/PasswordRecovery/PasswordRecovery'
 import NewPassword from './auth/PasswordRecovery/NewPassword'
 import Tips from './tips/Tips'
+import TipLoader from './tips/tip/TipLoader'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -127,6 +129,7 @@ function AppRoutes() {
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />
 
                 <Route exact={true} path={ROUTE_TIPS} component={Tips} />
+                <Route exact={true} path={ROUTE_TIP} component={TipLoader} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_TIP} component={TipCreate} requireVerified={true} />
 
                 <PrivateRoute exact={false} path={ROUTE_ACCOUNT} component={Account} requireVerified={false} />
