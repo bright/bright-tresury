@@ -127,7 +127,7 @@ export class TipsService {
     }
 
     private static getTipStatus({ closes, tips }: BlockchainTipDto, currentBlockNumber: BlockNumber): TipStatus {
-        if (closes && closes > currentBlockNumber) return TipStatus.PendingPayout
+        if (closes && closes.cmp(currentBlockNumber) !== 1) return TipStatus.PendingPayout
         else if (closes) return TipStatus.Closing
         else if (tips.length !== 0) return TipStatus.Tipped
         else return TipStatus.Proposed

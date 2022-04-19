@@ -171,12 +171,12 @@ describe(`TipsService`, () => {
             setUpBlockchainTips([
                 {
                     ...validBlockchainTip,
-                    closes: new BN(1) as BlockNumber,
+                    closes: new BN(2) as BlockNumber,
                     tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
                 },
             ])
             jest.spyOn(blockchainService(), 'getCurrentBlockNumber').mockImplementation(
-                async () => new BN(2) as BlockNumber,
+                async () => new BN(1) as BlockNumber,
             )
             const { items } = await tipsService().find(
                 NETWORKS.POLKADOT,
@@ -196,7 +196,7 @@ describe(`TipsService`, () => {
                 },
             ])
             jest.spyOn(blockchainService(), 'getCurrentBlockNumber').mockImplementation(
-                async () => new BN(0) as BlockNumber,
+                async () => new BN(2) as BlockNumber,
             )
 
             const { items } = await tipsService().find(

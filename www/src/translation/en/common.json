@@ -807,7 +807,15 @@
             "finder": "Finder",
             "beneficiary": "Beneficiary",
             "tipper": "Tipper",
-            "tippers": "Tippers"
+            "tippers": "Tippers",
+            "filters": {
+                "all": "All",
+                "mine": "Mine",
+                "proposed": "Proposed",
+                "tipped": "Tipped",
+                "closing": "Closing",
+                "pendingPayout": "Pending Payout"
+            }
         },
         "create": {
             "header": {

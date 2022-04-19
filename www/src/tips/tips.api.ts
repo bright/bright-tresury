@@ -3,13 +3,16 @@ import { PaginationRequestParams } from '../util/pagination/pagination.request.p
 import { TimeFrame } from '../util/useTimeFrame'
 import { apiGet, apiPost, getUrlSearchParams } from '../api'
 import { PaginationResponseDto } from '../util/pagination/pagination.response.dto'
-import { CreateTipDto, TipDto, TipExtrinsicDto } from './tips.dto'
+import { CreateTipDto, TipDto, TipExtrinsicDto, TipStatus } from './tips.dto'
+import { Nil } from '../util/types'
 
 const TIPS_API_PATH = '/tips'
 const TIPS_QUERY_KEY_BASE = 'tips'
 
 interface GetTipsApiParams {
     network: string
+    ownerId: Nil<string>
+    status: Nil<TipStatus>
     timeFrame: TimeFrame
 }
 
@@ -20,7 +23,7 @@ const getTips = async (params: GetTipsApiParams & PaginationRequestParams) => {
 }
 export const useGetTips = ({ pageNumber, ...params }: GetTipsApiParams & PaginationRequestParams) =>
     useInfiniteQuery(
-        [TIPS_QUERY_KEY_BASE, params.network, params.timeFrame],
+        [TIPS_QUERY_KEY_BASE, params.network, params.timeFrame, params.ownerId, params.status],
         ({ pageParam: pageNumber }) => getTips({ pageNumber, ...params }),
         {
             getNextPageParam: (lastPage, allPages) => allPages.length + 1,

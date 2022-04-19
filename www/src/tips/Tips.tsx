@@ -9,13 +9,35 @@ import LoadMore from '../components/loadMore/LoadMore'
 import TipsHeader from './TipsHeader'
 import TipCard from './list/TipCard'
 import Grid from '../components/grid/Grid'
+import { TipFilter, useTipFilter } from './list/useTipFilter'
+import { TipStatus } from './tips.dto'
+import { useAuth } from '../auth/AuthContext'
+
+const getTipStatus = (filter: TipFilter) => {
+    switch (filter) {
+        case TipFilter.Proposed:
+            return TipStatus.Proposed
+        case TipFilter.Tipped:
+            return TipStatus.Tipped
+        case TipFilter.Closing:
+            return TipStatus.Closing
+        case TipFilter.PendingPayout:
+            return TipStatus.PendingPayout
+        default:
+            return null
+    }
+}
 
 const Tips = () => {
     const { t } = useTranslation()
+    const { user } = useAuth()
+    const { param: tipFilter } = useTipFilter()
     const { param: timeFrame } = useTimeFrame()
     const { network } = useNetworks()
     const { status, data, isLoading, fetchNextPage } = useGetTips({
         network: network.id,
+        ownerId: tipFilter === TipFilter.All ? user?.id : null,
+        status: getTipStatus(tipFilter),
         timeFrame,
         ...defaultPaginatedRequestParams(),
     })

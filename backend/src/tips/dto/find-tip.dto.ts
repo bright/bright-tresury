@@ -12,10 +12,11 @@ export enum TipStatus {
 }
 
 export class FindTipDto {
-    blockchain!: BlockchainTipDto
+    blockchain: BlockchainTipDto
     entity: Nil<TipEntity>
-    people!: Map<string, PublicUserDto>
-    status!: TipStatus
+    people: Map<string, PublicUserDto>
+    status: TipStatus
+
     constructor(
         blockchain: BlockchainTipDto,
         entity: Nil<TipEntity>,
@@ -27,5 +28,6 @@ export class FindTipDto {
         this.people = people
         this.status = status
     }
+
     isOwner = (user: UserEntity) => this.entity?.isOwner(user) || this.blockchain.isOwner(user)
 }
