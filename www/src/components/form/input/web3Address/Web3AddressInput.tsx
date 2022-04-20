@@ -1,6 +1,5 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { UserStatus } from '../../../../auth/AuthContext'
 import { isValidAddress } from '../../../../util/addressValidator'
 import User from '../../../user/User'
 import TextField, { TextFieldProps } from '../TextField'
@@ -35,10 +34,10 @@ const Web3AddressInput = ({ ...props }: Web3AddressInputProps) => {
     const blurInput = () => setInputFocused(false)
 
     useEffect(() => {
-        if (showInput && inputRef) {
+        if (showInput && inputRef && inputFocused) {
             inputRef.current?.focus()
         }
-    }, [showInput, inputRef])
+    }, [showInput, inputRef, inputFocused])
 
     return (
         <>
