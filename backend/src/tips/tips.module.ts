@@ -7,9 +7,17 @@ import { BlockchainModule } from '../blockchain/blockchain.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { TipEntity } from './tip.entity'
 import { UsersModule } from '../users/users.module'
+import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
 
 @Module({
-    imports: [TypeOrmModule.forFeature([TipEntity]), BlockchainModule, UsersModule, ExtrinsicsModule, SessionModule],
+    imports: [
+        TypeOrmModule.forFeature([TipEntity]),
+        BlockchainModule,
+        UsersModule,
+        ExtrinsicsModule,
+        SessionModule,
+        PolkassemblyModule,
+    ],
     controllers: [TipsController],
     providers: [TipsService],
 })

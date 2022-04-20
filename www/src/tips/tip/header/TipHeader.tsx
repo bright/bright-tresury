@@ -77,7 +77,7 @@ const TipHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
             <BasicInfo>
                 <Hash prefix={t('tip.indexPrefix')} hash={tip.hash} />
                 <Title>
-                    <OptionalTitle title={tip.title ?? tip.reason} />
+                    <OptionalTitle title={tip.title ?? tip.polkassembly?.title ?? tip.reason} />
                 </Title>
             </BasicInfo>
             <NetworkValues className={classes.networkValues}>

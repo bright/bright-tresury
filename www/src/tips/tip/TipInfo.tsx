@@ -6,6 +6,7 @@ import { Label } from '../../components/text/Label'
 import User from '../../components/user/User'
 import LongText from '../../components/text/LongText'
 import { TipDto } from '../tips.dto'
+import PolkassemblyDescription from '../../components/polkassemblyDescription/PolkassemblyDescription'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -52,6 +53,7 @@ const TipInfo = ({ tip }: TipInfoProps) => {
                 <Label label={t('tip.info.reason')} />
                 <LongText text={tip.reason} placeholder={t('tip.info.reason')} />
             </div>
+            <PolkassemblyDescription polkassemblyPostDto={tip.polkassembly} initialShow={!tip.description} />
         </div>
     )
 }

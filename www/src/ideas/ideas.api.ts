@@ -1,5 +1,5 @@
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
-import { apiDelete, apiGet, apiPatch, apiPost } from '../api'
+import { apiDelete, apiGet, apiPatch, apiPost, getUrlSearchParams } from '../api'
 import { IdeaProposalDetailsDto } from '../idea-proposal-details/idea-proposal-details.dto'
 import {
     EditIdeaDto,
@@ -63,7 +63,7 @@ function toApiEditIdeaDto(idea: EditIdeaDto): ApiEditIdeaDto {
 // GET ALL
 
 async function getIdeas(network: string): Promise<IdeaDto[]> {
-    const ideas = await apiGet<ApiIdeaDto[]>(`${IDEAS_API_PATH}?network=${network}`)
+    const ideas = await apiGet<ApiIdeaDto[]>(`${IDEAS_API_PATH}?${getUrlSearchParams({ network }).toString()}`)
     return ideas.map((idea) => toIdeaDto(idea, network))
 }
 

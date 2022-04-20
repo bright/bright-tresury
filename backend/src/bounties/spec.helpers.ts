@@ -9,7 +9,6 @@ import {
 } from '../blockchain/blockchain-bounties/dto/blockchain-bounty.dto'
 import { PolkassemblyBountyPostDto } from '../polkassembly/bounties/bounty-post.dto'
 import { PolkassemblyBountiesService } from '../polkassembly/bounties/polkassembly-bounties.service'
-import { PolkassemblyService } from '../polkassembly/polkassembly.service'
 import { PolkassemblyBountyPostSchema } from '../polkassembly/bounties/bounty-post.schema'
 import { UserEntity } from '../users/entities/user.entity'
 import { NETWORKS } from '../utils/spec.helpers'
@@ -305,7 +304,6 @@ const bountySchema: PolkassemblyBountyPostSchema = {
     title: 'polkassembly title',
     content: 'polkassembly content',
     onchain_link: {
-        id: 0,
         proposer_address: '15oF4uVJwmo4TdGW7VfQxNLavjCXviqxT9S1MgbjMNHr6Sp5',
         onchain_bounty_id: 0,
         onchain_bounty: [

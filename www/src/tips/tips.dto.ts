@@ -1,5 +1,6 @@
 import { NetworkPlanckValue, Nil } from '../util/types'
 import { PublicUserDto } from '../util/publicUser.dto'
+import { PolkassemblyPostDto } from '../components/polkassemblyDescription/polkassembly-post.dto'
 
 export enum TipStatus {
     Proposed = 'Proposed',
@@ -21,7 +22,7 @@ export interface TipDto {
     description: Nil<string>
     owner: Nil<PublicUserDto>
 
-    polkassembly?: Nil<{ title: string }>
+    polkassembly?: Nil<PolkassemblyPostDto>
 
     status: TipStatus
 }

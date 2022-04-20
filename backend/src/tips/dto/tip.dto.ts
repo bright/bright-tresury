@@ -2,6 +2,7 @@ import { PublicUserDto } from '../../users/dto/public-user.dto'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
 import { FindTipDto, TipStatus } from './find-tip.dto'
 import { ApiProperty } from '@nestjs/swagger'
+import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
 
 export class TipDto {
     @ApiProperty({ description: 'Tip blockchain hash' })
@@ -37,12 +38,12 @@ export class TipDto {
     owner: Nil<PublicUserDto>
 
     @ApiProperty({ description: 'Polkassembly tip information' })
-    polkassembly?: Nil<{ title: string }>
+    polkassembly?: Nil<PolkassemblyPostDto>
 
     @ApiProperty({ description: 'Tip status', enum: TipStatus })
     status!: TipStatus
 
-    constructor({ blockchain, entity, people, status }: FindTipDto) {
+    constructor({ blockchain, entity, polkassembly, people, status }: FindTipDto) {
         this.hash = blockchain.hash
         this.reason = blockchain.reason
         this.finder = people.get(blockchain.finder) ?? new PublicUserDto({ web3address: blockchain.finder })
@@ -58,6 +59,9 @@ export class TipDto {
         this.title = entity?.title
         this.description = entity?.description
         this.owner = PublicUserDto.fromUserEntity(entity?.owner)
+
+        this.polkassembly = polkassembly
+
         this.status = status
     }
 }

@@ -1,26 +1,25 @@
-export interface PolkassemblyTreasuryProposalPostSchema {
+import { PostSchema } from '../fragments/post.schema'
+
+interface TreasuryProposalOnchainLinkSchema {
     id: number
-    content: string
-    title: string
-    onchain_link: {
+    proposer_address: string
+    onchain_treasury_proposal_id: number
+    onchain_motion_id: number
+    onchain_treasury_spend_proposal: {
         id: number
-        proposer_address: string
-        onchain_treasury_proposal_id: number
-        onchain_motion_id: number
-        onchain_treasury_spend_proposal: {
-            id: number
-            treasuryProposalId: number
-            proposer: string
-            beneficiary: string
-            value: string
-            bond: string
-            treasuryStatus: {
-                id: string
-                status: string
-                blockNumber: {
-                    number: number
-                }
-            }[]
+        treasuryProposalId: number
+        proposer: string
+        beneficiary: string
+        value: string
+        bond: string
+        treasuryStatus: {
+            id: string
+            status: string
+            blockNumber: {
+                number: number
+            }
         }[]
-    }
+    }[]
 }
+
+export type PolkassemblyTreasuryProposalPostSchema = PostSchema<TreasuryProposalOnchainLinkSchema>

@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { Nil } from '../../utils/types'
 import { PolkassemblyPostEventDto } from './polkassembly-post-event.dto'
 
@@ -12,10 +12,15 @@ export class PolkassemblyPostDto {
     })
     content: string
 
-    @ApiProperty({
+    @ApiPropertyOptional({
         description: 'Blockchain index fetched from polkassembly',
     })
-    blockchainIndex: number
+    blockchainIndex?: Nil<number>
+
+    @ApiPropertyOptional({
+        description: 'Blockchain hash fetched from polkassembly',
+    })
+    blockchainHash?: Nil<string>
 
     @ApiProperty({
         description: 'Events emitted fetched from polkassembly',
@@ -27,16 +32,19 @@ export class PolkassemblyPostDto {
         title,
         content,
         blockchainIndex,
+        blockchainHash,
         events,
     }: {
         title: string
         content: string
         blockchainIndex: number
+        blockchainHash: string
         events?: Nil<PolkassemblyPostEventDto[]>
     }) {
         this.title = title
         this.content = content
         this.blockchainIndex = blockchainIndex
+        this.blockchainHash = blockchainHash
         this.events = events ?? []
     }
 }

@@ -44,6 +44,7 @@ describe(`/api/v1/tips/`, () => {
                     new FindTipDto(
                         validBlockchainTip,
                         null,
+                        null,
                         new Map([
                             [bobAddress, new PublicUserDto({ web3address: bobAddress })],
                             [charlieAddress, new PublicUserDto({ web3address: charlieAddress })],
@@ -89,6 +90,7 @@ describe(`/api/v1/tips/`, () => {
                 async () =>
                     new FindTipDto(
                         validBlockchainTip,
+                        null,
                         null,
                         new Map([
                             [bobAddress, new PublicUserDto({ web3address: bobAddress })],

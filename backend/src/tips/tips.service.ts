@@ -22,6 +22,9 @@ import { TipFilterQuery } from './tip-filter.query'
 import { TipEntity } from './tip.entity'
 import { BlockNumber } from '@polkadot/types/interfaces'
 import { BlockchainService } from '../blockchain/blockchain.service'
+import { GetTipsPosts, PolkassemblyTipsService } from '../polkassembly/tips/polkassembly-tips.service'
+import { PolkassemblyTipPostSchema } from '../polkassembly/tips/tip-post.schema'
+import { PolkassemblyTipPostDto } from '../polkassembly/tips/tip-post.dto'
 
 const logger = getLogger()
 
@@ -33,6 +36,7 @@ export class TipsService {
         private readonly blockchainService: BlockchainService,
         private readonly usersService: UsersService,
         private readonly extrinsicsService: ExtrinsicsService,
+        private readonly polkassemblyService: PolkassemblyTipsService,
     ) {}
 
     create(dto: CreateTipDto, user: UserEntity): Promise<TipEntity> {
@@ -61,20 +65,18 @@ export class TipsService {
     }
 
     async findOne(networkId: string, blockchainHash: string): Promise<FindTipDto> {
-        const blockachainTip = await this.blockchainTipsService.getTip(networkId, blockchainHash)
+        const blockchainTip = await this.blockchainTipsService.getTip(networkId, blockchainHash)
 
-        const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
-
-        if (blockachainTip === undefined) {
+        if (blockchainTip === undefined) {
             throw new NotFoundException(`Tip not found`)
         }
+        const [currentBlockNumber, databaseTip, [polkassemblyTip]] = await Promise.all([
+            this.blockchainService.getCurrentBlockNumber(networkId),
+            this.repository.findOne({ networkId, blockchainHash }),
+            this.polkassemblyService.find({ networkId, includeHashes: [blockchainHash] }),
+        ])
 
-        const databaseTip = await this.repository.findOne({
-            networkId,
-            blockchainHash,
-        })
-
-        return this.createFindTipDto(blockachainTip, databaseTip, currentBlockNumber)
+        return this.createFindTipDto(blockchainTip, databaseTip, polkassemblyTip, currentBlockNumber)
     }
 
     async find(
@@ -108,12 +110,17 @@ export class TipsService {
         if (!blockchainTips.size) return PaginatedResponseDto.empty()
         const hashes = keysAsArray(blockchainTips)
         const databaseTips = await this.getMappedDatabaseTips({ where: { blockchainHash: In(hashes), networkId } })
-        const polkassemblyTips = {} // TODO: TREAS-446 add when implementing polkassembly support
+        const polkassemblyTips = await this.getMappedPolkassemblyTips({ networkId, includeHashes: hashes })
         const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
         const allItems = (
             await Promise.all(
                 hashes.map((hash) =>
-                    this.createFindTipDto(blockchainTips.get(hash)!, databaseTips.get(hash), currentBlockNumber),
+                    this.createFindTipDto(
+                        blockchainTips.get(hash)!,
+                        databaseTips.get(hash),
+                        polkassemblyTips.get(hash),
+                        currentBlockNumber,
+                    ),
                 ),
             )
         )
@@ -127,11 +134,13 @@ export class TipsService {
 
     private findOffChain(networkId: any, paginatedParams: PaginatedParams) {
         // TODO: TREAS-453 Implement  history tips
+        // TODO: Polkassembly fails to get us data when we asked for too much posts (paginate)
         return Promise.resolve({ items: [], total: 0 })
     }
     private async createFindTipDto(
         blockchain: BlockchainTipDto,
         entity: Nil<TipEntity>,
+        polkassembly: Nil<PolkassemblyTipPostDto>,
         currentBlockNumber: BlockNumber,
     ): Promise<FindTipDto> {
         const people = await this.getMappedPublicUserDtos([
@@ -140,7 +149,7 @@ export class TipsService {
             blockchain.who,
         ])
         const status = TipsService.getTipStatus(blockchain, currentBlockNumber)
-        return new FindTipDto(blockchain, entity, people, status)
+        return new FindTipDto(blockchain, entity, polkassembly, people, status)
     }
 
     private static getTipStatus({ closes, tips }: BlockchainTipDto, currentBlockNumber: BlockNumber): TipStatus {
@@ -163,5 +172,9 @@ export class TipsService {
 
     private async getMappedDatabaseTips(options: FindManyOptions) {
         return arrayToMap(await this.repository.find(options), 'blockchainHash')
+    }
+
+    private async getMappedPolkassemblyTips(options: GetTipsPosts): Promise<Map<number, PolkassemblyTipPostDto>> {
+        return arrayToMap(await this.polkassemblyService.find(options), 'hash')
     }
 }
