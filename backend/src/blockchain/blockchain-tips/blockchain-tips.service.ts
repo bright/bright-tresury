@@ -8,6 +8,8 @@ import { BlockchainsConnections } from '../blockchain.module'
 import { extractFromBlockchainEvent, getApi } from '../utils'
 import { BlockchainTipDto } from './dto/blockchain-tip.dto'
 import { BlockchainTipsConfigurationDto } from './dto/blockchain-tips-configuration.dto'
+import { PalletTipsOpenTip } from '@polkadot/types/lookup'
+import { Bytes } from '@polkadot/types'
 
 const logger = getLogger()
 
@@ -56,28 +58,8 @@ export class BlockchainTipsService {
                     optionOpenTip,
                 ]) => {
                     const openTip = optionOpenTip.unwrap()
-                    const optionReason = await api.query.tips.reasons(openTip.reason)
-                    const reason = hexToString(optionReason.unwrapOr(null)?.toHex())
-                    const who = encodeAddress(openTip.who.toString())
-                    const finder = encodeAddress(openTip.finder.toString())
-                    const deposit = openTip.deposit.toString() as NetworkPlanckValue
-                    const closes = openTip.closes.unwrapOr(null)
-                    const tips = openTip.tips.map(([account, amount]) => ({
-                        tipper: encodeAddress(account.toString()),
-                        value: amount.toString() as NetworkPlanckValue,
-                    }))
-                    const findersFee = openTip.findersFee.isTrue
-
-                    return new BlockchainTipDto({
-                        hash: hash.toHex(),
-                        reason,
-                        who,
-                        finder,
-                        deposit,
-                        closes,
-                        tips,
-                        findersFee,
-                    })
+                    const rawReason = (await api.query.tips.reasons(openTip.reason)).unwrapOr(null)
+                    return this.createBlockchainTipDto(hash.toHex(), openTip, rawReason)
                 },
             ),
         )
@@ -90,10 +72,17 @@ export class BlockchainTipsService {
         if (tip.isNone) {
             return undefined
         }
-
         const openTip = tip.unwrap()
-        const optionReason = await api.query.tips.reasons(openTip.reason)
-        const reason = hexToString(optionReason.unwrapOr(null)?.toHex())
+        const rawReason = (await api.query.tips.reasons(openTip.reason)).unwrapOr(null)
+        return this.createBlockchainTipDto(hash, openTip, rawReason)
+    }
+
+    private async createBlockchainTipDto(
+        hash: string,
+        openTip: PalletTipsOpenTip,
+        rawReason: Bytes | null,
+    ): Promise<BlockchainTipDto> {
+        const reason = hexToString(rawReason?.toHex())
         const who = encodeAddress(openTip.who.toString())
         const finder = encodeAddress(openTip.finder.toString())
         const deposit = openTip.deposit.toString() as NetworkPlanckValue

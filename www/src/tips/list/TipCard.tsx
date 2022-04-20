@@ -36,7 +36,7 @@ const TipCard = ({ item: tip }: TipCardProps) => {
     const { network } = useNetworks()
     const tippers = useMemo(
         () => `${tip.tips.length} ${tip.tips.length === 1 ? t('tip.list.tipper') : t('tip.list.tippers')}`,
-        [tip],
+        [tip, t],
     )
 
     const redirectTo = `${generatePath(ROUTE_TIP, { tipHash: tip.hash })}/${TipContentType.Info}`

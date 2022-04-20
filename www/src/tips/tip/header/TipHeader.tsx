@@ -2,17 +2,19 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
-import { breakpoints } from '../../theme/theme'
-import { TipTabConfig } from './Tip'
-import HeaderContainer from '../../components/header/details/HeaderContainer'
-import BasicInfo from '../../components/header/BasicInfo'
-import Title from '../../components/header/details/Title'
-import FlexBreakLine from '../../components/header/FlexBreakLine'
-import HeaderTabs from '../../components/header/HeaderTabs'
-import OptionalTitle from '../../components/text/OptionalTitle'
-import TipContentTypeTabs from './TipContentTypeTabs'
+import { breakpoints } from '../../../theme/theme'
+import { TipTabConfig } from '../Tip'
+import HeaderContainer from '../../../components/header/details/HeaderContainer'
+import BasicInfo from '../../../components/header/BasicInfo'
+import Title from '../../../components/header/details/Title'
+import FlexBreakLine from '../../../components/header/FlexBreakLine'
+import HeaderTabs from '../../../components/header/HeaderTabs'
+import OptionalTitle from '../../../components/text/OptionalTitle'
+import TipContentTypeTabs from '../TipContentTypeTabs'
 import Hash from './Hash'
-import { TipDto } from '../tips.dto'
+import { TipDto } from '../../tips.dto'
+import TipOptionsButton from './TipOptionsButton'
+import { useTip } from '../useTip'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -63,7 +65,7 @@ const TipHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
-
+    const { isOwner, isFinder, isBeneficiary } = useTip(tip)
     const navigateToList = () => {
         history.goBack()
     }
@@ -80,6 +82,9 @@ const TipHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
             <HeaderTabs className={classes.contentTypeTabs}>
                 <TipContentTypeTabs tipTabsConfig={tipTabsConfig} />
             </HeaderTabs>
+            {isOwner || isFinder || isBeneficiary ? (
+                <TipOptionsButton className={classes.optionsButton} tip={tip} />
+            ) : null}
         </HeaderContainer>
     )
 }

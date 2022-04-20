@@ -838,6 +838,15 @@
                 }
             }
         },
+        "tipPayout": {
+            "title": "Tip Payout",
+            "submitModal": {
+                "title": "You are about close the tip and make payout",
+                "warningMessage": "We're happy that you've made it to this point! Thanks for your work to support the community. Submit the transaction to claim the payout.",
+                "eventDescription": "event close tip finished",
+                "successMessage": "Congratulations, you have just claimed the payout! The tip is closed."
+            }
+        },
         "form": {
             "emptyFieldError": "This field cannot be empty",
             "maxBlockchainReasonLength": "The on-chain description is too long",

@@ -10,7 +10,7 @@ export class BountyDiscussionDto extends DiscussionDto {
     })
     @IsNotEmpty()
     @IsString()
-    category: DiscussionCategory.Bounty
+    category: DiscussionCategory.Bounty = DiscussionCategory.Bounty
 
     @ApiProperty({ description: 'Network id of the bounty' })
     @IsNotEmpty()
@@ -24,7 +24,7 @@ export class BountyDiscussionDto extends DiscussionDto {
 
     constructor(category: DiscussionCategory.Bounty, networkId: string, blockchainIndex: number) {
         super(category)
-        this.category = category
+
         this.networkId = networkId
         this.blockchainIndex = blockchainIndex
     }
