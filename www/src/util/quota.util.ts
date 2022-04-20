@@ -70,8 +70,8 @@ export const toNetworkDisplayValue = (value: NetworkPlanckValue, decimals: numbe
     return `${prefix}.${strippedSuffix}` as NetworkDisplayValue
 }
 
-export const toFixedDecimals = (value: NetworkDisplayValue, decimals: number): string => {
-    if (!isDecimal(value)) return `${value}.${'0'.repeat(decimals)}`
+export const toFixedDecimals = (value: NetworkDisplayValue, decimals: number): NetworkDisplayValue => {
+    if (!isDecimal(value)) return `${value}.${'0'.repeat(decimals)}` as NetworkDisplayValue
     const LEFT_AND_DOT_REGEXP = /^\d+\./gm
     const onlyDecimals = value.replace(LEFT_AND_DOT_REGEXP, '')
     const noLonger = onlyDecimals.substr(0, decimals)
@@ -79,5 +79,5 @@ export const toFixedDecimals = (value: NetworkDisplayValue, decimals: number): s
 
     const DOT_AND_RIGHT_REGEXP = /\.\d+$/gm
     const full = value.replace(DOT_AND_RIGHT_REGEXP, '')
-    return `${full}.${paddedWithZeros}`
+    return `${full}.${paddedWithZeros}` as NetworkDisplayValue
 }

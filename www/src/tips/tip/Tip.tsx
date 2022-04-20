@@ -1,5 +1,6 @@
 import React from 'react'
 import discussionIcon from '../../assets/discussion.svg'
+import tippersIcon from '../../assets/tippers.svg'
 import infoIcon from '../../assets/info.svg'
 import Route from '../../routes/Route'
 import { Nil } from '../../util/types'
@@ -9,10 +10,12 @@ import TipDiscussion from './discussion/TipDiscussion'
 import TipHeader from './TipHeader'
 import TipInfo from './TipInfo'
 import { TipDto } from '../tips.dto'
+import Tippers from './tippers/Tippers'
 
 export enum TipContentType {
     Info = 'info',
     Discussion = 'discussion',
+    Tippers = 'Tippers',
 }
 
 const TIP_CONTENT_TYPE_BUILDER: { [key in TipContentType]: TipTabConfig } = {
@@ -36,6 +39,17 @@ const TIP_CONTENT_TYPE_BUILDER: { [key in TipContentType]: TipTabConfig } = {
         getRoute: (basePath: string, tip: TipDto) => (
             <Route key={TipContentType.Discussion} exact={true} path={`${basePath}/${TipContentType.Discussion}`}>
                 <TipDiscussion tip={tip} />
+            </Route>
+        ),
+    },
+    [TipContentType.Tippers]: {
+        tipContentType: TipContentType.Tippers,
+        translationKey: 'tip.content.tippersLabel',
+        svg: tippersIcon, // todo change icon
+        getUrl: (baseUrl: string) => `${baseUrl}/${TipContentType.Tippers}`,
+        getRoute: (basePath: string, tip: TipDto) => (
+            <Route key={TipContentType.Discussion} exact={true} path={`${basePath}/${TipContentType.Tippers}`}>
+                <Tippers tip={tip} />
             </Route>
         ),
     },

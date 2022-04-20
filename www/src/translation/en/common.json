@@ -363,8 +363,7 @@
             "end": "Voting end"
         },
         "noMotion": {
-            "body1": "While waiting for motions from Councils, you can go to the discussion tab",
-            "body2": "to make sure that no aspect of the topic has slipped away from you or the community",
+            "description": "While waiting for motions from Councils, you can go to the discussion tab to make sure that no aspect of the topic has slipped away from you or the community",
             "visitDiscussions": "Visit discussions"
         },
         "method": {
@@ -860,9 +859,18 @@
             "beneficiary": "Beneficiary",
             "reason": "Reason of Tip"
         },
+        "tippers": {
+            "pending": "Pending",
+            "info": "A tip will enter a closing phase when at least {{closingThreshold}} of the tipping group have endorsed a tip",
+            "noTippers": {
+                "title": "No one has tipped yet",
+                "description": "While waiting for the tips, you can go to the discussion tab to make sure that no aspect of the topic has slipped away from you or the community"
+            }
+        },
         "content": {
             "infoLabel": "Info",
-            "discussionLabel": "Discussion"
+            "discussionLabel": "Discussion",
+            "tippersLabel": "Tippers"
         }
     },
     "ideaProposalDetails": {

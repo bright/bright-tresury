@@ -13,10 +13,7 @@ export interface TipDto {
     reason: Nil<string>
     finder: PublicUserDto
     beneficiary: PublicUserDto
-    tips: {
-        tipper: PublicUserDto
-        value: NetworkPlanckValue
-    }[]
+    tips: TippingDto[]
     deposit: NetworkPlanckValue
     findersFee: boolean
 
@@ -27,6 +24,11 @@ export interface TipDto {
     polkassembly?: Nil<{ title: string }>
 
     status: TipStatus
+}
+
+export interface TippingDto {
+    tipper: PublicUserDto
+    value: NetworkPlanckValue
 }
 
 export interface CreateTipDto {

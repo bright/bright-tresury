@@ -15,12 +15,15 @@ const useStyles = makeStyles((theme: Theme) =>
             fontSize: '18px',
             margin: '20px',
         },
-        body: {
+        description: {
             fontSize: '16px',
+            marginLeft: '25%',
+            marginRight: '25%',
         },
         image: {
             margin: '20px',
             paddingLeft: '35px',
+            // height: '170px',
         },
         link: {
             margin: '20px',
@@ -31,12 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     title: string
+    description?: string
     toDiscussion: string
 }
 
 export type NoMotionProps = OwnProps
 
-const NoMotion = ({ title, toDiscussion }: NoMotionProps) => {
+const NoMotion = ({ title, description, toDiscussion }: NoMotionProps) => {
     const { t } = useTranslation()
     const styles = useStyles()
     const successfullyLoadedItemStyles = useSuccessfullyLoadedItemStyles()
@@ -44,11 +48,7 @@ const NoMotion = ({ title, toDiscussion }: NoMotionProps) => {
     return (
         <div className={`${styles.root} ${successfullyLoadedItemStyles.content}`}>
             <h3 className={styles.header}>{title}</h3>
-            <p className={styles.body}>
-                {t('voting.noMotion.body1')}
-                <br />
-                {t('voting.noMotion.body2')}
-            </p>
+            <p className={styles.description}>{description ?? t('voting.noMotion.description')}</p>
             <img className={styles.image} src={proposalNoMotion} alt={''} />
             <span className={styles.link}>
                 <RouterLink to={toDiscussion}>{t('voting.noMotion.visitDiscussions')}</RouterLink>

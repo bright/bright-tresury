@@ -8,6 +8,9 @@ const useStyles = makeStyles((theme: Theme) =>
             marginRight: '10px',
             display: 'flex',
         },
+        icon: {
+            height: '20px',
+        },
         notifications: {
             position: 'absolute',
             marginLeft: '8px',
@@ -37,7 +40,7 @@ const TabLabelImg = ({ svg, notificationsCount = 0 }: TabLabelImgProps) => {
     return (
         <div className={classes.root}>
             {!!notificationsCount ? <div className={classes.notifications}>{notificationsCount}</div> : null}
-            <img src={svg} alt={''} />
+            <img className={classes.icon} src={svg} alt={''} />
         </div>
     )
 }
