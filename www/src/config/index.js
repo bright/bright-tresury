@@ -6,6 +6,9 @@ import test from './test.json'
 import development from './development.json'
 
 const env = process.env.REACT_APP_DEPLOY_ENV || 'development'
+
+console.log('loading env', env)
+
 const configs = {
     stage: stage,
     prod: prod,
