@@ -82,35 +82,35 @@ describe(`/api/v1/tips/`, () => {
 
             return request(app()).get(`${baseUrl}${tipHash}`).expect(HttpStatus.BAD_REQUEST)
         })
-        // TODO fix this
-        // it.skip('should return tip for given network', async () => {
-        //     const tipHash = '0x0'
-        //     const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
-        //     jest.spyOn(service(), 'findOne').mockImplementation(async () =>
-        //         Promise.resolve({
-        //             blockchain: validBlockchainTip,
-        //             entity: null,
-        //             people: new Map([
-        //                 [bobAddress, new PublicUserDto({ web3address: bobAddress })],
-        //                 [charlieAddress, new PublicUserDto({ web3address: charlieAddress })],
-        //             ]),
-        //             status: TipStatus.Proposed,
-        //         }),
-        //     )
-        //     const result = await request(app()).get(`${baseUrl}${tipHash}?network=${NETWORKS.POLKADOT}`)
-        //
-        //     expect(result.body).toMatchObject({
-        //         hash: '0x0',
-        //         reason: 'reason',
-        //         finder: { web3address: '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q' },
-        //         beneficiary: { web3address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
-        //         tips: [],
-        //         findersFee: false,
-        //         deposit: '1',
-        //         owner: {},
-        //         status: 'Proposed',
-        //     })
-        // })
+        it('should return tip for given network', async () => {
+            const tipHash = '0x0'
+
+            jest.spyOn(service(), 'findOne').mockImplementation(
+                async () =>
+                    new FindTipDto(
+                        validBlockchainTip,
+                        null,
+                        new Map([
+                            [bobAddress, new PublicUserDto({ web3address: bobAddress })],
+                            [charlieAddress, new PublicUserDto({ web3address: charlieAddress })],
+                        ]),
+                        TipStatus.Proposed,
+                    ),
+            )
+            const result = await request(app()).get(`${baseUrl}${tipHash}?network=${NETWORKS.POLKADOT}`)
+
+            expect(result.body).toMatchObject({
+                hash: '0x0',
+                reason: 'reason',
+                finder: { web3address: '14Gjs1TD93gnwEBfDMHoCgsuf1s2TVKUP6Z1qKmAZnZ8cW5q' },
+                beneficiary: { web3address: '5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty' },
+                tips: [],
+                findersFee: false,
+                deposit: '1',
+                owner: {},
+                status: 'Proposed',
+            })
+        })
     })
 
     describe('POST', () => {

@@ -66,8 +66,20 @@ describe(`TipsService`, () => {
         )
     }
 
-    const setUpBlockchainTip = (tip: BlockchainTipDto) => {
-        //
+    const setUpBlockchainTip = (tip: Partial<BlockchainTipDto>) => {
+        jest.spyOn(blockchainTipService(), 'getTip').mockImplementation(
+            async () =>
+                new BlockchainTipDto({
+                    hash: tip.hash ?? `0x${tip.hash}`,
+                    reason: tip.reason,
+                    who: tip.who ?? bobAddress,
+                    finder: tip.finder ?? charlieAddress,
+                    deposit: tip.deposit ?? ('1' as NetworkPlanckValue),
+                    closes: tip.closes ?? null,
+                    tips: tip.tips ?? [],
+                    findersFee: tip.findersFee ?? false,
+                }),
+        )
     }
 
     beforeEach(async () => {
@@ -295,7 +307,7 @@ describe(`TipsService`, () => {
         })
     })
 
-    describe.skip('findOne', () => {
+    describe('findOne', () => {
         it('should return on-chain tip WITHOUT entity and detailed public user data for finder and beneficiary', async () => {
             const tipHash = '0x0000000000000000000000000000000000000000000000000000000000000000'
             const expectedBlockchainTip = {
@@ -306,12 +318,45 @@ describe(`TipsService`, () => {
                 tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
                 findersFee: false,
             }
-
             setUpBlockchainTip(expectedBlockchainTip)
 
             const tip = await tipsService().findOne(NETWORKS.POLKADOT, tipHash)
 
-            expect(tip).toMatchObject(expectedBlockchainTip)
+            expect(tip.blockchain.hash).toBe(tipHash)
+            expect(tip.entity).toBe(undefined)
+            expect(tip.status).toBe('Tipped')
+            expect(tip.people.get(bobAddress)).toMatchObject({ web3address: bobAddress })
+            expect(tip.people.get(charlieAddress)).toMatchObject({ web3address: charlieAddress })
+            expect(tip.people.get(daveAddress)).toMatchObject({ web3address: daveAddress })
+        })
+
+        it('should return on-chain tip WITH entity and detailed public user data for finder and beneficiary', async () => {
+            const { user: alice } = await createWeb3SessionData(aliceAddress)
+            const { user: bob } = await createWeb3SessionData(bobAddress)
+            const { user: charlie } = await createWeb3SessionData(charlieAddress)
+            const { user: dave } = await createWeb3SessionData(daveAddress)
+
+            const expectedEntityTip = await setUpEntityTip({ blockchainHash: '0x0' }, alice)
+
+            const expectedBlockchainTip = new BlockchainTipDto({
+                ...validBlockchainTip,
+                who: bobAddress,
+                finder: charlieAddress,
+                tips: [{ tipper: daveAddress, value: '1' as NetworkPlanckValue }],
+                findersFee: false,
+            })
+            setUpBlockchainTip(expectedBlockchainTip)
+
+            const tip = await tipsService().findOne(NETWORKS.POLKADOT, expectedEntityTip.blockchainHash)
+
+            expect(JSON.stringify(tip.blockchain)).toBe(JSON.stringify(expectedBlockchainTip))
+            expect(tip.entity).toMatchObject(expectedEntityTip)
+            expect(tip.people.get(bobAddress)).toMatchObject({ username: bob.username, web3address: bobAddress })
+            expect(tip.people.get(charlieAddress)).toMatchObject({
+                username: charlie.username,
+                web3address: charlieAddress,
+            })
+            expect(tip.people.get(daveAddress)).toMatchObject({ username: dave.username, web3address: daveAddress })
         })
     })
 
