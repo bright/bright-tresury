@@ -7,7 +7,7 @@ import { TipDto } from '../../../tips.dto'
 import { useTippers } from '../useTippers'
 import PendingTippers from './PendingTippers'
 import TippersCardHeader from './TippersCardHeader'
-import Tipping from './Tipping'
+import Tipping from './tipping/Tipping'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -44,7 +44,7 @@ const TippersCard = ({ tip }: TippersCardProps) => {
             {tip.tips.map((tipping) => (
                 <Tipping key={tipping.tipper.web3address} tipping={tipping} />
             ))}
-            {tippers ? <PendingTippers tip={tip} tippers={tippers} /> : null}
+            {tippers && tippers.length > 0 ? <PendingTippers tip={tip} tippers={tippers} /> : null}
         </Card>
     )
 }

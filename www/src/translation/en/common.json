@@ -870,7 +870,10 @@
         },
         "tippers": {
             "pending": "Pending",
+            "noTip": "No tip",
             "info": "A tip will enter a closing phase when at least {{closingThreshold}} of the tipping group have endorsed a tip",
+            "infoClosing": "The tip is now closing as at least {{closingThreshold}} of the tipping group have endorsed a tip. The rest of the tippers can still submit a tip, which may influence the final tip value.",
+            "infoPendingPayout": "The tip is now closed and ready for the payout.",
             "noTippers": {
                 "title": "No one has tipped yet",
                 "description": "While waiting for the tips, you can go to the discussion tab to make sure that no aspect of the topic has slipped away from you or the community"

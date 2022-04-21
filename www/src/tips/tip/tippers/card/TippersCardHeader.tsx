@@ -1,9 +1,9 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Divider from '../../../../components/divider/Divider'
 import InformationTip from '../../../../components/info/InformationTip'
-import { TipDto } from '../../../tips.dto'
+import { TipDto, TipStatus } from '../../../tips.dto'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -29,17 +29,28 @@ interface OwnProps {
 
 export type TippersCardHeaderProps = OwnProps
 
-const TippersCardHeader = ({ tip: { tips }, closingThreshold }: TippersCardHeaderProps) => {
+const TippersCardHeader = ({ tip, closingThreshold }: TippersCardHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
+
+    const label = useMemo(() => {
+        switch (tip.status) {
+            case TipStatus.Tipped:
+                return t('tip.tippers.info', { closingThreshold })
+            case TipStatus.Closing:
+                return t('tip.tippers.infoClosing', { closingThreshold })
+            case TipStatus.PendingPayout:
+                return t('tip.tippers.infoPendingPayout')
+        }
+    }, [tip])
 
     return (
         <>
             <div className={classes.root}>
                 <h3 className={classes.label}>
-                    {tips.length}/{closingThreshold}
+                    {tip.tips.length}/{closingThreshold}
                 </h3>
-                <InformationTip className={classes.info} label={t('tip.tippers.info', { closingThreshold })} />
+                <InformationTip className={classes.info} label={label} />
             </div>
             <Divider />
         </>

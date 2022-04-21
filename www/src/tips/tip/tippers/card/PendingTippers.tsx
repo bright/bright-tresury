@@ -2,7 +2,7 @@ import Divider from 'components/divider/Divider'
 import React from 'react'
 import { PublicUserDto } from '../../../../util/publicUser.dto'
 import { TipDto } from '../../../tips.dto'
-import Tipping from './Tipping'
+import PendingTipping from './tipping/PendingTipping'
 
 interface OwnProps {
     tip: TipDto
@@ -20,7 +20,7 @@ const PendingTippers = ({ tip, tippers }: PendingTippersProps) => {
         <>
             <Divider />
             {pendingTippers.map((tipper) => (
-                <Tipping key={tipper.web3address} tipping={{ tipper }} />
+                <PendingTipping key={tipper.web3address} tipper={tipper} tipStatus={tip.status} />
             ))}
         </>
     )
