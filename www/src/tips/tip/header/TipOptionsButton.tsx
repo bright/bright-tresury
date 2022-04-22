@@ -1,13 +1,10 @@
 import { TipDto } from '../../tips.dto'
-import { useTranslation } from 'react-i18next'
 import { useMenu } from '../../../hook/useMenu'
 import OptionsButton from '../../../components/header/details/OptionsButton'
-import { useModal } from '../../../components/modal/useModal'
 import React from 'react'
 import { ClassNameProps } from '../../../components/props/className.props'
-
 import TipPayoutMenuItem from './TipPayoutMenuItem'
-import TipPayoutModal from './TipPayoutModal'
+import TipCancelMenuItem from './TipCancelMenuItem'
 
 interface OwnProps {
     tip: TipDto
@@ -27,6 +24,7 @@ const TipOptionsButton = ({ tip, className }: TipOptionsButtonProps) => {
                 handleOpen={handleOpen}
                 className={className}
             >
+                <TipCancelMenuItem tip={tip} />
                 <TipPayoutMenuItem tip={tip} />
             </OptionsButton>
         </>

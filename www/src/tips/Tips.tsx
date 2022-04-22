@@ -36,7 +36,7 @@ const Tips = () => {
     const { network } = useNetworks()
     const { status, data, isLoading, fetchNextPage } = useGetTips({
         network: network.id,
-        ownerId: tipFilter === TipFilter.All ? user?.id : null,
+        ownerId: tipFilter === TipFilter.Mine ? user?.id : null,
         status: getTipStatus(tipFilter),
         timeFrame,
         ...defaultPaginatedRequestParams(),

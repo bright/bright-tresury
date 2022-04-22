@@ -847,6 +847,15 @@
                 "successMessage": "Congratulations, you have just claimed the payout! The tip is closed."
             }
         },
+        "tipCancel": {
+            "title": "Cancel Tip",
+            "submitModal": {
+                "title": "You are about cancel the tip",
+                "warningMessage": "Retract a prior tip-report and cancel the process of tipping.",
+                "eventDescription": "event cancel tip finished",
+                "successMessage": "The tip is canceled."
+            }
+        },
         "form": {
             "emptyFieldError": "This field cannot be empty",
             "maxBlockchainReasonLength": "The on-chain description is too long",
