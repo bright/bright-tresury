@@ -129,7 +129,6 @@ function AppRoutes() {
                 <Route exact={false} path={ROUTE_IDEA} component={IdeaLoader} />
 
                 <Route exact={true} path={ROUTE_TIPS} component={Tips} />
-                <Route exact={true} path={ROUTE_TIP} component={TipLoader} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_TIP} component={TipCreate} requireVerified={true} />
                 <Route exact={false} path={ROUTE_TIP} component={TipLoader} />
 

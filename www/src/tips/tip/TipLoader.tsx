@@ -15,8 +15,8 @@ const TipLoader = () => {
     return (
         <LoadingWrapper
             status={status}
-            errorText={t('errors.errorOccurredWhileLoadingBounty')}
-            loadingText={t('loading.bounty')}
+            errorText={t('errors.errorOccurredWhileLoadingTip')}
+            loadingText={t('loading.tip')}
         >
             {tip && <Tip tip={tip} />}
         </LoadingWrapper>
