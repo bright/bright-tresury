@@ -25,6 +25,7 @@ async function bootstrap() {
     logger.info('NODE_ENV ', NODE_ENV)
 
     if (NODE_ENV !== 'development') {
+        logger.info('Using static assets')
         app.useStaticAssets(join(__dirname, '../../../www/build'))
     }
 
