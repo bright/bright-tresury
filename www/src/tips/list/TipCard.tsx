@@ -9,7 +9,6 @@ import CardTitle from '../../components/card/components/CardTitle'
 import Divider from '../../components/divider/Divider'
 import NetworkCard from '../../components/network/NetworkCard'
 import User from '../../components/user/User'
-import { useNetworks } from '../../networks/useNetworks'
 import { ROUTE_TIP } from '../../routes/routes'
 import { TipContentType } from '../tip/Tip'
 import { TipDto } from '../tips.dto'
@@ -33,7 +32,6 @@ export type TipCardProps = OwnProps
 const TipCard = ({ item: tip }: TipCardProps) => {
     const { t } = useTranslation()
     const classes = useStyles()
-    const { network } = useNetworks()
     const tippers = useMemo(
         () => `${tip.tips.length} ${tip.tips.length === 1 ? t('tip.list.tipper') : t('tip.list.tippers')}`,
         [tip, t],
@@ -51,7 +49,7 @@ const TipCard = ({ item: tip }: TipCardProps) => {
 
             <CardDetails>
                 <CardTitle title={tip.title ?? tip.polkassembly?.title ?? tip.reason} />
-                {tip.tips.length ? <TipValue tipsValues={tip.tips.map((t) => t.value)} /> : null}
+                {tip.tips.length ? <TipValue tip={tip} /> : null}
             </CardDetails>
 
             <Divider />

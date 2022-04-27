@@ -875,7 +875,13 @@
             "description": "Description",
             "finder": "Finder",
             "beneficiary": "Beneficiary",
-            "reason": "Reason of Tip"
+            "reason": "Reason of Tip",
+            "findersFee": {
+                "na": "N/A",
+                "currentTipValue": "Current Tip value",
+                "finalTipValue": "Final Tip Value"
+            },
+            "beneficiaryTipValue": "Beneficiary Tip Value"
         },
         "tippers": {
             "pending": "Pending",

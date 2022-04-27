@@ -15,6 +15,8 @@ import Hash from './Hash'
 import { TipDto } from '../../tips.dto'
 import TipOptionsButton from './TipOptionsButton'
 import { useTip } from '../useTip'
+import NetworkValues from '../../../components/header/details/NetworkValues'
+import TipsNetworkValues from './TipNetworkValues'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -78,6 +80,9 @@ const TipHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
                     <OptionalTitle title={tip.title ?? tip.reason} />
                 </Title>
             </BasicInfo>
+            <NetworkValues className={classes.networkValues}>
+                <TipsNetworkValues tip={tip} />
+            </NetworkValues>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
                 <TipContentTypeTabs tipTabsConfig={tipTabsConfig} />

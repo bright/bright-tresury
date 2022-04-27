@@ -25,8 +25,8 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface OwnProps {
     values: {
-        label: string
         value: NetworkPlanckValue
+        label: string
     }[]
 }
 
