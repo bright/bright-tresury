@@ -2,6 +2,11 @@
 
 source $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/_shared.sh
 
+if [[ -z "${DEPLOY_ENV}" ]]; then
+    echo "DEPLOY_ENV is empty"
+    exit 1
+fi
+
 set -x
 
 echo $(ls deploy)
