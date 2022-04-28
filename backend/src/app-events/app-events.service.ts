@@ -14,7 +14,7 @@ const logger = getLogger()
 export interface AppEventsQuery {
     userId: string
     isRead?: Nil<boolean>
-    appEventType?: Nil<AppEventType>
+    appEventType?: Nil<AppEventType[]>
     ideaId?: Nil<string>
     proposalIndex?: Nil<number>
     networkId?: Nil<string>
@@ -33,7 +33,8 @@ export class AppEventsService {
         paginated?: PaginatedParams,
     ): Promise<{ items: AppEventEntity[]; total: number }> {
         const query = this.buildFindAllQuery(queryParams)
-        return PaginatedResponseDto.fromQuery(query, paginated)
+        const response = await PaginatedResponseDto.fromQuery(query, paginated)
+        return response
     }
 
     buildFindAllQuery({ userId, isRead, appEventType, ideaId, proposalIndex, networkId }: AppEventsQuery) {
@@ -48,7 +49,7 @@ export class AppEventsService {
         }
 
         if (!isNil(appEventType)) {
-            query = query.andWhere("app_events.data->>'type' = :appEventType", { appEventType })
+            query = query.andWhere("app_events.data->>'type' in (:...appEventType)", { appEventType })
         }
 
         if (!isNil(ideaId)) {

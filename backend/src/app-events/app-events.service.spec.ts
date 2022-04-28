@@ -169,7 +169,7 @@ describe('AppEventsService', () => {
 
             const result = await service().findAll({
                 userId: user.id,
-                appEventType: AppEventType.NewIdeaComment,
+                appEventType: [AppEventType.NewIdeaComment],
             })
 
             expect(result.total).toBe(2)
@@ -187,7 +187,7 @@ describe('AppEventsService', () => {
 
             const result = await service().findAll({
                 userId: user.id,
-                appEventType: AppEventType.NewIdeaComment,
+                appEventType: [AppEventType.NewIdeaComment],
                 ideaId: newIdeaCommentEventData.ideaId,
             })
 
@@ -207,7 +207,7 @@ describe('AppEventsService', () => {
 
             const result = await service().findAll({
                 userId: user.id,
-                appEventType: AppEventType.NewProposalComment,
+                appEventType: [AppEventType.NewProposalComment],
                 proposalIndex: newProposalCommentEventData.proposalBlockchainId,
                 networkId: newProposalCommentEventData.networkId,
             })

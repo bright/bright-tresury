@@ -14,7 +14,16 @@ export function getUrlSearchParams(params: Object) {
     const searchParams = new URLSearchParams({})
     Object.entries(params).forEach(([key, value]) => {
         // backend controllers does not like empty/undefined/null values
-        if (value !== undefined && value !== null) searchParams.set(key, value)
+        if (value !== undefined && value !== null) {
+            if (Array.isArray(value)) {
+                const arraykey = key.endsWith('[]') ? key : `${key}[]`
+                value.forEach((element) => {
+                    searchParams.append(arraykey, element)
+                })
+            } else {
+                searchParams.set(key, value)
+            }
+        }
     })
     return searchParams
 }

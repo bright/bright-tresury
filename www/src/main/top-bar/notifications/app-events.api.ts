@@ -13,7 +13,7 @@ export const APP_EVENTS_QUERY_KEY_BASE = 'app_events'
 interface GetAppEventsApiParams {
     userId: string
     isRead?: boolean
-    appEventType?: AppEventType
+    appEventType?: AppEventType[]
     ideaId?: string
     proposalIndex?: number
     networkId?: string
@@ -49,7 +49,7 @@ export const useGetIdeaDiscussionAppEvents = (
         () =>
             getAppEvents({
                 ...params,
-                appEventType: AppEventType.NewIdeaComment,
+                appEventType: [AppEventType.NewIdeaComment, AppEventType.TaggedInIdeaComment],
                 isRead: false,
             }),
         options,
@@ -66,7 +66,7 @@ export const useGetProposalDiscussionAppEvents = (
         () =>
             getAppEvents({
                 ...params,
-                appEventType: AppEventType.NewProposalComment,
+                appEventType: [AppEventType.NewProposalComment, AppEventType.TaggedInProposalComment],
                 isRead: false,
             }),
         options,
@@ -83,7 +83,7 @@ export const useGetBountyDiscussionAppEvents = (
         () =>
             getAppEvents({
                 ...params,
-                appEventType: AppEventType.NewBountyComment,
+                appEventType: [AppEventType.NewBountyComment, AppEventType.TaggedInBountyComment],
                 isRead: false,
             }),
         options,

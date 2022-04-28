@@ -54,19 +54,19 @@ describe('/api/v1/users/:userId/app-events/', () => {
         it('should call findAll function from AppEventsService with basic valid params', async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             const spy = jest.spyOn(getService(), 'findAll')
-
             await sessionHandler.authorizeRequest(
                 request(app()).get(
                     `${getBaseUrl(
                         sessionHandler.sessionData.user.id,
-                    )}?isRead=true&appEventType=new_idea_comment&pageSize=10&pageNumber=2`,
+                    )}?isRead=true&appEventType[]=new_idea_comment&pageSize=10&pageNumber=2`,
                 ),
             )
+
             expect(spy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     userId: sessionHandler.sessionData.user.id,
                     isRead: true,
-                    appEventType: AppEventType.NewIdeaComment,
+                    appEventType: [AppEventType.NewIdeaComment],
                 }),
                 { pageSize: 10, pageNumber: 2 },
             )
@@ -92,6 +92,44 @@ describe('/api/v1/users/:userId/app-events/', () => {
             )
         })
 
+        it('should filter by AppEventType', async () => {
+            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+            const event = await createAndSaveAppEvent([sessionHandler.sessionData.user.id])
+
+            const result = await sessionHandler.authorizeRequest(
+                request(app()).get(
+                    `${getBaseUrl(sessionHandler.sessionData.user.id)}?appEventType[]=${event.data.type}`,
+                ),
+            )
+
+            expect(result.body.items).toHaveLength(1)
+            expect(result.body.items[0]).toMatchObject({
+                id: event.id,
+            })
+        })
+
+        it('should filter by AppEventType when there are two appEvents', async () => {
+            const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+            const event1 = await createAndSaveAppEvent([sessionHandler.sessionData.user.id])
+            const event2 = await createAndSaveAppEvent([sessionHandler.sessionData.user.id])
+
+            const result = await sessionHandler.authorizeRequest(
+                request(app()).get(
+                    `${getBaseUrl(sessionHandler.sessionData.user.id)}?appEventType[]=${
+                        AppEventType.NewIdeaComment
+                    }&appEventType[]=${AppEventType.TaggedInIdeaComment}`,
+                ),
+            )
+
+            expect(result.body.items).toHaveLength(2)
+            expect(result.body.items[0]).toMatchObject({
+                id: event2.id,
+            })
+            expect(result.body.items[1]).toMatchObject({
+                id: event1.id,
+            })
+        })
+
         it(`should return ${HttpStatus.BAD_REQUEST} for not boolean isRead param`, async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             return sessionHandler
@@ -105,7 +143,9 @@ describe('/api/v1/users/:userId/app-events/', () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
             return sessionHandler
                 .authorizeRequest(
-                    request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?appEventType=not_valid_type`),
+                    request(app()).get(
+                        `${getBaseUrl(sessionHandler.sessionData.user.id)}?appEventType[]=not_valid_type`,
+                    ),
                 )
                 .expect(HttpStatus.BAD_REQUEST)
         })
@@ -139,13 +179,13 @@ describe('/api/v1/users/:userId/app-events/', () => {
                     request(app()).get(
                         `${getBaseUrl(
                             sessionHandler.sessionData.user.id,
-                        )}?appEventType=new_idea_comment&ideaId=${ideaId}`,
+                        )}?appEventType[]=new_idea_comment&ideaId=${ideaId}`,
                     ),
                 )
                 expect(spy).toHaveBeenCalledWith(
                     expect.objectContaining({
                         userId: sessionHandler.sessionData.user.id,
-                        appEventType: AppEventType.NewIdeaComment,
+                        appEventType: [AppEventType.NewIdeaComment],
                         ideaId,
                     }),
                     expect.anything(),
@@ -171,13 +211,13 @@ describe('/api/v1/users/:userId/app-events/', () => {
                     request(app()).get(
                         `${getBaseUrl(
                             sessionHandler.sessionData.user.id,
-                        )}?appEventType=new_idea_comment&proposalIndex=3&networkId=${NETWORKS.POLKADOT}`,
+                        )}?appEventType[]=new_idea_comment&proposalIndex=3&networkId=${NETWORKS.POLKADOT}`,
                     ),
                 )
                 expect(spy).toHaveBeenCalledWith(
                     expect.objectContaining({
                         userId: sessionHandler.sessionData.user.id,
-                        appEventType: AppEventType.NewIdeaComment,
+                        appEventType: [AppEventType.NewIdeaComment],
                         proposalIndex: 3,
                         networkId: NETWORKS.POLKADOT,
                     }),

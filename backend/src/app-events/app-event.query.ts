@@ -1,8 +1,16 @@
 import { ApiPropertyOptional } from '@nestjs/swagger'
-import { IsBooleanString, IsNumberString, IsOptional, IsString, IsUUID, Validate } from 'class-validator'
+import {
+    IsArray,
+    IsBooleanString,
+    IsEnum,
+    IsNumberString,
+    IsOptional,
+    IsString,
+    IsUUID,
+    Validate,
+} from 'class-validator'
 import { IsValidNetworkConstraint } from '../utils/network.validator'
 import { Nil } from '../utils/types'
-import { IsValidAppEventType } from './dto/app-event-type.validator'
 import { AppEventType } from './entities/app-event-type'
 
 export class AppEventQuery {
@@ -15,12 +23,12 @@ export class AppEventQuery {
 
     @ApiPropertyOptional({
         description: 'The type of the app event',
-        type: AppEventType,
+        type: [AppEventType],
     })
     @IsOptional()
-    @IsString()
-    @IsValidAppEventType()
-    appEventType?: Nil<AppEventType>
+    @IsEnum(AppEventType, { each: true })
+    @IsArray()
+    appEventType?: Nil<AppEventType[]>
 
     @ApiPropertyOptional({
         description: 'The id of the idea which app events refer to',
