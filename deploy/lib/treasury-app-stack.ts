@@ -13,7 +13,7 @@ export class TreasuryAppStack extends cdk.Stack {
         const legacyTemplate = new CfnInclude(this, 'legacy-template', {
             parameters: {
                 DeployEnv: deployEnv(),
-                AppImage: `${dockerRegistry()}treasury:${vcsVersion()}`,
+                AppImage: `${dockerRegistry()}treasury:${vcsVersion()}_${deployEnv()}`,
                 PolkadotImage: `public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:v0.9.19`,
             },
             templateFile: path.join(__dirname, '..', 'aws.template'),
