@@ -10,7 +10,7 @@ interface OwnProps {
 export type FindersFeeProps = OwnProps
 
 const getFindersFeeLabel = (tip: TipDto) => {
-    if (!tip.findersFee || TipStatus.Proposed) return 'tip.info.findersFee.na'
+    if (!tip.findersFee || tip.status === TipStatus.Proposed) return 'tip.info.findersFee.na'
     if (tip.status === TipStatus.Tipped || tip.status === TipStatus.Closing)
         return 'tip.info.findersFee.currentTipValue'
     return 'tip.info.findersFee.finalTipValue'
