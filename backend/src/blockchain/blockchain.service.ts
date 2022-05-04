@@ -56,7 +56,11 @@ export class BlockchainService implements OnModuleDestroy {
             const api = getApi(this.blockchainsConnections, conf.id)
             try {
                 await api.isReadyOrError
-                await api.derive.chain.bestNumber()
+                await Promise.all([
+                    api.derive.chain.bestNumber(),
+                    api.derive.treasury.proposals(),
+                    api.derive.bounties.bounties(),
+                ])
                 services.push(new ServiceStatus(conf.id, 'up'))
             } catch (e) {
                 logger.info(`blockchain ${conf.id} healthCheck error:`, e)
