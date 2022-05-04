@@ -17,6 +17,8 @@ import TipOptionsButton from './TipOptionsButton'
 import { useTip } from '../useTip'
 import NetworkValues from '../../../components/header/details/NetworkValues'
 import TipsNetworkValues from './TipNetworkValues'
+import TipPolkassemblyShareButton from './TipPolkassemblyShareButton'
+import ActionButtons from '../../../components/header/details/ActionButtons'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -87,9 +89,14 @@ const TipHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
             <HeaderTabs className={classes.contentTypeTabs}>
                 <TipContentTypeTabs tipTabsConfig={tipTabsConfig} />
             </HeaderTabs>
-            {isOwner || isFinder || isBeneficiary ? (
-                <TipOptionsButton className={classes.optionsButton} tip={tip} />
-            ) : null}
+            {/*TODO: Add if when can share*/}
+            {/*TODO add mobile styling*/}
+            <ActionButtons className={classes.actionButtons}>
+                <TipPolkassemblyShareButton tip={tip} />
+                {isOwner || isFinder || isBeneficiary ? (
+                    <TipOptionsButton className={classes.optionsButton} tip={tip} />
+                ) : null}
+            </ActionButtons>
         </HeaderContainer>
     )
 }

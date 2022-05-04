@@ -4,6 +4,7 @@ import { Network } from '../../networks/networks.dto'
 export enum PolkassemblyPostType {
     Proposal = 'treasury_proposal',
     Bounty = 'bounty',
+    Tip = 'tip',
 }
 
 export interface PolkassemblyPostDto {
