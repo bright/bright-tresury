@@ -44,14 +44,41 @@ const TipPost = gql`
 `
 
 export const TipsPosts = gql`
-    query TipPosts($offset: Int! = 0, $limit: Int! = 1000, $includeHashes: [String!], $excludeHashes: [String!]) {
+    query TipPosts(
+        $offset: Int! = 0
+        $limit: Int! = 1000
+        $includeHashes: [String!]
+        $excludeHashes: [String!]
+        $finderAddresses: [String!]
+    ) {
         posts(
             offset: $offset
             limit: $limit
-            where: { onchain_link: { onchain_tip_id: { _is_null: false, _in: $includeHashes, _nin: $excludeHashes } } }
+            where: {
+                onchain_link: {
+                    proposer_address: { _in: $finderAddresses }
+                    onchain_tip_id: { _is_null: false, _in: $includeHashes, _nin: $excludeHashes }
+                }
+            }
             order_by: { onchain_link: { onchain_tip_id: desc } }
         ) {
             ...TipPost
+        }
+    }
+    ${TipPost}
+`
+
+export const TipsPostsCount = gql`
+    query TipPostsCount($includeHashes: [String!], $excludeHashes: [String!], $finderAddresses: [String!]) {
+        onchain_links_aggregate(
+            where: {
+                onchain_tip_id: { _is_null: false, _in: $includeHashes, _nin: $excludeHashes }
+                proposer_address: { _in: $finderAddresses }
+            }
+        ) {
+            aggregate {
+                count
+            }
         }
     }
     ${TipPost}

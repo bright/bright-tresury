@@ -1,7 +1,7 @@
 import { PublicUserDto } from '../../users/dto/public-user.dto'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
 import { FindTipDto, TipStatus } from './find-tip.dto'
-import { ApiProperty } from '@nestjs/swagger'
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
 
 export class TipDto {
@@ -13,11 +13,13 @@ export class TipDto {
     finder: PublicUserDto
     @ApiProperty({ description: 'The account to be tipped', type: PublicUserDto })
     beneficiary: PublicUserDto
-    @ApiProperty({ description: 'The members who have voted for this tip' })
-    tips: {
-        tipper: PublicUserDto
-        value: NetworkPlanckValue
-    }[]
+    @ApiPropertyOptional({ description: 'The members who have voted for this tip' })
+    tips: Nil<
+        {
+            tipper: PublicUserDto
+            value: NetworkPlanckValue
+        }[]
+    >
     @ApiProperty({ description: 'Whether this tip should result in the finder taking a fee' })
     findersFee: boolean
     @ApiProperty({ description: 'The amount held on deposit for this tip' })
@@ -48,10 +50,12 @@ export class TipDto {
         this.reason = blockchain.reason
         this.finder = people.get(blockchain.finder) ?? new PublicUserDto({ web3address: blockchain.finder })
         this.beneficiary = people.get(blockchain.who) ?? new PublicUserDto({ web3address: blockchain.who })
-        this.tips = blockchain.tips.map(({ tipper, value }) => ({
-            tipper: people.get(tipper) ?? new PublicUserDto({ web3address: tipper }),
-            value,
-        }))
+        this.tips = blockchain.tips
+            ? blockchain.tips.map(({ tipper, value }) => ({
+                  tipper: people.get(tipper) ?? new PublicUserDto({ web3address: tipper }),
+                  value,
+              }))
+            : null
         this.findersFee = blockchain.findersFee
         this.deposit = blockchain.deposit
         this.closes = blockchain.closes?.toString()

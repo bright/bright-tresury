@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import Divider from '../../../../components/divider/Divider'
 import InformationTip from '../../../../components/info/InformationTip'
-import { TipDto, TipStatus } from '../../../tips.dto'
+import { TipDto, TippingDto, TipStatus } from '../../../tips.dto'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -23,7 +23,7 @@ const useStyles = makeStyles(() =>
 )
 
 interface OwnProps {
-    tip: TipDto
+    tip: Omit<TipDto, 'tips'> & { tips: TippingDto[] }
     closingThreshold: number
 }
 

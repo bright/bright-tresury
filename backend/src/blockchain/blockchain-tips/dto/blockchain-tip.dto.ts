@@ -8,14 +8,14 @@ export interface ProposedBlockchainTip {
 }
 
 export class BlockchainTipDto {
-    hash!: string
+    hash: string
     reason: Nil<string>
-    who!: string
-    finder!: string
-    deposit!: NetworkPlanckValue
-    closes!: Nil<BlockNumber>
-    tips!: ProposedBlockchainTip[]
-    findersFee!: boolean
+    who: string
+    finder: string
+    deposit: NetworkPlanckValue
+    closes: Nil<BlockNumber>
+    tips: Nil<ProposedBlockchainTip[]>
+    findersFee: boolean
 
     constructor({
         hash,
@@ -33,7 +33,7 @@ export class BlockchainTipDto {
         finder: string
         deposit: NetworkPlanckValue
         closes: Nil<BlockNumber>
-        tips: ProposedBlockchainTip[]
+        tips: Nil<ProposedBlockchainTip[]>
         findersFee: boolean
     }) {
         this.hash = hash

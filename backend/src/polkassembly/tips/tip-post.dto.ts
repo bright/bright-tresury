@@ -1,6 +1,9 @@
 import { PolkassemblyTipPostSchema } from './tip-post.schema'
-import { Nil } from '../../utils/types'
+import { NetworkPlanckValue, Nil } from '../../utils/types'
 import { PolkassemblyPostEventDto } from '../dto/polkassembly-post-event.dto'
+import { BlockchainTipDto } from '../../blockchain/blockchain-tips/dto/blockchain-tip.dto'
+import BN from 'bn.js'
+import { BlockNumber } from '@polkadot/types/interfaces'
 
 export class PolkassemblyTipPostDto {
     title: string
@@ -9,7 +12,7 @@ export class PolkassemblyTipPostDto {
     reason: string
     finderAddress: string
     findersFee: Nil<string>
-    closes: number
+    closes: number | null
     status: string
     whoAddress: string
     events: PolkassemblyPostEventDto[]
@@ -35,5 +38,18 @@ export class PolkassemblyTipPostDto {
                     blockDateTime: blockNumber.startDateTime.toString(),
                 }),
         )
+    }
+
+    asBlockchainTipDto(): BlockchainTipDto {
+        return new BlockchainTipDto({
+            hash: this.hash,
+            reason: this.reason,
+            who: this.whoAddress,
+            finder: this.finderAddress,
+            deposit: '0' as NetworkPlanckValue,
+            closes: this.closes ? (new BN(this.closes) as BlockNumber) : null,
+            findersFee: !!this.findersFee,
+            tips: null,
+        })
     }
 }

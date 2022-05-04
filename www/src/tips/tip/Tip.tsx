@@ -76,7 +76,12 @@ const Tip = ({ tip }: TipProps) => {
 
     let { path } = useRouteMatch()
 
-    const tipTabsConfig = Object.values(TIP_CONTENT_TYPE_BUILDER)
+    const tipTabsConfig = [
+        TIP_CONTENT_TYPE_BUILDER[TipContentType.Info],
+        TIP_CONTENT_TYPE_BUILDER[TipContentType.Discussion],
+    ]
+    if (tip.tips) tipTabsConfig.push(TIP_CONTENT_TYPE_BUILDER[TipContentType.Tippers])
+
     const routes = tipTabsConfig.map(({ getRoute }) => getRoute(path, tip))
 
     return (

@@ -14,7 +14,7 @@ export interface TipDto {
     reason: Nil<string>
     finder: PublicUserDto
     beneficiary: PublicUserDto
-    tips: TippingDto[]
+    tips: Nil<TippingDto[]>
     deposit: NetworkPlanckValue
     findersFee: boolean
 

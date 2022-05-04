@@ -3,7 +3,7 @@ import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import Card from '../../../../components/card/Card'
 import { breakpoints } from '../../../../theme/theme'
-import { TipDto } from '../../../tips.dto'
+import { TipDto, TippingDto } from '../../../tips.dto'
 import { useTippers } from '../useTippers'
 import PendingTippers from './PendingTippers'
 import TippersCardHeader from './TippersCardHeader'
@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
-    tip: TipDto
+    tip: Omit<TipDto, 'tips'> & { tips: TippingDto[] }
 }
 
 export type TippersCardProps = OwnProps

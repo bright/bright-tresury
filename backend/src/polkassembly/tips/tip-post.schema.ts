@@ -6,7 +6,7 @@ interface TipSchema {
     reason: string
     finder: string
     finderFee: string | null
-    closes: number
+    closes: number | null
     tipStatus: {
         id: number
         status: string

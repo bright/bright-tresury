@@ -25,6 +25,7 @@ import { BlockchainService } from '../blockchain/blockchain.service'
 import { GetTipsPosts, PolkassemblyTipsService } from '../polkassembly/tips/polkassembly-tips.service'
 import { PolkassemblyTipPostSchema } from '../polkassembly/tips/tip-post.schema'
 import { PolkassemblyTipPostDto } from '../polkassembly/tips/tip-post.dto'
+import { FindBountyDto } from '../bounties/dto/find-bounty.dto'
 
 const logger = getLogger()
 
@@ -65,18 +66,18 @@ export class TipsService {
     }
 
     async findOne(networkId: string, blockchainHash: string): Promise<FindTipDto> {
-        const blockchainTip = await this.blockchainTipsService.getTip(networkId, blockchainHash)
+        const onChain = await this.blockchainTipsService.getTip(networkId, blockchainHash)
+        const [offChain] = await this.polkassemblyService.find({ includeHashes: [blockchainHash], networkId })
 
-        if (blockchainTip === undefined) {
+        if (!onChain && !offChain) {
             throw new NotFoundException(`Tip not found`)
         }
-        const [currentBlockNumber, databaseTip, [polkassemblyTip]] = await Promise.all([
+        const [currentBlockNumber, databaseTip] = await Promise.all([
             this.blockchainService.getCurrentBlockNumber(networkId),
             this.repository.findOne({ networkId, blockchainHash }),
-            this.polkassemblyService.find({ networkId, includeHashes: [blockchainHash] }),
         ])
-
-        return this.createFindTipDto(blockchainTip, databaseTip, polkassemblyTip, currentBlockNumber)
+        const blockchainTip = onChain ?? offChain!.asBlockchainTipDto()
+        return this.createFindTipDto(blockchainTip, databaseTip, offChain, currentBlockNumber)
     }
 
     async find(
@@ -92,7 +93,7 @@ export class TipsService {
         }
         try {
             if (timeFrame === TimeFrame.OnChain) return this.findOnChain(networkId, owner, status, paginatedParams)
-            else return this.findOffChain(networkId, paginatedParams)
+            else return this.findOffChain(networkId, owner, status, paginatedParams)
         } catch (error) {
             logger.error(error)
             return PaginatedResponseDto.empty()
@@ -132,10 +133,42 @@ export class TipsService {
         }
     }
 
-    private findOffChain(networkId: any, paginatedParams: PaginatedParams) {
-        // TODO: TREAS-453 Implement  history tips
-        // TODO: Polkassembly fails to get us data when we asked for too much posts (paginate)
-        return Promise.resolve({ items: [], total: 0 })
+    private async findOffChain(
+        networkId: string,
+        owner: Nil<UserEntity>,
+        status: Nil<TipStatus>,
+        paginatedParams: PaginatedParams,
+    ) {
+        logger.info('Looking for off-chain tips', { networkId, owner: owner?.id })
+        const blockchainTips = await this.getMappedBlockchainTips(networkId)
+
+        const excludeHashes = keysAsArray(blockchainTips)
+        const finderAddresses = this.encodeUserWeb3Addresses(networkId, owner)
+        const polkassemblySearchOptions = { networkId, excludeHashes, includeHashes: null, finderAddresses }
+        const [polkassemblyTipsPosts, total] = await Promise.all([
+            this.getMappedPolkassemblyTips({ ...polkassemblySearchOptions, paginatedParams }),
+            this.polkassemblyService.count(polkassemblySearchOptions),
+        ])
+
+        const offChainBlockchainHashes = keysAsArray(polkassemblyTipsPosts)
+
+        const databaseTips = await this.getMappedDatabaseTips({
+            where: { networkId, blockchainHash: In(offChainBlockchainHashes) },
+        })
+        const currentBlockNumber = await this.blockchainService.getCurrentBlockNumber(networkId)
+
+        const items = await Promise.all(
+            offChainBlockchainHashes.map((blockchainHash) =>
+                this.createFindTipDto(
+                    polkassemblyTipsPosts.get(blockchainHash)!.asBlockchainTipDto(),
+                    databaseTips.get(blockchainHash),
+                    polkassemblyTipsPosts.get(blockchainHash),
+                    currentBlockNumber,
+                ),
+            ),
+        )
+
+        return { items, total }
     }
     private async createFindTipDto(
         blockchain: BlockchainTipDto,
@@ -143,8 +176,9 @@ export class TipsService {
         polkassembly: Nil<PolkassemblyTipPostDto>,
         currentBlockNumber: BlockNumber,
     ): Promise<FindTipDto> {
+        const tippers = blockchain.tips ?? []
         const people = await this.getMappedPublicUserDtos([
-            ...blockchain.tips.map((tip) => tip.tipper),
+            ...tippers.map((tip) => tip.tipper),
             blockchain.finder,
             blockchain.who,
         ])
@@ -155,7 +189,7 @@ export class TipsService {
     private static getTipStatus({ closes, tips }: BlockchainTipDto, currentBlockNumber: BlockNumber): TipStatus {
         if (closes && closes.cmp(currentBlockNumber) !== 1) return TipStatus.PendingPayout
         else if (closes) return TipStatus.Closing
-        else if (tips.length !== 0) return TipStatus.Tipped
+        else if (tips && tips.length !== 0) return TipStatus.Tipped
         else return TipStatus.Proposed
     }
 
@@ -176,5 +210,10 @@ export class TipsService {
 
     private async getMappedPolkassemblyTips(options: GetTipsPosts): Promise<Map<number, PolkassemblyTipPostDto>> {
         return arrayToMap(await this.polkassemblyService.find(options), 'hash')
+    }
+
+    private encodeUserWeb3Addresses(networkId: string, user: Nil<UserEntity>) {
+        if (!user || !user.web3Addresses) return null
+        return user.web3Addresses.map((w3address) => this.blockchainService.encodeAddress(networkId, w3address.address))
     }
 }

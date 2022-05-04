@@ -294,17 +294,6 @@ describe(`TipsService`, () => {
             )
             expect(items).toHaveLength(0)
         })
-
-        it('should return off-chain tip', async () => {
-            // TODO: TREAS-453 implement proper test
-            const { items, total } = await tipsService().find(
-                NETWORKS.POLKADOT,
-                { timeFrame: TimeFrame.History },
-                new PaginatedParams({}),
-            )
-            expect(total).toBe(0)
-            expect(items).toHaveLength(0)
-        })
     })
 
     describe('findOne', () => {

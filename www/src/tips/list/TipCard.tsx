@@ -32,10 +32,10 @@ export type TipCardProps = OwnProps
 const TipCard = ({ item: tip }: TipCardProps) => {
     const { t } = useTranslation()
     const classes = useStyles()
-    const tippers = useMemo(
-        () => `${tip.tips.length} ${tip.tips.length === 1 ? t('tip.list.tipper') : t('tip.list.tippers')}`,
-        [tip, t],
-    )
+    const tippers = useMemo(() => {
+        if (!tip.tips) return ''
+        return `${tip.tips.length} ${tip.tips.length === 1 ? t('tip.list.tipper') : t('tip.list.tippers')}`
+    }, [tip, t])
 
     const redirectTo = `${generatePath(ROUTE_TIP, { tipHash: tip.hash })}/${TipContentType.Info}`
 
@@ -49,7 +49,6 @@ const TipCard = ({ item: tip }: TipCardProps) => {
 
             <CardDetails>
                 <CardTitle title={tip.title ?? tip.polkassembly?.title ?? tip.reason} />
-                {tip.tips.length ? <TipValue tip={tip} /> : null}
             </CardDetails>
 
             <Divider />

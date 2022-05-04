@@ -13,13 +13,13 @@ export type TippersProps = OwnProps
 const Tippers = ({ tip }: TippersProps) => {
     const classes = useSuccessfullyLoadedItemStyles()
 
-    if (tip.tips.length === 0) {
+    if (!tip.tips || tip.tips.length === 0) {
         return <NoTippers tipHash={tip.hash} />
     }
 
     return (
         <div className={classes.content}>
-            <TippersCard tip={tip} />
+            <TippersCard tip={{ ...tip, tips: tip.tips }} />
         </div>
     )
 }

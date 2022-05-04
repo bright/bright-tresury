@@ -1,11 +1,11 @@
 import Divider from 'components/divider/Divider'
 import React from 'react'
 import { PublicUserDto } from '../../../../util/publicUser.dto'
-import { TipDto } from '../../../tips.dto'
+import { TipDto, TippingDto } from '../../../tips.dto'
 import PendingTipping from './tipping/PendingTipping'
 
 interface OwnProps {
-    tip: TipDto
+    tip: Omit<TipDto, 'tips'> & { tips: TippingDto[] }
     tippers: PublicUserDto[]
 }
 

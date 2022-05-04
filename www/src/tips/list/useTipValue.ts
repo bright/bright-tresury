@@ -7,15 +7,16 @@ import BN from 'bn.js'
 
 export const useTipValue = (tip: TipDto) => {
     const { network } = useNetworks()
-    const median = useMemo(() => computeMedian(tip.tips.map((t) => t.value)), [tip])
+
+    const median = useMemo(() => computeMedian((tip.tips ?? []).map((t) => t.value)), [tip])
     const findersFee = useMemo(
         () => new BN(median).muln(network.tips.tipFindersFee).divn(100).toString() as NetworkPlanckValue,
         [median, tip],
     )
-    const tipValue = useMemo(
-        () => new BN(median).sub(new BN(findersFee)).toString() as NetworkPlanckValue,
-        [median, findersFee],
-    )
+    const tipValue = useMemo(() => new BN(median).sub(new BN(findersFee)).toString() as NetworkPlanckValue, [
+        median,
+        findersFee,
+    ])
 
     return { findersFee, tipValue, median }
 }
