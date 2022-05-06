@@ -33,7 +33,7 @@ export class AppEventsController {
         @ReqSession() session: SessionData,
         @Param('userId') userId: string,
         @Query() paginated: PaginatedQueryParams,
-        @Query() { isRead, appEventType, ideaId, networkId, proposalIndex }: AppEventQuery,
+        @Query() { isRead, appEventType, ideaId, networkId, proposalIndex, bountyIndex, tipHash }: AppEventQuery,
     ): Promise<PaginatedResponseDto<AppEventDto>> {
         const { items, total } = await this.appEventsService.findAll(
             {
@@ -43,6 +43,8 @@ export class AppEventsController {
                 ideaId,
                 networkId,
                 proposalIndex: typeof proposalIndex === 'string' ? Number(proposalIndex) : undefined,
+                bountyIndex: typeof bountyIndex === 'string' ? Number(bountyIndex) : undefined,
+                tipHash,
             },
             new PaginatedParams(paginated),
         )

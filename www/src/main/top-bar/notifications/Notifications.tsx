@@ -14,6 +14,7 @@ import BountyDiscussion from './menu-items/BountyDiscussion'
 import IdeaDiscussion from './menu-items/IdeaDiscussion'
 import ProposalDiscussion from './menu-items/ProposalDiscussion'
 import NotificationsButton from './NotificationsButton'
+import TipDiscussion from './menu-items/TipDiscussion'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -72,6 +73,10 @@ const Notifications = ({ userId, className }: NotificationsProps) => {
                 return <BountyDiscussion key={id} data={data} closeMenu={handleClose} />
             case AppEventType.TaggedInBountyComment:
                 return <BountyDiscussion key={id} data={data} closeMenu={handleClose} />
+            case AppEventType.NewTipComment:
+                return <TipDiscussion key={id} data={data} closeMenu={handleClose} />
+            case AppEventType.TaggedInTipComment:
+                return <TipDiscussion key={id} data={data} closeMenu={handleClose} />
             default:
                 return null
         }

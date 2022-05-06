@@ -20,6 +20,8 @@ import { AppEventReceiverEntity } from './entities/app-event-receiver.entity'
 import { AppEventEntity } from './entities/app-event.entity'
 import { AppEventSubscriber } from './subscribers/app-event.subscriber'
 import { AppEventsController } from './app-events.controller'
+import { TipCommentSubscriber } from './app-event-types/tip-comment/tip-comment.subscriber'
+import { TipsModule } from '../tips/tips.module'
 
 @Module({
     imports: [
@@ -32,6 +34,7 @@ import { AppEventsController } from './app-events.controller'
         IdeasModule,
         ProposalsModule,
         BountiesModule,
+        TipsModule,
         ConfigModule,
         SessionModule,
     ],
@@ -43,6 +46,7 @@ import { AppEventsController } from './app-events.controller'
         IdeaCommentSubscriber,
         ProposalCommentSubscriber,
         BountyCommentSubscriber,
+        TipCommentSubscriber,
     ],
     exports: [AppEventsService],
     controllers: [AppEventsController],

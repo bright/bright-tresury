@@ -20,5 +20,6 @@ import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
     ],
     controllers: [TipsController],
     providers: [TipsService],
+    exports: [TipsService],
 })
 export class TipsModule {}

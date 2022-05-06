@@ -12,6 +12,7 @@ import { AppEventReceiverEntity } from '../../entities/app-event-receiver.entity
 import { AppEventData, AppEventType } from '../../entities/app-event-type'
 import { AppEventEntity } from '../../entities/app-event.entity'
 import { UserStatus } from '../../../users/entities/user-status'
+import { NewTipCommentDto } from '../../app-event-types/tip-comment/new-tip-comment.dto'
 
 const logger = getLogger()
 
@@ -85,12 +86,16 @@ export class EmailNotificationsService {
                 return this.getNewProposalCommentEmailDetails(appEvent.data)
             case AppEventType.NewBountyComment:
                 return this.getNewBountyCommentEmailDetails(appEvent.data)
+            case AppEventType.NewTipComment:
+                return this.getNewTipCommentEmailDetails(appEvent.data)
             case AppEventType.TaggedInIdeaComment:
                 return this.getTaggedInIdeaCommentEmailDetails(appEvent.data)
             case AppEventType.TaggedInProposalComment:
                 return this.getTaggedInProposalCommentEmailDetails(appEvent.data)
             case AppEventType.TaggedInBountyComment:
                 return this.getTaggedInBountyCommentEmailDetails(appEvent.data)
+            case AppEventType.TaggedInTipComment:
+                return this.getTaggedInTipCommentEmailDetails(appEvent.data)
 
             default:
                 // for exhaustiveness check - should never get here if all data types are coverd
@@ -172,6 +177,30 @@ export class EmailNotificationsService {
             subject,
             text,
             template: EmailTemplates.TaggedInBountyCommentTemplate,
+            data,
+        }
+    }
+
+    private getNewTipCommentEmailDetails(data: NewTipCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Tip ${data.tipHash} - new comments`
+        const text = `You have a new comment in Tip ${data.tipTitle ?? ''}. You can see them here: ${data.commentsUrl}`
+
+        return {
+            subject,
+            text,
+            template: EmailTemplates.NewTipCommentTemplate,
+            data,
+        }
+    }
+
+    private getTaggedInTipCommentEmailDetails(data: NewTipCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Tip ${data.tipHash} - You have been tagged`
+        const text = `You have been tagged in Tip ${data.tipTitle ?? ''}. You can see them here: ${data.commentsUrl}`
+
+        return {
+            subject,
+            text,
+            template: EmailTemplates.TaggedInTipCommentTemplate,
             data,
         }
     }

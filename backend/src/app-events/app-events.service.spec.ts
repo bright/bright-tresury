@@ -13,6 +13,8 @@ import { AppEventReceiverEntity } from './entities/app-event-receiver.entity'
 import { AppEventType } from './entities/app-event-type'
 import { AppEventEntity } from './entities/app-event.entity'
 import { createAndSaveAppEvent } from './spec.helpers'
+import { NewTipCommentDto } from './app-event-types/tip-comment/new-tip-comment.dto'
+import { NewBountyCommentDto } from './app-event-types/bounty-comment/new-bounty-comment.dto'
 
 describe('AppEventsService', () => {
     const app = beforeSetupFullApp()
@@ -44,6 +46,26 @@ describe('AppEventsService', () => {
         commentId: uuid(),
         proposalBlockchainId: 0,
         proposalTitle: 'title',
+        commentsUrl: 'http://localhost3000',
+        networkId: NETWORKS.POLKADOT,
+        websiteUrl: 'http://localhost:3000',
+    }
+
+    const newBountyCommentEventData: NewBountyCommentDto = {
+        type: AppEventType.NewBountyComment,
+        commentId: uuid(),
+        bountyBlockchainId: 1,
+        bountyTitle: 'title',
+        commentsUrl: 'http://localhost3000',
+        networkId: NETWORKS.POLKADOT,
+        websiteUrl: 'http://localhost:3000',
+    }
+
+    const newTipCommentEventData: NewTipCommentDto = {
+        type: AppEventType.NewTipComment,
+        commentId: uuid(),
+        tipHash: '0x0',
+        tipTitle: 'title',
         commentsUrl: 'http://localhost3000',
         networkId: NETWORKS.POLKADOT,
         websiteUrl: 'http://localhost:3000',
@@ -243,6 +265,48 @@ describe('AppEventsService', () => {
             expect(result.items[1].id).toBe(sortedAppEvents[5].id)
             expect(result.items[2].id).toBe(sortedAppEvents[6].id)
             expect(result.items[3].id).toBe(sortedAppEvents[7].id)
+        })
+
+        it('should filter by bountyIndex and networkId', async () => {
+            const { user } = await createSessionData({ email: 'user@example.com', username: 'user' })
+            const event1 = await createAndSaveAppEvent([user.id], newBountyCommentEventData)
+            const event2 = await createAndSaveAppEvent([user.id], newBountyCommentEventData)
+            await createAndSaveAppEvent([user.id], { ...newBountyCommentEventData, networkId: NETWORKS.KUSAMA })
+            await createAndSaveAppEvent([user.id], { ...newBountyCommentEventData, bountyBlockchainId: 2 })
+            await createAndSaveAppEvent([user.id], newIdeaCommentEventData)
+
+            const result = await service().findAll({
+                userId: user.id,
+                appEventType: [AppEventType.NewBountyComment],
+                bountyIndex: newBountyCommentEventData.bountyBlockchainId,
+                networkId: newBountyCommentEventData.networkId,
+            })
+
+            expect(result.total).toBe(2)
+            expect(result.items).toHaveLength(2)
+            expect(result.items[0].id).toStrictEqual(event2.id)
+            expect(result.items[1].id).toStrictEqual(event1.id)
+        })
+
+        it('should filter by tipHash and networkId', async () => {
+            const { user } = await createSessionData({ email: 'user@example.com', username: 'user' })
+            const event1 = await createAndSaveAppEvent([user.id], newTipCommentEventData)
+            const event2 = await createAndSaveAppEvent([user.id], newTipCommentEventData)
+            await createAndSaveAppEvent([user.id], { ...newTipCommentEventData, networkId: NETWORKS.KUSAMA })
+            await createAndSaveAppEvent([user.id], { ...newTipCommentEventData, tipHash: '99' })
+            await createAndSaveAppEvent([user.id], newIdeaCommentEventData)
+
+            const result = await service().findAll({
+                userId: user.id,
+                appEventType: [AppEventType.NewTipComment],
+                tipHash: newTipCommentEventData.tipHash,
+                networkId: newTipCommentEventData.networkId,
+            })
+
+            expect(result.total).toBe(2)
+            expect(result.items).toHaveLength(2)
+            expect(result.items[0].id).toStrictEqual(event2.id)
+            expect(result.items[1].id).toStrictEqual(event1.id)
         })
     })
 

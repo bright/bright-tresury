@@ -211,13 +211,13 @@ describe('/api/v1/users/:userId/app-events/', () => {
                     request(app()).get(
                         `${getBaseUrl(
                             sessionHandler.sessionData.user.id,
-                        )}?appEventType[]=new_idea_comment&proposalIndex=3&networkId=${NETWORKS.POLKADOT}`,
+                        )}?appEventType[]=new_proposal_comment&proposalIndex=3&networkId=${NETWORKS.POLKADOT}`,
                     ),
                 )
                 expect(spy).toHaveBeenCalledWith(
                     expect.objectContaining({
                         userId: sessionHandler.sessionData.user.id,
-                        appEventType: [AppEventType.NewIdeaComment],
+                        appEventType: [AppEventType.NewProposalComment],
                         proposalIndex: 3,
                         networkId: NETWORKS.POLKADOT,
                     }),
@@ -232,6 +232,83 @@ describe('/api/v1/users/:userId/app-events/', () => {
                         request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?proposalIndex=three`),
                     )
                     .expect(HttpStatus.BAD_REQUEST)
+            })
+
+            it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId param`, async () => {
+                const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+                return sessionHandler
+                    .authorizeRequest(
+                        request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?networkId=not_valid`),
+                    )
+                    .expect(HttpStatus.BAD_REQUEST)
+            })
+        })
+
+        describe('bounty app events', () => {
+            it('should call findAll function with all valid params for bounty app events', async () => {
+                const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+                const spy = jest.spyOn(getService(), 'findAll')
+
+                await sessionHandler.authorizeRequest(
+                    request(app()).get(
+                        `${getBaseUrl(
+                            sessionHandler.sessionData.user.id,
+                        )}?appEventType[]=new_bounty_comment&bountyIndex=3&networkId=${NETWORKS.POLKADOT}`,
+                    ),
+                )
+
+                expect(spy).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        userId: sessionHandler.sessionData.user.id,
+                        appEventType: [AppEventType.NewBountyComment],
+                        bountyIndex: 3,
+                        networkId: NETWORKS.POLKADOT,
+                    }),
+                    expect.anything(),
+                )
+            })
+
+            it(`should return ${HttpStatus.BAD_REQUEST} for not number bountyIndex param`, async () => {
+                const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+                return sessionHandler
+                    .authorizeRequest(
+                        request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?bountyIndex=three`),
+                    )
+                    .expect(HttpStatus.BAD_REQUEST)
+            })
+
+            it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId param`, async () => {
+                const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+                return sessionHandler
+                    .authorizeRequest(
+                        request(app()).get(`${getBaseUrl(sessionHandler.sessionData.user.id)}?networkId=not_valid`),
+                    )
+                    .expect(HttpStatus.BAD_REQUEST)
+            })
+        })
+
+        describe('tip app events', () => {
+            it('should call findAll function with all valid params for tip app events', async () => {
+                const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())
+                const spy = jest.spyOn(getService(), 'findAll')
+
+                await sessionHandler.authorizeRequest(
+                    request(app()).get(
+                        `${getBaseUrl(
+                            sessionHandler.sessionData.user.id,
+                        )}?appEventType[]=new_tip_comment&tipHash=3&networkId=${NETWORKS.POLKADOT}`,
+                    ),
+                )
+
+                expect(spy).toHaveBeenCalledWith(
+                    expect.objectContaining({
+                        userId: sessionHandler.sessionData.user.id,
+                        appEventType: [AppEventType.NewTipComment],
+                        tipHash: '3',
+                        networkId: NETWORKS.POLKADOT,
+                    }),
+                    expect.anything(),
+                )
             })
 
             it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId param`, async () => {

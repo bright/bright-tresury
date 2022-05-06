@@ -3,6 +3,8 @@ import { DiscussionCategory, TipDiscussionDto } from '../../../discussion/commen
 import Discussion from '../../../discussion/Discussion'
 import { useNetworks } from '../../../networks/useNetworks'
 import { TipDto } from '../../tips.dto'
+import { useAuth } from '../../../auth/AuthContext'
+import PrivateTipDiscussion from './PrivateTipDiscussion'
 
 interface OwnProps {
     tip: TipDto
@@ -11,6 +13,7 @@ interface OwnProps {
 export type TipDiscussionProps = OwnProps
 
 const TipDiscussion = ({ tip }: TipDiscussionProps) => {
+    const { user, isUserSignedInAndVerified } = useAuth()
     const { network } = useNetworks()
 
     const discussion: TipDiscussionDto = useMemo(
@@ -24,8 +27,11 @@ const TipDiscussion = ({ tip }: TipDiscussionProps) => {
 
     return (
         <>
-            {/*Add private discussion to get notifications about new comments in TREAS-450*/}
-            <Discussion discussion={discussion} discussedEntity={tip} />
+            {user && isUserSignedInAndVerified ? (
+                <PrivateTipDiscussion discussion={discussion} userId={user.id} tip={tip} />
+            ) : (
+                <Discussion discussion={discussion} discussedEntity={tip} />
+            )}
         </>
     )
 }

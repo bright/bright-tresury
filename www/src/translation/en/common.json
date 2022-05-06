@@ -129,6 +129,12 @@
                     "goTo": "Go to Discussion",
                     "description": "There are new messages in the bounty discussion",
                     "tagged": "You have been tagged in the bounty discussion"
+                },
+                "tipDiscussion": {
+                    "title": "Tip Discussion",
+                    "goTo": "Go to Discussion",
+                    "description": "There are new messages in the tip discussion",
+                    "tagged": "You have been tagged in the tip discussion"
                 }
             }
         }

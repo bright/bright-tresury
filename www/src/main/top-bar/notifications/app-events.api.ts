@@ -16,6 +16,7 @@ interface GetAppEventsApiParams {
     appEventType?: AppEventType[]
     ideaId?: string
     proposalIndex?: number
+    tipHash?: string
     networkId?: string
 }
 
@@ -84,6 +85,23 @@ export const useGetBountyDiscussionAppEvents = (
             getAppEvents({
                 ...params,
                 appEventType: [AppEventType.NewBountyComment, AppEventType.TaggedInBountyComment],
+                isRead: false,
+            }),
+        options,
+    )
+}
+
+export const TIP_DISCUSSION_APP_EVENTS_QUERY_KEY_BASE = 'tip_discussion_app_events'
+export const useGetTipDiscussionAppEvents = (
+    params: { userId: string; tipHash: string; networkId: string } & PaginationRequestParams,
+    options?: UseQueryOptions<PaginationResponseDto<AppEventDto>>,
+) => {
+    return useQuery(
+        [TIP_DISCUSSION_APP_EVENTS_QUERY_KEY_BASE],
+        () =>
+            getAppEvents({
+                ...params,
+                appEventType: [AppEventType.NewTipComment, AppEventType.TaggedInTipComment],
                 isRead: false,
             }),
         options,

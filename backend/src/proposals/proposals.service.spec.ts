@@ -45,6 +45,11 @@ describe('ProposalsService', () => {
         jest.clearAllMocks()
     })
 
+    beforeEach(async () => {
+        await cleanDatabase()
+        await cleanAuthorizationDatabase()
+    })
+
     describe('find', () => {
         it('should return proposals', async () => {
             const { idea, ideaNetwork, sessionHandler } = await setUpIdea(app())

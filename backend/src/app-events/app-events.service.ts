@@ -17,6 +17,8 @@ export interface AppEventsQuery {
     appEventType?: Nil<AppEventType[]>
     ideaId?: Nil<string>
     proposalIndex?: Nil<number>
+    bountyIndex?: Nil<number>
+    tipHash?: Nil<string>
     networkId?: Nil<string>
 }
 
@@ -37,7 +39,16 @@ export class AppEventsService {
         return response
     }
 
-    buildFindAllQuery({ userId, isRead, appEventType, ideaId, proposalIndex, networkId }: AppEventsQuery) {
+    buildFindAllQuery({
+        userId,
+        isRead,
+        appEventType,
+        ideaId,
+        proposalIndex,
+        bountyIndex,
+        tipHash,
+        networkId,
+    }: AppEventsQuery) {
         let query = this.appEventRepository
             .createQueryBuilder('app_events')
             .innerJoinAndSelect('app_events.receivers', 'receivers')
@@ -58,6 +69,14 @@ export class AppEventsService {
 
         if (!isNil(proposalIndex)) {
             query = query.andWhere("app_events.data->>'proposalBlockchainId' = :proposalIndex", { proposalIndex })
+        }
+
+        if (!isNil(bountyIndex)) {
+            query = query.andWhere("app_events.data->>'bountyBlockchainId' = :bountyIndex", { bountyIndex })
+        }
+
+        if (!isNil(tipHash)) {
+            query = query.andWhere("app_events.data->>'tipHash' = :tipHash", { tipHash })
         }
 
         if (!isNil(networkId)) {

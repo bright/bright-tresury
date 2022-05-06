@@ -47,6 +47,21 @@ export class AppEventQuery {
     proposalIndex?: Nil<string>
 
     @ApiPropertyOptional({
+        description: 'The index of the bounty which app events refer to',
+    })
+    @IsOptional()
+    @IsString()
+    @IsNumberString()
+    bountyIndex?: Nil<string>
+
+    @ApiPropertyOptional({
+        description: 'The hash of the tip which app events refer to',
+    })
+    @IsOptional()
+    @IsString()
+    tipHash?: Nil<string>
+
+    @ApiPropertyOptional({
         description: 'The network of the proposal which app events refer to',
     })
     @IsOptional()

@@ -16,6 +16,7 @@ import { AppEventData, AppEventType } from '../../entities/app-event-type'
 import { createAppEvent } from '../../spec.helpers'
 import { EmailNotificationsService } from './email-notifications.service'
 import SpyInstance = jest.SpyInstance
+import { NewTipCommentDto } from '../../app-event-types/tip-comment/new-tip-comment.dto'
 
 describe('EmailNotificationsService', () => {
     const app = beforeSetupFullApp()
@@ -149,6 +150,47 @@ describe('EmailNotificationsService', () => {
             await service().send(appEvent)
 
             expectSendEmailFromTemplateToHaveBeenCalledWith(EmailTemplates.NewProposalCommentTemplate, appEvent.data)
+            expectSendEmailToHaveBeenCalledWithNotEmptyHtml()
+        })
+        it('should call sendEmailFromTemplate and sendEmail for NewTipComment event', async () => {
+            const {
+                sessionData: { user },
+            } = await createUserSessionHandlerWithVerifiedEmail(app())
+            const data: NewTipCommentDto = {
+                type: AppEventType.NewTipComment as const,
+                commentId: uuid(),
+                tipHash: '0',
+                tipTitle: 'title',
+                commentsUrl: 'http://localhost:3000',
+                networkId: NETWORKS.POLKADOT,
+                websiteUrl: 'http://localhost:3000',
+            }
+            const appEvent = createAppEvent([user.id], data)
+
+            await service().send(appEvent)
+
+            expectSendEmailFromTemplateToHaveBeenCalledWith(EmailTemplates.NewTipCommentTemplate, appEvent.data)
+            expectSendEmailToHaveBeenCalledWithNotEmptyHtml()
+        })
+
+        it('should call sendEmailFromTemplate and sendEmail for TaggedInTipComment event', async () => {
+            const {
+                sessionData: { user },
+            } = await createUserSessionHandlerWithVerifiedEmail(app())
+            const data: NewTipCommentDto = {
+                type: AppEventType.TaggedInTipComment as const,
+                commentId: uuid(),
+                tipHash: '0',
+                tipTitle: 'title',
+                commentsUrl: 'http://localhost:3000',
+                networkId: NETWORKS.POLKADOT,
+                websiteUrl: 'http://localhost:3000',
+            }
+            const appEvent = createAppEvent([user.id], data)
+
+            await service().send(appEvent)
+
+            expectSendEmailFromTemplateToHaveBeenCalledWith(EmailTemplates.TaggedInTipCommentTemplate, appEvent.data)
             expectSendEmailToHaveBeenCalledWithNotEmptyHtml()
         })
     })

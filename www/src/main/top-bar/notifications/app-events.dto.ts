@@ -4,15 +4,17 @@ export interface AppEventDto {
     isRead: boolean
 }
 
-export type AppEventData = NewIdeaCommentData | NewProposalCommentData | NewBountyCommentData
+export type AppEventData = NewIdeaCommentData | NewProposalCommentData | NewBountyCommentData | NewTipCommentData
 
 export enum AppEventType {
     NewIdeaComment = 'new_idea_comment',
     NewProposalComment = 'new_proposal_comment',
     NewBountyComment = 'new_bounty_comment',
+    NewTipComment = 'new_tip_comment',
     TaggedInIdeaComment = 'tagged_in_idea_comment',
     TaggedInProposalComment = 'tagged_in_proposal_comment',
     TaggedInBountyComment = 'tagged_in_bounty_comment',
+    TaggedInTipComment = 'tagged_in_tip_comment',
 }
 
 export interface NewIdeaCommentData {
@@ -39,6 +41,15 @@ export interface NewBountyCommentData {
     commentId: string
     bountyBlockchainId: number
     bountyTitle: string
+    commentsUrl: string
+    networkId: string
+}
+
+export interface NewTipCommentData {
+    type: AppEventType.NewTipComment | AppEventType.TaggedInTipComment
+    commentId: string
+    tipHash: string
+    tipTitle: string
     commentsUrl: string
     networkId: string
 }
