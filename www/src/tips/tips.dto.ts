@@ -25,6 +25,7 @@ export interface TipDto {
     polkassembly?: Nil<PolkassemblyPostDto>
 
     status: TipStatus
+    closes: Nil<string>
 }
 
 export interface TippingDto {

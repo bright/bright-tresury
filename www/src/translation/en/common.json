@@ -898,7 +898,8 @@
             "noTippers": {
                 "title": "No one has tipped yet",
                 "description": "While waiting for the tips, you can go to the discussion tab to make sure that no aspect of the topic has slipped away from you or the community"
-            }
+            },
+            "timeLeft": "Time left: "
         },
         "content": {
             "infoLabel": "Info",

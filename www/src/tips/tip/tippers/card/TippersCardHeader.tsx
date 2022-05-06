@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import Divider from '../../../../components/divider/Divider'
 import InformationTip from '../../../../components/info/InformationTip'
 import { TipDto, TippingDto, TipStatus } from '../../../tips.dto'
+import TippingTime from './tipping/TippingTime'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -13,6 +14,10 @@ const useStyles = makeStyles(() =>
             alignItems: 'flex-end',
         },
         label: {
+            display: 'flex',
+            width: '100%',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             textAlign: 'right',
             marginBottom: '8px',
         },
@@ -48,6 +53,7 @@ const TippersCardHeader = ({ tip, closingThreshold }: TippersCardHeaderProps) =>
         <>
             <div className={classes.root}>
                 <h3 className={classes.label}>
+                    <TippingTime tip={tip} />
                     {tip.tips.length}/{closingThreshold}
                 </h3>
                 <InformationTip className={classes.info} label={label} />
