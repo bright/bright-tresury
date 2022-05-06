@@ -16,7 +16,7 @@ const useStyles = makeStyles(() =>
         label: {
             display: 'flex',
             width: '100%',
-            flexDirection: 'row',
+            flexDirection: 'row-reverse',
             justifyContent: 'space-between',
             textAlign: 'right',
             marginBottom: '8px',
@@ -53,8 +53,8 @@ const TippersCardHeader = ({ tip, closingThreshold }: TippersCardHeaderProps) =>
         <>
             <div className={classes.root}>
                 <h3 className={classes.label}>
-                    <TippingTime tip={tip} />
                     {tip.tips.length}/{closingThreshold}
+                    {tip.status === TipStatus.Closing ? <TippingTime closes={tip.closes!} /> : null}
                 </h3>
                 <InformationTip className={classes.info} label={label} />
             </div>
