@@ -118,15 +118,16 @@ describe('DiscussionsService', () => {
 
         it('should return tip comment', async () => {
             const { addComment } = await findCommentsSetUp()
+            const tipHash = '0x0000000000000000000000000000000000000000000000000000000000000000'
             const tipComment = await addComment({
                 category: DiscussionCategory.Tip,
-                blockchainHash: '0x0',
+                blockchainHash: tipHash,
                 networkId: NETWORKS.POLKADOT,
             } as TipDiscussionDto)
 
             const actual = await service().findComments({
                 category: DiscussionCategory.Tip,
-                blockchainHash: '0x0',
+                blockchainHash: tipHash,
                 networkId: NETWORKS.POLKADOT,
             })
 
@@ -271,9 +272,10 @@ describe('DiscussionsService', () => {
 
             it('should create tip discussion', async () => {
                 const { user: author } = await createSessionData()
+                const tipHash = '0x0000000000000000000000000000000000000000000000000000000000000000'
                 const tipDiscussionDto = {
                     category: DiscussionCategory.Tip as const,
-                    blockchainHash: '0x0',
+                    blockchainHash: tipHash,
                     networkId: NETWORKS.POLKADOT,
                 }
 

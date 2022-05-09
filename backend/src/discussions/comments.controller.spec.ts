@@ -227,15 +227,16 @@ describe('/api/v1/comments', () => {
                 const baseProposalUrl = `${baseUrl}?category=${DiscussionCategory.Tip}&`
 
                 it(`should return comments for hash and existing networkId`, async () => {
+                    const tipHash = '0x0000000000000000000000000000000000000000000000000000000000000000'
                     const discussionDto: TipDiscussionDto = {
                         category: DiscussionCategory.Tip,
                         networkId: NETWORKS.POLKADOT,
-                        blockchainHash: '0x0',
+                        blockchainHash: tipHash,
                     }
                     await getSetUp(discussionDto)
 
                     const result = await request(app()).get(
-                        `${baseProposalUrl}&blockchainHash=0x0&networkId=${NETWORKS.POLKADOT}`,
+                        `${baseProposalUrl}&blockchainHash=${tipHash}&networkId=${NETWORKS.POLKADOT}`,
                     )
 
                     expect(result.body).toHaveLength(1)
@@ -500,11 +501,12 @@ describe('/api/v1/comments', () => {
 
             describe('tip', () => {
                 const getTipDiscussionDto = (dto: any = {}) => {
+                    const tipHash = '0x0000000000000000000000000000000000000000000000000000000000000000'
                     return {
                         ...validDto,
                         discussionDto: {
                             category: DiscussionCategory.Tip,
-                            blockchainHash: '0x0',
+                            blockchainHash: tipHash,
                             networkId: NETWORKS.POLKADOT,
                             ...dto,
                         },
