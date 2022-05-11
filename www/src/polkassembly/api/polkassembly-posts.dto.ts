@@ -10,7 +10,7 @@ export enum PolkassemblyPostType {
 export interface PolkassemblyPostDto {
     title: string
     content: string
-    onChainIndex: number
+    onChainIndex: number | string
     type: PolkassemblyPostType
 }
 

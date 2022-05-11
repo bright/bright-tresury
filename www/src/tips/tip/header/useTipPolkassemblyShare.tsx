@@ -23,7 +23,7 @@ export const useTipPolkassemblyShare = ({ tip }: UseTipPolkassemblyShareProps): 
         postData: {
             title: tip.title ?? tip.reason ?? '',
             content: `${intro}${description}`,
-            onChainIndex: Number(tip.hash),
+            onChainIndex: tip.hash,
             type: PolkassemblyPostType.Tip,
         },
     }
@@ -39,15 +39,11 @@ const useIntro = (hash: string) => {
         }),
     )
 
-    return `**${t('bounty.info.curatorActions.polkassemblyShare.intro')} [${t(
-        'bounty.info.curatorActions.polkassemblyShare.link',
-    )}](${url})**`
+    return `**${t('tip.polkassemblyShare.intro')} [${t('tip.polkassemblyShare.link')}](${url})**`
 }
 
 const useDescription = (description: Nil<string>) => {
-    const { t } = useTranslation()
-    if (!description) {
-        return ''
-    }
+    if (!description) return ''
+
     return `\n\n${description}`
 }

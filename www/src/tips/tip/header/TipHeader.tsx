@@ -89,10 +89,9 @@ const TipHeader = ({ tip, tipTabsConfig }: TipHeaderProps) => {
             <HeaderTabs className={classes.contentTypeTabs}>
                 <TipContentTypeTabs tipTabsConfig={tipTabsConfig} />
             </HeaderTabs>
-            {/*TODO: Add if when can share*/}
-            {/*TODO add mobile styling*/}
+
             <ActionButtons className={classes.actionButtons}>
-                <TipPolkassemblyShareButton tip={tip} />
+                {isFinder ? <TipPolkassemblyShareButton tip={tip} /> : null}
                 {isOwner || isFinder || isBeneficiary ? (
                     <TipOptionsButton className={classes.optionsButton} tip={tip} />
                 ) : null}

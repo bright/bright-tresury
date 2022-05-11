@@ -42,6 +42,7 @@ const Tips = () => {
         ...defaultPaginatedRequestParams(),
     })
     const tips = useMemo(() => data?.pages?.map((page) => page.items).flat() ?? [], [data])
+
     const canLoadMore = useMemo(() => (data?.pages ? data?.pages[0]?.total > tips.length : false), [data])
     return (
         <>

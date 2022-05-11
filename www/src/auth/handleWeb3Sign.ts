@@ -18,14 +18,17 @@ export interface ConfirmWeb3SignRequestDto {
     signature: string
     details: Nil<any>
 }
-
+export interface Web3SignAccount {
+    address: string
+    format?: number
+}
 export async function handleWeb3Sign(
-    account: Account | string,
+    account: Web3SignAccount,
     startCall: (dto: StartWeb3SignRequestDto) => Promise<StartWeb3SignResponseDto>,
     confirmCall: (confirmDto: ConfirmWeb3SignRequestDto) => Promise<void | any>,
     details?: any,
 ) {
-    const address = encodeAddress(typeof account === 'string' ? account : account.address)
+    const address = encodeAddress(account.address, account.format)
 
     const injected = await web3FromAddress(address)
 

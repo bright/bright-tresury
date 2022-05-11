@@ -47,9 +47,7 @@ const useIntro = (bountyIndex: number) => {
 }
 
 const useDescription = (description: Nil<string>) => {
-    const { t } = useTranslation()
-    if (!description) {
-        return ''
-    }
+    if (!description) return ''
+
     return `\n\n${description}`
 }

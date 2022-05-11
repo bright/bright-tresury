@@ -1,6 +1,6 @@
 import request, { gql } from 'graphql-request'
 import { useMutation } from 'react-query'
-import { handleWeb3Sign, StartWeb3SignResponseDto } from '../../auth/handleWeb3Sign'
+import { handleWeb3Sign, StartWeb3SignResponseDto, Web3SignAccount } from '../../auth/handleWeb3Sign'
 import {
     ConfirmMutationRequestDto,
     PostMutationWeb3SignDetailsDto,
@@ -33,6 +33,8 @@ async function startMutation(dto: StartMutationRequestDto): Promise<StartWeb3Sig
     const {
         editPostStart: { signMessage, message },
     } = await request(apiUrl, mutation, { address: dto.address })
+
+    console.log('startMutation')
     console.log(message)
     const signContent = getPostSignContent(dto, signMessage)
     return {
@@ -82,10 +84,11 @@ async function confirmMutation({
         content: postData.content,
         signature,
     })
+    console.log('confirm mutation')
     console.log(message)
 }
 
-function handlePolkassemblyShare(dto: { account: string; details: PostMutationWeb3SignDetailsDto }) {
+function handlePolkassemblyShare(dto: { account: Web3SignAccount; details: PostMutationWeb3SignDetailsDto }) {
     return handleWeb3Sign(dto.account, startMutation, confirmMutation, dto.details)
 }
 

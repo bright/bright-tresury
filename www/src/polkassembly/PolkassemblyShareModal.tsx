@@ -62,7 +62,7 @@ const PolkassemblyShareModal = ({ open, onClose, web3address, postData }: Polkas
     const onSubmit = async () => {
         await mutateAsync(
             {
-                account: web3address,
+                account: { address: web3address, format: network.ss58Format },
                 details: {
                     network,
                     postData,
