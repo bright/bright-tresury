@@ -11,7 +11,6 @@ import { BlockchainBountiesService } from './blockchain-bounties/blockchain-boun
 import { BlockchainTipsService } from './blockchain-tips/blockchain-tips.service'
 import { BlockchainChildBountiesService } from './blockchain-child-bounties/blockchain-child-bounties.service'
 
-
 const logger = getLogger()
 export interface BlockchainsConnections {
     [key: string]: BlockchainConnection
