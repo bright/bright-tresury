@@ -15,6 +15,7 @@ import { extractTime } from '@polkadot/util'
 import { AccountId32 } from '@polkadot/types/interfaces/runtime'
 import { u32 } from '@polkadot/types'
 import { ProposedMotionDto, toBlockchainMotion } from '../dto/proposed-motion.dto'
+import { BlockchainChildBountiesService } from '../blockchain-child-bounties/blockchain-child-bounties.service'
 
 const logger = getLogger()
 
@@ -30,6 +31,7 @@ export class BlockchainBountiesService {
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
         private readonly blockchainService: BlockchainService,
+        private readonly blockchainChildBountiesService: BlockchainChildBountiesService,
     ) {}
 
     static extractBountyIndex(extrinsicEvents: ExtrinsicEvent[]): number | undefined {

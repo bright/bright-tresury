@@ -8,6 +8,7 @@ import { BountyEntity } from './entities/bounty.entity'
 import { BlockchainModule } from '../blockchain/blockchain.module'
 import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
 import { UsersModule } from '../users/users.module'
+import { ChildBountiesService } from './child-bounties/child-bounties.service'
 
 @Module({
     imports: [
@@ -19,7 +20,7 @@ import { UsersModule } from '../users/users.module'
         UsersModule,
     ],
     controllers: [BountiesController],
-    providers: [BountiesService],
+    providers: [BountiesService, ChildBountiesService],
     exports: [BountiesService],
 })
 export class BountiesModule {}

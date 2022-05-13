@@ -5,6 +5,7 @@ import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dt
 import { NetworkPlanckValue, Nil } from '../../utils/types'
 import { FindBountyDto } from './find-bounty.dto'
 import { PublicUserDto } from '../../users/dto/public-user.dto'
+import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
 
 export class BountyDto {
     @ApiProperty({
@@ -93,12 +94,17 @@ export class BountyDto {
     description?: Nil<string>
 
     @ApiPropertyOptional({
+        description: 'Child bounties assigned to this bounty',
+    })
+    childBounties?: Nil<BlockchainChildBountyDto[]>
+
+    @ApiPropertyOptional({
         description: 'Bounty data kept in polkassembly server',
         type: PolkassemblyPostDto,
     })
     polkassembly?: Nil<PolkassemblyPostDto>
 
-    constructor({ blockchain, entity, polkassembly, beneficiary, curator, proposer }: FindBountyDto) {
+    constructor({ blockchain, entity, polkassembly, beneficiary, curator, proposer, childBounties }: FindBountyDto) {
         this.id = entity?.id
         this.blockchainIndex = blockchain.index
         this.blockchainDescription = blockchain.description
@@ -116,6 +122,7 @@ export class BountyDto {
         this.title = entity?.title
         this.description = entity?.description
         this.field = entity?.field
+        this.childBounties = childBounties
         this.polkassembly = polkassembly
     }
 }
