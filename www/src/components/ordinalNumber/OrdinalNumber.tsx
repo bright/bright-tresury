@@ -15,7 +15,7 @@ const useStyles = makeStyles(() =>
 
 interface OwnProps {
     prefix: string
-    ordinalNumber: number
+    ordinalNumber: number | string
 }
 
 export type OrdinalNumberProps = OwnProps

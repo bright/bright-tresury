@@ -15,6 +15,10 @@ export interface UseBountyResult {
     isProposer: boolean
     isBeneficiary: boolean
     hasDetails: boolean
+    isCuratorProposed: boolean
+    isActive: boolean
+    isPendingPayout: boolean
+    isClaimed: boolean
 }
 
 export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
@@ -25,6 +29,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
     const isCuratorProposed = bounty?.status === BountyStatus.CuratorProposed
     const isActive = bounty?.status === BountyStatus.Active
     const isPendingPayout = bounty?.status === BountyStatus.PendingPayout
+    const isClaimed = bounty?.status === BountyStatus.Claimed
     const isUnknown = bounty?.status === BountyStatus.Unknown
 
     const isProposedCurator = isCuratorProposed && hasWeb3AddressAssigned(bounty.curator.web3address)
@@ -62,5 +67,9 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
         isProposer,
         isBeneficiary,
         hasDetails,
+        isCuratorProposed,
+        isActive,
+        isPendingPayout,
+        isClaimed,
     }
 }

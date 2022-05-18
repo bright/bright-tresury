@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
 import infoIcon from '../../assets/info.svg'
 import voting from '../../assets/voting.svg'
+import child_bounties from '../../assets/child_bounties.svg'
 import discussionIcon from '../../assets/discussion.svg'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import PrivateRoute from '../../routes/PrivateRoute'
@@ -16,14 +17,16 @@ import BountyAward from './header/curator-actions/award/BountyAward'
 import BountyExtendExpiry from './header/curator-actions/extend-expiry/BountyExtendExpiry'
 import BountyInfo from './info/BountyInfo'
 import BountyVoting from './voting/BountyVoting'
+import ChildBounties from './child-bounties/ChildBounties'
 
 export enum BountyContentType {
     Info = 'info',
     Discussion = 'discussion',
     Voting = 'voting',
+    ChildBounties = 'child-bounties',
 }
 
-const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]: BountyTabConfig } = {
+const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]?: BountyTabConfig } = {
     [BountyContentType.Info]: {
         bountyContentType: BountyContentType.Info,
         translationKey: 'bounty.content.infoLabel',
@@ -58,6 +61,21 @@ const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]: BountyTabConfig
             </Route>
         ),
     },
+    [BountyContentType.ChildBounties]: {
+        bountyContentType: BountyContentType.ChildBounties,
+        translationKey: 'bounty.content.childBounties',
+        svg: child_bounties,
+        getUrl: (baseUrl: string) => `${baseUrl}/${BountyContentType.ChildBounties}`,
+        getRoute: (basePath: string, bounty: BountyDto) => (
+            <Route
+                key={BountyContentType.ChildBounties}
+                exact={true}
+                path={`${basePath}/${BountyContentType.ChildBounties}`}
+            >
+                <ChildBounties bounty={bounty} />
+            </Route>
+        ),
+    },
 }
 
 export interface BountyTabConfig {
@@ -78,7 +96,19 @@ const Bounty = ({ bounty }: BountyProps) => {
 
     let { path } = useRouteMatch()
 
-    const bountyTabsConfig = Object.values(BOUNTY_CONTENT_TYPE_BUILDER)
+    const bountyTabsConfig = useMemo(() => {
+        const bountyContentTypes = bounty.childBounties?.length
+            ? [
+                  BountyContentType.Info,
+                  BountyContentType.Discussion,
+                  BountyContentType.Voting,
+                  BountyContentType.ChildBounties,
+              ]
+            : [BountyContentType.Info, BountyContentType.Discussion, BountyContentType.Voting]
+
+        return bountyContentTypes.map((contentType) => BOUNTY_CONTENT_TYPE_BUILDER[contentType]!)
+    }, [bounty.childBounties])
+
     const routes = bountyTabsConfig.map(({ getRoute }) => getRoute(path, bounty))
 
     return (

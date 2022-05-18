@@ -17,6 +17,7 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import { breakpoints } from '../../theme/theme'
 import BountyStatusIndicator from '../components/BountyStatusIndicator'
 import User from '../../components/user/User'
+import ChildBountiesLink from './ChildBountiesLink'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,6 +56,12 @@ const BountyCard = ({ bounty, disable = false, showStatus = true }: BountyCardPr
         <NetworkCard redirectTo={disable ? undefined : redirectTo}>
             <CardHeader>
                 <OrdinalNumber prefix={t('bounty.indexPrefix')} ordinalNumber={bounty.blockchainIndex} />
+                {bounty.childBounties?.length ? (
+                    <ChildBountiesLink
+                        bountyIndex={bounty.blockchainIndex}
+                        childBountiesCount={bounty.childBounties?.length}
+                    />
+                ) : null}
                 {showStatus ? <BountyStatusIndicator status={bounty.status} /> : null}
             </CardHeader>
 
