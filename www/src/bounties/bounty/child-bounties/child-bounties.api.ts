@@ -5,6 +5,7 @@ import { ChildBountyDto, CreateChildBountyDto } from './child-bounties.dto'
 
 const getChildBountiesApiBasePath = (bountyIndex: number | string) =>
     `${BOUNTIES_API_PATH}/${bountyIndex}/child-bounties`
+
 export const CHILD_BOUNTIES_API_PATH = '/child-bounties'
 
 // GET ONE
