@@ -19,3 +19,14 @@ export interface ChildBountyDto {
     unlockAt: Nil<string>
     status: ChildBountyStatus
 }
+export interface CreateChildBountyDto {
+    parentIndex: number
+    blockchainDescription: string
+    value: NetworkPlanckValue
+    title: string
+    description?: Nil<string>
+    networkId: string
+    proposer: string
+    extrinsicHash: string
+    lastBlockHash: string
+}

@@ -24,9 +24,7 @@ const BountyOptionsButton = ({ className, bounty }: BountyOptionsButtonProps) =>
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
     const { canEdit, canReject, hasDetails } = useBounty(bounty)
 
-    const onEditClick = () => {
-        history.push(generatePath(ROUTE_EDIT_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
-    }
+    const onEditClick = () => history.push(generatePath(ROUTE_EDIT_BOUNTY, { bountyIndex: bounty.blockchainIndex }))
 
     return (
         <>

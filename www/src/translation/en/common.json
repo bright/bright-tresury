@@ -808,11 +808,46 @@
         },
         "discussion": {
             "bountyClosed": "This bounty is already closed."
+        }
+    },
+    "childBounty": {
+        "list": {
+            "create": "+ Child Bounty",
+            "noChildBounties": "No child bounties have been added yet.",
+            "proposer": "Proposer",
+            "curator": "Curator"
         },
-        "childBounty": {
-            "list": {
-                "proposer": "Proposer",
-                "curator": "Curator"
+        "create": {
+            "title": "Create child bounty",
+            "submit": "Submit",
+            "submitModal": {
+                "title": "You are about to create a child bounty proposal",
+                "warningMessage": "In order to submit your child bounty proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your bounty proposal will be <strong>rejected you will lose the deposit</strong>. If your bounty proposal is approved you will get the deposit money back.",
+                "eventDescription": "event child bounty proposed finished"
+            }
+        },
+        "form": {
+            "emptyFieldError": "This field cannot be empty",
+            "minValueError": "The value must be at least {{value}}",
+            "maxBlockchainDescriptionLength": "The on-chain description is too long",
+            "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
+            "fields": {
+                "title": "Title",
+                "field": "Field of bounty",
+                "value": "Value",
+                "deposit": "Deposit",
+                "depositTooltip": "The deposit amount that will be bonded (partly depends on the on-chain description length)",
+                "blockchainDescription": "Description - this description is stored on chain (the bond will increase for each byte of this description)",
+                "description": "Description",
+                "beneficiary": "Beneficiary",
+                "extendRemark": "Remark",
+                "extendRemarkDescription": "Explain why you need to extend the expiry date. This information will be included in a transaction (but not stored on-chain)",
+                "fieldOptions": {
+                    "optimisation": "Optimisation",
+                    "treasury": "Treasury",
+                    "transactions": "Transactions",
+                    "other": "Other"
+                }
             }
         }
     },

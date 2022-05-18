@@ -7,7 +7,12 @@ import discussionIcon from '../../assets/discussion.svg'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import PrivateRoute from '../../routes/PrivateRoute'
 import Route from '../../routes/Route'
-import { ROUTE_AWARD_BOUNTY, ROUTE_EDIT_BOUNTY, ROUTE_EXTEND_EXPIRY_BOUNTY } from '../../routes/routes'
+import {
+    ROUTE_AWARD_BOUNTY,
+    ROUTE_EDIT_BOUNTY,
+    ROUTE_EXTEND_EXPIRY_BOUNTY,
+    ROUTE_NEW_CHILD_BOUNTY,
+} from '../../routes/routes'
 import { Nil } from '../../util/types'
 import { BountyDto } from '../bounties.dto'
 import BountyDiscussion from './discussion/BountyDiscussion'
@@ -18,6 +23,7 @@ import BountyExtendExpiry from './header/curator-actions/extend-expiry/BountyExt
 import BountyInfo from './info/BountyInfo'
 import BountyVoting from './voting/BountyVoting'
 import ChildBounties from './child-bounties/ChildBounties'
+import ChildBountyCreate from './child-bounties/create/ChildBountyCreate'
 
 export enum BountyContentType {
     Info = 'info',
@@ -96,18 +102,7 @@ const Bounty = ({ bounty }: BountyProps) => {
 
     let { path } = useRouteMatch()
 
-    const bountyTabsConfig = useMemo(() => {
-        const bountyContentTypes = bounty.childBounties?.length
-            ? [
-                  BountyContentType.Info,
-                  BountyContentType.Discussion,
-                  BountyContentType.Voting,
-                  BountyContentType.ChildBounties,
-              ]
-            : [BountyContentType.Info, BountyContentType.Discussion, BountyContentType.Voting]
-
-        return bountyContentTypes.map((contentType) => BOUNTY_CONTENT_TYPE_BUILDER[contentType]!)
-    }, [bounty.childBounties])
+    const bountyTabsConfig = useMemo(() => Object.values(BOUNTY_CONTENT_TYPE_BUILDER), [BOUNTY_CONTENT_TYPE_BUILDER])
 
     const routes = bountyTabsConfig.map(({ getRoute }) => getRoute(path, bounty))
 
@@ -122,6 +117,9 @@ const Bounty = ({ bounty }: BountyProps) => {
                 </PrivateRoute>
                 <PrivateRoute requireVerified={true} exact={true} path={ROUTE_EXTEND_EXPIRY_BOUNTY}>
                     <BountyExtendExpiry bounty={bounty} />
+                </PrivateRoute>
+                <PrivateRoute requireVerified={true} exact={true} path={ROUTE_NEW_CHILD_BOUNTY}>
+                    <ChildBountyCreate bounty={bounty} />
                 </PrivateRoute>
                 <>
                     <BountyHeader bounty={bounty} bountyTabsConfig={bountyTabsConfig} />

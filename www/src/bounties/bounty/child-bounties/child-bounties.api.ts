@@ -1,15 +1,17 @@
-import { apiGet, getUrlSearchParams } from '../../../api'
-import { useQuery, UseQueryOptions } from 'react-query'
+import { apiGet, apiPost, getUrlSearchParams } from '../../../api'
+import { useQuery, useMutation, UseQueryOptions } from 'react-query'
 import { BOUNTIES_API_PATH } from '../../bounties.api'
-import { ChildBountyDto } from './child-bounties.dto'
+import { ChildBountyDto, CreateChildBountyDto } from './child-bounties.dto'
 
+const getChildBountiesApiBasePath = (bountyIndex: number | string) =>
+    `${BOUNTIES_API_PATH}/${bountyIndex}/child-bounties`
 export const CHILD_BOUNTIES_API_PATH = '/child-bounties'
 
 // GET ONE
 
 async function getChildBounty(bountyIndex: string, childBountyIndex: string, network: string): Promise<ChildBountyDto> {
     return apiGet<ChildBountyDto>(
-        `${BOUNTIES_API_PATH}/${bountyIndex}${CHILD_BOUNTIES_API_PATH}/${childBountyIndex}?${getUrlSearchParams({
+        `${getChildBountiesApiBasePath(bountyIndex)}/${childBountyIndex}?${getUrlSearchParams({
             network,
         }).toString()}`,
     )
@@ -26,4 +28,16 @@ export const useGetChildBounty = (
         () => getChildBounty(bountyIndex, childBountyIndex, network),
         options,
     )
+}
+
+const createChildBounty = ({ parentIndex, ...data }: CreateChildBountyDto) =>
+    apiPost(getChildBountiesApiBasePath(parentIndex), data)
+
+export const useCreateChildBounty = () => {
+    return {
+        mutateAsync: (data: any) => {
+            console.log('Should sent create child bounty post request with data', data)
+        },
+    }
+    // return useMutation(createChildBounty)
 }

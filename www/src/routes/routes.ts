@@ -19,9 +19,6 @@ export const ROUTE_TIPS = '/tips'
 export const ROUTE_TIP = '/tips/:tipHash'
 export const ROUTE_NEW_TIP = '/tips/new'
 // endregion
-// region Child-Bounties
-export const ROUTE_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/:childBountyIndex'
-// endregion
 // region Bounties
 export const ROUTE_BOUNTIES = '/bounties'
 export const ROUTE_NEW_BOUNTY = '/bounties/new'
@@ -30,6 +27,11 @@ export const ROUTE_AWARD_BOUNTY = '/bounties/:bountyIndex/award'
 export const ROUTE_EXTEND_EXPIRY_BOUNTY = '/bounties/:bountyIndex/extend-expiry'
 export const ROUTE_BOUNTY = '/bounties/:bountyIndex'
 export const ROUTE_BOUNTY_DISCUSSION = '/bounties/:bountyIndex/discussion'
+// endregion
+// region Child-Bounties
+export const ROUTE_CHILD_BOUNTIES = '/bounties/:bountyIndex/child-bounties'
+export const ROUTE_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/:childBountyIndex'
+export const ROUTE_NEW_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/new'
 // endregion
 // region Auth
 export const ROUTE_SIGNUP = '/auth/signup'

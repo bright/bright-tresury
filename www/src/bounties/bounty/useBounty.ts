@@ -19,6 +19,7 @@ export interface UseBountyResult {
     isActive: boolean
     isPendingPayout: boolean
     isClaimed: boolean
+    hasChildBounties: boolean
 }
 
 export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
@@ -53,7 +54,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
     const canExtendExpiry = isCurator && isActive
 
     const hasDetails = !!bounty?.owner
-
+    const hasChildBounties = !!bounty?.childBounties?.length
     return {
         canReject,
         canAccept,
@@ -71,5 +72,6 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
         isActive,
         isPendingPayout,
         isClaimed,
+        hasChildBounties,
     }
 }
