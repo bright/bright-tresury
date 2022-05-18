@@ -8,6 +8,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             marginBottom: '6px',
+            marginTop: '20px'
         },
     }),
 )
