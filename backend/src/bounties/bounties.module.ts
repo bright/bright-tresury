@@ -10,10 +10,11 @@ import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
 import { UsersModule } from '../users/users.module'
 import { ChildBountiesService } from './child-bounties/child-bounties.service'
 import { ChildBountiesController } from './child-bounties/child-bounties.controller'
+import { ChildBountyEntity } from './child-bounties/entities/child-bounty.entity'
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([BountyEntity]),
+        TypeOrmModule.forFeature([BountyEntity, ChildBountyEntity]),
         SessionModule,
         ExtrinsicsModule,
         BlockchainModule,

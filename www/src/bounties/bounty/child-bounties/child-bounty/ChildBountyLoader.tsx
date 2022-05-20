@@ -1,10 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
-import { useNetworks } from '../../../networks/useNetworks'
-import LoadingWrapper from '../../../components/loading/LoadingWrapper'
+import { useNetworks } from '../../../../networks/useNetworks'
+import LoadingWrapper from '../../../../components/loading/LoadingWrapper'
 import ChildBounty from './ChildBounty'
-import { useGetChildBounty } from './child-bounties.api'
+import { useGetChildBounty } from '../child-bounties.api'
 
 const ChildBountyLoader = () => {
     const { t } = useTranslation()

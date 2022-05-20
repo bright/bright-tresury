@@ -1,12 +1,17 @@
 import React from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
-import infoIcon from '../../../assets/info.svg'
-import { ChildBountyDto } from './child-bounties.dto'
-import ChildBountyInfo from './info/ChildBountyInfo'
-import Route from '../../../routes/Route'
-import { Nil } from '../../../util/types'
-import { useSuccessfullyLoadedItemStyles } from '../../../components/loading/useSuccessfullyLoadedItemStyles'
+import infoIcon from '../../../../assets/info.svg'
+import { ChildBountyDto } from '../child-bounties.dto'
+import ChildBountyInfo from '../info/ChildBountyInfo'
+import Route from '../../../../routes/Route'
+import { Nil } from '../../../../util/types'
+import { useSuccessfullyLoadedItemStyles } from '../../../../components/loading/useSuccessfullyLoadedItemStyles'
 import ChildBountyHeader from './header/ChildBountyHeader'
+import PrivateRoute from '../../../../routes/PrivateRoute'
+import { ROUTE_CHILD_BOUNTY, ROUTE_NEW_CHILD_BOUNTY, ROUTE_TURN_IDEA } from '../../../../routes/routes'
+import TurnIdeaIntoProposal from '../../../../ideas/idea/turnIntoProposal/TurnIdeaIntoProposal'
+import ChildBountyCreate from '../create/ChildBountyCreate'
+import ChildBountyLoader from './ChildBountyLoader'
 
 export enum ChildBountyContentType {
     Info = 'info',

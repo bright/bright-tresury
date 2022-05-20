@@ -8,7 +8,7 @@ import { BountyEntity } from '../entities/bounty.entity'
 import { PolkassemblyPostDto } from '../../polkassembly/dto/polkassembly-post.dto'
 import { PolkassemblyBountyPostDto } from '../../polkassembly/bounties/bounty-post.dto'
 import { PublicUserDto } from '../../users/dto/public-user.dto'
-import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
+import { ChildBountyDto } from '../child-bounties/dto/child-bounty.dto'
 
 export class FindBountyDto {
     blockchain: BlockchainBountyDto
@@ -17,7 +17,7 @@ export class FindBountyDto {
     proposer: PublicUserDto
     curator: Nil<PublicUserDto>
     beneficiary: Nil<PublicUserDto>
-    childBounties: Nil<BlockchainChildBountyDto[]>
+    childBounties: Nil<ChildBountyDto[]>
 
     constructor(
         blockchain: BlockchainBountyDto,
@@ -26,7 +26,7 @@ export class FindBountyDto {
         proposer: PublicUserDto,
         curator: Nil<PublicUserDto>,
         beneficiary: Nil<PublicUserDto>,
-        childBounties: Nil<BlockchainChildBountyDto[]>,
+        childBounties: Nil<ChildBountyDto[]>,
     ) {
         this.blockchain = blockchain
         this.entity = entity

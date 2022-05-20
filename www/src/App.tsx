@@ -37,7 +37,6 @@ import {
     ROUTE_ACCOUNT_DELETED,
     ROUTE_BOUNTIES,
     ROUTE_BOUNTY,
-    ROUTE_CHILD_BOUNTY,
     ROUTE_EMAIL_NOT_VERIFIED,
     ROUTE_IDEA,
     ROUTE_IDEAS,
@@ -74,7 +73,6 @@ import PasswordRecovery from './auth/PasswordRecovery/PasswordRecovery'
 import NewPassword from './auth/PasswordRecovery/NewPassword'
 import Tips from './tips/Tips'
 import TipLoader from './tips/tip/TipLoader'
-import ChildBountyLoader from './bounties/bounty/child-bounties/ChildBountyLoader'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -121,8 +119,6 @@ function AppRoutes() {
 
                 <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
                 <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal} />
-
-                <Route exact={false} path={ROUTE_CHILD_BOUNTY} component={ChildBountyLoader} />
 
                 <Route exact={true} path={ROUTE_BOUNTIES} component={Bounties} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_BOUNTY} component={BountyCreate} requireVerified={true} />

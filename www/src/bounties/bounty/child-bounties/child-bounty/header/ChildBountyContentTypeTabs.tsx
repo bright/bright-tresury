@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 
 import { useRouteMatch } from 'react-router-dom'
 import { ChildBountyTabConfig } from '../ChildBounty'
-import Tabs, { TabEntry } from '../../../../components/tabs/Tabs'
+import Tabs, { TabEntry } from '../../../../../components/tabs/Tabs'
 
 interface OwnProps {
     childBountyTabsConfig: ChildBountyTabConfig[]

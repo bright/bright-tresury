@@ -6,6 +6,7 @@ import { NetworkPlanckValue, Nil } from '../../utils/types'
 import { FindBountyDto } from './find-bounty.dto'
 import { PublicUserDto } from '../../users/dto/public-user.dto'
 import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
+import { ChildBountyDto } from '../child-bounties/dto/child-bounty.dto'
 
 export class BountyDto {
     @ApiProperty({
@@ -96,7 +97,7 @@ export class BountyDto {
     @ApiPropertyOptional({
         description: 'Child bounties assigned to this bounty',
     })
-    childBounties?: Nil<BlockchainChildBountyDto[]>
+    childBounties?: Nil<ChildBountyDto[]>
 
     @ApiPropertyOptional({
         description: 'Bounty data kept in polkassembly server',

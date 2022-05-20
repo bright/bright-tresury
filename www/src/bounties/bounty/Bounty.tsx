@@ -9,6 +9,7 @@ import PrivateRoute from '../../routes/PrivateRoute'
 import Route from '../../routes/Route'
 import {
     ROUTE_AWARD_BOUNTY,
+    ROUTE_CHILD_BOUNTY,
     ROUTE_EDIT_BOUNTY,
     ROUTE_EXTEND_EXPIRY_BOUNTY,
     ROUTE_NEW_CHILD_BOUNTY,
@@ -24,6 +25,7 @@ import BountyInfo from './info/BountyInfo'
 import BountyVoting from './voting/BountyVoting'
 import ChildBounties from './child-bounties/ChildBounties'
 import ChildBountyCreate from './child-bounties/create/ChildBountyCreate'
+import ChildBountyLoader from './child-bounties/child-bounty/ChildBountyLoader'
 
 export enum BountyContentType {
     Info = 'info',
@@ -118,9 +120,11 @@ const Bounty = ({ bounty }: BountyProps) => {
                 <PrivateRoute requireVerified={true} exact={true} path={ROUTE_EXTEND_EXPIRY_BOUNTY}>
                     <BountyExtendExpiry bounty={bounty} />
                 </PrivateRoute>
+
                 <PrivateRoute requireVerified={true} exact={true} path={ROUTE_NEW_CHILD_BOUNTY}>
                     <ChildBountyCreate bounty={bounty} />
                 </PrivateRoute>
+                <Route exact={false} path={ROUTE_CHILD_BOUNTY} component={ChildBountyLoader} />
                 <>
                     <BountyHeader bounty={bounty} bountyTabsConfig={bountyTabsConfig} />
                     <Switch>

@@ -7,6 +7,7 @@ import ShortText from '../../../../components/text/ShortText'
 import User from '../../../../components/user/User'
 import { ChildBountyDto } from '../child-bounties.dto'
 import { UserStatus } from '../../../../auth/AuthContext'
+import LongText from '../../../../components/text/LongText'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -45,10 +46,16 @@ const ChildBountyInfo = ({ childBounty }: ChildBountyDetailsProps) => {
                     <User user={{ web3address: childBounty.curator, status: UserStatus.Web3Only }} />
                 </div>
             </div>
-
             <div className={classes.spacing}>
-                <Label label={t('childBounty.info.description')} />
-                <ShortText text={childBounty.description} placeholder={t('childBounty.info.field')} />
+                <Label label={t('bounty.info.description')} />
+                <LongText text={childBounty.description} placeholder={t('childBounty.info.description')} />
+            </div>
+            <div className={classes.spacing}>
+                <Label label={t('childBounty.info.onChainDescription')} />
+                <ShortText
+                    text={childBounty.blockchainDescription}
+                    placeholder={t('childBounty.info.onChainDescription')}
+                />
             </div>
         </div>
     )

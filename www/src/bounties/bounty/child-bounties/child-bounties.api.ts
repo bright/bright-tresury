@@ -23,22 +23,15 @@ export const CHILD_BOUNTY_QUERY_KEY_BASE = 'child-bounty'
 export const useGetChildBounty = (
     { bountyIndex, childBountyIndex, network }: { bountyIndex: string; childBountyIndex: string; network: string },
     options?: UseQueryOptions<ChildBountyDto>,
-) => {
-    return useQuery(
+) =>
+    useQuery(
         [CHILD_BOUNTY_QUERY_KEY_BASE, bountyIndex, childBountyIndex, network],
         () => getChildBounty(bountyIndex, childBountyIndex, network),
         options,
     )
-}
+
 
 const createChildBounty = ({ parentIndex, ...data }: CreateChildBountyDto) =>
     apiPost(getChildBountiesApiBasePath(parentIndex), data)
 
-export const useCreateChildBounty = () => {
-    return {
-        mutateAsync: (data: any) => {
-            console.log('Should sent create child bounty post request with data', data)
-        },
-    }
-    // return useMutation(createChildBounty)
-}
+export const useCreateChildBounty = () => useMutation(createChildBounty)

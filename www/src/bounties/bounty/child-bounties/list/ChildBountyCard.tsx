@@ -11,14 +11,14 @@ import User from '../../../../components/user/User'
 import { toNetworkDisplayValue } from '../../../../util/quota.util'
 import { breakpoints } from '../../../../theme/theme'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import ChildBountyStatusIndicator from '../ChildBountyStatusIndicator'
+import ChildBountyStatusIndicator from '../components/ChildBountyStatusIndicator'
 import { ChildBountyDto } from '../child-bounties.dto'
 import CardHeader from '../../../../components/card/components/CardHeader'
 import { UserStatus } from '../../../../auth/AuthContext'
 import { useChildBounty } from '../useChildBounty'
 import { generatePath } from 'react-router-dom'
 import { ROUTE_CHILD_BOUNTY } from '../../../../routes/routes'
-import { ChildBountyContentType } from '../ChildBounty'
+import { ChildBountyContentType } from '../child-bounty/ChildBounty'
 import ChildBountyOrdinalNumber from '../components/ChildBountyOrdinalNumber'
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -67,20 +67,23 @@ const ChildBountyCard = ({ childBounty, bounty, showStatus = true }: BountyCardP
 
     const redirectTo = `${generatePath(ROUTE_CHILD_BOUNTY, {
         bountyIndex: bounty.blockchainIndex,
-        childBountyIndex: childBounty.index,
+        childBountyIndex: childBounty.blockchainIndex,
     })}/${ChildBountyContentType.Info}`
 
     return (
         <NetworkCard redirectTo={redirectTo}>
             <CardHeader>
-                <ChildBountyOrdinalNumber parentIndex={childBounty.parentIndex} childBountyIndex={childBounty.index} />
+                <ChildBountyOrdinalNumber
+                    parentIndex={childBounty.parentBountyBlockchainIndex}
+                    childBountyIndex={childBounty.blockchainIndex}
+                />
                 {showStatus ? <ChildBountyStatusIndicator status={childBounty.status} /> : null}
             </CardHeader>
 
             <Divider />
 
             <CardDetails>
-                <CardTitle title={childBounty.description} />
+                <CardTitle title={childBounty.title ?? childBounty.blockchainDescription} />
                 <NetworkValue value={toNetworkDisplayValue(childBounty.value, network.decimals)} />
             </CardDetails>
 

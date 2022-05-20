@@ -8,25 +8,25 @@ export enum ChildBountyStatus {
 }
 
 export interface ChildBountyDto {
-    index: number
-    parentIndex: number
-    description: string
+    blockchainIndex: number
+    parentBountyBlockchainIndex: number
+    blockchainDescription: string
     value: NetworkPlanckValue
-    fee: NetworkPlanckValue
+    curatorFee: NetworkPlanckValue
     curator: Nil<string>
     curatorDeposit: NetworkPlanckValue
     beneficiary: Nil<string>
     unlockAt: Nil<string>
     status: ChildBountyStatus
+
+    title: Nil<string>
+    description: Nil<string>
 }
 export interface CreateChildBountyDto {
     parentIndex: number
-    blockchainDescription: string
-    value: NetworkPlanckValue
     title: string
     description?: Nil<string>
     networkId: string
-    proposer: string
     extrinsicHash: string
     lastBlockHash: string
 }

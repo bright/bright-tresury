@@ -1,14 +1,14 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { ChildBountyStatus } from './child-bounties.dto'
-import Status from '../../../components/status/Status'
+import { ChildBountyStatus } from '../child-bounties.dto'
+import Status from '../../../../components/status/Status'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             marginBottom: '6px',
-            marginTop: '20px'
+            marginTop: '20px',
         },
     }),
 )

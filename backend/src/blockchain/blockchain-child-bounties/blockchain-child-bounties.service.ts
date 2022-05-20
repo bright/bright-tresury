@@ -1,32 +1,45 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { BlockchainsConnections } from '../blockchain.module'
-import { BlockchainService } from '../blockchain.service'
-import { getApi } from '../utils'
+import { extractNumberFromBlockchainEvent, getApi } from '../utils'
 import { BlockchainChildBountyDto, BlockchainChildBountyStatus } from './dto/blockchain-child-bounty.dto'
 import { PalletChildBountiesChildBountyStatus } from '@polkadot/types/lookup'
 import { u32 } from '@polkadot/types'
 import { StorageKey } from '@polkadot/types/primitive/StorageKey'
 import { AccountId32 } from '@polkadot/types/interfaces/runtime'
-import { NetworkPlanckValue } from '../../utils/types'
+import { NetworkPlanckValue, Nil } from '../../utils/types'
+import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
+import { getLogger } from '../../logging.module'
+import { ChildBountyId } from './child-bounty-id.interface'
 
-interface ChildBountyId {
-    bountyId: number
-    childBountyId: number
-}
+const logger = getLogger()
 
 @Injectable()
 export class BlockchainChildBountiesService {
     constructor(@Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections) {}
+
+    async getAllChildBountiesIds(networkId: string) {
+        const api = getApi(this.blockchainsConnections, networkId)
+        const ids = await api.query.childBounties.childBounties.keys()
+        return ids.map(BlockchainChildBountiesService.parseRawId)
+    }
+
+    async getBountyChildBountiesIds(networkId: string, parentBountyBlockchainIndex: number) {
+        return (await this.getAllChildBountiesIds(networkId)).filter(
+            ({ parentBountyBlockchainIndex: anyParentBountyBlockchainIndex }) =>
+                anyParentBountyBlockchainIndex === parentBountyBlockchainIndex,
+        )
+    }
 
     async getAllChildBounties(networkId: string): Promise<BlockchainChildBountyDto[]> {
         const ids = await this.getAllChildBountiesIds(networkId)
         return this.getChildBountiesWithIds(networkId, ids)
     }
 
-    async getBountyChildBounties(networkId: string, bountyId: number): Promise<BlockchainChildBountyDto[]> {
-        const ids = (await this.getAllChildBountiesIds(networkId)).filter(
-            ({ bountyId: anyBountyId }) => anyBountyId === bountyId,
-        )
+    async getBountyChildBounties(
+        networkId: string,
+        parentBountyBlockchainIndex: number,
+    ): Promise<BlockchainChildBountyDto[]> {
+        const ids = await this.getBountyChildBountiesIds(networkId, parentBountyBlockchainIndex)
         return this.getChildBountiesWithIds(networkId, ids)
     }
 
@@ -35,29 +48,26 @@ export class BlockchainChildBountiesService {
         return childBounties[0]
     }
 
-    private async getAllChildBountiesIds(networkId: string) {
-        const api = getApi(this.blockchainsConnections, networkId)
-        const ids = await api.query.childBounties.childBounties.keys()
-        return ids.map(BlockchainChildBountiesService.parseRawId)
-    }
-
     private static parseRawId(rawId: StorageKey<[u32, u32]>): ChildBountyId {
         const {
-            args: [bountyId, childBountyId],
+            args: [parentIndex, index],
         } = rawId
         return {
-            bountyId: bountyId.toNumber(),
-            childBountyId: childBountyId.toNumber(),
+            parentBountyBlockchainIndex: parentIndex.toNumber(),
+            blockchainIndex: index.toNumber(),
         }
     }
-
+    private static toRawId(childBountyId: ChildBountyId): [number, number] {
+        const { parentBountyBlockchainIndex, blockchainIndex } = childBountyId
+        return [parentBountyBlockchainIndex, blockchainIndex]
+    }
     async getChildBountiesWithIds(networkId: string, ids: ChildBountyId[]): Promise<BlockchainChildBountyDto[]> {
         if (!ids.length) return []
         const api = getApi(this.blockchainsConnections, networkId)
         const childBountiesBase = api.query.childBounties
         const [maybeChildBounties, maybeDescriptions] = await Promise.all([
-            childBountiesBase.childBounties.multi(ids.map(({ bountyId, childBountyId }) => [bountyId, childBountyId])),
-            childBountiesBase.childBountyDescriptions.multi(ids.map(({ childBountyId }) => childBountyId)),
+            childBountiesBase.childBounties.multi(ids.map(BlockchainChildBountiesService.toRawId)),
+            childBountiesBase.childBountyDescriptions.multi(ids.map(({ blockchainIndex }) => blockchainIndex)),
         ])
         return maybeChildBounties
             .map((maybeChildBounty, index) => {
@@ -68,7 +78,7 @@ export class BlockchainChildBountiesService {
                 const curatorAddress = curator?.toString()
                 const beneficiaryAddress = beneficiary?.toString()
                 return {
-                    index: ids[index].childBountyId,
+                    index: ids[index].blockchainIndex,
                     parentIndex: childBounty.parentBounty.toNumber(),
                     description: maybeDescriptions[index].unwrapOrDefault().toUtf8(),
                     value: childBounty.value.toString() as NetworkPlanckValue,
@@ -100,5 +110,18 @@ export class BlockchainChildBountiesService {
             ? { status: BlockchainChildBountyStatus.PendingPayout, data: childBountyStatus.asPendingPayout }
             : null
         return added ?? curatorProposed ?? active ?? pendingPayout!
+    }
+
+    static extractChildBountyIdFromBlockchainEvents(extrinsicEvents: ExtrinsicEvent[]): Nil<ChildBountyId> {
+        logger.info('Looking for a child bounty id')
+        const parentBountyBlockchainIndex = extractNumberFromBlockchainEvent(
+            extrinsicEvents,
+            'childBounties',
+            'Added',
+            0,
+        )
+        const blockchainIndex = extractNumberFromBlockchainEvent(extrinsicEvents, 'childBounties', 'Added', 1)
+        if (parentBountyBlockchainIndex === undefined || blockchainIndex === undefined) return
+        return { parentBountyBlockchainIndex, blockchainIndex }
     }
 }

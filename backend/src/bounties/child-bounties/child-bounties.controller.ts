@@ -1,11 +1,21 @@
 import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
-import { ApiNotFoundResponse, ApiOkResponse, ApiProperty, ApiTags } from '@nestjs/swagger'
-import { Get, Param, Query } from '@nestjs/common'
-import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
+import {
+    ApiBadRequestResponse,
+    ApiCreatedResponse,
+    ApiNotFoundResponse,
+    ApiOkResponse,
+    ApiProperty,
+    ApiTags,
+} from '@nestjs/swagger'
+import { Body, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from '@nestjs/common'
 import { NetworkNameQuery } from '../../utils/network-name.query'
 import { IsNotEmpty, IsString } from 'class-validator'
 import { BountyParam } from '../bounty.param'
 import { ChildBountiesService } from './child-bounties.service'
+import { SessionGuard } from '../../auth/guards/session.guard'
+import { ReqSession, SessionData } from '../../auth/session/session.decorator'
+import { ListenForChildBountyDto } from './dto/listen-for-child-bounty.dto'
+import { ChildBountyDto } from './dto/child-bounty.dto'
 
 class ChildBountyParams extends BountyParam {
     @ApiProperty({
@@ -24,7 +34,7 @@ export class ChildBountiesController {
     @Get('/:childBountyIndex')
     @ApiOkResponse({
         description: 'Respond with child-bounty',
-        type: BlockchainChildBountyDto,
+        type: ChildBountyDto,
     })
     @ApiNotFoundResponse({
         description: 'Child-bounty with the given id not found',
@@ -32,8 +42,33 @@ export class ChildBountiesController {
     async getOne(
         @Param() { bountyIndex, childBountyIndex }: ChildBountyParams,
         @Query() { network }: NetworkNameQuery,
-    ): Promise<BlockchainChildBountyDto> {
-        const childBounty = await this.childBountiesService.findOne(network, Number(bountyIndex), childBountyIndex)
-        return new BlockchainChildBountyDto(childBounty)
+    ): Promise<ChildBountyDto> {
+        const childBountyId = {
+            parentBountyBlockchainIndex: Number(bountyIndex),
+            blockchainIndex: childBountyIndex,
+        }
+        const findChildBountyDto = await this.childBountiesService.findOne(network, childBountyId)
+        return new ChildBountyDto(findChildBountyDto)
+    }
+
+    @Post()
+    @HttpCode(HttpStatus.ACCEPTED)
+    @ApiCreatedResponse({
+        description: 'Accepted to find a bounty proposal extrinsic and create a bounty entity',
+    })
+    @ApiBadRequestResponse({
+        description: 'Not valid data',
+    })
+    @UseGuards(SessionGuard)
+    async createBounty(
+        @Param() { bountyIndex }: BountyParam,
+        @Body() dto: ListenForChildBountyDto,
+        @ReqSession() sessionData: SessionData,
+    ) {
+        return this.childBountiesService.listenForAddedChildBountyExtrinsic(
+            dto,
+            parseInt(bountyIndex, 10),
+            sessionData.user,
+        )
     }
 }

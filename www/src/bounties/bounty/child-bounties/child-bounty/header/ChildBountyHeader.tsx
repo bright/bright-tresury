@@ -2,26 +2,26 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath, useHistory } from 'react-router-dom'
-import BasicInfo from '../../../../components/header/BasicInfo'
-import BasicInfoDivider from '../../../../components/header/details/BasicInfoDivider'
-import HeaderContainer from '../../../../components/header/details/HeaderContainer'
-import NetworkValues from '../../../../components/header/details/NetworkValues'
-import Title from '../../../../components/header/details/Title'
-import FlexBreakLine from '../../../../components/header/FlexBreakLine'
-import HeaderTabs from '../../../../components/header/HeaderTabs'
-import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
-import OptionalTitle from '../../../../components/text/OptionalTitle'
-import { breakpoints } from '../../../../theme/theme'
-import { ChildBountyDto } from '../child-bounties.dto'
+import BasicInfo from '../../../../../components/header/BasicInfo'
+import BasicInfoDivider from '../../../../../components/header/details/BasicInfoDivider'
+import HeaderContainer from '../../../../../components/header/details/HeaderContainer'
+import NetworkValues from '../../../../../components/header/details/NetworkValues'
+import Title from '../../../../../components/header/details/Title'
+import FlexBreakLine from '../../../../../components/header/FlexBreakLine'
+import HeaderTabs from '../../../../../components/header/HeaderTabs'
+import OrdinalNumber from '../../../../../components/ordinalNumber/OrdinalNumber'
+import OptionalTitle from '../../../../../components/text/OptionalTitle'
+import { breakpoints } from '../../../../../theme/theme'
+import { ChildBountyDto } from '../../child-bounties.dto'
 import { ChildBountyTabConfig } from '../ChildBounty'
-import NormalRouterLink from '../../../../components/link/NormalRouterLink'
-import { ROUTE_BOUNTY } from '../../../../routes/routes'
-import { BountyContentType } from '../../Bounty'
-import child_bounties from '../../../../assets/child_bounties.svg'
-import ChildBountyStatusIndicator from '../ChildBountyStatusIndicator'
+import NormalRouterLink from '../../../../../components/link/NormalRouterLink'
+import { ROUTE_BOUNTY } from '../../../../../routes/routes'
+import { BountyContentType } from '../../../Bounty'
+import child_bounties from '../../../../../assets/child_bounties.svg'
+import ChildBountyStatusIndicator from '../../components/ChildBountyStatusIndicator'
 import ChildBountyNetworkRewardDeposit from './ChildBountyNetworkRewardDeposit'
 import ChildBountyContentTypeTabs from './ChildBountyContentTypeTabs'
-import ChildBountyOrdinalNumber from '../components/ChildBountyOrdinalNumber'
+import ChildBountyOrdinalNumber from '../../components/ChildBountyOrdinalNumber'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -91,23 +91,29 @@ const ChildBountyHeader = ({ childBounty, childBountyTabsConfig }: ChildBountyHe
         history.goBack()
     }
 
-    const routeToParentBounty = `${generatePath(ROUTE_BOUNTY, { bountyIndex: childBounty.parentIndex })}/${
-        BountyContentType.Info
-    }`
+    const routeToParentBounty = `${generatePath(ROUTE_BOUNTY, {
+        bountyIndex: childBounty.parentBountyBlockchainIndex,
+    })}/${BountyContentType.Info}`
 
     return (
         <HeaderContainer onClose={navigateToList}>
             <BasicInfo>
                 <NormalRouterLink to={routeToParentBounty} className={classes.bountyLink}>
-                    <OrdinalNumber prefix={t('bounty.indexPrefix')} ordinalNumber={childBounty.parentIndex} />
+                    <OrdinalNumber
+                        prefix={t('bounty.indexPrefix')}
+                        ordinalNumber={childBounty.parentBountyBlockchainIndex}
+                    />
                 </NormalRouterLink>
                 <img className={classes.childBountyArrow} alt={'Child-bounty icon'} src={child_bounties} />
                 {t('childBounty.header.childBounty')}
-                <ChildBountyOrdinalNumber parentIndex={childBounty.parentIndex} childBountyIndex={childBounty.index} />
+                <ChildBountyOrdinalNumber
+                    parentIndex={childBounty.parentBountyBlockchainIndex}
+                    childBountyIndex={childBounty.blockchainIndex}
+                />
                 <BasicInfoDivider />
                 <ChildBountyStatusIndicator status={childBounty.status} />
                 <Title>
-                    <OptionalTitle title={childBounty.description} />
+                    <OptionalTitle title={childBounty.title ?? childBounty.blockchainDescription} />
                 </Title>
             </BasicInfo>
             <NetworkValues className={classes.networkValues}>

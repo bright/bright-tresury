@@ -43,12 +43,9 @@ const SubmitBountyModal = ({ open, onClose, childBounty }: SubmitBountyModalProp
             if (childBounty) {
                 const params: CreateChildBountyDto = {
                     parentIndex: childBounty.parentBountyId,
-                    blockchainDescription: childBounty.blockchainDescription,
                     title: childBounty.title,
                     description: childBounty.description,
-                    value: toNetworkPlanckValue(childBounty.value, network.decimals)!,
                     networkId: network.id,
-                    proposer: signerAddress,
                     extrinsicHash,
                     lastBlockHash,
                 }
