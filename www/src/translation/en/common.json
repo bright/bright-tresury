@@ -808,12 +808,27 @@
         },
         "discussion": {
             "bountyClosed": "This bounty is already closed."
+        }
+    },
+    "childBounty": {
+        "header": {
+            "childBounty": "Child-Bounty"
         },
-        "childBounty": {
-            "list": {
-                "proposer": "Proposer",
-                "curator": "Curator"
-            }
+        "content": {
+            "infoLabel": "Info"
+        },
+        "list": {
+            "proposer": "Proposer",
+            "curator": "Curator"
+        },
+        "info": {
+            "reward": "Reward",
+            "curatorDeposit": "Curator Deposit",
+            "curatorsFee": "Curator's Fee",
+            "beneficiary": "Beneficiary",
+            "curator": "Curator",
+            "description": "Description",
+            "field": "Field of child-bounty"
         }
     },
     "tip": {
@@ -1062,6 +1077,7 @@
         "errorOccurredWhileLoadingProposalMilestones": "An error occurred while loading proposal milestones.",
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
         "errorOccurredWhileLoadingBounty": "An error occurred while loading the bounty.",
+        "errorOccurredWhileLoadingChildBounty": "An error occurred while loading the child-bounty.",
         "errorOccurredWhileLoadingComments": "An error occurred while loading comments.",
         "errorOccurredWhileLoadingTips": "An error occurred while loading tips.",
         "errorOccurredWhileLoadingTip": "An error occurred while loading the tip.",
@@ -1080,6 +1096,7 @@
         "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us.",
         "stats": "We're loading the statistics. It may take a moment. Bear with us.",
         "bounty": "We're loading the bounty. It may take a moment. Bear with us.",
+        "childBounty": "We're loading the child-bounty. It may take a moment. Bear with us.",
         "comments": "We're loading the comments. It may take a moment. Bear with us.",
         "bountiesVoting": "We're loading the bounty voting. It may take a moment. Bear with us."
     }

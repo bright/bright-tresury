@@ -19,6 +19,9 @@ export const ROUTE_TIPS = '/tips'
 export const ROUTE_TIP = '/tips/:tipHash'
 export const ROUTE_NEW_TIP = '/tips/new'
 // endregion
+// region Child-Bounties
+export const ROUTE_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/:childBountyIndex'
+// endregion
 // region Bounties
 export const ROUTE_BOUNTIES = '/bounties'
 export const ROUTE_NEW_BOUNTY = '/bounties/new'

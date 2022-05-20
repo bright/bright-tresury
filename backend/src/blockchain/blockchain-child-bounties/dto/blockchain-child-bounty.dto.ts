@@ -36,10 +36,10 @@ export class BlockchainChildBountyDto {
         description: string
         value: NetworkPlanckValue
         fee: NetworkPlanckValue
-        curator: string
+        curator: Nil<string>
         curatorDeposit: NetworkPlanckValue
-        beneficiary: string
-        unlockAt: string
+        beneficiary: Nil<string>
+        unlockAt: Nil<string>
         status: BlockchainChildBountyStatus
     }) {
         this.index = index

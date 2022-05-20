@@ -108,7 +108,6 @@ const Bounty = ({ bounty }: BountyProps) => {
 
         return bountyContentTypes.map((contentType) => BOUNTY_CONTENT_TYPE_BUILDER[contentType]!)
     }, [bounty.childBounties])
-
     const routes = bountyTabsConfig.map(({ getRoute }) => getRoute(path, bounty))
 
     return (

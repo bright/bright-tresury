@@ -9,6 +9,7 @@ import { BlockchainModule } from '../blockchain/blockchain.module'
 import { PolkassemblyModule } from '../polkassembly/polkassembly.module'
 import { UsersModule } from '../users/users.module'
 import { ChildBountiesService } from './child-bounties/child-bounties.service'
+import { ChildBountiesController } from './child-bounties/child-bounties.controller'
 
 @Module({
     imports: [
@@ -19,7 +20,7 @@ import { ChildBountiesService } from './child-bounties/child-bounties.service'
         PolkassemblyModule,
         UsersModule,
     ],
-    controllers: [BountiesController],
+    controllers: [BountiesController, ChildBountiesController],
     providers: [BountiesService, ChildBountiesService],
     exports: [BountiesService],
 })

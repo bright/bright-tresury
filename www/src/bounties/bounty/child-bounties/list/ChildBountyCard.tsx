@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { useNetworks } from '../../../../networks/useNetworks'
 import { BountyDto, BountyStatus } from '../../../bounties.dto'
 import NetworkCard from '../../../../components/network/NetworkCard'
-import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
 import Divider from '../../../../components/divider/Divider'
 import CardDetails from '../../../../components/card/components/CardDetails'
 import CardTitle from '../../../../components/card/components/CardTitle'
@@ -17,6 +16,10 @@ import { ChildBountyDto } from '../child-bounties.dto'
 import CardHeader from '../../../../components/card/components/CardHeader'
 import { UserStatus } from '../../../../auth/AuthContext'
 import { useChildBounty } from '../useChildBounty'
+import { generatePath } from 'react-router-dom'
+import { ROUTE_CHILD_BOUNTY } from '../../../../routes/routes'
+import { ChildBountyContentType } from '../ChildBounty'
+import ChildBountyOrdinalNumber from '../components/ChildBountyOrdinalNumber'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -62,13 +65,15 @@ const ChildBountyCard = ({ childBounty, bounty, showStatus = true }: BountyCardP
 
     const bountyHasCurator = isCuratorProposed || isActive || isPendingPayout || isClaimed
 
+    const redirectTo = `${generatePath(ROUTE_CHILD_BOUNTY, {
+        bountyIndex: bounty.blockchainIndex,
+        childBountyIndex: childBounty.index,
+    })}/${ChildBountyContentType.Info}`
+
     return (
-        <NetworkCard>
+        <NetworkCard redirectTo={redirectTo}>
             <CardHeader>
-                <OrdinalNumber
-                    prefix={`#\xa0`}
-                    ordinalNumber={`${childBounty.parentIndex}\xa0-\xa0${childBounty.index}`}
-                />
+                <ChildBountyOrdinalNumber parentIndex={childBounty.parentIndex} childBountyIndex={childBounty.index} />
                 {showStatus ? <ChildBountyStatusIndicator status={childBounty.status} /> : null}
             </CardHeader>
 
@@ -82,10 +87,10 @@ const ChildBountyCard = ({ childBounty, bounty, showStatus = true }: BountyCardP
             <Divider />
 
             <div className={classes.usersInfoContainer}>
-                {bountyHasCurator ? <User label={t('bounty.childBounty.list.proposer')} user={bounty.curator} /> : null}
+                {bountyHasCurator ? <User label={t('childBounty.list.proposer')} user={bounty.curator} /> : null}
                 {childBountyHasCurator ? (
                     <User
-                        label={t('bounty.childBounty.list.curator')}
+                        label={t('childBounty.list.curator')}
                         user={{ web3address: childBounty.curator, status: UserStatus.Web3Only }}
                     />
                 ) : null}
