@@ -20,6 +20,9 @@ export class DiscussionEntity extends BaseEntity {
     @Column({ type: 'enum', enum: DiscussionCategory, nullable: false })
     category!: DiscussionCategory
 
+    @Column()
+    parentBountyBlockchainIndex?: number
+
     @OneToMany(() => CommentEntity, (comment) => comment.discussion, {
         cascade: true,
         onDelete: 'CASCADE',

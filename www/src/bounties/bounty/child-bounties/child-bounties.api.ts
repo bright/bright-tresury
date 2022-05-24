@@ -1,5 +1,5 @@
 import { apiGet, apiPost, getUrlSearchParams } from '../../../api'
-import { useQuery, useMutation, UseQueryOptions } from 'react-query'
+import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { BOUNTIES_API_PATH } from '../../bounties.api'
 import { ChildBountyDto, CreateChildBountyDto } from './child-bounties.dto'
 
@@ -29,7 +29,6 @@ export const useGetChildBounty = (
         () => getChildBounty(bountyIndex, childBountyIndex, network),
         options,
     )
-
 
 const createChildBounty = ({ parentIndex, ...data }: CreateChildBountyDto) =>
     apiPost(getChildBountiesApiBasePath(parentIndex), data)

@@ -1,13 +1,13 @@
 import { createStyles, makeStyles } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useSuccessfullyLoadedItemStyles } from '../../../../components/loading/useSuccessfullyLoadedItemStyles'
-import { Label } from '../../../../components/text/Label'
-import ShortText from '../../../../components/text/ShortText'
-import User from '../../../../components/user/User'
-import { ChildBountyDto } from '../child-bounties.dto'
-import { UserStatus } from '../../../../auth/AuthContext'
-import LongText from '../../../../components/text/LongText'
+import { useSuccessfullyLoadedItemStyles } from '../../../../../components/loading/useSuccessfullyLoadedItemStyles'
+import { Label } from '../../../../../components/text/Label'
+import ShortText from '../../../../../components/text/ShortText'
+import User from '../../../../../components/user/User'
+import { ChildBountyDto } from '../../child-bounties.dto'
+import { UserStatus } from '../../../../../auth/AuthContext'
+import LongText from '../../../../../components/text/LongText'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -39,11 +39,11 @@ const ChildBountyInfo = ({ childBounty }: ChildBountyDetailsProps) => {
             <div className={classes.addresses}>
                 <div>
                     <Label label={t('childBounty.info.beneficiary')} />
-                    <User user={{ web3address: childBounty.beneficiary, status: UserStatus.Web3Only }} />
+                    <User user={{ web3address: childBounty.beneficiary as string }} />
                 </div>
                 <div>
                     <Label label={t('childBounty.info.curator')} />
-                    <User user={{ web3address: childBounty.curator, status: UserStatus.Web3Only }} />
+                    <User user={{ web3address: childBounty.curator as string, status: UserStatus.Web3Only }} />
                 </div>
             </div>
             <div className={classes.spacing}>

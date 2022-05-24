@@ -3,4 +3,5 @@ export enum DiscussionCategory {
     Proposal = 'proposal',
     Idea = 'idea',
     Tip = 'tip',
+    ChildBounty = 'childBounty',
 }

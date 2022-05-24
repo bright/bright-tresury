@@ -22,6 +22,13 @@ export interface BountyDiscussionDto {
     networkId: string
 }
 
+export interface ChildBountyDiscussionDto {
+    category: DiscussionCategory.ChildBounty
+    blockchainIndex: number
+    parentBountyBlockchainIndex: number
+    networkId: string
+}
+
 export interface IdeaDiscussionDto {
     category: DiscussionCategory.Idea
     entityId: string
@@ -33,7 +40,12 @@ export interface TipDiscussionDto {
     networkId: string
 }
 
-export type DiscussionDto = ProposalDiscussionDto | BountyDiscussionDto | IdeaDiscussionDto | TipDiscussionDto
+export type DiscussionDto =
+    | ProposalDiscussionDto
+    | BountyDiscussionDto
+    | ChildBountyDiscussionDto
+    | IdeaDiscussionDto
+    | TipDiscussionDto
 
 export interface CreateCommentDto {
     content: string
@@ -42,6 +54,7 @@ export interface CreateCommentDto {
 
 export enum DiscussionCategory {
     Bounty = 'bounty',
+    ChildBounty = 'childBounty',
     Proposal = 'proposal',
     Idea = 'idea',
     Tip = 'tip',

@@ -1,4 +1,5 @@
 import { NetworkPlanckValue, Nil } from '../../../util/types'
+import { PublicUserDto } from '../../../util/publicUser.dto'
 
 export enum ChildBountyStatus {
     Added = 'Added',
@@ -13,9 +14,9 @@ export interface ChildBountyDto {
     blockchainDescription: string
     value: NetworkPlanckValue
     curatorFee: NetworkPlanckValue
-    curator: Nil<string>
+    curator: Nil<PublicUserDto>
     curatorDeposit: NetworkPlanckValue
-    beneficiary: Nil<string>
+    beneficiary: Nil<PublicUserDto>
     unlockAt: Nil<string>
     status: ChildBountyStatus
 

@@ -14,7 +14,6 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import ChildBountyStatusIndicator from '../components/ChildBountyStatusIndicator'
 import { ChildBountyDto } from '../child-bounties.dto'
 import CardHeader from '../../../../components/card/components/CardHeader'
-import { UserStatus } from '../../../../auth/AuthContext'
 import { useChildBounty } from '../useChildBounty'
 import { generatePath } from 'react-router-dom'
 import { ROUTE_CHILD_BOUNTY } from '../../../../routes/routes'
@@ -92,10 +91,7 @@ const ChildBountyCard = ({ childBounty, bounty, showStatus = true }: BountyCardP
             <div className={classes.usersInfoContainer}>
                 {bountyHasCurator ? <User label={t('childBounty.list.proposer')} user={bounty.curator} /> : null}
                 {childBountyHasCurator ? (
-                    <User
-                        label={t('childBounty.list.curator')}
-                        user={{ web3address: childBounty.curator, status: UserStatus.Web3Only }}
-                    />
+                    <User label={t('childBounty.list.curator')} user={{ web3address: childBounty.curator as string }} />
                 ) : null}
             </div>
         </NetworkCard>

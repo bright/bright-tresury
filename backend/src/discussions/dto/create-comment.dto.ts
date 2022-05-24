@@ -7,6 +7,7 @@ import { IdeaDiscussionDto } from './discussion-category/idea-discussion.dto'
 import { ProposalDiscussionDto } from './discussion-category/proposal-discussion.dto'
 import { TipDiscussionDto } from './discussion-category/tip-discussion.dto'
 import { DiscussionDto } from './discussion.dto'
+import { ChildBountyDiscussionDto } from './discussion-category/child-bounty-discussion.dto'
 
 export class CreateCommentDto {
     @ApiProperty({
@@ -25,6 +26,7 @@ export class CreateCommentDto {
             property: 'category',
             subTypes: [
                 { name: DiscussionCategory.Bounty, value: BountyDiscussionDto },
+                { name: DiscussionCategory.ChildBounty, value: ChildBountyDiscussionDto },
                 { name: DiscussionCategory.Proposal, value: ProposalDiscussionDto },
                 { name: DiscussionCategory.Idea, value: IdeaDiscussionDto },
                 { name: DiscussionCategory.Tip, value: TipDiscussionDto },
