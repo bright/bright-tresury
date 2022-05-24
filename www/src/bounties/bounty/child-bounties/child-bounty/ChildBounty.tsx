@@ -9,6 +9,9 @@ import { useSuccessfullyLoadedItemStyles } from '../../../../components/loading/
 import ChildBountyHeader from './header/ChildBountyHeader'
 import discussionIcon from '../../../../assets/discussion.svg'
 import ChildBountyDiscussion from './discussion/ChildBountyDiscussion'
+import PrivateRoute from '../../../../routes/PrivateRoute'
+import { ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR, ROUTE_NEW_CHILD_BOUNTY } from '../../../../routes/routes'
+import AssignChildBountyCurator from './assign-curator/AssignChildBountyCurator'
 
 export enum ChildBountyContentType {
     Info = 'info',
@@ -64,10 +67,13 @@ const ChildBounty = ({ childBounty }: ChildBountyProps) => {
 
     const childBountyTabsConfig = Object.values(CHILD_BOUNTY_CONTENT_TYPE_BUILDER)
     const routes = childBountyTabsConfig.map(({ getRoute }) => getRoute(path, childBounty))
-
+    console.log('redraw ChildBounty')
     return (
         <div className={classes.root}>
             <Switch>
+                <PrivateRoute requireVerified={true} exact={true} path={ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR}>
+                    <AssignChildBountyCurator childBounty={childBounty} />
+                </PrivateRoute>
                 <>
                     <ChildBountyHeader childBounty={childBounty} childBountyTabsConfig={childBountyTabsConfig} />
                     <Switch>

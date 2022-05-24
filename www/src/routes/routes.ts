@@ -32,6 +32,8 @@ export const ROUTE_BOUNTY_DISCUSSION = '/bounties/:bountyIndex/discussion'
 export const ROUTE_CHILD_BOUNTIES = '/bounties/:bountyIndex/child-bounties'
 export const ROUTE_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/:childBountyIndex'
 export const ROUTE_NEW_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/new'
+export const ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR =
+    '/bounties/:bountyIndex/child-bounties/:childBountyIndex/assign-curator'
 // endregion
 // region Auth
 export const ROUTE_SIGNUP = '/auth/signup'

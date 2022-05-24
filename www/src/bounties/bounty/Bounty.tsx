@@ -107,7 +107,7 @@ const Bounty = ({ bounty }: BountyProps) => {
     const bountyTabsConfig = useMemo(() => Object.values(BOUNTY_CONTENT_TYPE_BUILDER), [BOUNTY_CONTENT_TYPE_BUILDER])
 
     const routes = bountyTabsConfig.map(({ getRoute }) => getRoute(path, bounty))
-
+    console.log('redraw Bounty')
     return (
         <div className={classes.root}>
             <Switch>

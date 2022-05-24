@@ -34,6 +34,7 @@ export interface ExtrinsicError {
 export interface TxAttrs {
     palletRpc: string
     callable: string
+    eventSection?: string
     eventMethod: string
     inputParams?: InputParam[]
     eventDescription?: string
@@ -82,7 +83,9 @@ const SubmittingTransaction = ({
     const { network } = useNetworks()
 
     const txResHandler = ({ status, events, dispatchError }: SubmittableResult) => {
-        const txResult = { status } as Result
+        const txResult = {
+            status: { isReady: status.isReady, isInBlock: status.isInBlock, isFinalized: status.isFinalized },
+        } as Result
 
         if (dispatchError) {
             if (dispatchError.isModule && api) {
@@ -94,14 +97,18 @@ const SubmittingTransaction = ({
             }
         }
 
-        const applyExtrinsicEvent = events.find(
-            ({ phase, event }) =>
-                phase.isApplyExtrinsic && event.section === txAttrs.palletRpc && event.method === txAttrs.eventMethod,
-        )
+        const applyExtrinsicEvent = events.find(({ phase, event }) => {
+            console.log({ isApplyExtrinsic: phase.isApplyExtrinsic, section: event.section, method: event.method })
+            return (
+                phase.isApplyExtrinsic &&
+                event.section === (txAttrs.eventSection ?? txAttrs.palletRpc) &&
+                event.method === txAttrs.eventMethod
+            )
+        })
         if (applyExtrinsicEvent) {
             txResult.event = applyExtrinsicEvent.event
         }
-
+        console.log('setting txResult', txResult)
         setResult(txResult)
     }
 
@@ -148,8 +155,9 @@ const SubmittingTransaction = ({
         setSubmitting(true)
         await signAndSend(address)
     }
-
+    console.log('redraw!')
     if (apiState === ApiState.ERROR) {
+        console.log('TransactionError apiState === ApiState.ERROR')
         return (
             <TransactionError
                 onOk={onClose}
@@ -158,8 +166,10 @@ const SubmittingTransaction = ({
             />
         )
     } else if (apiState !== ApiState.READY) {
+        console.log('SubstrateLoading')
         return <SubstrateLoading onOk={onClose} />
     } else if (keyringState !== KeyringState.READY || (keyringState === KeyringState.READY && accounts.length === 0)) {
+        console.log('TransactionError keyring')
         return (
             <TransactionError
                 onOk={onClose}
@@ -174,6 +184,7 @@ const SubmittingTransaction = ({
             />
         )
     } else if (!submitting) {
+        console.log('SignAndSubmit')
         return (
             <SignAndSubmit
                 title={title}
@@ -184,8 +195,10 @@ const SubmittingTransaction = ({
             />
         )
     } else if (result && result.error) {
+        console.log('ExtrinsicFailed')
         return <ExtrinsicFailed error={result.error} onOk={onClose} />
     } else if (error) {
+        console.log('TransactionError error')
         return (
             <TransactionError
                 error={error}
@@ -194,6 +207,7 @@ const SubmittingTransaction = ({
             />
         )
     } else {
+        console.log('TransactionInProgress')
         return (
             <TransactionInProgress
                 status={result?.status}

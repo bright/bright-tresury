@@ -63,7 +63,6 @@ const ChildBountyCard = ({ childBounty, bounty, showStatus = true }: BountyCardP
     const isClaimed = bounty.status === BountyStatus.Claimed
 
     const bountyHasCurator = isCuratorProposed || isActive || isPendingPayout || isClaimed
-
     const redirectTo = `${generatePath(ROUTE_CHILD_BOUNTY, {
         bountyIndex: bounty.blockchainIndex,
         childBountyIndex: childBounty.blockchainIndex,

@@ -33,7 +33,7 @@ const ChildBountyInfo = ({ childBounty }: ChildBountyDetailsProps) => {
     const classes = useStyles()
     const loadedClasses = useSuccessfullyLoadedItemStyles()
     const { t } = useTranslation()
-
+    console.log('redraw ChildBountyInfo')
     return (
         <div className={loadedClasses.content}>
             <div className={classes.addresses}>

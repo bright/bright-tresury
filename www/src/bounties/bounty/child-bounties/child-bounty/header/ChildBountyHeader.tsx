@@ -22,6 +22,11 @@ import ChildBountyStatusIndicator from '../../components/ChildBountyStatusIndica
 import ChildBountyNetworkRewardDeposit from './ChildBountyNetworkRewardDeposit'
 import ChildBountyContentTypeTabs from './ChildBountyContentTypeTabs'
 import ChildBountyOrdinalNumber from '../../components/ChildBountyOrdinalNumber'
+import ActionButtons from '../../../../../components/header/details/ActionButtons'
+import BountyActionButtons from '../../../header/curator-actions/BountyActionButtons'
+import ChildBountyActionButtons from './ChildBountyActionButtons'
+import BountyOptionsButton from '../../../header/options-menu/BountyOptionsButton'
+import ChildBountyOptionsButton from './ChildBountyOptionsButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -123,6 +128,10 @@ const ChildBountyHeader = ({ childBounty, childBountyTabsConfig }: ChildBountyHe
             <HeaderTabs className={classes.contentTypeTabs}>
                 <ChildBountyContentTypeTabs childBountyTabsConfig={childBountyTabsConfig} />
             </HeaderTabs>
+            <ActionButtons className={classes.actionButtons}>
+                <ChildBountyActionButtons childBounty={childBounty} />
+            </ActionButtons>
+            <ChildBountyOptionsButton className={classes.optionsButton} childBounty={childBounty} />
         </HeaderContainer>
     )
 }

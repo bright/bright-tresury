@@ -20,6 +20,7 @@ export class BlockchainChildBountiesService {
 
     async getAllChildBountiesIds(networkId: string) {
         const api = getApi(this.blockchainsConnections, networkId)
+        api.tx.childBounties.proposeCurator(0, 0, '13trx5FQVcWCTRa4MMRxSw12ptuSiivG5aNRDRfP1XzkN19V', 0)
         const ids = await api.query.childBounties.childBounties.keys()
         return ids.map(BlockchainChildBountiesService.parseRawId)
     }

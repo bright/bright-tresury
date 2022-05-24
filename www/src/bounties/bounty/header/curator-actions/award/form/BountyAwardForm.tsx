@@ -38,7 +38,7 @@ const BountyAwardForm = ({ bounty, onSubmit, children }: BountyAwardFormProps) =
         const params = patchParams(formValues)
         return onSubmit(params)
     }
-
+    console.log('redraw BountyAwardForm')
     return (
         <Formik
             initialValues={initialValues}

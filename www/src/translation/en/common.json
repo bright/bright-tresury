@@ -812,7 +812,22 @@
     },
     "childBounty": {
         "header": {
-            "childBounty": "Child Bounty"
+            "childBounty": "Child Bounty",
+            "assignCurator": "Assign curator"
+        },
+        "assignCurator": {
+            "title": "Propose child bounty curator",
+            "form": {
+                "curator": "Curator",
+                "curatorPlaceholder": "Child bounty curator",
+                "fee": "Curator Fee",
+                "emptyFieldError": "This field cannot be empty",
+                "submit": "Propose curator"
+            },
+            "submittingTransaction": {
+                "title": "You are about to propose child bounty curator",
+                "warningMessage": "You will now propose <strong>{{curator}}</strong> to be this child bounty curator<br/>."
+            },
         },
         "content": {
             "infoLabel": "Info"
