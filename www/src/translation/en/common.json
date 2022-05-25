@@ -679,8 +679,8 @@
                 "rejected": "Rejected"
             },
             "childBounties": {
-                "childBounties": "Child-Bounties",
-                "childBounty": "Child-Bounty"
+                "childBounties": "Child Bounties",
+                "childBounty": "Child Bounty"
             }
         },
         "create": {
@@ -720,7 +720,7 @@
             "infoLabel": "Info",
             "discussionLabel": "Discussion",
             "votingLabel": "Voting",
-            "childBounties": "Child-Bounties"
+            "childBounties": "Child Bounties"
         },
         "header": {
             "accept": "Accept",
@@ -812,20 +812,20 @@
     },
     "childBounty": {
         "header": {
-            "childBounty": "Child-Bounty"
+            "childBounty": "Child Bounty"
         },
         "content": {
             "infoLabel": "Info"
         },
         "info": {
-            "reward": "Reward",
+            "totalValue": "Total Value",
             "curatorDeposit": "Curator Deposit",
             "curatorsFee": "Curator's Fee",
             "beneficiary": "Beneficiary",
             "curator": "Curator",
             "description": "Description",
             "onChainDescription": "On-chain description",
-            "field": "Field of child-bounty"
+            "field": "Field of child bounty"
         },
         "list": {
             "create": "+ Child Bounty",
@@ -1113,7 +1113,7 @@
         "errorOccurredWhileLoadingProposalMilestones": "An error occurred while loading proposal milestones.",
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
         "errorOccurredWhileLoadingBounty": "An error occurred while loading the bounty.",
-        "errorOccurredWhileLoadingChildBounty": "An error occurred while loading the child-bounty.",
+        "errorOccurredWhileLoadingChildBounty": "An error occurred while loading the child bounty.",
         "errorOccurredWhileLoadingComments": "An error occurred while loading comments.",
         "errorOccurredWhileLoadingTips": "An error occurred while loading tips.",
         "errorOccurredWhileLoadingTip": "An error occurred while loading the tip.",
@@ -1132,7 +1132,7 @@
         "verifyEmail": "We're verifying your email address. It may take a moment. Bear with us.",
         "stats": "We're loading the statistics. It may take a moment. Bear with us.",
         "bounty": "We're loading the bounty. It may take a moment. Bear with us.",
-        "childBounty": "We're loading the child-bounty. It may take a moment. Bear with us.",
+        "childBounty": "We're loading the child bounty. It may take a moment. Bear with us.",
         "comments": "We're loading the comments. It may take a moment. Bear with us.",
         "bountiesVoting": "We're loading the bounty voting. It may take a moment. Bear with us."
     }

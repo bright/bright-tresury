@@ -20,7 +20,7 @@ const ChildBountyNetworkRewardDeposit = ({ childBounty }: ChildBountyNetworkRewa
 
     values.push({ value: childBounty.curatorDeposit, label: t('childBounty.info.curatorDeposit') })
     values.push({ value: childBounty.curatorFee, label: t('childBounty.info.curatorsFee') })
-    values.push({ value: childBounty.value, label: t('childBounty.info.reward') })
+    values.push({ value: childBounty.value, label: t('childBounty.info.totalValue') })
 
     return <NetworkRewardDeposit values={values} />
 }
