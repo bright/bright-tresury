@@ -7,6 +7,7 @@ import { BN_MILLION, BN_HUNDRED } from '@polkadot/util'
 import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configuration.config'
 import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
 import { NetworkPlanckValue } from '../../utils/types'
+import { BlockchainChildBountiesService } from '../blockchain-child-bounties/blockchain-child-bounties.service'
 
 @Injectable()
 export class BlockchainConfigurationService {
@@ -17,6 +18,7 @@ export class BlockchainConfigurationService {
         @Inject(BlockchainConfigToken) private readonly blockchainConfig: BlockchainConfig[],
         private readonly bountiesBlockchainService: BlockchainBountiesService,
         private readonly tipsBlockchainService: BlockchainTipsService,
+        private readonly childBountiesBlockchainService: BlockchainChildBountiesService,
     ) {
         this.defaultBlockchainConfigMap = blockchainConfig.reduce((acc, cur) => ({ ...acc, [cur.id]: cur }), {})
     }
@@ -42,6 +44,9 @@ export class BlockchainConfigurationService {
 
         const bounties = this.bountiesBlockchainService.getBountiesConfig(networkId) ?? defaultBlockchainConfig.bounties
         const tips = this.tipsBlockchainService.getTipsConfig(networkId) ?? defaultBlockchainConfig.tips
+        const childBounties =
+            this.childBountiesBlockchainService.getChildBountiesConfig(networkId) ??
+            defaultBlockchainConfig.childBounties
         const version = api.consts.system.version.specVersion.toNumber()
 
         return {
@@ -51,6 +56,7 @@ export class BlockchainConfigurationService {
             bond: { minValue, percentage, maxValue },
             bounties,
             tips,
+            childBounties,
             version,
         }
     }

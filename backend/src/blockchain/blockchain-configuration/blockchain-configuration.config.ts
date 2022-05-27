@@ -40,6 +40,10 @@ export interface BlockchainConfig {
         tipCountdown: number
         tipFindersFee: number
     }
+    childBounties: {
+        childBountyValueMinimum: NetworkPlanckValue
+        maxActiveChildBountyCount: number
+    }
     version: number
 }
 
@@ -135,6 +139,13 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
             maximumReasonLength: 16384,
             tipCountdown: 70,
             tipFindersFee: 20,
+        },
+    },
+    childBounties: {
+        doc: 'Child bounties module configuration used by this blockchain',
+        default: {
+            childBountyValueMinimum: '10000000000' as NetworkPlanckValue,
+            maxActiveChildBountyCount: 100,
         },
     },
     version: {

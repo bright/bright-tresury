@@ -80,4 +80,16 @@ describe('GET blockchains configurations', () => {
             expect(typeof bounties.maximumReasonLength).toBe('number')
         }
     })
+
+    it('response should include childBounties configuration', async () => {
+        const response = await request(app()).get('/api/v1/blockchain/configuration')
+        const blockchainsConfiguration = response.body
+        expect(Array.isArray(blockchainsConfiguration)).toBe(true)
+        for (const blockchainConfiguration of blockchainsConfiguration) {
+            const { childBounties } = blockchainConfiguration
+            expect(typeof childBounties).toBe('object')
+            expect(typeof childBounties.childBountyValueMinimum).toBe('string')
+            expect(typeof childBounties.maxActiveChildBountyCount).toBe('number')
+        }
+    })
 })

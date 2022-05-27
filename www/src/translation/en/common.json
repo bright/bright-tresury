@@ -849,21 +849,12 @@
             "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
             "fields": {
                 "title": "Title",
-                "field": "Field of bounty",
                 "value": "Value",
-                "deposit": "Deposit",
-                "depositTooltip": "The deposit amount that will be bonded (partly depends on the on-chain description length)",
-                "blockchainDescription": "Description - this description is stored on chain (the bond will increase for each byte of this description)",
+                "blockchainDescription": "Description - this description is stored on chain",
                 "description": "Description",
                 "beneficiary": "Beneficiary",
                 "extendRemark": "Remark",
-                "extendRemarkDescription": "Explain why you need to extend the expiry date. This information will be included in a transaction (but not stored on-chain)",
-                "fieldOptions": {
-                    "optimisation": "Optimisation",
-                    "treasury": "Treasury",
-                    "transactions": "Transactions",
-                    "other": "Other"
-                }
+                "extendRemarkDescription": "Explain why you need to extend the expiry date. This information will be included in a transaction (but not stored on-chain)"
             }
         }
     },

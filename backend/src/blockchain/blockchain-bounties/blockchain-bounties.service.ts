@@ -31,7 +31,6 @@ export class BlockchainBountiesService {
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
         private readonly blockchainService: BlockchainService,
-        private readonly blockchainChildBountiesService: BlockchainChildBountiesService,
     ) {}
 
     static extractBountyIndex(extrinsicEvents: ExtrinsicEvent[]): number | undefined {

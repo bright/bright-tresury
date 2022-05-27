@@ -10,6 +10,7 @@ import { NetworkPlanckValue, Nil } from '../../utils/types'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
 import { getLogger } from '../../logging.module'
 import { ChildBountyId } from './child-bounty-id.interface'
+import { BlockchainChildBountiesConfigurationDto } from './dto/blockchain-child-bounties-configuration.dto'
 
 const logger = getLogger()
 
@@ -123,5 +124,24 @@ export class BlockchainChildBountiesService {
         const blockchainIndex = extractNumberFromBlockchainEvent(extrinsicEvents, 'childBounties', 'Added', 1)
         if (parentBountyBlockchainIndex === undefined || blockchainIndex === undefined) return
         return { parentBountyBlockchainIndex, blockchainIndex }
+    }
+
+    getChildBountiesConfig(networkId: string): BlockchainChildBountiesConfigurationDto | undefined {
+        try {
+            const consts = getApi(this.blockchainsConnections, networkId).consts.childBounties
+            if (!consts) {
+                return
+            }
+
+            const childBountyValueMinimum = consts.childBountyValueMinimum.toString() as NetworkPlanckValue
+            const maxActiveChildBountyCount = Number(consts.maxActiveChildBountyCount)
+
+            return {
+                childBountyValueMinimum,
+                maxActiveChildBountyCount,
+            }
+        } catch (err) {
+            logger.error('Error while fetching child bounties configuration', err)
+        }
     }
 }

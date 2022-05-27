@@ -59,9 +59,9 @@ const ChildBountyCreateForm = ({ bounty, children }: ChildBountyCreateFormProps)
         value: networkValueValidationSchema({ t, findNetwork, required: true, decimals: network.decimals }).test(
             'is-min',
             t('childBounty.form.minValueError', {
-                value: toNetworkDisplayValue(network.bounties.bountyValueMinimum, network.decimals),
+                value: toNetworkDisplayValue(network.childBounties.childBountyValueMinimum, network.decimals),
             }),
-            optional((value) => isMin(value, network.bounties.bountyValueMinimum, network.decimals)),
+            optional((value) => isMin(value, network.childBounties.childBountyValueMinimum, network.decimals)),
         ),
     })
 
@@ -87,7 +87,7 @@ const ChildBountyCreateForm = ({ bounty, children }: ChildBountyCreateFormProps)
             {({ values, handleSubmit }) => (
                 <>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <ChildBountyCreateFormFields formValues={values} />
+                        <ChildBountyCreateFormFields />
                         <FormFooter>{children}</FormFooter>
                     </form>
                     <SubmitChildBountyModal

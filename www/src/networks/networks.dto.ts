@@ -33,6 +33,10 @@ export interface Network {
         tipCountdown: number
         tipFindersFee: number
     }
+    childBounties: {
+        childBountyValueMinimum: NetworkPlanckValue
+        maxActiveChildBountyCount: number
+    }
     version: number
     polkassemblyUrl: string
 }

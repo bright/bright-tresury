@@ -3,6 +3,7 @@ import { BlockchainTipsConfigurationDto } from '../../blockchain-tips/dto/blockc
 import { BlockchainConfig } from '../blockchain-configuration.config'
 import { NetworkPlanckValue, Nil } from '../../../utils/types'
 import { BlockchainBountiesConfigurationDto } from '../../blockchain-bounties/dto/blockchain-bounties-configuration.dto'
+import { BlockchainChildBountiesConfigurationDto } from '../../blockchain-child-bounties/dto/blockchain-child-bounties-configuration.dto'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({
@@ -67,6 +68,9 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Bounties module configuration', type: BlockchainBountiesConfigurationDto })
     bounties: BlockchainBountiesConfigurationDto
 
+    @ApiProperty({ description: 'Child bounties module configuration', type: BlockchainTipsConfigurationDto })
+    childBounties: BlockchainChildBountiesConfigurationDto
+
     @ApiProperty({ description: 'Tips module configuration', type: BlockchainTipsConfigurationDto })
     tips: BlockchainTipsConfigurationDto
 
@@ -90,6 +94,7 @@ export class BlockchainConfigurationDto {
         isDefault,
         isLiveNetwork,
         bounties,
+        childBounties,
         tips,
         version,
     }: BlockchainConfig) {
@@ -109,6 +114,7 @@ export class BlockchainConfigurationDto {
         this.isDefault = isDefault
         this.isLiveNetwork = isLiveNetwork
         this.bounties = bounties
+        this.childBounties = childBounties
         this.tips = tips
         this.version = version
     }
