@@ -6,6 +6,7 @@ import { PaginationResponseDto } from '../util/pagination/pagination.response.dt
 import { TimeFrame } from '../util/useTimeFrame'
 import { Nil } from '../util/types'
 import { PaginationRequestParams } from '../util/pagination/pagination.request.params'
+import { PublicUserDto } from '../util/publicUser.dto'
 
 export const BOUNTIES_API_PATH = '/bounties'
 
@@ -22,6 +23,21 @@ export const useGetBounty = (
     options?: UseQueryOptions<BountyDto>,
 ) => {
     return useQuery([BOUNTY_QUERY_KEY_BASE, bountyIndex, network], () => getBounty(bountyIndex, network), options)
+}
+
+async function getBountyCurator(bountyIndex: string, network: string): Promise<Nil<PublicUserDto>> {
+    return apiGet<Nil<PublicUserDto>>(`${BOUNTIES_API_PATH}/${bountyIndex}/curator?network=${network}`)
+}
+
+export const useGetBountyCurator = (
+    { bountyIndex, network }: { bountyIndex: string; network: string },
+    options?: UseQueryOptions<Nil<PublicUserDto>>,
+) => {
+    return useQuery(
+        [BOUNTY_QUERY_KEY_BASE, 'curator', bountyIndex, network],
+        () => getBountyCurator(bountyIndex, network),
+        options,
+    )
 }
 
 // POST

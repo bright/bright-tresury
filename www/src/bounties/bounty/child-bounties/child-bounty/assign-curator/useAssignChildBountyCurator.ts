@@ -12,7 +12,13 @@ export interface AssignChildBountyCuratorFormValues {
     fee: NetworkDisplayValue
 }
 
-export const useAssignChildBountyCurator = (childBounty: ChildBountyDto) => {
+export const useAssignChildBountyCurator = ({
+    parentBountyBlockchainIndex,
+    blockchainIndex,
+}: {
+    blockchainIndex: number
+    parentBountyBlockchainIndex: number
+}) => {
     const { network, findNetwork } = useNetworks()
     const { t } = useTranslation()
 
@@ -30,8 +36,8 @@ export const useAssignChildBountyCurator = (childBounty: ChildBountyDto) => {
     const initialValues = { curator: '', fee: '0' as NetworkDisplayValue }
 
     const toAssignChildBountyCuratorParams = (formValues: AssignChildBountyCuratorFormValues) => ({
-        parentBountyBlockchainIndex: childBounty.parentBountyBlockchainIndex,
-        blockchainIndex: childBounty.blockchainIndex,
+        parentBountyBlockchainIndex,
+        blockchainIndex,
         curator: formValues.curator,
         fee: toNetworkPlanckValue(formValues.fee, network.decimals) ?? ('0' as NetworkPlanckValue),
     })

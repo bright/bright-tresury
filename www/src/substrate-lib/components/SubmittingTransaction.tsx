@@ -98,7 +98,6 @@ const SubmittingTransaction = ({
         }
 
         const applyExtrinsicEvent = events.find(({ phase, event }) => {
-            console.log({ isApplyExtrinsic: phase.isApplyExtrinsic, section: event.section, method: event.method })
             return (
                 phase.isApplyExtrinsic &&
                 event.section === (txAttrs.eventSection ?? txAttrs.palletRpc) &&
@@ -108,7 +107,7 @@ const SubmittingTransaction = ({
         if (applyExtrinsicEvent) {
             txResult.event = applyExtrinsicEvent.event
         }
-        console.log('setting txResult', txResult)
+
         setResult(txResult)
     }
 
@@ -155,9 +154,8 @@ const SubmittingTransaction = ({
         setSubmitting(true)
         await signAndSend(address)
     }
-    console.log('redraw!')
+
     if (apiState === ApiState.ERROR) {
-        console.log('TransactionError apiState === ApiState.ERROR')
         return (
             <TransactionError
                 onOk={onClose}
@@ -166,10 +164,8 @@ const SubmittingTransaction = ({
             />
         )
     } else if (apiState !== ApiState.READY) {
-        console.log('SubstrateLoading')
         return <SubstrateLoading onOk={onClose} />
     } else if (keyringState !== KeyringState.READY || (keyringState === KeyringState.READY && accounts.length === 0)) {
-        console.log('TransactionError keyring')
         return (
             <TransactionError
                 onOk={onClose}
@@ -184,7 +180,6 @@ const SubmittingTransaction = ({
             />
         )
     } else if (!submitting) {
-        console.log('SignAndSubmit')
         return (
             <SignAndSubmit
                 title={title}
@@ -195,10 +190,8 @@ const SubmittingTransaction = ({
             />
         )
     } else if (result && result.error) {
-        console.log('ExtrinsicFailed')
         return <ExtrinsicFailed error={result.error} onOk={onClose} />
     } else if (error) {
-        console.log('TransactionError error')
         return (
             <TransactionError
                 error={error}
@@ -207,7 +200,6 @@ const SubmittingTransaction = ({
             />
         )
     } else {
-        console.log('TransactionInProgress')
         return (
             <TransactionInProgress
                 status={result?.status}

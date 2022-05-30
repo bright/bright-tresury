@@ -15,7 +15,6 @@ import { getBytesLength } from '../../../../util/stringUtil'
 import { NetworkDisplayValue, NetworkPlanckValue } from '../../../../util/types'
 import SubmitChildBountyModal from './SubmitChildBountyModal'
 import ChildBountyCreateFormFields from './ChildBountyCreateFormFields'
-import { BountyDto } from '../../../bounties.dto'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -36,12 +35,12 @@ export interface ChildBountyCreateFormValues {
 }
 
 interface OwnProps {
-    bounty: BountyDto
+    parentBountyBlockchainIndex: number
 }
 
 export type ChildBountyCreateFormProps = PropsWithChildren<OwnProps>
 
-const ChildBountyCreateForm = ({ bounty, children }: ChildBountyCreateFormProps) => {
+const ChildBountyCreateForm = ({ parentBountyBlockchainIndex, children }: ChildBountyCreateFormProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const submitModal = useModal()
@@ -66,7 +65,7 @@ const ChildBountyCreateForm = ({ bounty, children }: ChildBountyCreateFormProps)
     })
 
     const initialValues: ChildBountyCreateFormValues = {
-        parentBountyId: bounty.blockchainIndex,
+        parentBountyId: parentBountyBlockchainIndex,
         blockchainDescription: '',
         value: toNetworkDisplayValue('0' as NetworkPlanckValue, network.decimals),
         title: '',

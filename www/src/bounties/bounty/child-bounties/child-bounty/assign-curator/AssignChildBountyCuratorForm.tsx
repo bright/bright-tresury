@@ -22,36 +22,40 @@ const useStyles = makeStyles(() =>
 )
 
 interface OwnProps {
-    childBounty: ChildBountyDto
+    parentBountyBlockchainIndex: number
+    blockchainIndex: number
 }
 
 export type AssignChildBountyCuratorFormProps = PropsWithChildren<OwnProps>
 
-const AssignChildBountyCuratorForm = ({ childBounty, children }: AssignChildBountyCuratorFormProps) => {
+const AssignChildBountyCuratorForm = ({
+    blockchainIndex,
+    parentBountyBlockchainIndex,
+    children,
+}: AssignChildBountyCuratorFormProps) => {
     const classes = useStyles()
     const { network } = useNetworks()
     const { t } = useTranslation()
     const submitModal = useModal()
-    const { validationSchema, initialValues, toAssignChildBountyCuratorParams } = useAssignChildBountyCurator(
-        childBounty,
-    )
+    const { validationSchema, initialValues, toAssignChildBountyCuratorParams } = useAssignChildBountyCurator({
+        blockchainIndex,
+        parentBountyBlockchainIndex,
+    })
 
     const onSubmit = () => {
         submitModal.open()
     }
-    console.log('redraw AssignChildBountyCuratorForm')
-    console.log('submitModal.visible', submitModal.visible)
+
     return (
         <Formik
             initialValues={initialValues}
-            enableReinitialize={true}
+            enableReinitialize={false}
             validationSchema={validationSchema}
             onSubmit={onSubmit}
         >
             {({ values, handleSubmit }) => (
                 <>
                     <form className={classes.form} autoComplete="off" onSubmit={handleSubmit}>
-                        <input name={'random'} />
                         <StyledSmallInput
                             name="curator"
                             description={t('form.web3AddressInput.description')}

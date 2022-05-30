@@ -35,7 +35,7 @@ const BountyAward = ({ bounty }: BountyAwardProps) => {
     if (!canAward) {
         return <Container error={t('bounty.award.cannotEditBounty')} />
     }
-    console.log('redraw BountyAward')
+
     return (
         <Container title={t('bounty.award.title')}>
             <BountyAwardForm bounty={bounty} onSubmit={submit}>

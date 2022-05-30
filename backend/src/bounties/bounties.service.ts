@@ -35,6 +35,7 @@ import { PolkassemblyBountyPostDto } from '../polkassembly/bounties/bounty-post.
 import { ChildBountiesService } from './child-bounties/child-bounties.service'
 import { FindChildBountyDto } from './child-bounties/dto/find-child-bounty.dto'
 import { ChildBountyDto } from './child-bounties/dto/child-bounty.dto'
+import { PublicUserDto } from '../users/dto/public-user.dto'
 
 const logger = getLogger()
 
@@ -285,5 +286,10 @@ export class BountiesService {
     }
     async getMappedPolkassemblyBounties(options: GetPosts): Promise<Map<number, PolkassemblyBountyPostDto>> {
         return arrayToMap(await this.polkassemblyService.find(options), 'blockchainIndex')
+    }
+
+    async getCurator(networkId: string, blockchainIndex: number): Promise<Nil<PublicUserDto>> {
+        const bounty = await this.getBounty(networkId, blockchainIndex)
+        return bounty.curator
     }
 }

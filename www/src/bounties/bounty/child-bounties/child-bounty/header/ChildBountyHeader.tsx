@@ -27,6 +27,8 @@ import BountyActionButtons from '../../../header/curator-actions/BountyActionBut
 import ChildBountyActionButtons from './ChildBountyActionButtons'
 import BountyOptionsButton from '../../../header/options-menu/BountyOptionsButton'
 import ChildBountyOptionsButton from './ChildBountyOptionsButton'
+import { PublicUserDto } from '../../../../../util/publicUser.dto'
+import { Nil } from '../../../../../util/types'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -83,11 +85,12 @@ const useStyles = makeStyles((theme: Theme) =>
 interface OwnProps {
     childBounty: ChildBountyDto
     childBountyTabsConfig: ChildBountyTabConfig[]
+    bountyCurator: Nil<PublicUserDto>
 }
 
 export type ChildBountyHeaderProps = OwnProps
 
-const ChildBountyHeader = ({ childBounty, childBountyTabsConfig }: ChildBountyHeaderProps) => {
+const ChildBountyHeader = ({ childBounty, bountyCurator, childBountyTabsConfig }: ChildBountyHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
@@ -131,7 +134,11 @@ const ChildBountyHeader = ({ childBounty, childBountyTabsConfig }: ChildBountyHe
             <ActionButtons className={classes.actionButtons}>
                 <ChildBountyActionButtons childBounty={childBounty} />
             </ActionButtons>
-            <ChildBountyOptionsButton className={classes.optionsButton} childBounty={childBounty} />
+            <ChildBountyOptionsButton
+                className={classes.optionsButton}
+                childBounty={childBounty}
+                bountyCurator={bountyCurator}
+            />
         </HeaderContainer>
     )
 }

@@ -826,8 +826,8 @@
             },
             "submittingTransaction": {
                 "title": "You are about to propose child bounty curator",
-                "warningMessage": "You will now propose <strong>{{curator}}</strong> to be this child bounty curator<br/>."
-            },
+                "warningMessage": "You will now propose <br/><strong>{{curator}}</strong><br/> to be this child bounty curator."
+            }
         },
         "content": {
             "infoLabel": "Info"
@@ -853,7 +853,6 @@
             "submit": "Submit",
             "submitModal": {
                 "title": "You are about to create a child bounty proposal",
-                "warningMessage": "In order to submit your child bounty proposal you need to have a <strong>deposit amount</strong> available on your account. Please note, that if your bounty proposal will be <strong>rejected you will lose the deposit</strong>. If your bounty proposal is approved you will get the deposit money back.",
                 "eventDescription": "event child bounty proposed finished"
             }
         },

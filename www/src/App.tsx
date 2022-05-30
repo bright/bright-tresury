@@ -35,13 +35,16 @@ import Route from './routes/Route'
 import {
     ROUTE_ACCOUNT,
     ROUTE_ACCOUNT_DELETED,
+    ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR,
     ROUTE_BOUNTIES,
     ROUTE_BOUNTY,
+    ROUTE_CHILD_BOUNTY,
     ROUTE_EMAIL_NOT_VERIFIED,
     ROUTE_IDEA,
     ROUTE_IDEAS,
     ROUTE_LEARN_MORE,
     ROUTE_NEW_BOUNTY,
+    ROUTE_NEW_CHILD_BOUNTY,
     ROUTE_NEW_IDEA,
     ROUTE_NEW_PASSWORD,
     ROUTE_NEW_TIP,
@@ -73,6 +76,9 @@ import PasswordRecovery from './auth/PasswordRecovery/PasswordRecovery'
 import NewPassword from './auth/PasswordRecovery/NewPassword'
 import Tips from './tips/Tips'
 import TipLoader from './tips/tip/TipLoader'
+import ChildBountyCreate from './bounties/bounty/child-bounties/create/ChildBountyCreate'
+import ChildBountyLoader from './bounties/bounty/child-bounties/child-bounty/ChildBountyLoader'
+import AssignChildBountyCurator from './bounties/bounty/child-bounties/child-bounty/assign-curator/AssignChildBountyCurator'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -119,6 +125,20 @@ function AppRoutes() {
 
                 <Route exact={true} path={ROUTE_PROPOSALS} component={Proposals} />
                 <Route exact={false} path={ROUTE_PROPOSAL} component={Proposal} />
+
+                <PrivateRoute
+                    requireVerified={true}
+                    exact={true}
+                    path={ROUTE_NEW_CHILD_BOUNTY}
+                    component={ChildBountyCreate}
+                />
+                <PrivateRoute
+                    requireVerified={true}
+                    exact={true}
+                    path={ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR}
+                    component={AssignChildBountyCurator}
+                />
+                <Route exact={false} path={ROUTE_CHILD_BOUNTY} component={ChildBountyLoader} />
 
                 <Route exact={true} path={ROUTE_BOUNTIES} component={Bounties} />
                 <PrivateRoute exact={true} path={ROUTE_NEW_BOUNTY} component={BountyCreate} requireVerified={true} />

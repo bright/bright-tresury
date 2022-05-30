@@ -107,7 +107,7 @@ const Bounty = ({ bounty }: BountyProps) => {
     const bountyTabsConfig = useMemo(() => Object.values(BOUNTY_CONTENT_TYPE_BUILDER), [BOUNTY_CONTENT_TYPE_BUILDER])
 
     const routes = bountyTabsConfig.map(({ getRoute }) => getRoute(path, bounty))
-    console.log('redraw Bounty')
+
     return (
         <div className={classes.root}>
             <Switch>
@@ -121,10 +121,6 @@ const Bounty = ({ bounty }: BountyProps) => {
                     <BountyExtendExpiry bounty={bounty} />
                 </PrivateRoute>
 
-                <PrivateRoute requireVerified={true} exact={true} path={ROUTE_NEW_CHILD_BOUNTY}>
-                    <ChildBountyCreate bounty={bounty} />
-                </PrivateRoute>
-                <Route exact={false} path={ROUTE_CHILD_BOUNTY} component={ChildBountyLoader} />
                 <>
                     <BountyHeader bounty={bounty} bountyTabsConfig={bountyTabsConfig} />
                     <Switch>

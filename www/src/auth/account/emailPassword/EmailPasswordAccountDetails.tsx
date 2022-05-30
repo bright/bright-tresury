@@ -21,7 +21,6 @@ const EmailPasswordAccountDetails = () => {
     const classes = useStyles()
     const { user } = useAuth()
 
-    console.log(user)
     return (
         <div>
             {user && user.isEmailVerified ? (

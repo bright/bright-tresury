@@ -34,13 +34,6 @@ const TransactionInProgress = ({ status, onOk, event, eventDescription }: Transa
     const [activeStep, setActiveStep] = useState(-1)
 
     useEffect(() => {
-        console.log({
-            '!status': !status,
-            'status.isFinalized || status.isInBlock': status?.isFinalized || status?.isInBlock,
-            event: !!event,
-            'status.isInBlock': status?.isInBlock,
-            'status.isReady': status?.isReady,
-        })
         if (!status) {
             setActiveStep(Steps.READY)
         } else if (status.isFinalized || status.isInBlock) {
@@ -62,7 +55,6 @@ const TransactionInProgress = ({ status, onOk, event, eventDescription }: Transa
     ]
 
     const success = activeStep >= steps.length
-    console.log('TransactionInProgress: ', { status, event, eventDescription, activeStep })
     return (
         <TransactionModal
             title={t('substrate.inProgress.title')}

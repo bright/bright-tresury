@@ -50,7 +50,7 @@ const AssignChildBountyCuratorModal = ({
                 instruction={
                     <Trans
                         id="modal-description"
-                        i18nKey="childBounty.assignCurator.submittingTransaction.warning"
+                        i18nKey="childBounty.assignCurator.submittingTransaction.warningMessage"
                         values={{ curator }}
                         components={{ strong: <Strong color={'primary'} /> }}
                     />

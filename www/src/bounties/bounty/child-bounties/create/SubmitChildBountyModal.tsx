@@ -66,15 +66,7 @@ const SubmitBountyModal = ({ open, onClose, childBounty }: SubmitBountyModalProp
         >
             <SubmittingTransaction
                 title={t('childBounty.create.submitModal.title')}
-                instruction={
-                    <Trans
-                        id="modal-description"
-                        i18nKey="childBounty.create.submitModal.warningMessage"
-                        components={{
-                            strong: <Strong color={'primary'} />,
-                        }}
-                    />
-                }
+                instruction={''}
                 onSuccess={goToChildBounty}
                 onClose={onClose}
                 txAttrs={{
