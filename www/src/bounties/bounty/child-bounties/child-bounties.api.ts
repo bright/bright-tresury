@@ -8,6 +8,25 @@ const getChildBountiesApiBasePath = (bountyIndex: number | string) =>
 
 export const CHILD_BOUNTIES_API_PATH = '/child-bounties'
 
+// GET ALL FOR PARENT BOUNTY
+export const CHILD_BOUNTIES_QUERY_KEY_BASE = 'child-bounties'
+
+async function getChildBounties(bountyIndex: string, network: string): Promise<ChildBountyDto[]> {
+    return apiGet<ChildBountyDto[]>(
+        `${getChildBountiesApiBasePath(bountyIndex)}?${getUrlSearchParams({ network }).toString()}`,
+    )
+}
+
+export const useGetChildBounties = (
+    { bountyIndex, network }: { bountyIndex: string; network: string },
+    options?: UseQueryOptions<ChildBountyDto[]>,
+) =>
+    useQuery(
+        [CHILD_BOUNTIES_QUERY_KEY_BASE, bountyIndex, network],
+        () => getChildBounties(bountyIndex, network),
+        options,
+    )
+
 // GET ONE
 
 async function getChildBounty(bountyIndex: string, childBountyIndex: string, network: string): Promise<ChildBountyDto> {

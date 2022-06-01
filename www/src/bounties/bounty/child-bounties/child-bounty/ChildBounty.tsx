@@ -9,7 +9,7 @@ import { useSuccessfullyLoadedItemStyles } from '../../../../components/loading/
 import ChildBountyHeader from './header/ChildBountyHeader'
 import discussionIcon from '../../../../assets/discussion.svg'
 import ChildBountyDiscussion from './discussion/ChildBountyDiscussion'
-import { PublicUserDto } from '../../../../util/publicUser.dto'
+import { BountyDto } from '../../../bounties.dto'
 
 export enum ChildBountyContentType {
     Info = 'info',
@@ -56,11 +56,12 @@ export interface ChildBountyTabConfig {
     isDefault?: boolean
 }
 interface OwnProps {
+    bounty: BountyDto
     childBounty: ChildBountyDto
-    bountyCurator: Nil<PublicUserDto>
 }
 export type ChildBountyProps = OwnProps
-const ChildBounty = ({ childBounty, bountyCurator }: ChildBountyProps) => {
+
+const ChildBounty = ({ bounty, childBounty }: ChildBountyProps) => {
     const classes = useSuccessfullyLoadedItemStyles()
     let { path } = useRouteMatch()
 
@@ -72,7 +73,7 @@ const ChildBounty = ({ childBounty, bountyCurator }: ChildBountyProps) => {
             <Switch>
                 <>
                     <ChildBountyHeader
-                        bountyCurator={bountyCurator}
+                        bounty={bounty}
                         childBounty={childBounty}
                         childBountyTabsConfig={childBountyTabsConfig}
                     />

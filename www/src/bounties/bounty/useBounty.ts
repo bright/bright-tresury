@@ -54,7 +54,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
     const canExtendExpiry = isCurator && isActive
 
     const hasDetails = !!bounty?.owner
-    const hasChildBounties = !!bounty?.childBounties?.length
+    const hasChildBounties = !!bounty?.childBountiesCount
     return {
         canReject,
         canAccept,

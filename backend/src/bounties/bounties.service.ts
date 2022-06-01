@@ -33,8 +33,6 @@ import { FindBountyDto } from './dto/find-bounty.dto'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { PolkassemblyBountyPostDto } from '../polkassembly/bounties/bounty-post.dto'
 import { ChildBountiesService } from './child-bounties/child-bounties.service'
-import { FindChildBountyDto } from './child-bounties/dto/find-child-bounty.dto'
-import { ChildBountyDto } from './child-bounties/dto/child-bounty.dto'
 import { PublicUserDto } from '../users/dto/public-user.dto'
 
 const logger = getLogger()
@@ -137,7 +135,7 @@ export class BountiesService {
         if (!blockchainBounties.size) return PaginatedResponseDto.empty()
         const bountiesIndexes = keysAsArray(blockchainBounties).sort((a, b) => b - a)
 
-        const [databaseBounties, polkassemblyBountiesPosts, childBounties] = await Promise.all([
+        const [databaseBounties, polkassemblyBountiesPosts] = await Promise.all([
             this.getMappedEntityBounties({ where: { blockchainIndex: In(bountiesIndexes), networkId } }),
             this.getMappedPolkassemblyBounties({
                 networkId,
@@ -145,7 +143,6 @@ export class BountiesService {
                 excludeIndexes: null,
                 proposers: null,
             }),
-            this.getMappedChildBounties(networkId),
         ])
 
         const allItems = (
@@ -155,7 +152,7 @@ export class BountiesService {
                         blockchainBounties.get(bountyIndex)!,
                         databaseBounties.get(bountyIndex),
                         polkassemblyBountiesPosts.get(bountyIndex),
-                        childBounties.get(bountyIndex),
+                        networkId,
                     ),
                 ),
             )
@@ -196,7 +193,7 @@ export class BountiesService {
                         polkassemblyBountiesPosts.get(blockchainIndex)!.asBlockchainBountyDto(),
                         databaseBounties.get(blockchainIndex),
                         polkassemblyBountiesPosts.get(blockchainIndex),
-                        null,
+                        networkId,
                     ),
                 ),
             )
@@ -216,30 +213,28 @@ export class BountiesService {
 
         const blockchain = onChain ?? offChain!.asBlockchainBountyDto()
 
-        const [entity, childBounties] = await Promise.all([
-            this.repository.findOne({ where: { networkId, blockchainIndex } }),
-            this.childBountiesService.findByParentBountyBlockchainIndex(networkId, blockchain.index),
-        ])
+        const entity = await this.repository.findOne({ where: { networkId, blockchainIndex } })
 
-        return this.createFindBountyDto(blockchain, entity, offChain, childBounties)
+        return this.createFindBountyDto(blockchain, entity, offChain, networkId)
     }
 
     async createFindBountyDto(
         blockchain: BlockchainBountyDto,
         entity: Nil<BountyEntity>,
         polkassembly: Nil<PolkassemblyBountyPostDto>,
-        foundChildBounties: Nil<FindChildBountyDto[]>,
+        networkId: string,
     ): Promise<FindBountyDto> {
         const proposerAddress = blockchain.proposer
         const beneficiaryAddress = blockchain.beneficiary ?? entity?.beneficiary
         const curatorAddress = blockchain.curator
-        const [proposer, beneficiary, curator] = await Promise.all([
+        const [proposer, beneficiary, curator, childBountiesCount] = await Promise.all([
             this.usersService.getPublicUserDataForWeb3Address(proposerAddress),
             beneficiaryAddress ? this.usersService.getPublicUserDataForWeb3Address(beneficiaryAddress) : null,
             curatorAddress ? this.usersService.getPublicUserDataForWeb3Address(curatorAddress) : null,
+            this.childBountiesService.getBountyChildBountiesCount(networkId, blockchain.index),
         ])
-        const childBounties = foundChildBounties?.map((foundChildBounty) => new ChildBountyDto(foundChildBounty))
-        return new FindBountyDto(blockchain, entity, polkassembly, proposer!, curator, beneficiary, childBounties)
+
+        return new FindBountyDto(blockchain, entity, polkassembly, proposer!, curator, beneficiary, childBountiesCount)
     }
 
     async getBountyMotions(
@@ -270,15 +265,6 @@ export class BountiesService {
 
     async getMappedBlockchainBounties(networkId: string): Promise<Map<number, BlockchainBountyDto>> {
         return arrayToMap(await this.bountiesBlockchainService.getBounties(networkId), 'index')
-    }
-
-    async getMappedChildBounties(networkId: string): Promise<Map<number, FindChildBountyDto[]>> {
-        const childBounties = await this.childBountiesService.find(networkId)
-        return childBounties.reduce((map, childBounty) => {
-            if (!map.has(childBounty.blockchain.parentIndex)) map.set(childBounty.blockchain.parentIndex, [])
-            map.get(childBounty.blockchain.parentIndex)!.push(childBounty)
-            return map
-        }, new Map<number, FindChildBountyDto[]>())
     }
 
     async getMappedEntityBounties(options: FindManyOptions): Promise<Map<number, BountyEntity>> {

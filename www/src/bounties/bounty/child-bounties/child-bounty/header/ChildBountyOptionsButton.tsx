@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { generatePath, useHistory } from 'react-router-dom'
 import { ChildBountyDto } from '../../child-bounties.dto'
@@ -8,29 +8,25 @@ import OptionsButton from '../../../../../components/header/details/OptionsButto
 import { ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR } from '../../../../../routes/routes'
 import MenuItem from '../../../../../main/top-bar/account/MenuItem'
 import { useChildBounty } from '../../useChildBounty'
-import { Nil } from '../../../../../util/types'
-import { PublicUserDto } from '../../../../../util/publicUser.dto'
-import { useAuth } from '../../../../../auth/AuthContext'
+import { useBounty } from '../../../useBounty'
+import { BountyDto } from '../../../../bounties.dto'
+
 
 interface OwnProps {
     childBounty: ChildBountyDto
-    bountyCurator: Nil<PublicUserDto>
+    bounty: BountyDto
 }
 
 export type ChildBountyOptionsButtonProps = OwnProps & ClassNameProps
 
-const ChildBountyOptionsButton = ({ className, childBounty, bountyCurator }: ChildBountyOptionsButtonProps) => {
+const ChildBountyOptionsButton = ({ className, childBounty, bounty }: ChildBountyOptionsButtonProps) => {
     const { t } = useTranslation()
     const history = useHistory()
-    const { hasWeb3AddressAssigned } = useAuth()
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
+    const { isCurator: isBountyCurator } = useBounty(bounty)
+    const { hasCurator } = useChildBounty(bounty, childBounty)
 
-    const { hasCurator } = useChildBounty(childBounty)
-
-    const canAssignCurator = useMemo(() => !hasCurator && hasWeb3AddressAssigned(bountyCurator?.web3address), [
-        hasCurator,
-        bountyCurator,
-    ])
+    const canAssignCurator = !hasCurator && isBountyCurator
 
     const onAssignCuratorClick = () => {
         history.push(

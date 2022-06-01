@@ -94,10 +94,10 @@ export class BountyDto {
     })
     description?: Nil<string>
 
-    @ApiPropertyOptional({
-        description: 'Child bounties assigned to this bounty',
+    @ApiProperty({
+        description: 'Child bounties count assigned to this bounty',
     })
-    childBounties?: Nil<ChildBountyDto[]>
+    childBountiesCount: number
 
     @ApiPropertyOptional({
         description: 'Bounty data kept in polkassembly server',
@@ -105,7 +105,15 @@ export class BountyDto {
     })
     polkassembly?: Nil<PolkassemblyPostDto>
 
-    constructor({ blockchain, entity, polkassembly, beneficiary, curator, proposer, childBounties }: FindBountyDto) {
+    constructor({
+        blockchain,
+        entity,
+        polkassembly,
+        beneficiary,
+        curator,
+        proposer,
+        childBountiesCount,
+    }: FindBountyDto) {
         this.id = entity?.id
         this.blockchainIndex = blockchain.index
         this.blockchainDescription = blockchain.description
@@ -123,7 +131,7 @@ export class BountyDto {
         this.title = entity?.title
         this.description = entity?.description
         this.field = entity?.field
-        this.childBounties = childBounties
+        this.childBountiesCount = childBountiesCount
         this.polkassembly = polkassembly
     }
 }

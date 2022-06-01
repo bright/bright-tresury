@@ -61,7 +61,9 @@ export class ChildBountiesService {
         const entity = await this.repository.findOne({ where: { ...childBountyId, networkId } })
         return new FindChildBountyDto(onChain, entity)
     }
-
+    async getBountyChildBountiesCount(networkId: string, parentBountyBlockchainIndex: number): Promise<number> {
+        return this.childBountiesBlockchainService.getBountyChildBountiesCount(networkId, parentBountyBlockchainIndex)
+    }
     private async getMappedBlockchainChildBounties(networkId: string, childBountyIds: ChildBountyId[]) {
         return arrayToMap(
             await this.childBountiesBlockchainService.getChildBountiesWithIds(networkId, childBountyIds),

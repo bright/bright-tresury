@@ -12,6 +12,7 @@ const getPolkadotApi = async () => {
     }
 
     // const nodeUrl = 'wss://rpc.polkadot.io';
+    // const nodeUrl = 'wss://testing.treasury.bright.dev:9944'
     const nodeUrl = 'ws://localhost:9944'
     const types = {}
 

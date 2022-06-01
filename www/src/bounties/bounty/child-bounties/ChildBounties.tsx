@@ -5,6 +5,7 @@ import { BountyDto } from '../../bounties.dto'
 import { useBounty } from '../useBounty'
 import AddChildBountyLink from './components/AddChildBountyLink'
 import { useTranslation } from 'react-i18next'
+import { ChildBountyDto } from './child-bounties.dto'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -23,11 +24,12 @@ export enum ChildBountyContentType {
 
 interface OwnProps {
     bounty: BountyDto
+    childBounties: ChildBountyDto[]
 }
 
 export type ChildBountiesProps = OwnProps
 
-const ChildBounties = ({ bounty }: ChildBountiesProps) => {
+const ChildBounties = ({ bounty, childBounties }: ChildBountiesProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { isActive, isCurator, hasChildBounties } = useBounty(bounty)
@@ -37,7 +39,9 @@ const ChildBounties = ({ bounty }: ChildBountiesProps) => {
             {!hasChildBounties ? (
                 <p className={classes.noChildBounties}>{t('childBounty.list.noChildBounties')}</p>
             ) : null}
-            {hasChildBounties ? <ChildBountiesList bounty={bounty}></ChildBountiesList> : null}
+            {hasChildBounties ? (
+                <ChildBountiesList bounty={bounty} childBounties={childBounties}></ChildBountiesList>
+            ) : null}
         </div>
     )
 }

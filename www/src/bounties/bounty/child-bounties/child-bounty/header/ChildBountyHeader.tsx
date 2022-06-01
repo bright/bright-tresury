@@ -23,12 +23,9 @@ import ChildBountyNetworkRewardDeposit from './ChildBountyNetworkRewardDeposit'
 import ChildBountyContentTypeTabs from './ChildBountyContentTypeTabs'
 import ChildBountyOrdinalNumber from '../../components/ChildBountyOrdinalNumber'
 import ActionButtons from '../../../../../components/header/details/ActionButtons'
-import BountyActionButtons from '../../../header/curator-actions/BountyActionButtons'
 import ChildBountyActionButtons from './ChildBountyActionButtons'
-import BountyOptionsButton from '../../../header/options-menu/BountyOptionsButton'
 import ChildBountyOptionsButton from './ChildBountyOptionsButton'
-import { PublicUserDto } from '../../../../../util/publicUser.dto'
-import { Nil } from '../../../../../util/types'
+import { BountyDto } from '../../../../bounties.dto'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -83,14 +80,14 @@ const useStyles = makeStyles((theme: Theme) =>
 )
 
 interface OwnProps {
+    bounty: BountyDto
     childBounty: ChildBountyDto
     childBountyTabsConfig: ChildBountyTabConfig[]
-    bountyCurator: Nil<PublicUserDto>
 }
 
 export type ChildBountyHeaderProps = OwnProps
 
-const ChildBountyHeader = ({ childBounty, bountyCurator, childBountyTabsConfig }: ChildBountyHeaderProps) => {
+const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: ChildBountyHeaderProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
@@ -132,12 +129,12 @@ const ChildBountyHeader = ({ childBounty, bountyCurator, childBountyTabsConfig }
                 <ChildBountyContentTypeTabs childBountyTabsConfig={childBountyTabsConfig} />
             </HeaderTabs>
             <ActionButtons className={classes.actionButtons}>
-                <ChildBountyActionButtons childBounty={childBounty} />
+                <ChildBountyActionButtons bounty={bounty} childBounty={childBounty} />
             </ActionButtons>
             <ChildBountyOptionsButton
                 className={classes.optionsButton}
                 childBounty={childBounty}
-                bountyCurator={bountyCurator}
+                bounty={bounty}
             />
         </HeaderContainer>
     )

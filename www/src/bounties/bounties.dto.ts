@@ -73,7 +73,7 @@ interface BaseBountyDto {
     owner?: Nil<PublicUserDto>
 
     polkassembly?: Nil<PolkassemblyPostDto>
-    childBounties?: ChildBountyDto[]
+    childBountiesCount: number
 }
 
 type ExtendedBountyDto =

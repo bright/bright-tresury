@@ -31,6 +31,25 @@ class ChildBountyParams extends BountyParam {
 export class ChildBountiesController {
     constructor(private readonly childBountiesService: ChildBountiesService) {}
 
+    @Get()
+    @ApiOkResponse({
+        description: 'Respond with child-bounties',
+        type: [ChildBountyDto],
+    })
+    @ApiNotFoundResponse({
+        description: 'Bounty with the given id not found',
+    })
+    async getAll(
+        @Param() { bountyIndex }: BountyParam,
+        @Query() { network }: NetworkNameQuery,
+    ): Promise<ChildBountyDto[]> {
+        const findChildBountyDtos = await this.childBountiesService.findByParentBountyBlockchainIndex(
+            network,
+            Number(bountyIndex),
+        )
+        return findChildBountyDtos.map((findChildBountyDto) => new ChildBountyDto(findChildBountyDto))
+    }
+
     @Get('/:childBountyIndex')
     @ApiOkResponse({
         description: 'Respond with child-bounty',

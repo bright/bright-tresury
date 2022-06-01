@@ -56,7 +56,7 @@ const ChildBountyCard = ({ childBounty, bounty, showStatus = true }: BountyCardP
     const { t } = useTranslation()
     const { network } = useNetworks()
     const classes = useStyles()
-    const { hasCurator: childBountyHasCurator } = useChildBounty(childBounty)
+    const { hasCurator: childBountyHasCurator } = useChildBounty(bounty, childBounty)
     const isCuratorProposed = bounty.status === BountyStatus.CuratorProposed
     const isActive = bounty.status === BountyStatus.Active
     const isPendingPayout = bounty.status === BountyStatus.PendingPayout

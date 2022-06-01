@@ -43,7 +43,12 @@ export class BlockchainChildBountiesService {
         const ids = await this.getBountyChildBountiesIds(networkId, parentBountyBlockchainIndex)
         return this.getChildBountiesWithIds(networkId, ids)
     }
-
+    async getBountyChildBountiesCount(networkId: string, parentBountyBlockchainIndex: number): Promise<number> {
+        const api = getApi(this.blockchainsConnections, networkId)
+        const childBountiesBase = api.query.childBounties
+        const u32Count = await childBountiesBase.parentChildBounties(parentBountyBlockchainIndex)
+        return u32Count.toNumber()
+    }
     async getChildBounty(networkId: string, childBountyId: ChildBountyId): Promise<BlockchainChildBountyDto> {
         const childBounties = await this.getChildBountiesWithIds(networkId, [childBountyId])
         return childBounties[0]

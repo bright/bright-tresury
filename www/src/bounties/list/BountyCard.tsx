@@ -18,6 +18,7 @@ import { breakpoints } from '../../theme/theme'
 import BountyStatusIndicator from '../components/BountyStatusIndicator'
 import User from '../../components/user/User'
 import ChildBountiesLink from './ChildBountiesLink'
+import { useBounty } from '../bounty/useBounty'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -47,7 +48,7 @@ const BountyCard = ({ bounty, disable = false, showStatus = true }: BountyCardPr
     const { t } = useTranslation()
     const { network } = useNetworks()
     const classes = useStyles()
-
+    const { hasChildBounties } = useBounty(bounty)
     const redirectTo = `${generatePath(ROUTE_BOUNTY, { bountyIndex: bounty.blockchainIndex })}/${
         BountyContentType.Info
     }`
@@ -56,10 +57,10 @@ const BountyCard = ({ bounty, disable = false, showStatus = true }: BountyCardPr
         <NetworkCard redirectTo={disable ? undefined : redirectTo}>
             <CardHeader>
                 <OrdinalNumber prefix={t('bounty.indexPrefix')} ordinalNumber={bounty.blockchainIndex} />
-                {bounty.childBounties?.length ? (
+                {hasChildBounties ? (
                     <ChildBountiesLink
                         bountyIndex={bounty.blockchainIndex}
-                        childBountiesCount={bounty.childBounties?.length}
+                        childBountiesCount={bounty.childBountiesCount}
                     />
                 ) : null}
                 {showStatus ? <BountyStatusIndicator status={bounty.status} /> : null}

@@ -26,6 +26,7 @@ import BountyVoting from './voting/BountyVoting'
 import ChildBounties from './child-bounties/ChildBounties'
 import ChildBountyCreate from './child-bounties/create/ChildBountyCreate'
 import ChildBountyLoader from './child-bounties/child-bounty/ChildBountyLoader'
+import ChildBountiesLoader from './child-bounties/ChildBountiesLoader'
 
 export enum BountyContentType {
     Info = 'info',
@@ -80,7 +81,7 @@ const BOUNTY_CONTENT_TYPE_BUILDER: { [key in BountyContentType]?: BountyTabConfi
                 exact={true}
                 path={`${basePath}/${BountyContentType.ChildBounties}`}
             >
-                <ChildBounties bounty={bounty} />
+                <ChildBountiesLoader bounty={bounty} />
             </Route>
         ),
     },

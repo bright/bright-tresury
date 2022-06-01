@@ -17,7 +17,7 @@ export class FindBountyDto {
     proposer: PublicUserDto
     curator: Nil<PublicUserDto>
     beneficiary: Nil<PublicUserDto>
-    childBounties: Nil<ChildBountyDto[]>
+    childBountiesCount: number
 
     constructor(
         blockchain: BlockchainBountyDto,
@@ -26,7 +26,7 @@ export class FindBountyDto {
         proposer: PublicUserDto,
         curator: Nil<PublicUserDto>,
         beneficiary: Nil<PublicUserDto>,
-        childBounties: Nil<ChildBountyDto[]>,
+        childBountiesCount: number,
     ) {
         this.blockchain = blockchain
         this.entity = entity
@@ -34,7 +34,7 @@ export class FindBountyDto {
         this.proposer = proposer
         this.beneficiary = beneficiary
         this.curator = curator
-        this.childBounties = childBounties
+        this.childBountiesCount = childBountiesCount
     }
 
     isOwner = (user: UserEntity) => this.entity?.isOwner(user) || this.blockchain.isOwner(user)

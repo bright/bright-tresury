@@ -6,19 +6,15 @@ import ChildBountyCard from './ChildBountyCard'
 
 interface OwnProps {
     bounty: BountyDto
+    childBounties: ChildBountyDto[]
 }
 
 export type ChildBountyListProps = OwnProps
 
-const ChildBountiesList = ({ bounty }: ChildBountyListProps) => {
+const ChildBountiesList = ({ bounty, childBounties }: ChildBountyListProps) => {
     const renderCard = (childBounty: ChildBountyDto) => <ChildBountyCard bounty={bounty} childBounty={childBounty} />
 
-    return (
-        <Grid
-            items={bounty?.childBounties?.sort((a, b) => b.blockchainIndex - a.blockchainIndex)}
-            renderItem={renderCard}
-        />
-    )
+    return <Grid items={childBounties?.sort((a, b) => b.blockchainIndex - a.blockchainIndex)} renderItem={renderCard} />
 }
 
 export default ChildBountiesList
