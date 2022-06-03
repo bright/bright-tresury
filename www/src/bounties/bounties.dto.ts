@@ -2,7 +2,6 @@ import { Time } from '@polkadot/util/types'
 import { NetworkPlanckValue, Nil } from '../util/types'
 import { PolkassemblyPostDto } from '../components/polkassemblyDescription/polkassembly-post.dto'
 import { PublicUserDto } from '../util/publicUser.dto'
-import { ChildBountyDto } from './bounty/child-bounties/child-bounties.dto'
 
 export enum BountyStatus {
     Proposed = 'Proposed',
@@ -38,7 +37,7 @@ interface ActiveBounty {
     status: BountyStatus.Active
     curatorFee: NetworkPlanckValue
     curator: PublicUserDto
-    updateDue?: Time
+    updateDue?: Nil<string>
 }
 
 interface PendingPayoutBounty {

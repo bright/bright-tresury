@@ -81,6 +81,7 @@ export class BlockchainChildBountiesService {
                 const childBounty = maybeChildBounty.unwrap()
                 const { status, data } = BlockchainChildBountiesService.getChildBountyStatusData(childBounty.status)
                 const { curator, beneficiary, unlockAt } = data || {}
+                console.log({ status, curator, beneficiary, unlockAt })
                 const curatorAddress = curator?.toString()
                 const beneficiaryAddress = beneficiary?.toString()
                 return {

@@ -1,7 +1,6 @@
 import LoadingWrapper from '../../../components/loading/LoadingWrapper'
 import { useGetChildBounties } from './child-bounties.api'
 import { useNetworks } from '../../../networks/useNetworks'
-import { useParams } from 'react-router'
 import { useTranslation } from 'react-i18next'
 import ChildBounties from './ChildBounties'
 import { BountyDto } from '../../bounties.dto'

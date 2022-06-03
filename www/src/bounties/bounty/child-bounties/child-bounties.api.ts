@@ -3,10 +3,9 @@ import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { BOUNTIES_API_PATH } from '../../bounties.api'
 import { ChildBountyDto, CreateChildBountyDto } from './child-bounties.dto'
 
+export const CHILD_BOUNTIES_API_PATH = '/child-bounties'
 const getChildBountiesApiBasePath = (bountyIndex: number | string) =>
     `${BOUNTIES_API_PATH}/${bountyIndex}/child-bounties`
-
-export const CHILD_BOUNTIES_API_PATH = '/child-bounties'
 
 // GET ALL FOR PARENT BOUNTY
 export const CHILD_BOUNTIES_QUERY_KEY_BASE = 'child-bounties'

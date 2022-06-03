@@ -14,6 +14,8 @@ import { ChildBountyId } from '../../blockchain/blockchain-child-bounties/child-
 import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
 import { arrayToMap, keysAsArray } from '../../utils/arrayToMap'
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
+import { Nil } from '../../utils/types'
+import { UsersService } from '../../users/users.service'
 
 const logger = getLogger()
 
@@ -23,6 +25,7 @@ export class ChildBountiesService {
         @InjectRepository(ChildBountyEntity) private readonly repository: Repository<ChildBountyEntity>,
         private readonly childBountiesBlockchainService: BlockchainChildBountiesService,
         private readonly extrinsicsService: ExtrinsicsService,
+        private readonly usersService: UsersService,
     ) {}
 
     async find(networkId: string): Promise<FindChildBountyDto[]> {
@@ -48,10 +51,13 @@ export class ChildBountiesService {
         const entities = await this.getMappedEntityChildBounties({
             where: { blockchainIndex: In(blockchainIndexes), networkId },
         })
-
-        return blockchainIndexes.map(
-            (blockchainIndex) =>
-                new FindChildBountyDto(blockchainChildBounties.get(blockchainIndex)!, entities.get(blockchainIndex)),
+        return Promise.all(
+            blockchainIndexes.map((blockchainIndex) =>
+                this.createFindChildBountyDto(
+                    blockchainChildBounties.get(blockchainIndex)!,
+                    entities.get(blockchainIndex),
+                ),
+            ),
         )
     }
 
@@ -59,11 +65,23 @@ export class ChildBountiesService {
         const onChain = await this.childBountiesBlockchainService.getChildBounty(networkId, childBountyId)
         if (!onChain) throw new NotFoundException(`Child bounty not found`)
         const entity = await this.repository.findOne({ where: { ...childBountyId, networkId } })
-        return new FindChildBountyDto(onChain, entity)
+        return this.createFindChildBountyDto(onChain, entity)
     }
+
+    private async createFindChildBountyDto(
+        blockchain: BlockchainChildBountyDto,
+        entity?: Nil<ChildBountyEntity>,
+    ): Promise<FindChildBountyDto> {
+        const curator = blockchain.curator
+            ? await this.usersService.getPublicUserDataForWeb3Address(blockchain.curator)
+            : null
+        return new FindChildBountyDto(blockchain, entity, curator)
+    }
+
     async getBountyChildBountiesCount(networkId: string, parentBountyBlockchainIndex: number): Promise<number> {
         return this.childBountiesBlockchainService.getBountyChildBountiesCount(networkId, parentBountyBlockchainIndex)
     }
+
     private async getMappedBlockchainChildBounties(networkId: string, childBountyIds: ChildBountyId[]) {
         return arrayToMap(
             await this.childBountiesBlockchainService.getChildBountiesWithIds(networkId, childBountyIds),

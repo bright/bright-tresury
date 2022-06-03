@@ -23,9 +23,7 @@ import { TipEntity } from './tip.entity'
 import { BlockNumber } from '@polkadot/types/interfaces'
 import { BlockchainService } from '../blockchain/blockchain.service'
 import { GetTipsPosts, PolkassemblyTipsService } from '../polkassembly/tips/polkassembly-tips.service'
-import { PolkassemblyTipPostSchema } from '../polkassembly/tips/tip-post.schema'
 import { PolkassemblyTipPostDto } from '../polkassembly/tips/tip-post.dto'
-import { FindBountyDto } from '../bounties/dto/find-bounty.dto'
 
 const logger = getLogger()
 

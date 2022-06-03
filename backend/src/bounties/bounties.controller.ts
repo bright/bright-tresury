@@ -23,8 +23,6 @@ import { PaginatedParams, PaginatedQueryParams } from '../utils/pagination/pagin
 import { getLogger } from '../logging.module'
 import { PaginatedResponseDto } from '../utils/pagination/paginated.response.dto'
 import { BountyFilterQuery } from './bounty-filter.query'
-import { PublicUserDto } from '../users/dto/public-user.dto'
-import { Nil } from '../utils/types'
 
 const logger = getLogger()
 
@@ -115,22 +113,5 @@ export class BountiesController {
     ): Promise<BountyDto> {
         const bounty = await this.bountiesService.update(Number(bountyIndex), network, dto, sessionData.user)
         return new BountyDto(bounty)
-    }
-
-    @Get(':bountyIndex/curator')
-    @ApiOkResponse({
-        description: 'Bounty curator if exists',
-    })
-    @ApiBadRequestResponse({
-        description: 'Not valid data',
-    })
-    @ApiNotFoundResponse({
-        description: 'The bounty with the given id in the given network does not exist',
-    })
-    async getCurator(
-        @Param() { bountyIndex }: BountyParam,
-        @Query() { network }: NetworkNameQuery,
-    ): Promise<Nil<PublicUserDto>> {
-        return this.bountiesService.getCurator(network, Number(bountyIndex))
     }
 }

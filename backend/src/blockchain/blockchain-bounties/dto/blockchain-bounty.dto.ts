@@ -1,7 +1,8 @@
 import { ForbiddenException } from '@nestjs/common'
 import { Time } from '@polkadot/util/types'
-import { NetworkPlanckValue } from '../../../utils/types'
+import { NetworkPlanckValue, Nil } from '../../../utils/types'
 import { UserEntity } from '../../../users/entities/user.entity'
+import { BlockNumber } from '@polkadot/types/interfaces'
 
 export enum BlockchainBountyStatus {
     Proposed = 'Proposed',
@@ -23,7 +24,7 @@ export class BlockchainBountyDto {
     bond: NetworkPlanckValue
     curatorDeposit: NetworkPlanckValue
     curator?: string
-    updateDue?: Time
+    updateDue?: Nil<BlockNumber>
     beneficiary?: string
     unlockAt?: Time
     fee: NetworkPlanckValue
@@ -50,7 +51,7 @@ export class BlockchainBountyDto {
         bond: NetworkPlanckValue
         curatorDeposit: NetworkPlanckValue
         curator?: string
-        updateDue?: Time
+        updateDue?: Nil<BlockNumber>
         beneficiary?: string
         unlockAt?: Time
         fee: NetworkPlanckValue

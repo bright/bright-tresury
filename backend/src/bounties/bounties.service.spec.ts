@@ -411,20 +411,4 @@ describe('BountiesService', () => {
             expect(result).toHaveLength(0)
         })
     })
-    describe('getCurator', () => {
-        beforeAll(() => {
-            mockGetBounties(app().get(BlockchainBountiesService))
-        })
-        it('should throw NotFoundException when bounty does not exist', async () => {
-            return expect(service().getCurator(NETWORKS.POLKADOT, 99)).rejects.toThrow(NotFoundException)
-        })
-        it('should return undefined when bounty has not curator assigned', async () => {
-            const result = await service().getCurator(NETWORKS.POLKADOT, 0)
-            expect(result).toBeFalsy()
-        })
-        it('should return curator as PublicUserDto when bounty has curator assigned', async () => {
-            const result = await service().getCurator(NETWORKS.POLKADOT, 4)
-            expect(result).toMatchObject({ web3address: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3' })
-        })
-    })
 })

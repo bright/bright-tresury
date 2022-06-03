@@ -14,11 +14,15 @@ import { UserEntity } from '../../users/entities/user.entity'
 import { Repository } from 'typeorm'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { ChildBountyEntity } from './entities/child-bounty.entity'
+import { BlockchainChildBountiesService } from '../../blockchain/blockchain-child-bounties/blockchain-child-bounties.service'
 
 describe('ChildBountiesService', () => {
     const app = beforeSetupFullApp()
     const service = beforeAllSetup(() => app().get<ChildBountiesService>(ChildBountiesService))
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
+    const blockchainChildBountiesService = beforeAllSetup(() =>
+        app().get<BlockchainChildBountiesService>(BlockchainChildBountiesService),
+    )
     const extrinsicsService = beforeAllSetup(() => app().get<ExtrinsicsService>(ExtrinsicsService))
     const repository = beforeAllSetup(() =>
         app().get<Repository<ChildBountyEntity>>(getRepositoryToken(ChildBountyEntity)),
@@ -141,6 +145,13 @@ describe('ChildBountiesService', () => {
             )
             const saved = (await repository().findOne(result.id))!
             expect(saved.ownerId).toBe(user.id)
+        })
+    })
+    describe('getBountyChildBountiesCount', () => {
+        it('should call getBountyChildBountiesCount with correct arguments', () => {
+            const spy = jest.spyOn(blockchainChildBountiesService(), 'getBountyChildBountiesCount')
+            service().getBountyChildBountiesCount(NETWORKS.POLKADOT, 0)
+            expect(spy).toHaveBeenCalledWith(NETWORKS.POLKADOT, 0)
         })
     })
 })

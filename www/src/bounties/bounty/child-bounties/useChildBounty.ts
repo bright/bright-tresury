@@ -2,6 +2,8 @@ import { ChildBountyDto, ChildBountyStatus } from './child-bounties.dto'
 import { BountyDto } from '../../bounties.dto'
 import { useAuth } from '../../../auth/AuthContext'
 import { useBounty } from '../useBounty'
+import { useBestNumber } from '../../../util/useBestNumber'
+import BN from 'bn.js'
 
 export interface UseChildBountyResult {
     isAdded: boolean
@@ -15,9 +17,11 @@ export interface UseChildBountyResult {
     canUnassignCurator: boolean
     canClaimPayout: boolean
 }
-
+// Those condition are defined based on the child_bounties pallet defined here:
+// https://github.com/paritytech/substrate/blob/master/frame/child-bounties/src/lib.rs
 export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): UseChildBountyResult => {
-    const { isActive: isBountyActive, isCurator: isBountyCurator } = useBounty(bounty)
+    const { bestNumber } = useBestNumber()
+    const { isActive: isBountyActive, isCurator: isBountyCurator, isUpdateDueExpired } = useBounty(bounty)
     const { hasWeb3AddressAssigned, user } = useAuth()
     const isSignedInWithWeb3 = user?.isWeb3
 
@@ -32,14 +36,20 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
 
     const canAcceptCurator = isBountyActive && isCuratorProposed && isCurator
 
-    const isUpdateDueExpired = false
     const canUnassignCurator =
         (isCuratorProposed && isCurator) ||
         (isCuratorProposed && isBountyActive && isBountyCurator) ||
         (isActive && isCurator) ||
-        (isActive && isBountyCurator) ||
-        (isActive && isUpdateDueExpired && isSignedInWithWeb3)
-    const canClaimPayout = false
+        (isActive && isBountyActive && isBountyCurator) ||
+        (isSignedInWithWeb3 && isActive && isBountyActive && isUpdateDueExpired) ||
+        (isPendingPayout && isBountyActive && isBountyCurator)
+
+    const canClaimPayout = !!(
+        isPendingPayout &&
+        bestNumber &&
+        childBounty.unlockAt &&
+        bestNumber.cmp(new BN(childBounty.unlockAt)) >= 0
+    )
 
     const hasCurator = isActive || isPendingPayout || isCuratorProposed
 

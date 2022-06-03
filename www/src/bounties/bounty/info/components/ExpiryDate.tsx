@@ -6,6 +6,8 @@ import { Label } from '../../../../components/text/Label'
 import ShortText from '../../../../components/text/ShortText'
 import { dateToString, timeToString } from '../../../../util/dateUtil'
 import { BountyDto, BountyStatus } from '../../../bounties.dto'
+import { useTimeLeft } from '../../../../util/useTimeLeft'
+import BlockNumberShortText from '../../../../components/text/BlockNumberShortText'
 
 interface OwnProps {
     bounty: BountyDto
@@ -37,8 +39,8 @@ const ExpiryDate = ({ bounty, className }: ExpiryDateProps) => {
                     <div className={className}>
                         <Label label={t('bounty.info.expiryDate')} />
                         {bounty.updateDue ? (
-                            <ShortText
-                                text={timeToString(bounty.updateDue, t)}
+                            <BlockNumberShortText
+                                blockNumber={bounty.updateDue}
                                 placeholder={t('bounty.info.expiryDate')}
                             />
                         ) : (

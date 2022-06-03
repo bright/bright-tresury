@@ -273,9 +273,4 @@ export class BountiesService {
     async getMappedPolkassemblyBounties(options: GetPosts): Promise<Map<number, PolkassemblyBountyPostDto>> {
         return arrayToMap(await this.polkassemblyService.find(options), 'blockchainIndex')
     }
-
-    async getCurator(networkId: string, blockchainIndex: number): Promise<Nil<PublicUserDto>> {
-        const bounty = await this.getBounty(networkId, blockchainIndex)
-        return bounty.curator
-    }
 }

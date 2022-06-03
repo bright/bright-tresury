@@ -88,7 +88,7 @@ export class BlockchainBountiesService {
                 value: bounty.value.toString() as NetworkPlanckValue,
                 fee: bounty.fee.toString() as NetworkPlanckValue,
                 curator: curatorAddress,
-                updateDue: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, updateDue, blockTime),
+                updateDue,
                 beneficiary: beneficiaryAddress,
                 unlockAt: BlockchainBountiesService.getBlockchainTimeLeft(bestNumber, unlockAt, blockTime),
                 curatorDeposit: bounty.curatorDeposit.toString() as NetworkPlanckValue,

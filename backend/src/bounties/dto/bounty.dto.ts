@@ -65,9 +65,9 @@ export class BountyDto {
     unlockAt?: BlockchainTimeLeft
 
     @ApiProperty({
-        description: 'Time left until the bounty expires',
+        description: 'An update from the curator is due by this block, else they are considered inactive',
     })
-    updateDue?: BlockchainTimeLeft
+    updateDue?: Nil<string>
 
     @ApiProperty({
         description: 'Current bounty status ',
@@ -125,7 +125,7 @@ export class BountyDto {
         this.curator = curator
         this.beneficiary = beneficiary
         this.unlockAt = blockchain.unlockAt
-        this.updateDue = blockchain.updateDue
+        this.updateDue = blockchain.updateDue?.toString()
         this.status = blockchain.status
         this.owner = entity?.owner ? PublicUserDto.fromUserEntity(entity.owner) : null
         this.title = entity?.title

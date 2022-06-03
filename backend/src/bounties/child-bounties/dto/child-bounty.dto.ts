@@ -70,7 +70,7 @@ export class ChildBountyDto {
     })
     description?: Nil<string>
 
-    constructor({ blockchain, entity }: FindChildBountyDto) {
+    constructor({ blockchain, entity, curator }: FindChildBountyDto) {
         this.blockchainIndex = blockchain.index
         this.parentBountyBlockchainIndex = blockchain.parentIndex
         this.blockchainDescription = blockchain.description
@@ -80,8 +80,10 @@ export class ChildBountyDto {
         this.unlockAt = blockchain.unlockAt
         this.status = blockchain.status
 
-        this.owner = entity?.owner ? PublicUserDto.fromUserEntity(entity.owner) : null
+        this.owner = entity?.owner ? PublicUserDto.fromUserEntity(entity.owner) : undefined
         this.title = entity?.title
         this.description = entity?.description
+
+        this.curator = curator
     }
 }

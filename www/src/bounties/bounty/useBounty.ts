@@ -1,6 +1,9 @@
 import { useAuth } from '../../auth/AuthContext'
 import { Nil } from '../../util/types'
 import { BountyDto, BountyStatus } from '../bounties.dto'
+import { useTimeLeft } from '../../util/useTimeLeft'
+import { useBestNumber } from '../../util/useBestNumber'
+import BN from 'bn.js'
 
 export interface UseBountyResult {
     canEdit: boolean
@@ -8,6 +11,7 @@ export interface UseBountyResult {
     canReject: boolean
     canAward: boolean
     canClaimPayout: boolean
+    isUpdateDueExpired: boolean
     canExtendExpiry: boolean
     isProposedCurator: boolean
     isCurator: boolean
@@ -24,6 +28,7 @@ export interface UseBountyResult {
 
 export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
     const { user, hasWeb3AddressAssigned } = useAuth()
+    const { bestNumber } = useBestNumber()
     const isProposed = bounty?.status === BountyStatus.Proposed
     const isApproved = bounty?.status === BountyStatus.Approved
     const isFunded = bounty?.status === BountyStatus.Funded
@@ -53,6 +58,13 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
 
     const canExtendExpiry = isCurator && isActive
 
+    const isUpdateDueExpired = !!(
+        isActive &&
+        bounty?.updateDue &&
+        bestNumber &&
+        bestNumber.cmp(new BN(bounty.updateDue)) >= 0
+    )
+
     const hasDetails = !!bounty?.owner
     const hasChildBounties = !!bounty?.childBountiesCount
     return {
@@ -61,6 +73,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
         canEdit,
         canAward,
         canClaimPayout,
+        isUpdateDueExpired,
         canExtendExpiry,
         isProposedCurator,
         isCurator,

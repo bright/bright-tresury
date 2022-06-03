@@ -7,6 +7,9 @@ import {
     createUserSessionHandlerWithVerifiedEmail,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { minimalValidCreateDto } from './spec.helpers'
+import { FindChildBountyDto } from './dto/find-child-bounty.dto'
+import { NetworkPlanckValue, Nil } from '../../utils/types'
+import { BlockchainChildBountyStatus } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
 
 const baseUrl = (bountyId: any) => `/api/v1/bounties/${bountyId}/child-bounties`
 
@@ -22,6 +25,56 @@ describe(`/api/v1/bounties/:bountyIndex/childBounties`, () => {
     afterAll(() => {
         jest.clearAllMocks()
     })
+
+    describe('GET', () => {
+        beforeAll(() => {
+            jest.spyOn(childBountiesService(), 'findByParentBountyBlockchainIndex').mockImplementation(
+                async (networkId, parentBountyBlockchainIndex) => {
+                    return Promise.resolve([
+                        {
+                            blockchain: {
+                                index: 0,
+                                parentIndex: 0,
+                                description: 'bc-description-0',
+                                value: '10' as NetworkPlanckValue,
+                                fee: '1' as NetworkPlanckValue,
+                                curator: undefined,
+                                curatorDeposit: '0' as NetworkPlanckValue,
+                                beneficiary: undefined,
+                                unlockAt: undefined,
+                                status: BlockchainChildBountyStatus.Added,
+                            },
+                        },
+                    ])
+                },
+            )
+        })
+
+        it('should return child bounties', async () => {
+            const { body: childBountiesDtos } = await request(app()).get(`${baseUrl(0)}?network=${NETWORKS.POLKADOT}`)
+            expect(Array.isArray(childBountiesDtos)).toBe(true)
+            expect(childBountiesDtos).toHaveLength(1)
+            const [childBountyDto] = childBountiesDtos
+            expect(childBountyDto).toMatchObject({
+                blockchainIndex: 0,
+                parentBountyBlockchainIndex: 0,
+                blockchainDescription: 'bc-description-0',
+                value: '10',
+                curatorFee: '1',
+                curatorDeposit: '0',
+                status: BlockchainChildBountyStatus.Added,
+            })
+        })
+        it(`should return ${HttpStatus.BAD_REQUEST} for no networkId`, async () => {
+            return request(app()).get(baseUrl(0)).expect(HttpStatus.BAD_REQUEST)
+        })
+        it(`should return ${HttpStatus.BAD_REQUEST} for not valid networkId`, async () => {
+            return request(app())
+                .get(`${baseUrl(0)}?network=non-existing`)
+                .expect(HttpStatus.BAD_REQUEST)
+        })
+    })
+
     describe('POST', () => {
         const setUp = async () => {
             const sessionHandler = await createUserSessionHandlerWithVerifiedEmail(app())

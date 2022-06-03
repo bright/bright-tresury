@@ -813,7 +813,8 @@
     "childBounty": {
         "header": {
             "childBounty": "Child Bounty",
-            "assignCurator": "Assign curator"
+            "assignCurator": "Assign curator",
+            "acceptCurator": "Accept curator"
         },
         "assignCurator": {
             "title": "Propose child bounty curator",
@@ -829,6 +830,13 @@
                 "warningMessage": "You will now propose <br/><strong>{{curator}}</strong><br/> to be this child bounty curator."
             }
         },
+        "acceptCurator": {
+            "submittingTransaction": {
+                "title": "You are about to accept the curator's role",
+                "warningMessage": "In order to accept the curator's role you need to have a <strong>deposit amount</strong> available on your account. Please note, that if you act maliciously, <strong>you may loose the deposit</strong>. The deposit will be refund upon successful child bounty payout.",
+                "eventDescription": "event curator accepted finished"
+            }
+        },
         "content": {
             "infoLabel": "Info"
         },
@@ -839,8 +847,7 @@
             "beneficiary": "Beneficiary",
             "curator": "Curator",
             "description": "Description",
-            "onChainDescription": "On-chain description",
-            "field": "Field of child bounty"
+            "onChainDescription": "On-chain description"
         },
         "list": {
             "create": "+ Child Bounty",
