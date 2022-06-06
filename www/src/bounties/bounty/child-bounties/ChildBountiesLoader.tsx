@@ -19,8 +19,8 @@ const ChildBountiesLoader = ({ bounty }: ChildBountiesLoaderProps) => {
     return (
         <LoadingWrapper
             status={status}
-            errorText={t('TOTO add child bounties loading error text')}
-            loadingText={t('TODO add child bounties loading text')}
+            errorText={t('errors.errorOccurredWhileLoadingChildBounties')}
+            loadingText={t('loading.childBounties')}
         >
             <ChildBounties bounty={bounty} childBounties={data ?? []} />
         </LoadingWrapper>

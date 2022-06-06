@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Switch, useRouteMatch } from 'react-router-dom'
 import infoIcon from '../../assets/info.svg'
 import voting from '../../assets/voting.svg'
@@ -7,13 +7,7 @@ import discussionIcon from '../../assets/discussion.svg'
 import { useSuccessfullyLoadedItemStyles } from '../../components/loading/useSuccessfullyLoadedItemStyles'
 import PrivateRoute from '../../routes/PrivateRoute'
 import Route from '../../routes/Route'
-import {
-    ROUTE_AWARD_BOUNTY,
-    ROUTE_CHILD_BOUNTY,
-    ROUTE_EDIT_BOUNTY,
-    ROUTE_EXTEND_EXPIRY_BOUNTY,
-    ROUTE_NEW_CHILD_BOUNTY,
-} from '../../routes/routes'
+import { ROUTE_AWARD_BOUNTY, ROUTE_EDIT_BOUNTY, ROUTE_EXTEND_EXPIRY_BOUNTY } from '../../routes/routes'
 import { Nil } from '../../util/types'
 import { BountyDto } from '../bounties.dto'
 import BountyDiscussion from './discussion/BountyDiscussion'
@@ -23,9 +17,6 @@ import BountyAward from './header/curator-actions/award/BountyAward'
 import BountyExtendExpiry from './header/curator-actions/extend-expiry/BountyExtendExpiry'
 import BountyInfo from './info/BountyInfo'
 import BountyVoting from './voting/BountyVoting'
-import ChildBounties from './child-bounties/ChildBounties'
-import ChildBountyCreate from './child-bounties/create/ChildBountyCreate'
-import ChildBountyLoader from './child-bounties/child-bounty/ChildBountyLoader'
 import ChildBountiesLoader from './child-bounties/ChildBountiesLoader'
 
 export enum BountyContentType {
@@ -105,7 +96,7 @@ const Bounty = ({ bounty }: BountyProps) => {
 
     let { path } = useRouteMatch()
 
-    const bountyTabsConfig = useMemo(() => Object.values(BOUNTY_CONTENT_TYPE_BUILDER), [BOUNTY_CONTENT_TYPE_BUILDER])
+    const bountyTabsConfig = Object.values(BOUNTY_CONTENT_TYPE_BUILDER)
 
     const routes = bountyTabsConfig.map(({ getRoute }) => getRoute(path, bounty))
 

@@ -14,6 +14,9 @@ export interface UseChildBountyResult {
     hasCurator: boolean
     canProposeCurator: boolean
     canAcceptCurator: boolean
+    canUnassignCuratorByBountyCurator: boolean
+    canUsassignCuratorByChildBountyCurator: boolean
+    canUnassignCuratorByCommunity: boolean
     canUnassignCurator: boolean
     canClaimPayout: boolean
 }
@@ -36,13 +39,15 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
 
     const canAcceptCurator = isBountyActive && isCuratorProposed && isCurator
 
+    const hasCurator = isActive || isPendingPayout || isCuratorProposed
+
+    const canUnassignCuratorByBountyCurator =
+        isBountyActive && isBountyCurator && (isCuratorProposed || isActive || isPendingPayout)
+    const canUsassignCuratorByChildBountyCurator = isCurator && (isCuratorProposed || isActive)
+    const canUnassignCuratorByCommunity = !!(isSignedInWithWeb3 && isActive && isBountyActive && isUpdateDueExpired)
+
     const canUnassignCurator =
-        (isCuratorProposed && isCurator) ||
-        (isCuratorProposed && isBountyActive && isBountyCurator) ||
-        (isActive && isCurator) ||
-        (isActive && isBountyActive && isBountyCurator) ||
-        (isSignedInWithWeb3 && isActive && isBountyActive && isUpdateDueExpired) ||
-        (isPendingPayout && isBountyActive && isBountyCurator)
+        canUnassignCuratorByBountyCurator || canUsassignCuratorByChildBountyCurator || canUnassignCuratorByCommunity
 
     const canClaimPayout = !!(
         isPendingPayout &&
@@ -50,13 +55,14 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         childBounty.unlockAt &&
         bestNumber.cmp(new BN(childBounty.unlockAt)) >= 0
     )
-
-    const hasCurator = isActive || isPendingPayout || isCuratorProposed
-
+    debugger
     return {
         hasCurator,
         canProposeCurator,
         canAcceptCurator,
+        canUnassignCuratorByBountyCurator,
+        canUsassignCuratorByChildBountyCurator,
+        canUnassignCuratorByCommunity,
         canUnassignCurator,
         isAdded,
         isCuratorProposed,

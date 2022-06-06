@@ -90,7 +90,7 @@ const ChildBountyCard = ({ childBounty, bounty, showStatus = true }: BountyCardP
             <div className={classes.usersInfoContainer}>
                 {bountyHasCurator ? <User label={t('childBounty.list.proposer')} user={bounty.curator} /> : null}
                 {childBountyHasCurator ? (
-                    <User label={t('childBounty.list.curator')} user={{ web3address: childBounty.curator as string }} />
+                    <User label={t('childBounty.list.curator')} user={childBounty.curator!} />
                 ) : null}
             </div>
         </NetworkCard>

@@ -37,6 +37,7 @@ const isYou = (user: PublicUserDto, authUser: Nil<AuthContextUser>, detectYou: b
     if (user.userId === authUser.id) return true
 
     if (!user.web3address || !authUser.web3Addresses) return false
+
     return !!authUser.web3Addresses.find(
         (web3Address) =>
             encodeAddress(web3Address.address, network.ss58Format) ===

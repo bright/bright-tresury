@@ -814,7 +814,8 @@
         "header": {
             "childBounty": "Child Bounty",
             "assignCurator": "Assign curator",
-            "acceptCurator": "Accept curator"
+            "acceptCurator": "Accept curator",
+            "unassignCurator": "Reject curator"
         },
         "assignCurator": {
             "title": "Propose child bounty curator",
@@ -835,6 +836,15 @@
                 "title": "You are about to accept the curator's role",
                 "warningMessage": "In order to accept the curator's role you need to have a <strong>deposit amount</strong> available on your account. Please note, that if you act maliciously, <strong>you may loose the deposit</strong>. The deposit will be refund upon successful child bounty payout.",
                 "eventDescription": "event curator accepted finished"
+            }
+        },
+        "unassignCurator": {
+            "submittingTransaction": {
+                "title": "You are about to reject the curator's role",
+                "warningMessageAsChildBountyCurator": "We take this as a sign that you are unable to do your job and willingly give up. The community could slash you, but for now they allow you to recover your deposit and exit without issue. (The community may want to change this if it is abused.)",
+                "warningMessageAsBountyCurator": "We assume that the child bounty curator is malicious or inactive. As a result, child bounty curator deposit is slashed.",
+                "warningMessageAsCommunity": "We allow anyone in the community to call out that a child-bounty curator is not doing their due diligence, and we should pick a new one. In this case the child bounty curator deposit is slashed.",
+                "eventDescription": "event curator rejected finished"
             }
         },
         "content": {
@@ -1126,6 +1136,7 @@
         "errorOccurredWhileLoadingStatistics": "An error occurred while loading statistics.",
         "errorOccurredWhileLoadingBounty": "An error occurred while loading the bounty.",
         "errorOccurredWhileLoadingChildBounty": "An error occurred while loading the child bounty.",
+        "errorOccurredWhileLoadingChildBounties": "An error occurred while loading child bounties.",
         "errorOccurredWhileLoadingComments": "An error occurred while loading comments.",
         "errorOccurredWhileLoadingTips": "An error occurred while loading tips.",
         "errorOccurredWhileLoadingTip": "An error occurred while loading the tip.",
@@ -1145,6 +1156,7 @@
         "stats": "We're loading the statistics. It may take a moment. Bear with us.",
         "bounty": "We're loading the bounty. It may take a moment. Bear with us.",
         "childBounty": "We're loading the child bounty. It may take a moment. Bear with us.",
+        "childBounties": "We're loading child bounties. It may take a moment. Bear with us.",
         "comments": "We're loading the comments. It may take a moment. Bear with us.",
         "bountiesVoting": "We're loading the bounty voting. It may take a moment. Bear with us."
     }

@@ -11,7 +11,6 @@ import { useChildBounty } from '../../useChildBounty'
 import { useBounty } from '../../../useBounty'
 import { BountyDto } from '../../../../bounties.dto'
 
-
 interface OwnProps {
     childBounty: ChildBountyDto
     bounty: BountyDto
@@ -25,7 +24,6 @@ const ChildBountyOptionsButton = ({ className, childBounty, bounty }: ChildBount
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
     const { isCurator: isBountyCurator } = useBounty(bounty)
     const { hasCurator } = useChildBounty(bounty, childBounty)
-
     const canAssignCurator = !hasCurator && isBountyCurator
 
     const onAssignCuratorClick = () => {
