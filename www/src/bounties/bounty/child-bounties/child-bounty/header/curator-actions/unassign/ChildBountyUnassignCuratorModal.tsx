@@ -20,6 +20,7 @@ const WARNING_MESSAGES = {
 interface OwnProps {
     open: boolean
     onClose: () => void
+    onSuccess: () => Promise<any>
     childBounty: ChildBountyDto
     bounty: BountyDto
 }
@@ -31,8 +32,10 @@ const ChildBountyUnassignCuratorModal = ({
     onClose,
     childBounty,
     bounty,
+    onSuccess,
 }: ChildBountyUnassignCuratorModalProps) => {
     const { t } = useTranslation()
+
     const {
         canUnassignCuratorByBountyCurator,
         canUsassignCuratorByChildBountyCurator,
@@ -61,7 +64,7 @@ const ChildBountyUnassignCuratorModal = ({
                 <SubmittingTransaction
                     title={t('childBounty.unassignCurator.submittingTransaction.title')}
                     instruction={warningMessage}
-                    onSuccess={onClose}
+                    onSuccess={onSuccess}
                     onClose={onClose}
                     txAttrs={{
                         palletRpc: 'childBounties',

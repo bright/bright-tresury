@@ -8,11 +8,18 @@ import React from 'react'
 interface OwnProps {
     open: boolean
     onClose: () => void
+    onSuccess: () => Promise<any>
     childBounty: ChildBountyDto
 }
 export type ChildBountyAcceptCuratorModalProps = OwnProps
-const ChildBountyAcceptCuratorModal = ({ open, onClose, childBounty }: ChildBountyAcceptCuratorModalProps) => {
+const ChildBountyAcceptCuratorModal = ({
+    open,
+    onClose,
+    onSuccess,
+    childBounty,
+}: ChildBountyAcceptCuratorModalProps) => {
     const { t } = useTranslation()
+
     return (
         <Modal
             open={open}
@@ -33,7 +40,7 @@ const ChildBountyAcceptCuratorModal = ({ open, onClose, childBounty }: ChildBoun
                         }}
                     />
                 }
-                onSuccess={onClose}
+                onSuccess={onSuccess}
                 onClose={onClose}
                 txAttrs={{
                     palletRpc: 'childBounties',

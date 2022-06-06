@@ -7,19 +7,28 @@ import { ChildBountyDto } from '../../../../child-bounties.dto'
 
 interface OwnProps {
     childBounty: ChildBountyDto
+    onSuccess: () => Promise<any>
 }
 export type ChildBountyAcceptCuratorButtonProps = OwnProps
 
-const ChildBountyAcceptCuratorButton = ({ childBounty }: ChildBountyAcceptCuratorButtonProps) => {
+const ChildBountyAcceptCuratorButton = ({ childBounty, onSuccess }: ChildBountyAcceptCuratorButtonProps) => {
     const { t } = useTranslation()
     const { open, visible, close } = useModal()
-
+    const onSuccessWithClose = async () => {
+        await onSuccess()
+        close()
+    }
     return (
         <>
             <SuccessButton variant="contained" color="primary" onClick={open}>
                 {t('childBounty.header.acceptCurator')}
             </SuccessButton>
-            <ChildBountyAcceptCuratorModal open={visible} onClose={close} childBounty={childBounty} />
+            <ChildBountyAcceptCuratorModal
+                open={visible}
+                onClose={close}
+                childBounty={childBounty}
+                onSuccess={onSuccessWithClose}
+            />
         </>
     )
 }

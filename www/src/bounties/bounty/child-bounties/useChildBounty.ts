@@ -55,7 +55,7 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         childBounty.unlockAt &&
         bestNumber.cmp(new BN(childBounty.unlockAt)) >= 0
     )
-    debugger
+
     return {
         hasCurator,
         canProposeCurator,

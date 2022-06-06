@@ -9,19 +9,34 @@ import { BountyDto } from '../../../../../../bounties.dto'
 interface OwnProps {
     childBounty: ChildBountyDto
     bounty: BountyDto
+    onSuccess: () => Promise<any>
 }
 
 export type ChildBountyUnassignCuratorButtonProps = OwnProps
 
-const ChildBountyUnassignCuratorButton = ({ childBounty, bounty }: ChildBountyUnassignCuratorButtonProps) => {
+const ChildBountyUnassignCuratorButton = ({
+    childBounty,
+    bounty,
+    onSuccess,
+}: ChildBountyUnassignCuratorButtonProps) => {
     const { t } = useTranslation()
     const { open, visible, close } = useModal()
+    const onSuccessWithClose = async () => {
+        await onSuccess()
+        close()
+    }
     return (
         <>
             <WarningButton variant="contained" color="primary" onClick={open}>
                 {t('childBounty.header.unassignCurator')}
             </WarningButton>
-            <ChildBountyUnassignCuratorModal open={visible} onClose={close} childBounty={childBounty} bounty={bounty} />
+            <ChildBountyUnassignCuratorModal
+                open={visible}
+                onClose={close}
+                childBounty={childBounty}
+                bounty={bounty}
+                onSuccess={onSuccessWithClose}
+            />
         </>
     )
 }
