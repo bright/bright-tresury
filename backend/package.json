@@ -28,7 +28,7 @@
         "database:migrate": "npx --node-options $NODE_DEBUG_OPTION -- ts-node --files src/database.migrate.up.ts",
         "database:migrate:undo": "DATABASE_USERNAME=deployer npx --node-arg $NODE_DEBUG_OPTION -- ts-node --files src/database.migrate.down.ts",
         "database:migrate:ci": "npm run database:migrate | bunyan -o short",
-        "database:clean": "npx --node-arg $NODE_DEBUG_OPTION -- ts-node --files src/database.clean.ts",
+        "database:clean": "npx --node-options='--max-old-space-size=2048' -- ts-node --files src/database.clean.ts",
         "webpack": "webpack --config webpack.config.ts"
     },
     "author": "",
