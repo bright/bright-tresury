@@ -37,10 +37,12 @@ const ChildBountyInfo = ({ childBounty }: ChildBountyDetailsProps) => {
     return (
         <div className={loadedClasses.content}>
             <div className={classes.addresses}>
-                <div>
-                    <Label label={t('childBounty.info.beneficiary')} />
-                    <User user={{ web3address: childBounty.beneficiary as string }} />
-                </div>
+                {childBounty.beneficiary ? (
+                    <div>
+                        <Label label={t('childBounty.info.beneficiary')} />
+                        <User user={childBounty.beneficiary} />
+                    </div>
+                ) : null}
                 {childBounty.curator ? (
                     <div>
                         <Label label={t('childBounty.info.curator')} />

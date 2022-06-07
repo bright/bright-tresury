@@ -11,7 +11,11 @@ export interface UseChildBountyResult {
     isActive: boolean
     isPendingPayout: boolean
 
+    hasBeneficiary: boolean
+    isBeneficiary: boolean
+
     hasCurator: boolean
+    isCurator: boolean
     canProposeCurator: boolean
     canAcceptCurator: boolean
     canUnassignCuratorByBountyCurator: boolean
@@ -35,11 +39,13 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
 
     const canProposeCurator = isBountyActive && isBountyCurator && isAdded
 
-    const isCurator = hasWeb3AddressAssigned(childBounty.curator?.web3address)
+    const hasCurator = isActive || isPendingPayout || isCuratorProposed
+    const isCurator = hasCurator && hasWeb3AddressAssigned(childBounty.curator?.web3address)
 
     const canAcceptCurator = isBountyActive && isCuratorProposed && isCurator
 
-    const hasCurator = isActive || isPendingPayout || isCuratorProposed
+    const hasBeneficiary = isPendingPayout
+    const isBeneficiary = isPendingPayout && hasWeb3AddressAssigned(childBounty.beneficiary?.web3address)
 
     const canUnassignCuratorByBountyCurator =
         isBountyActive && isBountyCurator && (isCuratorProposed || isActive || isPendingPayout)
@@ -50,6 +56,7 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         canUnassignCuratorByBountyCurator || canUsassignCuratorByChildBountyCurator || canUnassignCuratorByCommunity
 
     const canClaimPayout = !!(
+        (isBountyCurator || isCurator || isBeneficiary) &&
         isPendingPayout &&
         bestNumber &&
         childBounty.unlockAt &&
@@ -57,7 +64,10 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
     )
 
     return {
+        hasBeneficiary,
+        isBeneficiary,
         hasCurator,
+        isCurator,
         canProposeCurator,
         canAcceptCurator,
         canUnassignCuratorByBountyCurator,

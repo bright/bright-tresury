@@ -70,7 +70,7 @@ export class ChildBountyDto {
     })
     description?: Nil<string>
 
-    constructor({ blockchain, entity, curator }: FindChildBountyDto) {
+    constructor({ blockchain, entity, curator, beneficiary }: FindChildBountyDto) {
         this.blockchainIndex = blockchain.index
         this.parentBountyBlockchainIndex = blockchain.parentIndex
         this.blockchainDescription = blockchain.description
@@ -85,5 +85,6 @@ export class ChildBountyDto {
         this.description = entity?.description
 
         this.curator = curator
+        this.beneficiary = beneficiary
     }
 }

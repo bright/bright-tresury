@@ -7,10 +7,16 @@ export class FindChildBountyDto {
     blockchain: BlockchainChildBountyDto
     entity?: Nil<ChildBountyEntity>
     curator?: Nil<PublicUserDto>
-
-    constructor(blockchain: BlockchainChildBountyDto, entity?: Nil<ChildBountyEntity>, curator?: Nil<PublicUserDto>) {
+    beneficiary?: Nil<PublicUserDto>
+    constructor(
+        blockchain: BlockchainChildBountyDto,
+        entity?: Nil<ChildBountyEntity>,
+        curator?: Nil<PublicUserDto>,
+        beneficiary?: Nil<PublicUserDto>,
+    ) {
         this.blockchain = blockchain
         this.entity = entity
         this.curator = curator
+        this.beneficiary = beneficiary
     }
 }

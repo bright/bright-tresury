@@ -7,6 +7,7 @@ import ChildBountyAcceptCuratorButton from './curator-actions/accept/ChildBounty
 import ChildBountyUnassignCuratorButton from './curator-actions/unassign/ChildBountyUnassignCuratorButton'
 import { useNetworks } from '../../../../../networks/useNetworks'
 import { useGetChildBounty } from '../../child-bounties.api'
+import ChildBountyClaimButton from './curator-actions/claim/ChildBountyClaimButton'
 
 interface OwnProps {
     bounty: BountyDto
@@ -30,7 +31,7 @@ const ChildBountyActionButtons = ({ bounty, childBounty, ...props }: CuratorActi
             {canUnassignCurator ? (
                 <ChildBountyUnassignCuratorButton bounty={bounty} childBounty={childBounty} onSuccess={refetch} />
             ) : null}
-            {/*TODO: TREAS-435 { canClaimPayout ? <ChildBountyClaimPayoutButton /> : null}*/}
+            {canClaimPayout ? <ChildBountyClaimButton childBounty={childBounty} /> : null}
         </ActionButtons>
     )
 }

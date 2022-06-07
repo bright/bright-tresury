@@ -815,7 +815,8 @@
             "childBounty": "Child Bounty",
             "assignCurator": "Assign curator",
             "acceptCurator": "Accept curator",
-            "unassignCurator": "Reject curator"
+            "unassignCurator": "Reject curator",
+            "claimPayout": "Claim Payout"
         },
         "assignCurator": {
             "title": "Propose child bounty curator",
@@ -845,6 +846,14 @@
                 "warningMessageAsBountyCurator": "We assume that the child bounty curator is malicious or inactive. As a result, child bounty curator deposit is slashed.",
                 "warningMessageAsCommunity": "We allow anyone in the community to call out that a child-bounty curator is not doing their due diligence, and we should pick a new one. In this case the child bounty curator deposit is slashed.",
                 "eventDescription": "event curator rejected finished"
+            }
+        },
+        "claimPayout": {
+            "submittingTransaction": {
+                "title": "You are about to claim the payout",
+                "warningMessage": "We're happy that you've made it to this point! Thanks for your work to support the community. Submit the transaction to claim the payout.",
+                "eventDescription": "event claim payout finished",
+                "successMessage": "Congratulations, you have just claimed the payout!"
             }
         },
         "content": {

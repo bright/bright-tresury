@@ -72,10 +72,13 @@ export class ChildBountiesService {
         blockchain: BlockchainChildBountyDto,
         entity?: Nil<ChildBountyEntity>,
     ): Promise<FindChildBountyDto> {
+        const beneficiary = blockchain.beneficiary
+            ? await this.usersService.getPublicUserDataForWeb3Address(blockchain.beneficiary)
+            : null
         const curator = blockchain.curator
             ? await this.usersService.getPublicUserDataForWeb3Address(blockchain.curator)
             : null
-        return new FindChildBountyDto(blockchain, entity, curator)
+        return new FindChildBountyDto(blockchain, entity, curator, beneficiary)
     }
 
     async getBountyChildBountiesCount(networkId: string, parentBountyBlockchainIndex: number): Promise<number> {
