@@ -816,7 +816,8 @@
             "assignCurator": "Assign curator",
             "acceptCurator": "Accept curator",
             "unassignCurator": "Reject curator",
-            "claimPayout": "Claim Payout"
+            "claimPayout": "Claim Payout",
+            "closeChildBounty": "Close child bounty"
         },
         "assignCurator": {
             "title": "Propose child bounty curator",
@@ -830,6 +831,12 @@
             "submittingTransaction": {
                 "title": "You are about to propose child bounty curator",
                 "warningMessage": "You will now propose <br/><strong>{{curator}}</strong><br/> to be this child bounty curator."
+            }
+        },
+        "closeChildBounty": {
+            "submittingTransaction": {
+                "title": "Closing child bounty",
+                "warningMessage": "You will now cancel a proposed or active child bounty. Child bounty account funds are transferred to parent bounty account. The child bounty curator deposit may be unreserved if possible."
             }
         },
         "acceptCurator": {
