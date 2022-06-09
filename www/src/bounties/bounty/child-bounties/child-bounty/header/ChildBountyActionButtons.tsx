@@ -8,6 +8,7 @@ import ChildBountyUnassignCuratorButton from './curator-actions/unassign/ChildBo
 import { useNetworks } from '../../../../../networks/useNetworks'
 import { useGetChildBounty } from '../../child-bounties.api'
 import ChildBountyClaimButton from './curator-actions/claim/ChildBountyClaimButton'
+import ChildBountyEditButton from './ChildBountyEditButton'
 
 interface OwnProps {
     bounty: BountyDto
@@ -18,7 +19,7 @@ export type CuratorActionButtonsProps = OwnProps & ActionButtonsProps
 
 const ChildBountyActionButtons = ({ bounty, childBounty, ...props }: CuratorActionButtonsProps) => {
     const { network } = useNetworks()
-    const { canAcceptCurator, canUnassignCurator, canClaimPayout } = useChildBounty(bounty, childBounty)
+    const { canAcceptCurator, canUnassignCurator, canClaimPayout, canEdit } = useChildBounty(bounty, childBounty)
     const { refetch } = useGetChildBounty({
         bountyIndex: childBounty.parentBountyBlockchainIndex.toString(),
         childBountyIndex: childBounty.blockchainIndex.toString(),
@@ -27,6 +28,7 @@ const ChildBountyActionButtons = ({ bounty, childBounty, ...props }: CuratorActi
 
     return (
         <ActionButtons {...props}>
+            {canEdit ? <ChildBountyEditButton childBounty={childBounty} bounty={bounty} /> : null}
             {canAcceptCurator ? <ChildBountyAcceptCuratorButton childBounty={childBounty} onSuccess={refetch} /> : null}
             {canUnassignCurator ? (
                 <ChildBountyUnassignCuratorButton bounty={bounty} childBounty={childBounty} onSuccess={refetch} />

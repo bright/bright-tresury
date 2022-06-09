@@ -1,6 +1,6 @@
 import { ChildBountyDto, ChildBountyStatus } from './child-bounties.dto'
-import { BountyDto } from '../../bounties.dto'
 import { useAuth } from '../../../auth/AuthContext'
+import { BountyDto } from '../../bounties.dto'
 import { useBounty } from '../useBounty'
 import { useBestNumber } from '../../../util/useBestNumber'
 import BN from 'bn.js'
@@ -14,6 +14,7 @@ export interface UseChildBountyResult {
     hasBeneficiary: boolean
     isBeneficiary: boolean
 
+    canEdit: boolean
     hasCurator: boolean
     isCurator: boolean
     canProposeCurator: boolean
@@ -23,6 +24,7 @@ export interface UseChildBountyResult {
     canUnassignCuratorByCommunity: boolean
     canUnassignCurator: boolean
     canClaimPayout: boolean
+    hasDetails: boolean
 }
 // Those condition are defined based on the child_bounties pallet defined here:
 // https://github.com/paritytech/substrate/blob/master/frame/child-bounties/src/lib.rs
@@ -31,10 +33,9 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
     const { isActive: isBountyActive, isCurator: isBountyCurator, isUpdateDueExpired } = useBounty(bounty)
     const { hasWeb3AddressAssigned, user } = useAuth()
     const isSignedInWithWeb3 = user?.isWeb3
-
+    const isActive = childBounty.status === ChildBountyStatus.Active
     const isAdded = childBounty.status === ChildBountyStatus.Added
     const isCuratorProposed = childBounty.status === ChildBountyStatus.CuratorProposed
-    const isActive = childBounty.status === ChildBountyStatus.Active
     const isPendingPayout = childBounty.status === ChildBountyStatus.PendingPayout
 
     const canProposeCurator = isBountyActive && isBountyCurator && isAdded
@@ -63,9 +64,15 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         bestNumber.cmp(new BN(childBounty.unlockAt)) >= 0
     )
 
+    const hasDetails = !!childBounty?.owner
+    const isOwner = !!childBounty && !!user?.id && user?.id === childBounty.owner?.userId
+
+    const canEdit = isOwner || isCurator
+
     return {
         hasBeneficiary,
         isBeneficiary,
+        canEdit,
         hasCurator,
         isCurator,
         canProposeCurator,
@@ -79,5 +86,6 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         isActive,
         isPendingPayout,
         canClaimPayout,
+        hasDetails,
     }
 }

@@ -19,9 +19,9 @@ export interface ChildBountyDto {
     beneficiary: Nil<PublicUserDto>
     unlockAt: Nil<string>
     status: ChildBountyStatus
-
     title: Nil<string>
     description: Nil<string>
+    owner: Nil<PublicUserDto>
 }
 export interface CreateChildBountyDto {
     parentIndex: number
@@ -30,4 +30,9 @@ export interface CreateChildBountyDto {
     networkId: string
     extrinsicHash: string
     lastBlockHash: string
+}
+
+export interface EditChildBountyDto {
+    title: string
+    description?: Nil<string>
 }

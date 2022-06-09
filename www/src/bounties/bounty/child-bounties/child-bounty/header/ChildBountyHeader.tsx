@@ -91,7 +91,6 @@ const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: Child
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
-
     const navigateToList = () => {
         history.goBack()
     }
@@ -131,11 +130,7 @@ const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: Child
             <ActionButtons className={classes.actionButtons}>
                 <ChildBountyActionButtons bounty={bounty} childBounty={childBounty} />
             </ActionButtons>
-            <ChildBountyOptionsButton
-                className={classes.optionsButton}
-                childBounty={childBounty}
-                bounty={bounty}
-            />
+            <ChildBountyOptionsButton className={classes.optionsButton} childBounty={childBounty} bounty={bounty} />
         </HeaderContainer>
     )
 }

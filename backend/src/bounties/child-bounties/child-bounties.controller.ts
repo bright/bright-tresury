@@ -2,12 +2,13 @@ import { ControllerApiVersion } from '../../utils/ControllerApiVersion'
 import {
     ApiBadRequestResponse,
     ApiCreatedResponse,
+    ApiForbiddenResponse,
     ApiNotFoundResponse,
     ApiOkResponse,
     ApiProperty,
     ApiTags,
 } from '@nestjs/swagger'
-import { Body, Get, HttpCode, HttpStatus, Param, Post, Query, UseGuards } from '@nestjs/common'
+import { Body, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { NetworkNameQuery } from '../../utils/network-name.query'
 import { IsNotEmpty, IsString } from 'class-validator'
 import { BountyParam } from '../bounty.param'
@@ -16,6 +17,7 @@ import { SessionGuard } from '../../auth/guards/session.guard'
 import { ReqSession, SessionData } from '../../auth/session/session.decorator'
 import { ListenForChildBountyDto } from './dto/listen-for-child-bounty.dto'
 import { ChildBountyDto } from './dto/child-bounty.dto'
+import { UpdateChildBountyDto } from './dto/update-child-bounty.dto'
 
 class ChildBountyParams extends BountyParam {
     @ApiProperty({
@@ -89,5 +91,33 @@ export class ChildBountiesController {
             parseInt(bountyIndex, 10),
             sessionData.user,
         )
+    }
+
+    @Patch(':childBountyIndex')
+    @ApiOkResponse({
+        description: 'Child bounty details successfully edited',
+    })
+    @ApiForbiddenResponse({
+        description: 'You are not allowed to edit this child bounty',
+    })
+    @ApiBadRequestResponse({
+        description: 'Not valid data or this child bounty cannot be edited',
+    })
+    @ApiNotFoundResponse({
+        description: 'The child bounty with the given id in the given network does not exist',
+    })
+    @UseGuards(SessionGuard)
+    async editChildBounty(
+        @Param() { bountyIndex, childBountyIndex }: ChildBountyParams,
+        @Body() dto: UpdateChildBountyDto,
+        @Query() { network }: NetworkNameQuery,
+        @ReqSession() sessionData: SessionData,
+    ): Promise<ChildBountyDto> {
+        const childBountyId = {
+            parentBountyBlockchainIndex: Number(bountyIndex),
+            blockchainIndex: childBountyIndex,
+        }
+        const childBounty = await this.childBountiesService.update(childBountyId, network, dto, sessionData.user)
+        return new ChildBountyDto(childBounty)
     }
 }

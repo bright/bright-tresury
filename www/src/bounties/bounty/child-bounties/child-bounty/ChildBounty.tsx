@@ -10,6 +10,9 @@ import ChildBountyHeader from './header/ChildBountyHeader'
 import discussionIcon from '../../../../assets/discussion.svg'
 import ChildBountyDiscussion from './discussion/ChildBountyDiscussion'
 import { BountyDto } from '../../../bounties.dto'
+import { ROUTE_EDIT_CHILD_BOUNTY } from '../../../../routes/routes'
+import PrivateRoute from '../../../../routes/PrivateRoute'
+import ChildBountyEdit from './edit/ChildBountyEdit'
 
 export enum ChildBountyContentType {
     Info = 'info',
@@ -71,6 +74,9 @@ const ChildBounty = ({ bounty, childBounty }: ChildBountyProps) => {
     return (
         <div className={classes.root}>
             <Switch>
+                <PrivateRoute requireVerified={true} exact={true} path={ROUTE_EDIT_CHILD_BOUNTY}>
+                    <ChildBountyEdit childBounty={childBounty} bounty={bounty} />
+                </PrivateRoute>
                 <>
                     <ChildBountyHeader
                         bounty={bounty}

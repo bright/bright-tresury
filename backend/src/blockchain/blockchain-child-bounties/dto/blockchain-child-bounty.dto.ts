@@ -1,4 +1,5 @@
 import { NetworkPlanckValue, Nil } from '../../../utils/types'
+import { UserEntity } from '../../../users/entities/user.entity'
 
 export enum BlockchainChildBountyStatus {
     Added = 'Added',
@@ -53,4 +54,14 @@ export class BlockchainChildBountyDto {
         this.unlockAt = unlockAt
         this.status = status
     }
+
+    isCurator = (user: UserEntity) =>
+        UserEntity.hasWeb3Address(user, this.curator) &&
+        [
+            BlockchainChildBountyStatus.Active,
+            BlockchainChildBountyStatus.PendingPayout,
+            BlockchainChildBountyStatus.CuratorProposed,
+        ].includes(this.status)
+
+    isOwner = (user: UserEntity) => this.isCurator(user)
 }

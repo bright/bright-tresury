@@ -1,7 +1,7 @@
-import { apiGet, apiPost, getUrlSearchParams } from '../../../api'
+import { apiGet, apiPatch, apiPost, getUrlSearchParams } from '../../../api'
 import { useMutation, useQuery, UseQueryOptions } from 'react-query'
 import { BOUNTIES_API_PATH } from '../../bounties.api'
-import { ChildBountyDto, CreateChildBountyDto } from './child-bounties.dto'
+import { ChildBountyDto, CreateChildBountyDto, EditChildBountyDto } from './child-bounties.dto'
 
 export const CHILD_BOUNTIES_API_PATH = '/child-bounties'
 const getChildBountiesApiBasePath = (bountyIndex: number | string) =>
@@ -48,7 +48,36 @@ export const useGetChildBounty = (
         options,
     )
 
+// CREATE
+
 const createChildBounty = ({ parentIndex, ...data }: CreateChildBountyDto) =>
     apiPost(getChildBountiesApiBasePath(parentIndex), data)
 
 export const useCreateChildBounty = () => useMutation(createChildBounty)
+
+// PATCH
+
+export interface PatchChildBountyParams {
+    bountyIndex: string
+    childBountyIndex: string
+    network: string
+    data: EditChildBountyDto
+}
+
+async function patchChildBounty({
+    bountyIndex,
+    childBountyIndex,
+    network,
+    data,
+}: PatchChildBountyParams): Promise<ChildBountyDto> {
+    return apiPatch<ChildBountyDto>(
+        `${getChildBountiesApiBasePath(bountyIndex)}/${childBountyIndex}?${getUrlSearchParams({
+            network,
+        }).toString()}`,
+        data,
+    )
+}
+
+export const usePatchChildBounty = () => {
+    return useMutation(patchChildBounty)
+}

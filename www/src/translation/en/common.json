@@ -866,6 +866,8 @@
             "beneficiary": "Beneficiary",
             "curator": "Curator",
             "description": "Description",
+            "editButton": "Edit",
+            "addDetailsButton": "Add details",
             "onChainDescription": "On-chain description"
         },
         "list": {
@@ -896,6 +898,12 @@
                 "extendRemark": "Remark",
                 "extendRemarkDescription": "Explain why you need to extend the expiry date. This information will be included in a transaction (but not stored on-chain)"
             }
+        },
+        "edit": {
+            "cannotEditChildBounty": "You cannot edit this child bounty",
+            "titleEdit": "Edit child bounty",
+            "titleAddDetails": "Add details",
+            "save": "Save"
         }
     },
     "tip": {

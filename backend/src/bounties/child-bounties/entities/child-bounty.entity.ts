@@ -25,4 +25,8 @@ export class ChildBountyEntity extends BaseEntity {
 
     @Column({ nullable: false, type: 'text' })
     ownerId!: string
+
+    isOwner(user: UserEntity) {
+        return this.ownerId === user.id
+    }
 }

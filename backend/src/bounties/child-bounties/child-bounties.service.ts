@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { BlockchainChildBountiesService } from '../../blockchain/blockchain-child-bounties/blockchain-child-bounties.service'
 import { ListenForChildBountyDto } from './dto/listen-for-child-bounty.dto'
 import { UserEntity } from '../../users/entities/user.entity'
@@ -11,11 +11,14 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { In, Repository } from 'typeorm'
 import { FindChildBountyDto } from './dto/find-child-bounty.dto'
 import { ChildBountyId } from '../../blockchain/blockchain-child-bounties/child-bounty-id.interface'
-import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
 import { arrayToMap, keysAsArray } from '../../utils/arrayToMap'
 import { FindManyOptions } from 'typeorm/find-options/FindManyOptions'
 import { Nil } from '../../utils/types'
 import { UsersService } from '../../users/users.service'
+import { plainToClass } from 'class-transformer'
+import { validateOrReject } from 'class-validator'
+import { UpdateChildBountyDto } from './dto/update-child-bounty.dto'
+import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
 
 const logger = getLogger()
 
@@ -128,5 +131,41 @@ export class ChildBountiesService {
             owner: user,
         })
         return this.repository.save(childBounty)
+    }
+
+    async update(
+        childBountyId: ChildBountyId,
+        networkId: string,
+        dto: UpdateChildBountyDto,
+        user: UserEntity,
+    ): Promise<FindChildBountyDto> {
+        logger.info(
+            `Update a child bounty entity for index in network by user`,
+            childBountyId.blockchainIndex,
+            networkId,
+            user,
+        )
+        const childBounty = await this.findOne(networkId, childBountyId)
+
+        if (!childBounty.isOwner(user)) {
+            throw new ForbiddenException('The given user cannot edit this child bounty')
+        }
+
+        if (!childBounty.entity) {
+            try {
+                // construct CreateChildBountyDto object and validate
+                const createDto = plainToClass(CreateChildBountyDto, { ...dto, ...childBountyId, networkId })
+
+                await validateOrReject(createDto)
+
+                // create child bounty with validated dto
+                await this.create(createDto, user)
+            } catch (e: any) {
+                throw new BadRequestException(e.message)
+            }
+        } else {
+            await this.repository.save({ ...childBounty.entity, ...dto })
+        }
+        return await this.findOne(networkId, childBountyId)
     }
 }
