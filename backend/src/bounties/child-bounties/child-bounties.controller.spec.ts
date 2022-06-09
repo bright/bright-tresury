@@ -7,8 +7,7 @@ import {
     createUserSessionHandlerWithVerifiedEmail,
 } from '../../auth/supertokens/specHelpers/supertokens.session.spec.helper'
 import { minimalValidCreateDto } from './spec.helpers'
-import { FindChildBountyDto } from './dto/find-child-bounty.dto'
-import { NetworkPlanckValue, Nil } from '../../utils/types'
+import { NetworkPlanckValue } from '../../utils/types'
 import { BlockchainChildBountyStatus } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
 
 const baseUrl = (bountyId: any) => `/api/v1/bounties/${bountyId}/child-bounties`
@@ -43,7 +42,10 @@ describe(`/api/v1/bounties/:bountyIndex/childBounties`, () => {
                                 beneficiary: undefined,
                                 unlockAt: undefined,
                                 status: BlockchainChildBountyStatus.Added,
+                                isOwner: () => true,
+                                isCurator: () => true,
                             },
+                            isOwner: () => true,
                         },
                     ])
                 },

@@ -26,6 +26,7 @@ export const updateExtrinsicWithAddedEventDto: UpdateExtrinsicDto = {
             ],
         },
     ],
+    data: '',
 } as UpdateExtrinsicDto
 
 export const updateExtrinsicWithNoEventsDto: UpdateExtrinsicDto = {
