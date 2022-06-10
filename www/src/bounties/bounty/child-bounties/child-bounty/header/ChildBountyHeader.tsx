@@ -20,12 +20,14 @@ import { BountyContentType } from '../../../Bounty'
 import child_bounties from '../../../../../assets/child_bounties.svg'
 import ChildBountyStatusIndicator from '../../components/ChildBountyStatusIndicator'
 import ChildBountyNetworkRewardDeposit from './ChildBountyNetworkRewardDeposit'
-import ChildBountyContentTypeTabs from './ChildBountyContentTypeTabs'
 import ChildBountyOrdinalNumber from '../../components/ChildBountyOrdinalNumber'
 import ActionButtons from '../../../../../components/header/details/ActionButtons'
 import ChildBountyActionButtons from './ChildBountyActionButtons'
 import ChildBountyOptionsButton from './ChildBountyOptionsButton'
 import { BountyDto } from '../../../../bounties.dto'
+import ChildBountyContentTypeTabs from './ChildBountyContentTypeTabs'
+import { useAuth } from '../../../../../auth/AuthContext'
+import PrivateChildBountyContentTypeTabs from '../PrivateChildBountyContentTypeTabs'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -91,6 +93,8 @@ const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: Child
     const classes = useStyles()
     const { t } = useTranslation()
     const history = useHistory()
+    const { user } = useAuth()
+
     const navigateToList = () => {
         history.goBack()
     }
@@ -125,7 +129,16 @@ const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: Child
             </NetworkValues>
             <FlexBreakLine className={classes.flexBreakLine} />
             <HeaderTabs className={classes.contentTypeTabs}>
-                <ChildBountyContentTypeTabs childBountyTabsConfig={childBountyTabsConfig} />
+                {user ? (
+                    <PrivateChildBountyContentTypeTabs
+                        childBountyTabsConfig={childBountyTabsConfig}
+                        userId={user.id}
+                        blockchainIndex={childBounty.blockchainIndex}
+                        parentBountyBlockchainIndex={childBounty.parentBountyBlockchainIndex}
+                    />
+                ) : (
+                    <ChildBountyContentTypeTabs childBountyTabsConfig={childBountyTabsConfig} />
+                )}
             </HeaderTabs>
             <ActionButtons className={classes.actionButtons}>
                 <ChildBountyActionButtons bounty={bounty} childBounty={childBounty} />

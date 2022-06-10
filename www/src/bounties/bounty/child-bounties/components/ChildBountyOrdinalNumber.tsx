@@ -1,5 +1,6 @@
 import React from 'react'
 import OrdinalNumber from '../../../../components/ordinalNumber/OrdinalNumber'
+import { childBountyOrdinalNumber } from '../../../../util/childBountyOrdinalNumberUtil'
 
 interface OwnProps {
     parentIndex: number
@@ -9,7 +10,8 @@ interface OwnProps {
 export type ChildBountyOrdinalNumberProps = OwnProps
 
 const ChildBountyOrdinalNumber = ({ parentIndex, childBountyIndex }: ChildBountyOrdinalNumberProps) => {
-    return <OrdinalNumber prefix={`#\xa0`} ordinalNumber={`${parentIndex}\xa0-\xa0${childBountyIndex}`} />
+    const ordinalChildBountyNumber = childBountyOrdinalNumber({ parentIndex, childBountyIndex })
+    return <OrdinalNumber prefix={`#\xa0`} ordinalNumber={ordinalChildBountyNumber} />
 }
 
 export default ChildBountyOrdinalNumber

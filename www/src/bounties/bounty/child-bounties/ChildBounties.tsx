@@ -33,6 +33,7 @@ const ChildBounties = ({ bounty, childBounties }: ChildBountiesProps) => {
     const classes = useStyles()
     const { t } = useTranslation()
     const { isActive, isCurator, hasChildBounties } = useBounty(bounty)
+
     return (
         <div className={classes.root}>
             {isCurator && isActive ? <AddChildBountyLink bounty={bounty} /> : null}

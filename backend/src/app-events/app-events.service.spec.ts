@@ -15,6 +15,7 @@ import { AppEventEntity } from './entities/app-event.entity'
 import { createAndSaveAppEvent } from './spec.helpers'
 import { NewTipCommentDto } from './app-event-types/tip-comment/new-tip-comment.dto'
 import { NewBountyCommentDto } from './app-event-types/bounty-comment/new-bounty-comment.dto'
+import { NewChildBountyCommentDto } from './app-event-types/childBounty-comment/new-childBounty-comment.dto'
 
 describe('AppEventsService', () => {
     const app = beforeSetupFullApp()
@@ -66,6 +67,17 @@ describe('AppEventsService', () => {
         commentId: uuid(),
         tipHash: '0x0',
         tipTitle: 'title',
+        commentsUrl: 'http://localhost3000',
+        networkId: NETWORKS.POLKADOT,
+        websiteUrl: 'http://localhost:3000',
+    }
+
+    const newChildBountyCommentEventData: NewChildBountyCommentDto = {
+        type: AppEventType.NewChildBountyComment,
+        commentId: uuid(),
+        childBountyBlockchainId: 1,
+        bountyBlockchainId: 2,
+        childBountyTitle: 'title',
         commentsUrl: 'http://localhost3000',
         networkId: NETWORKS.POLKADOT,
         websiteUrl: 'http://localhost:3000',
@@ -301,6 +313,24 @@ describe('AppEventsService', () => {
                 appEventType: [AppEventType.NewTipComment],
                 tipHash: newTipCommentEventData.tipHash,
                 networkId: newTipCommentEventData.networkId,
+            })
+
+            expect(result.total).toBe(2)
+            expect(result.items).toHaveLength(2)
+            expect(result.items[0].id).toStrictEqual(event2.id)
+            expect(result.items[1].id).toStrictEqual(event1.id)
+        })
+
+        it('should filter by childBountyIndex and networkId', async () => {
+            const { user } = await createSessionData({ email: 'user@example.com', username: 'user' })
+            const event1 = await createAndSaveAppEvent([user.id], newChildBountyCommentEventData)
+            const event2 = await createAndSaveAppEvent([user.id], newChildBountyCommentEventData)
+
+            const result = await service().findAll({
+                userId: user.id,
+                appEventType: [AppEventType.NewChildBountyComment],
+                childBountyIndex: newChildBountyCommentEventData.childBountyBlockchainId,
+                networkId: newChildBountyCommentEventData.networkId,
             })
 
             expect(result.total).toBe(2)

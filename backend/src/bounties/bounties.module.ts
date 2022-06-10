@@ -23,6 +23,6 @@ import { ChildBountyEntity } from './child-bounties/entities/child-bounty.entity
     ],
     controllers: [BountiesController, ChildBountiesController],
     providers: [BountiesService, ChildBountiesService],
-    exports: [BountiesService],
+    exports: [BountiesService, ChildBountiesService],
 })
 export class BountiesModule {}

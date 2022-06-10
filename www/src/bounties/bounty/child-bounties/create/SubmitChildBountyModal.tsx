@@ -7,7 +7,6 @@ import { useNetworks } from '../../../../networks/useNetworks'
 import { ROUTE_CHILD_BOUNTIES, ROUTE_CHILD_BOUNTY } from '../../../../routes/routes'
 import SubmittingTransaction, { ExtrinsicDetails } from '../../../../substrate-lib/components/SubmittingTransaction'
 import { toNetworkPlanckValue } from '../../../../util/quota.util'
-
 import { ChildBountyCreateFormValues } from './ChildBountyCreateForm'
 import { CreateChildBountyDto } from '../child-bounties.dto'
 import { useCreateChildBounty } from '../child-bounties.api'
@@ -39,7 +38,7 @@ const SubmitBountyModal = ({ open, onClose, childBounty }: SubmitBountyModalProp
     }
 
     const onTransactionSigned = useCallback(
-        async ({ extrinsicHash, lastBlockHash, signerAddress }: ExtrinsicDetails) => {
+        async ({ extrinsicHash, lastBlockHash }: ExtrinsicDetails) => {
             if (childBounty) {
                 const params: CreateChildBountyDto = {
                     parentIndex: childBounty.parentBountyId,

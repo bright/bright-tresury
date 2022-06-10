@@ -13,6 +13,7 @@ import { AppEventData, AppEventType } from '../../entities/app-event-type'
 import { AppEventEntity } from '../../entities/app-event.entity'
 import { UserStatus } from '../../../users/entities/user-status'
 import { NewTipCommentDto } from '../../app-event-types/tip-comment/new-tip-comment.dto'
+import { NewChildBountyCommentDto } from '../../app-event-types/childBounty-comment/new-childBounty-comment.dto'
 
 const logger = getLogger()
 
@@ -86,6 +87,8 @@ export class EmailNotificationsService {
                 return this.getNewProposalCommentEmailDetails(appEvent.data)
             case AppEventType.NewBountyComment:
                 return this.getNewBountyCommentEmailDetails(appEvent.data)
+            case AppEventType.NewChildBountyComment:
+                return this.getNewChildBountyCommentEmailDetails(appEvent.data)
             case AppEventType.NewTipComment:
                 return this.getNewTipCommentEmailDetails(appEvent.data)
             case AppEventType.TaggedInIdeaComment:
@@ -94,6 +97,8 @@ export class EmailNotificationsService {
                 return this.getTaggedInProposalCommentEmailDetails(appEvent.data)
             case AppEventType.TaggedInBountyComment:
                 return this.getTaggedInBountyCommentEmailDetails(appEvent.data)
+            case AppEventType.TaggedInChildBountyComment:
+                return this.getTaggedInChildBountyCommentEmailDetails(appEvent.data)
             case AppEventType.TaggedInTipComment:
                 return this.getTaggedInTipCommentEmailDetails(appEvent.data)
 
@@ -177,6 +182,34 @@ export class EmailNotificationsService {
             subject,
             text,
             template: EmailTemplates.TaggedInBountyCommentTemplate,
+            data,
+        }
+    }
+
+    private getNewChildBountyCommentEmailDetails(data: NewChildBountyCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Child Bounty ${data.bountyBlockchainId} - ${data.childBountyBlockchainId} - new comments`
+        const text = `You have a new comment in Child Bounty ${data.bountyBlockchainId} - ${
+            data.childBountyBlockchainId
+        } ${data.childBountyTitle ?? ''}. You can see them here: ${data.commentsUrl}`
+
+        return {
+            subject,
+            text,
+            template: EmailTemplates.NewChildBountyCommentTemplate,
+            data,
+        }
+    }
+
+    private getTaggedInChildBountyCommentEmailDetails(data: NewChildBountyCommentDto): EmailDetails {
+        const subject = `${EMAIL_NOTIFICATION_SUBJECT_PREFIX}Child Bounty ${data.bountyBlockchainId} - ${data.childBountyBlockchainId} - You have been tagged`
+        const text = `You have been tagged in Child Bounty ${data.bountyBlockchainId} - ${
+            data.childBountyBlockchainId
+        } ${data.childBountyTitle ?? ''}. You can see them here: ${data.commentsUrl}`
+
+        return {
+            subject,
+            text,
+            template: EmailTemplates.TaggedInChildBountyCommentTemplate,
             data,
         }
     }

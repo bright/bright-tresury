@@ -3,6 +3,9 @@ import { ChildBountyDto } from '../../child-bounties.dto'
 import { useNetworks } from '../../../../../networks/useNetworks'
 import { ChildBountyDiscussionDto, DiscussionCategory } from '../../../../../discussion/comments.dto'
 import Discussion from '../../../../../discussion/Discussion'
+import PrivateBountyDiscussion from '../../../discussion/PrivateBountyDiscussion'
+import { useAuth } from '../../../../../auth/AuthContext'
+import PrivateChildBountyDiscussion from './PrivateChildBountyDiscussion'
 
 interface OwnProps {
     childBounty: ChildBountyDto
@@ -10,6 +13,7 @@ interface OwnProps {
 export type ChildBountyDiscussionProps = OwnProps
 const ChildBountyDiscussion = ({ childBounty }: ChildBountyDiscussionProps) => {
     const { network } = useNetworks()
+    const { user, isUserSignedInAndVerified } = useAuth()
 
     const discussion: ChildBountyDiscussionDto = useMemo(
         () => ({
@@ -21,7 +25,15 @@ const ChildBountyDiscussion = ({ childBounty }: ChildBountyDiscussionProps) => {
         [childBounty.blockchainIndex, childBounty.parentBountyBlockchainIndex, network],
     )
 
-    return <Discussion discussion={discussion} discussedEntity={childBounty} />
+    return (
+        <>
+            {user && isUserSignedInAndVerified ? (
+                <PrivateChildBountyDiscussion discussion={discussion} userId={user.id} childBounty={childBounty} />
+            ) : (
+                <Discussion discussion={discussion} discussedEntity={childBounty} />
+            )}
+        </>
+    )
 }
 
 export default ChildBountyDiscussion

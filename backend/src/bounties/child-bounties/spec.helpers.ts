@@ -3,13 +3,13 @@ import { NETWORKS } from '../../utils/spec.helpers'
 import { BlockchainService } from '../../blockchain/blockchain.service'
 import { UpdateExtrinsicDto } from '../../extrinsics/dto/updateExtrinsic.dto'
 import { ExtrinsicEvent } from '../../extrinsics/extrinsicEvent'
+import { BlockchainChildBountiesService } from '../../blockchain/blockchain-child-bounties/blockchain-child-bounties.service'
+import { ChildBountyId } from '../../blockchain/blockchain-child-bounties/child-bounty-id.interface'
+import { NetworkPlanckValue } from '../../utils/types'
 import {
     BlockchainChildBountyDto,
     BlockchainChildBountyStatus,
 } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
-import { NetworkPlanckValue } from '../../utils/types'
-import { ChildBountyId } from '../../blockchain/blockchain-child-bounties/child-bounty-id.interface'
-import { BlockchainChildBountiesService } from '../../blockchain/blockchain-child-bounties/blockchain-child-bounties.service'
 import { UserEntity } from '../../users/entities/user.entity'
 import { ChildBountiesService } from './child-bounties.service'
 import { CreateChildBountyDto } from './dto/create-child-bounty.dto'

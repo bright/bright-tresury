@@ -6,7 +6,6 @@ import { ChildBountyDto, CreateChildBountyDto, EditChildBountyDto } from './chil
 export const CHILD_BOUNTIES_API_PATH = '/child-bounties'
 const getChildBountiesApiBasePath = (bountyIndex: number | string) =>
     `${BOUNTIES_API_PATH}/${bountyIndex}/child-bounties`
-
 // GET ALL FOR PARENT BOUNTY
 export const CHILD_BOUNTIES_QUERY_KEY_BASE = 'child-bounties'
 

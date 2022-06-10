@@ -17,6 +17,7 @@ import { createAppEvent } from '../../spec.helpers'
 import { EmailNotificationsService } from './email-notifications.service'
 import SpyInstance = jest.SpyInstance
 import { NewTipCommentDto } from '../../app-event-types/tip-comment/new-tip-comment.dto'
+import { NewChildBountyCommentDto } from '../../app-event-types/childBounty-comment/new-childBounty-comment.dto'
 
 describe('EmailNotificationsService', () => {
     const app = beforeSetupFullApp()
@@ -191,6 +192,53 @@ describe('EmailNotificationsService', () => {
             await service().send(appEvent)
 
             expectSendEmailFromTemplateToHaveBeenCalledWith(EmailTemplates.TaggedInTipCommentTemplate, appEvent.data)
+            expectSendEmailToHaveBeenCalledWithNotEmptyHtml()
+        })
+
+        it('should call sendEmailFromTemplate and sendEmail for NewChildBountyComment event', async () => {
+            const {
+                sessionData: { user },
+            } = await createUserSessionHandlerWithVerifiedEmail(app())
+            const data: NewChildBountyCommentDto = {
+                type: AppEventType.NewChildBountyComment as const,
+                commentId: uuid(),
+                childBountyBlockchainId: 0,
+                bountyBlockchainId: 0,
+                childBountyTitle: 'Child Bounty title',
+                commentsUrl: 'http://localhost:3000',
+                networkId: NETWORKS.POLKADOT,
+                websiteUrl: 'http://localhost:3000',
+            }
+            const appEvent = createAppEvent([user.id], data)
+
+            await service().send(appEvent)
+
+            expectSendEmailFromTemplateToHaveBeenCalledWith(EmailTemplates.NewChildBountyCommentTemplate, appEvent.data)
+            expectSendEmailToHaveBeenCalledWithNotEmptyHtml()
+        })
+
+        it('should call sendEmailFromTemplate and sendEmail for TaggedInChildBountyComment event', async () => {
+            const {
+                sessionData: { user },
+            } = await createUserSessionHandlerWithVerifiedEmail(app())
+            const data: NewChildBountyCommentDto = {
+                type: AppEventType.TaggedInChildBountyComment as const,
+                commentId: uuid(),
+                childBountyBlockchainId: 0,
+                bountyBlockchainId: 0,
+                childBountyTitle: 'Child Bounty title',
+                commentsUrl: 'http://localhost:3000',
+                networkId: NETWORKS.POLKADOT,
+                websiteUrl: 'http://localhost:3000',
+            }
+            const appEvent = createAppEvent([user.id], data)
+
+            await service().send(appEvent)
+
+            expectSendEmailFromTemplateToHaveBeenCalledWith(
+                EmailTemplates.TaggedInChildBountyCommentTemplate,
+                appEvent.data,
+            )
             expectSendEmailToHaveBeenCalledWithNotEmptyHtml()
         })
     })

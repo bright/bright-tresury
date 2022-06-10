@@ -18,6 +18,7 @@ export interface AppEventsQuery {
     ideaId?: Nil<string>
     proposalIndex?: Nil<number>
     bountyIndex?: Nil<number>
+    childBountyIndex?: Nil<number>
     tipHash?: Nil<string>
     networkId?: Nil<string>
 }
@@ -46,6 +47,7 @@ export class AppEventsService {
         ideaId,
         proposalIndex,
         bountyIndex,
+        childBountyIndex,
         tipHash,
         networkId,
     }: AppEventsQuery) {
@@ -73,6 +75,12 @@ export class AppEventsService {
 
         if (!isNil(bountyIndex)) {
             query = query.andWhere("app_events.data->>'bountyBlockchainId' = :bountyIndex", { bountyIndex })
+        }
+
+        if (!isNil(childBountyIndex)) {
+            query = query.andWhere("app_events.data->>'childBountyBlockchainId' = :childBountyIndex", {
+                childBountyIndex,
+            })
         }
 
         if (!isNil(tipHash)) {

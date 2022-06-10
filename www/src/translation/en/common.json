@@ -132,6 +132,12 @@
                     "description": "There are new messages in the bounty discussion",
                     "tagged": "You have been tagged in the bounty discussion"
                 },
+                "childBountyDiscussion": {
+                    "title": "Child Bounty Discussion",
+                    "goTo": "Go to Discussion",
+                    "description": "There are new messages in the child bounty discussion",
+                    "tagged": "You have been tagged in the child bounty discussion"
+                },
                 "tipDiscussion": {
                     "title": "Tip Discussion",
                     "goTo": "Go to Discussion",
@@ -812,7 +818,7 @@
     },
     "childBounty": {
         "header": {
-            "childBounty": "Child Bounty",
+            "childBounty": "Child Bounty ",
             "assignCurator": "Assign curator",
             "acceptCurator": "Accept curator",
             "unassignCurator": "Reject curator",

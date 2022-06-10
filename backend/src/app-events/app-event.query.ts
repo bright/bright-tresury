@@ -55,6 +55,14 @@ export class AppEventQuery {
     bountyIndex?: Nil<string>
 
     @ApiPropertyOptional({
+        description: 'The index of the child bounty which app events refer to',
+    })
+    @IsOptional()
+    @IsString()
+    @IsNumberString()
+    childBountyIndex?: Nil<string>
+
+    @ApiPropertyOptional({
         description: 'The hash of the tip which app events refer to',
     })
     @IsOptional()

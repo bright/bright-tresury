@@ -22,6 +22,7 @@ import { AppEventSubscriber } from './subscribers/app-event.subscriber'
 import { AppEventsController } from './app-events.controller'
 import { TipCommentSubscriber } from './app-event-types/tip-comment/tip-comment.subscriber'
 import { TipsModule } from '../tips/tips.module'
+import { ChildBountyCommentSubscriber } from './app-event-types/childBounty-comment/childBounty-comment.subscriber'
 
 @Module({
     imports: [
@@ -46,6 +47,7 @@ import { TipsModule } from '../tips/tips.module'
         IdeaCommentSubscriber,
         ProposalCommentSubscriber,
         BountyCommentSubscriber,
+        ChildBountyCommentSubscriber,
         TipCommentSubscriber,
     ],
     exports: [AppEventsService],

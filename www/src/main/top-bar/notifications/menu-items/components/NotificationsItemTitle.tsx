@@ -29,7 +29,7 @@ const useStyles = makeStyles((theme) =>
 )
 
 interface OwnProps {
-    ordinalNumber: number
+    ordinalNumber: number | string
     title: string
 }
 
@@ -37,6 +37,7 @@ export type NotificationsItemTitleProps = OwnProps
 
 const NotificationsItemTitle = ({ ordinalNumber, title }: NotificationsItemTitleProps) => {
     const classes = useStyles()
+
     return (
         <div className={classes.root}>
             <span className={classes.hash}>#</span>
