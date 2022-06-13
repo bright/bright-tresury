@@ -36,6 +36,7 @@ import {
     ROUTE_ACCOUNT,
     ROUTE_ACCOUNT_DELETED,
     ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR,
+    ROUTE_AWARD_CHILD_BOUNTY,
     ROUTE_BOUNTIES,
     ROUTE_BOUNTY,
     ROUTE_CHILD_BOUNTY,
@@ -79,6 +80,7 @@ import TipLoader from './tips/tip/TipLoader'
 import ChildBountyCreate from './bounties/bounty/child-bounties/create/ChildBountyCreate'
 import ChildBountyLoader from './bounties/bounty/child-bounties/child-bounty/ChildBountyLoader'
 import AssignChildBountyCurator from './bounties/bounty/child-bounties/child-bounty/assign-curator/AssignChildBountyCurator'
+import ChildBountyAward from './bounties/bounty/child-bounties/child-bounty/header/curator-actions/award/ChildBountyAward'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -137,6 +139,12 @@ function AppRoutes() {
                     exact={true}
                     path={ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR}
                     component={AssignChildBountyCurator}
+                />
+                <PrivateRoute
+                    requireVerified={true}
+                    exact={true}
+                    path={ROUTE_AWARD_CHILD_BOUNTY}
+                    component={ChildBountyAward}
                 />
                 <Route exact={false} path={ROUTE_CHILD_BOUNTY} component={ChildBountyLoader} />
 

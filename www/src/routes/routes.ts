@@ -32,6 +32,7 @@ export const ROUTE_BOUNTY_DISCUSSION = '/bounties/:bountyIndex/discussion'
 export const ROUTE_CHILD_BOUNTIES = '/bounties/:bountyIndex/child-bounties'
 export const ROUTE_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/:childBountyIndex'
 export const ROUTE_NEW_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/new'
+export const ROUTE_AWARD_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/:childBountyIndex/award'
 export const ROUTE_ASSIGN_CHILD_BOUNTY_CURATOR =
     '/bounties/:bountyIndex/child-bounties/:childBountyIndex/assign-curator'
 export const ROUTE_EDIT_CHILD_BOUNTY = '/bounties/:bountyIndex/child-bounties/:childBountyIndex/edit'

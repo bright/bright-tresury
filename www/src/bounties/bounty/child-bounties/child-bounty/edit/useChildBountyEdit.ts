@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import * as Yup from 'yup'
-import { ChildBountyDto, EditChildBountyDto } from '../../child-bounties.dto'
+import { ChildBountyDto } from '../../child-bounties.dto'
 import { PatchChildBountyParams } from '../../child-bounties.api'
 import { useNetworks } from '../../../../../networks/useNetworks'
 

@@ -823,7 +823,8 @@
             "acceptCurator": "Accept curator",
             "unassignCurator": "Reject curator",
             "claimPayout": "Claim Payout",
-            "closeChildBounty": "Close child bounty"
+            "closeChildBounty": "Close child bounty",
+            "award": "Award child bounty"
         },
         "assignCurator": {
             "title": "Propose child bounty curator",
@@ -917,6 +918,19 @@
             "titleEdit": "Edit child bounty",
             "titleAddDetails": "Add details",
             "save": "Save"
+        },
+        "award": {
+            "cannotAwardChildBounty": "You cannot award this child bounty",
+            "title": "Award child bounty",
+            "save": "Award",
+            "form": {
+                "beneficiaryPlaceholder": "Child bounty beneficiary"
+            },
+            "awardModal": {
+                "title": "You are about to award the child bounty",
+                "warningMessage": "You will now award the child bounty to: <strong>{{beneficiary}}</strong><br/> Please notice that you will not be able to change the beneficiary address once chosen.",
+                "eventDescription": "event child bounty awarded finished"
+            }
         }
     },
     "tip": {

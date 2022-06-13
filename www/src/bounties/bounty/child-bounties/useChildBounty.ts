@@ -26,6 +26,7 @@ export interface UseChildBountyResult {
     canClaimPayout: boolean
     hasDetails: boolean
     canCloseChildBounty: boolean
+    canAward: boolean
 }
 // Those condition are defined based on the child_bounties pallet defined here:
 // https://github.com/paritytech/substrate/blob/master/frame/child-bounties/src/lib.rs
@@ -71,6 +72,8 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
     const canEdit = isOwner || isCurator
     const canCloseChildBounty = isBountyCurator && isBountyActive && !isPendingPayout
 
+    const canAward = (isBountyCurator || isCurator) && isBountyActive && isActive
+
     return {
         hasBeneficiary,
         isBeneficiary,
@@ -89,6 +92,7 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         isPendingPayout,
         canClaimPayout,
         hasDetails,
-        canCloseChildBounty
+        canCloseChildBounty,
+        canAward,
     }
 }
