@@ -28,7 +28,7 @@ const ChildBountyUnassignCuratorButton = ({
     return (
         <>
             <WarningButton variant="contained" color="primary" onClick={open}>
-                {t('childBounty.header.unassignCurator')}
+                {t('childBounty.header.rejectCurator')}
             </WarningButton>
             <ChildBountyUnassignCuratorModal
                 open={visible}

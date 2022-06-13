@@ -19,7 +19,10 @@ export type CuratorActionButtonsProps = OwnProps & ActionButtonsProps
 
 const ChildBountyActionButtons = ({ bounty, childBounty, ...props }: CuratorActionButtonsProps) => {
     const { network } = useNetworks()
-    const { canAcceptCurator, canUnassignCurator, canClaimPayout, canEdit } = useChildBounty(bounty, childBounty)
+    const { canAcceptCurator, canUnassignCurator, canClaimPayout, isCuratorProposed, canEdit } = useChildBounty(
+        bounty,
+        childBounty,
+    )
     const { refetch } = useGetChildBounty({
         bountyIndex: childBounty.parentBountyBlockchainIndex.toString(),
         childBountyIndex: childBounty.blockchainIndex.toString(),
@@ -29,8 +32,10 @@ const ChildBountyActionButtons = ({ bounty, childBounty, ...props }: CuratorActi
     return (
         <ActionButtons {...props}>
             {canEdit ? <ChildBountyEditButton childBounty={childBounty} bounty={bounty} /> : null}
-            {canAcceptCurator ? <ChildBountyAcceptCuratorButton childBounty={childBounty} onSuccess={refetch} /> : null}
-            {canUnassignCurator ? (
+            {canAcceptCurator && isCuratorProposed ? (
+                <ChildBountyAcceptCuratorButton childBounty={childBounty} onSuccess={refetch} />
+            ) : null}
+            {canUnassignCurator && isCuratorProposed ? (
                 <ChildBountyUnassignCuratorButton bounty={bounty} childBounty={childBounty} onSuccess={refetch} />
             ) : null}
             {canClaimPayout ? <ChildBountyClaimButton childBounty={childBounty} /> : null}

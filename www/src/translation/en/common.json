@@ -820,7 +820,8 @@
         "header": {
             "childBounty": "Child Bounty ",
             "assignCurator": "Assign curator",
-            "acceptCurator": "Accept curator",
+            "acceptCurator": "Accept",
+            "rejectCurator": "Reject",
             "unassignCurator": "Reject curator",
             "claimPayout": "Claim Payout",
             "closeChildBounty": "Close child bounty",
