@@ -27,6 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         learnMoreButton: {
             marginTop: 20,
+            textAlign: 'center',
             backgroundColor: theme.palette.secondary.main,
             color: theme.palette.primary.main,
             fontWeight: 600,
@@ -59,7 +60,7 @@ const MenuAppInfo = () => {
             <img className={classes.drawing} src={menuDrawing} alt={''} />
             <div className={classes.whatForLabel}>{t('menu.whatForLabel')}</div>
             <NormalRouterLink className={classes.learnMoreButton} to={ROUTE_LEARN_MORE}>
-                {t('menu.learnMoreLabel')}
+                {t('menu.whatIsBrightTreasury')}
             </NormalRouterLink>
             <img className={classes.logo} src={treasuryLabeledLogo} alt={t('menu.logo')} />
             {isStageOrQa ? (

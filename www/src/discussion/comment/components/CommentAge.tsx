@@ -22,11 +22,6 @@ const CommentAge = ({ createdAt, updatedAt }: CommentAgeProps) => {
     const { t } = useTranslation()
 
     const commentAge = useMemo(() => {
-        const title =
-            updatedAt > createdAt
-                ? t('discussion.commentUpdatedTimestampTitle')
-                : t('discussion.commentCreatedTimestampTitle')
-
         const timestamp = updatedAt > createdAt ? updatedAt : createdAt
         const ageMs = Date.now() - timestamp
         let time = ''
@@ -37,7 +32,7 @@ const CommentAge = ({ createdAt, updatedAt }: CommentAgeProps) => {
             time = timeToString(extractedTime, t)
         }
 
-        return `${title} ${time} ${t('ago')}`
+        return `${time} ${t('ago')}`
     }, [updatedAt, createdAt, t])
 
     return <div className={classes.age}>{commentAge}</div>

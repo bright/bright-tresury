@@ -146,7 +146,7 @@
         "tips": "Tips",
         "bounties": "Bounties",
         "whatForLabel": "What is Treasury app for?",
-        "learnMoreLabel": "Learn more",
+        "whatIsBrightTreasury": "What is BrightTreasury?",
         "logo": "Bright Treasury logo image",
         "build": "Build:"
     },
@@ -224,7 +224,7 @@
                 "emptyFieldError": "You need to agree to the terms of the user agreement"
             },
             "emptyFieldError": "This field cannot be empty",
-            "privacyNotice": "To see how we use your personal data please see our <a>privacy notice</a>.",
+            "privacyNotice": "Want more information on how we handle personal data? Check out our <a>privacy notice</a>.",
             "emailSignUp": {
                 "form": {
                     "username": {
@@ -336,12 +336,11 @@
         "commentAlso": "Comment also on ",
         "ideaAlreadyTurnedIntoProposal": "This idea was turned into the proposal. We suggest discussing this in the proposal <a>page</a>.",
         "createCommentPlaceholder": "Leave your comment here",
-        "commentCreatedTimestampTitle": "commented",
         "commentUpdatedTimestampTitle": "edited",
         "inOrderToComment": "In order to comment, please ",
         "logIn": "log in",
         "cancelComment": "Cancel",
-        "sendComment": "Send",
+        "sendComment": "Post",
         "sendCommentError": "Could not save the comment",
         "noComments": "There are no comments yet. Be the first to start the discussion.",
         "thumbsUpAlt": "Thumbs Up",
@@ -530,7 +529,7 @@
                     "subtitle": "No beneficiary was found in the idea which the converted milestone belongs to. Please fill in the beneficiary and try again."
                 },
                 "areYouSureYouWantToTurnIdeaMilestoneIntoProposal": "Are you sure you want to convert {{ideaMilestoneSubject}} into a proposal?",
-                "makeSureYouHaveAllDataCorrectBeforeTurnIntoProposal": "Make sure you have all the data correct before you convert your milestone into a proposal"
+                "makeSureYouHaveAllDataCorrectBeforeTurnIntoProposal": "Check the milestone data before converting it into a proposal"
             }
         },
         "introduceTitle": "Introduce Idea",
@@ -541,8 +540,7 @@
             "commentAlso": "Comment also on",
             "enterCommentPlaceholder": "Leave your comment here",
             "cancelComment": "Cancel",
-            "sendComment": "Send",
-            "commentedTimestampTitle": " | commented"
+            "sendComment": "Post"
         },
         "optionsMenu": {
             "deleteIdea": "Delete Idea",
@@ -689,7 +687,7 @@
             }
         },
         "form": {
-            "emptyFieldError": "This field cannot be empty",
+            "emptyFieldError": "Please give your idea a name",
             "minValueError": "The value must be at least {{value}}",
             "maxBlockchainDescriptionLength": "The on-chain description is too long",
             "wrongBeneficiaryError": "Wrong beneficiary address (please provide encoded address)",
@@ -929,7 +927,7 @@
             "addLink": "+ Add Link",
             "badLinkError": "This is not a valid URL",
             "linkTooLong": "URL too long",
-            "emptyFieldError": "This field cannot be empty"
+            "emptyFieldError": "Please give your idea a name"
         }
     },
     "milestoneDetails": {
