@@ -24,7 +24,7 @@ import {
     BlockchainChildBountyStatus,
 } from '../../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
 
-describe('New bounty comment app event e2e', () => {
+describe('New child bounty comment app event e2e', () => {
     const app = beforeSetupFullApp()
     const getDiscussionsService = () => app.get().get(DiscussionsService)
     const getCommentsService = () => app.get().get(CommentsService)
@@ -229,7 +229,7 @@ describe('New bounty comment app event e2e', () => {
             expect(spy).toHaveBeenCalledWith(expect.anything(), expect.arrayContaining([]))
         })
 
-        it('should create NewChildBountyComment event for update comment for all tagged users', async () => {
+        it('should create TaggedInChildBountyComment event for update comment for all tagged users', async () => {
             const { childBountyEntity, user } = await setUp()
             const user2 = await createSessionData({
                 username: 'user2',
