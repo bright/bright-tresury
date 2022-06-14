@@ -95,16 +95,18 @@ export const blockchainChildBountyNoCurator = new BlockchainChildBountyDto({
     status: BlockchainChildBountyStatus.Active,
 })
 
-export const blockchainChildBountyCuratorProposed = {
+export const blockchainChildBountyCuratorProposed = new BlockchainChildBountyDto({
     index: 1,
     parentIndex: 1,
     description: 'bc-description',
     value: '2' as NetworkPlanckValue,
     fee: '1' as NetworkPlanckValue,
     curator: '14E5nqKAp3oAJcmzgZhUD2RcptBeUBScxKHgJKU4HPNcKVf3',
-    curatorDeposit: '0.2' as NetworkPlanckValue,
+    curatorDeposit: '1' as NetworkPlanckValue,
+    unlockAt: '',
+    beneficiary: undefined,
     status: BlockchainChildBountyStatus.CuratorProposed,
-} as BlockchainChildBountyDto
+})
 
 export const blockchainChildBounties = [
     blockchainChildBounty4,

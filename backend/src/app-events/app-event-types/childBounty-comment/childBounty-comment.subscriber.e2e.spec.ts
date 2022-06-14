@@ -79,8 +79,8 @@ describe('New bounty comment app event e2e', () => {
                 {
                     ...minimalValidCreateDto,
                     ...createDto,
-                    blockchainIndex: createDto.blockchainIndex ?? 0,
-                    parentBountyBlockchainIndex: createDto.parentBountyBlockchainIndex ?? 0,
+                    blockchainIndex: createDto.blockchainIndex ?? 1,
+                    parentBountyBlockchainIndex: createDto.parentBountyBlockchainIndex ?? 1,
                 },
                 user,
             )
@@ -139,7 +139,7 @@ describe('New bounty comment app event e2e', () => {
                 {
                     type: AppEventType.NewChildBountyComment,
                     childBountyBlockchainId: childBountyEntity.blockchainIndex,
-                    parentBountyBlockchainIndex: childBountyEntity.parentBountyBlockchainIndex,
+                    bountyBlockchainId: childBountyEntity.parentBountyBlockchainIndex,
                     childBountyTitle: childBountyEntity.title,
                     commentId: createdComment.id,
                     commentsUrl: `http://localhost:3000/bounties/${childBountyEntity.parentBountyBlockchainIndex}/child-bounties/${childBountyEntity.blockchainIndex}/discussion?networkId=${childBountyEntity.networkId}`,

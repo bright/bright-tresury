@@ -11,7 +11,7 @@ export class AddChildBountiesToDiscussionsTable1652974071629 implements Migratio
             alter table "discussions" alter column "category" type discussion_category USING (category::discussion_category);
         `)
         await queryRunner.query(`
-            alter table "discussions" add column "parentBountyBlockchainIndex" text
+            alter table "discussions" add column "parentBountyBlockchainIndex" integer
          `)
     }
 
