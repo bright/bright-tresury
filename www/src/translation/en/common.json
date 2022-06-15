@@ -730,7 +730,7 @@
             "description": "Description",
             "field": "Field of bounty",
             "onChainDescription": "On-chain description",
-            "reward": "Reward",
+            "totalValue": "Total value",
             "bond": "Deposit",
             "curatorFee": "Curator's fee",
             "curatorsDeposit": "Curator's deposit",

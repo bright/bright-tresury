@@ -19,7 +19,7 @@ const ProposalNetworkRewardDeposit = ({ bounty }: NetworkRewardDepositProps) => 
     const values: Value[] = []
 
     // reward
-    values.push({ value: bounty.value, label: t('bounty.info.reward') })
+    values.push({ value: bounty.value, label: t('bounty.info.totalValue') })
 
     if (
         bounty.status === BountyStatus.Proposed ||
