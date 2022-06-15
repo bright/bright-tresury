@@ -54,7 +54,15 @@ const PrivateBountyDiscussion = ({
                 },
             },
         )
-    }, [appEvents.isSuccess, appEvents.data, bountyComments.isSuccess, bountyComments.data])
+    }, [
+        appEvents.isSuccess,
+        appEvents.data,
+        bountyComments.isSuccess,
+        bountyComments.data,
+        mutateAsync,
+        queryClient,
+        userId,
+    ])
 
     return <Discussion discussion={discussion} discussedEntity={bounty} />
 }

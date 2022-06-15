@@ -1,7 +1,6 @@
 import { web3FromAddress } from '@polkadot/extension-dapp'
 import { stringToHex } from '@polkadot/util'
 import { encodeAddress } from '@polkadot/util-crypto'
-import { Account } from '../substrate-lib/accounts/AccountsContext'
 import { Nil } from '../util/types'
 
 export interface StartWeb3SignRequestDto {

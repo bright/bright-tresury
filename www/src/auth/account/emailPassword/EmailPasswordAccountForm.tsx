@@ -1,6 +1,6 @@
 import { AxiosError } from 'axios'
 import { Formik } from 'formik'
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import InfoBox from '../../../components/form/InfoBox'
 import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'

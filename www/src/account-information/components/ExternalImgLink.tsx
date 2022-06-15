@@ -25,7 +25,7 @@ const ExternalImgLink = ({ url, src }: ExternalImgLinkProps) => {
     const classes = useStyles()
     return (
         <Link href={url} target={'_blank'}>
-            <img className={classes.icon} src={src} />
+            <img className={classes.icon} src={src} alt={''} />
         </Link>
     )
 }

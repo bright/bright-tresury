@@ -141,7 +141,9 @@ export class BlockchainBountiesService {
         const motions = deriveBounty.proposals
         const toBlockchainMotionEnd = (endBlock: BlockNumber) =>
             this.blockchainService.getRemainingTime(networkId, currentBlockNumber, endBlock)
-        return motions.map((motion) => toBlockchainMotion(motion, toBlockchainMotionEnd))
+        return motions
+            .map((motion) => toBlockchainMotion(motion, toBlockchainMotionEnd))
+            .filter((motion) => !!motion) as ProposedMotionDto[]
     }
 
     async getTotalBountiesCount(networkId: string) {

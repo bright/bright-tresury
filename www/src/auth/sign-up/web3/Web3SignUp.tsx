@@ -10,7 +10,6 @@ import { ROUTE_SIGNUP_WEB3_SUCCESS } from '../../../routes/routes'
 import { Account } from '../../../substrate-lib/accounts/AccountsContext'
 import { useAccounts } from '../../../substrate-lib/accounts/useAccounts'
 import { fullValidatorForSchema } from '../../../util/form.util'
-import { useAuth } from '../../AuthContext'
 import { SignComponentWrapper } from '../../sign-components/SignComponentWrapper'
 import { SignFormWrapper } from '../../sign-components/SignFormWrapper'
 import { SignOption } from '../../sign-components/SignOption'
@@ -39,7 +38,7 @@ const Web3SignUp = () => {
         return () => {
             location.state = null
         }
-    }, [])
+    }, [location])
 
     const accountSelectionAddress = locationState?.accountSelection?.address
 

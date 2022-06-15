@@ -6,7 +6,6 @@ import { SignComponentWrapper } from '../../../sign-components/SignComponentWrap
 import { PrivacyNotice } from '../../common/PrivacyNotice'
 import { UserAgreementCheckbox } from '../../common/UserAgreementCheckbox'
 import useSignUpForm, { SignUpValues } from './useSignUpForm'
-import { FormikValues } from 'formik'
 import DisabledFormField from '../../../account/emailPassword/components/DisabledFormField'
 
 interface OwnProps {

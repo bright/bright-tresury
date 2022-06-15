@@ -32,10 +32,11 @@ export class ProposedMotionDto extends MotionDto {
 export function toBlockchainMotion(
     council: DeriveCollectiveProposal,
     toBlockchainMotionEnd: (endBlock: BlockNumber) => MotionTimeDto,
-): ProposedMotionDto {
+): ProposedMotionDto | undefined {
     const toStringVotesArray = (votesVector: Vec<AccountId>): string[] =>
         votesVector.toArray().map((accountId) => accountId.toHuman())
     const { hash, proposal, votes } = council
+    if (!proposal) return
     if (votes === null) {
         return new ProposedMotionDto({
             hash: hash.toString(),

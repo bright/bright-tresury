@@ -61,7 +61,7 @@ const AuthContextProvider = ({ children }: PropsWithChildren<{}>) => {
                           }) ?? [],
                   }
                 : undefined,
-        [doesSessionExist, accessTokenPayload],
+        [doesSessionExist, accessTokenPayload, network.ss58Format],
     )
 
     const isUserVerified = useMemo(

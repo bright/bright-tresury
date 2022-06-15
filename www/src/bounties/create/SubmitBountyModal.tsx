@@ -48,7 +48,7 @@ const SubmitBountyModal = ({ open, onClose, bounty }: SubmitBountyModalProps) =>
                 await mutateAsync(params)
             }
         },
-        [bounty, mutateAsync],
+        [bounty, mutateAsync, network.id, network.decimals],
     )
 
     return (

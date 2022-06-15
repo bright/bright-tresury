@@ -36,7 +36,9 @@ export class BlockchainProposal {
         const beneficiary = beneficiaryAddress
         const value = proposal.value.toString() as NetworkPlanckValue
         const bond = proposal.bond.toString() as NetworkPlanckValue
-        const motions = council.map((motion) => toBlockchainMotion(motion, toBlockchainProposalMotionEnd))
+        const motions = council
+            .map((motion) => toBlockchainMotion(motion, toBlockchainProposalMotionEnd))
+            .filter((motion) => !!motion) as ProposedMotionDto[]
         return new this(proposalIndex, proposer, beneficiary, value, bond, motions, status)
     }
 

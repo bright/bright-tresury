@@ -34,7 +34,7 @@ const VerifyEmail = () => {
                 },
             })
         }
-    }, [token])
+    }, [token, mutateAsync, isUserSignedIn, refreshSession])
 
     if (isLoading || isIdle) {
         return <Loader text={t('loading.verifyEmail')} />

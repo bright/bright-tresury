@@ -22,7 +22,7 @@ export type AccountInformationIconProps = OwnProps
 const AccountInformationIcon = ({ onClick }: AccountInformationIconProps) => {
     const classes = useStyles()
 
-    return <img className={classes.icon} onClick={onClick} src={identityIconSrc} />
+    return <img className={classes.icon} onClick={onClick} src={identityIconSrc} alt={''} />
 }
 
 export default AccountInformationIcon

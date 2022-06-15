@@ -51,7 +51,7 @@ const AccountDeleted = () => {
 
     useEffect(() => {
         refreshSession()
-    }, [])
+    }, [refreshSession])
 
     const goToRoot = () => {
         history.push(ROUTE_ROOT)

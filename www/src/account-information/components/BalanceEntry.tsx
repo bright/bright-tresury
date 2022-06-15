@@ -22,7 +22,7 @@ const BalanceEntry = ({ title, amount, className }: BalanceEntryProps) => {
             amount
                 ? toFixedDecimals(toNetworkDisplayValue(amount.toString() as NetworkPlanckValue, network.decimals), 4)
                 : t('common.na'),
-        [amount, network],
+        [amount, network, t],
     )
     return <IdentityEntry title={title} value={value} className={className} />
 }
