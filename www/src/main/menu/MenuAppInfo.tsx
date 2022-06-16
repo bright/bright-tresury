@@ -60,7 +60,7 @@ const MenuAppInfo = () => {
             <img className={classes.drawing} src={menuDrawing} alt={''} />
             <div className={classes.whatForLabel}>{t('menu.whatForLabel')}</div>
             <NormalRouterLink className={classes.learnMoreButton} to={ROUTE_LEARN_MORE}>
-                {t('menu.whatIsBrightTreasury')}
+                {t('menu.learnMore')}
             </NormalRouterLink>
             <img className={classes.logo} src={treasuryLabeledLogo} alt={t('menu.logo')} />
             {isStageOrQa ? (

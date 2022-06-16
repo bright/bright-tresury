@@ -11,6 +11,7 @@ const useStyles = makeStyles(() =>
             display: 'flex',
             flexDirection: 'row',
             alignItems: 'center',
+            marginRight: '10px',
         },
         informationIcon: {
             marginRight: '10px',
