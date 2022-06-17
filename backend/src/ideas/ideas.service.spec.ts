@@ -265,7 +265,65 @@ describe(`IdeasService`, () => {
             done()
         })
     })
+    describe('findIdeasByUserId', () => {
+        const setUpIdea = (title: string, status: IdeaStatus, networkName: string, userSessionData: SessionData) =>
+            getService().create(
+                {
+                    details: { title },
+                    networks: [{ name: networkName, value: '10' as NetworkPlanckValue }],
+                    status,
+                },
+                userSessionData,
+            )
 
+        it('should return only ideas owned by the user', async () => {
+            const [expected] = await Promise.all([
+                setUpIdea('active polkadot user 1', IdeaStatus.Active, NETWORKS.POLKADOT, sessionData),
+                setUpIdea('active polkadot user 2', IdeaStatus.Active, NETWORKS.POLKADOT, otherSessionData),
+            ])
+
+            const ideas = await getService().findIdeasByUserId(NETWORKS.POLKADOT, sessionData.user.id)
+
+            expect(Array.isArray(ideas)).toBe(true)
+            expect(ideas).toHaveLength(1)
+            expect(ideas[0].entity.id).toBe(expected.entity.id)
+        })
+
+        it('should return only ideas in the given network', async () => {
+            const [expected] = await Promise.all([
+                setUpIdea('active polkadot user 1', IdeaStatus.Active, NETWORKS.POLKADOT, sessionData),
+                setUpIdea('active kusama user 1', IdeaStatus.Active, NETWORKS.KUSAMA, sessionData),
+            ])
+
+            const ideas = await getService().findIdeasByUserId(NETWORKS.POLKADOT, sessionData.user.id)
+
+            expect(Array.isArray(ideas)).toBe(true)
+            expect(ideas).toHaveLength(1)
+            expect(ideas[0].entity.id).toBe(expected.entity.id)
+        })
+
+        it('should return only idea when idea published in multiple network', async () => {
+            const [expected] = await Promise.all([
+                getService().create(
+                    {
+                        details: { title: 'idea title' },
+                        networks: [
+                            { name: NETWORKS.POLKADOT, value: '10' as NetworkPlanckValue },
+                            { name: NETWORKS.KUSAMA, value: '10' as NetworkPlanckValue },
+                        ],
+                        status: IdeaStatus.Active,
+                    },
+                    sessionData,
+                ),
+            ])
+
+            const ideas = await getService().findIdeasByUserId(NETWORKS.POLKADOT, sessionData.user.id)
+
+            expect(Array.isArray(ideas)).toBe(true)
+            expect(ideas).toHaveLength(1)
+            expect(ideas[0].entity.id).toBe(expected.entity.id)
+        })
+    })
     describe('create', () => {
         it('should create and save idea with owner', async () => {
             const { entity: createdIdea } = await getService().create(

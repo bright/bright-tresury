@@ -104,7 +104,9 @@
             "account": "Account",
             "signOut": "Log out",
             "yourIdeas": "Your Ideas",
-            "yourProposals": "Your Proposals"
+            "yourProposals": "Your Proposals",
+            "yourBounties": "Your Bounties",
+            "yourTips": "Your Tips"
         },
         "notifications": {
             "notifications": "Notifications",

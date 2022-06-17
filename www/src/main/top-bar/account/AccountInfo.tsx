@@ -1,28 +1,26 @@
 import { Divider } from '@material-ui/core'
 import Menu from '@material-ui/core/Menu'
 import { createStyles, makeStyles } from '@material-ui/core/styles'
-import React, { useMemo } from 'react'
+import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHistory } from 'react-router-dom'
 import arrowSvg from '../../../assets/account_menu_arrow.svg'
 import { useAuth } from '../../../auth/AuthContext'
 import IconButton from '../../../components/button/IconButton'
-import { useNetworks } from '../../../networks/useNetworks'
-import { ROUTE_ACCOUNT, ROUTE_IDEAS, ROUTE_PROPOSALS } from '../../../routes/routes'
+import { ROUTE_ACCOUNT, ROUTE_BOUNTIES, ROUTE_IDEAS, ROUTE_PROPOSALS, ROUTE_TIPS } from '../../../routes/routes'
 import { useMenu } from '../../../hook/useMenu'
 import EmailVerifyErrorMenuItem from './EmailVerifyErrorMenuItem'
 import MenuItem from './MenuItem'
 import SignOutMenuItem from './SignOutMenuItem'
 import { IdeaFilter, IdeaFilterSearchParamName } from '../../../ideas/list/IdeaStatusFilters'
-import { useGetIdeas } from '../../../ideas/ideas.api'
-import { filterIdeas } from '../../../ideas/list/filterIdeas'
-import { useGetProposals } from '../../../proposals/proposals.api'
-import { ProposalFilter } from '../../../proposals/useProposalsFilter'
-import { TimeFrame } from '../../../util/useTimeFrame'
+import { ProposalFilter, ProposalFilterSearchParamName } from '../../../proposals/useProposalsFilter'
 import clsx from 'clsx'
 import StyledAvatarContainer from './StyledAvatarContainer'
 import { fromAuthContextUser } from '../../../util/publicUser.dto'
 import UserAvatar from '../../../components/user/UserAvatar'
+import { BountyFilter, BountyFilterSearchParamName } from '../../../bounties/useBountiesFilter'
+import { TipFilter, TipFilterSearchParamName } from '../../../tips/list/useTipFilter'
+import { useGetUserStatistics } from './useGetUserStatistics'
 
 const useStyles = makeStyles((theme) =>
     createStyles({
@@ -43,47 +41,29 @@ const useStyles = makeStyles((theme) =>
     }),
 )
 
+const MY_ACCOUNT = ROUTE_ACCOUNT
+const MINE_IDEAS = `${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${IdeaFilter.Mine}`
+const MINE_PROPOSALS = `${ROUTE_PROPOSALS}?${ProposalFilterSearchParamName}=${ProposalFilter.Mine}`
+const MINE_BOUNTIES = `${ROUTE_BOUNTIES}?${BountyFilterSearchParamName}=${BountyFilter.Mine}`
+const MINE_TIPS = `${ROUTE_TIPS}?${TipFilterSearchParamName}=${TipFilter.Mine}`
+
 const AccountInfo = () => {
     const { t } = useTranslation()
     const classes = useStyles()
     const history = useHistory()
     const { user } = useAuth()
-    const { network } = useNetworks()
-    const { data: ideas } = useGetIdeas(network.id)
-    const { data: proposals } = useGetProposals({
-        network: network.id,
-        ownerId: user?.id,
-        status: null,
-        timeFrame: TimeFrame.OnChain,
-        pageNumber: 1,
-        pageSize: 100,
-    })
+    const { data: userStatistics, refetch } = useGetUserStatistics()
+    const { ideas = 0, proposals = 0, bounties = 0, tips = 0 } = userStatistics ?? {}
     const address = user?.web3Addresses.find((address) => address.isPrimary)?.encodedAddress ?? ''
 
     const { anchorEl, open, handleClose, handleOpen } = useMenu()
-
-    const numberOfMineIdeas = useMemo(() => {
-        const mineIdeas = ideas ? filterIdeas(ideas, IdeaFilter.Mine, user) : []
-        return mineIdeas.length
-    }, [ideas, user])
-
-    const numberOfMineProposals = useMemo(() => {
-        const flattenProposals = proposals?.pages.map((page) => page.items).flat() ?? []
-        return flattenProposals.length
-    }, [proposals, user])
-
-    const goToAccount = () => {
-        history.push(ROUTE_ACCOUNT)
-        handleClose()
+    const openMenu = (event?: React.MouseEvent<HTMLElement>) => {
+        refetch()
+        handleOpen(event)
     }
 
-    const goToMineIdeas = () => {
-        history.push(`${ROUTE_IDEAS}?${IdeaFilterSearchParamName}=${IdeaFilter.Mine}`)
-        handleClose()
-    }
-
-    const goToMineProposals = () => {
-        history.push(`${ROUTE_PROPOSALS}?${IdeaFilterSearchParamName}=${ProposalFilter.Mine}`)
+    const goToPath = (path: string) => {
+        history.push(path)
         handleClose()
     }
 
@@ -96,7 +76,7 @@ const AccountInfo = () => {
                     size={26}
                 />
             </StyledAvatarContainer>
-            <IconButton onClick={handleOpen} alt={t('topBar.showAccountMenu')} svg={arrowSvg} />
+            <IconButton onClick={openMenu} alt={t('topBar.showAccountMenu')} svg={arrowSvg} />
             <Menu
                 id="simple-menu"
                 anchorEl={anchorEl}
@@ -112,12 +92,18 @@ const AccountInfo = () => {
                         <Divider />
                     </>
                 ) : null}
-                <MenuItem onClick={goToAccount}>{t('topBar.account.account')}</MenuItem>
-                <MenuItem onClick={goToMineIdeas}>
-                    {t('topBar.account.yourIdeas')} ({numberOfMineIdeas})
+                <MenuItem onClick={() => goToPath(MY_ACCOUNT)}>{t('topBar.account.account')}</MenuItem>
+                <MenuItem onClick={() => goToPath(MINE_IDEAS)}>
+                    {t('topBar.account.yourIdeas')} ({ideas})
                 </MenuItem>
-                <MenuItem onClick={goToMineProposals}>
-                    {t('topBar.account.yourProposals')} ({numberOfMineProposals})
+                <MenuItem onClick={() => goToPath(MINE_PROPOSALS)}>
+                    {t('topBar.account.yourProposals')} ({proposals})
+                </MenuItem>
+                <MenuItem onClick={() => goToPath(MINE_BOUNTIES)}>
+                    {t('topBar.account.yourBounties')} ({bounties})
+                </MenuItem>
+                <MenuItem onClick={() => goToPath(MINE_TIPS)}>
+                    {t('topBar.account.yourTips')} ({tips})
                 </MenuItem>
                 <Divider />
                 <SignOutMenuItem />

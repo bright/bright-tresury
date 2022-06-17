@@ -93,7 +93,7 @@ function AppRoutes() {
     return (
         <Main>
             <Switch>
-                {/*TODO make public only route but enable history redirect inside the componenet*/}
+                {/*TODO make public only route but enable history redirect inside the component */}
                 <Route exact={false} path={ROUTE_SIGNUP} component={SignUp} />
                 <PublicOnlyRoute exact={false} path={ROUTE_SIGNIN} component={SignIn} />
                 <PrivateRoute

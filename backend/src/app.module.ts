@@ -31,6 +31,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler'
 import { DiscussionsModule } from './discussions/discussions.module'
 import helmet from 'helmet'
 import { TipsModule } from './tips/tips.module'
+import { UserStatisticsModule } from './user-statistics/user-statistics.module'
 
 @Module({
     imports: [
@@ -58,6 +59,7 @@ import { TipsModule } from './tips/tips.module'
         }),
         DiscussionsModule,
         TipsModule,
+        UserStatisticsModule,
     ],
     providers: [
         {

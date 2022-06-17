@@ -26,7 +26,6 @@ const SubmitBountyModal = ({ open, onClose, bounty }: SubmitBountyModalProps) =>
 
     const { mutateAsync } = useCreateBounty()
     const { network } = useNetworks()
-
     const goToBounties = (event?: any) => {
         const bountyIndex = event?.data?.toJSON()?.[0]
         bountyIndex !== undefined

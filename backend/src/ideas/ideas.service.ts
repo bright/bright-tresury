@@ -74,6 +74,17 @@ export class IdeasService {
         return this.createFindIdeaDto(idea)
     }
 
+    async findIdeasByUserId(networkName: string, ownerId: string): Promise<FindIdeaDto[]> {
+        const ideaEntities = await this.ideaRepository
+            .createQueryBuilder('idea')
+            .leftJoinAndSelect('idea.networks', 'networkToQuery')
+            .leftJoinAndSelect('idea.details', 'details')
+            .where('networkToQuery.name = :networkName', { networkName })
+            .andWhere('idea.ownerId = :ownerId', { ownerId })
+            .getMany()
+        return Promise.all(ideaEntities.map((entity) => this.createFindIdeaDto(entity)))
+    }
+
     async createFindIdeaDto(entity: IdeaEntity): Promise<FindIdeaDto> {
         if (!entity.beneficiary) return { entity }
         return {
