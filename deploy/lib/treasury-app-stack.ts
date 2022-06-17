@@ -14,7 +14,7 @@ export class TreasuryAppStack extends cdk.Stack {
             parameters: {
                 DeployEnv: deployEnv(),
                 AppImage: `${dockerRegistry()}treasury:${vcsVersion()}_${deployEnv()}`,
-                PolkadotImage: `public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:v0.9.19`,
+                PolkadotImage: `public.ecr.aws/x2h8r1m3/treasury/polkadot-dev:v0.9.24`,
             },
             templateFile: path.join(__dirname, '..', 'aws.template'),
         })
