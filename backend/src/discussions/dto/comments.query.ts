@@ -30,4 +30,9 @@ export class CommentsQuery {
     @IsOptional()
     @IsString()
     blockchainHash?: string
+
+    @ApiPropertyOptional({ description: 'Blockchain index of the parent bounty blockchain entity' })
+    @IsOptional()
+    @IsNumberString()
+    parentBountyBlockchainIndex?: string
 }
