@@ -83,7 +83,7 @@ export class BlockchainChildBountiesService {
                 const { curator, beneficiary, unlockAt } = data || {}
                 const curatorAddress = curator?.toString()
                 const beneficiaryAddress = beneficiary?.toString()
-                return {
+                return new BlockchainChildBountyDto({
                     index: ids[index].blockchainIndex,
                     parentIndex: childBounty.parentBounty.toNumber(),
                     description: maybeDescriptions[index].unwrapOrDefault().toUtf8(),
@@ -94,7 +94,7 @@ export class BlockchainChildBountiesService {
                     beneficiary: beneficiaryAddress,
                     unlockAt: unlockAt?.toString(),
                     status,
-                }
+                })
             })
             .filter((childBountyDto) => childBountyDto !== undefined) as BlockchainChildBountyDto[]
     }
