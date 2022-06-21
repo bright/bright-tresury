@@ -17,7 +17,6 @@ const useStyles = makeStyles((theme: Theme) =>
             [theme.breakpoints.down(breakpoints.tablet)]: {
                 fontSize: '17px',
             },
-            marginRight: '1em',
             color: theme.palette.text.primary,
             border: `solid 2px ${theme.palette.background.paper}`,
             borderRadius: '8px',
@@ -27,6 +26,12 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         selected: {
             border: `solid 2px ${theme.palette.primary.main}`,
+        },
+        buttonContainer: {
+            marginRight: '1em',
+        },
+        button: {
+            borderRadius: '8px',
         },
     }),
 )
@@ -71,18 +76,20 @@ const TabLabel = ({ label, filterName, svg, path, isDefault, searchParamName, no
     }
 
     return (
-        <ButtonBase centerRipple={true}>
-            <NavLink
-                className={classes.root}
-                to={path}
-                replace={true}
-                isActive={isActive}
-                activeClassName={classes.selected}
-            >
-                {svg ? <TabLabelImg svg={svg} notificationsCount={notificationsCount} /> : null}
-                {label}
-            </NavLink>
-        </ButtonBase>
+        <div className={classes.buttonContainer}>
+            <ButtonBase className={classes.button}>
+                <NavLink
+                    className={classes.root}
+                    to={path}
+                    replace={true}
+                    isActive={isActive}
+                    activeClassName={classes.selected}
+                >
+                    {svg ? <TabLabelImg svg={svg} notificationsCount={notificationsCount} /> : null}
+                    {label}
+                </NavLink>
+            </ButtonBase>
+        </div>
     )
 }
 
