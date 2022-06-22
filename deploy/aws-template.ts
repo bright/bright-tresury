@@ -255,7 +255,7 @@ const AppContainerDefinition = {
         },
         {
             Name: 'NODE_OPTIONS',
-            Value: '--max-old-space-size=800',
+            Value: '--max-old-space-size=2048',
         },
     ],
     Cpu: 100,
