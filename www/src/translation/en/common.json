@@ -216,14 +216,14 @@
         "passwordHide": "Hide password button",
         "errors": {
             "generalError": "Something went wrong. Please try again later.",
-            "wrongCredentialsError": "Unable to log in. Please check if your credentials are correct.",
+            "wrongCredentialsError": "Something went wrong. Check your login details and try again.",
             "accountTemporaryLocked": "Account temporary locked. Please try again later.",
             "emailAlreadyVerifiedError": "Email is already verified.",
             "tokenError": "Your token has expired"
         },
         "signUp": {
-            "title": "Sign up",
-            "emailSignUpLabel": "E-mail sign up",
+            "title": "Sign up for Bright Treasury!",
+            "emailSignUpLabel": "Email sign-up",
             "web3SignUpLabel": "Web 3 address sign up",
             "logInLabel": "Already have an account? <a>Log in</a>",
             "submitButton": "Sign up",
@@ -242,7 +242,7 @@
                     "login": {
                         "label": "Login (email address)",
                         "placeholder": "Enter your email address",
-                        "emailError": "Please see if your email address is correct"
+                        "emailError": "Something seems not right. Please have a look."
                     },
                     "password": {
                         "label": "Password",
@@ -323,9 +323,9 @@
         },
         "passwordRecovery": {
             "title": "Forgot Password",
-            "header": "Forgot password?",
-            "paragraph": "In order to reset your password, please enter your Login (Email Address)",
-            "reset": "Reset",
+            "header": "Forgot your password?",
+            "paragraph": "Submit your email address. We will send you an email with a link to reset your password.",
+            "reset": "Confirm",
             "success": "We have sent an e-mail to the address provided to reset your password."
         },
         "newPassword": {
@@ -345,7 +345,7 @@
         "ideaAlreadyTurnedIntoProposal": "This idea was turned into the proposal. We suggest discussing this in the proposal <a>page</a>.",
         "createCommentPlaceholder": "Leave your comment here",
         "commentUpdatedTimestampTitle": "edited",
-        "inOrderToComment": "In order to comment, please ",
+        "inOrderToComment": "To comment, please ",
         "logIn": "log in",
         "cancelComment": "Cancel",
         "sendComment": "Post",
@@ -481,7 +481,7 @@
                 "mine": "Mine",
                 "draft": "Draft",
                 "active": "Active",
-                "turnedIntoProposal": "Turned into Proposal",
+                "turnedIntoProposal": "Converted into proposalSign up",
                 "closed": "Closed"
             }
         },
@@ -1086,7 +1086,7 @@
             "proposalsApproved": "Proposals Approved",
             "activeIdeas": "Active Ideas",
             "spendPeriod": "Spend Period",
-            "timeLeft": "Time Left",
+            "timeLeft": "Current spend time",
             "leftOfSpendingPeriod": "Left of Spending Period",
             "available": "Available",
             "nextBurn": "Next Burn"
@@ -1158,7 +1158,7 @@
                 "warning": "Any description already published on Polkassembly will be overwritten!",
                 "subtitle": "Here is the preview of your proposal on Polkassembly:",
                 "submit": "Share",
-                "discard": "Do not share",
+                "discard": "Cancel",
                 "notProposerError": "You do not have the proposer account configured in your browser extension.",
                 "generalError": "Ooops... Something went wrong.",
                 "successSnackMessage": "Details of the proposal have been successfully shared on Polkassembly"
