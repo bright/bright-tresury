@@ -10,13 +10,24 @@
         <meta name="description" content="Apply for Polkadot and Kusama Treasury funds. Contribute with your idea and get funds from the Blockchain Substrate community." />
         <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
         <meta name="theme-color" content="#000000" />
-        <meta property="og:image" content="%PUBLIC_URL%/og_image.png" />
+
+        <% if (process.env.REACT_APP_DEPLOY_ENV === 'stage') { %>
+            <meta property="og:image" content="https://stage.treasury.bright.dev/og_image.png" />
+            <meta name="twitter:image" content="https://stage.treasury.bright.dev/og_image.png" />
+        <% } else if (process.env.REACT_APP_DEPLOY_ENV === 'qa') { %>
+            <meta property="og:image" content="https://testing.treasury.bright.dev/og_image.png" />
+            <meta name="twitter:image" content="https://testing.treasury.bright.dev/og_image.png" />
+        <% } else if (process.env.REACT_APP_DEPLOY_ENV === 'prod') { %>
+            <meta property="og:image" content="https://treasury.bright.dev/og_image.png" />
+            <meta name="twitter:image" content="https://treasury.bright.dev/og_image.png" />
+        <% } %>
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="BrightTreasury – Kusama and Polkadot’s Treasury module app">
-        <meta name="twitter:image" content="%PUBLIC_URL%/og_image.png" />
+
+
         <meta name="twitter:description" content="Apply for Polkadot and Kusama Treasury funds. Contribute with your idea and get funds from the Blockchain Substrate community.">
-        
+
         <link rel="apple-touch-icon" sizes="196x196" href="%PUBLIC_URL%/icons/logo_ios_196.png" />
         <link rel="apple-touch-icon" sizes="512x512" href="%PUBLIC_URL%/icons/logo_ios_512.png" />
         <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
