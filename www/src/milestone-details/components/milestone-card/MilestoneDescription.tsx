@@ -10,8 +10,6 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             fontSize: '14px',
             overflow: 'hidden',
-            position: 'relative',
-            top: '-40px',
         },
         description: {
             display: '-webkit-box',
@@ -40,7 +38,7 @@ const MilestoneDescription = ({ description, placeholder }: MilestoneDescription
     return (
         <div className={classes.root}>
             {description ? (
-                <Markdown>{description}</Markdown>
+                <Markdown className={classes.description}>{description}</Markdown>
             ) : (
                 <Placeholder className={classes.descriptionPlaceholder} value={placeholder} />
             )}
