@@ -1,5 +1,5 @@
 import React from 'react'
-import { useTranslation } from 'react-i18next'
+import { Trans, useTranslation } from 'react-i18next'
 import { ClassNameProps } from '../../components/props/className.props'
 import SimpleToggleButton from '../../components/toggle/toggle-state/SimpleToggleButton'
 import SimpleToggleButtonGroup from '../../components/toggle/toggle-state/SimpleToggleButtonGroup'
@@ -24,7 +24,16 @@ const TipCreateSwitch = ({ mode, setMode, className }: TipCreateSwitchProps) => 
             </SimpleToggleButton>
             <SimpleToggleButton value="createAndTip">
                 <div>{t('tip.create.header.createAndTip')}</div>
-                <SimpleToggleButtonSubtitle>{t('tip.create.header.createAndTipSubtitle')}</SimpleToggleButtonSubtitle>
+                <SimpleToggleButtonSubtitle>
+                    {t('tip.create.header.createAndTipSubtitle')}
+                    <Trans
+                        id="tip-header-description"
+                        components={{
+                            a: <a target="_blank" href="https://wiki.polkadot.network/docs/learn-treasury#tipping" />,
+                        }}
+                        i18nKey="tip.create.header.account"
+                    />
+                </SimpleToggleButtonSubtitle>
             </SimpleToggleButton>
         </SimpleToggleButtonGroup>
     )

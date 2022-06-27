@@ -32,17 +32,6 @@ const TipCreateHeader = ({ mode, setMode }: TipCreateHeaderProps) => {
     return (
         <div className={classes.root}>
             <TipCreateSwitch mode={mode} setMode={setMode} className={classes.switch} />
-            <InformationTip
-                label={
-                    <Trans
-                        id="modal-description"
-                        components={{
-                            a: <a target="_blank" href="https://wiki.polkadot.network/docs/learn-treasury#tipping" />,
-                        }}
-                        i18nKey="tip.create.header.info"
-                    />
-                }
-            />
         </div>
     )
 }

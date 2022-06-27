@@ -159,7 +159,7 @@
         "build": "Build:"
     },
     "account": {
-        "title": "Account",
+        "title": "Account details",
         "emailPassword": {
             "username": "Displayed name",
             "editUsername": "Edit",
@@ -263,7 +263,7 @@
                 "successSubtitle": "Start your experience with Bright Treasury"
             },
             "success": {
-                "title": "Congrats! You have successfully registered!",
+                "title": "Thanks for signing up to Bright Treasury!",
                 "mailboxImage": "Image of a mailbox"
             }
         },
@@ -293,7 +293,7 @@
             "verifyEmail": {
                 "success": {
                     "title": "Sign up success",
-                    "subtitle": "Welcome to the family!",
+                    "subtitle": "Welcome to Bright Treasury!",
                     "information": "You have successfully registered. <a>Log in</a> and experience Bright Treasury app’s potential to the fullest!"
                 },
                 "error": {
@@ -376,7 +376,7 @@
             "end": "Voting end"
         },
         "noMotion": {
-            "description": "While waiting for motions from Councils, you can go to the discussion tab to make sure that no aspect of the topic has slipped away from you or the community",
+            "description": "You'll need to wait a bit for motions from the Councils. In the meantime, go to Discussions and be part of the conversation.",
             "visitDiscussions": "Visit discussions"
         },
         "method": {
@@ -489,7 +489,7 @@
             "createMilestone": "+ Create Milestone",
             "ordinalNumberPrefix": "Milestone - ",
             "noIdeaMilestones": {
-                "ownerCanAdd": "Please add milestones for this idea, milestones will allow our community appreciate the idea more and understand it better.",
+                "ownerCanAdd": "Do you want to add milestones to your idea? Milestones will allow our community appreciate the idea more and understand it better.",
                 "notOwnerCanAdd": "No milestones have been added yet. You can ask the owner to add milestones in the Discussion tab.",
                 "cannotAdd": "No milestones have been added to the idea.",
                 "goToProposal": " The idea is already turned into proposal, go to <a>proposal milestones tab</a> to check it's milestones."
@@ -731,8 +731,8 @@
         "header": {
             "accept": "Accept",
             "reject": "Reject",
-            "rejectCuratorRole": "Reject curator role",
-            "claimPayout": "Claim Payout",
+            "rejectCuratorRole": "Stop being the curator",
+            "claimPayout": "Pay out reward",
             "extendExpiry": "Extend expiry date",
             "edit": "Edit bounty",
             "addDetails": "Add details",
@@ -821,9 +821,9 @@
             "childBounty": "Child Bounty ",
             "assignCurator": "Assign curator",
             "acceptCurator": "Accept",
-            "rejectCurator": "Reject",
+            "rejectCurator": "Stop being the curator",
             "unassignCurator": "Reject curator",
-            "claimPayout": "Claim Payout",
+            "claimPayout": "Pay out reward",
             "closeChildBounty": "Close child bounty",
             "award": "Award child bounty"
         },
@@ -953,10 +953,10 @@
         },
         "create": {
             "header": {
-                "createOnly": "I want to propose",
+                "createOnly": "I want to suggest a tip",
                 "createAndTip": "I want to tip",
-                "createAndTipSubtitle": "To tip you need to have a tipper’s account",
-                "info": "What’s a <a>tipper’s account</a>"
+                "createAndTipSubtitle": "To tip you need to have a ",
+                "account": "<a>tipper’s account</a>"
             },
             "title": "Create Tip",
             "create": "Create",
