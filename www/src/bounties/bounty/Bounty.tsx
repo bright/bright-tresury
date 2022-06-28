@@ -18,6 +18,9 @@ import BountyExtendExpiry from './header/curator-actions/extend-expiry/BountyExt
 import BountyInfo from './info/BountyInfo'
 import BountyVoting from './voting/BountyVoting'
 import ChildBountiesLoader from './child-bounties/ChildBountiesLoader'
+import CornerFloater from '../../components/cornerFloater/CornerFloater'
+import TwitterShare from '../../components/twitterShare/TwitterShare'
+import { useTranslation } from 'react-i18next'
 
 export enum BountyContentType {
     Info = 'info',
@@ -92,6 +95,7 @@ interface OwnProps {
 }
 export type BountyProps = OwnProps
 const Bounty = ({ bounty }: BountyProps) => {
+    const { t } = useTranslation()
     const classes = useSuccessfullyLoadedItemStyles()
 
     let { path } = useRouteMatch()
@@ -123,6 +127,9 @@ const Bounty = ({ bounty }: BountyProps) => {
                     </Switch>
                 </>
             </Switch>
+            <CornerFloater>
+                <TwitterShare title={t('share.twitter.bounty')} />
+            </CornerFloater>
         </div>
     )
 }

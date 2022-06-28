@@ -19,6 +19,7 @@ import PrivateProposalContentTypeTabs from './PrivateProposalContentTypeTabs'
 import { ProposalTabConfig } from './Proposal'
 import ProposalActionButtons from './ProposalActionButtons'
 import { ProposalContentTypeTabs } from './ProposalContentTypeTabs'
+import { useProposal } from './useProposals'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -66,6 +67,7 @@ const ProposalHeader = ({ proposal, proposalTabsConfig }: ProposalHeaderProps) =
     const classes = useStyles()
     const history = useHistory()
     const { user, isUserSignedInAndVerified } = useAuth()
+    const { canEdit } = useProposal(proposal)
 
     const navigateToList = () => {
         history.goBack()
@@ -98,7 +100,7 @@ const ProposalHeader = ({ proposal, proposalTabsConfig }: ProposalHeaderProps) =
                     <ProposalContentTypeTabs proposalTabsConfig={proposalTabsConfig} />
                 )}
             </HeaderTabs>
-            <ProposalActionButtons className={classes.actionButtons} proposal={proposal} />
+            {canEdit ? <ProposalActionButtons className={classes.actionButtons} proposal={proposal} /> : null}
         </HeaderContainer>
     )
 }

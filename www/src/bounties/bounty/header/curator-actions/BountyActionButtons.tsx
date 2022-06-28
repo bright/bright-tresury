@@ -16,7 +16,6 @@ export type CuratorActionButtonsProps = OwnProps & ActionButtonsProps
 
 const BountyActionButtons = ({ bounty, ...props }: CuratorActionButtonsProps) => {
     const { canReject, canAccept, canClaimPayout, canEdit } = useBounty(bounty)
-
     if (!canAccept && !canReject && !canClaimPayout && !canEdit) {
         return null
     }

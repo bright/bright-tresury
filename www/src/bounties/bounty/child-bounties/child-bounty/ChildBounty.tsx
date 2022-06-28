@@ -13,6 +13,9 @@ import { BountyDto } from '../../../bounties.dto'
 import { ROUTE_EDIT_CHILD_BOUNTY } from '../../../../routes/routes'
 import PrivateRoute from '../../../../routes/PrivateRoute'
 import ChildBountyEdit from './edit/ChildBountyEdit'
+import TwitterShare from '../../../../components/twitterShare/TwitterShare'
+import CornerFloater from '../../../../components/cornerFloater/CornerFloater'
+import { useTranslation } from 'react-i18next'
 
 export enum ChildBountyContentType {
     Info = 'info',
@@ -65,6 +68,7 @@ interface OwnProps {
 export type ChildBountyProps = OwnProps
 
 const ChildBounty = ({ bounty, childBounty }: ChildBountyProps) => {
+    const { t } = useTranslation()
     const classes = useSuccessfullyLoadedItemStyles()
     let { path } = useRouteMatch()
 
@@ -91,6 +95,9 @@ const ChildBounty = ({ bounty, childBounty }: ChildBountyProps) => {
                     </Switch>
                 </>
             </Switch>
+            <CornerFloater>
+                <TwitterShare title={t('share.twitter.childBounty')} />
+            </CornerFloater>
         </div>
     )
 }

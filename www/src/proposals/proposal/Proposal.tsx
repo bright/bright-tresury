@@ -22,6 +22,8 @@ import { Nil } from '../../util/types'
 import ProposalEdit from './edit/ProposalEdit'
 import PrivateRoute from '../../routes/PrivateRoute'
 import { ROUTE_EDIT_PROPOSAL } from '../../routes/routes'
+import TwitterShare from '../../components/twitterShare/TwitterShare'
+import CornerFloater from '../../components/cornerFloater/CornerFloater'
 
 export interface ProposalTabConfig {
     proposalContentType: ProposalContentType
@@ -136,6 +138,9 @@ const Proposal = () => {
                             </Switch>
                         </>
                     </Switch>
+                    <CornerFloater>
+                        <TwitterShare title={t('share.twitter.proposal')} />
+                    </CornerFloater>
                 </div>
             ) : null}
         </LoadingWrapper>

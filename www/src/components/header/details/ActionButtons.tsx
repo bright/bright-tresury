@@ -16,6 +16,7 @@ const useStyles = makeStyles((theme: Theme) =>
                 flexDirection: 'row',
                 position: 'fixed',
                 padding: 16,
+                paddingRight: 36,
                 background: theme.palette.background.default,
                 bottom: '-30px',
                 left: 0,

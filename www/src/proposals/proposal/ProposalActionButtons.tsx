@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import EditButton from '../../components/header/details/EditButton'
 import { generatePath, useHistory } from 'react-router-dom'
 import { ROUTE_EDIT_PROPOSAL } from '../../routes/routes'
+import TwitterShare from '../../components/twitterShare/TwitterShare'
 
 interface OwnProps {
     proposal: ProposalDto
@@ -16,12 +17,7 @@ export type ProposalActionButtonsProps = OwnProps & ActionButtonsProps
 
 const ProposalActionButtons = ({ proposal, ...props }: ProposalActionButtonsProps) => {
     const { t } = useTranslation()
-    const { canEdit } = useProposal(proposal)
     const history = useHistory()
-
-    if (!canEdit) {
-        return null
-    }
 
     const navigateToEdit = () => {
         history.push(generatePath(ROUTE_EDIT_PROPOSAL, { proposalIndex: proposal.proposalIndex }))

@@ -1204,5 +1204,14 @@
         "childBounties": "We're loading child bounties. It may take a moment. Bear with us.",
         "comments": "We're loading the comments. It may take a moment. Bear with us.",
         "bountiesVoting": "We're loading the bounty voting. It may take a moment. Bear with us."
+    },
+    "share": {
+        "twitter": {
+            "idea": "Check this proposal idea: ",
+            "proposal": "Check this treasury proposal: ",
+            "bounty": "Check this treasury bounty: ",
+            "childBounty": "Check this treasury child bounty: ",
+            "tip": "Check this tip: "
+        }
     }
 }

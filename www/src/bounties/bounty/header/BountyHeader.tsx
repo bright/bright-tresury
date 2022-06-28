@@ -105,9 +105,9 @@ const BountyHeader = ({ bounty, bountyTabsConfig }: BountyHeaderProps) => {
                     <BountyContentTypeTabs bountyTabsConfig={bountyTabsConfig} />
                 )}
             </HeaderTabs>
-            <ActionButtons className={classes.actionButtons}>
-                <BountyActionButtons bounty={bounty} />
-            </ActionButtons>
+
+            <BountyActionButtons className={classes.actionButtons} bounty={bounty} />
+
             {isProposer || isCurator ? <BountyOptionsButton className={classes.optionsButton} bounty={bounty} /> : null}
         </HeaderContainer>
     )

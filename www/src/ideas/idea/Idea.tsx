@@ -15,6 +15,9 @@ import IdeaInfo from './info/IdeaInfo'
 import IdeaEdit from './info/IdeaEdit'
 import IdeaMilestones from './milestones/IdeaMilestones'
 import TurnIdeaIntoProposal from './turnIntoProposal/TurnIdeaIntoProposal'
+import TwitterShare from '../../components/twitterShare/TwitterShare'
+import { useTranslation } from 'react-i18next'
+import CornerFloater from '../../components/cornerFloater/CornerFloater'
 
 export enum IdeaContentType {
     Info = 'info',
@@ -73,6 +76,7 @@ interface OwnProps {
 }
 export type IdeaProps = OwnProps
 const Idea = ({ idea }: IdeaProps) => {
+    const { t } = useTranslation()
     const classes = useSuccessfullyLoadedItemStyles()
 
     let { path } = useRouteMatch()
@@ -104,6 +108,9 @@ const Idea = ({ idea }: IdeaProps) => {
                     </Switch>
                 </>
             </Switch>
+            <CornerFloater>
+                <TwitterShare title={t('share.twitter.idea')} />
+            </CornerFloater>
         </div>
     )
 }

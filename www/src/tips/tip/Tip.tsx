@@ -11,6 +11,9 @@ import TipHeader from './header/TipHeader'
 import TipInfo from './TipInfo'
 import { TipDto } from '../tips.dto'
 import Tippers from './tippers/Tippers'
+import CornerFloater from '../../components/cornerFloater/CornerFloater'
+import TwitterShare from '../../components/twitterShare/TwitterShare'
+import { useTranslation } from 'react-i18next'
 
 export enum TipContentType {
     Info = 'info',
@@ -72,6 +75,7 @@ interface OwnProps {
 export type TipProps = OwnProps
 
 const Tip = ({ tip }: TipProps) => {
+    const { t } = useTranslation()
     const classes = useSuccessfullyLoadedItemStyles()
 
     let { path } = useRouteMatch()
@@ -97,6 +101,9 @@ const Tip = ({ tip }: TipProps) => {
                     </Switch>
                 </>
             </Switch>
+            <CornerFloater>
+                <TwitterShare title={t('share.twitter.tip')} />
+            </CornerFloater>
         </div>
     )
 }

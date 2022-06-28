@@ -1,11 +1,9 @@
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { generatePath, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { useAuth } from '../../auth/AuthContext'
-import Button from '../../components/button/Button'
 import BasicInfo from '../../components/header/BasicInfo'
-import ActionButtons from '../../components/header/details/ActionButtons'
 import BasicInfoDivider from '../../components/header/details/BasicInfoDivider'
 import HeaderContainer from '../../components/header/details/HeaderContainer'
 import NetworkValues from '../../components/header/details/NetworkValues'
@@ -15,7 +13,6 @@ import HeaderTabs from '../../components/header/HeaderTabs'
 import ProposalNetworkRewardDeposit from '../../components/network/ProposalNetworkRewardDeposit'
 import OrdinalNumber from '../../components/ordinalNumber/OrdinalNumber'
 import OptionalTitle from '../../components/text/OptionalTitle'
-import { ROUTE_EDIT_IDEA, ROUTE_TURN_IDEA } from '../../routes/routes'
 import { breakpoints } from '../../theme/theme'
 import { IdeaDto } from '../ideas.dto'
 import IdeaContentTypeTabs from './IdeaContentTypeTabs'
@@ -24,7 +21,7 @@ import IdeaOptionsButton from './IdeaOptionsButton'
 import IdeaStatusIndicator from './status/IdeaStatusIndicator'
 import { useIdea } from './useIdea'
 import { IdeaContentType, IdeaTabConfig } from './Idea'
-import EditButton from '../../components/header/details/EditButton'
+import IdeaActionButtons from './IdeaActionButtons'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -79,18 +76,11 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
         history.goBack()
     }
 
-    const navigateToTurnIntoProposal = () => {
-        history.push(generatePath(ROUTE_TURN_IDEA, { ideaId: idea.id }), { idea })
-    }
-
-    const navigateToEdit = () => {
-        history.push(generatePath(ROUTE_EDIT_IDEA, { ideaId: idea.id }))
-    }
-
     const networkValue = idea.currentNetwork.value
     const withDiscussion = !!ideaTabsConfig.find(
         ({ ideaContentType }) => ideaContentType === IdeaContentType.Discussion,
     )
+
     return (
         <HeaderContainer onClose={navigateToList}>
             <BasicInfo>
@@ -112,17 +102,9 @@ const IdeaHeader = ({ idea, ideaTabsConfig }: IdeaHeaderProps) => {
                     <IdeaContentTypeTabs ideaTabsConfig={ideaTabsConfig} />
                 )}
             </HeaderTabs>
-            {canTurnIntoProposal && (
-                <ActionButtons className={classes.actionButtons}>
-                    <EditButton label={t('idea.details.edit')} onClick={navigateToEdit} />
-                    <Button variant="contained" color="primary" onClick={navigateToTurnIntoProposal}>
-                        {t('idea.details.header.turnIntoProposal')}
-                    </Button>
-                </ActionButtons>
-            )}
+            {canTurnIntoProposal ? <IdeaActionButtons className={classes.actionButtons} idea={idea} /> : null}
             {isOwner ? <IdeaOptionsButton className={classes.optionsButton} idea={idea} /> : null}
         </HeaderContainer>
     )
 }
-
 export default IdeaHeader
