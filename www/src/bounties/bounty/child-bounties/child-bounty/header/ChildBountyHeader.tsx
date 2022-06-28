@@ -28,6 +28,8 @@ import { BountyDto } from '../../../../bounties.dto'
 import ChildBountyContentTypeTabs from './ChildBountyContentTypeTabs'
 import { useAuth } from '../../../../../auth/AuthContext'
 import PrivateChildBountyContentTypeTabs from '../PrivateChildBountyContentTypeTabs'
+import { useChildBounty } from '../../useChildBounty'
+import { useBounty } from '../../../useBounty'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -94,6 +96,8 @@ const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: Child
     const { t } = useTranslation()
     const history = useHistory()
     const { user } = useAuth()
+    const { canEdit } = useChildBounty(bounty, childBounty)
+    const { isCurator: isBountyCurator } = useBounty(bounty)
 
     const navigateToList = () => {
         history.goBack()
@@ -143,7 +147,9 @@ const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: Child
             <ActionButtons className={classes.actionButtons}>
                 <ChildBountyActionButtons bounty={bounty} childBounty={childBounty} />
             </ActionButtons>
-            <ChildBountyOptionsButton className={classes.optionsButton} childBounty={childBounty} bounty={bounty} />
+            {isBountyCurator || canEdit ? (
+                <ChildBountyOptionsButton className={classes.optionsButton} childBounty={childBounty} bounty={bounty} />
+            ) : null}
         </HeaderContainer>
     )
 }
