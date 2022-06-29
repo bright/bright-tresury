@@ -481,7 +481,7 @@
                 "mine": "Mine",
                 "draft": "Draft",
                 "active": "Active",
-                "turnedIntoProposal": "Converted into proposalSign up",
+                "turnedIntoProposal": "Converted into proposal",
                 "closed": "Closed"
             }
         },
