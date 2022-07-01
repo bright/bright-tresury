@@ -51,7 +51,7 @@ const TIP_CONTENT_TYPE_BUILDER: { [key in TipContentType]: TipTabConfig } = {
         svg: tippersIcon, // todo change icon
         getUrl: (baseUrl: string) => `${baseUrl}/${TipContentType.Tippers}`,
         getRoute: (basePath: string, tip: TipDto) => (
-            <Route key={TipContentType.Discussion} exact={true} path={`${basePath}/${TipContentType.Tippers}`}>
+            <Route key={TipContentType.Tippers} exact={true} path={`${basePath}/${TipContentType.Tippers}`}>
                 <Tippers tip={tip} />
             </Route>
         ),

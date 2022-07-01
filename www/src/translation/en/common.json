@@ -390,6 +390,7 @@
             "approved": "Approved",
             "disapproved": "Rejected"
         },
+        "informationTip": "This motion can be closed when the vote count for either Aye or Nay reaches {{motionThreshold}}",
         "vote": {
             "aye": "Aye",
             "nay": "Nay"

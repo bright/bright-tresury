@@ -5,6 +5,10 @@ import MotionTimeRow from './MotionTimeRow'
 import MotionStatusLabel from './MotionStatusLabel'
 import MotionTitle from './MotionTitle'
 import VoteCount from './VoteCount'
+import InformationTip from '../../../info/InformationTip'
+import { Trans, useTranslation } from 'react-i18next'
+import Strong from '../../../strong/Strong'
+import React from 'react'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -20,6 +24,11 @@ const useStyles = makeStyles(() =>
             justifyContent: 'space-between',
             marginBottom: '4px',
         },
+        informationTip: {
+            marginTop: '14px',
+            fontSize: '12px',
+            fontWeight: 400,
+        },
     }),
 )
 
@@ -31,7 +40,7 @@ export type MotionHeaderProps = OwnProps
 
 const Header = ({ motion }: MotionHeaderProps) => {
     const styles = useStyles()
-
+    const { t } = useTranslation()
     return (
         <CardHeader>
             <div className={styles.root}>
@@ -45,6 +54,10 @@ const Header = ({ motion }: MotionHeaderProps) => {
                         )}
                     </div>
                 </div>
+                <InformationTip
+                    className={styles.informationTip}
+                    label={<Trans i18nKey="voting.informationTip" values={{ motionThreshold: motion.threshold }} />}
+                />
                 <MotionTimeRow motion={motion} />
             </div>
         </CardHeader>
