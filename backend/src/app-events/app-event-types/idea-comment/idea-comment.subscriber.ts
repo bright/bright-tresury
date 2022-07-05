@@ -12,6 +12,7 @@ import { getLogger } from '../../../logging.module'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
 import { NewIdeaCommentDto } from './new-idea-comment.dto'
+import { getTaggedUsers } from '../utils'
 
 const logger = getLogger()
 
@@ -43,7 +44,7 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<CommentE
 
         try {
             const { entity: idea } = await this.ideasService.findOne(discussion.entityId!)
-            const taggedReceiverIds = await this.getTaggedUsers(entity)
+            const taggedReceiverIds = await getTaggedUsers(entity)
             const discussionReceiverIds = await this.getReceiverIds(entity, discussion, idea, taggedReceiverIds)
             const data = this.getEventDetails(entity, idea)
 
@@ -75,7 +76,7 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<CommentE
 
         try {
             const { entity: idea } = await this.ideasService.findOne(discussion.entityId!)
-            const taggedReceiverIds = await this.getTaggedUsers(databaseEntity)
+            const taggedReceiverIds = await getTaggedUsers(databaseEntity)
             const data = this.getEventDetails(databaseEntity, idea)
 
             await this.appEventsService.create({ ...data, type: AppEventType.TaggedInIdeaComment }, taggedReceiverIds)
@@ -86,23 +87,6 @@ export class IdeaCommentSubscriber implements EntitySubscriberInterface<CommentE
                 throw e
             }
         }
-    }
-
-    private async getTaggedUsers(comment: CommentEntity): Promise<string[]> {
-        const taggedUsers: string[] = []
-
-        const commentContainsTag = comment.content.match(/\[(?<text>.+)\]\((?<url>[^ ]+)(?: "(?<title>.+)")?\)/gim)
-
-        if (commentContainsTag) {
-            const userId = commentContainsTag[0].match(/(?<=\().+?(?=\))/gim)
-            if (userId !== null) {
-                for (const id of userId) {
-                    taggedUsers.push(id)
-                }
-            }
-        }
-
-        return [...new Set(taggedUsers)]
     }
 
     private getEventDetails(comment: CommentEntity, idea: IdeaEntity): NewIdeaCommentDto {

@@ -15,6 +15,7 @@ import { Nil } from '../../../utils/types'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
 import { NewBountyCommentDto } from './new-bounty-comment.dto'
+import { addUserFromWeb3Address, getTaggedUsers } from '../utils'
 
 const logger = getLogger()
 
@@ -47,7 +48,7 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Commen
 
         try {
             const bounty = await this.bountiesService.getBounty(discussion.networkId!, discussion.blockchainIndex!)
-            const taggedReceiverIds = await this.getTaggedUsers(entity)
+            const taggedReceiverIds = await getTaggedUsers(entity)
             const discussionReceiverIds = await this.getReceiverIds(
                 entity,
                 discussion,
@@ -91,7 +92,7 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Commen
 
         try {
             const bounty = await this.bountiesService.getBounty(discussion.networkId!, discussion.blockchainIndex!)
-            const taggedReceiverIds = await this.getTaggedUsers(databaseEntity)
+            const taggedReceiverIds = await getTaggedUsers(databaseEntity)
 
             const data = this.getEventDetails(
                 databaseEntity,
@@ -109,23 +110,6 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Commen
                 throw e
             }
         }
-    }
-
-    private async getTaggedUsers(comment: CommentEntity): Promise<string[]> {
-        const taggedUsers: string[] = []
-
-        const commentContainsTag = comment.content.match(/\[(?<text>.+)\]\((?<url>[^ ]+)(?: "(?<title>.+)")?\)/gim)
-
-        if (commentContainsTag) {
-            const userId = commentContainsTag[0].match(/(?<=\().+?(?=\))/gim)
-            if (userId !== null) {
-                for (const id of userId) {
-                    taggedUsers.push(id)
-                }
-            }
-        }
-
-        return [...new Set(taggedUsers)]
     }
 
     private getEventDetails(
@@ -162,10 +146,10 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Commen
             receiverIds.push(bountyEntity.ownerId)
         }
 
-        await this.addUserFromWeb3Address(bountyBlockchain.proposer, receiverIds)
+        await addUserFromWeb3Address(this.usersService, bountyBlockchain.proposer, receiverIds)
 
         if (bountyBlockchain.curator) {
-            await this.addUserFromWeb3Address(bountyBlockchain.curator, receiverIds)
+            await addUserFromWeb3Address(this.usersService, bountyBlockchain.curator, receiverIds)
         }
 
         // Set created from an array will take only distinct values
@@ -176,14 +160,5 @@ export class BountyCommentSubscriber implements EntitySubscriberInterface<Commen
         })
 
         return [...receiversIdsSet]
-    }
-
-    private async addUserFromWeb3Address(web3address: string, receiverIds: string[]): Promise<void> {
-        try {
-            const user = await this.usersService.findOneByWeb3AddressOrThrow(web3address)
-            receiverIds.push(user.id)
-        } catch (err) {
-            logger.info(`No user with address ${web3address} found`)
-        }
     }
 }

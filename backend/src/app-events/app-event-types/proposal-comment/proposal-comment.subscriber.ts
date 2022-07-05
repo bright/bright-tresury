@@ -13,6 +13,7 @@ import { UsersService } from '../../../users/users.service'
 import { AppEventsService } from '../../app-events.service'
 import { AppEventType } from '../../entities/app-event-type'
 import { NewProposalCommentDto } from './new-proposal-comment.dto'
+import { addUserFromWeb3Address, getTaggedUsers } from '../utils'
 
 const logger = getLogger()
 
@@ -46,7 +47,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Comm
         try {
             const proposal = await this.proposalsService.findOne(discussion.blockchainIndex!, discussion.networkId!)
             const data = this.getEventDetails(entity, discussion.blockchainIndex!, discussion.networkId!, proposal)
-            const taggedReceiverIds = await this.getTaggedUsers(entity)
+            const taggedReceiverIds = await getTaggedUsers(entity)
             const discussionReceiverIds = await this.getReceiverIds(entity, discussion, proposal, taggedReceiverIds)
 
             await this.appEventsService.create(
@@ -86,7 +87,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Comm
                 discussion.networkId!,
                 proposal,
             )
-            const taggedReceiverIds = await this.getTaggedUsers(databaseEntity)
+            const taggedReceiverIds = await getTaggedUsers(databaseEntity)
 
             await this.appEventsService.create(
                 { ...data, type: AppEventType.TaggedInProposalComment },
@@ -99,23 +100,6 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Comm
                 throw e
             }
         }
-    }
-
-    private async getTaggedUsers(comment: CommentEntity): Promise<string[]> {
-        const taggedUsers: string[] = []
-
-        const commentContainsTag = comment.content.match(/\[(?<text>.+)\]\((?<url>[^ ]+)(?: "(?<title>.+)")?\)/gim)
-
-        if (commentContainsTag) {
-            const userId = commentContainsTag[0].match(/(?<=\().+?(?=\))/gim)
-            if (userId !== null) {
-                for (const id of userId) {
-                    taggedUsers.push(id)
-                }
-            }
-        }
-
-        return [...new Set(taggedUsers)]
     }
 
     private getEventDetails(
@@ -151,12 +135,7 @@ export class ProposalCommentSubscriber implements EntitySubscriberInterface<Comm
         }
 
         // add proposer
-        try {
-            const proposerUser = await this.usersService.findOneByWeb3AddressOrThrow(proposal.blockchain.proposer)
-            receiverIds.push(proposerUser.id)
-        } catch (err) {
-            logger.info('No user with proposer address found')
-        }
+        await addUserFromWeb3Address(this.usersService, proposal.proposer.web3address!, receiverIds)
 
         // Set created from an array will take only distinct values
         const receiversIdsSet = new Set(receiverIds.filter((receiverId) => receiverId !== comment.authorId))
