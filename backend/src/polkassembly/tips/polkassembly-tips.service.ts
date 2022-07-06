@@ -5,7 +5,6 @@ import { getLogger } from '../../logging.module'
 import { Nil } from '../../utils/types'
 import { PolkassemblyTipPostDto } from './tip-post.dto'
 import { PolkassemblyTipPostSchema } from './tip-post.schema'
-import { TreasuryProposalPostsCount } from '../treasury-proposals/proposal.fragments'
 
 const logger = getLogger()
 export type GetTipsPosts = Omit<GetPosts, 'includeIndexes' | 'excludeIndexes' | 'proposers'> & {

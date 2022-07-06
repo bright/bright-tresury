@@ -23,6 +23,7 @@ import PrivateBountyContentTypeTabs from '../PrivateBountyContentTypeTabs'
 import BountyActionButtons from './curator-actions/BountyActionButtons'
 import { useBounty } from '../useBounty'
 import BountyOptionsButton from './options-menu/BountyOptionsButton'
+import ChildBountyPolkassemblyShareButton from '../child-bounties/child-bounty/header/curator-actions/polkassembly-share/ChildBountyPolkassemblyShareButton'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

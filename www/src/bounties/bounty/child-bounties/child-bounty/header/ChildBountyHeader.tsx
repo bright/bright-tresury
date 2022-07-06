@@ -21,7 +21,6 @@ import child_bounties from '../../../../../assets/child_bounties.svg'
 import ChildBountyStatusIndicator from '../../components/ChildBountyStatusIndicator'
 import ChildBountyNetworkRewardDeposit from './ChildBountyNetworkRewardDeposit'
 import ChildBountyOrdinalNumber from '../../components/ChildBountyOrdinalNumber'
-import ActionButtons from '../../../../../components/header/details/ActionButtons'
 import ChildBountyActionButtons from './ChildBountyActionButtons'
 import ChildBountyOptionsButton from './ChildBountyOptionsButton'
 import { BountyDto } from '../../../../bounties.dto'
@@ -144,12 +143,13 @@ const ChildBountyHeader = ({ bounty, childBounty, childBountyTabsConfig }: Child
                     <ChildBountyContentTypeTabs childBountyTabsConfig={childBountyTabsConfig} />
                 )}
             </HeaderTabs>
-            <ActionButtons className={classes.actionButtons}>
-                <ChildBountyActionButtons bounty={bounty} childBounty={childBounty} />
-            </ActionButtons>
+
+            <ChildBountyActionButtons className={classes.actionButtons} bounty={bounty} childBounty={childBounty} />
+
             {isBountyCurator || canEdit ? (
                 <ChildBountyOptionsButton className={classes.optionsButton} childBounty={childBounty} bounty={bounty} />
             ) : null}
+
         </HeaderContainer>
     )
 }

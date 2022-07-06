@@ -4,6 +4,7 @@ import { BountyDto } from '../../bounties.dto'
 import { useBounty } from '../useBounty'
 import { useBestNumber } from '../../../util/useBestNumber'
 import BN from 'bn.js'
+import { Nil } from '../../../util/types'
 
 export interface UseChildBountyResult {
     isAdded: boolean
@@ -17,6 +18,9 @@ export interface UseChildBountyResult {
     canEdit: boolean
     hasCurator: boolean
     isCurator: boolean
+    curator: Nil<string>
+    isProposer: boolean
+    proposer: Nil<string>
     canProposeCurator: boolean
     canAcceptCurator: boolean
     canUnassignCuratorByBountyCurator: boolean
@@ -27,31 +31,38 @@ export interface UseChildBountyResult {
     hasDetails: boolean
     canCloseChildBounty: boolean
     canAward: boolean
+
+    canSharePolkassembly: boolean
 }
 // Those condition are defined based on the child_bounties pallet defined here:
 // https://github.com/paritytech/substrate/blob/master/frame/child-bounties/src/lib.rs
 export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): UseChildBountyResult => {
     const { bestNumber } = useBestNumber()
-    const { isActive: isBountyActive, isCurator: isBountyCurator, isUpdateDueExpired } = useBounty(bounty)
+    const { isActive: isBountyActive, isCurator: isProposer, isUpdateDueExpired, curator: bountyCurator } = useBounty(
+        bounty,
+    )
     const { hasWeb3AddressAssigned, user } = useAuth()
     const isSignedInWithWeb3 = user?.isWeb3
     const isActive = childBounty.status === ChildBountyStatus.Active
     const isAdded = childBounty.status === ChildBountyStatus.Added
     const isCuratorProposed = childBounty.status === ChildBountyStatus.CuratorProposed
     const isPendingPayout = childBounty.status === ChildBountyStatus.PendingPayout
+    const isClaimed = childBounty.status === ChildBountyStatus.Claimed
+    const isCanceled = childBounty.status === ChildBountyStatus.Canceled
+    const isAwarded = childBounty.status === ChildBountyStatus.Awarded
 
-    const canProposeCurator = isBountyActive && isBountyCurator && isAdded
+    const canProposeCurator = isBountyActive && isProposer && isAdded
 
-    const hasCurator = isActive || isPendingPayout || isCuratorProposed
+    const hasCurator = isActive || isPendingPayout || isCuratorProposed || isClaimed || isCanceled || isAwarded
     const isCurator = hasCurator && hasWeb3AddressAssigned(childBounty.curator?.web3address)
-
+    const curator = childBounty.curator?.web3address
     const canAcceptCurator = isBountyActive && isCuratorProposed && isCurator
 
     const hasBeneficiary = isPendingPayout
     const isBeneficiary = isPendingPayout && hasWeb3AddressAssigned(childBounty.beneficiary?.web3address)
 
     const canUnassignCuratorByBountyCurator =
-        isBountyActive && isBountyCurator && (isCuratorProposed || isActive || isPendingPayout)
+        isBountyActive && isProposer && (isCuratorProposed || isActive || isPendingPayout)
     const canUsassignCuratorByChildBountyCurator = isCurator && (isCuratorProposed || isActive)
     const canUnassignCuratorByCommunity = !!(isSignedInWithWeb3 && isActive && isBountyActive && isUpdateDueExpired)
 
@@ -59,7 +70,7 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         canUnassignCuratorByBountyCurator || canUsassignCuratorByChildBountyCurator || canUnassignCuratorByCommunity
 
     const canClaimPayout = !!(
-        (isBountyCurator || isCurator || isBeneficiary) &&
+        (isProposer || isCurator || isBeneficiary) &&
         isPendingPayout &&
         bestNumber &&
         childBounty.unlockAt &&
@@ -68,11 +79,11 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
 
     const hasDetails = !!childBounty?.owner
     const isOwner = !!childBounty && !!user?.id && user?.id === childBounty.owner?.userId
+    const canEdit = isOwner || isCurator || isProposer
+    const canSharePolkassembly = canEdit
+    const canCloseChildBounty = isProposer && isBountyActive && !isPendingPayout
 
-    const canEdit = isOwner || isCurator
-    const canCloseChildBounty = isBountyCurator && isBountyActive && !isPendingPayout
-
-    const canAward = (isBountyCurator || isCurator) && isBountyActive && isActive
+    const canAward = (isProposer || isCurator) && isBountyActive && isActive
 
     return {
         hasBeneficiary,
@@ -80,6 +91,9 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         canEdit,
         hasCurator,
         isCurator,
+        curator,
+        isProposer,
+        proposer: bountyCurator,
         canProposeCurator,
         canAcceptCurator,
         canUnassignCuratorByBountyCurator,
@@ -94,5 +108,6 @@ export const useChildBounty = (bounty: BountyDto, childBounty: ChildBountyDto): 
         hasDetails,
         canCloseChildBounty,
         canAward,
+        canSharePolkassembly,
     }
 }

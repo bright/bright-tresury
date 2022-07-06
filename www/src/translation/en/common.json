@@ -872,6 +872,10 @@
                 "successMessage": "Congratulations, you have just claimed the payout!"
             }
         },
+        "polkassemblyShare": {
+            "intro": "This child bounty was added through BrightTreasury. For more info & discussion, check",
+            "link": "BrightTreasury"
+        },
         "content": {
             "infoLabel": "Info"
         },

@@ -5,6 +5,7 @@ export enum PolkassemblyPostType {
     Proposal = 'treasury_proposal',
     Bounty = 'bounty',
     Tip = 'tip',
+    ChildBounty = 'child_bounty',
 }
 
 export interface PolkassemblyPostDto {

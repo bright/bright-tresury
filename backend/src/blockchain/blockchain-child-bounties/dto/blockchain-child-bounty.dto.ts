@@ -65,6 +65,9 @@ export class BlockchainChildBountyDto {
             BlockchainChildBountyStatus.Active,
             BlockchainChildBountyStatus.PendingPayout,
             BlockchainChildBountyStatus.CuratorProposed,
+            BlockchainChildBountyStatus.Awarded,
+            BlockchainChildBountyStatus.Claimed,
+            BlockchainChildBountyStatus.Canceled,
         ].includes(this.status)
 
     isOwner = (user: UserEntity) => this.isCurator(user)

@@ -15,6 +15,7 @@ export interface UseBountyResult {
     canExtendExpiry: boolean
     isProposedCurator: boolean
     isCurator: boolean
+    curator: Nil<string>
     isOwner: boolean
     isProposer: boolean
     isBeneficiary: boolean
@@ -40,7 +41,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
 
     const isProposedCurator = isCuratorProposed && hasWeb3AddressAssigned(bounty.curator.web3address)
     const isCurator = (isActive || isPendingPayout) && hasWeb3AddressAssigned(bounty.curator.web3address)
-
+    const curator = isActive || isPendingPayout ? bounty.curator.web3address : null
     const isOwner = !!bounty && !!user?.id && user?.id === bounty.owner?.userId
 
     const isProposer = !!bounty && hasWeb3AddressAssigned(bounty.proposer.web3address)
@@ -77,6 +78,7 @@ export const useBounty = (bounty: Nil<BountyDto>): UseBountyResult => {
         canExtendExpiry,
         isProposedCurator,
         isCurator,
+        curator,
         isOwner,
         isProposer,
         isBeneficiary,

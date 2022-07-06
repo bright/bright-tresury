@@ -9,6 +9,8 @@ import { useNetworks } from '../../../../../networks/useNetworks'
 import { useGetChildBounty } from '../../child-bounties.api'
 import ChildBountyClaimButton from './curator-actions/claim/ChildBountyClaimButton'
 import ChildBountyEditButton from './ChildBountyEditButton'
+import ProposalPolkassemblyShareButton from '../../../../../proposals/proposal/polkassembly/ProposalPolkassemblyShareButton'
+import ChildBountyPolkassemblyShareButton from './curator-actions/polkassembly-share/ChildBountyPolkassemblyShareButton'
 
 interface OwnProps {
     bounty: BountyDto
@@ -19,10 +21,14 @@ export type CuratorActionButtonsProps = OwnProps & ActionButtonsProps
 
 const ChildBountyActionButtons = ({ bounty, childBounty, ...props }: CuratorActionButtonsProps) => {
     const { network } = useNetworks()
-    const { canAcceptCurator, canUnassignCurator, canClaimPayout, isCuratorProposed, canEdit } = useChildBounty(
-        bounty,
-        childBounty,
-    )
+    const {
+        canAcceptCurator,
+        canUnassignCurator,
+        canClaimPayout,
+        isCuratorProposed,
+        canEdit,
+        canSharePolkassembly,
+    } = useChildBounty(bounty, childBounty)
     const { refetch } = useGetChildBounty({
         bountyIndex: childBounty.parentBountyBlockchainIndex.toString(),
         childBountyIndex: childBounty.blockchainIndex.toString(),
@@ -31,6 +37,9 @@ const ChildBountyActionButtons = ({ bounty, childBounty, ...props }: CuratorActi
 
     return (
         <ActionButtons {...props}>
+            {canSharePolkassembly ? (
+                <ChildBountyPolkassemblyShareButton bounty={bounty} childBounty={childBounty} />
+            ) : null}
             {canEdit ? <ChildBountyEditButton childBounty={childBounty} bounty={bounty} /> : null}
             {canAcceptCurator && isCuratorProposed ? (
                 <ChildBountyAcceptCuratorButton childBounty={childBounty} onSuccess={refetch} />
