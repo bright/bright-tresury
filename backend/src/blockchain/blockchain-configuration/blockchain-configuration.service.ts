@@ -8,6 +8,7 @@ import { BlockchainConfig, BlockchainConfigToken } from './blockchain-configurat
 import { BlockchainConfigurationDto } from './dto/blockchain-configuration.dto'
 import { NetworkPlanckValue } from '../../utils/types'
 import { BlockchainChildBountiesService } from '../blockchain-child-bounties/blockchain-child-bounties.service'
+import { BlockchainProposalsService } from '../blockchain-proposals/blockchain-proposals.service'
 
 @Injectable()
 export class BlockchainConfigurationService {
@@ -16,6 +17,7 @@ export class BlockchainConfigurationService {
     constructor(
         @Inject('PolkadotApi') private readonly blockchainsConnections: BlockchainsConnections,
         @Inject(BlockchainConfigToken) private readonly blockchainConfig: BlockchainConfig[],
+        private readonly proposalsBlockchainService: BlockchainProposalsService,
         private readonly bountiesBlockchainService: BlockchainBountiesService,
         private readonly tipsBlockchainService: BlockchainTipsService,
         private readonly childBountiesBlockchainService: BlockchainChildBountiesService,
@@ -33,15 +35,8 @@ export class BlockchainConfigurationService {
 
         const currency = api.registry.chainTokens[0] ?? defaultBlockchainConfig.currency
 
-        const proposalBondMinimum = api.consts.treasury?.proposalBondMinimum.toString() as NetworkPlanckValue
-        const minValue = proposalBondMinimum ?? defaultBlockchainConfig.bond.minValue
-
-        const proposalBondMaximum = api.consts.treasury?.proposalBondMaximum?.toString() as NetworkPlanckValue
-        const maxValue = proposalBondMaximum ?? defaultBlockchainConfig.bond.maxValue
-
-        const proposalBond = api.consts.treasury?.proposalBond.mul(BN_HUNDRED).div(BN_MILLION).toNumber()
-        const percentage = proposalBond ?? defaultBlockchainConfig.bond.percentage
-
+        const proposals =
+            this.proposalsBlockchainService.getProposalsConfig(networkId) ?? defaultBlockchainConfig.proposals
         const bounties = this.bountiesBlockchainService.getBountiesConfig(networkId) ?? defaultBlockchainConfig.bounties
         const tips = this.tipsBlockchainService.getTipsConfig(networkId) ?? defaultBlockchainConfig.tips
         const childBounties =
@@ -53,7 +48,7 @@ export class BlockchainConfigurationService {
             ...defaultBlockchainConfig,
             decimals,
             currency,
-            bond: { minValue, percentage, maxValue },
+            proposals,
             bounties,
             tips,
             childBounties,

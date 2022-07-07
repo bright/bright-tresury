@@ -21,7 +21,7 @@ describe('GET blockchains configurations', () => {
                 developmentKeyring,
                 ss58Format,
                 genesisHash,
-                bond,
+                proposals,
                 currency,
                 decimals,
                 color,
@@ -39,10 +39,10 @@ describe('GET blockchains configurations', () => {
             expect(typeof developmentKeyring).toBe('boolean')
             expect(typeof ss58Format).toBe('number')
             expect(typeof genesisHash).toBe('string')
-            expect(bond).toBeDefined()
-            expect(typeof bond).toBe('object')
-            expect(typeof bond.minValue).toBe('string')
-            expect(typeof bond.percentage).toBe('number')
+            expect(proposals).toBeDefined()
+            expect(typeof proposals).toBe('object')
+            expect(typeof proposals.proposalBondMinimum).toBe('string')
+            expect(typeof proposals.proposalBond).toBe('number')
             expect(typeof currency).toBe('string')
             expect(typeof decimals).toBe('number')
             expect(typeof color).toBe('string')

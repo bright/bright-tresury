@@ -4,6 +4,7 @@ import { BlockchainConfig } from '../blockchain-configuration.config'
 import { NetworkPlanckValue, Nil } from '../../../utils/types'
 import { BlockchainBountiesConfigurationDto } from '../../blockchain-bounties/dto/blockchain-bounties-configuration.dto'
 import { BlockchainChildBountiesConfigurationDto } from '../../blockchain-child-bounties/dto/blockchain-child-bounties-configuration.dto'
+import { BlockchainProposalsConfigurationDto } from '../../blockchain-proposals/dto/blockchain-proposals-configuration.dto'
 
 export class BlockchainConfigurationDto {
     @ApiProperty({
@@ -40,16 +41,6 @@ export class BlockchainConfigurationDto {
     @ApiProperty({ description: 'Genesis Hash of the blockchain' })
     genesisHash: string
 
-    @ApiProperty({
-        description:
-            'Bond values used when we submit new proposal. Supported properties: minValue, percentage and maxValue',
-    })
-    bond: {
-        minValue: NetworkPlanckValue
-        percentage: number
-        maxValue: Nil<NetworkPlanckValue>
-    }
-
     @ApiProperty({ description: 'Ticker to use for the currency used by the blockchain' })
     currency: string
 
@@ -64,6 +55,12 @@ export class BlockchainConfigurationDto {
 
     @ApiProperty({ description: 'Is this a live network or a development one' })
     isLiveNetwork: boolean
+
+    @ApiProperty({
+        description: 'Treasury Proposals module configuration',
+        type: BlockchainProposalsConfigurationDto,
+    })
+    proposals: BlockchainProposalsConfigurationDto
 
     @ApiProperty({ description: 'Bounties module configuration', type: BlockchainBountiesConfigurationDto })
     bounties: BlockchainBountiesConfigurationDto
@@ -87,12 +84,12 @@ export class BlockchainConfigurationDto {
         developmentKeyring,
         ss58Format,
         genesisHash,
-        bond,
         currency,
         decimals,
         color,
         isDefault,
         isLiveNetwork,
+        proposals,
         bounties,
         childBounties,
         tips,
@@ -107,12 +104,12 @@ export class BlockchainConfigurationDto {
         this.developmentKeyring = developmentKeyring
         this.ss58Format = ss58Format
         this.genesisHash = genesisHash
-        this.bond = bond
         this.currency = currency
         this.decimals = decimals
         this.color = color
         this.isDefault = isDefault
         this.isLiveNetwork = isLiveNetwork
+        this.proposals = proposals
         this.bounties = bounties
         this.childBounties = childBounties
         this.tips = tips

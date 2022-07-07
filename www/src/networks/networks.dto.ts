@@ -10,10 +10,10 @@ export interface Network {
     genesisHash: string
     rpc: Record<string, Record<string, DefinitionRpcExt>>
     developmentKeyring: boolean
-    bond: {
-        minValue: NetworkPlanckValue
-        percentage: number
-        maxValue: Nil<NetworkPlanckValue>
+    proposals: {
+        proposalBondMinimum: NetworkPlanckValue
+        proposalBond: number
+        proposalBondMaximum: Nil<NetworkPlanckValue>
     }
     currency: string
     decimals: number

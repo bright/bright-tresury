@@ -21,10 +21,10 @@
             "developmentKeyring": true,
             "ss58Format": 42,
             "genesisHash": "",
-            "bond": {
-                "minValue": "1000000000000",
-                "percentage": 5,
-                "maxValue": "5000000000000"
+            "proposals": {
+                "proposalBondMinimum": "1000000000000",
+                "proposalBond": 5,
+                "proposalBondMaximum": "5000000000000"
             },
             "currency": "Unit",
             "decimals": 12,
@@ -37,10 +37,10 @@
             "url": "ws://localhost:9955",
             "ss58Format": 42,
             "genesisHash": "",
-            "bond": {
-                "minValue": "1000000000000",
-                "percentage": 5,
-                "maxValue": "5000000000000"
+            "proposals": {
+                "proposalBondMinimum": "1000000000000",
+                "proposalBond": 5,
+                "proposalBondMaximum": "5000000000000"
             },
             "currency": "Unit",
             "developmentKeyring": true,

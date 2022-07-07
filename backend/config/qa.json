@@ -10,10 +10,10 @@
             "developmentKeyring": true,
             "ss58Format": 0,
             "genesisHash": "",
-            "bond": {
-                "minValue": "1000000000000",
+            "proposals": {
+                "proposalBondMinimum": "1000000000000",
                 "percentage": 5,
-                "maxValue": "5000000000000"
+                "proposalBondMaximum": "5000000000000"
             },
             "currency": "Unit",
             "decimals": 12,
@@ -27,10 +27,10 @@
             "developmentKeyring": true,
             "ss58Format": 0,
             "genesisHash": "",
-            "bond": {
-                "minValue": "1000000000000",
+            "proposals": {
+                "proposalBondMinimum": "1000000000000",
                 "percentage": 5,
-                "maxValue": "5000000000000"
+                "proposalBondMaximum": "5000000000000"
             },
             "currency": "Unit",
             "decimals": 12,
@@ -44,8 +44,8 @@
             "polkassemblyUrl": "https://polkadot.polkassembly.io/v1/graphql",
             "ss58Format": 0,
             "genesisHash": "0x91b171bb158e2d3848fa23a9f1c25182fb8e20313b2c1eb49219da7a70ce90c3",
-            "bond": {
-                "minValue": "1000000000000",
+            "proposals": {
+                "proposalBondMinimum": "1000000000000",
                 "percentage": 5
             },
             "currency": "DOT",
@@ -60,10 +60,10 @@
             "polkassemblyUrl": "https://test.polkassembly.io/v1/graphql",
             "ss58Format": 2,
             "genesisHash": "0xb0a8d493285c2df73290dfb7e61f870f17b41801197a149ca93654499ea3dafe",
-            "bond": {
-                "minValue": "66666666000",
+            "proposals": {
+                "proposalBondMinimum": "66666666000",
                 "percentage": 5,
-                "maxValue": "3333333300000"
+                "proposalBondMaximum": "3333333300000"
             },
             "currency": "KSM",
             "decimals": 12,

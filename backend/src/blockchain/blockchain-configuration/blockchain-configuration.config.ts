@@ -4,6 +4,7 @@ import { numberFormat } from '../../config/formats/number.format'
 import { stringFormat } from '../../config/formats/string.format'
 import { objectFormat } from '../../config/formats/object.format'
 import { NetworkPlanckValue, Nil } from '../../utils/types'
+import { BlockchainProposalsConfigurationDto } from '../blockchain-proposals/dto/blockchain-proposals-configuration.dto'
 
 export const BlockchainConfigToken = 'BlockchainConfig'
 
@@ -17,10 +18,10 @@ export interface BlockchainConfig {
     developmentKeyring: boolean
     ss58Format: number
     genesisHash: string
-    bond: {
-        minValue: NetworkPlanckValue
-        percentage: number
-        maxValue: Nil<NetworkPlanckValue>
+    proposals: {
+        proposalBondMinimum: NetworkPlanckValue
+        proposalBondMaximum: Nil<NetworkPlanckValue>
+        proposalBond: number
     }
     currency: string
     decimals: number
@@ -93,10 +94,6 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         default: '',
         format: stringFormat,
     },
-    bond: {
-        doc: 'Proposal tips-bounties-bond information used by this blockchain',
-        default: { minValue: '1000000000000' as NetworkPlanckValue, percentage: 5, maxValue: undefined },
-    },
     currency: {
         doc: 'Currency ticker used',
         default: 'UNIT',
@@ -121,6 +118,14 @@ export const blockchainConfigSchema: Schema<BlockchainConfig> = {
         doc: 'Is this a live network or a development one',
         default: false,
         format: booleanFormat,
+    },
+    proposals: {
+        doc: 'Treasury proposals bond information used by this blockchain',
+        default: {
+            proposalBondMinimum: '1000000000000' as NetworkPlanckValue,
+            proposalBond: 5,
+            proposalBondMaximum: undefined,
+        },
     },
     bounties: {
         doc: 'Bounties module configuration used by this blockchain',
