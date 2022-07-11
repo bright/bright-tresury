@@ -6,8 +6,8 @@ import { Label } from '../../../../../components/text/Label'
 import ShortText from '../../../../../components/text/ShortText'
 import User from '../../../../../components/user/User'
 import { ChildBountyDto } from '../../child-bounties.dto'
-import { UserStatus } from '../../../../../auth/AuthContext'
 import LongText from '../../../../../components/text/LongText'
+import PolkassemblyDescription from '../../../../../components/polkassemblyDescription/PolkassemblyDescription'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -61,6 +61,10 @@ const ChildBountyInfo = ({ childBounty }: ChildBountyDetailsProps) => {
                     placeholder={t('childBounty.info.onChainDescription')}
                 />
             </div>
+            <PolkassemblyDescription
+                polkassemblyPostDto={childBounty.polkassembly}
+                initialShow={!childBounty.description}
+            />
         </div>
     )
 }

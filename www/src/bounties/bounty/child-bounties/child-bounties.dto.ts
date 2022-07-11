@@ -1,5 +1,6 @@
 import { NetworkPlanckValue, Nil } from '../../../util/types'
 import { PublicUserDto } from '../../../util/publicUser.dto'
+import { PolkassemblyPostDto } from '../../../components/polkassemblyDescription/polkassembly-post.dto'
 
 export enum ChildBountyStatus {
     Added = 'Added',
@@ -22,6 +23,7 @@ export interface ChildBountyDto {
     title: Nil<string>
     description: Nil<string>
     owner: Nil<PublicUserDto>
+    polkassembly?: Nil<PolkassemblyPostDto>
 }
 export interface CreateChildBountyDto {
     parentIndex: number

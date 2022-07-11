@@ -27,29 +27,28 @@ describe(`/api/v1/bounties/:bountyIndex/childBounties`, () => {
 
     describe('GET', () => {
         beforeAll(() => {
-            jest.spyOn(childBountiesService(), 'findByParentBountyBlockchainIndex').mockImplementation(
-                async (networkId, parentBountyBlockchainIndex) => {
-                    return Promise.resolve([
-                        {
-                            blockchain: {
-                                index: 0,
-                                parentIndex: 0,
-                                description: 'bc-description-0',
-                                value: '10' as NetworkPlanckValue,
-                                fee: '1' as NetworkPlanckValue,
-                                curator: undefined,
-                                curatorDeposit: '0' as NetworkPlanckValue,
-                                beneficiary: undefined,
-                                unlockAt: undefined,
-                                status: BlockchainChildBountyStatus.Added,
-                                isOwner: () => true,
-                                isCurator: () => true,
-                            },
+            jest.spyOn(childBountiesService(), 'findByParentBountyBlockchainIndex').mockImplementation(async () => {
+                return Promise.resolve([
+                    {
+                        blockchain: {
+                            index: 0,
+                            parentIndex: 0,
+                            description: 'bc-description-0',
+                            value: '10' as NetworkPlanckValue,
+                            fee: '1' as NetworkPlanckValue,
+                            curator: undefined,
+                            curatorDeposit: '0' as NetworkPlanckValue,
+                            beneficiary: undefined,
+                            unlockAt: undefined,
+                            status: BlockchainChildBountyStatus.Added,
                             isOwner: () => true,
+                            isCurator: () => true,
                         },
-                    ])
-                },
-            )
+                        polkassembly: undefined,
+                        isOwner: () => true,
+                    },
+                ])
+            })
         })
 
         it('should return child bounties', async () => {

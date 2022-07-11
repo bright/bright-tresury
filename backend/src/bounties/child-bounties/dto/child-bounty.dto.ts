@@ -3,6 +3,8 @@ import { BlockchainChildBountyStatus } from '../../../blockchain/blockchain-chil
 import { FindChildBountyDto } from './find-child-bounty.dto'
 import { NetworkPlanckValue, Nil } from '../../../utils/types'
 import { PublicUserDto } from '../../../users/dto/public-user.dto'
+import { PolkassemblyPostDto } from '../../../polkassembly/dto/polkassembly-post.dto'
+import { PolkassemblyChildBountyPostDto } from '../../../polkassembly/childBounties/childBounty-post.dto'
 
 export class ChildBountyDto {
     @ApiProperty({
@@ -70,7 +72,13 @@ export class ChildBountyDto {
     })
     description?: Nil<string>
 
-    constructor({ blockchain, entity, curator, beneficiary }: FindChildBountyDto) {
+    @ApiPropertyOptional({
+        description: 'Child bounty data kept in polkassembly server',
+        type: PolkassemblyPostDto,
+    })
+    polkassembly?: Nil<PolkassemblyChildBountyPostDto>
+
+    constructor({ blockchain, entity, curator, beneficiary, polkassembly }: FindChildBountyDto) {
         this.blockchainIndex = blockchain.index
         this.parentBountyBlockchainIndex = blockchain.parentIndex
         this.blockchainDescription = blockchain.description
@@ -86,5 +94,6 @@ export class ChildBountyDto {
 
         this.curator = curator
         this.beneficiary = beneficiary
+        this.polkassembly = polkassembly
     }
 }

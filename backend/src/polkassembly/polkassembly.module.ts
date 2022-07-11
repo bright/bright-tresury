@@ -4,6 +4,7 @@ import { PolkassemblyBountiesService } from './bounties/polkassembly-bounties.se
 import { PolkassemblyService } from './polkassembly.service'
 import { PolkassemblyTreasuryProposalsService } from './treasury-proposals/polkassembly-treasury-proposals.service'
 import { PolkassemblyTipsService } from './tips/polkassembly-tips.service'
+import { PolkassemblyChildBountiesService } from './childBounties/polkassembly-childBounties.service'
 
 @Module({
     imports: [BlockchainModule],
@@ -12,7 +13,13 @@ import { PolkassemblyTipsService } from './tips/polkassembly-tips.service'
         PolkassemblyBountiesService,
         PolkassemblyTreasuryProposalsService,
         PolkassemblyTipsService,
+        PolkassemblyChildBountiesService,
     ],
-    exports: [PolkassemblyBountiesService, PolkassemblyTreasuryProposalsService, PolkassemblyTipsService],
+    exports: [
+        PolkassemblyBountiesService,
+        PolkassemblyTreasuryProposalsService,
+        PolkassemblyTipsService,
+        PolkassemblyChildBountiesService,
+    ],
 })
 export class PolkassemblyModule {}
