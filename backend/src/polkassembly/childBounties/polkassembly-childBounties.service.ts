@@ -4,8 +4,7 @@ import { GetPosts, PolkassemblyService } from '../polkassembly.service'
 import { Nil } from '../../utils/types'
 import { PolkassemblyChildBountyPostDto } from './childBounty-post.dto'
 import { PolkassemblyChildBountyPostSchema } from './childBounty-post.shema'
-import { ChildBountyPosts, OneChildBountyPost } from './childBounty.fragment'
-import { ChildBountyId } from '../../blockchain/blockchain-child-bounties/child-bounty-id.interface'
+import { ChildBountiesIdsByParentBountyId, ChildBountyPosts, OneChildBountyPost } from './childBounty.fragment'
 
 const logger = getLogger()
 
@@ -23,6 +22,20 @@ export class PolkassemblyChildBountiesService {
         } catch (err) {
             logger.error('Error when looking for ChildBountyPost', err)
         }
+    }
+
+    async getBountyChildBountiesIds(networkId: string, parentBountyId: number) {
+        try {
+            logger.info('Looking for ChildBountyIds for ', { parentBountyId, networkId })
+            const data = await this.polkassemblyService.executeQuery(networkId, ChildBountiesIdsByParentBountyId, {
+                parentBountyId,
+            })
+            return data?.childBounties.map((childBounty: { childBountyId: number }) => childBounty.childBountyId) ?? []
+        } catch (err) {
+            logger.error('Error when looking for ChildBountyIds', err)
+            return []
+        }
+        return Promise.resolve([])
     }
 
     async find({ networkId, paginatedParams, ...queryVariables }: GetPosts): Promise<PolkassemblyChildBountyPostDto[]> {

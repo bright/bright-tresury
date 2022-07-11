@@ -7,6 +7,10 @@ export enum ChildBountyStatus {
     CuratorProposed = 'CuratorProposed',
     Active = 'Active',
     PendingPayout = 'PendingPayout',
+    Awarded = 'Awarded',
+    Claimed = 'Claimed',
+    Canceled = 'Canceled',
+    Unknown = 'Unknown',
 }
 
 export interface ChildBountyDto {

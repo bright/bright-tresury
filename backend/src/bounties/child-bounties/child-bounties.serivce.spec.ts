@@ -22,6 +22,7 @@ import { ChildBountyEntity } from './entities/child-bounty.entity'
 import { BlockchainChildBountiesService } from '../../blockchain/blockchain-child-bounties/blockchain-child-bounties.service'
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common'
 import { BlockchainChildBountyDto } from '../../blockchain/blockchain-child-bounties/dto/blockchain-child-bounty.dto'
+import { PolkassemblyChildBountiesService } from '../../polkassembly/childBounties/polkassembly-childBounties.service'
 
 describe('ChildBountiesService', () => {
     const app = beforeSetupFullApp()
@@ -29,6 +30,9 @@ describe('ChildBountiesService', () => {
     const blockchainService = beforeAllSetup(() => app().get<BlockchainService>(BlockchainService))
     const blockchainChildBountiesService = beforeAllSetup(() =>
         app().get<BlockchainChildBountiesService>(BlockchainChildBountiesService),
+    )
+    const polkassemblyService = beforeAllSetup(() =>
+        app().get<PolkassemblyChildBountiesService>(PolkassemblyChildBountiesService),
     )
     const extrinsicsService = beforeAllSetup(() => app().get<ExtrinsicsService>(ExtrinsicsService))
     const repository = beforeAllSetup(() =>
@@ -155,8 +159,13 @@ describe('ChildBountiesService', () => {
         })
     })
     describe('getBountyChildBountiesCount', () => {
-        it('should call getBountyChildBountiesCount with correct arguments', () => {
-            const spy = jest.spyOn(blockchainChildBountiesService(), 'getBountyChildBountiesCount')
+        it('should call PolkassemblyChildBountiesService.getBountyChildBountiesIds with correct arguments', () => {
+            const spy = jest.spyOn(polkassemblyService(), 'getBountyChildBountiesIds')
+            service().getBountyChildBountiesCount(NETWORKS.POLKADOT, 0)
+            expect(spy).toHaveBeenCalledWith(NETWORKS.POLKADOT, 0)
+        })
+        it('should call BlockchainChildBountiesService.getBountyChildBountiesIds with correct arguments', () => {
+            const spy = jest.spyOn(blockchainChildBountiesService(), 'getBountyChildBountiesIds')
             service().getBountyChildBountiesCount(NETWORKS.POLKADOT, 0)
             expect(spy).toHaveBeenCalledWith(NETWORKS.POLKADOT, 0)
         })

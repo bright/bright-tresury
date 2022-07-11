@@ -82,3 +82,10 @@ export const ChildBountyPosts = gql`
     }
     ${childBountyPost}
 `
+export const ChildBountiesIdsByParentBountyId = gql`
+    query ChildBountiesByParentBountyId($parentBountyId: Int!) {
+        childBounties(where: { parentBountyId: $parentBountyId }) {
+            childBountyId
+        }
+    }
+`

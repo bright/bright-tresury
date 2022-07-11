@@ -6,7 +6,7 @@ interface ChildBountySchema {
     fee: string
     curatorDeposit: string
     curator: string
-    parentBountyId: string
+    parentBountyId: number
     childBountyId: number
     beneficiary: string
     childBountyStatus: {

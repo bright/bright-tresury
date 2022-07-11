@@ -10,7 +10,7 @@ import {
 } from '@nestjs/swagger'
 import { Body, Get, HttpCode, HttpStatus, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { NetworkNameQuery } from '../../utils/network-name.query'
-import { IsNotEmpty, IsString } from 'class-validator'
+import { IsNotEmpty, IsNumberString, IsString } from 'class-validator'
 import { BountyParam } from '../bounty.param'
 import { ChildBountiesService } from './child-bounties.service'
 import { SessionGuard } from '../../auth/guards/session.guard'
@@ -24,8 +24,9 @@ class ChildBountyParams extends BountyParam {
         description: 'Child-bounty id',
     })
     @IsString()
+    @IsNumberString()
     @IsNotEmpty()
-    childBountyIndex!: number
+    childBountyIndex!: string
 }
 
 @ControllerApiVersion('/bounties/:bountyIndex/child-bounties', ['v1'])
@@ -66,7 +67,7 @@ export class ChildBountiesController {
     ): Promise<ChildBountyDto> {
         const childBountyId = {
             parentBountyBlockchainIndex: Number(bountyIndex),
-            blockchainIndex: childBountyIndex,
+            blockchainIndex: Number(childBountyIndex),
         }
         const findChildBountyDto = await this.childBountiesService.findOne(network, childBountyId)
         return new ChildBountyDto(findChildBountyDto)
@@ -115,7 +116,7 @@ export class ChildBountiesController {
     ): Promise<ChildBountyDto> {
         const childBountyId = {
             parentBountyBlockchainIndex: Number(bountyIndex),
-            blockchainIndex: childBountyIndex,
+            blockchainIndex: Number(childBountyIndex),
         }
         const childBounty = await this.childBountiesService.update(childBountyId, network, dto, sessionData.user)
         return new ChildBountyDto(childBounty)

@@ -6,6 +6,7 @@ import { useBounty } from '../useBounty'
 import AddChildBountyLink from './components/AddChildBountyLink'
 import { useTranslation } from 'react-i18next'
 import { ChildBountyDto } from './child-bounties.dto'
+import ChildBountiesHeader from './ChildBountiesHeader'
 
 const useStyles = makeStyles(() =>
     createStyles({
@@ -40,9 +41,7 @@ const ChildBounties = ({ bounty, childBounties }: ChildBountiesProps) => {
             {!hasChildBounties ? (
                 <p className={classes.noChildBounties}>{t('childBounty.list.noChildBounties')}</p>
             ) : null}
-            {hasChildBounties ? (
-                <ChildBountiesList bounty={bounty} childBounties={childBounties}></ChildBountiesList>
-            ) : null}
+            {hasChildBounties ? <ChildBountiesList bounty={bounty} childBounties={childBounties} /> : null}
         </div>
     )
 }

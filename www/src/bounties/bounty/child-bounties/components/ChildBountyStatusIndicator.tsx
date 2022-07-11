@@ -22,6 +22,14 @@ const ChildBountyStatusIndicator = ({ status }: BountyStatusIndicatorProps) => {
                 return 'Active'
             case ChildBountyStatus.PendingPayout:
                 return 'Pending Payout'
+            case ChildBountyStatus.Awarded:
+                return 'Awarded'
+            case ChildBountyStatus.Claimed:
+                return 'Claimed'
+            case ChildBountyStatus.Canceled:
+                return 'Canceled'
+            case ChildBountyStatus.Unknown:
+                return 'Unknown'
         }
     }
 
@@ -35,6 +43,14 @@ const ChildBountyStatusIndicator = ({ status }: BountyStatusIndicatorProps) => {
                 return '#0E65F2'
             case ChildBountyStatus.PendingPayout:
                 return '#01D55A'
+            case ChildBountyStatus.Awarded:
+                return '#01D55A'
+            case ChildBountyStatus.Claimed:
+                return '#01D55A'
+            case ChildBountyStatus.Canceled:
+                return '#999'
+            case ChildBountyStatus.Unknown:
+                return '#999'
         }
     }
 

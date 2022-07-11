@@ -24,11 +24,13 @@ export class BlockchainChildBountiesService {
         return ids.map(BlockchainChildBountiesService.parseRawId)
     }
 
-    async getBountyChildBountiesIds(networkId: string, parentBountyBlockchainIndex: number) {
-        return (await this.getAllChildBountiesIds(networkId)).filter(
-            ({ parentBountyBlockchainIndex: anyParentBountyBlockchainIndex }) =>
-                anyParentBountyBlockchainIndex === parentBountyBlockchainIndex,
-        )
+    async getBountyChildBountiesIds(networkId: string, parentBountyBlockchainIndex: number): Promise<number[]> {
+        return (await this.getAllChildBountiesIds(networkId))
+            .filter(
+                ({ parentBountyBlockchainIndex: anyParentBountyBlockchainIndex }) =>
+                    anyParentBountyBlockchainIndex === parentBountyBlockchainIndex,
+            )
+            .map(({ blockchainIndex }) => blockchainIndex)
     }
 
     async getAllChildBounties(networkId: string): Promise<BlockchainChildBountyDto[]> {
@@ -40,7 +42,9 @@ export class BlockchainChildBountiesService {
         networkId: string,
         parentBountyBlockchainIndex: number,
     ): Promise<BlockchainChildBountyDto[]> {
-        const ids = await this.getBountyChildBountiesIds(networkId, parentBountyBlockchainIndex)
+        const ids = (
+            await this.getBountyChildBountiesIds(networkId, parentBountyBlockchainIndex)
+        ).map((blockchainIndex) => ({ parentBountyBlockchainIndex, blockchainIndex }))
         return this.getChildBountiesWithIds(networkId, ids)
     }
     async getBountyChildBountiesCount(networkId: string, parentBountyBlockchainIndex: number): Promise<number> {
