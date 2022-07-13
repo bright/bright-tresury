@@ -8,7 +8,9 @@ import { Nil } from '../../../util/types'
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            display: 'inline-block',
+            display: '-webkit-box',
+            '-webkit-line-clamp': '2',
+            '-webkit-box-orient': 'vertical',
             fontSize: '18px',
             marginBottom: '16px',
             marginTop: 0,
