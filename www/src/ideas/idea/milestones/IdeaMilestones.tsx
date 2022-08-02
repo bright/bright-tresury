@@ -31,6 +31,7 @@ const IdeaMilestones = ({ idea }: IdeaMilestonesProps) => {
 
     return (
         <LoadingWrapper
+            list
             status={status}
             errorText={t('errors.errorOccurredWhileLoadingIdeaMilestones')}
             loadingText={t('loading.ideaMilestones')}

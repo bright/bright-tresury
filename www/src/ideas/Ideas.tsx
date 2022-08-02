@@ -38,6 +38,7 @@ const Ideas = () => {
         <div>
             <IdeasHeader selectedFilter={selectedFilter} />
             <LoadingWrapper
+                list
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingIdeas')}
                 loadingText={t('loading.ideas')}

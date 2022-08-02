@@ -7,14 +7,15 @@ interface OwnProps {
     status: QueryStatus
     errorText: string
     loadingText: string
+    list?: boolean
 }
 export type LoadingWrapperProps = PropsWithChildren<OwnProps>
-const LoadingWrapper = ({ status, errorText, loadingText, children }: LoadingWrapperProps) => {
+const LoadingWrapper = ({ status, errorText, loadingText, children, list }: LoadingWrapperProps) => {
     switch (status) {
         case 'idle':
             return null
         case 'loading':
-            return <Loader text={loadingText} />
+            return <Loader text={loadingText} list={list} />
         case 'success':
             return <>{children}</>
         case 'error':

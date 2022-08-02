@@ -56,6 +56,7 @@ const Proposals = () => {
         <div className={classes.root}>
             <ProposalsHeader />
             <LoadingWrapper
+                list
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingProposals')}
                 loadingText={t('loading.proposals')}

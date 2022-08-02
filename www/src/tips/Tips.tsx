@@ -48,6 +48,7 @@ const Tips = () => {
         <>
             <TipsHeader />
             <LoadingWrapper
+                list
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingTips')}
                 loadingText={t('loading.tips')}

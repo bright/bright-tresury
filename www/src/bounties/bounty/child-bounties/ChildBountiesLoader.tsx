@@ -18,6 +18,7 @@ const ChildBountiesLoader = ({ bounty }: ChildBountiesLoaderProps) => {
     })
     return (
         <LoadingWrapper
+            list
             status={status}
             errorText={t('errors.errorOccurredWhileLoadingChildBounties')}
             loadingText={t('loading.childBounties')}

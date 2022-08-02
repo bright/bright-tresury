@@ -36,6 +36,7 @@ const ProposalMilestones = ({ proposal }: ProposalMilestonesProps) => {
 
     return (
         <LoadingWrapper
+            list
             status={status}
             errorText={t('errors.errorOccurredWhileLoadingProposalMilestones')}
             loadingText={t('loading.proposalMilestones')}

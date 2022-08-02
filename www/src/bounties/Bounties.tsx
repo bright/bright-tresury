@@ -68,6 +68,7 @@ const Bounties = () => {
         <div className={classes.root}>
             <BountiesHeader />
             <LoadingWrapper
+                list
                 status={status}
                 errorText={t('errors.errorOccurredWhileLoadingBounties')}
                 loadingText={t('loading.bounties')}
