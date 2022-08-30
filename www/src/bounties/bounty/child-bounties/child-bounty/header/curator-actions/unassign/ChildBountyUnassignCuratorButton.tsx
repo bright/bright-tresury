@@ -5,6 +5,7 @@ import { WarningButton } from '../../../../../../../components/button/Button'
 import React from 'react'
 import ChildBountyUnassignCuratorModal from './ChildBountyUnassignCuratorModal'
 import { BountyDto } from '../../../../../../bounties.dto'
+import { useChildBounty } from '../../../../useChildBounty'
 
 interface OwnProps {
     childBounty: ChildBountyDto
@@ -21,6 +22,7 @@ const ChildBountyUnassignCuratorButton = ({
 }: ChildBountyUnassignCuratorButtonProps) => {
     const { t } = useTranslation()
     const { open, visible, close } = useModal()
+    const { isCurator, canAcceptCurator } = useChildBounty(bounty, childBounty)
     const onSuccessWithClose = async () => {
         await onSuccess()
         close()
@@ -28,7 +30,11 @@ const ChildBountyUnassignCuratorButton = ({
     return (
         <>
             <WarningButton variant="contained" color="primary" onClick={open}>
-                {t('childBounty.header.rejectCurator')}
+                {isCurator
+                    ? canAcceptCurator
+                        ? t('childBounty.header.rejectCurator')
+                        : t('childBounty.header.stopBeingTheCurator')
+                    : t('childBounty.header.unassignCurator')}
             </WarningButton>
             <ChildBountyUnassignCuratorModal
                 open={visible}

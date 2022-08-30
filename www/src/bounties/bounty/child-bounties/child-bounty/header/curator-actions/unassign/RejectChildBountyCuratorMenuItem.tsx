@@ -1,6 +1,5 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-
 import ChildBountyUnassignCuratorModal from './ChildBountyUnassignCuratorModal'
 import { useChildBounty } from '../../../../useChildBounty'
 import { ChildBountyDto } from '../../../../child-bounties.dto'
@@ -21,7 +20,7 @@ const RejectChildBountyCuratorMenuItem = ({ childBounty, bounty }: RejectChildBo
     const { t } = useTranslation()
     const { open, visible, close } = useModal()
     const { network } = useNetworks()
-    const { canUnassignCurator } = useChildBounty(bounty, childBounty)
+    const { canUnassignCurator, isCurator, canAcceptCurator } = useChildBounty(bounty, childBounty)
 
     const { refetch } = useGetChildBounty({
         bountyIndex: childBounty.parentBountyBlockchainIndex.toString(),
@@ -31,7 +30,11 @@ const RejectChildBountyCuratorMenuItem = ({ childBounty, bounty }: RejectChildBo
     return (
         <>
             <MenuItem key={'AssignCurator'} onClick={open} disabled={!canUnassignCurator}>
-                {t('childBounty.header.unassignCurator')}
+                {isCurator
+                    ? canAcceptCurator
+                        ? t('childBounty.header.rejectCurator')
+                        : t('childBounty.header.stopBeingTheCurator')
+                    : t('childBounty.header.unassignCurator')}
             </MenuItem>
             <ChildBountyUnassignCuratorModal
                 open={visible}

@@ -822,8 +822,9 @@
             "childBounty": "Child Bounty ",
             "assignCurator": "Assign curator",
             "acceptCurator": "Accept",
-            "rejectCurator": "Stop being the curator",
-            "unassignCurator": "Reject curator",
+            "rejectCurator": "Reject Curator",
+            "unassignCurator": "Unassign Curator",
+            "stopBeingTheCurator": "Stop being the curator",
             "claimPayout": "Pay out reward",
             "closeChildBounty": "Close child bounty",
             "award": "Award child bounty"

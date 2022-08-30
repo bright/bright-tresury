@@ -9,7 +9,6 @@ import { useNetworks } from '../../../../../networks/useNetworks'
 import { useGetChildBounty } from '../../child-bounties.api'
 import ChildBountyClaimButton from './curator-actions/claim/ChildBountyClaimButton'
 import ChildBountyEditButton from './ChildBountyEditButton'
-import ProposalPolkassemblyShareButton from '../../../../../proposals/proposal/polkassembly/ProposalPolkassemblyShareButton'
 import ChildBountyPolkassemblyShareButton from './curator-actions/polkassembly-share/ChildBountyPolkassemblyShareButton'
 
 interface OwnProps {
